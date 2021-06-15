@@ -25,9 +25,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
+import appeng.core.api.definitions.ApiBlocks;
 
 public class AEItemGroup extends ItemGroup {
 
@@ -39,9 +38,7 @@ public class AEItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        final IDefinitions definitions = Api.instance().definitions();
-        final IBlocks blocks = definitions.blocks();
-        return blocks.controller().stack(1);
+        return ApiBlocks.controller().stack(1);
     }
 
     public void add(IItemDefinition itemDef) {

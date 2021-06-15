@@ -71,7 +71,6 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
@@ -95,6 +94,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
@@ -987,7 +987,7 @@ public class Platform {
         }
 
         if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
-            final IItemDefinition certusQuartzCrystal = Api.instance().definitions().materials().certusQuartzCrystal();
+            final IItemDefinition certusQuartzCrystal = ApiMaterials.certusQuartzCrystal();
 
             return certusQuartzCrystal.isSameAs(b);
         }
@@ -997,16 +997,6 @@ public class Platform {
         }
 
         return false;
-    }
-
-    public static boolean isRecipePrioritized(final ItemStack what) {
-        final IMaterials materials = Api.instance().definitions().materials();
-
-        boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs(what);
-        isPurified |= materials.purifiedFluixCrystal().isSameAs(what);
-        isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs(what);
-
-        return isPurified;
     }
 
     public static boolean isSortOrderAvailable(SortOrder order) {

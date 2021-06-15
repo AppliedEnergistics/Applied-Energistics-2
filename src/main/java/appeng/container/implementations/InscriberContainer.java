@@ -30,7 +30,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
 
@@ -107,7 +107,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
-            IItemDefinition press = Api.instance().definitions().materials().namePress();
+            IItemDefinition press = ApiMaterials.namePress();
             if (press.isSameAs(top) || press.isSameAs(bot)) {
                 return !press.isSameAs(is);
             }
@@ -122,7 +122,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
             }
 
             // name presses
-            final IItemDefinition namePress = Api.instance().definitions().materials().namePress();
+            final IItemDefinition namePress = ApiMaterials.namePress();
             if (namePress.isSameAs(otherSlot)) {
                 return namePress.isSameAs(is);
             }

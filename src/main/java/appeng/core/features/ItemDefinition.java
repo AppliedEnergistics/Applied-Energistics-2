@@ -18,37 +18,31 @@
 
 package appeng.core.features;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 public class ItemDefinition implements IItemDefinition {
-    private final String identifier;
+    private final ResourceLocation id;
     private final Item item;
-    private final Set<AEFeature> features;
 
-    public ItemDefinition(String registryName, Item item, Set<AEFeature> features) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(registryName), "registryName");
-        this.identifier = registryName;
+    public ItemDefinition(ResourceLocation id, Item item) {
+        Preconditions.checkNotNull(id, "id");
+        this.id = id;
         this.item = item;
-        this.features = ImmutableSet.copyOf(features);
     }
 
     @Nonnull
     @Override
-    public String identifier() {
-        return this.identifier;
+    public ResourceLocation id() {
+        return this.id;
     }
 
     @Override
@@ -59,11 +53,6 @@ public class ItemDefinition implements IItemDefinition {
     @Override
     public ItemStack stack(final int stackSize) {
         return new ItemStack(item, stackSize);
-    }
-
-    @Override
-    public Set<AEFeature> features() {
-        return features;
     }
 
     @Override

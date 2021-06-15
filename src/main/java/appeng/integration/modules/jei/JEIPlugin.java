@@ -55,9 +55,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.GrinderScreen;
@@ -65,8 +63,11 @@ import appeng.client.gui.implementations.InscriberScreen;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiParts;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
@@ -84,7 +85,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-        final Optional<Item> maybeFacade = Api.instance().definitions().items().facade().maybeItem();
+        final Optional<Item> maybeFacade = ApiItems.facade().maybeItem();
         maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
     }
 
@@ -111,33 +112,28 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
 
-        IDefinitions definitions = Api.instance().definitions();
-
         RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
         registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
         registration.addRecipes(recipeManager.getRecipes(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
         registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY),
                 CondenserCategory.UID);
 
-        registerDescriptions(definitions, registration);
+        registerDescriptions(registration);
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        IDefinitions definitions = Api.instance().definitions();
-
-        ItemStack grindstone = definitions.blocks().grindstone().stack(1);
+        ItemStack grindstone = ApiBlocks.grindstone().stack(1);
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-        ItemStack condenser = definitions.blocks().condenser().stack(1);
+        ItemStack condenser = ApiBlocks.condenser().stack(1);
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        ItemStack inscriber = definitions.blocks().inscriber().stack(1);
+        ItemStack inscriber = ApiBlocks.inscriber().stack(1);
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
     }
 
-    private void registerDescriptions(IDefinitions definitions, IRecipeRegistration registry) {
-        IMaterials materials = definitions.materials();
+    private void registerDescriptions(IRecipeRegistration registry) {
 
         final ITextComponent[] message;
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
@@ -147,31 +143,31 @@ public class JEIPlugin implements IModPlugin {
         } else {
             message = new ITextComponent[] { GuiText.ChargedQuartz.text() };
         }
-        this.addDescription(registry, materials.certusQuartzCrystalCharged(), message);
+        this.addDescription(registry, ApiMaterials.certusQuartzCrystalCharged(), message);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            this.addDescription(registry, materials.logicProcessorPress(),
+            this.addDescription(registry, ApiMaterials.logicProcessorPress(),
                     GuiText.inWorldCraftingPresses.text());
-            this.addDescription(registry, materials.calcProcessorPress(),
+            this.addDescription(registry, ApiMaterials.calcProcessorPress(),
                     GuiText.inWorldCraftingPresses.text());
-            this.addDescription(registry, materials.engProcessorPress(),
+            this.addDescription(registry, ApiMaterials.engProcessorPress(),
                     GuiText.inWorldCraftingPresses.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
-            this.addDescription(registry, materials.fluixCrystal(), GuiText.inWorldFluix.text());
+            this.addDescription(registry, ApiMaterials.fluixCrystal(), GuiText.inWorldFluix.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
-            this.addDescription(registry, materials.qESingularity(), GuiText.inWorldSingularity.text());
+            this.addDescription(registry, ApiMaterials.qESingularity(), GuiText.inWorldSingularity.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
-            this.addDescription(registry, materials.purifiedCertusQuartzCrystal(),
+            this.addDescription(registry, ApiMaterials.purifiedCertusQuartzCrystal(),
                     GuiText.inWorldPurificationCertus.text());
-            this.addDescription(registry, materials.purifiedNetherQuartzCrystal(),
+            this.addDescription(registry, ApiMaterials.purifiedNetherQuartzCrystal(),
                     GuiText.inWorldPurificationNether.text());
-            this.addDescription(registry, materials.purifiedFluixCrystal(),
+            this.addDescription(registry, ApiMaterials.purifiedFluixCrystal(),
                     GuiText.inWorldPurificationFluix.text());
         }
 
@@ -185,11 +181,9 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
 
-        IDefinitions definitions = Api.instance().definitions();
-
         if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
-            FacadeItem itemFacade = (FacadeItem) definitions.items().facade().item();
-            ItemStack cableAnchor = definitions.parts().cableAnchor().stack(1);
+            FacadeItem itemFacade = (FacadeItem) ApiItems.facade().item();
+            ItemStack cableAnchor = ApiParts.cableAnchor().stack(1);
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
 
@@ -249,19 +243,18 @@ public class JEIPlugin implements IModPlugin {
         Collection<ItemStack> toRemove = new ArrayList<>();
 
         // We use the internal API here as exception as debug tools are not part of the public one by design.
-        toRemove.add(Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).orElse(null));
 
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
-            toRemove.add(Api.INSTANCE.definitions().blocks().cubeGenerator().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().blocks().chunkLoader().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().blocks().energyGenerator().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().blocks().itemGen().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().blocks().phantomNode().maybeStack(1).orElse(null));
+            toRemove.add(ApiBlocks.cubeGenerator().stack(1));
+            toRemove.add(ApiBlocks.chunkLoader().stack(1));
+            toRemove.add(ApiBlocks.energyGenerator().stack(1));
+            toRemove.add(ApiBlocks.itemGen().stack(1));
+            toRemove.add(ApiBlocks.phantomNode().stack(1));
 
-            toRemove.add(Api.INSTANCE.definitions().items().toolDebugCard().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().items().toolEraser().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().items().toolMeteoritePlacer().maybeStack(1).orElse(null));
-            toRemove.add(Api.INSTANCE.definitions().items().toolReplicatorCard().maybeStack(1).orElse(null));
+            toRemove.add(ApiItems.toolDebugCard().stack(1));
+            toRemove.add(ApiItems.toolEraser().stack(1));
+            toRemove.add(ApiItems.toolMeteoritePlacer().stack(1));
+            toRemove.add(ApiItems.toolReplicatorCard().stack(1));
         }
 
         jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,

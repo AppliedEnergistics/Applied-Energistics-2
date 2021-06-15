@@ -21,7 +21,6 @@ package appeng.parts.p2p;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
@@ -48,6 +46,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiParts;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -115,12 +114,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return super.getItemStack(type);
         }
 
-        final Optional<ItemStack> maybeMEStack = Api.instance().definitions().parts().p2PTunnelME().maybeStack(1);
-        if (maybeMEStack.isPresent()) {
-            return maybeMEStack.get();
-        }
-
-        return super.getItemStack(type);
+        return ApiParts.p2PTunnelME().stack(1);
     }
 
     @Override
@@ -211,35 +205,33 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         {
             final ItemStack newType;
 
-            final IParts parts = Api.instance().definitions().parts();
-
             switch (tt) {
                 case LIGHT:
-                    newType = parts.p2PTunnelLight().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelLight().stack(1);
                     break;
 
                 case FE_POWER:
-                    newType = parts.p2PTunnelFE().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelFE().stack(1);
                     break;
 
                 case FLUID:
-                    newType = parts.p2PTunnelFluids().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelFluids().stack(1);
                     break;
 
                 case IC2_POWER:
-                    newType = parts.p2PTunnelEU().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelEU().stack(1);
                     break;
 
                 case ITEM:
-                    newType = parts.p2PTunnelItems().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelItems().stack(1);
                     break;
 
                 case ME:
-                    newType = parts.p2PTunnelME().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelME().stack(1);
                     break;
 
                 case REDSTONE:
-                    newType = parts.p2PTunnelRedstone().maybeStack(1).orElse(ItemStack.EMPTY);
+                    newType = ApiParts.p2PTunnelRedstone().stack(1);
                     break;
 
                 /*

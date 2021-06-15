@@ -33,9 +33,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
 import appeng.api.features.INetworkEncodable;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -45,6 +42,8 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.client.gui.Icon;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;
@@ -114,9 +113,6 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final IDefinitions definitions = Api.instance().definitions();
-        final IMaterials materials = definitions.materials();
-        final IItems items = definitions.items();
         final ICraftingHelper crafting = Api.instance().crafting();
 
         switch (this.which) {
@@ -131,13 +127,13 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ENCODED_PATTERN:
                 return crafting.isEncodedPattern(stack);
             case BLANK_PATTERN:
-                return materials.blankPattern().isSameAs(stack);
+                return ApiMaterials.blankPattern().isSameAs(stack);
 
             case PATTERN:
-                return materials.blankPattern().isSameAs(stack) || crafting.isEncodedPattern(stack);
+                return ApiMaterials.blankPattern().isSameAs(stack) || crafting.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
-                if (materials.namePress().isSameAs(stack)) {
+                if (ApiMaterials.namePress().isSameAs(stack)) {
                     return true;
                 }
 
@@ -154,7 +150,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return isMetalIngot(stack);
 
             case VIEW_CELL:
-                return items.viewCell().isSameAs(stack);
+                return ApiItems.viewCell().isSameAs(stack);
             case ORE:
                 return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
@@ -162,10 +158,10 @@ public class RestrictedInputSlot extends AppEngSlot {
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
-                return materials.qESingularity().isSameAs(stack);
+                return ApiMaterials.qESingularity().isSameAs(stack);
 
             case RANGE_BOOSTER:
-                return materials.wirelessBooster().isSameAs(stack);
+                return ApiMaterials.wirelessBooster().isSameAs(stack);
 
             case SPATIAL_STORAGE_CELLS:
                 return stack.getItem() instanceof ISpatialStorageCell

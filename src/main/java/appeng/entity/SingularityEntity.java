@@ -31,16 +31,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiEntities;
+import appeng.core.api.definitions.ApiMaterials;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
     private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
-
-    public static EntityType<SingularityEntity> TYPE;
 
     private static int randTickSeed = 0;
 
@@ -49,7 +47,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     public SingularityEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(TYPE, w, x, y, z, is);
+        super(ApiEntities.SINGULARITY, w, x, y, z, is);
     }
 
     @Override
@@ -73,9 +71,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
         final ItemStack item = this.getItem();
 
-        final IMaterials materials = Api.instance().definitions().materials();
-
-        if (materials.singularity().isSameAs(item)) {
+        if (ApiMaterials.singularity().isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
                     this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -86,7 +82,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     if (!other.isEmpty()) {
                         boolean matches = false;
 
-                        if (materials.enderDust().isSameAs(other)) {
+                        if (ApiMaterials.enderDust().isSameAs(other)) {
                             matches = true;
                         }
 
@@ -103,7 +99,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     e.remove();
                                 }
 
-                                materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
+                                ApiMaterials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
                                     final CompoundNBT cmp = singularityStack.getOrCreateTag();
                                     cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                     randTickSeed++;

@@ -30,17 +30,12 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.ApiDefinitions;
 import appeng.core.api.client.ApiCellModelRegistry;
 import appeng.core.localization.GuiText;
 
 public class ApiClientHelper implements IClientHelper {
 
-    private final ICellModelRegistry cells;
-
-    public ApiClientHelper(ApiDefinitions definitions) {
-        this.cells = new ApiCellModelRegistry(definitions);
-    }
+    private final ICellModelRegistry cells = new ApiCellModelRegistry();
 
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,

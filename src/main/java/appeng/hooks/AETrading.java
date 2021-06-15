@@ -24,9 +24,9 @@ public class AETrading {
 
     /*
      * @Override public void manipulateTradesForVillager( EntityVillager villager, MerchantRecipeList recipeList, Random
-     * random ) { final IMaterials materials = Api.instance().definitions().materials(); this.addMerchant( recipeList,
-     * materials.silicon(), 1, random, 2 ); this.addMerchant( recipeList, materials.certusQuartzCrystal(), 2, random, 4
-     * ); this.addMerchant( recipeList, materials.certusQuartzDust(), 1, random, 3 ); this.addTrade( recipeList,
+     * random ) { final IMaterials materials = ApiMaterials; this.addMerchant( recipeList, materials.silicon(), 1,
+     * random, 2 ); this.addMerchant( recipeList, materials.certusQuartzCrystal(), 2, random, 4 ); this.addMerchant(
+     * recipeList, materials.certusQuartzDust(), 1, random, 3 ); this.addTrade( recipeList,
      * materials.certusQuartzDust(), materials.certusQuartzCrystal(), random, 2 ); } private void addMerchant(
      * MerchantRecipeList list, IItemDefinition item, int emera, Random rand, int greed ) { for( ItemStack itemStack :
      * item.maybeStack( 1 ).asSet() ) { // Sell ItemStack from = itemStack.copy(); ItemStack to = new ItemStack(

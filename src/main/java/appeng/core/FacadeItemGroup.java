@@ -29,6 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.core.api.definitions.ApiItems;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeItemGroup extends ItemGroup {
@@ -40,7 +41,7 @@ public final class FacadeItemGroup extends ItemGroup {
     public FacadeItemGroup() {
         super("appliedenergistics2.facades");
 
-        itemFacade = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
+        itemFacade = (FacadeItem) ApiItems.facade().item();
     }
 
     @Override

@@ -61,8 +61,8 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiParts;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -267,7 +267,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().iface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return ApiParts.iface().stack(1);
     }
 
     @Override

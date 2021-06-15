@@ -26,8 +26,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IParts;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
@@ -35,7 +33,8 @@ import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiParts;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
@@ -58,8 +57,6 @@ public final class AESubScreen {
      * back to it.
      */
     public AESubScreen(Object containerHost) {
-        final IDefinitions definitions = Api.instance().definitions();
-        final IParts parts = definitions.parts();
 
         if (containerHost instanceof ChestTileEntity) {
             // A chest is also a priority host, but the priority _interface_ can only be
@@ -73,16 +70,16 @@ public final class AESubScreen {
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
             this.previousContainerType = priorityHost.getContainerType();
         } else if (containerHost instanceof WirelessTerminalGuiObject) {
-            this.previousContainerIcon = definitions.items().wirelessTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.previousContainerIcon = ApiItems.wirelessTerminal().stack(1);
             this.previousContainerType = WirelessTermContainer.TYPE;
         } else if (containerHost instanceof TerminalPart) {
-            this.previousContainerIcon = parts.terminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.previousContainerIcon = ApiParts.terminal().stack(1);
             this.previousContainerType = ItemTerminalContainer.TYPE;
         } else if (containerHost instanceof CraftingTerminalPart) {
-            this.previousContainerIcon = parts.craftingTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.previousContainerIcon = ApiParts.craftingTerminal().stack(1);
             this.previousContainerType = CraftingTermContainer.TYPE;
         } else if (containerHost instanceof PatternTerminalPart) {
-            this.previousContainerIcon = parts.patternTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.previousContainerIcon = ApiParts.patternTerminal().stack(1);
             this.previousContainerType = PatternTermContainer.TYPE;
         } else {
             this.previousContainerIcon = null;

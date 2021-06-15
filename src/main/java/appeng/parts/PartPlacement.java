@@ -49,7 +49,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItems;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -57,8 +56,9 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
@@ -198,7 +198,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final IBlockDefinition multiPart = Api.instance().definitions().blocks().multiPart();
+        final IBlockDefinition multiPart = ApiBlocks.multiPart();
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -372,10 +372,9 @@ public class PartPlacement {
                 }
             } else {
                 final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
-                final IItems items = Api.instance().definitions().items();
 
-                boolean supportedItem = items.memoryCard().isSameAs(held);
-                supportedItem |= items.colorApplicator().isSameAs(held);
+                boolean supportedItem = ApiItems.memoryCard().isSameAs(held);
+                supportedItem |= ApiItems.colorApplicator().isSameAs(held);
 
                 if (InteractionUtil.isInAlternateUseMode(event.getPlayer()) && !held.isEmpty() && supportedItem) {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));

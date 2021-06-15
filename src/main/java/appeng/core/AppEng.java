@@ -25,8 +25,6 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Stopwatch;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -43,7 +41,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -53,20 +50,19 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IPostInitComponent;
 import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
 import appeng.client.render.overlay.OverlayManager;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
-import appeng.entity.ChargedQuartzEntity;
-import appeng.entity.GrowingCrystalEntity;
-import appeng.entity.SingularityEntity;
-import appeng.entity.TinyTNTPrimedEntity;
-import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.ticking.TickHandler;
+import appeng.init.InitDispenserBehavior;
+import appeng.init.client.InitEntityRendering;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
@@ -99,6 +95,13 @@ public final class AppEng {
         proxy = DistExecutor.unsafeRunForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
         CreativeTab.init();
+
+        // Initialize items in order
+        ApiItems.init();
+        ApiBlocks.init();
+        ApiMaterials.init();
+        ApiParts.init();
+
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -135,11 +138,7 @@ public final class AppEng {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(IInitComponent.class)
-                .forEachRemaining(IInitComponent::initialize);
-        definitions.getRegistry().getBootstrapComponents(IPostInitComponent.class)
-                .forEachRemaining(IPostInitComponent::postInitialize);
+        InitDispenserBehavior.init();
 
         Capabilities.register();
         Registration.setupInternalRegistries();
@@ -157,13 +156,7 @@ public final class AppEng {
 
         ((ClientHelper) proxy).clientInit();
 
-        RenderingRegistry.registerEntityRenderingHandler(TinyTNTPrimedEntity.TYPE, TinyTNTPrimedRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(SingularityEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(GrowingCrystalEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+        InitEntityRendering.init();
 
         MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
     }

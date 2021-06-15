@@ -42,7 +42,7 @@ import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 
 /**
  * Chunk generator the spatial storage world.
@@ -68,7 +68,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     public SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
         super(createBiomeSource(biomeRegistry), createSettings());
-        this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+        this.defaultBlockState = ApiBlocks.matrixFrame().block().getDefaultState();
         this.biomeRegistry = biomeRegistry;
 
         // Vertical sample is mostly used for Feature generation, for those purposes

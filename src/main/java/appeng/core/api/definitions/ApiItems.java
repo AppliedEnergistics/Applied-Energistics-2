@@ -18,48 +18,39 @@
 
 package appeng.core.api.definitions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IItems;
 import appeng.api.features.AEFeature;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.bootstrap.FeatureFactory;
-import appeng.bootstrap.IItemRendering;
-import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
+import appeng.core.CreativeTab;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
+import appeng.core.features.ItemDefinition;
 import appeng.core.features.ItemStackSrc;
 import appeng.debug.DebugCardItem;
 import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
-import appeng.fluids.items.FluidDummyItemColor;
-import appeng.hooks.BlockToolDispenseItemBehavior;
-import appeng.hooks.MatterCannonDispenseItemBehavior;
-import appeng.items.materials.MaterialType;
 import appeng.items.misc.CrystalSeedItem;
-import appeng.items.misc.CrystalSeedRendering;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.items.misc.PaintBallItem;
-import appeng.items.misc.PaintBallItemRendering;
 import appeng.items.parts.FacadeItem;
 import appeng.items.storage.BasicStorageCellItem;
 import appeng.items.storage.CreativeStorageCellItem;
@@ -70,7 +61,6 @@ import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.powered.ChargedStaffItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
-import appeng.items.tools.powered.ColorApplicatorItemRendering;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.items.tools.powered.PortableCellItem;
@@ -87,278 +77,217 @@ import appeng.items.tools.quartz.QuartzWrenchItem;
 /**
  * Internal implementation for the API items
  */
-public final class ApiItems implements IItems {
-    private final IItemDefinition certusQuartzAxe;
-    private final IItemDefinition certusQuartzHoe;
-    private final IItemDefinition certusQuartzShovel;
-    private final IItemDefinition certusQuartzPick;
-    private final IItemDefinition certusQuartzSword;
-    private final IItemDefinition certusQuartzWrench;
-    private final IItemDefinition certusQuartzKnife;
+public final class ApiItems {
 
-    private final IItemDefinition netherQuartzAxe;
-    private final IItemDefinition netherQuartzHoe;
-    private final IItemDefinition netherQuartzShovel;
-    private final IItemDefinition netherQuartzPick;
-    private final IItemDefinition netherQuartzSword;
-    private final IItemDefinition netherQuartzWrench;
-    private final IItemDefinition netherQuartzKnife;
-
-    private final IItemDefinition entropyManipulator;
-    private final IItemDefinition wirelessTerminal;
-    private final IItemDefinition biometricCard;
-    private final IItemDefinition chargedStaff;
-    private final IItemDefinition massCannon;
-    private final IItemDefinition memoryCard;
-    private final IItemDefinition networkTool;
-
-    private final IItemDefinition portableCell1k;
-    private final IItemDefinition portableCell4k;
-    private final IItemDefinition portableCell16k;
-    private final IItemDefinition portableCell64k;
-
-    private final IItemDefinition cellCreative;
-    private final IItemDefinition viewCell;
-
-    private final IItemDefinition cell1k;
-    private final IItemDefinition cell4k;
-    private final IItemDefinition cell16k;
-    private final IItemDefinition cell64k;
-
-    private final IItemDefinition fluidCell1k;
-    private final IItemDefinition fluidCell4k;
-    private final IItemDefinition fluidCell16k;
-    private final IItemDefinition fluidCell64k;
-
-    private final IItemDefinition spatialCell2;
-    private final IItemDefinition spatialCell16;
-    private final IItemDefinition spatialCell128;
-
-    private final IItemDefinition facade;
-    private final IItemDefinition certusCrystalSeed;
-    private final IItemDefinition fluixCrystalSeed;
-    private final IItemDefinition netherQuartzSeed;
-
+    private static final List<IItemDefinition> ITEMS = new ArrayList<>();
+    private static final IItemDefinition certusQuartzAxe;
+    private static final IItemDefinition certusQuartzHoe;
+    private static final IItemDefinition certusQuartzShovel;
+    private static final IItemDefinition certusQuartzPick;
+    private static final IItemDefinition certusQuartzSword;
+    private static final IItemDefinition certusQuartzWrench;
+    private static final IItemDefinition certusQuartzKnife;
+    private static final IItemDefinition netherQuartzAxe;
+    private static final IItemDefinition netherQuartzHoe;
+    private static final IItemDefinition netherQuartzShovel;
+    private static final IItemDefinition netherQuartzPick;
+    private static final IItemDefinition netherQuartzSword;
+    private static final IItemDefinition netherQuartzWrench;
+    private static final IItemDefinition netherQuartzKnife;
+    private static final IItemDefinition entropyManipulator;
+    private static final IItemDefinition wirelessTerminal;
+    private static final IItemDefinition biometricCard;
+    private static final IItemDefinition chargedStaff;
+    private static final IItemDefinition massCannon;
+    private static final IItemDefinition memoryCard;
+    private static final IItemDefinition networkTool;
+    private static final IItemDefinition portableCell1k;
+    private static final IItemDefinition portableCell4k;
+    private static final IItemDefinition portableCell16k;
+    private static final IItemDefinition portableCell64k;
+    private static final IItemDefinition cellCreative;
+    private static final IItemDefinition viewCell;
+    private static final IItemDefinition cell1k;
+    private static final IItemDefinition cell4k;
+    private static final IItemDefinition cell16k;
+    private static final IItemDefinition cell64k;
+    private static final IItemDefinition fluidCell1k;
+    private static final IItemDefinition fluidCell4k;
+    private static final IItemDefinition fluidCell16k;
+    private static final IItemDefinition fluidCell64k;
+    private static final IItemDefinition spatialCell2;
+    private static final IItemDefinition spatialCell16;
+    private static final IItemDefinition spatialCell128;
+    private static final IItemDefinition facade;
+    private static final IItemDefinition certusCrystalSeed;
+    private static final IItemDefinition fluixCrystalSeed;
+    private static final IItemDefinition netherQuartzSeed;
     // rv1
-    private final IItemDefinition encodedPattern;
-    private final IItemDefinition colorApplicator;
-
-    private final AEColoredItemDefinition coloredPaintBall;
-    private final AEColoredItemDefinition coloredLumenPaintBall;
-
+    private static final IItemDefinition encodedPattern;
+    private static final IItemDefinition colorApplicator;
+    private static final AEColoredItemDefinition coloredPaintBall;
+    private static final AEColoredItemDefinition coloredLumenPaintBall;
     // unsupported dev tools
-    private final IItemDefinition toolEraser;
-    private final IItemDefinition toolMeteoritePlacer;
-    private final IItemDefinition toolDebugCard;
-    private final IItemDefinition toolReplicatorCard;
+    private static final IItemDefinition toolEraser;
+    private static final IItemDefinition toolMeteoritePlacer;
+    private static final IItemDefinition toolDebugCard;
+    private static final IItemDefinition toolReplicatorCard;
+    private static final IItemDefinition dummyFluidItem;
 
-    private final IItemDefinition dummyFluidItem;
-
-    public ApiItems(FeatureFactory registry, ApiMaterials materials) {
-        FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
-        this.certusQuartzAxe = certusTools
-                .item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
-        this.certusQuartzHoe = certusTools
-                .item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
-        this.certusQuartzShovel = certusTools
-                .item("certus_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
-        this.certusQuartzPick = certusTools
-                .item("certus_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
-        this.certusQuartzSword = certusTools
-                .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-        this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+    static {
+        certusQuartzAxe = item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).build();
+        certusQuartzHoe = item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).build();
+        certusQuartzShovel = item("certus_quartz_shovel",
+                props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).build();
+        certusQuartzPick = item("certus_quartz_pickaxe",
+                props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).build();
+        certusQuartzSword = item("certus_quartz_sword",
+                props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.COMBAT).build();
+        certusQuartzWrench = item("certus_quartz_wrench", QuartzWrenchItem::new)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1))
                 .build();
-        this.certusQuartzKnife = certusTools
-                .item("certus_quartz_cutting_knife",
-                        props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
+        certusQuartzKnife = item("certus_quartz_cutting_knife",
+                props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
+                        .build();
 
-        FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
-        this.netherQuartzAxe = netherTools
-                .item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
-        this.netherQuartzHoe = netherTools
-                .item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
-        this.netherQuartzShovel = netherTools
-                .item("nether_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
-        this.netherQuartzPick = netherTools
-                .item("nether_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
-        this.netherQuartzSword = netherTools
-                .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-        this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+        netherQuartzAxe = item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).build();
+        netherQuartzHoe = item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).build();
+        netherQuartzShovel = item("nether_quartz_shovel",
+                props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).build();
+        netherQuartzPick = item("nether_quartz_pickaxe",
+                props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).build();
+        netherQuartzSword = item("nether_quartz_sword",
+                props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.COMBAT).build();
+        netherQuartzWrench = item("nether_quartz_wrench", QuartzWrenchItem::new)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1))
+
                 .build();
-        this.netherQuartzKnife = netherTools
-                .item("nether_quartz_cutting_knife",
-                        props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
+        netherQuartzKnife = item("nether_quartz_cutting_knife",
+                props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                        .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
+                        .build();
 
         Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1);
 
-        FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
-        this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
-                .props(chargedDefaults).addFeatures(AEFeature.ENTROPY_MANIPULATOR)
-                .dispenserBehavior(BlockToolDispenseItemBehavior::new).build();
-        this.wirelessTerminal = powerTools.item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
-                .addFeatures(AEFeature.WIRELESS_ACCESS_TERMINAL).build();
-        this.chargedStaff = powerTools.item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
-                .addFeatures(AEFeature.CHARGED_STAFF).build();
-        this.massCannon = powerTools.item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
-                .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
+        entropyManipulator = item("entropy_manipulator", EntropyManipulatorItem::new)
+                .props(chargedDefaults)
+                .build();
+        wirelessTerminal = item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
+                .build();
+        chargedStaff = item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
+                .build();
+        massCannon = item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
+                .build();
         // TODO: change id in 9.0 to 1k_portable_cell
-        this.portableCell1k = powerTools
-                .item("portable_cell", props -> new PortableCellItem(StorageTier.SIZE_1K, props))
+        portableCell1k = item("portable_cell", props -> new PortableCellItem(StorageTier.SIZE_1K, props))
                 .props(chargedDefaults)
-                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-        this.portableCell4k = powerTools
-                .item("4k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_4K, props))
+                .build();
+        portableCell4k = item("4k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_4K, props))
                 .props(chargedDefaults)
-                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-        this.portableCell16k = powerTools
-                .item("16k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_16K, props))
+                .build();
+        portableCell16k = item("16k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_16K, props))
                 .props(chargedDefaults)
-                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-        this.portableCell64k = powerTools
-                .item("64k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_64K, props))
+                .build();
+        portableCell64k = item("64k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_64K, props))
                 .props(chargedDefaults)
-                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-        this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
-                .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
-                .bootstrap(item -> new IClientSetupComponent() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void setup() {
-                        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) item;
-                        ItemModelsProperties.registerProperty(item, new ResourceLocation(AppEng.MOD_ID, "colored"),
-                                (itemStack, world, entity) -> {
-                                    // If the stack has no color, don't use the colored model since the impact of
-                                    // calling getColor for every quad is extremely high, if the stack tries to
-                                    // re-search its
-                                    // inventory for a new paintball everytime
-                                    AEColor col = colorApplicatorItem.getActiveColor(itemStack);
-                                    return col != null ? 1 : 0;
-                                });
-                    }
-                }).rendering(new ColorApplicatorItemRendering()).build();
+                .build();
+        colorApplicator = item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
 
-        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-                .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
-        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
-                .features(AEFeature.MEMORY_CARD).build();
-        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
+                .build();
+
+        biometricCard = item("biometric_card", BiometricCardItem::new)
+                .props(props -> props.maxStackSize(1)).build();
+        memoryCard = item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
+                .build();
+        networkTool = item("network_tool", NetworkToolItem::new)
                 .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
-                .features(AEFeature.NETWORK_TOOL).build();
+                .build();
 
-        this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
+        cellCreative = item("creative_storage_cell", CreativeStorageCellItem::new)
                 .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
-                .features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
-                .features(AEFeature.VIEW_CELL).build();
+                .build();
+        viewCell = item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
+                .build();
 
         Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
 
-        FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
-        this.cell1k = storageCells
-                .item("1k_storage_cell",
-                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1))
+        cell1k = item("1k_storage_cell",
+                props -> new BasicStorageCellItem(props, ApiMaterials.cell1kPart(), 1, 0.5f, 8))
+                        .props(storageCellProps).build();
+        cell4k = item("4k_storage_cell",
+                props -> new BasicStorageCellItem(props, ApiMaterials.cell4kPart(), 4, 1.0f, 32))
+                        .props(storageCellProps).build();
+        cell16k = item("16k_storage_cell",
+                props -> new BasicStorageCellItem(props, ApiMaterials.cell16kPart(), 16, 1.5f, 128))
+                        .props(storageCellProps).build();
+        cell64k = item("64k_storage_cell",
+                props -> new BasicStorageCellItem(props, ApiMaterials.cell64kPart(), 64, 2.0f, 512))
+                        .props(storageCellProps).build();
+
+        fluidCell1k = item("1k_fluid_storage_cell",
+                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell1kPart(), 1, 0.5f, 8))
+                        .props(storageCellProps).build();
+        fluidCell4k = item("4k_fluid_storage_cell",
+                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell4kPart(), 4, 1.0f, 32))
+                        .props(storageCellProps).build();
+        fluidCell16k = item("16k_fluid_storage_cell",
+                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell16kPart(), 16, 1.5f, 128))
+                        .props(storageCellProps).build();
+        fluidCell64k = item("64k_fluid_storage_cell",
+                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell64kPart(), 64, 2.0f, 512))
+                        .props(storageCellProps).build();
+
+        spatialCell2 = item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
                 .props(storageCellProps).build();
-        this.cell4k = storageCells
-                .item("4k_storage_cell",
-                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4))
+        spatialCell16 = item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
                 .props(storageCellProps).build();
-        this.cell16k = storageCells
-                .item("16k_storage_cell",
-                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16))
-                .props(storageCellProps).build();
-        this.cell64k = storageCells
-                .item("64k_storage_cell",
-                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64))
+        spatialCell128 = item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
                 .props(storageCellProps).build();
 
-        this.fluidCell1k = storageCells
-                .item("1k_fluid_storage_cell",
-                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_1K_CELL_COMPONENT, 1))
-                .props(storageCellProps).build();
-        this.fluidCell4k = storageCells
-                .item("4k_fluid_storage_cell",
-                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_4K_CELL_COMPONENT, 4))
-                .props(storageCellProps).build();
-        this.fluidCell16k = storageCells
-                .item("16k_fluid_storage_cell",
-                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_16K_CELL_COMPONENT, 16))
-                .props(storageCellProps).build();
-        this.fluidCell64k = storageCells
-                .item("64k_fluid_storage_cell",
-                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_64K_CELL_COMPONENT, 64))
-                .props(storageCellProps).build();
+        facade = item("facade", FacadeItem::new).build();
 
-        FeatureFactory spatialCells = registry.features(AEFeature.SPATIAL_IO);
-        this.spatialCell2 = spatialCells
-                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
-                .props(storageCellProps).build();
-        this.spatialCell16 = spatialCells
-                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
-                .props(storageCellProps).build();
-        this.spatialCell128 = spatialCells
-                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
-                .props(storageCellProps).build();
-
-        this.facade = registry.item("facade", FacadeItem::new).features(AEFeature.FACADES).build();
-
-        this.certusCrystalSeed = registry
-                .item("certus_crystal_seed",
-                        props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
-                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
-        this.fluixCrystalSeed = registry
-                .item("fluix_crystal_seed",
-                        props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
-                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
-        this.netherQuartzSeed = registry
-                .item("nether_quartz_seed",
-                        props -> new CrystalSeedItem(props, materials.purifiedNetherQuartzCrystal().item()))
-                .bootstrap(CrystalSeedRendering::new).features(AEFeature.CRYSTAL_SEEDS).build();
-
-        GrowingCrystalEntity.TYPE = registry
-                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.25F, 0.4F)).build();
+        certusCrystalSeed = item("certus_crystal_seed",
+                props -> new CrystalSeedItem(props, ApiMaterials.purifiedCertusQuartzCrystal().item()))
+                        .build();
+        fluixCrystalSeed = item("fluix_crystal_seed",
+                props -> new CrystalSeedItem(props, ApiMaterials.purifiedFluixCrystal().item()))
+                        .build();
+        netherQuartzSeed = item("nether_quartz_seed",
+                props -> new CrystalSeedItem(props, ApiMaterials.purifiedNetherQuartzCrystal().item()))
+                        .build();
 
         // rv1
-        this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
-                .props(props -> props.maxStackSize(1)).features(AEFeature.PATTERNS).build();
+        encodedPattern = item("encoded_pattern", EncodedPatternItem::new)
+                .props(props -> props.maxStackSize(1)).build();
 
-        this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
-        this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
+        coloredPaintBall = createPaintBalls("_paint_ball", false);
+        coloredLumenPaintBall = createPaintBalls("_lumen_paint_ball", true);
 
-        FeatureFactory debugTools = registry.features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE);
-        this.toolEraser = debugTools.item("debug_eraser", EraserItem::new).build();
-        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
-        this.toolDebugCard = debugTools.item("debug_card", DebugCardItem::new).build();
-        this.toolReplicatorCard = debugTools.item("debug_replicator_card", ReplicatorCardItem::new).build();
-        debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
+        toolEraser = item("debug_eraser", EraserItem::new).build();
+        toolMeteoritePlacer = item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
+        toolDebugCard = item("debug_card", DebugCardItem::new).build();
+        toolReplicatorCard = item("debug_replicator_card", ReplicatorCardItem::new).build();
+        item("debug_part_placer", DebugPartPlacerItem::new).build();
 
-        this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
-                .rendering(new ItemRenderingCustomizer() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void customize(IItemRendering rendering) {
-                        rendering.color(new FluidDummyItemColor());
-                    }
-                }).build();
+        dummyFluidItem = item("dummy_fluid_item", FluidDummyItem::new).build();
     }
 
-    private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
+    public static List<IItemDefinition> getItems() {
+        return Collections.unmodifiableList(ITEMS);
+    }
+
+    private static AEColoredItemDefinition createPaintBalls(String idSuffix, boolean lumen) {
         ColoredItemDefinition colors = new ColoredItemDefinition();
         for (AEColor color : AEColor.values()) {
             if (color == AEColor.TRANSPARENT) {
@@ -366,267 +295,267 @@ public final class ApiItems implements IItems {
             }
 
             String id = color.registryPrefix + idSuffix;
-            IItemDefinition paintBall = registry.item(id, props -> new PaintBallItem(props, color, lumen))
-                    .features(AEFeature.PAINT_BALLS).rendering(new PaintBallItemRendering(color, lumen)).build();
+            IItemDefinition paintBall = item(id, props -> new PaintBallItem(props, color, lumen))
+                    .build();
             colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
         }
         return colors;
     }
 
-    @Override
-    public IItemDefinition certusQuartzAxe() {
-        return this.certusQuartzAxe;
+    public static IItemDefinition certusQuartzAxe() {
+        return certusQuartzAxe;
     }
 
-    @Override
-    public IItemDefinition certusQuartzHoe() {
-        return this.certusQuartzHoe;
+    public static IItemDefinition certusQuartzHoe() {
+        return certusQuartzHoe;
     }
 
-    @Override
-    public IItemDefinition certusQuartzShovel() {
-        return this.certusQuartzShovel;
+    public static IItemDefinition certusQuartzShovel() {
+        return certusQuartzShovel;
     }
 
-    @Override
-    public IItemDefinition certusQuartzPick() {
-        return this.certusQuartzPick;
+    public static IItemDefinition certusQuartzPick() {
+        return certusQuartzPick;
     }
 
-    @Override
-    public IItemDefinition certusQuartzSword() {
-        return this.certusQuartzSword;
+    public static IItemDefinition certusQuartzSword() {
+        return certusQuartzSword;
     }
 
-    @Override
-    public IItemDefinition certusQuartzWrench() {
-        return this.certusQuartzWrench;
+    public static IItemDefinition certusQuartzWrench() {
+        return certusQuartzWrench;
     }
 
-    @Override
-    public IItemDefinition certusQuartzKnife() {
-        return this.certusQuartzKnife;
+    public static IItemDefinition certusQuartzKnife() {
+        return certusQuartzKnife;
     }
 
-    @Override
-    public IItemDefinition netherQuartzAxe() {
-        return this.netherQuartzAxe;
+    public static IItemDefinition netherQuartzAxe() {
+        return netherQuartzAxe;
     }
 
-    @Override
-    public IItemDefinition netherQuartzHoe() {
-        return this.netherQuartzHoe;
+    public static IItemDefinition netherQuartzHoe() {
+        return netherQuartzHoe;
     }
 
-    @Override
-    public IItemDefinition netherQuartzShovel() {
-        return this.netherQuartzShovel;
+    public static IItemDefinition netherQuartzShovel() {
+        return netherQuartzShovel;
     }
 
-    @Override
-    public IItemDefinition netherQuartzPick() {
-        return this.netherQuartzPick;
+    public static IItemDefinition netherQuartzPick() {
+        return netherQuartzPick;
     }
 
-    @Override
-    public IItemDefinition netherQuartzSword() {
-        return this.netherQuartzSword;
+    public static IItemDefinition netherQuartzSword() {
+        return netherQuartzSword;
     }
 
-    @Override
-    public IItemDefinition netherQuartzWrench() {
-        return this.netherQuartzWrench;
+    public static IItemDefinition netherQuartzWrench() {
+        return netherQuartzWrench;
     }
 
-    @Override
-    public IItemDefinition netherQuartzKnife() {
-        return this.netherQuartzKnife;
+    public static IItemDefinition netherQuartzKnife() {
+        return netherQuartzKnife;
     }
 
-    @Override
-    public IItemDefinition entropyManipulator() {
-        return this.entropyManipulator;
+    public static IItemDefinition entropyManipulator() {
+        return entropyManipulator;
     }
 
-    @Override
-    public IItemDefinition wirelessTerminal() {
-        return this.wirelessTerminal;
+    public static IItemDefinition wirelessTerminal() {
+        return wirelessTerminal;
     }
 
-    @Override
-    public IItemDefinition biometricCard() {
-        return this.biometricCard;
+    public static IItemDefinition biometricCard() {
+        return biometricCard;
     }
 
-    @Override
-    public IItemDefinition chargedStaff() {
-        return this.chargedStaff;
+    public static IItemDefinition chargedStaff() {
+        return chargedStaff;
     }
 
-    @Override
-    public IItemDefinition massCannon() {
-        return this.massCannon;
+    public static IItemDefinition massCannon() {
+        return massCannon;
     }
 
-    @Override
-    public IItemDefinition memoryCard() {
-        return this.memoryCard;
+    public static IItemDefinition memoryCard() {
+        return memoryCard;
     }
 
-    @Override
-    public IItemDefinition networkTool() {
-        return this.networkTool;
+    public static IItemDefinition networkTool() {
+        return networkTool;
     }
 
-    @Deprecated
-    @Override
-    public IItemDefinition portableCell() {
-        return this.portableCell1k;
+    public static IItemDefinition portableCell1k() {
+        return portableCell1k;
     }
 
-    @Override
-    public IItemDefinition portableCell1k() {
-        return this.portableCell1k;
+    public static IItemDefinition portableCell4k() {
+        return portableCell4k;
     }
 
-    @Override
-    public IItemDefinition portableCell4k() {
-        return this.portableCell4k;
+    public static IItemDefinition portableCell16k() {
+        return portableCell16k;
     }
 
-    @Override
-    public IItemDefinition portableCell16k() {
-        return this.portableCell16k;
+    public static IItemDefinition portableCell64k() {
+        return portableCell64k;
     }
 
-    @Override
-    public IItemDefinition portableCell64k() {
-        return this.portableCell64k;
+    public static IItemDefinition cellCreative() {
+        return cellCreative;
     }
 
-    @Override
-    public IItemDefinition cellCreative() {
-        return this.cellCreative;
+    public static IItemDefinition viewCell() {
+        return viewCell;
     }
 
-    @Override
-    public IItemDefinition viewCell() {
-        return this.viewCell;
+    public static IItemDefinition cell1k() {
+        return cell1k;
     }
 
-    @Override
-    public IItemDefinition cell1k() {
-        return this.cell1k;
+    public static IItemDefinition cell4k() {
+        return cell4k;
     }
 
-    @Override
-    public IItemDefinition cell4k() {
-        return this.cell4k;
+    public static IItemDefinition cell16k() {
+        return cell16k;
     }
 
-    @Override
-    public IItemDefinition cell16k() {
-        return this.cell16k;
+    public static IItemDefinition cell64k() {
+        return cell64k;
     }
 
-    @Override
-    public IItemDefinition cell64k() {
-        return this.cell64k;
+    public static IItemDefinition fluidCell1k() {
+        return fluidCell1k;
     }
 
-    @Override
-    public IItemDefinition fluidCell1k() {
-        return this.fluidCell1k;
+    public static IItemDefinition fluidCell4k() {
+        return fluidCell4k;
     }
 
-    @Override
-    public IItemDefinition fluidCell4k() {
-        return this.fluidCell4k;
+    public static IItemDefinition fluidCell16k() {
+        return fluidCell16k;
     }
 
-    @Override
-    public IItemDefinition fluidCell16k() {
-        return this.fluidCell16k;
+    public static IItemDefinition fluidCell64k() {
+        return fluidCell64k;
     }
 
-    @Override
-    public IItemDefinition fluidCell64k() {
-        return this.fluidCell64k;
+    public static IItemDefinition spatialCell2() {
+        return spatialCell2;
     }
 
-    @Override
-    public IItemDefinition spatialCell2() {
-        return this.spatialCell2;
+    public static IItemDefinition spatialCell16() {
+        return spatialCell16;
     }
 
-    @Override
-    public IItemDefinition spatialCell16() {
-        return this.spatialCell16;
+    public static IItemDefinition spatialCell128() {
+        return spatialCell128;
     }
 
-    @Override
-    public IItemDefinition spatialCell128() {
-        return this.spatialCell128;
+    public static IItemDefinition facade() {
+        return facade;
     }
 
-    @Override
-    public IItemDefinition facade() {
-        return this.facade;
-    }
-
-    @Override
-    public IItemDefinition certusCrystalSeed() {
+    public static IItemDefinition certusCrystalSeed() {
         return certusCrystalSeed;
     }
 
-    @Override
-    public IItemDefinition fluixCrystalSeed() {
+    public static IItemDefinition fluixCrystalSeed() {
         return fluixCrystalSeed;
     }
 
-    @Override
-    public IItemDefinition netherQuartzSeed() {
+    public static IItemDefinition netherQuartzSeed() {
         return netherQuartzSeed;
     }
 
-    @Override
-    public IItemDefinition encodedPattern() {
-        return this.encodedPattern;
+    public static IItemDefinition encodedPattern() {
+        return encodedPattern;
     }
 
-    @Override
-    public IItemDefinition colorApplicator() {
-        return this.colorApplicator;
+    public static IItemDefinition colorApplicator() {
+        return colorApplicator;
     }
 
-    @Override
-    public AEColoredItemDefinition coloredPaintBall() {
-        return this.coloredPaintBall;
+    public static AEColoredItemDefinition coloredPaintBall() {
+        return coloredPaintBall;
     }
 
-    @Override
-    public AEColoredItemDefinition coloredLumenPaintBall() {
-        return this.coloredLumenPaintBall;
+    public static AEColoredItemDefinition coloredLumenPaintBall() {
+        return coloredLumenPaintBall;
     }
 
-    public IItemDefinition toolEraser() {
-        return this.toolEraser;
+    public static IItemDefinition toolEraser() {
+        return toolEraser;
     }
 
-    public IItemDefinition toolMeteoritePlacer() {
-        return this.toolMeteoritePlacer;
+    public static IItemDefinition toolMeteoritePlacer() {
+        return toolMeteoritePlacer;
     }
 
-    public IItemDefinition toolDebugCard() {
-        return this.toolDebugCard;
+    public static IItemDefinition toolDebugCard() {
+        return toolDebugCard;
     }
 
-    public IItemDefinition toolReplicatorCard() {
-        return this.toolReplicatorCard;
+    public static IItemDefinition toolReplicatorCard() {
+        return toolReplicatorCard;
     }
 
-    @Override
-    public IItemDefinition dummyFluidItem() {
-        return this.dummyFluidItem;
+    public static IItemDefinition dummyFluidItem() {
+        return dummyFluidItem;
     }
+
+    static Builder item(String registryName, Function<Item.Properties, Item> factory) {
+        return new Builder(registryName, factory);
+    }
+
+    static class Builder {
+
+        private final ResourceLocation id;
+
+        private final Function<Item.Properties, Item> itemFactory;
+
+        private final Item.Properties props = new Item.Properties();
+
+        private ItemGroup itemGroup = CreativeTab.INSTANCE;
+
+        Builder(String registryName, Function<Item.Properties, Item> itemFactory) {
+            this.id = new ResourceLocation(AppEng.MOD_ID, registryName);
+            this.itemFactory = itemFactory;
+        }
+
+        public Builder itemGroup(ItemGroup itemGroup) {
+            this.itemGroup = itemGroup;
+            return this;
+        }
+
+        public Builder props(Consumer<Item.Properties> consumer) {
+            consumer.accept(props);
+            return this;
+        }
+
+        public ItemDefinition build() {
+            props.group(itemGroup);
+
+            Item item = this.itemFactory.apply(props);
+            item.setRegistryName(id);
+
+            ItemDefinition definition = new ItemDefinition(this.id, item);
+
+            if (itemGroup instanceof AEItemGroup) {
+                ((AEItemGroup) itemGroup).add(definition);
+            }
+
+            ITEMS.add(definition);
+
+            return definition;
+        }
+
+    }
+
+    // Used to control in which order static constructors are called
+    public static void init() {
+    }
+
 }

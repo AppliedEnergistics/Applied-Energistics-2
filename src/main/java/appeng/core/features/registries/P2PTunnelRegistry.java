@@ -36,14 +36,12 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiParts;
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     private static final int INITIAL_CAPACITY = 40;
@@ -53,10 +51,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     private final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
 
     public void configure() {
-
-        final IDefinitions definitions = Api.instance().definitions();
-        final IBlocks blocks = definitions.blocks();
-        final IParts parts = definitions.parts();
 
         /**
          * light!
@@ -68,10 +62,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
          * Forge energy tunnel items
          */
 
-        this.addNewAttunement(blocks.energyCellDense(), TunnelType.FE_POWER);
-        this.addNewAttunement(blocks.energyAcceptor(), TunnelType.FE_POWER);
-        this.addNewAttunement(blocks.energyCell(), TunnelType.FE_POWER);
-        this.addNewAttunement(blocks.energyCellCreative(), TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.energyCellDense(), TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.energyAcceptor(), TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.energyCell(), TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.energyCellCreative(), TunnelType.FE_POWER);
 
         // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
         // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
@@ -107,11 +101,11 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
          * attune based on lots of random item related stuff
          */
 
-        this.addNewAttunement(blocks.iface(), TunnelType.ITEM);
-        this.addNewAttunement(parts.iface(), TunnelType.ITEM);
-        this.addNewAttunement(parts.storageBus(), TunnelType.ITEM);
-        this.addNewAttunement(parts.importBus(), TunnelType.ITEM);
-        this.addNewAttunement(parts.exportBus(), TunnelType.ITEM);
+        this.addNewAttunement(ApiBlocks.iface(), TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.iface(), TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.storageBus(), TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.importBus(), TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.exportBus(), TunnelType.ITEM);
 
         this.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
         this.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
@@ -155,10 +149,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         // FIXME // (opaque)
         // FIXME
         for (final AEColor c : AEColor.values()) {
-            this.addNewAttunement(parts.cableGlass().stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(parts.cableCovered().stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(parts.cableSmart().stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(parts.cableDenseSmart().stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.cableGlass().stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.cableCovered().stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.cableSmart().stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.cableDenseSmart().stack(c, 1), TunnelType.ME);
         }
 
         /**

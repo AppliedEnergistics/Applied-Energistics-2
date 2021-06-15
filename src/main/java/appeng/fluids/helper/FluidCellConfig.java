@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiItems;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 
@@ -48,13 +48,13 @@ public class FluidCellConfig extends CellConfig {
             super.insertItem(slot, stack, simulate);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !Api.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
             return stack;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = Api.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.insertItem(slot, is, simulate);
@@ -66,13 +66,13 @@ public class FluidCellConfig extends CellConfig {
             super.setStackInSlot(slot, stack);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !Api.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
             return;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = Api.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         super.setStackInSlot(slot, is);
@@ -84,13 +84,13 @@ public class FluidCellConfig extends CellConfig {
             super.isItemValid(slot, stack);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !Api.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
             return false;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = Api.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.isItemValid(slot, is);

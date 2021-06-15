@@ -35,11 +35,10 @@ import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiEntities;
 import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
-
-    public static EntityType<GrowingCrystalEntity> TYPE;
 
     // Growth tick progress per tick by number of adjacent accelerators
     // Expressed as 1/1000th of a growth tick, applied to progress_1000
@@ -63,7 +62,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(TYPE, w, x, y, z, is);
+        super(ApiEntities.GROWING_CRYSTAL, w, x, y, z, is);
         this.setNoDespawn();
     }
 

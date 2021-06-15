@@ -50,7 +50,7 @@ import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.tile.storage.ChestTileEntity;
 
 /**
@@ -120,7 +120,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
 
     private DriveBakedModel getDriveModel() {
         IBakedModel driveModel = modelManager.getBlockModelShapes()
-                .getModel(Api.instance().definitions().blocks().drive().block().getDefaultState());
+                .getModel(ApiBlocks.drive().block().getDefaultState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
 

@@ -20,14 +20,15 @@ package appeng.fluids.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IItemProvider;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.fluids.helper.FluidCellConfig;
-import appeng.items.materials.MaterialType;
 import appeng.items.storage.AbstractStorageCell;
 import appeng.util.InventoryAdaptor;
 
@@ -38,38 +39,19 @@ import appeng.util.InventoryAdaptor;
  */
 public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidStack> {
 
-    private final int perType;
+    private final int bytesPerType;
     private final double idleDrain;
 
-    public BasicFluidStorageCell(Properties props, final MaterialType whichCell, final int kilobytes) {
-        super(props, whichCell, kilobytes);
-        switch (whichCell) {
-            case FLUID_1K_CELL_COMPONENT:
-                this.idleDrain = 0.5;
-                this.perType = 8;
-                break;
-            case FLUID_4K_CELL_COMPONENT:
-                this.idleDrain = 1.0;
-                this.perType = 32;
-                break;
-            case FLUID_16K_CELL_COMPONENT:
-                this.idleDrain = 1.5;
-                this.perType = 128;
-                break;
-            case FLUID_64K_CELL_COMPONENT:
-                this.idleDrain = 2.0;
-                this.perType = 512;
-                break;
-            default:
-                this.idleDrain = 0.0;
-                this.perType = 8;
-        }
-
+    public BasicFluidStorageCell(Properties props, IItemProvider coreItem, int kilobytes, float idleDrain,
+            int bytesPerType) {
+        super(props, coreItem, kilobytes);
+        this.idleDrain = idleDrain;
+        this.bytesPerType = bytesPerType;
     }
 
     @Override
     public int getBytesPerType(ItemStack cellItem) {
-        return this.perType;
+        return this.bytesPerType;
     }
 
     @Override
@@ -94,11 +76,9 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 
     @Override
     protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
-        Api.instance().definitions().materials().emptyStorageCell().maybeStack(1).ifPresent(is -> {
-            final ItemStack extraA = ia.addItems(is);
-            if (!extraA.isEmpty()) {
-                player.dropItem(extraA, false);
-            }
-        });
+        final ItemStack extraA = ia.addItems(ApiMaterials.emptyStorageCell().stack(1));
+        if (!extraA.isEmpty()) {
+            player.dropItem(extraA, false);
+        }
     }
 }

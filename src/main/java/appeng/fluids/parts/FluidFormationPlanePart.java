@@ -63,6 +63,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiParts;
 import appeng.fluids.container.FluidFormationPlaneContainer;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
@@ -240,7 +241,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().fluidFormationnPlane().maybeStack(1).orElse(ItemStack.EMPTY);
+        return ApiParts.fluidFormationnPlane().stack(1);
     }
 
     @Override

@@ -33,24 +33,26 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class DecorationRecipes extends RecipeProvider implements IAE2DataProvider {
 
     IBlockDefinition[][] blocks = {
-            { BLOCKS.skyStoneBlock(), BLOCKS.skyStoneSlab(), BLOCKS.skyStoneStairs(), BLOCKS.skyStoneWall() },
-            { BLOCKS.smoothSkyStoneBlock(), BLOCKS.smoothSkyStoneSlab(), BLOCKS.smoothSkyStoneStairs(),
-                    BLOCKS.smoothSkyStoneWall() },
-            { BLOCKS.skyStoneBrick(), BLOCKS.skyStoneBrickSlab(), BLOCKS.skyStoneBrickStairs(),
-                    BLOCKS.skyStoneBrickWall() },
-            { BLOCKS.skyStoneSmallBrick(), BLOCKS.skyStoneSmallBrickSlab(), BLOCKS.skyStoneSmallBrickStairs(),
-                    BLOCKS.skyStoneSmallBrickWall() },
-            { BLOCKS.fluixBlock(), BLOCKS.fluixSlab(), BLOCKS.fluixStairs(), BLOCKS.fluixWall() },
-            { BLOCKS.quartzBlock(), BLOCKS.quartzSlab(), BLOCKS.quartzStairs(), BLOCKS.quartzWall() },
-            { BLOCKS.chiseledQuartzBlock(), BLOCKS.chiseledQuartzSlab(), BLOCKS.chiseledQuartzStairs(),
-                    BLOCKS.chiseledQuartzWall() },
-            { BLOCKS.quartzPillar(), BLOCKS.quartzPillarSlab(), BLOCKS.quartzPillarStairs(),
-                    BLOCKS.quartzPillarWall() }, };
+            { ApiBlocks.skyStoneBlock(), ApiBlocks.skyStoneSlab(), ApiBlocks.skyStoneStairs(),
+                    ApiBlocks.skyStoneWall() },
+            { ApiBlocks.smoothSkyStoneBlock(), ApiBlocks.smoothSkyStoneSlab(), ApiBlocks.smoothSkyStoneStairs(),
+                    ApiBlocks.smoothSkyStoneWall() },
+            { ApiBlocks.skyStoneBrick(), ApiBlocks.skyStoneBrickSlab(), ApiBlocks.skyStoneBrickStairs(),
+                    ApiBlocks.skyStoneBrickWall() },
+            { ApiBlocks.skyStoneSmallBrick(), ApiBlocks.skyStoneSmallBrickSlab(), ApiBlocks.skyStoneSmallBrickStairs(),
+                    ApiBlocks.skyStoneSmallBrickWall() },
+            { ApiBlocks.fluixBlock(), ApiBlocks.fluixSlab(), ApiBlocks.fluixStairs(), ApiBlocks.fluixWall() },
+            { ApiBlocks.quartzBlock(), ApiBlocks.quartzSlab(), ApiBlocks.quartzStairs(), ApiBlocks.quartzWall() },
+            { ApiBlocks.chiseledQuartzBlock(), ApiBlocks.chiseledQuartzSlab(), ApiBlocks.chiseledQuartzStairs(),
+                    ApiBlocks.chiseledQuartzWall() },
+            { ApiBlocks.quartzPillar(), ApiBlocks.quartzPillarSlab(), ApiBlocks.quartzPillarStairs(),
+                    ApiBlocks.quartzPillarWall() }, };
 
     public DecorationRecipes(DataGenerator generatorIn) {
         super(generatorIn);
@@ -71,11 +73,11 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
         ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
+                .build(consumer, prefix("shaped/slabs/", block.id()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
+                .build(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
     private void stairRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition stairs) {
@@ -84,11 +86,11 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
         ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
                 .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
+                .build(consumer, prefix("shaped/stairs/", block.id()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
+                .build(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
@@ -98,16 +100,22 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
         ShapedRecipeBuilder.shapedRecipe(outputBlock, 6).patternLine("###").patternLine("###")
                 .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/walls/" + block.identifier()));
+                .build(consumer, prefix("shaped/walls/", block.id()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/walls/" + wall.identifier()));
+                .build(consumer, prefix("block_cutter/walls/", wall.id()));
 
     }
 
+    private ResourceLocation prefix(String prefix, ResourceLocation id) {
+        return new ResourceLocation(
+                id.getNamespace(),
+                prefix + id.getPath());
+    }
+
     private String criterionName(IBlockDefinition block) {
-        return String.format("has_%s", block.identifier());
+        return String.format("has_%s", block.id().getPath());
     }
 
     @Override

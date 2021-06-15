@@ -18,26 +18,24 @@
 
 package appeng.core.features;
 
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.definitions.IBlockDefinition;
-import appeng.api.features.AEFeature;
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition {
     private final Block block;
 
     private final BlockItem blockItem;
 
-    public BlockDefinition(String registryName, Block block, BlockItem item, Set<AEFeature> features) {
-        super(registryName, item, features);
+    public BlockDefinition(ResourceLocation id, Block block, BlockItem item) {
+        super(id, item);
         this.block = block;
         this.blockItem = item;
     }

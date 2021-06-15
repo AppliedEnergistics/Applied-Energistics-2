@@ -20,6 +20,8 @@ package appeng.items.materials;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -60,9 +62,21 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
     private final MaterialType materialType;
 
+    /**
+     * Can be set to make this item drop a custom entity instead of the default.
+     */
+    @Nullable
+    private final EntityFactory droppedEntityFactory;
+
     public MaterialItem(Properties properties, MaterialType materialType) {
+        this(properties, materialType, null);
+    }
+
+    public MaterialItem(Properties properties, MaterialType materialType,
+            @Nullable EntityFactory droppedEntityFactory) {
         super(properties);
         this.materialType = materialType;
+        this.droppedEntityFactory = droppedEntityFactory;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -143,20 +157,14 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
     @Override
     public boolean hasCustomEntity(final ItemStack is) {
-        return materialType.hasCustomEntity();
+        return droppedEntityFactory != null;
     }
 
     @Override
     public Entity createEntity(final World w, final Entity location, final ItemStack itemstack) {
-        final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
-        final Entity eqi;
 
-        try {
-            eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-                    .newInstance(w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack);
-        } catch (final Throwable t) {
-            throw new IllegalStateException(t);
-        }
+        ItemEntity eqi = droppedEntityFactory.create(w, location.getPosX(), location.getPosY(), location.getPosZ(),
+                itemstack);
 
         eqi.setMotion(location.getMotion());
 
@@ -194,6 +202,11 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
             default:
         }
         return false;
+    }
+
+    @FunctionalInterface
+    public interface EntityFactory {
+        ItemEntity create(World w, double x, double y, double z, ItemStack is);
     }
 
 }

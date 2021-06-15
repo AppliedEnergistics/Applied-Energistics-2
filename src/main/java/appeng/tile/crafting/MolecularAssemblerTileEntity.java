@@ -42,7 +42,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.ITileDefinition;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
@@ -61,6 +60,7 @@ import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -104,10 +104,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     public MolecularAssemblerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        final ITileDefinition assembler = Api.instance().definitions().blocks().molecularAssembler();
 
         this.getProxy().setIdlePowerUsage(0.0);
-        this.upgrades = new DefinitionUpgradeInventory(assembler, this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.molecularAssembler(), this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
     }

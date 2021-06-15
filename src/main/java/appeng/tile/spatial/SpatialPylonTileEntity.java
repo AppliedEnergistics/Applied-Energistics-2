@@ -74,7 +74,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
 
     @Override
     protected AENetworkProxy createProxy() {
-        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(this), true);
+        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(), true);
     }
 
     @Override

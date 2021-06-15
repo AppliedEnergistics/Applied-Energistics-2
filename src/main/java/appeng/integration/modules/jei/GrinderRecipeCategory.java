@@ -34,8 +34,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 
@@ -55,7 +55,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
         this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
 
-        this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
+        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.grindstone().stack(1));
     }
 
     @Override

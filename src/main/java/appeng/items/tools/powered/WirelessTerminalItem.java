@@ -42,6 +42,7 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiItems;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
@@ -75,7 +76,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public boolean canHandle(final ItemStack is) {
-        return Api.instance().definitions().items().wirelessTerminal().isSameAs(is);
+        return ApiItems.wirelessTerminal().isSameAs(is);
     }
 
     @Override

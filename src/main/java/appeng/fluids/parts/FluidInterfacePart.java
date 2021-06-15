@@ -52,8 +52,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiParts;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
@@ -210,7 +210,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return ApiParts.fluidIface().stack(1);
     }
 
     @Override

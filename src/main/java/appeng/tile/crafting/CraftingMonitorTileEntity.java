@@ -19,7 +19,6 @@
 package appeng.tile.crafting;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -37,7 +36,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {
@@ -159,10 +158,8 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    protected ItemStack getItemFromTile(final Object obj) {
-        final Optional<ItemStack> is = Api.instance().definitions().blocks().craftingMonitor().maybeStack(1);
-
-        return is.orElseGet(() -> super.getItemFromTile(obj));
+    protected ItemStack getItemFromTile() {
+        return ApiBlocks.craftingMonitor().stack(1);
     }
 
     @Nonnull

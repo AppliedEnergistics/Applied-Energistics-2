@@ -18,15 +18,11 @@
 
 package appeng.core.api.definitions;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.EntityClassification;
-
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
-import appeng.api.features.AEFeature;
-import appeng.bootstrap.FeatureFactory;
-import appeng.core.AEConfig;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.MaterialItem;
@@ -35,458 +31,389 @@ import appeng.items.materials.MaterialType;
 /**
  * Internal implementation for the API materials
  */
-public final class ApiMaterials implements IMaterials {
-    private final IItemDefinition cell2SpatialPart;
-    private final IItemDefinition cell16SpatialPart;
-    private final IItemDefinition cell128SpatialPart;
+public final class ApiMaterials {
+    private static final IItemDefinition cell2SpatialPart;
+    private static final IItemDefinition cell16SpatialPart;
+    private static final IItemDefinition cell128SpatialPart;
 
-    private final IItemDefinition silicon;
-    private final IItemDefinition skyDust;
+    private static final IItemDefinition silicon;
+    private static final IItemDefinition skyDust;
 
-    private final IItemDefinition calcProcessorPress;
-    private final IItemDefinition engProcessorPress;
-    private final IItemDefinition logicProcessorPress;
+    private static final IItemDefinition calcProcessorPress;
+    private static final IItemDefinition engProcessorPress;
+    private static final IItemDefinition logicProcessorPress;
 
-    private final IItemDefinition calcProcessorPrint;
-    private final IItemDefinition engProcessorPrint;
-    private final IItemDefinition logicProcessorPrint;
+    private static final IItemDefinition calcProcessorPrint;
+    private static final IItemDefinition engProcessorPrint;
+    private static final IItemDefinition logicProcessorPrint;
 
-    private final IItemDefinition siliconPress;
-    private final IItemDefinition siliconPrint;
+    private static final IItemDefinition siliconPress;
+    private static final IItemDefinition siliconPrint;
 
-    private final IItemDefinition namePress;
+    private static final IItemDefinition namePress;
 
-    private final IItemDefinition logicProcessor;
-    private final IItemDefinition calcProcessor;
-    private final IItemDefinition engProcessor;
+    private static final IItemDefinition logicProcessor;
+    private static final IItemDefinition calcProcessor;
+    private static final IItemDefinition engProcessor;
 
-    private final IItemDefinition basicCard;
-    private final IItemDefinition advCard;
+    private static final IItemDefinition basicCard;
+    private static final IItemDefinition advCard;
 
-    private final IItemDefinition purifiedCertusQuartzCrystal;
-    private final IItemDefinition purifiedNetherQuartzCrystal;
-    private final IItemDefinition purifiedFluixCrystal;
+    private static final IItemDefinition purifiedCertusQuartzCrystal;
+    private static final IItemDefinition purifiedNetherQuartzCrystal;
+    private static final IItemDefinition purifiedFluixCrystal;
 
-    private final IItemDefinition cell1kPart;
-    private final IItemDefinition cell4kPart;
-    private final IItemDefinition cell16kPart;
-    private final IItemDefinition cell64kPart;
-    private final IItemDefinition emptyStorageCell;
+    private static final IItemDefinition cell1kPart;
+    private static final IItemDefinition cell4kPart;
+    private static final IItemDefinition cell16kPart;
+    private static final IItemDefinition cell64kPart;
+    private static final IItemDefinition emptyStorageCell;
 
-    private final IItemDefinition cardRedstone;
-    private final IItemDefinition cardSpeed;
-    private final IItemDefinition cardCapacity;
-    private final IItemDefinition cardFuzzy;
-    private final IItemDefinition cardInverter;
-    private final IItemDefinition cardCrafting;
+    private static final IItemDefinition cardRedstone;
+    private static final IItemDefinition cardSpeed;
+    private static final IItemDefinition cardCapacity;
+    private static final IItemDefinition cardFuzzy;
+    private static final IItemDefinition cardInverter;
+    private static final IItemDefinition cardCrafting;
 
-    private final IItemDefinition enderDust;
-    private final IItemDefinition flour;
-    private final IItemDefinition goldDust;
-    private final IItemDefinition ironDust;
-    private final IItemDefinition fluixDust;
-    private final IItemDefinition certusQuartzDust;
-    private final IItemDefinition netherQuartzDust;
+    private static final IItemDefinition enderDust;
+    private static final IItemDefinition flour;
+    private static final IItemDefinition goldDust;
+    private static final IItemDefinition ironDust;
+    private static final IItemDefinition fluixDust;
+    private static final IItemDefinition certusQuartzDust;
+    private static final IItemDefinition netherQuartzDust;
 
-    private final IItemDefinition matterBall;
+    private static final IItemDefinition matterBall;
 
-    private final IItemDefinition certusQuartzCrystal;
-    private final IItemDefinition certusQuartzCrystalCharged;
-    private final IItemDefinition fluixCrystal;
-    private final IItemDefinition fluixPearl;
+    private static final IItemDefinition certusQuartzCrystal;
+    private static final IItemDefinition certusQuartzCrystalCharged;
+    private static final IItemDefinition fluixCrystal;
+    private static final IItemDefinition fluixPearl;
 
-    private final IItemDefinition woodenGear;
+    private static final IItemDefinition woodenGear;
 
-    private final IItemDefinition wirelessReceiver;
-    private final IItemDefinition wirelessBooster;
+    private static final IItemDefinition wirelessReceiver;
+    private static final IItemDefinition wirelessBooster;
 
-    private final IItemDefinition annihilationCore;
-    private final IItemDefinition formationCore;
+    private static final IItemDefinition annihilationCore;
+    private static final IItemDefinition formationCore;
 
-    private final IItemDefinition singularity;
-    private final IItemDefinition qESingularity;
-    private final IItemDefinition blankPattern;
+    private static final IItemDefinition singularity;
+    private static final IItemDefinition qESingularity;
+    private static final IItemDefinition blankPattern;
 
-    private final IItemDefinition fluidCell1kPart;
-    private final IItemDefinition fluidCell4kPart;
-    private final IItemDefinition fluidCell16kPart;
-    private final IItemDefinition fluidCell64kPart;
+    private static final IItemDefinition fluidCell1kPart;
+    private static final IItemDefinition fluidCell4kPart;
+    private static final IItemDefinition fluidCell16kPart;
+    private static final IItemDefinition fluidCell64kPart;
 
-    private final FeatureFactory registry;
-
-    public ApiMaterials(FeatureFactory registry) {
-        this.registry = registry;
-
-        SingularityEntity.TYPE = registry
-                .<SingularityEntity>entity("singularity", SingularityEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
-                        .setShouldReceiveVelocityUpdates(true))
-                .build();
-
-        ChargedQuartzEntity.TYPE = registry
-                .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, EntityClassification.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
-                        .setShouldReceiveVelocityUpdates(true))
-                .build();
-
-        this.cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT);
-        this.cell16SpatialPart = createMaterial(MaterialType.SPATIAL_16_CELL_COMPONENT);
-        this.cell128SpatialPart = createMaterial(MaterialType.SPATIAL_128_CELL_COMPONENT);
-        this.silicon = createMaterial(MaterialType.SILICON);
-        this.skyDust = createMaterial(MaterialType.SKY_DUST);
-        this.calcProcessorPress = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRESS);
-        this.engProcessorPress = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRESS);
-        this.logicProcessorPress = createMaterial(MaterialType.LOGIC_PROCESSOR_PRESS);
-        this.siliconPress = createMaterial(MaterialType.SILICON_PRESS);
-        this.namePress = createMaterial(MaterialType.NAME_PRESS);
-        this.calcProcessorPrint = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRINT);
-        this.engProcessorPrint = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRINT);
-        this.logicProcessorPrint = createMaterial(MaterialType.LOGIC_PROCESSOR_PRINT);
-        this.siliconPrint = createMaterial(MaterialType.SILICON_PRINT);
-        this.logicProcessor = createMaterial(MaterialType.LOGIC_PROCESSOR);
-        this.calcProcessor = createMaterial(MaterialType.CALCULATION_PROCESSOR);
-        this.engProcessor = createMaterial(MaterialType.ENGINEERING_PROCESSOR);
-        this.basicCard = createMaterial(MaterialType.BASIC_CARD);
-        this.advCard = createMaterial(MaterialType.ADVANCED_CARD);
-        this.purifiedCertusQuartzCrystal = createMaterial(MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
-        this.purifiedNetherQuartzCrystal = createMaterial(MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL);
-        this.purifiedFluixCrystal = createMaterial(MaterialType.PURIFIED_FLUIX_CRYSTAL);
-        this.cell1kPart = createMaterial(MaterialType.ITEM_1K_CELL_COMPONENT);
-        this.cell4kPart = createMaterial(MaterialType.ITEM_4K_CELL_COMPONENT);
-        this.cell16kPart = createMaterial(MaterialType.ITEM_16K_CELL_COMPONENT);
-        this.cell64kPart = createMaterial(MaterialType.ITEM_64K_CELL_COMPONENT);
-        this.emptyStorageCell = createMaterial(MaterialType.EMPTY_STORAGE_CELL);
-        this.cardRedstone = createMaterial(MaterialType.CARD_REDSTONE);
-        this.cardSpeed = createMaterial(MaterialType.CARD_SPEED);
-        this.cardCapacity = createMaterial(MaterialType.CARD_CAPACITY);
-        this.cardFuzzy = createMaterial(MaterialType.CARD_FUZZY);
-        this.cardInverter = createMaterial(MaterialType.CARD_INVERTER);
-        this.cardCrafting = createMaterial(MaterialType.CARD_CRAFTING);
-        this.enderDust = createMaterial(MaterialType.ENDER_DUST);
-        this.flour = createMaterial(MaterialType.FLOUR);
-        this.goldDust = createMaterial(MaterialType.GOLD_DUST);
-        this.ironDust = createMaterial(MaterialType.IRON_DUST);
-        this.fluixDust = createMaterial(MaterialType.FLUIX_DUST);
-        this.certusQuartzDust = createMaterial(MaterialType.CERTUS_QUARTZ_DUST);
-        this.netherQuartzDust = createMaterial(MaterialType.NETHER_QUARTZ_DUST);
-        this.matterBall = createMaterial(MaterialType.MATTER_BALL);
-        this.certusQuartzCrystal = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL);
-        this.certusQuartzCrystalCharged = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED);
-        this.fluixCrystal = createMaterial(MaterialType.FLUIX_CRYSTAL);
-        this.fluixPearl = createMaterial(MaterialType.FLUIX_PEARL);
-        this.woodenGear = createMaterial(MaterialType.WOODEN_GEAR);
-        this.wirelessReceiver = createMaterial(MaterialType.WIRELESS_RECEIVER);
-        this.wirelessBooster = createMaterial(MaterialType.WIRELESS_BOOSTER);
-        this.annihilationCore = createMaterial(MaterialType.ANNIHILATION_CORE);
-        this.formationCore = createMaterial(MaterialType.FORMATION_CORE);
-        this.singularity = createMaterial(MaterialType.SINGULARITY);
-        this.qESingularity = createMaterial(MaterialType.QUANTUM_ENTANGLED_SINGULARITY);
-        this.blankPattern = createMaterial(MaterialType.BLANK_PATTERN);
-        this.fluidCell1kPart = createMaterial(MaterialType.FLUID_1K_CELL_COMPONENT);
-        this.fluidCell4kPart = createMaterial(MaterialType.FLUID_4K_CELL_COMPONENT);
-        this.fluidCell16kPart = createMaterial(MaterialType.FLUID_16K_CELL_COMPONENT);
-        this.fluidCell64kPart = createMaterial(MaterialType.FLUID_64K_CELL_COMPONENT);
+    static {
+        cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT);
+        cell16SpatialPart = createMaterial(MaterialType.SPATIAL_16_CELL_COMPONENT);
+        cell128SpatialPart = createMaterial(MaterialType.SPATIAL_128_CELL_COMPONENT);
+        silicon = createMaterial(MaterialType.SILICON);
+        skyDust = createMaterial(MaterialType.SKY_DUST);
+        calcProcessorPress = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRESS);
+        engProcessorPress = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRESS);
+        logicProcessorPress = createMaterial(MaterialType.LOGIC_PROCESSOR_PRESS);
+        siliconPress = createMaterial(MaterialType.SILICON_PRESS);
+        namePress = createMaterial(MaterialType.NAME_PRESS);
+        calcProcessorPrint = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRINT);
+        engProcessorPrint = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRINT);
+        logicProcessorPrint = createMaterial(MaterialType.LOGIC_PROCESSOR_PRINT);
+        siliconPrint = createMaterial(MaterialType.SILICON_PRINT);
+        logicProcessor = createMaterial(MaterialType.LOGIC_PROCESSOR);
+        calcProcessor = createMaterial(MaterialType.CALCULATION_PROCESSOR);
+        engProcessor = createMaterial(MaterialType.ENGINEERING_PROCESSOR);
+        basicCard = createMaterial(MaterialType.BASIC_CARD);
+        advCard = createMaterial(MaterialType.ADVANCED_CARD);
+        purifiedCertusQuartzCrystal = createMaterial(MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
+        purifiedNetherQuartzCrystal = createMaterial(MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL);
+        purifiedFluixCrystal = createMaterial(MaterialType.PURIFIED_FLUIX_CRYSTAL);
+        cell1kPart = createMaterial(MaterialType.ITEM_1K_CELL_COMPONENT);
+        cell4kPart = createMaterial(MaterialType.ITEM_4K_CELL_COMPONENT);
+        cell16kPart = createMaterial(MaterialType.ITEM_16K_CELL_COMPONENT);
+        cell64kPart = createMaterial(MaterialType.ITEM_64K_CELL_COMPONENT);
+        emptyStorageCell = createMaterial(MaterialType.EMPTY_STORAGE_CELL);
+        cardRedstone = createMaterial(MaterialType.CARD_REDSTONE);
+        cardSpeed = createMaterial(MaterialType.CARD_SPEED);
+        cardCapacity = createMaterial(MaterialType.CARD_CAPACITY);
+        cardFuzzy = createMaterial(MaterialType.CARD_FUZZY);
+        cardInverter = createMaterial(MaterialType.CARD_INVERTER);
+        cardCrafting = createMaterial(MaterialType.CARD_CRAFTING);
+        enderDust = createMaterial(MaterialType.ENDER_DUST, SingularityEntity::new);
+        flour = createMaterial(MaterialType.FLOUR);
+        goldDust = createMaterial(MaterialType.GOLD_DUST);
+        ironDust = createMaterial(MaterialType.IRON_DUST);
+        fluixDust = createMaterial(MaterialType.FLUIX_DUST);
+        certusQuartzDust = createMaterial(MaterialType.CERTUS_QUARTZ_DUST);
+        netherQuartzDust = createMaterial(MaterialType.NETHER_QUARTZ_DUST);
+        matterBall = createMaterial(MaterialType.MATTER_BALL);
+        certusQuartzCrystal = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL);
+        certusQuartzCrystalCharged = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                ChargedQuartzEntity::new);
+        fluixCrystal = createMaterial(MaterialType.FLUIX_CRYSTAL);
+        fluixPearl = createMaterial(MaterialType.FLUIX_PEARL);
+        woodenGear = createMaterial(MaterialType.WOODEN_GEAR);
+        wirelessReceiver = createMaterial(MaterialType.WIRELESS_RECEIVER);
+        wirelessBooster = createMaterial(MaterialType.WIRELESS_BOOSTER);
+        annihilationCore = createMaterial(MaterialType.ANNIHILATION_CORE);
+        formationCore = createMaterial(MaterialType.FORMATION_CORE);
+        singularity = createMaterial(MaterialType.SINGULARITY, SingularityEntity::new);
+        qESingularity = createMaterial(MaterialType.QUANTUM_ENTANGLED_SINGULARITY, SingularityEntity::new);
+        blankPattern = createMaterial(MaterialType.BLANK_PATTERN);
+        fluidCell1kPart = createMaterial(MaterialType.FLUID_1K_CELL_COMPONENT);
+        fluidCell4kPart = createMaterial(MaterialType.FLUID_4K_CELL_COMPONENT);
+        fluidCell16kPart = createMaterial(MaterialType.FLUID_16K_CELL_COMPONENT);
+        fluidCell64kPart = createMaterial(MaterialType.FLUID_64K_CELL_COMPONENT);
     }
 
-    private IItemDefinition createMaterial(final MaterialType mat) {
+    private static IItemDefinition createMaterial(final MaterialType mat) {
+        return createMaterial(mat, null);
+    }
+
+    private static IItemDefinition createMaterial(final MaterialType mat,
+            @Nullable MaterialItem.EntityFactory entityFactory) {
         Preconditions.checkState(!mat.isRegistered(), "Cannot create the same material twice.");
-
-        IItemDefinition def = registry.item(mat.getId(), props -> new MaterialItem(props, mat))
-                .features(mat.getFeature().toArray(new AEFeature[0])).build();
-
-        boolean enabled = true;
-
-        for (final AEFeature f : mat.getFeature()) {
-            enabled = enabled && AEConfig.instance().isFeatureEnabled(f);
-        }
+        IItemDefinition def = ApiItems.item(mat.getId(), props -> new MaterialItem(props, mat, entityFactory))
+                .build();
 
         mat.setItemInstance(def.item());
         mat.markReady();
         return def;
     }
 
-    @Override
-    public IItemDefinition cell2SpatialPart() {
-        return this.cell2SpatialPart;
+    public static IItemDefinition cell2SpatialPart() {
+        return cell2SpatialPart;
     }
 
-    @Override
-    public IItemDefinition cell16SpatialPart() {
-        return this.cell16SpatialPart;
+    public static IItemDefinition cell16SpatialPart() {
+        return cell16SpatialPart;
     }
 
-    @Override
-    public IItemDefinition cell128SpatialPart() {
-        return this.cell128SpatialPart;
+    public static IItemDefinition cell128SpatialPart() {
+        return cell128SpatialPart;
     }
 
-    @Override
-    public IItemDefinition silicon() {
-        return this.silicon;
+    public static IItemDefinition silicon() {
+        return silicon;
     }
 
-    @Override
-    public IItemDefinition skyDust() {
-        return this.skyDust;
+    public static IItemDefinition skyDust() {
+        return skyDust;
     }
 
-    @Override
-    public IItemDefinition calcProcessorPress() {
-        return this.calcProcessorPress;
+    public static IItemDefinition calcProcessorPress() {
+        return calcProcessorPress;
     }
 
-    @Override
-    public IItemDefinition engProcessorPress() {
-        return this.engProcessorPress;
+    public static IItemDefinition engProcessorPress() {
+        return engProcessorPress;
     }
 
-    @Override
-    public IItemDefinition logicProcessorPress() {
-        return this.logicProcessorPress;
+    public static IItemDefinition logicProcessorPress() {
+        return logicProcessorPress;
     }
 
-    @Override
-    public IItemDefinition calcProcessorPrint() {
-        return this.calcProcessorPrint;
+    public static IItemDefinition calcProcessorPrint() {
+        return calcProcessorPrint;
     }
 
-    @Override
-    public IItemDefinition engProcessorPrint() {
-        return this.engProcessorPrint;
+    public static IItemDefinition engProcessorPrint() {
+        return engProcessorPrint;
     }
 
-    @Override
-    public IItemDefinition logicProcessorPrint() {
-        return this.logicProcessorPrint;
+    public static IItemDefinition logicProcessorPrint() {
+        return logicProcessorPrint;
     }
 
-    @Override
-    public IItemDefinition siliconPress() {
-        return this.siliconPress;
+    public static IItemDefinition siliconPress() {
+        return siliconPress;
     }
 
-    @Override
-    public IItemDefinition siliconPrint() {
-        return this.siliconPrint;
+    public static IItemDefinition siliconPrint() {
+        return siliconPrint;
     }
 
-    @Override
-    public IItemDefinition namePress() {
-        return this.namePress;
+    public static IItemDefinition namePress() {
+        return namePress;
     }
 
-    @Override
-    public IItemDefinition logicProcessor() {
-        return this.logicProcessor;
+    public static IItemDefinition logicProcessor() {
+        return logicProcessor;
     }
 
-    @Override
-    public IItemDefinition calcProcessor() {
-        return this.calcProcessor;
+    public static IItemDefinition calcProcessor() {
+        return calcProcessor;
     }
 
-    @Override
-    public IItemDefinition engProcessor() {
-        return this.engProcessor;
+    public static IItemDefinition engProcessor() {
+        return engProcessor;
     }
 
-    @Override
-    public IItemDefinition basicCard() {
-        return this.basicCard;
+    public static IItemDefinition basicCard() {
+        return basicCard;
     }
 
-    @Override
-    public IItemDefinition advCard() {
-        return this.advCard;
+    public static IItemDefinition advCard() {
+        return advCard;
     }
 
-    @Override
-    public IItemDefinition purifiedCertusQuartzCrystal() {
-        return this.purifiedCertusQuartzCrystal;
+    public static IItemDefinition purifiedCertusQuartzCrystal() {
+        return purifiedCertusQuartzCrystal;
     }
 
-    @Override
-    public IItemDefinition purifiedNetherQuartzCrystal() {
-        return this.purifiedNetherQuartzCrystal;
+    public static IItemDefinition purifiedNetherQuartzCrystal() {
+        return purifiedNetherQuartzCrystal;
     }
 
-    @Override
-    public IItemDefinition purifiedFluixCrystal() {
-        return this.purifiedFluixCrystal;
+    public static IItemDefinition purifiedFluixCrystal() {
+        return purifiedFluixCrystal;
     }
 
-    @Override
-    public IItemDefinition cell1kPart() {
-        return this.cell1kPart;
+    public static IItemDefinition cell1kPart() {
+        return cell1kPart;
     }
 
-    @Override
-    public IItemDefinition cell4kPart() {
-        return this.cell4kPart;
+    public static IItemDefinition cell4kPart() {
+        return cell4kPart;
     }
 
-    @Override
-    public IItemDefinition cell16kPart() {
-        return this.cell16kPart;
+    public static IItemDefinition cell16kPart() {
+        return cell16kPart;
     }
 
-    @Override
-    public IItemDefinition cell64kPart() {
-        return this.cell64kPart;
+    public static IItemDefinition cell64kPart() {
+        return cell64kPart;
     }
 
-    @Override
-    public IItemDefinition emptyStorageCell() {
-        return this.emptyStorageCell;
+    public static IItemDefinition emptyStorageCell() {
+        return emptyStorageCell;
     }
 
-    @Override
-    public IItemDefinition cardRedstone() {
-        return this.cardRedstone;
+    public static IItemDefinition cardRedstone() {
+        return cardRedstone;
     }
 
-    @Override
-    public IItemDefinition cardSpeed() {
-        return this.cardSpeed;
+    public static IItemDefinition cardSpeed() {
+        return cardSpeed;
     }
 
-    @Override
-    public IItemDefinition cardCapacity() {
-        return this.cardCapacity;
+    public static IItemDefinition cardCapacity() {
+        return cardCapacity;
     }
 
-    @Override
-    public IItemDefinition cardFuzzy() {
-        return this.cardFuzzy;
+    public static IItemDefinition cardFuzzy() {
+        return cardFuzzy;
     }
 
-    @Override
-    public IItemDefinition cardInverter() {
-        return this.cardInverter;
+    public static IItemDefinition cardInverter() {
+        return cardInverter;
     }
 
-    @Override
-    public IItemDefinition cardCrafting() {
-        return this.cardCrafting;
+    public static IItemDefinition cardCrafting() {
+        return cardCrafting;
     }
 
-    @Override
-    public IItemDefinition enderDust() {
-        return this.enderDust;
+    public static IItemDefinition enderDust() {
+        return enderDust;
     }
 
-    @Override
-    public IItemDefinition flour() {
-        return this.flour;
+    public static IItemDefinition flour() {
+        return flour;
     }
 
-    @Override
-    public IItemDefinition goldDust() {
-        return this.goldDust;
+    public static IItemDefinition goldDust() {
+        return goldDust;
     }
 
-    @Override
-    public IItemDefinition ironDust() {
-        return this.ironDust;
+    public static IItemDefinition ironDust() {
+        return ironDust;
     }
 
-    @Override
-    public IItemDefinition fluixDust() {
-        return this.fluixDust;
+    public static IItemDefinition fluixDust() {
+        return fluixDust;
     }
 
-    @Override
-    public IItemDefinition certusQuartzDust() {
-        return this.certusQuartzDust;
+    public static IItemDefinition certusQuartzDust() {
+        return certusQuartzDust;
     }
 
-    @Override
-    public IItemDefinition netherQuartzDust() {
-        return this.netherQuartzDust;
+    public static IItemDefinition netherQuartzDust() {
+        return netherQuartzDust;
     }
 
-    @Override
-    public IItemDefinition matterBall() {
-        return this.matterBall;
+    public static IItemDefinition matterBall() {
+        return matterBall;
     }
 
-    @Override
-    public IItemDefinition certusQuartzCrystal() {
-        return this.certusQuartzCrystal;
+    public static IItemDefinition certusQuartzCrystal() {
+        return certusQuartzCrystal;
     }
 
-    @Override
-    public IItemDefinition certusQuartzCrystalCharged() {
-        return this.certusQuartzCrystalCharged;
+    public static IItemDefinition certusQuartzCrystalCharged() {
+        return certusQuartzCrystalCharged;
     }
 
-    @Override
-    public IItemDefinition fluixCrystal() {
-        return this.fluixCrystal;
+    public static IItemDefinition fluixCrystal() {
+        return fluixCrystal;
     }
 
-    @Override
-    public IItemDefinition fluixPearl() {
-        return this.fluixPearl;
+    public static IItemDefinition fluixPearl() {
+        return fluixPearl;
     }
 
-    @Override
-    public IItemDefinition woodenGear() {
-        return this.woodenGear;
+    public static IItemDefinition woodenGear() {
+        return woodenGear;
     }
 
-    @Override
-    public IItemDefinition wirelessReceiver() {
-        return this.wirelessReceiver;
+    public static IItemDefinition wirelessReceiver() {
+        return wirelessReceiver;
     }
 
-    @Override
-    public IItemDefinition wirelessBooster() {
-        return this.wirelessBooster;
+    public static IItemDefinition wirelessBooster() {
+        return wirelessBooster;
     }
 
-    @Override
-    public IItemDefinition annihilationCore() {
-        return this.annihilationCore;
+    public static IItemDefinition annihilationCore() {
+        return annihilationCore;
     }
 
-    @Override
-    public IItemDefinition formationCore() {
-        return this.formationCore;
+    public static IItemDefinition formationCore() {
+        return formationCore;
     }
 
-    @Override
-    public IItemDefinition singularity() {
-        return this.singularity;
+    public static IItemDefinition singularity() {
+        return singularity;
     }
 
-    @Override
-    public IItemDefinition qESingularity() {
-        return this.qESingularity;
+    public static IItemDefinition qESingularity() {
+        return qESingularity;
     }
 
-    @Override
-    public IItemDefinition blankPattern() {
-        return this.blankPattern;
+    public static IItemDefinition blankPattern() {
+        return blankPattern;
     }
 
-    @Override
-    public IItemDefinition fluidCell1kPart() {
-        return this.fluidCell1kPart;
+    public static IItemDefinition fluidCell1kPart() {
+        return fluidCell1kPart;
     }
 
-    @Override
-    public IItemDefinition fluidCell4kPart() {
-        return this.fluidCell4kPart;
+    public static IItemDefinition fluidCell4kPart() {
+        return fluidCell4kPart;
     }
 
-    @Override
-    public IItemDefinition fluidCell16kPart() {
-        return this.fluidCell16kPart;
+    public static IItemDefinition fluidCell16kPart() {
+        return fluidCell16kPart;
     }
 
-    @Override
-    public IItemDefinition fluidCell64kPart() {
-        return this.fluidCell64kPart;
+    public static IItemDefinition fluidCell64kPart() {
+        return fluidCell64kPart;
     }
+
+    // Used to control in which order static constructors are called
+    public static void init() {
+    }
+
 }

@@ -31,6 +31,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -58,7 +59,6 @@ import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.core.features.IStackSrc;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
@@ -71,7 +71,7 @@ import appeng.util.SettingsFrom;
 public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject {
 
     private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
-    private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
+    private static final Map<TileEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
     private String customName;
@@ -83,8 +83,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         super(tileEntityTypeIn);
     }
 
-    public static void registerTileItem(final Class<? extends TileEntity> c, final IStackSrc wat) {
-        ITEM_STACKS.put(c, wat);
+    public static void registerTileItem(TileEntityType<?> type, final Item wat) {
+        REPRESENTATIVE_ITEMS.put(type, wat);
     }
 
     public boolean dropItems() {
@@ -102,12 +102,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Nullable
-    protected ItemStack getItemFromTile(final Object obj) {
-        final IStackSrc src = ITEM_STACKS.get(obj.getClass());
-        if (src == null) {
+    protected ItemStack getItemFromTile() {
+        final Item item = REPRESENTATIVE_ITEMS.get(getType());
+        if (item == null) {
             return ItemStack.EMPTY;
         }
-        return src.stack(1);
+        return new ItemStack(item);
     }
 
     @Override

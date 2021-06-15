@@ -48,7 +48,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -64,7 +63,8 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiParts;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
@@ -411,9 +411,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            final IDefinitions definitions = Api.instance().definitions();
-            if (definitions.parts().iface().isSameAs(is)) {
-                Optional<ItemStack> iface = definitions.blocks().iface().maybeStack(1);
+            if (ApiParts.iface().isSameAs(is)) {
+                Optional<ItemStack> iface = ApiBlocks.iface().maybeStack(1);
                 if (iface.isPresent()) {
                     is = iface.get();
                 }

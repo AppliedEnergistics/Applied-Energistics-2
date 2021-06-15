@@ -33,18 +33,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiEntities;
+import appeng.core.api.definitions.ApiMaterials;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     private static final Random RANDOM = new Random();
-
-    public static EntityType<ChargedQuartzEntity> TYPE;
 
     private int delay = 0;
     private int transformTime = 0;
@@ -54,7 +52,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     }
 
     public ChargedQuartzEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(TYPE, w, x, y, z, is);
+        super(ApiEntities.CHARGED_QUARTZ, w, x, y, z, is);
     }
 
     @Override
@@ -92,9 +90,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     private boolean transform() {
         final ItemStack item = this.getItem();
-        final IMaterials materials = Api.instance().definitions().materials();
 
-        if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
+        if (ApiMaterials.certusQuartzCrystalCharged().isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
                     this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -134,7 +131,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                     netherQuartz.remove();
                 }
 
-                materials.fluixCrystal().maybeStack(2).ifPresent(is -> {
+                ApiMaterials.fluixCrystal().maybeStack(2).ifPresent(is -> {
                     final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
                     final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
                     final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;

@@ -52,21 +52,23 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-            .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
-            .put(BLOCKS.quartzOre().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(),
-                            withExplosionDecay(BLOCKS.quartzOre().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+            .put(ApiBlocks.matrixFrame().block(), $ -> LootTable.builder())
+            .put(ApiBlocks.quartzOre().block(),
+                    b -> droppingWithSilkTouch(ApiBlocks.quartzOre().block(),
+                            withExplosionDecay(ApiBlocks.quartzOre().block(),
+                                    ItemLootEntry.builder(ApiMaterials.certusQuartzCrystal().item())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(BLOCKS.quartzOreCharged().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                            withExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+            .put(ApiBlocks.quartzOreCharged().block(),
+                    b -> droppingWithSilkTouch(ApiBlocks.quartzOreCharged().block(),
+                            withExplosionDecay(ApiBlocks.quartzOreCharged().block(),
+                                    ItemLootEntry.builder(ApiMaterials.certusQuartzCrystalCharged().item())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();

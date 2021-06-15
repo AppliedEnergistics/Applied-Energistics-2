@@ -24,15 +24,13 @@
 package appeng.api.definitions;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IItemProvider;
-
-import appeng.api.features.AEFeature;
+import net.minecraft.util.ResourceLocation;
 
 public interface IItemDefinition extends IComparableDefinition, IItemProvider {
     /**
@@ -40,7 +38,7 @@ public interface IItemDefinition extends IComparableDefinition, IItemProvider {
      *         null
      */
     @Nonnull
-    String identifier();
+    ResourceLocation id();
 
     /**
      * @return the {@link Item} Implementation if applicable
@@ -59,11 +57,6 @@ public interface IItemDefinition extends IComparableDefinition, IItemProvider {
     }
 
     ItemStack stack(int stackSize);
-
-    /**
-     * @return an immutable set of the features of this item
-     */
-    Set<AEFeature> features();
 
     @Override
     default Item asItem() {

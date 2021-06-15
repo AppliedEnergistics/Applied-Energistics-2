@@ -66,6 +66,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -450,7 +451,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
+        return ApiBlocks.drive().stack(1);
     }
 
     @Nonnull

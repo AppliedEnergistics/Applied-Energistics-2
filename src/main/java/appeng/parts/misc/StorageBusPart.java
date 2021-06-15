@@ -77,6 +77,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -555,7 +556,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().storageBus().maybeStack(1).orElse(ItemStack.EMPTY);
+        return ApiParts.storageBus().stack(1);
     }
 
     @Override

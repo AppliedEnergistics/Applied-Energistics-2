@@ -33,17 +33,16 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiMaterials;
 
 public final class DisassembleRecipe extends SpecialRecipe {
     public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
@@ -61,24 +60,19 @@ public final class DisassembleRecipe extends SpecialRecipe {
     public DisassembleRecipe(ResourceLocation id) {
         super(id);
 
-        final IDefinitions definitions = Api.instance().definitions();
-        final IBlocks blocks = definitions.blocks();
-        final IItems items = definitions.items();
-        final IMaterials mats = definitions.materials();
-
         this.cellMappings = new HashMap<>(4);
         this.nonCellMappings = new HashMap<>(5);
 
-        this.cellMappings.put(items.cell1k(), mats.cell1kPart());
-        this.cellMappings.put(items.cell4k(), mats.cell4kPart());
-        this.cellMappings.put(items.cell16k(), mats.cell16kPart());
-        this.cellMappings.put(items.cell64k(), mats.cell64kPart());
+        this.cellMappings.put(ApiItems.cell1k(), ApiMaterials.cell1kPart());
+        this.cellMappings.put(ApiItems.cell4k(), ApiMaterials.cell4kPart());
+        this.cellMappings.put(ApiItems.cell16k(), ApiMaterials.cell16kPart());
+        this.cellMappings.put(ApiItems.cell64k(), ApiMaterials.cell64kPart());
 
-        this.nonCellMappings.put(items.encodedPattern(), mats.blankPattern());
-        this.nonCellMappings.put(blocks.craftingStorage1k(), mats.cell1kPart());
-        this.nonCellMappings.put(blocks.craftingStorage4k(), mats.cell4kPart());
-        this.nonCellMappings.put(blocks.craftingStorage16k(), mats.cell16kPart());
-        this.nonCellMappings.put(blocks.craftingStorage64k(), mats.cell64kPart());
+        this.nonCellMappings.put(ApiItems.encodedPattern(), ApiMaterials.blankPattern());
+        this.nonCellMappings.put(ApiBlocks.craftingStorage1k(), ApiMaterials.cell1kPart());
+        this.nonCellMappings.put(ApiBlocks.craftingStorage4k(), ApiMaterials.cell4kPart());
+        this.nonCellMappings.put(ApiBlocks.craftingStorage16k(), ApiMaterials.cell16kPart());
+        this.nonCellMappings.put(ApiBlocks.craftingStorage64k(), ApiMaterials.cell64kPart());
     }
 
     @Override

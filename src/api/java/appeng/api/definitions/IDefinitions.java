@@ -27,23 +27,5 @@ package appeng.api.definitions;
  * All definitions in AE
  */
 public interface IDefinitions {
-    /**
-     * @return an accessible list of all of AE's blocks
-     */
-    IBlocks blocks();
 
-    /**
-     * @return an accessible list of all of AE's Items
-     */
-    IItems items();
-
-    /**
-     * @return an accessible list of all of AE's materials; materials are items
-     */
-    IMaterials materials();
-
-    /**
-     * @return an accessible list of all of AE's parts, parts are items
-     */
-    IParts parts();
 }

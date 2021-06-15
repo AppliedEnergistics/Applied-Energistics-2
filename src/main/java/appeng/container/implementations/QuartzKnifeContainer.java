@@ -34,7 +34,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.core.Api;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.MaterialItem;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -104,7 +104,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             }
 
             if (RestrictedInputSlot.isMetalIngot(input) && QuartzKnifeContainer.this.currentName.length() > 0) {
-                return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
+                return ApiMaterials.namePress().maybeStack(1).map(namePressStack -> {
                     final CompoundNBT compound = namePressStack.getOrCreateTag();
                     compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.currentName);
 

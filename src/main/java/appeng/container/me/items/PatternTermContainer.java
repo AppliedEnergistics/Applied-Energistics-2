@@ -38,7 +38,6 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -55,6 +54,7 @@ import appeng.container.slot.PatternOutputsSlot;
 import appeng.container.slot.PatternTermSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -253,8 +253,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             return false;
         }
 
-        final IDefinitions definitions = Api.instance().definitions();
-        return definitions.materials().blankPattern().isSameAs(output);
+        return ApiMaterials.blankPattern().isSameAs(output);
     }
 
     @Override

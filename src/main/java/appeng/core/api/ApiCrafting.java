@@ -41,7 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.ApiDefinitions;
+import appeng.core.api.definitions.ApiItems;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;
 
@@ -49,8 +49,8 @@ public class ApiCrafting implements ICraftingHelper {
 
     private final IItemDefinition encodedPattern;
 
-    public ApiCrafting(ApiDefinitions definitions) {
-        this.encodedPattern = definitions.items().encodedPattern();
+    public ApiCrafting() {
+        this.encodedPattern = ApiItems.encodedPattern();
     }
 
     @Override

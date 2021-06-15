@@ -53,7 +53,7 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     }
 
     protected AENetworkProxy createProxy() {
-        return new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
+        return new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
     }
 
     @Override

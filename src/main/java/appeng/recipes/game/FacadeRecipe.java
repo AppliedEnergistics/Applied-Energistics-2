@@ -30,9 +30,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.api.definitions.ApiParts;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends SpecialRecipe {
@@ -44,9 +43,8 @@ public final class FacadeRecipe extends SpecialRecipe {
     public FacadeRecipe(ResourceLocation id, FacadeItem facade) {
         super(id);
         this.facade = facade;
-        final IDefinitions definitions = Api.instance().definitions();
 
-        this.anchor = definitions.parts().cableAnchor();
+        this.anchor = ApiParts.cableAnchor();
     }
 
     @Override

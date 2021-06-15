@@ -47,6 +47,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
+import appeng.core.api.definitions.ApiBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -71,20 +72,20 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     @Override
     protected AENetworkProxy createProxy() {
-        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(this), true);
+        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(), true);
     }
 
     @Override
-    protected ItemStack getItemFromTile(final Object obj) {
+    protected ItemStack getItemFromTile() {
         Optional<ItemStack> is;
 
-        if (((CraftingTileEntity) obj).isAccelerator()) {
-            is = Api.instance().definitions().blocks().craftingAccelerator().maybeStack(1);
+        if (isAccelerator()) {
+            is = ApiBlocks.craftingAccelerator().maybeStack(1);
         } else {
-            is = Api.instance().definitions().blocks().craftingUnit().maybeStack(1);
+            is = ApiBlocks.craftingUnit().maybeStack(1);
         }
 
-        return is.orElseGet(() -> super.getItemFromTile(obj));
+        return is.orElseGet(() -> super.getItemFromTile());
     }
 
     @Override
@@ -115,7 +116,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     public void onReady() {
         super.onReady();
-        this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
+        this.getProxy().setVisualRepresentation(this.getItemFromTile());
         this.calc.calculateMultiblock(world, pos);
     }
 
