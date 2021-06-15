@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
@@ -112,13 +113,21 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     @Override
     public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+
         if (isClient()) {
             return;
         }
 
-        this.cpuCycler.detectAndSendChanges(this.getGrid());
+        final IGrid grid = this.getGrid();
 
-        super.detectAndSendChanges();
+        // Close the screen if the grid no longer exists
+        if (grid == null) {
+            this.setValidContainer(false);
+            return;
+        }
+
+        this.cpuCycler.detectAndSendChanges(grid);
 
         if (this.job != null && this.job.isDone()) {
             try {
@@ -147,7 +156,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     private IGrid getGrid() {
         final IActionHost h = (IActionHost) this.getTarget();
-        return h.getActionableNode().getGrid();
+        final IGridNode a = h.getActionableNode();
+        return a != null ? a.getGrid() : null;
     }
 
     private boolean cpuMatches(final ICraftingCPU c) {
