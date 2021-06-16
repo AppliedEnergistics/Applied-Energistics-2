@@ -189,16 +189,6 @@ public final class ApiItems {
 
     public static final ItemDefinition FACADE = item(AEItemIds.FACADE, FacadeItem::new).build();
 
-    public static final ItemDefinition CERTUS_CRYSTAL_SEED = item(AEItemIds.CERTUS_CRYSTAL_SEED,
-            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL.item()))
-            .build();
-    public static final ItemDefinition FLUIX_CRYSTAL_SEED = item(AEItemIds.FLUIX_CRYSTAL_SEED,
-            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_FLUIX_CRYSTAL.item()))
-            .build();
-    public static final ItemDefinition NETHER_QUARTZ_SEED = item(AEItemIds.NETHER_QUARTZ_SEED,
-            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_NETHER_QUARTZ_CRYSTAL.item()))
-            .build();
-
     public static final ItemDefinition ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, EncodedPatternItem::new)
             .props(props -> props.maxStackSize(1)).build();
 
@@ -266,6 +256,20 @@ public final class ApiItems {
     public static final ItemDefinition FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_4K_CELL_COMPONENT, MaterialItem::new).build();
     public static final ItemDefinition FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_16K_CELL_COMPONENT, MaterialItem::new).build();
     public static final ItemDefinition FLUID_64K_CELL_COMPONENT = item(AEItemIds.FLUID_64K_CELL_COMPONENT, MaterialItem::new).build();
+
+    ///
+    /// SEEDS
+    ///
+
+    public static final ItemDefinition CERTUS_CRYSTAL_SEED = item(AEItemIds.CERTUS_CRYSTAL_SEED,
+            props -> new CrystalSeedItem(props, PURIFIED_CERTUS_QUARTZ_CRYSTAL.item()))
+            .build();
+    public static final ItemDefinition FLUIX_CRYSTAL_SEED = item(AEItemIds.FLUIX_CRYSTAL_SEED,
+            props -> new CrystalSeedItem(props, PURIFIED_FLUIX_CRYSTAL.item()))
+            .build();
+    public static final ItemDefinition NETHER_QUARTZ_SEED = item(AEItemIds.NETHER_QUARTZ_SEED,
+            props -> new CrystalSeedItem(props, PURIFIED_NETHER_QUARTZ_CRYSTAL.item()))
+            .build();
 
     ///
     /// CELLS

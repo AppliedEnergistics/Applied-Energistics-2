@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:portable_cell"
+      "item": "appliedenergistics2:1k_portable_cell"
     },
     "title": {
       "translate": "achievement.ae2.PortableCell"
@@ -12,15 +12,46 @@
   },
   "parent": "appliedenergistics2:main/storage_cell",
   "criteria": {
-    "portable_cell": {
+    "pc_1k": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:portable_cell"
+            "item": "appliedenergistics2:1k_portable_cell"
+          }
+        ]
+      }
+    },
+    "pc_4k": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "appliedenergistics2:4k_portable_cell"
+          }
+        ]
+      }
+    },
+    "pc_16k": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "appliedenergistics2:16k_portable_cell"
+          }
+        ]
+      }
+    },
+    "pc_64k": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "appliedenergistics2:64k_portable_cell"
           }
         ]
       }
     }
-  }
+  },
+  "requirements": [["pc_1k", "pc_4k", "pc_16k", "pc_64k"]]
 }
