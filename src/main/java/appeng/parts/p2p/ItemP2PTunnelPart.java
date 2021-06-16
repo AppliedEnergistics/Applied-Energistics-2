@@ -23,24 +23,19 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
-public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
-    private static final float POWER_DRAIN = 2.0f;
+public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart, IItemHandler> {
+
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
     private static final IItemHandler NULL_ITEM_HANDLER = new NullItemHandler();
-
-    private final IItemHandler inputHandler = new InputItemHandler();
-    private final IItemHandler outputHandler = new OutputItemHandler();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -48,44 +43,15 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     }
 
     public ItemP2PTunnelPart(final ItemStack is) {
-        super(is);
-    }
-
-    @Override
-    protected float getPowerDrainPerTick() {
-        return POWER_DRAIN;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (this.isOutput()) {
-                return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
-            }
-            return (LazyOptional<T>) LazyOptional.of(() -> this.inputHandler);
-        }
-
-        return super.getCapability(capabilityClass);
+        super(is, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        inputHandler = new InputItemHandler();
+        outputHandler = new OutputItemHandler();
+        emptyHandler = NULL_ITEM_HANDLER;
     }
 
     @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    private IItemHandler getAttachedItemHandler() {
-        LazyOptional<IItemHandler> itemHandler = LazyOptional.empty();
-        if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
-
-            if (te != null) {
-                itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                        this.getSide().getOpposite().getFacing());
-            }
-        }
-        return itemHandler.orElse(NULL_ITEM_HANDLER);
     }
 
     private class InputItemHandler implements IItemHandler {
@@ -104,7 +70,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            final ItemStack remainder = stack.copy();
+            int remainder = stack.getCount();
 
             try {
                 final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
@@ -118,36 +84,43 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
                 int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
                 for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
-                    final IItemHandler output = target.getAttachedItemHandler();
-                    final int toSend = amountPerOutput + overflow;
-                    final ItemStack fillWithItemStack = stack.copy();
-                    fillWithItemStack.setCount(toSend);
+                    try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
+                        final IItemHandler output = capabilityGuard.get();
+                        final int toSend = amountPerOutput + overflow;
 
-                    ItemStack received = ItemStack.EMPTY;
-
-                    for (int i = 0; i < output.getSlots(); i++) {
-                        received = output.insertItem(i, fillWithItemStack, simulate);
-
-                        if (received.isEmpty()) {
+                        if (toSend <= 0) {
+                            // Both overflow and amountPerOutput are 0, so they will be for further outputs as well.
                             break;
                         }
-                    }
 
-                    overflow = received.getCount();
-                    remainder.setCount(remainder.getCount() - toSend - received.getCount());
+                        // So the documentation says that copying the stack should not be necessary because it is not
+                        // supposed to be stored or modifed by insertItem. However, ItemStackHandler will gladly store
+                        // the stack so we need to do a defensive copy. Forgecord says this is the intended behavior,
+                        // and the documentation is wrong.
+                        ItemStack stackCopy = stack.copy();
+                        stackCopy.setCount(toSend);
+                        final int sent = toSend - ItemHandlerHelper.insertItem(output, stackCopy, simulate).getCount();
 
-                    if (remainder.isEmpty()) {
-                        break;
+                        overflow = toSend - sent;
+                        remainder -= sent;
                     }
                 }
 
                 if (!simulate) {
-                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, stack.getCount() - remainder.getCount());
+                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, amount - remainder);
                 }
             } catch (GridAccessException ignored) {
             }
 
-            return remainder;
+            if (remainder == stack.getCount()) {
+                return stack;
+            } else if (remainder == 0) {
+                return ItemStack.EMPTY;
+            } else {
+                ItemStack copy = stack.copy();
+                copy.setCount(remainder);
+                return copy;
+            }
         }
 
         @Override
@@ -169,16 +142,19 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     }
 
     private class OutputItemHandler implements IItemHandler {
-
         @Override
         public int getSlots() {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlots();
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getSlots();
+            }
         }
 
         @Override
         @Nonnull
         public ItemStack getStackInSlot(int slot) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getStackInSlot(slot);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getStackInSlot(slot);
+            }
         }
 
         @Override
@@ -190,17 +166,29 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().extractItem(slot, amount, simulate);
+            try (CapabilityGuard input = getInputCapability()) {
+                ItemStack result = input.get().extractItem(slot, amount, simulate);
+
+                if (!simulate) {
+                    queueTunnelDrain(PowerUnits.RF, result.getCount());
+                }
+
+                return result;
+            }
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getSlotLimit(slot);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().getSlotLimit(slot);
+            }
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().isItemValid(slot, stack);
+            try (CapabilityGuard input = getInputCapability()) {
+                return input.get().isItemValid(slot, stack);
+            }
         }
     }
 
