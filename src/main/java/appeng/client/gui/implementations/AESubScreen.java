@@ -73,13 +73,13 @@ public final class AESubScreen {
             this.previousContainerIcon = ApiItems.WIRELESS_TERMINAL.stack();
             this.previousContainerType = WirelessTermContainer.TYPE;
         } else if (containerHost instanceof TerminalPart) {
-            this.previousContainerIcon = ApiParts.terminal.stack();
+            this.previousContainerIcon = ApiParts.TERMINAL.stack();
             this.previousContainerType = ItemTerminalContainer.TYPE;
         } else if (containerHost instanceof CraftingTerminalPart) {
-            this.previousContainerIcon = ApiParts.craftingTerminal.stack();
+            this.previousContainerIcon = ApiParts.CRAFTING_TERMINAL.stack();
             this.previousContainerType = CraftingTermContainer.TYPE;
         } else if (containerHost instanceof PatternTerminalPart) {
-            this.previousContainerIcon = ApiParts.patternTerminal.stack();
+            this.previousContainerIcon = ApiParts.PATTERN_TERMINAL.stack();
             this.previousContainerType = PatternTermContainer.TYPE;
         } else {
             this.previousContainerIcon = null;

@@ -62,10 +62,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
          * Forge energy tunnel items
          */
 
-        this.addNewAttunement(ApiBlocks.energyCellDense, TunnelType.FE_POWER);
-        this.addNewAttunement(ApiBlocks.energyAcceptor, TunnelType.FE_POWER);
-        this.addNewAttunement(ApiBlocks.energyCell, TunnelType.FE_POWER);
-        this.addNewAttunement(ApiBlocks.energyCellCreative, TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.DENSE_ENERGY_CELL, TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.ENERGY_ACCEPTOR, TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.ENERGY_CELL, TunnelType.FE_POWER);
+        this.addNewAttunement(ApiBlocks.CREATIVE_ENERGY_CELL, TunnelType.FE_POWER);
 
         // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
         // FIXME this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
@@ -101,11 +101,11 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
          * attune based on lots of random item related stuff
          */
 
-        this.addNewAttunement(ApiBlocks.iface, TunnelType.ITEM);
-        this.addNewAttunement(ApiParts.iface, TunnelType.ITEM);
-        this.addNewAttunement(ApiParts.storageBus, TunnelType.ITEM);
-        this.addNewAttunement(ApiParts.importBus, TunnelType.ITEM);
-        this.addNewAttunement(ApiParts.exportBus, TunnelType.ITEM);
+        this.addNewAttunement(ApiBlocks.INTERFACE, TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.INTERFACE, TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.STORAGE_BUS, TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.IMPORT_BUS, TunnelType.ITEM);
+        this.addNewAttunement(ApiParts.EXPORT_BUS, TunnelType.ITEM);
 
         this.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
         this.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
@@ -149,10 +149,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         // FIXME // (opaque)
         // FIXME
         for (final AEColor c : AEColor.values()) {
-            this.addNewAttunement(ApiParts.cableGlass.stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(ApiParts.cableCovered.stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(ApiParts.cableSmart.stack(c, 1), TunnelType.ME);
-            this.addNewAttunement(ApiParts.cableDenseSmart.stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.GLASS_CABLE.stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.COVERED_CABLE.stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.SMART_CABLE.stack(c, 1), TunnelType.ME);
+            this.addNewAttunement(ApiParts.SMART_DENSE_CABLE.stack(c, 1), TunnelType.ME);
         }
 
         /**
@@ -176,7 +176,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         this.addNewAttunement("mekanism", TunnelType.FE_POWER);
         // TODO: Remove when support for RFTools' Powercells support is added
         this.addNewAttunement("rftools", TunnelType.FE_POWER);
-        this.addNewAttunement("ic2", TunnelType.IC2_POWER);
 
     }
 

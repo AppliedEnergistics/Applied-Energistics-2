@@ -39,20 +39,20 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class DecorationRecipes extends RecipeProvider implements IAE2DataProvider {
 
     BlockDefinition[][] blocks = {
-            { ApiBlocks.skyStoneBlock, ApiBlocks.skyStoneSlab, ApiBlocks.skyStoneStairs,
-                    ApiBlocks.skyStoneWall },
-            { ApiBlocks.smoothSkyStoneBlock, ApiBlocks.smoothSkyStoneSlab, ApiBlocks.smoothSkyStoneStairs,
-                    ApiBlocks.smoothSkyStoneWall },
-            { ApiBlocks.skyStoneBrick, ApiBlocks.skyStoneBrickSlab, ApiBlocks.skyStoneBrickStairs,
-                    ApiBlocks.skyStoneBrickWall },
-            { ApiBlocks.skyStoneSmallBrick, ApiBlocks.skyStoneSmallBrickSlab, ApiBlocks.skyStoneSmallBrickStairs,
-                    ApiBlocks.skyStoneSmallBrickWall },
-            { ApiBlocks.fluixBlock, ApiBlocks.fluixSlab, ApiBlocks.fluixStairs, ApiBlocks.fluixWall },
-            { ApiBlocks.quartzBlock, ApiBlocks.quartzSlab, ApiBlocks.quartzStairs, ApiBlocks.quartzWall },
-            { ApiBlocks.chiseledQuartzBlock, ApiBlocks.chiseledQuartzSlab, ApiBlocks.chiseledQuartzStairs,
-                    ApiBlocks.chiseledQuartzWall },
-            { ApiBlocks.quartzPillar, ApiBlocks.quartzPillarSlab, ApiBlocks.quartzPillarStairs,
-                    ApiBlocks.quartzPillarWall }, };
+            { ApiBlocks.SKY_STONE_BLOCK, ApiBlocks.SKY_STONE_SLAB, ApiBlocks.SKY_STONE_STAIRS,
+                    ApiBlocks.SKY_STONE_WALL},
+            { ApiBlocks.SMOOTH_SKY_STONE_BLOCK, ApiBlocks.SMOOTH_SKY_STONE_SLAB, ApiBlocks.SMOOTH_SKY_STONE_STAIRS,
+                    ApiBlocks.SMOOTH_SKY_STONE_WALL},
+            { ApiBlocks.SKY_STONE_BRICK, ApiBlocks.SKY_STONE_BRICK_SLAB, ApiBlocks.SKY_STONE_BRICK_STAIRS,
+                    ApiBlocks.SKY_STONE_BRICK_WALL},
+            { ApiBlocks.SKY_STONE_SMALL_BRICK, ApiBlocks.SKY_STONE_SMALL_BRICK_SLAB, ApiBlocks.SKY_STONE_SMALL_BRICK_STAIRS,
+                    ApiBlocks.SKY_STONE_SMALL_BRICK_WALL},
+            { ApiBlocks.FLUIX_BLOCK, ApiBlocks.FLUIX_SLAB, ApiBlocks.FLUIX_STAIRS, ApiBlocks.FLUIX_WALL},
+            { ApiBlocks.QUARTZ_BLOCK, ApiBlocks.QUARTZ_SLAB, ApiBlocks.QUARTZ_STAIRS, ApiBlocks.QUARTZ_WALL},
+            { ApiBlocks.CHISELED_QUARTZ_BLOCK, ApiBlocks.CHISELED_QUARTZ_SLAB, ApiBlocks.CHISELED_QUARTZ_STAIRS,
+                    ApiBlocks.CHISELED_QUARTZ_WALL},
+            { ApiBlocks.QUARTZ_PILLAR, ApiBlocks.QUARTZ_PILLAR_SLAB, ApiBlocks.QUARTZ_PILLAR_STAIRS,
+                    ApiBlocks.QUARTZ_PILLAR_WALL}, };
 
     public DecorationRecipes(DataGenerator generatorIn) {
         super(generatorIn);

@@ -241,7 +241,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.fluidFormationPlane.stack();
+        return ApiParts.FLUID_FORMATION_PLANE.stack();
     }
 
     @Override

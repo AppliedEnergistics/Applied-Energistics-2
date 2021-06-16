@@ -107,7 +107,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
         this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
 
-        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.inscriber, this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.INSCRIBER, this, this.getUpgradeSlots());
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 

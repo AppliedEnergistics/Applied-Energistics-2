@@ -27,18 +27,18 @@ public final class InitAutoRotatingModel {
      * Blocks that should not use the auto rotation model.
      */
     private static final Set<BlockDefinition> NO_AUTO_ROTATION = ImmutableSet.of(
-            ApiBlocks.multiPart,
-            ApiBlocks.controller,
-            ApiBlocks.paint,
-            ApiBlocks.quantumLink,
-            ApiBlocks.quantumRing,
-            ApiBlocks.craftingUnit,
-            ApiBlocks.craftingAccelerator,
-            ApiBlocks.craftingMonitor,
-            ApiBlocks.craftingStorage1k,
-            ApiBlocks.craftingStorage4k,
-            ApiBlocks.craftingStorage16k,
-            ApiBlocks.craftingStorage64k);
+            ApiBlocks.MULTI_PART,
+            ApiBlocks.CONTROLLER,
+            ApiBlocks.PAINT,
+            ApiBlocks.QUANTUM_LINK,
+            ApiBlocks.QUANTUM_RING,
+            ApiBlocks.CRAFTING_UNIT,
+            ApiBlocks.CRAFTING_ACCELERATOR,
+            ApiBlocks.CRAFTING_MONITOR,
+            ApiBlocks.CRAFTING_STORAGE_1K,
+            ApiBlocks.CRAFTING_STORAGE_4K,
+            ApiBlocks.CRAFTING_STORAGE_16K,
+            ApiBlocks.CRAFTING_STORAGE_64K);
 
     // Maps from resource path to customizer
     private static final Map<String, Function<IBakedModel, IBakedModel>> CUSTOMIZERS = new HashMap<>();
@@ -47,7 +47,7 @@ public final class InitAutoRotatingModel {
     }
 
     public static void init(IEventBus modEventBus) {
-        register(ApiBlocks.craftingMonitor, InitAutoRotatingModel::customizeCraftingMonitorModel);
+        register(ApiBlocks.CRAFTING_MONITOR, InitAutoRotatingModel::customizeCraftingMonitorModel);
 
         for (BlockDefinition block : ApiBlocks.getBlocks()) {
             if (NO_AUTO_ROTATION.contains(block)) {

@@ -307,7 +307,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiBlocks.iface.stack();
+        return ApiBlocks.INTERFACE.stack();
     }
 
     @Override

@@ -210,7 +210,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.fluidIface.stack();
+        return ApiParts.FLUID_INTERFACE.stack();
     }
 
     @Override

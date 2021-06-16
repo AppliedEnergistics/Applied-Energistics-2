@@ -267,7 +267,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final BlockState whatsThere = w.getBlockState(hitPos);
                 if (whatsThere.getMaterial().isReplaceable() && w.isAirBlock(hitPos)) {
-                    w.setBlockState(hitPos, ApiBlocks.paint.block().getDefaultState(), 3);
+                    w.setBlockState(hitPos, ApiBlocks.PAINT.block().getDefaultState(), 3);
                 }
 
                 final TileEntity te = w.getTileEntity(hitPos);

@@ -74,11 +74,11 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
         addAe2("wool", ItemTags.WOOL);
 
         for (AEColor color : AEColor.values()) {
-            addAe2("smart_dense_cable", ApiParts.cableDenseSmart.item(color));
-            addAe2("smart_cable", ApiParts.cableSmart.item(color));
-            addAe2("glass_cable", ApiParts.cableGlass.item(color));
-            addAe2("covered_cable", ApiParts.cableCovered.item(color));
-            addAe2("covered_dense_cable", ApiParts.cableDenseCovered.item(color));
+            addAe2("smart_dense_cable", ApiParts.SMART_DENSE_CABLE.item(color));
+            addAe2("smart_cable", ApiParts.SMART_CABLE.item(color));
+            addAe2("glass_cable", ApiParts.GLASS_CABLE.item(color));
+            addAe2("covered_cable", ApiParts.COVERED_CABLE.item(color));
+            addAe2("covered_dense_cable", ApiParts.COVERED_DENSE_CABLE.item(color));
         }
 
         addAe2("silicon", ApiItems.SILICON);
@@ -89,12 +89,12 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
 
         addAe2("metal_ingots", Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON);
 
-        addAe2("interface", ApiParts.iface, ApiBlocks.iface);
-        addAe2("fluid_interface", ApiParts.fluidIface, ApiBlocks.fluidIface);
+        addAe2("interface", ApiParts.INTERFACE, ApiBlocks.INTERFACE);
+        addAe2("fluid_interface", ApiParts.FLUID_INTERFACE, ApiBlocks.FLUID_INTERFACE);
 
-        addAe2("illuminated_panel", ApiParts.monitor,
-                ApiParts.semiDarkMonitor,
-                ApiParts.darkMonitor);
+        addAe2("illuminated_panel", ApiParts.MONITOR,
+                ApiParts.SEMI_DARK_MONITOR,
+                ApiParts.DARK_MONITOR);
 
         addAe2("glass", Items.GLASS, Tags.Items.GLASS);
 

@@ -114,7 +114,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return super.getItemStack(type);
         }
 
-        return ApiParts.p2PTunnelME.stack();
+        return ApiParts.ME_P2P_TUNNEL.stack();
     }
 
     @Override
@@ -207,31 +207,27 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             switch (tt) {
                 case LIGHT:
-                    newType = ApiParts.p2PTunnelLight.stack();
+                    newType = ApiParts.LIGHT_P2P_TUNNEL.stack();
                     break;
 
                 case FE_POWER:
-                    newType = ApiParts.p2PTunnelFE.stack();
+                    newType = ApiParts.FE_P2P_TUNNEL.stack();
                     break;
 
                 case FLUID:
-                    newType = ApiParts.p2PTunnelFluids.stack();
-                    break;
-
-                case IC2_POWER:
-                    newType = ApiParts.p2PTunnelEU.stack();
+                    newType = ApiParts.FLUID_P2P_TUNNEL.stack();
                     break;
 
                 case ITEM:
-                    newType = ApiParts.p2PTunnelItems.stack();
+                    newType = ApiParts.ITEM_P2P_TUNNEL.stack();
                     break;
 
                 case ME:
-                    newType = ApiParts.p2PTunnelME.stack();
+                    newType = ApiParts.ME_P2P_TUNNEL.stack();
                     break;
 
                 case REDSTONE:
-                    newType = ApiParts.p2PTunnelRedstone.stack();
+                    newType = ApiParts.REDSTONE_P2P_TUNNEL.stack();
                     break;
 
                 /*

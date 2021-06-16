@@ -68,7 +68,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     public SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
         super(createBiomeSource(biomeRegistry), createSettings());
-        this.defaultBlockState = ApiBlocks.matrixFrame.block().getDefaultState();
+        this.defaultBlockState = ApiBlocks.MATRIX_FRAME.block().getDefaultState();
         this.biomeRegistry = biomeRegistry;
 
         // Vertical sample is mostly used for Feature generation, for those purposes

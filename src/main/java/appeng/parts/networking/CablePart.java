@@ -94,15 +94,15 @@ public class CablePart extends AEBasePart implements ICablePart {
             ItemStack newPart = null;
 
             if (this.getCableConnectionType() == AECableType.GLASS) {
-                newPart = ApiParts.cableGlass.stack(newColor, 1);
+                newPart = ApiParts.GLASS_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.COVERED) {
-                newPart = ApiParts.cableCovered.stack(newColor, 1);
+                newPart = ApiParts.COVERED_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.SMART) {
-                newPart = ApiParts.cableSmart.stack(newColor, 1);
+                newPart = ApiParts.SMART_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_COVERED) {
-                newPart = ApiParts.cableDenseCovered.stack(newColor, 1);
+                newPart = ApiParts.COVERED_DENSE_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_SMART) {
-                newPart = ApiParts.cableDenseSmart.stack(newColor, 1);
+                newPart = ApiParts.SMART_DENSE_CABLE.stack(newColor, 1);
             }
 
             boolean hasPermission = true;

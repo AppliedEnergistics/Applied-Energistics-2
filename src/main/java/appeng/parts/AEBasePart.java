@@ -410,8 +410,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            if (ApiParts.iface.isSameAs(is)) {
-                is = ApiBlocks.iface.stack();
+            if (ApiParts.INTERFACE.isSameAs(is)) {
+                is = ApiBlocks.INTERFACE.stack();
             }
 
             final String name = is.getTranslationKey();

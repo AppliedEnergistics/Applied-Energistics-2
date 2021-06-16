@@ -88,9 +88,9 @@ public final class MeteoritePlacer {
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
-        this.skyChestDefinition = ApiBlocks.skyStoneChest;
-        this.skyStone = ApiBlocks.skyStoneBlock.block().getDefaultState();
-        this.skyStoneItem = ApiBlocks.skyStoneBlock.item();
+        this.skyChestDefinition = ApiBlocks.SKY_STONE_CHEST;
+        this.skyStone = ApiBlocks.SKY_STONE_BLOCK.block().getDefaultState();
+        this.skyStoneItem = ApiBlocks.SKY_STONE_BLOCK.item();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }

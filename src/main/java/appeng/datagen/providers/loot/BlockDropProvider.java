@@ -58,16 +58,16 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-            .put(ApiBlocks.matrixFrame.block(), $ -> LootTable.builder())
-            .put(ApiBlocks.quartzOre.block(),
-                    b -> droppingWithSilkTouch(ApiBlocks.quartzOre.block(),
-                            withExplosionDecay(ApiBlocks.quartzOre.block(),
+            .put(ApiBlocks.MATRIX_FRAME.block(), $ -> LootTable.builder())
+            .put(ApiBlocks.QUARTZ_ORE.block(),
+                    b -> droppingWithSilkTouch(ApiBlocks.QUARTZ_ORE.block(),
+                            withExplosionDecay(ApiBlocks.QUARTZ_ORE.block(),
                                     ItemLootEntry.builder(ApiItems.CERTUS_QUARTZ_CRYSTAL.item())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(ApiBlocks.quartzOreCharged.block(),
-                    b -> droppingWithSilkTouch(ApiBlocks.quartzOreCharged.block(),
-                            withExplosionDecay(ApiBlocks.quartzOreCharged.block(),
+            .put(ApiBlocks.QUARTZ_ORE_CHARGED.block(),
+                    b -> droppingWithSilkTouch(ApiBlocks.QUARTZ_ORE_CHARGED.block(),
+                            withExplosionDecay(ApiBlocks.QUARTZ_ORE_CHARGED.block(),
                                     ItemLootEntry.builder(ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.item())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))

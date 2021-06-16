@@ -425,7 +425,7 @@ final class Registration {
 
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = ApiParts.iface.asItem().getTranslationKey();
+        String interfaceGroup = ApiParts.INTERFACE.asItem().getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
@@ -434,39 +434,39 @@ final class Registration {
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(ApiParts.iface, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(ApiBlocks.iface, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(ApiParts.INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(ApiBlocks.INTERFACE, 1, interfaceGroup);
 
         // IO Port!
-        Upgrades.SPEED.registerItem(ApiBlocks.iOPort, 3);
-        Upgrades.REDSTONE.registerItem(ApiBlocks.iOPort, 1);
+        Upgrades.SPEED.registerItem(ApiBlocks.IO_PORT, 3);
+        Upgrades.REDSTONE.registerItem(ApiBlocks.IO_PORT, 1);
 
         // Level Emitter!
-        Upgrades.FUZZY.registerItem(ApiParts.levelEmitter, 1);
-        Upgrades.CRAFTING.registerItem(ApiParts.levelEmitter, 1);
+        Upgrades.FUZZY.registerItem(ApiParts.LEVEL_EMITTER, 1);
+        Upgrades.CRAFTING.registerItem(ApiParts.LEVEL_EMITTER, 1);
 
         // Import Bus
-        Upgrades.FUZZY.registerItem(ApiParts.importBus, 1, itemIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.importBus, 1, itemIoBusGroup);
-        Upgrades.CAPACITY.registerItem(ApiParts.importBus, 2, itemIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.importBus, 4, itemIoBusGroup);
+        Upgrades.FUZZY.registerItem(ApiParts.IMPORT_BUS, 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.IMPORT_BUS, 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.IMPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.IMPORT_BUS, 4, itemIoBusGroup);
 
         // Fluid Import Bus
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidImportBus, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.fluidImportBus, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.fluidImportBus, 4, fluidIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.FLUID_IMPORT_BUS, 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.FLUID_IMPORT_BUS, 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.FLUID_IMPORT_BUS, 4, fluidIoBusGroup);
 
         // Export Bus
-        Upgrades.FUZZY.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
-        Upgrades.CAPACITY.registerItem(ApiParts.exportBus, 2, itemIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.exportBus, 4, itemIoBusGroup);
-        Upgrades.CRAFTING.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
+        Upgrades.FUZZY.registerItem(ApiParts.EXPORT_BUS, 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.EXPORT_BUS, 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.EXPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.EXPORT_BUS, 4, itemIoBusGroup);
+        Upgrades.CRAFTING.registerItem(ApiParts.EXPORT_BUS, 1, itemIoBusGroup);
 
         // Fluid Export Bus
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidExportBus, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.fluidExportBus, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.fluidExportBus, 4, fluidIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.FLUID_EXPORT_BUS, 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.FLUID_EXPORT_BUS, 4, fluidIoBusGroup);
 
         // Storage Cells
         Upgrades.FUZZY.registerItem(ApiItems.CELL1K, 1, storageCellGroup);
@@ -499,18 +499,18 @@ final class Registration {
         Upgrades.INVERTER.registerItem(ApiItems.VIEW_CELL, 1);
 
         // Storage Bus
-        Upgrades.FUZZY.registerItem(ApiParts.storageBus, 1);
-        Upgrades.INVERTER.registerItem(ApiParts.storageBus, 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.storageBus, 5);
+        Upgrades.FUZZY.registerItem(ApiParts.STORAGE_BUS, 1);
+        Upgrades.INVERTER.registerItem(ApiParts.STORAGE_BUS, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.STORAGE_BUS, 5);
 
         // Storage Bus Fluids
-        Upgrades.INVERTER.registerItem(ApiParts.fluidStorageBus, 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidStorageBus, 5);
+        Upgrades.INVERTER.registerItem(ApiParts.FLUID_STORAGE_BUS, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.FLUID_STORAGE_BUS, 5);
 
         // Formation Plane
-        Upgrades.FUZZY.registerItem(ApiParts.formationPlane, 1);
-        Upgrades.INVERTER.registerItem(ApiParts.formationPlane, 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.formationPlane, 5);
+        Upgrades.FUZZY.registerItem(ApiParts.FORMATION_PLANE, 1);
+        Upgrades.INVERTER.registerItem(ApiParts.FORMATION_PLANE, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.FORMATION_PLANE, 5);
 
         // Matter Cannon
         Upgrades.FUZZY.registerItem(ApiItems.MASS_CANNON, 1);
@@ -518,10 +518,10 @@ final class Registration {
         Upgrades.SPEED.registerItem(ApiItems.MASS_CANNON, 4);
 
         // Molecular Assembler
-        Upgrades.SPEED.registerItem(ApiBlocks.molecularAssembler, 5);
+        Upgrades.SPEED.registerItem(ApiBlocks.MOLECULAR_ASSEMBLER, 5);
 
         // Inscriber
-        Upgrades.SPEED.registerItem(ApiBlocks.inscriber, 3);
+        Upgrades.SPEED.registerItem(ApiBlocks.INSCRIBER, 3);
 
         // Wireless Terminal Handler
         registries.wireless().registerWirelessHandler((IWirelessTermHandler) ApiItems.WIRELESS_TERMINAL.item());
@@ -536,8 +536,8 @@ final class Registration {
         registries.charger().addChargeRate(ApiItems.WIRELESS_TERMINAL, 8000d);
         registries.charger().addChargeRate(ApiItems.ENTROPY_MANIPULATOR, 8000d);
         registries.charger().addChargeRate(ApiItems.MASS_CANNON, 8000d);
-        registries.charger().addChargeRate(ApiBlocks.energyCell, 8000d);
-        registries.charger().addChargeRate(ApiBlocks.energyCellDense, 16000d);
+        registries.charger().addChargeRate(ApiBlocks.ENERGY_CELL, 8000d);
+        registries.charger().addChargeRate(ApiBlocks.DENSE_ENERGY_CELL, 16000d);
 
         // FIXME // add villager trading to black smiths for a few basic materials
         // FIXME if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
@@ -671,7 +671,7 @@ final class Registration {
 
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = ApiBlocks.quartzOre.block().getDefaultState();
+        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
                 .withConfiguration(
                         new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
@@ -682,8 +682,8 @@ final class Registration {
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = ApiBlocks.quartzOre.block().getDefaultState();
-        BlockState chargedQuartzOreState = ApiBlocks.quartzOreCharged.block()
+        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
+        BlockState chargedQuartzOreState = ApiBlocks.QUARTZ_ORE_CHARGED.block()
                 .getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
                 ChargedQuartzOreFeature.INSTANCE

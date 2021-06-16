@@ -198,7 +198,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final BlockDefinition multiPart = ApiBlocks.multiPart;
+        final BlockDefinition multiPart = ApiBlocks.MULTI_PART;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 

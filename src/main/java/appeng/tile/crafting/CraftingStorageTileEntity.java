@@ -37,13 +37,13 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
 
         switch (storage) {
             case 1:
-                return ApiBlocks.craftingStorage1k.stack();
+                return ApiBlocks.CRAFTING_STORAGE_1K.stack();
             case 4:
-                return ApiBlocks.craftingStorage4k.stack();
+                return ApiBlocks.CRAFTING_STORAGE_4K.stack();
             case 16:
-                return ApiBlocks.craftingStorage16k.stack();
+                return ApiBlocks.CRAFTING_STORAGE_16K.stack();
             case 64:
-                return ApiBlocks.craftingStorage64k.stack();
+                return ApiBlocks.CRAFTING_STORAGE_64K.stack();
             default:
                 return super.getItemFromTile();
         }

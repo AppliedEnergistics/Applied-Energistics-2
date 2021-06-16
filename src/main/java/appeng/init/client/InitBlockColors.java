@@ -17,10 +17,10 @@ public final class InitBlockColors {
     }
 
     public static void init(BlockColors blockColors) {
-        blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), ApiBlocks.wirelessAccessPoint.block());
-        blockColors.register(new CableBusColor(), ApiBlocks.multiPart.block());
-        blockColors.register(ColorableTileBlockColor.INSTANCE, ApiBlocks.securityStation.block());
-        blockColors.register(new ColorableTileBlockColor(), ApiBlocks.chest.block());
+        blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), ApiBlocks.WIRELESS_ACCESS_POINT.block());
+        blockColors.register(new CableBusColor(), ApiBlocks.MULTI_PART.block());
+        blockColors.register(ColorableTileBlockColor.INSTANCE, ApiBlocks.SECURITY_STATION.block());
+        blockColors.register(new ColorableTileBlockColor(), ApiBlocks.CHEST.block());
     }
 
 }

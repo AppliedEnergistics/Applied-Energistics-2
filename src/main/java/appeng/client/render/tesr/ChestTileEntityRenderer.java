@@ -120,7 +120,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
 
     private DriveBakedModel getDriveModel() {
         IBakedModel driveModel = modelManager.getBlockModelShapes()
-                .getModel(ApiBlocks.drive.block().getDefaultState());
+                .getModel(ApiBlocks.DRIVE.block().getDefaultState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
 

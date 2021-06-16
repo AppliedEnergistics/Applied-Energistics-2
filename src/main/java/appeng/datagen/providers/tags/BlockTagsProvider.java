@@ -40,10 +40,10 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
 
     @Override
     protected void registerTags() {
-        addForge("ores/certus_quartz", ApiBlocks.quartzOre, ApiBlocks.quartzOreCharged);
+        addForge("ores/certus_quartz", ApiBlocks.QUARTZ_ORE, ApiBlocks.QUARTZ_ORE_CHARGED);
         addForge("ores", "#forge:ores/certus_quartz");
 
-        addForge("storage_blocks/certus_quartz", ApiBlocks.quartzBlock);
+        addForge("storage_blocks/certus_quartz", ApiBlocks.QUARTZ_BLOCK);
         addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
 
         addForge("terracotta", Blocks.TERRACOTTA,
@@ -72,19 +72,19 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         addAe2("whitelisted/facades",
                 Blocks.GLASS,
                 Tags.Blocks.STAINED_GLASS,
-                ApiBlocks.quartzGlass,
-                ApiBlocks.quartzVibrantGlass);
+                ApiBlocks.QUARTZ_GLASS,
+                ApiBlocks.QUARTZ_VIBRANT_GLASS);
 
         // Special behavior is associated with this tag
         add(BlockTags.WALLS.getName(),
-                ApiBlocks.skyStoneWall.block(),
-                ApiBlocks.smoothSkyStoneWall.block(),
-                ApiBlocks.skyStoneBrickWall.block(),
-                ApiBlocks.skyStoneSmallBrickWall.block(),
-                ApiBlocks.fluixWall.block(),
-                ApiBlocks.quartzWall.block(),
-                ApiBlocks.chiseledQuartzWall.block(),
-                ApiBlocks.quartzPillarWall.block());
+                ApiBlocks.SKY_STONE_WALL.block(),
+                ApiBlocks.SMOOTH_SKY_STONE_WALL.block(),
+                ApiBlocks.SKY_STONE_BRICK_WALL.block(),
+                ApiBlocks.SKY_STONE_SMALL_BRICK_WALL.block(),
+                ApiBlocks.FLUIX_WALL.block(),
+                ApiBlocks.QUARTZ_WALL.block(),
+                ApiBlocks.CHISELED_QUARTZ_WALL.block(),
+                ApiBlocks.QUARTZ_PILLAR_WALL.block());
     }
 
     private void addForge(String tagName, Object... blockSources) {

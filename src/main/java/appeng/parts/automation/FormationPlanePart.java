@@ -356,7 +356,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.formationPlane.stack();
+        return ApiParts.FORMATION_PLANE.stack();
     }
 
     @Override

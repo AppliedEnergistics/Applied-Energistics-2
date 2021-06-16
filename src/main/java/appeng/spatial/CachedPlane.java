@@ -70,7 +70,7 @@ public class CachedPlane {
     public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX,
             final int maxY, final int maxZ) {
 
-        Block matrixFrameBlock = ApiBlocks.matrixFrame.block();
+        Block matrixFrameBlock = ApiBlocks.MATRIX_FRAME.block();
         if (matrixFrameBlock != null) {
             this.matrixBlockState = matrixFrameBlock.getDefaultState();
         } else {

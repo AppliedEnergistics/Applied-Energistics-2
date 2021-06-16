@@ -8,6 +8,10 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.util.AEColor;
 
+/**
+ * Contains {@link net.minecraft.item.Item} ids for various items defined by Ae2.
+ */
+@SuppressWarnings("unused")
 public final class AEItemIds {
     public static final ResourceLocation TOOL_DEBUG_CARD = id("debug_card");
     public static final ResourceLocation TOOL_ERASER = id("debug_eraser");

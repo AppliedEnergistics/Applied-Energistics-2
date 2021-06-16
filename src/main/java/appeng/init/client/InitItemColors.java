@@ -21,9 +21,9 @@ public final class InitItemColors {
     }
 
     public static void init(ItemColors itemColors) {
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.securityStation.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.SECURITY_STATION.blockItem());
         // I checked, the ME chest doesn't keep its color in item form
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.chest.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.CHEST.blockItem());
 
         itemColors.register(InitItemColors::getColorApplicatorColor, ApiItems.COLOR_APPLICATOR);
 

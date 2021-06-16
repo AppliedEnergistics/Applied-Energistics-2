@@ -556,7 +556,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.storageBus.stack();
+        return ApiParts.STORAGE_BUS.stack();
     }
 
     @Override

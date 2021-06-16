@@ -108,7 +108,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
-        final Block ioPortBlock = ApiBlocks.iOPort.block();
+        final Block ioPortBlock = ApiBlocks.IO_PORT.block();
         this.upgrades = new BlockUpgradeInventory(ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS);
     }
 

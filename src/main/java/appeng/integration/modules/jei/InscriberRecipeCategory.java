@@ -64,7 +64,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
         this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
                 false);
 
-        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.inscriber.stack());
+        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.INSCRIBER.stack());
     }
 
     @Override

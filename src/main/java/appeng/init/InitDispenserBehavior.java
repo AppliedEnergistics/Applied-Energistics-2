@@ -17,7 +17,7 @@ public final class InitDispenserBehavior {
     }
 
     public static void init() {
-        DispenserBlock.registerDispenseBehavior(ApiBlocks.tinyTNT, new TinyTNTDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(ApiBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
         DispenserBlock.registerDispenseBehavior(ApiItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
         DispenserBlock.registerDispenseBehavior(ApiItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
         DispenserBlock.registerDispenseBehavior(ApiItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());

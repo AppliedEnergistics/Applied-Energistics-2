@@ -68,10 +68,10 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
 
             num++;
             if (num == 5) {
-                if (!this.isBlockAtLocation(w, p, ApiBlocks.quantumLink)) {
+                if (!this.isBlockAtLocation(w, p, ApiBlocks.QUANTUM_LINK)) {
                     return false;
                 }
-            } else if (!this.isBlockAtLocation(w, p, ApiBlocks.quantumRing)) {
+            } else if (!this.isBlockAtLocation(w, p, ApiBlocks.QUANTUM_RING)) {
                 return false;
             }
         }

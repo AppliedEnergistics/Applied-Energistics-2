@@ -832,7 +832,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiBlocks.chest.stack();
+        return ApiBlocks.CHEST.stack();
     }
 
     @Override

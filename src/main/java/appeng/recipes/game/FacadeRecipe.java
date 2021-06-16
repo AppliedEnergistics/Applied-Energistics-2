@@ -44,7 +44,7 @@ public final class FacadeRecipe extends SpecialRecipe {
         super(id);
         this.facade = facade;
 
-        this.anchor = ApiParts.cableAnchor;
+        this.anchor = ApiParts.CABLE_ANCHOR;
     }
 
     @Override

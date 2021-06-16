@@ -70,7 +70,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.drawItem(offsetX + 66 - 8, offsetY + 17, ApiItems.CELL1K.stack());
-        this.drawItem(offsetX + 94 + 8, offsetY + 17, ApiBlocks.drive.stack());
+        this.drawItem(offsetX + 94 + 8, offsetY + 17, ApiBlocks.DRIVE.stack());
     }
 
 }

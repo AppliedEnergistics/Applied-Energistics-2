@@ -133,7 +133,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     private boolean isCenter() {
-        return getBlockState().matchesBlock(ApiBlocks.quantumLink.block());
+        return getBlockState().matchesBlock(ApiBlocks.QUANTUM_LINK.block());
     }
 
     @MENetworkEventSubscribe
@@ -151,7 +151,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     public void onReady() {
         super.onReady();
 
-        final BlockDefinition quantumRing = ApiBlocks.quantumRing;
+        final BlockDefinition quantumRing = ApiBlocks.QUANTUM_RING;
 
         if (this.getBlockState().getBlock() == quantumRing.block()) {
             this.getProxy().setVisualRepresentation(quantumRing.stack());

@@ -119,13 +119,13 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack grindstone = ApiBlocks.grindstone.stack();
+        ItemStack grindstone = ApiBlocks.GRINDSTONE.stack();
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-        ItemStack condenser = ApiBlocks.condenser.stack();
+        ItemStack condenser = ApiBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        ItemStack inscriber = ApiBlocks.inscriber.stack();
+        ItemStack inscriber = ApiBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
     }
 
@@ -179,7 +179,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
             FacadeItem itemFacade = (FacadeItem) ApiItems.FACADE.item();
-            ItemStack cableAnchor = ApiParts.cableAnchor.stack();
+            ItemStack cableAnchor = ApiParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
 
@@ -241,11 +241,11 @@ public class JEIPlugin implements IModPlugin {
         // We use the internal API here as exception as debug tools are not part of the public one by design.
 
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
-            toRemove.add(ApiBlocks.cubeGenerator.stack());
-            toRemove.add(ApiBlocks.chunkLoader.stack());
-            toRemove.add(ApiBlocks.energyGenerator.stack());
-            toRemove.add(ApiBlocks.itemGen.stack());
-            toRemove.add(ApiBlocks.phantomNode.stack());
+            toRemove.add(ApiBlocks.DEBUG_CUBE_GEN.stack());
+            toRemove.add(ApiBlocks.DEBUG_CHUNK_LOADER.stack());
+            toRemove.add(ApiBlocks.DEBUG_ENERGY_GEN.stack());
+            toRemove.add(ApiBlocks.DEBUG_ITEM_GEN.stack());
+            toRemove.add(ApiBlocks.DEBUG_PHANTOM_NODE.stack());
 
             toRemove.add(ApiItems.DEBUG_CARD.stack());
             toRemove.add(ApiItems.DEBUG_ERASER.stack());

@@ -19,14 +19,14 @@ public class DecorationModelProvider extends BlockStateProvider implements IAE2D
 
     @Override
     protected void registerStatesAndModels() {
-        wall(ApiBlocks.skyStoneWall, modLoc("block/sky_stone_block"));
-        wall(ApiBlocks.smoothSkyStoneWall, modLoc("block/smooth_sky_stone_block"));
-        wall(ApiBlocks.skyStoneBrickWall, modLoc("block/sky_stone_brick"));
-        wall(ApiBlocks.skyStoneSmallBrickWall, modLoc("block/sky_stone_small_brick"));
-        wall(ApiBlocks.fluixWall, modLoc("block/fluix_block"));
-        wall(ApiBlocks.quartzWall, modLoc("block/quartz_block"));
-        wall(ApiBlocks.chiseledQuartzWall, modLoc("block/chiseled_quartz_block_side"));
-        wall(ApiBlocks.quartzPillarWall, modLoc("block/quartz_pillar_side"));
+        wall(ApiBlocks.SKY_STONE_WALL, modLoc("block/sky_stone_block"));
+        wall(ApiBlocks.SMOOTH_SKY_STONE_WALL, modLoc("block/smooth_sky_stone_block"));
+        wall(ApiBlocks.SKY_STONE_BRICK_WALL, modLoc("block/sky_stone_brick"));
+        wall(ApiBlocks.SKY_STONE_SMALL_BRICK_WALL, modLoc("block/sky_stone_small_brick"));
+        wall(ApiBlocks.FLUIX_WALL, modLoc("block/fluix_block"));
+        wall(ApiBlocks.QUARTZ_WALL, modLoc("block/quartz_block"));
+        wall(ApiBlocks.CHISELED_QUARTZ_WALL, modLoc("block/chiseled_quartz_block_side"));
+        wall(ApiBlocks.QUARTZ_PILLAR_WALL, modLoc("block/quartz_pillar_side"));
     }
 
     /**

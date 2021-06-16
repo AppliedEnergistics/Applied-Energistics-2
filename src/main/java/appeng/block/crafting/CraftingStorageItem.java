@@ -34,7 +34,7 @@ public class CraftingStorageItem extends AEBaseBlockItem {
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        return ApiBlocks.craftingUnit.stack();
+        return ApiBlocks.CRAFTING_UNIT.stack();
     }
 
     @Override

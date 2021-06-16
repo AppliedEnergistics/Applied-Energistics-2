@@ -38,7 +38,7 @@ public class AEItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return ApiBlocks.controller.stack();
+        return ApiBlocks.CONTROLLER.stack();
     }
 
     public void add(ItemDefinition itemDef) {

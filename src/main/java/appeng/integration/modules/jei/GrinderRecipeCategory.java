@@ -55,7 +55,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
         this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
 
-        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.grindstone.stack());
+        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.GRINDSTONE.stack());
     }
 
     @Override

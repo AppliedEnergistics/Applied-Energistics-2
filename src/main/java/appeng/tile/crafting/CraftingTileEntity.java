@@ -77,9 +77,9 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     protected ItemStack getItemFromTile() {
         if (isAccelerator()) {
-            return ApiBlocks.craftingAccelerator.stack();
+            return ApiBlocks.CRAFTING_ACCELERATOR.stack();
         } else {
-            return ApiBlocks.craftingUnit.stack();
+            return ApiBlocks.CRAFTING_UNIT.stack();
         }
     }
 

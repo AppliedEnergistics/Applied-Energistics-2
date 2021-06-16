@@ -113,7 +113,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getMaxEnergyCapacity() {
-        if (Block.getBlockFromItem(this) == ApiBlocks.energyCell.block()) {
+        if (Block.getBlockFromItem(this) == ApiBlocks.ENERGY_CELL.block()) {
             return 200000;
         } else {
             return 8 * 200000;

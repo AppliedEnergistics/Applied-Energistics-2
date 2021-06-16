@@ -18,28 +18,28 @@ public final class InitRenderTypes {
      * List of blocks that should render in the cutout layer.
      */
     private static final BlockDefinition[] CUTOUT_BLOCKS = {
-            ApiBlocks.craftingMonitor,
-            ApiBlocks.securityStation,
-            ApiBlocks.controller,
-            ApiBlocks.molecularAssembler,
-            ApiBlocks.quartzOreCharged,
-            ApiBlocks.quartzGlass,
-            ApiBlocks.quartzVibrantGlass,
-            ApiBlocks.quartzFixture,
-            ApiBlocks.lightDetector,
-            ApiBlocks.wirelessAccessPoint,
-            ApiBlocks.paint,
-            ApiBlocks.quantumRing,
-            ApiBlocks.quantumLink,
-            ApiBlocks.chest,
-            ApiBlocks.drive,
-            ApiBlocks.craftingUnit,
-            ApiBlocks.craftingAccelerator,
-            ApiBlocks.craftingStorage1k,
-            ApiBlocks.craftingStorage4k,
-            ApiBlocks.craftingStorage16k,
-            ApiBlocks.craftingStorage64k,
-            ApiBlocks.spatialPylon,
+            ApiBlocks.CRAFTING_MONITOR,
+            ApiBlocks.SECURITY_STATION,
+            ApiBlocks.CONTROLLER,
+            ApiBlocks.MOLECULAR_ASSEMBLER,
+            ApiBlocks.QUARTZ_ORE_CHARGED,
+            ApiBlocks.QUARTZ_GLASS,
+            ApiBlocks.QUARTZ_VIBRANT_GLASS,
+            ApiBlocks.QUARTZ_FIXTURE,
+            ApiBlocks.LIGHT_DETECTOR,
+            ApiBlocks.WIRELESS_ACCESS_POINT,
+            ApiBlocks.PAINT,
+            ApiBlocks.QUANTUM_RING,
+            ApiBlocks.QUANTUM_LINK,
+            ApiBlocks.CHEST,
+            ApiBlocks.DRIVE,
+            ApiBlocks.CRAFTING_UNIT,
+            ApiBlocks.CRAFTING_ACCELERATOR,
+            ApiBlocks.CRAFTING_STORAGE_1K,
+            ApiBlocks.CRAFTING_STORAGE_4K,
+            ApiBlocks.CRAFTING_STORAGE_16K,
+            ApiBlocks.CRAFTING_STORAGE_64K,
+            ApiBlocks.SPATIAL_PYLON,
     };
 
     private InitRenderTypes() {
@@ -51,7 +51,7 @@ public final class InitRenderTypes {
         }
 
         // Cable bus multiblock renders in all layers
-        RenderTypeLookup.setRenderLayer(ApiBlocks.multiPart.block(), rt -> true);
+        RenderTypeLookup.setRenderLayer(ApiBlocks.MULTI_PART.block(), rt -> true);
     }
 
 }
