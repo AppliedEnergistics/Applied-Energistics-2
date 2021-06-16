@@ -18,16 +18,10 @@
 
 package appeng.core;
 
-import java.util.Locale;
-import java.util.function.Supplier;
-
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -35,165 +29,63 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.config.Upgrades;
-import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
-import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.networking.IGridCacheRegistry;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.networking.ticking.ITickManager;
-import appeng.block.paint.PaintSplotchesModel;
-import appeng.block.qnb.QnbFormedModel;
-import appeng.client.gui.ScreenRegistration;
-import appeng.client.render.DummyFluidItemModel;
-import appeng.client.render.FacadeItemModel;
-import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModelLoader;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
-import appeng.client.render.crafting.CraftingCubeModelLoader;
-import appeng.client.render.crafting.EncodedPatternModelLoader;
-import appeng.client.render.crafting.MolecularAssemblerRenderer;
-import appeng.client.render.effects.ChargedOreFX;
-import appeng.client.render.effects.CraftingFx;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.MatterCannonFX;
-import appeng.client.render.effects.ParticleTypes;
-import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.BiometricCardModel;
-import appeng.client.render.model.ColorApplicatorModel;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.GlassModel;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.ChestContainer;
-import appeng.container.implementations.CondenserContainer;
-import appeng.container.implementations.DriveContainer;
-import appeng.container.implementations.FormationPlaneContainer;
-import appeng.container.implementations.GrinderContainer;
-import appeng.container.implementations.IOBusContainer;
-import appeng.container.implementations.IOPortContainer;
-import appeng.container.implementations.InscriberContainer;
-import appeng.container.implementations.InterfaceContainer;
-import appeng.container.implementations.InterfaceTerminalContainer;
-import appeng.container.implementations.LevelEmitterContainer;
-import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.container.implementations.PriorityContainer;
-import appeng.container.implementations.QNBContainer;
-import appeng.container.implementations.QuartzKnifeContainer;
-import appeng.container.implementations.SecurityStationContainer;
-import appeng.container.implementations.SkyChestContainer;
-import appeng.container.implementations.SpatialAnchorContainer;
-import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.container.implementations.StorageBusContainer;
-import appeng.container.implementations.VibrationChamberContainer;
-import appeng.container.implementations.WirelessContainer;
-import appeng.container.me.crafting.CraftAmountContainer;
-import appeng.container.me.crafting.CraftConfirmContainer;
-import appeng.container.me.crafting.CraftingCPUContainer;
-import appeng.container.me.crafting.CraftingStatusContainer;
-import appeng.container.me.fluids.FluidTerminalContainer;
-import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.me.items.ItemTerminalContainer;
-import appeng.container.me.items.MEPortableCellContainer;
-import appeng.container.me.items.PatternTermContainer;
-import appeng.container.me.items.WirelessTermContainer;
-import appeng.container.me.networktool.NetworkStatusContainer;
-import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.P2PTunnelRegistry;
-import appeng.core.features.registries.PartModels;
-import appeng.core.features.registries.cell.BasicCellHandler;
-import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
-import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
-import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOBusContainer;
-import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
-import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
+import appeng.init.InitContainerTypes;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
+import appeng.init.InitRecipeSerializers;
+import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBlockEntityRenderers;
+import appeng.init.client.InitBuiltInModels;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
+import appeng.init.client.InitParticleFactories;
+import appeng.init.client.InitParticleTypes;
 import appeng.init.client.InitRenderTypes;
-import appeng.items.parts.FacadeItem;
-import appeng.me.cache.CraftingGridCache;
-import appeng.me.cache.EnergyGridCache;
-import appeng.me.cache.GridStorageCache;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.PathGridCache;
-import appeng.me.cache.SecurityCache;
-import appeng.me.cache.SpatialPylonCache;
-import appeng.me.cache.StatisticsCache;
-import appeng.me.cache.TickManagerCache;
-import appeng.mixins.feature.ConfiguredFeaturesAccessor;
-import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
-import appeng.parts.automation.PlaneModelLoader;
-import appeng.recipes.entropy.EntropyRecipeSerializer;
-import appeng.recipes.game.DisassembleRecipe;
-import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.handlers.GrinderRecipeSerializer;
-import appeng.recipes.handlers.InscriberRecipeSerializer;
+import appeng.init.client.InitScreens;
+import appeng.init.internal.InitCellHandlers;
+import appeng.init.internal.InitGridCaches;
+import appeng.init.internal.InitMatterCannonAmmo;
+import appeng.init.worldgen.InitBiomes;
+import appeng.init.worldgen.InitFeatures;
+import appeng.init.worldgen.InitStructures;
 import appeng.server.AECommand;
-import appeng.spatial.SpatialStorageBiome;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.tile.AEBaseTileEntity;
-import appeng.worldgen.ChargedQuartzOreConfig;
-import appeng.worldgen.ChargedQuartzOreFeature;
-import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 final class Registration {
 
@@ -203,82 +95,22 @@ final class Registration {
     private static ConfiguredFeature<?, ?> chargedQuartzOreFeature;
 
     public static void setupInternalRegistries() {
-        // TODO: Do not use the internal API
-        final Api api = Api.INSTANCE;
-        final IRegistryContainer registries = api.registries();
-
-        final IGridCacheRegistry gcr = registries.gridCache();
-        gcr.registerGridCache(ITickManager.class, TickManagerCache::new);
-        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache::new);
-        gcr.registerGridCache(IPathingGrid.class, PathGridCache::new);
-        gcr.registerGridCache(IStorageGrid.class, GridStorageCache::new);
-        gcr.registerGridCache(P2PCache.class, P2PCache::new);
-        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
-        gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
-        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
-        gcr.registerGridCache(StatisticsCache.class, StatisticsCache::new);
-
-        registries.cell().addCellHandler(new BasicCellHandler());
-        registries.cell().addCellHandler(new CreativeCellHandler());
-        registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
-        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
-
-        registries.matterCannon().registerAmmoItem(ApiItems.MATTER_BALL.item(), 32);
+        InitGridCaches.init();
+        InitMatterCannonAmmo.init();
+        InitCellHandlers.init();
     }
 
     @OnlyIn(Dist.CLIENT)
     public void modelRegistryEvent(ModelRegistryEvent event) {
-        registerSpecialModels();
-
+        InitAdditionalModels.init();
         InitBlockEntityRenderers.init();
         InitItemModelsProperties.init();
         InitRenderTypes.init();
-
-        addBuiltInModel("glass", GlassModel::new);
-        addBuiltInModel("sky_compass", SkyCompassModel::new);
-        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
-        addBuiltInModel("memory_card", MemoryCardModel::new);
-        addBuiltInModel("biometric_card", BiometricCardModel::new);
-        addBuiltInModel("drive", DriveModel::new);
-        addBuiltInModel("color_applicator", ColorApplicatorModel::new);
-        addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
-        addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
-        addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
-        addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
-        addBuiltInModel("facade", FacadeItemModel::new);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
-                EncodedPatternModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
-                PlaneModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
-                CraftingCubeModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
-                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
-
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
-                new SimpleModelLoader<>(modelFactory));
-    }
-
-    /**
-     * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
-     */
-    @OnlyIn(Dist.CLIENT)
-    private void registerSpecialModels() {
-        ModelLoader.addSpecialModel(MolecularAssemblerRenderer.LIGHTS_MODEL);
-
-        PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
-        partModels.getModels().forEach(ModelLoader::addSpecialModel);
-        partModels.setInitialized(true);
+        InitBuiltInModels.init();
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> event) {
-        Biome biome = SpatialStorageBiome.INSTANCE;
-        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.getLocation());
-        event.getRegistry().register(biome);
+        InitBiomes.init(event.getRegistry());
     }
 
     public void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -294,64 +126,15 @@ final class Registration {
     }
 
     public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
-        final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
-
-        registry.registerAll(
-                CellWorkbenchContainer.TYPE,
-                ChestContainer.TYPE,
-                CondenserContainer.TYPE,
-                CraftAmountContainer.TYPE,
-                CraftConfirmContainer.TYPE,
-                CraftingCPUContainer.TYPE,
-                CraftingStatusContainer.TYPE,
-                CraftingTermContainer.TYPE,
-                DriveContainer.TYPE,
-                FormationPlaneContainer.TYPE,
-                GrinderContainer.TYPE,
-                InscriberContainer.TYPE,
-                InterfaceContainer.TYPE,
-                InterfaceTerminalContainer.TYPE,
-                IOPortContainer.TYPE,
-                LevelEmitterContainer.TYPE,
-                MolecularAssemblerContainer.TYPE,
-                ItemTerminalContainer.TYPE,
-                MEPortableCellContainer.TYPE,
-                NetworkStatusContainer.TYPE,
-                NetworkToolContainer.TYPE,
-                PatternTermContainer.TYPE,
-                PriorityContainer.TYPE,
-                QNBContainer.TYPE,
-                QuartzKnifeContainer.TYPE,
-                SecurityStationContainer.TYPE,
-                SkyChestContainer.TYPE,
-                SpatialIOPortContainer.TYPE,
-                SpatialAnchorContainer.TYPE,
-                StorageBusContainer.TYPE,
-                IOBusContainer.EXPORT_TYPE,
-                IOBusContainer.IMPORT_TYPE,
-                VibrationChamberContainer.TYPE,
-                WirelessContainer.TYPE,
-                WirelessTermContainer.TYPE,
-                FluidFormationPlaneContainer.TYPE,
-                FluidIOBusContainer.EXPORT_TYPE,
-                FluidIOBusContainer.IMPORT_TYPE,
-                FluidInterfaceContainer.TYPE,
-                FluidLevelEmitterContainer.TYPE,
-                FluidStorageBusContainer.TYPE,
-                FluidTerminalContainer.TYPE);
+        InitContainerTypes.init(event.getRegistry());
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ScreenRegistration.register();
+            InitScreens.init();
         });
     }
 
     public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
-
-        FacadeItem facadeItem = (FacadeItem) ApiItems.FACADE.item();
-        r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
-                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
-                EntropyRecipeSerializer.INSTANCE);
+        InitRecipeSerializers.init(event.getRegistry());
     }
 
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
@@ -359,61 +142,20 @@ final class Registration {
     }
 
     public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
-        final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
-        registry.register(ParticleTypes.CHARGED_ORE);
-        registry.register(ParticleTypes.CRAFTING);
-        registry.register(ParticleTypes.ENERGY);
-        registry.register(ParticleTypes.LIGHTNING_ARC);
-        registry.register(ParticleTypes.LIGHTNING);
-        registry.register(ParticleTypes.MATTER_CANNON);
-        registry.register(ParticleTypes.VIBRANT);
+        InitParticleTypes.init(event.getRegistry());
     }
 
     public void registerStructures(RegistryEvent.Register<Structure<?>> event) {
-        MeteoriteStructurePiece.register();
-
-        // Registering into the registry alone is INSUFFICIENT!
-        // There's a bidirectional map in the Structure class itself primarily for the
-        // purposes of NBT serialization
-        registerStructure(event.getRegistry(), MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
-                GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
-
-        ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
-                MeteoriteStructure.CONFIGURED_INSTANCE);
-    }
-
-    // This mirrors the Vanilla registration method for structures, but uses the
-    // Forge registry instead
-    private static <F extends Structure<?>> void registerStructure(IForgeRegistry<Structure<?>> registry, String name,
-            F structure, GenerationStage.Decoration stage) {
-        Structure.NAME_STRUCTURE_BIMAP.put(name.toLowerCase(Locale.ROOT), structure);
-        Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
-        structure.setRegistryName(name.toLowerCase(Locale.ROOT));
-        registry.register(structure);
+        InitStructures.init(event.getRegistry());
     }
 
     public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-        IForgeRegistry<Feature<?>> registry = event.getRegistry();
-
-        // Tell Minecraft about our charged quartz ore feature
-        ChargedQuartzOreFeature.INSTANCE.setRegistryName(AppEng.makeId("charged_quartz_ore"));
-        registry.register(ChargedQuartzOreFeature.INSTANCE);
-
-        // Register the configured versions of our features
-        quartzOreFeature = registerQuartzOreFeature();
-        chargedQuartzOreFeature = registerChargedQuartzOreFeature();
+        InitFeatures.init(event.getRegistry());
     }
 
     @OnlyIn(Dist.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager particles = Minecraft.getInstance().particles;
-        particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
-        particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
-        particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
-        particles.registerFactory(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
-        particles.registerFactory(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
+        InitParticleFactories.init();
     }
 
     // FIXME LATER
@@ -615,81 +357,6 @@ final class Registration {
         modEventBus.addListener(this::registerItemColors);
 
         InitAutoRotatingModel.init(modEventBus);
-    }
-
-    public void addWorldGenToBiome(BiomeLoadingEvent e) {
-        addMeteoriteWorldGen(e);
-        addQuartzWorldGen(e);
-    }
-
-    private void addMeteoriteWorldGen(BiomeLoadingEvent e) {
-        if (shouldGenerateIn(e.getName(), AEFeature.METEORITE_WORLD_GEN, IWorldGen.WorldGenType.METEORITES,
-                e.getCategory())) {
-            e.getGeneration().withStructure(MeteoriteStructure.CONFIGURED_INSTANCE);
-        }
-    }
-
-    private void addQuartzWorldGen(BiomeLoadingEvent e) {
-        if (shouldGenerateIn(e.getName(), AEFeature.CERTUS_QUARTZ_WORLD_GEN, IWorldGen.WorldGenType.CERTUS_QUARTZ,
-                e.getCategory())) {
-            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
-
-            if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-                e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
-                        chargedQuartzOreFeature);
-            }
-        }
-    }
-
-    static boolean shouldGenerateIn(ResourceLocation id,
-            AEFeature feature,
-            IWorldGen.WorldGenType worldGenType,
-            Biome.Category category) {
-        if (id == null) {
-            return false; // We don't add to unnamed biomes
-        }
-
-        if (!AEConfig.instance().isFeatureEnabled(feature)) {
-            AELog.debug("Not generating %s in %s because the feature is disabled", feature, id);
-            return false;
-        }
-
-        if (category == Biome.Category.THEEND || category == Biome.Category.NETHER
-                || category == Biome.Category.NONE) {
-            AELog.debug("Not generating %s in %s because it's of category %s", feature, id, category);
-            return false;
-        }
-
-        if (Api.instance().registries().worldgen().isWorldGenDisabledForBiome(worldGenType, id)) {
-            AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
-                    feature, id);
-            return false;
-        }
-
-        return true;
-    }
-
-    private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
-        // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
-        return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
-                .withConfiguration(
-                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
-                                AEConfig.instance().getQuartzOresPerCluster()))
-                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
-                .square/* spreadHorizontally */()
-                .count/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
-    }
-
-    private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
-        BlockState chargedQuartzOreState = ApiBlocks.QUARTZ_ORE_CHARGED.block()
-                .getDefaultState();
-        return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
-                ChargedQuartzOreFeature.INSTANCE
-                        .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
-                                AEConfig.instance().getSpawnChargedChance()))
-                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
     }
 
     public void registerDimension(RegistryEvent.NewRegistry e) {

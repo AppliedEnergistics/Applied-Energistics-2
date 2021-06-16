@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui;
+package appeng.init.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,6 +41,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
@@ -48,12 +49,12 @@ import appeng.util.LoadTranslations;
 
 @LoadTranslations
 @MockitoSettings
-class ScreenRegistrationTest {
+class InitScreensTest {
 
     @BeforeAll
     static void setUp() {
         try (MockedStatic<ScreenManager> registration = Mockito.mockStatic(ScreenManager.class)) {
-            ScreenRegistration.register();
+            InitScreens.init();
         }
     }
 
@@ -62,7 +63,7 @@ class ScreenRegistrationTest {
      */
     @Test
     void testMissingStyles() {
-        List<String> missingStyles = ScreenRegistration.CONTAINER_STYLES.values().stream()
+        List<String> missingStyles = InitScreens.CONTAINER_STYLES.values().stream()
                 .filter(f -> (getClass().getResourceAsStream("/assets/appliedenergistics2" + f) == null))
                 .collect(Collectors.toList());
         assertThat(missingStyles).isEmpty();
@@ -76,7 +77,7 @@ class ScreenRegistrationTest {
         StyleManager.initialize(MockResourceManager.create());
 
         List<String> errors = new ArrayList<>();
-        for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {
+        for (String path : InitScreens.CONTAINER_STYLES.values()) {
             try {
                 StyleManager.loadStyleDoc(path);
             } catch (Exception e) {
@@ -109,7 +110,7 @@ class ScreenRegistrationTest {
         StyleManager.initialize(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();
-        for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {
+        for (String path : InitScreens.CONTAINER_STYLES.values()) {
             ScreenStyle style = StyleManager.loadStyleDoc(path);
 
             for (Text text : style.getText().values()) {

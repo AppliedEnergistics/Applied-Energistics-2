@@ -62,6 +62,7 @@ import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.client.InitEntityRendering;
+import appeng.init.worldgen.InitBiomeModifications;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
@@ -132,7 +133,7 @@ public final class AppEng {
         MinecraftForge.EVENT_BUS.addListener(registration::registerCommands);
 
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
-        MinecraftForge.EVENT_BUS.addListener(registration::addWorldGenToBiome);
+        MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
 
     }
 

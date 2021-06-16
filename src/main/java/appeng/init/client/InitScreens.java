@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui;
+package appeng.init.client;
 
 import java.io.FileNotFoundException;
 import java.util.IdentityHashMap;
@@ -32,6 +32,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.ChestScreen;
 import appeng.client.gui.implementations.CondenserScreen;
@@ -118,19 +119,22 @@ import appeng.fluids.container.FluidStorageBusContainer;
  * The server sends the client a container identifier, which the client then maps onto a screen using
  * {@link net.minecraft.client.gui.ScreenManager}. This class registers our screens.
  */
-public class ScreenRegistration {
+public final class InitScreens {
 
     @VisibleForTesting
     static final Map<ContainerType<?>, String> CONTAINER_STYLES = new IdentityHashMap<>();
 
-    public static void register() {
+    private InitScreens() {
+    }
+
+    public static void init() {
         register(GrinderContainer.TYPE, GrinderScreen::new, "/screens/grinder.json");
         register(QNBContainer.TYPE, QNBScreen::new, "/screens/qnb.json");
         register(SkyChestContainer.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestContainer.TYPE, ChestScreen::new, "/screens/chest.json");
         register(WirelessContainer.TYPE, WirelessScreen::new, "/screens/wireless.json");
         register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
-        ScreenRegistration.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
+        InitScreens.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
                 CraftingCPUContainer.TYPE,
                 CraftingCPUScreen::new,
                 "/screens/crafting_cpu.json");
@@ -165,15 +169,15 @@ public class ScreenRegistration {
         register(SpatialAnchorContainer.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
         // Terminals
-        ScreenRegistration.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>register(
+        InitScreens.<ItemTerminalContainer, ItemTerminalScreen<ItemTerminalContainer>>register(
                 ItemTerminalContainer.TYPE,
                 ItemTerminalScreen::new,
                 "/screens/terminals/item_terminal.json");
-        ScreenRegistration.<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>register(
+        InitScreens.<MEPortableCellContainer, ItemTerminalScreen<MEPortableCellContainer>>register(
                 MEPortableCellContainer.TYPE,
                 ItemTerminalScreen::new,
                 "/screens/terminals/portable_cell.json");
-        ScreenRegistration.<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>register(
+        InitScreens.<WirelessTermContainer, ItemTerminalScreen<WirelessTermContainer>>register(
                 WirelessTermContainer.TYPE,
                 ItemTerminalScreen::new,
                 "/screens/terminals/wireless_terminal.json");
