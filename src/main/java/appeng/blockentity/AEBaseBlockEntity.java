@@ -315,13 +315,6 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
         this.saveChanges();
     }
 
-    public void onPlacement(BlockPlaceContext context) {
-        ItemStack stack = context.getItemInHand();
-        if (stack.hasTag()) {
-            this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTag());
-        }
-    }
-
     /**
      * depending on the from, different settings will be accepted, don't call this with null
      *
