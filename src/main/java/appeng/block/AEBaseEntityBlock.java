@@ -170,17 +170,22 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     @Override
     public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
-        // Inherit the item stack's display name, but only if it's a user defined string
-        // rather
-        // than a translation component, since our custom naming cannot handle
-        // untranslated
-        // I18N strings and we would translate it using the server's locale :-(
-        AEBaseBlockEntity te = this.getBlockEntity(level, pos);
-        if (te != null && is.hasCustomHoverName()) {
-            Component displayName = is.getHoverName();
-            if (displayName instanceof TextComponent) {
-                te.setName(((TextComponent) displayName).getText());
-            }
+        // Inherit the item stack's display name, but only if it's a user defined string rather than a translation
+        // component, since our custom naming cannot handle untranslated I18N strings and we would translate it using
+        // the server's locale :-(
+        var blockEntity = this.getBlockEntity(level, pos);
+
+        if (blockEntity == null) {
+            return;
+        }
+
+        var displayName = is.getDisplayName();
+        if (displayName instanceof TextComponent) {
+            blockEntity.setName(((TextComponent) displayName).getText());
+        }
+
+        if (is.hasTag()) {
+            blockEntity.uploadSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag());
         }
     }
 

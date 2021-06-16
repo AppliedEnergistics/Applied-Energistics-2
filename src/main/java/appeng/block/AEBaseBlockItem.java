@@ -73,6 +73,9 @@ public class AEBaseBlockItem extends BlockItem {
         return this.blockType.getDescriptionId();
     }
 
+    /**
+     * TODO: 1.17 Refactor to use Block#onBlockPlacedBy(), BlockItem#setTileEntityNBT() or equivalent.
+     */
     @Override
     public InteractionResult place(BlockPlaceContext context) {
 
@@ -149,8 +152,6 @@ public class AEBaseBlockItem extends BlockItem {
             if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware) {
                 ownerAware.setOwner(player);
             }
-
-            blockEntity.onPlacement(context);
         } else if (this.blockType instanceof IOrientableBlock) {
             ori.setOrientation(forward, up);
         }
