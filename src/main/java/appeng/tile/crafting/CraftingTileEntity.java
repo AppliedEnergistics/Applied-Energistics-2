@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -77,15 +76,11 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     @Override
     protected ItemStack getItemFromTile() {
-        Optional<ItemStack> is;
-
         if (isAccelerator()) {
-            is = ApiBlocks.craftingAccelerator().maybeStack(1);
+            return ApiBlocks.craftingAccelerator.stack();
         } else {
-            is = ApiBlocks.craftingUnit().maybeStack(1);
+            return ApiBlocks.craftingUnit.stack();
         }
-
-        return is.orElseGet(() -> super.getItemFromTile());
     }
 
     @Override

@@ -54,7 +54,7 @@ import appeng.container.slot.PatternOutputsSlot;
 import appeng.container.slot.PatternTermSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -253,7 +253,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             return false;
         }
 
-        return ApiMaterials.blankPattern().isSameAs(output);
+        return ApiItems.BLANK_PATTERN.isSameAs(output);
     }
 
     @Override

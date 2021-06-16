@@ -20,7 +20,6 @@ package appeng.recipes.game;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +32,6 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -42,7 +40,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.features.ItemDefinition;
 
 public final class DisassembleRecipe extends SpecialRecipe {
     public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
@@ -54,8 +52,8 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
 
-    private final Map<IItemDefinition, IItemDefinition> cellMappings;
-    private final Map<IItemDefinition, IItemDefinition> nonCellMappings;
+    private final Map<ItemDefinition, ItemDefinition> cellMappings;
+    private final Map<ItemDefinition, ItemDefinition> nonCellMappings;
 
     public DisassembleRecipe(ResourceLocation id) {
         super(id);
@@ -63,16 +61,16 @@ public final class DisassembleRecipe extends SpecialRecipe {
         this.cellMappings = new HashMap<>(4);
         this.nonCellMappings = new HashMap<>(5);
 
-        this.cellMappings.put(ApiItems.cell1k(), ApiMaterials.cell1kPart());
-        this.cellMappings.put(ApiItems.cell4k(), ApiMaterials.cell4kPart());
-        this.cellMappings.put(ApiItems.cell16k(), ApiMaterials.cell16kPart());
-        this.cellMappings.put(ApiItems.cell64k(), ApiMaterials.cell64kPart());
+        this.cellMappings.put(ApiItems.CELL1K, ApiItems.ITEM_1K_CELL_COMPONENT);
+        this.cellMappings.put(ApiItems.CELL4K, ApiItems.ITEM_4K_CELL_COMPONENT);
+        this.cellMappings.put(ApiItems.CELL16K, ApiItems.ITEM_16K_CELL_COMPONENT);
+        this.cellMappings.put(ApiItems.CELL64K, ApiItems.ITEM_64K_CELL_COMPONENT);
 
-        this.nonCellMappings.put(ApiItems.encodedPattern(), ApiMaterials.blankPattern());
-        this.nonCellMappings.put(ApiBlocks.craftingStorage1k(), ApiMaterials.cell1kPart());
-        this.nonCellMappings.put(ApiBlocks.craftingStorage4k(), ApiMaterials.cell4kPart());
-        this.nonCellMappings.put(ApiBlocks.craftingStorage16k(), ApiMaterials.cell16kPart());
-        this.nonCellMappings.put(ApiBlocks.craftingStorage64k(), ApiMaterials.cell64kPart());
+        this.nonCellMappings.put(ApiItems.ENCODED_PATTERN, ApiItems.BLANK_PATTERN);
+        this.nonCellMappings.put(ApiBlocks.craftingStorage1k, ApiItems.ITEM_1K_CELL_COMPONENT);
+        this.nonCellMappings.put(ApiBlocks.craftingStorage4k, ApiItems.ITEM_4K_CELL_COMPONENT);
+        this.nonCellMappings.put(ApiBlocks.craftingStorage16k, ApiItems.ITEM_16K_CELL_COMPONENT);
+        this.nonCellMappings.put(ApiBlocks.craftingStorage64k, ApiItems.ITEM_64K_CELL_COMPONENT);
     }
 
     @Override
@@ -95,9 +93,8 @@ public final class DisassembleRecipe extends SpecialRecipe {
                 }
 
                 // handle storage cells
-                Optional<ItemStack> maybeCellOutput = this.getCellOutput(stackInSlot);
-                if (maybeCellOutput.isPresent()) {
-                    ItemStack storageCellStack = maybeCellOutput.get();
+                output = this.getCellOutput(stackInSlot);
+                if (!output.isEmpty()) {
                     // make sure the storage cell stackInSlot empty...
                     final IMEInventory<IAEItemStack> cellInv = Api.instance().registries().cell().getCellInventory(
                             stackInSlot, null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -108,12 +105,10 @@ public final class DisassembleRecipe extends SpecialRecipe {
                             return ItemStack.EMPTY;
                         }
                     }
-
-                    output = storageCellStack;
                 }
 
                 // handle crafting storage blocks
-                output = this.getNonCellOutput(stackInSlot).orElse(output);
+                output = this.getNonCellOutput(stackInSlot);
             }
         }
 
@@ -121,25 +116,25 @@ public final class DisassembleRecipe extends SpecialRecipe {
     }
 
     @Nonnull
-    private Optional<ItemStack> getCellOutput(final ItemStack compared) {
-        for (final Map.Entry<IItemDefinition, IItemDefinition> entry : this.cellMappings.entrySet()) {
+    private ItemStack getCellOutput(final ItemStack compared) {
+        for (final Map.Entry<ItemDefinition, ItemDefinition> entry : this.cellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
-                return entry.getValue().maybeStack(1);
+                return entry.getValue().stack();
             }
         }
 
-        return Optional.empty();
+        return ItemStack.EMPTY;
     }
 
     @Nonnull
-    private Optional<ItemStack> getNonCellOutput(final ItemStack compared) {
-        for (final Map.Entry<IItemDefinition, IItemDefinition> entry : this.nonCellMappings.entrySet()) {
+    private ItemStack getNonCellOutput(final ItemStack compared) {
+        for (final Map.Entry<ItemDefinition, ItemDefinition> entry : this.nonCellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
-                return entry.getValue().maybeStack(1);
+                return entry.getValue().stack();
             }
         }
 
-        return Optional.empty();
+        return ItemStack.EMPTY;
     }
 
     @Nonnull

@@ -25,12 +25,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.features.ItemDefinition;
 
 public class AEItemGroup extends ItemGroup {
 
-    private final List<IItemDefinition> itemDefs = new ArrayList<>();
+    private final List<ItemDefinition> itemDefs = new ArrayList<>();
 
     public AEItemGroup(String label) {
         super(label);
@@ -38,16 +38,16 @@ public class AEItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return ApiBlocks.controller().stack(1);
+        return ApiBlocks.controller.stack();
     }
 
-    public void add(IItemDefinition itemDef) {
+    public void add(ItemDefinition itemDef) {
         this.itemDefs.add(itemDef);
     }
 
     @Override
     public void fill(NonNullList<ItemStack> items) {
-        for (IItemDefinition itemDef : this.itemDefs) {
+        for (ItemDefinition itemDef : this.itemDefs) {
             itemDef.item().fillItemGroup(this, items);
         }
     }

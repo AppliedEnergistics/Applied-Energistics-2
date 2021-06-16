@@ -19,13 +19,13 @@
 package appeng.parts.automation;
 
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.IItemDefinition;
+import appeng.core.features.ItemDefinition;
 import appeng.util.inv.IAEAppEngInventory;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
-    private final IItemDefinition definition;
+    private final ItemDefinition definition;
 
-    public DefinitionUpgradeInventory(final IItemDefinition definition, final IAEAppEngInventory parent, final int s) {
+    public DefinitionUpgradeInventory(final ItemDefinition definition, final IAEAppEngInventory parent, final int s) {
         super(parent, s);
 
         this.definition = definition;

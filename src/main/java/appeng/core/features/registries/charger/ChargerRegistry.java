@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.IItemProvider;
 
 import appeng.api.features.IChargerRegistry;
 
@@ -42,27 +43,30 @@ public class ChargerRegistry implements IChargerRegistry {
 
     @Override
     @Nonnegative
-    public double getChargeRate(@Nonnull Item item) {
+    public double getChargeRate(@Nonnull IItemProvider item) {
         Preconditions.checkNotNull(item);
+        Preconditions.checkNotNull(item.asItem());
 
-        return this.chargeRates.getOrDefault(item, DEFAULT_CHARGE_RATE);
+        return this.chargeRates.getOrDefault(item.asItem(), DEFAULT_CHARGE_RATE);
     }
 
     @Override
-    public void addChargeRate(@Nonnull Item item, @Nonnegative double value) {
+    public void addChargeRate(@Nonnull IItemProvider item, @Nonnegative double value) {
         Preconditions.checkNotNull(item);
+        Preconditions.checkNotNull(item.asItem());
         Preconditions.checkArgument(value > 0d);
 
         final double cappedValue = Math.min(value, CAPPED_CHARGE_RATE);
 
-        this.chargeRates.put(item, cappedValue);
+        this.chargeRates.put(item.asItem(), cappedValue);
     }
 
     @Override
-    public void removeChargeRate(@Nonnull Item item) {
+    public void removeChargeRate(@Nonnull IItemProvider item) {
         Preconditions.checkNotNull(item);
+        Preconditions.checkNotNull(item.asItem());
 
-        this.chargeRates.remove(item);
+        this.chargeRates.remove(item.asItem());
     }
 
 }

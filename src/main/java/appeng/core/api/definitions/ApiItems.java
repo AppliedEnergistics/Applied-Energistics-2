@@ -21,6 +21,7 @@ package appeng.core.api.definitions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -30,7 +31,8 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
-import appeng.api.definitions.IItemDefinition;
+import appeng.api.config.Upgrades;
+import appeng.api.definitions.AEItemIds;
 import appeng.api.features.AEFeature;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -46,8 +48,15 @@ import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.SingularityEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
+import appeng.items.materials.CustomEntityItem;
+import appeng.items.materials.MaterialItem;
+import appeng.items.materials.NamePressItem;
+import appeng.items.materials.StorageComponentItem;
+import appeng.items.materials.UpgradeCardItem;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.items.misc.PaintBallItem;
@@ -77,437 +86,268 @@ import appeng.items.tools.quartz.QuartzWrenchItem;
 /**
  * Internal implementation for the API items
  */
+@SuppressWarnings("unused")
 public final class ApiItems {
 
-    private static final List<IItemDefinition> ITEMS = new ArrayList<>();
-    private static final IItemDefinition certusQuartzAxe;
-    private static final IItemDefinition certusQuartzHoe;
-    private static final IItemDefinition certusQuartzShovel;
-    private static final IItemDefinition certusQuartzPick;
-    private static final IItemDefinition certusQuartzSword;
-    private static final IItemDefinition certusQuartzWrench;
-    private static final IItemDefinition certusQuartzKnife;
-    private static final IItemDefinition netherQuartzAxe;
-    private static final IItemDefinition netherQuartzHoe;
-    private static final IItemDefinition netherQuartzShovel;
-    private static final IItemDefinition netherQuartzPick;
-    private static final IItemDefinition netherQuartzSword;
-    private static final IItemDefinition netherQuartzWrench;
-    private static final IItemDefinition netherQuartzKnife;
-    private static final IItemDefinition entropyManipulator;
-    private static final IItemDefinition wirelessTerminal;
-    private static final IItemDefinition biometricCard;
-    private static final IItemDefinition chargedStaff;
-    private static final IItemDefinition massCannon;
-    private static final IItemDefinition memoryCard;
-    private static final IItemDefinition networkTool;
-    private static final IItemDefinition portableCell1k;
-    private static final IItemDefinition portableCell4k;
-    private static final IItemDefinition portableCell16k;
-    private static final IItemDefinition portableCell64k;
-    private static final IItemDefinition cellCreative;
-    private static final IItemDefinition viewCell;
-    private static final IItemDefinition cell1k;
-    private static final IItemDefinition cell4k;
-    private static final IItemDefinition cell16k;
-    private static final IItemDefinition cell64k;
-    private static final IItemDefinition fluidCell1k;
-    private static final IItemDefinition fluidCell4k;
-    private static final IItemDefinition fluidCell16k;
-    private static final IItemDefinition fluidCell64k;
-    private static final IItemDefinition spatialCell2;
-    private static final IItemDefinition spatialCell16;
-    private static final IItemDefinition spatialCell128;
-    private static final IItemDefinition facade;
-    private static final IItemDefinition certusCrystalSeed;
-    private static final IItemDefinition fluixCrystalSeed;
-    private static final IItemDefinition netherQuartzSeed;
-    // rv1
-    private static final IItemDefinition encodedPattern;
-    private static final IItemDefinition colorApplicator;
-    private static final AEColoredItemDefinition coloredPaintBall;
-    private static final AEColoredItemDefinition coloredLumenPaintBall;
-    // unsupported dev tools
-    private static final IItemDefinition toolEraser;
-    private static final IItemDefinition toolMeteoritePlacer;
-    private static final IItemDefinition toolDebugCard;
-    private static final IItemDefinition toolReplicatorCard;
-    private static final IItemDefinition dummyFluidItem;
+    // spotless:off
+    private static final List<ItemDefinition> ITEMS = new ArrayList<>();
+    private static final Consumer<Item.Properties> UNSTACKABLE = props -> props.maxStackSize(1);
 
-    static {
-        certusQuartzAxe = item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).build();
-        certusQuartzHoe = item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).build();
-        certusQuartzShovel = item("certus_quartz_shovel",
-                props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).build();
-        certusQuartzPick = item("certus_quartz_pickaxe",
-                props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).build();
-        certusQuartzSword = item("certus_quartz_sword",
-                props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.COMBAT).build();
-        certusQuartzWrench = item("certus_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1))
-                .build();
-        certusQuartzKnife = item("certus_quartz_cutting_knife",
-                props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                        .build();
+    ///
+    /// CERTUS QUARTZ TOOLS
+    ///
 
-        netherQuartzAxe = item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).build();
-        netherQuartzHoe = item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                .itemGroup(ItemGroup.TOOLS).build();
-        netherQuartzShovel = item("nether_quartz_shovel",
-                props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).build();
-        netherQuartzPick = item("nether_quartz_pickaxe",
-                props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).build();
-        netherQuartzSword = item("nether_quartz_sword",
-                props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.COMBAT).build();
-        netherQuartzWrench = item("nether_quartz_wrench", QuartzWrenchItem::new)
-                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1))
+    public static final ItemDefinition CERTUS_QUARTZ_AXE = item(AEItemIds.CERTUS_QUARTZ_AXE, props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition CERTUS_QUARTZ_HOE = item(AEItemIds.CERTUS_QUARTZ_HOE, props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition CERTUS_QUARTZ_SHOVEL = item(AEItemIds.CERTUS_QUARTZ_SHOVEL,
+            props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK,
+            props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD,
+            props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.COMBAT).build();
+    public static final ItemDefinition CERTUS_QUARTZ_WRENCH = item(AEItemIds.CERTUS_QUARTZ_WRENCH, props -> new QuartzWrenchItem(props.maxStackSize(1)))
+            .itemGroup(ItemGroup.TOOLS)
+            .build();
+    public static final ItemDefinition CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE,
+            props -> new QuartzCuttingKnifeItem(props.maxStackSize(1).maxDamage(50).setNoRepair(), AEFeature.CERTUS_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS)
+            .build();
 
-                .build();
-        netherQuartzKnife = item("nether_quartz_cutting_knife",
-                props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-                        .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                        .build();
+    ///
+    /// NETHER QUARTZ TOOLS
+    ///
 
-        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1);
+    public static final ItemDefinition NETHER_QUARTZ_AXE = item(AEItemIds.NETHER_QUARTZ_AXE, props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition NETHER_QUARTZ_HOE = item(AEItemIds.NETHER_QUARTZ_HOE, props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition NETHER_QUARTZ_SHOVEL = item(AEItemIds.NETHER_QUARTZ_SHOVEL,
+            props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK,
+            props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).build();
+    public static final ItemDefinition NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD,
+            props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.COMBAT).build();
+    public static final ItemDefinition NETHER_QUARTZ_WRENCH = item(AEItemIds.NETHER_QUARTZ_WRENCH, props -> new QuartzWrenchItem(props.maxStackSize(1)))
+            .itemGroup(ItemGroup.TOOLS)
+            .build();
+    public static final ItemDefinition NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE,
+            props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+            .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
+            .build();
 
-        entropyManipulator = item("entropy_manipulator", EntropyManipulatorItem::new)
-                .props(chargedDefaults)
-                .build();
-        wirelessTerminal = item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
-                .build();
-        chargedStaff = item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
-                .build();
-        massCannon = item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
-                .build();
-        // TODO: change id in 9.0 to 1k_portable_cell
-        portableCell1k = item("portable_cell", props -> new PortableCellItem(StorageTier.SIZE_1K, props))
-                .props(chargedDefaults)
-                .build();
-        portableCell4k = item("4k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_4K, props))
-                .props(chargedDefaults)
-                .build();
-        portableCell16k = item("16k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_16K, props))
-                .props(chargedDefaults)
-                .build();
-        portableCell64k = item("64k_portable_cell", props -> new PortableCellItem(StorageTier.SIZE_64K, props))
-                .props(chargedDefaults)
-                .build();
-        colorApplicator = item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
+    ///
+    /// VARIOUS POWERED TOOLS
+    ///
 
-                .build();
+    public static final ItemDefinition ENTROPY_MANIPULATOR = item(AEItemIds.ENTROPY_MANIPULATOR, EntropyManipulatorItem::new)
+            .props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, WirelessTerminalItem::new).props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition CHARGED_STAFF = item(AEItemIds.CHARGED_STAFF, ChargedStaffItem::new).props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition COLOR_APPLICATOR = item(AEItemIds.COLOR_APPLICATOR, ColorApplicatorItem::new).props(UNSTACKABLE).build();
+    public static final ItemDefinition MASS_CANNON = item(AEItemIds.MASS_CANNON, MatterCannonItem::new).props(UNSTACKABLE)
+            .build();
 
-        biometricCard = item("biometric_card", BiometricCardItem::new)
-                .props(props -> props.maxStackSize(1)).build();
-        memoryCard = item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
-                .build();
-        networkTool = item("network_tool", NetworkToolItem::new)
-                .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
-                .build();
+    ///
+    /// PORTABLE CELLS
+    ///
 
-        cellCreative = item("creative_storage_cell", CreativeStorageCellItem::new)
-                .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
-                .build();
-        viewCell = item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
-                .build();
+    public static final ItemDefinition PORTABLE_CELL1K = item(AEItemIds.PORTABLE_CELL1K, props -> new PortableCellItem(StorageTier.SIZE_1K, props))
+            .props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition PORTABLE_CELL4k = item(AEItemIds.PORTABLE_CELL4K, props -> new PortableCellItem(StorageTier.SIZE_4K, props))
+            .props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition PORTABLE_CELL16K = item(AEItemIds.PORTABLE_CELL16K, props -> new PortableCellItem(StorageTier.SIZE_16K, props))
+            .props(UNSTACKABLE)
+            .build();
+    public static final ItemDefinition PORTABLE_CELL64K = item(AEItemIds.PORTABLE_CELL64K, props -> new PortableCellItem(StorageTier.SIZE_64K, props))
+            .props(UNSTACKABLE)
+            .build();
 
-        Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
+    ///
+    /// NETWORK RELATED TOOLS
+    ///
 
-        cell1k = item("1k_storage_cell",
-                props -> new BasicStorageCellItem(props, ApiMaterials.cell1kPart(), 1, 0.5f, 8))
-                        .props(storageCellProps).build();
-        cell4k = item("4k_storage_cell",
-                props -> new BasicStorageCellItem(props, ApiMaterials.cell4kPart(), 4, 1.0f, 32))
-                        .props(storageCellProps).build();
-        cell16k = item("16k_storage_cell",
-                props -> new BasicStorageCellItem(props, ApiMaterials.cell16kPart(), 16, 1.5f, 128))
-                        .props(storageCellProps).build();
-        cell64k = item("64k_storage_cell",
-                props -> new BasicStorageCellItem(props, ApiMaterials.cell64kPart(), 64, 2.0f, 512))
-                        .props(storageCellProps).build();
+    public static final ItemDefinition BIOMETRIC_CARD = item(AEItemIds.BIOMETRIC_CARD, BiometricCardItem::new)
+            .props(props -> props.maxStackSize(1)).build();
+    public static final ItemDefinition MEMORY_CARD = item(AEItemIds.MEMORY_CARD, MemoryCardItem::new).props(props -> props.maxStackSize(1))
+            .build();
+    public static final ItemDefinition NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, NetworkToolItem::new)
+            .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
+            .build();
 
-        fluidCell1k = item("1k_fluid_storage_cell",
-                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell1kPart(), 1, 0.5f, 8))
-                        .props(storageCellProps).build();
-        fluidCell4k = item("4k_fluid_storage_cell",
-                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell4kPart(), 4, 1.0f, 32))
-                        .props(storageCellProps).build();
-        fluidCell16k = item("16k_fluid_storage_cell",
-                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell16kPart(), 16, 1.5f, 128))
-                        .props(storageCellProps).build();
-        fluidCell64k = item("64k_fluid_storage_cell",
-                props -> new BasicFluidStorageCell(props, ApiMaterials.fluidCell64kPart(), 64, 2.0f, 512))
-                        .props(storageCellProps).build();
+    public static final ItemDefinition FACADE = item(AEItemIds.FACADE, FacadeItem::new).build();
 
-        spatialCell2 = item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
-                .props(storageCellProps).build();
-        spatialCell16 = item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
-                .props(storageCellProps).build();
-        spatialCell128 = item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
-                .props(storageCellProps).build();
+    public static final ItemDefinition CERTUS_CRYSTAL_SEED = item(AEItemIds.CERTUS_CRYSTAL_SEED,
+            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL.item()))
+            .build();
+    public static final ItemDefinition FLUIX_CRYSTAL_SEED = item(AEItemIds.FLUIX_CRYSTAL_SEED,
+            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_FLUIX_CRYSTAL.item()))
+            .build();
+    public static final ItemDefinition NETHER_QUARTZ_SEED = item(AEItemIds.NETHER_QUARTZ_SEED,
+            props -> new CrystalSeedItem(props, ApiItems.PURIFIED_NETHER_QUARTZ_CRYSTAL.item()))
+            .build();
 
-        facade = item("facade", FacadeItem::new).build();
+    public static final ItemDefinition ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, EncodedPatternItem::new)
+            .props(props -> props.maxStackSize(1)).build();
 
-        certusCrystalSeed = item("certus_crystal_seed",
-                props -> new CrystalSeedItem(props, ApiMaterials.purifiedCertusQuartzCrystal().item()))
-                        .build();
-        fluixCrystalSeed = item("fluix_crystal_seed",
-                props -> new CrystalSeedItem(props, ApiMaterials.purifiedFluixCrystal().item()))
-                        .build();
-        netherQuartzSeed = item("nether_quartz_seed",
-                props -> new CrystalSeedItem(props, ApiMaterials.purifiedNetherQuartzCrystal().item()))
-                        .build();
+    public static final AEColoredItemDefinition COLORED_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_PAINT_BALL, false);
+    public static final AEColoredItemDefinition COLORED_LUMEN_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_LUMEN_PAINT_BALL, true);
 
-        // rv1
-        encodedPattern = item("encoded_pattern", EncodedPatternItem::new)
-                .props(props -> props.maxStackSize(1)).build();
+    ///
+    /// MATERIALS
+    ///
 
-        coloredPaintBall = createPaintBalls("_paint_ball", false);
-        coloredLumenPaintBall = createPaintBalls("_lumen_paint_ball", true);
+    public static final ItemDefinition CERTUS_QUARTZ_CRYSTAL = item(AEItemIds.CERTUS_QUARTZ_CRYSTAL, MaterialItem::new).build();
+    public static final ItemDefinition CERTUS_QUARTZ_CRYSTAL_CHARGED = item(AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, props -> new CustomEntityItem(props, ChargedQuartzEntity::new)).build();
+    public static final ItemDefinition CERTUS_QUARTZ_DUST = item(AEItemIds.CERTUS_QUARTZ_DUST, MaterialItem::new).build();
+    public static final ItemDefinition NETHER_QUARTZ_DUST = item(AEItemIds.NETHER_QUARTZ_DUST, MaterialItem::new).build();
+    public static final ItemDefinition FLOUR = item(AEItemIds.FLOUR, MaterialItem::new).build();
+    public static final ItemDefinition GOLD_DUST = item(AEItemIds.GOLD_DUST, MaterialItem::new).build();
+    public static final ItemDefinition IRON_DUST = item(AEItemIds.IRON_DUST, MaterialItem::new).build();
+    public static final ItemDefinition SILICON = item(AEItemIds.SILICON, MaterialItem::new).build();
+    public static final ItemDefinition MATTER_BALL = item(AEItemIds.MATTER_BALL, MaterialItem::new).build();
+    public static final ItemDefinition FLUIX_CRYSTAL = item(AEItemIds.FLUIX_CRYSTAL, MaterialItem::new).build();
+    public static final ItemDefinition FLUIX_DUST = item(AEItemIds.FLUIX_DUST, MaterialItem::new).build();
+    public static final ItemDefinition FLUIX_PEARL = item(AEItemIds.FLUIX_PEARL, MaterialItem::new).build();
+    public static final ItemDefinition PURIFIED_CERTUS_QUARTZ_CRYSTAL = item(AEItemIds.PURIFIED_CERTUS_QUARTZ_CRYSTAL, MaterialItem::new).build();
+    public static final ItemDefinition PURIFIED_NETHER_QUARTZ_CRYSTAL = item(AEItemIds.PURIFIED_NETHER_QUARTZ_CRYSTAL, MaterialItem::new).build();
+    public static final ItemDefinition PURIFIED_FLUIX_CRYSTAL = item(AEItemIds.PURIFIED_FLUIX_CRYSTAL, MaterialItem::new).build();
+    public static final ItemDefinition CALCULATION_PROCESSOR_PRESS = item(AEItemIds.CALCULATION_PROCESSOR_PRESS, MaterialItem::new).build();
+    public static final ItemDefinition ENGINEERING_PROCESSOR_PRESS = item(AEItemIds.ENGINEERING_PROCESSOR_PRESS, MaterialItem::new).build();
+    public static final ItemDefinition LOGIC_PROCESSOR_PRESS = item(AEItemIds.LOGIC_PROCESSOR_PRESS, MaterialItem::new).build();
+    public static final ItemDefinition CALCULATION_PROCESSOR_PRINT = item(AEItemIds.CALCULATION_PROCESSOR_PRINT, MaterialItem::new).build();
+    public static final ItemDefinition ENGINEERING_PROCESSOR_PRINT = item(AEItemIds.ENGINEERING_PROCESSOR_PRINT, MaterialItem::new).build();
+    public static final ItemDefinition LOGIC_PROCESSOR_PRINT = item(AEItemIds.LOGIC_PROCESSOR_PRINT, MaterialItem::new).build();
+    public static final ItemDefinition SILICON_PRESS = item(AEItemIds.SILICON_PRESS, MaterialItem::new).build();
+    public static final ItemDefinition SILICON_PRINT = item(AEItemIds.SILICON_PRINT, MaterialItem::new).build();
+    public static final ItemDefinition NAME_PRESS = item(AEItemIds.NAME_PRESS, NamePressItem::new).build();
+    public static final ItemDefinition LOGIC_PROCESSOR = item(AEItemIds.LOGIC_PROCESSOR, MaterialItem::new).build();
+    public static final ItemDefinition CALCULATION_PROCESSOR = item(AEItemIds.CALCULATION_PROCESSOR, MaterialItem::new).build();
+    public static final ItemDefinition ENGINEERING_PROCESSOR = item(AEItemIds.ENGINEERING_PROCESSOR, MaterialItem::new).build();
+    public static final ItemDefinition BASIC_CARD = item(AEItemIds.BASIC_CARD, MaterialItem::new).build();
+    public static final ItemDefinition REDSTONE_CARD = item(AEItemIds.REDSTONE_CARD, props -> new UpgradeCardItem(props, Upgrades.REDSTONE)).build();
+    public static final ItemDefinition CAPACITY_CARD = item(AEItemIds.CAPACITY_CARD, props -> new UpgradeCardItem(props, Upgrades.CAPACITY)).build();
+    public static final ItemDefinition ADVANCED_CARD = item(AEItemIds.ADVANCED_CARD, MaterialItem::new).build();
+    public static final ItemDefinition FUZZY_CARD = item(AEItemIds.FUZZY_CARD, props -> new UpgradeCardItem(props, Upgrades.FUZZY)).build();
+    public static final ItemDefinition SPEED_CARD = item(AEItemIds.SPEED_CARD, props -> new UpgradeCardItem(props, Upgrades.SPEED)).build();
+    public static final ItemDefinition INVERTER_CARD = item(AEItemIds.INVERTER_CARD, props -> new UpgradeCardItem(props, Upgrades.INVERTER)).build();
+    public static final ItemDefinition SPATIAL_2_CELL_COMPONENT = item(AEItemIds.SPATIAL_2_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition SPATIAL_16_CELL_COMPONENT = item(AEItemIds.SPATIAL_16_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition SPATIAL_128_CELL_COMPONENT = item(AEItemIds.SPATIAL_128_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition ITEM_1K_CELL_COMPONENT = item(AEItemIds.ITEM_1K_CELL_COMPONENT, props -> new StorageComponentItem(props, 1)).build();
+    public static final ItemDefinition ITEM_4K_CELL_COMPONENT = item(AEItemIds.ITEM_4K_CELL_COMPONENT, props -> new StorageComponentItem(props, 4)).build();
+    public static final ItemDefinition ITEM_16K_CELL_COMPONENT = item(AEItemIds.ITEM_16K_CELL_COMPONENT, props -> new StorageComponentItem(props, 16)).build();
+    public static final ItemDefinition ITEM_64K_CELL_COMPONENT = item(AEItemIds.ITEM_64K_CELL_COMPONENT, props -> new StorageComponentItem(props, 64)).build();
+    public static final ItemDefinition EMPTY_STORAGE_CELL = item(AEItemIds.EMPTY_STORAGE_CELL, MaterialItem::new).build();
+    public static final ItemDefinition WOODEN_GEAR = item(AEItemIds.WOODEN_GEAR, MaterialItem::new).build();
+    public static final ItemDefinition WIRELESS_RECEIVER = item(AEItemIds.WIRELESS_RECEIVER, MaterialItem::new).build();
+    public static final ItemDefinition WIRELESS_BOOSTER = item(AEItemIds.WIRELESS_BOOSTER, MaterialItem::new).build();
+    public static final ItemDefinition FORMATION_CORE = item(AEItemIds.FORMATION_CORE, MaterialItem::new).build();
+    public static final ItemDefinition ANNIHILATION_CORE = item(AEItemIds.ANNIHILATION_CORE, MaterialItem::new).build();
+    public static final ItemDefinition SKY_DUST = item(AEItemIds.SKY_DUST, MaterialItem::new).build();
+    public static final ItemDefinition ENDER_DUST = item(AEItemIds.ENDER_DUST, props -> new CustomEntityItem(props, SingularityEntity::new)).build();
+    public static final ItemDefinition SINGULARITY = item(AEItemIds.SINGULARITY, props -> new CustomEntityItem(props, SingularityEntity::new)).build();
+    public static final ItemDefinition QUANTUM_ENTANGLED_SINGULARITY = item(AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, props -> new CustomEntityItem(props, SingularityEntity::new)).build();
+    public static final ItemDefinition BLANK_PATTERN = item(AEItemIds.BLANK_PATTERN, MaterialItem::new).build();
+    public static final ItemDefinition CARD_CRAFTING = item(AEItemIds.CARD_CRAFTING, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_1K_CELL_COMPONENT = item(AEItemIds.FLUID_1K_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_4K_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_16K_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_64K_CELL_COMPONENT = item(AEItemIds.FLUID_64K_CELL_COMPONENT, MaterialItem::new).build();
 
-        toolEraser = item("debug_eraser", EraserItem::new).build();
-        toolMeteoritePlacer = item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
-        toolDebugCard = item("debug_card", DebugCardItem::new).build();
-        toolReplicatorCard = item("debug_replicator_card", ReplicatorCardItem::new).build();
-        item("debug_part_placer", DebugPartPlacerItem::new).build();
+    ///
+    /// CELLS
+    ///
 
-        dummyFluidItem = item("dummy_fluid_item", FluidDummyItem::new).build();
-    }
+    public static final ItemDefinition CELL_CREATIVE = item(AEItemIds.CELL_CREATIVE, CreativeStorageCellItem::new)
+            .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
+            .build();
+    public static final ItemDefinition VIEW_CELL = item(AEItemIds.VIEW_CELL, ViewCellItem::new).props(props -> props.maxStackSize(1))
+            .build();
 
-    public static List<IItemDefinition> getItems() {
+    public static final ItemDefinition CELL1K = item(AEItemIds.CELL1K,
+            props -> new BasicStorageCellItem(props, ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition CELL4K = item(AEItemIds.CELL4K,
+            props -> new BasicStorageCellItem(props, ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition CELL16K = item(AEItemIds.CELL16K,
+            props -> new BasicStorageCellItem(props, ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition CELL64K = item(AEItemIds.CELL64K,
+            props -> new BasicStorageCellItem(props, ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512))
+            .props(UNSTACKABLE).build();
+
+    public static final ItemDefinition FLUID_CELL1K = item(AEItemIds.FLUID_CELL1K,
+            props -> new BasicFluidStorageCell(props, FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition FLUID_CELL4K = item(AEItemIds.FLUID_CELL4K,
+            props -> new BasicFluidStorageCell(props, FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition FLUID_CELL16K = item(AEItemIds.FLUID_CELL16K,
+            props -> new BasicFluidStorageCell(props, FLUID_16K_CELL_COMPONENT, 16, 1.5f, 128))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition FLUID_CELL64K = item(AEItemIds.FLUID_CELL64K,
+            props -> new BasicFluidStorageCell(props, FLUID_64K_CELL_COMPONENT, 64, 2.0f, 512))
+            .props(UNSTACKABLE).build();
+
+    public static final ItemDefinition SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL2, props -> new SpatialStorageCellItem(props, 2))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL16, props -> new SpatialStorageCellItem(props, 16))
+            .props(UNSTACKABLE).build();
+    public static final ItemDefinition SPATIAL_CELL128 = item(AEItemIds.SPATIAL_CELL128, props -> new SpatialStorageCellItem(props, 128))
+            .props(UNSTACKABLE).build();
+
+    ///
+    /// UNSUPPORTED DEV TOOLS
+    ///
+
+    public static final ItemDefinition DEBUG_ERASER = item(AppEng.makeId("debug_eraser"), EraserItem::new).build();
+    public static final ItemDefinition DEBUG_METEORITE_PLACER = item(AppEng.makeId("debug_meteorite_placer"), MeteoritePlacerItem::new).build();
+    public static final ItemDefinition DEBUG_CARD = item(AppEng.makeId("debug_card"), DebugCardItem::new).build();
+    public static final ItemDefinition DEBUG_REPLICATOR_CARD = item(AppEng.makeId("debug_replicator_card"), ReplicatorCardItem::new).build();
+    public static final ItemDefinition DEBUG_PART_PLACER = item(AppEng.makeId("debug_part_placer"), DebugPartPlacerItem::new).build();
+    public static final ItemDefinition DUMMY_FLUID_ITEM = item(AEItemIds.DUMMY_FLUID_ITEM, FluidDummyItem::new).build();
+
+    // spotless:on
+
+    public static List<ItemDefinition> getItems() {
         return Collections.unmodifiableList(ITEMS);
     }
 
-    private static AEColoredItemDefinition createPaintBalls(String idSuffix, boolean lumen) {
+    private static AEColoredItemDefinition createPaintBalls(Map<AEColor, ResourceLocation> ids, boolean lumen) {
         ColoredItemDefinition colors = new ColoredItemDefinition();
         for (AEColor color : AEColor.values()) {
-            if (color == AEColor.TRANSPARENT) {
-                continue; // Fluix paintballs don't exist
+            ResourceLocation id = ids.get(color);
+            if (id == null) {
+                continue;
             }
 
-            String id = color.registryPrefix + idSuffix;
-            IItemDefinition paintBall = item(id, props -> new PaintBallItem(props, color, lumen))
+            ItemDefinition paintBall = item(id, props -> new PaintBallItem(props, color, lumen))
                     .build();
             colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
         }
         return colors;
     }
 
-    public static IItemDefinition certusQuartzAxe() {
-        return certusQuartzAxe;
+    static Builder item(ResourceLocation id, Function<Item.Properties, Item> factory) {
+        return new Builder(id, factory);
     }
 
-    public static IItemDefinition certusQuartzHoe() {
-        return certusQuartzHoe;
-    }
-
-    public static IItemDefinition certusQuartzShovel() {
-        return certusQuartzShovel;
-    }
-
-    public static IItemDefinition certusQuartzPick() {
-        return certusQuartzPick;
-    }
-
-    public static IItemDefinition certusQuartzSword() {
-        return certusQuartzSword;
-    }
-
-    public static IItemDefinition certusQuartzWrench() {
-        return certusQuartzWrench;
-    }
-
-    public static IItemDefinition certusQuartzKnife() {
-        return certusQuartzKnife;
-    }
-
-    public static IItemDefinition netherQuartzAxe() {
-        return netherQuartzAxe;
-    }
-
-    public static IItemDefinition netherQuartzHoe() {
-        return netherQuartzHoe;
-    }
-
-    public static IItemDefinition netherQuartzShovel() {
-        return netherQuartzShovel;
-    }
-
-    public static IItemDefinition netherQuartzPick() {
-        return netherQuartzPick;
-    }
-
-    public static IItemDefinition netherQuartzSword() {
-        return netherQuartzSword;
-    }
-
-    public static IItemDefinition netherQuartzWrench() {
-        return netherQuartzWrench;
-    }
-
-    public static IItemDefinition netherQuartzKnife() {
-        return netherQuartzKnife;
-    }
-
-    public static IItemDefinition entropyManipulator() {
-        return entropyManipulator;
-    }
-
-    public static IItemDefinition wirelessTerminal() {
-        return wirelessTerminal;
-    }
-
-    public static IItemDefinition biometricCard() {
-        return biometricCard;
-    }
-
-    public static IItemDefinition chargedStaff() {
-        return chargedStaff;
-    }
-
-    public static IItemDefinition massCannon() {
-        return massCannon;
-    }
-
-    public static IItemDefinition memoryCard() {
-        return memoryCard;
-    }
-
-    public static IItemDefinition networkTool() {
-        return networkTool;
-    }
-
-    public static IItemDefinition portableCell1k() {
-        return portableCell1k;
-    }
-
-    public static IItemDefinition portableCell4k() {
-        return portableCell4k;
-    }
-
-    public static IItemDefinition portableCell16k() {
-        return portableCell16k;
-    }
-
-    public static IItemDefinition portableCell64k() {
-        return portableCell64k;
-    }
-
-    public static IItemDefinition cellCreative() {
-        return cellCreative;
-    }
-
-    public static IItemDefinition viewCell() {
-        return viewCell;
-    }
-
-    public static IItemDefinition cell1k() {
-        return cell1k;
-    }
-
-    public static IItemDefinition cell4k() {
-        return cell4k;
-    }
-
-    public static IItemDefinition cell16k() {
-        return cell16k;
-    }
-
-    public static IItemDefinition cell64k() {
-        return cell64k;
-    }
-
-    public static IItemDefinition fluidCell1k() {
-        return fluidCell1k;
-    }
-
-    public static IItemDefinition fluidCell4k() {
-        return fluidCell4k;
-    }
-
-    public static IItemDefinition fluidCell16k() {
-        return fluidCell16k;
-    }
-
-    public static IItemDefinition fluidCell64k() {
-        return fluidCell64k;
-    }
-
-    public static IItemDefinition spatialCell2() {
-        return spatialCell2;
-    }
-
-    public static IItemDefinition spatialCell16() {
-        return spatialCell16;
-    }
-
-    public static IItemDefinition spatialCell128() {
-        return spatialCell128;
-    }
-
-    public static IItemDefinition facade() {
-        return facade;
-    }
-
-    public static IItemDefinition certusCrystalSeed() {
-        return certusCrystalSeed;
-    }
-
-    public static IItemDefinition fluixCrystalSeed() {
-        return fluixCrystalSeed;
-    }
-
-    public static IItemDefinition netherQuartzSeed() {
-        return netherQuartzSeed;
-    }
-
-    public static IItemDefinition encodedPattern() {
-        return encodedPattern;
-    }
-
-    public static IItemDefinition colorApplicator() {
-        return colorApplicator;
-    }
-
-    public static AEColoredItemDefinition coloredPaintBall() {
-        return coloredPaintBall;
-    }
-
-    public static AEColoredItemDefinition coloredLumenPaintBall() {
-        return coloredLumenPaintBall;
-    }
-
-    public static IItemDefinition toolEraser() {
-        return toolEraser;
-    }
-
-    public static IItemDefinition toolMeteoritePlacer() {
-        return toolMeteoritePlacer;
-    }
-
-    public static IItemDefinition toolDebugCard() {
-        return toolDebugCard;
-    }
-
-    public static IItemDefinition toolReplicatorCard() {
-        return toolReplicatorCard;
-    }
-
-    public static IItemDefinition dummyFluidItem() {
-        return dummyFluidItem;
-    }
-
-    static Builder item(String registryName, Function<Item.Properties, Item> factory) {
-        return new Builder(registryName, factory);
+    // Used to control in which order static constructors are called
+    public static void init() {
     }
 
     static class Builder {
@@ -520,8 +360,8 @@ public final class ApiItems {
 
         private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
-        Builder(String registryName, Function<Item.Properties, Item> itemFactory) {
-            this.id = new ResourceLocation(AppEng.MOD_ID, registryName);
+        Builder(ResourceLocation id, Function<Item.Properties, Item> itemFactory) {
+            this.id = id;
             this.itemFactory = itemFactory;
         }
 
@@ -552,10 +392,6 @@ public final class ApiItems {
             return definition;
         }
 
-    }
-
-    // Used to control in which order static constructors are called
-    public static void init() {
     }
 
 }

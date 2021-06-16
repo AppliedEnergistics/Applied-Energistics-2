@@ -35,11 +35,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.BlockDefinition;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -52,7 +52,7 @@ import appeng.worldgen.meteorite.fallout.FalloutSnow;
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
     private static final int SKYSTONE_SPAWN_LIMIT = 12;
-    private final IBlockDefinition skyChestDefinition;
+    private final BlockDefinition skyChestDefinition;
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
@@ -88,9 +88,9 @@ public final class MeteoritePlacer {
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
-        this.skyChestDefinition = ApiBlocks.skyStoneChest();
-        this.skyStone = ApiBlocks.skyStoneBlock().block().getDefaultState();
-        this.skyStoneItem = ApiBlocks.skyStoneBlock().item();
+        this.skyChestDefinition = ApiBlocks.skyStoneChest;
+        this.skyStone = ApiBlocks.skyStoneBlock.block().getDefaultState();
+        this.skyStoneItem = ApiBlocks.skyStoneBlock.item();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }
@@ -230,16 +230,16 @@ public final class MeteoritePlacer {
 
                         switch (r % 4) {
                             case 0:
-                                toAdd = ApiMaterials.calcProcessorPress().stack(1);
+                                toAdd = ApiItems.CALCULATION_PROCESSOR_PRESS.stack();
                                 break;
                             case 1:
-                                toAdd = ApiMaterials.engProcessorPress().stack(1);
+                                toAdd = ApiItems.ENGINEERING_PROCESSOR_PRESS.stack();
                                 break;
                             case 2:
-                                toAdd = ApiMaterials.logicProcessorPress().stack(1);
+                                toAdd = ApiItems.LOGIC_PROCESSOR_PRESS.stack();
                                 break;
                             case 3:
-                                toAdd = ApiMaterials.siliconPress().stack(1);
+                                toAdd = ApiItems.SILICON_PRESS.stack();
                                 break;
                             default:
                         }

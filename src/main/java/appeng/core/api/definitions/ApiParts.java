@@ -19,17 +19,16 @@
 package appeng.core.api.definitions;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemDefinition;
@@ -84,50 +83,50 @@ import appeng.parts.reporting.TerminalPart;
  * Internal implementation for the API parts
  */
 public final class ApiParts {
-    private static final List<IItemDefinition> UNCOLORED_PARTS = new ArrayList<>();
+    private static final List<ItemDefinition> UNCOLORED_PARTS = new ArrayList<>();
     private static final List<AEColoredItemDefinition> COLORED_PARTS = new ArrayList<>();
-    private static final AEColoredItemDefinition cableSmart;
-    private static final AEColoredItemDefinition cableCovered;
-    private static final AEColoredItemDefinition cableGlass;
-    private static final AEColoredItemDefinition cableDenseCovered;
-    private static final AEColoredItemDefinition cableDenseSmart;
-    private static final IItemDefinition quartzFiber;
-    private static final IItemDefinition toggleBus;
-    private static final IItemDefinition invertedToggleBus;
-    private static final IItemDefinition storageBus;
-    private static final IItemDefinition importBus;
-    private static final IItemDefinition exportBus;
-    private static final IItemDefinition iface;
-    private static final IItemDefinition fluidIface;
-    private static final IItemDefinition levelEmitter;
-    private static final IItemDefinition fluidLevelEmitter;
-    private static final IItemDefinition annihilationPlane;
-    private static final IItemDefinition identityAnnihilationPlane;
-    private static final IItemDefinition fluidAnnihilationPlane;
-    private static final IItemDefinition formationPlane;
-    private static final IItemDefinition fluidFormationPlane;
-    private static final IItemDefinition p2PTunnelME;
-    private static final IItemDefinition p2PTunnelRedstone;
-    private static final IItemDefinition p2PTunnelItems;
-    private static final IItemDefinition p2PTunnelFluids;
-    private static final IItemDefinition p2PTunnelEU;
-    private static final IItemDefinition p2PTunnelFE;
-    private static final IItemDefinition p2PTunnelLight;
-    private static final IItemDefinition cableAnchor;
-    private static final IItemDefinition monitor;
-    private static final IItemDefinition semiDarkMonitor;
-    private static final IItemDefinition darkMonitor;
-    private static final IItemDefinition interfaceTerminal;
-    private static final IItemDefinition patternTerminal;
-    private static final IItemDefinition craftingTerminal;
-    private static final IItemDefinition terminal;
-    private static final IItemDefinition storageMonitor;
-    private static final IItemDefinition conversionMonitor;
-    private static final IItemDefinition fluidImportBus;
-    private static final IItemDefinition fluidExportBus;
-    private static final IItemDefinition fluidTerminal;
-    private static final IItemDefinition fluidStorageBus;
-    private static final IItemDefinition energyAcceptor;
+    public static final AEColoredItemDefinition cableSmart;
+    public static final AEColoredItemDefinition cableCovered;
+    public static final AEColoredItemDefinition cableGlass;
+    public static final AEColoredItemDefinition cableDenseCovered;
+    public static final AEColoredItemDefinition cableDenseSmart;
+    public static final ItemDefinition quartzFiber;
+    public static final ItemDefinition toggleBus;
+    public static final ItemDefinition invertedToggleBus;
+    public static final ItemDefinition storageBus;
+    public static final ItemDefinition importBus;
+    public static final ItemDefinition exportBus;
+    public static final ItemDefinition iface;
+    public static final ItemDefinition fluidIface;
+    public static final ItemDefinition levelEmitter;
+    public static final ItemDefinition fluidLevelEmitter;
+    public static final ItemDefinition annihilationPlane;
+    public static final ItemDefinition identityAnnihilationPlane;
+    public static final ItemDefinition fluidAnnihilationPlane;
+    public static final ItemDefinition formationPlane;
+    public static final ItemDefinition fluidFormationPlane;
+    public static final ItemDefinition p2PTunnelME;
+    public static final ItemDefinition p2PTunnelRedstone;
+    public static final ItemDefinition p2PTunnelItems;
+    public static final ItemDefinition p2PTunnelFluids;
+    public static final ItemDefinition p2PTunnelEU;
+    public static final ItemDefinition p2PTunnelFE;
+    public static final ItemDefinition p2PTunnelLight;
+    public static final ItemDefinition cableAnchor;
+    public static final ItemDefinition monitor;
+    public static final ItemDefinition semiDarkMonitor;
+    public static final ItemDefinition darkMonitor;
+    public static final ItemDefinition interfaceTerminal;
+    public static final ItemDefinition patternTerminal;
+    public static final ItemDefinition craftingTerminal;
+    public static final ItemDefinition terminal;
+    public static final ItemDefinition storageMonitor;
+    public static final ItemDefinition conversionMonitor;
+    public static final ItemDefinition fluidImportBus;
+    public static final ItemDefinition fluidExportBus;
+    public static final ItemDefinition fluidTerminal;
+    public static final ItemDefinition fluidStorageBus;
+    public static final ItemDefinition energyAcceptor;
 
     static {
         cableSmart = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
@@ -187,21 +186,13 @@ public final class ApiParts {
         energyAcceptor = createPart("cable_energy_acceptor", EnergyAcceptorPart.class, EnergyAcceptorPart::new);
     }
 
-    public static List<IItemDefinition> getUncoloredParts() {
-        return Collections.unmodifiableList(UNCOLORED_PARTS);
-    }
-
-    public static List<AEColoredItemDefinition> getColoredParts() {
-        return Collections.unmodifiableList(COLORED_PARTS);
-    }
-
-    private static <T extends IPart> IItemDefinition createPart(String id, Class<T> partClass,
+    private static <T extends IPart> ItemDefinition createPart(String id, Class<T> partClass,
             Function<ItemStack, T> factory) {
 
         // TODO
         PartModels partModels = (PartModels) Api.instance().registries().partModels();
         partModels.registerModels(PartModelsHelper.createModels(partClass));
-        ItemDefinition result = ApiItems.item(id, props -> new PartItem<>(props, factory)).build();
+        ItemDefinition result = ApiItems.item(AppEng.makeId(id), props -> new PartItem<>(props, factory)).build();
         UNCOLORED_PARTS.add(result);
         return result;
     }
@@ -218,7 +209,8 @@ public final class ApiParts {
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
-            IItemDefinition itemDef = ApiItems.item(id, props -> new ColoredPartItem<>(props, factory, color)).build();
+            ItemDefinition itemDef = ApiItems
+                    .item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color)).build();
 
             definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
         }
@@ -226,174 +218,6 @@ public final class ApiParts {
         COLORED_PARTS.add(definition);
 
         return definition;
-    }
-
-    public static AEColoredItemDefinition cableSmart() {
-        return cableSmart;
-    }
-
-    public static AEColoredItemDefinition cableCovered() {
-        return cableCovered;
-    }
-
-    public static AEColoredItemDefinition cableGlass() {
-        return cableGlass;
-    }
-
-    public static AEColoredItemDefinition cableDenseCovered() {
-        return cableDenseCovered;
-    }
-
-    public static AEColoredItemDefinition cableDenseSmart() {
-        return cableDenseSmart;
-    }
-
-    public static IItemDefinition quartzFiber() {
-        return quartzFiber;
-    }
-
-    public static IItemDefinition toggleBus() {
-        return toggleBus;
-    }
-
-    public static IItemDefinition invertedToggleBus() {
-        return invertedToggleBus;
-    }
-
-    public static IItemDefinition storageBus() {
-        return storageBus;
-    }
-
-    public static IItemDefinition importBus() {
-        return importBus;
-    }
-
-    public static IItemDefinition exportBus() {
-        return exportBus;
-    }
-
-    public static IItemDefinition iface() {
-        return iface;
-    }
-
-    public static IItemDefinition fluidIface() {
-        return fluidIface;
-    }
-
-    public static IItemDefinition levelEmitter() {
-        return levelEmitter;
-    }
-
-    public static IItemDefinition annihilationPlane() {
-        return annihilationPlane;
-    }
-
-    public static IItemDefinition identityAnnihilationPlane() {
-        return identityAnnihilationPlane;
-    }
-
-    public static IItemDefinition formationPlane() {
-        return formationPlane;
-    }
-
-    public static IItemDefinition p2PTunnelME() {
-        return p2PTunnelME;
-    }
-
-    public static IItemDefinition p2PTunnelRedstone() {
-        return p2PTunnelRedstone;
-    }
-
-    public static IItemDefinition p2PTunnelItems() {
-        return p2PTunnelItems;
-    }
-
-    public static IItemDefinition p2PTunnelFluids() {
-        return p2PTunnelFluids;
-    }
-
-    public static IItemDefinition p2PTunnelEU() {
-        return p2PTunnelEU;
-    }
-
-    public static IItemDefinition p2PTunnelFE() {
-        return p2PTunnelFE;
-    }
-
-    public static IItemDefinition p2PTunnelLight() {
-        return p2PTunnelLight;
-    }
-
-    public static IItemDefinition cableAnchor() {
-        return cableAnchor;
-    }
-
-    public static IItemDefinition monitor() {
-        return monitor;
-    }
-
-    public static IItemDefinition semiDarkMonitor() {
-        return semiDarkMonitor;
-    }
-
-    public static IItemDefinition darkMonitor() {
-        return darkMonitor;
-    }
-
-    public static IItemDefinition interfaceTerminal() {
-        return interfaceTerminal;
-    }
-
-    public static IItemDefinition patternTerminal() {
-        return patternTerminal;
-    }
-
-    public static IItemDefinition craftingTerminal() {
-        return craftingTerminal;
-    }
-
-    public static IItemDefinition terminal() {
-        return terminal;
-    }
-
-    public static IItemDefinition storageMonitor() {
-        return storageMonitor;
-    }
-
-    public static IItemDefinition conversionMonitor() {
-        return conversionMonitor;
-    }
-
-    public static IItemDefinition fluidTerminal() {
-        return fluidTerminal;
-    }
-
-    public static IItemDefinition fluidImportBus() {
-        return fluidImportBus;
-    }
-
-    public static IItemDefinition fluidExportBus() {
-        return fluidExportBus;
-    }
-
-    public static IItemDefinition fluidStorageBus() {
-        return fluidStorageBus;
-    }
-
-    public static IItemDefinition fluidLevelEmitter() {
-        return fluidLevelEmitter;
-    }
-
-    public static IItemDefinition fluidAnnihilationPlane() {
-        return fluidAnnihilationPlane;
-    }
-
-    public static IItemDefinition fluidFormationnPlane() {
-        return fluidFormationPlane;
-    }
-
-    public static IItemDefinition energyAcceptor() {
-        return energyAcceptor;
     }
 
     // Used to control in which order static constructors are called

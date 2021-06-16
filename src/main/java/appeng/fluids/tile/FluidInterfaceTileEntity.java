@@ -166,7 +166,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiBlocks.fluidIface().stack(1);
+        return ApiBlocks.fluidIface.stack();
     }
 
     @Override

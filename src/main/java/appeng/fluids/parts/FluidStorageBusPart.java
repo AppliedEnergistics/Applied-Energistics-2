@@ -443,7 +443,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.fluidStorageBus().stack(1);
+        return ApiParts.fluidStorageBus.stack();
     }
 
     @Override

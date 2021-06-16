@@ -76,7 +76,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public boolean canHandle(final ItemStack is) {
-        return ApiItems.wirelessTerminal().isSameAs(is);
+        return ApiItems.WIRELESS_TERMINAL.isSameAs(is);
     }
 
     @Override

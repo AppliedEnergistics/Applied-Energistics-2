@@ -101,7 +101,7 @@ public final class SpatialStoragePlotManager {
 
             // This is slow, but it should usually be just an admin-command
             ServerWorld world = getWorld();
-            BlockState matrixFrame = ApiBlocks.matrixFrame().block().getDefaultState();
+            BlockState matrixFrame = ApiBlocks.matrixFrame.block().getDefaultState();
             for (BlockPos blockPos : BlockPos.getAllInBoxMutable(from, to)) {
                 world.setBlockState(blockPos, matrixFrame);
             }

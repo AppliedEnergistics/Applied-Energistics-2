@@ -24,12 +24,12 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;
 
-public class ItemDefinition implements IItemDefinition {
+public class ItemDefinition implements IItemProvider {
     private final ResourceLocation id;
     private final Item item;
 
@@ -40,24 +40,35 @@ public class ItemDefinition implements IItemDefinition {
     }
 
     @Nonnull
-    @Override
     public ResourceLocation id() {
         return this.id;
     }
 
-    @Override
-    public final Item item() {
+    public Item item() {
         return this.item;
     }
 
-    @Override
+    public ItemStack stack() {
+        return stack(1);
+    }
+
     public ItemStack stack(final int stackSize) {
         return new ItemStack(item, stackSize);
     }
 
-    @Override
+    /**
+     * Compare {@link ItemStack} with this
+     *
+     * @param comparableStack compared item
+     *
+     * @return true if the item stack is a matching item.
+     */
     public final boolean isSameAs(final ItemStack comparableStack) {
-        return Platform.itemComparisons().isEqualItemType(comparableStack, this.stack(1));
+        return Platform.itemComparisons().isEqualItemType(comparableStack, this.stack());
     }
 
+    @Override
+    public Item asItem() {
+        return item;
+    }
 }

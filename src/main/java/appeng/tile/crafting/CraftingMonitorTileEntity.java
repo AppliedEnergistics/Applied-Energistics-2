@@ -159,7 +159,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
 
     @Override
     protected ItemStack getItemFromTile() {
-        return ApiBlocks.craftingMonitor().stack(1);
+        return ApiBlocks.craftingMonitor.stack();
     }
 
     @Nonnull

@@ -70,7 +70,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
@@ -94,7 +93,8 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.ItemDefinition;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
@@ -987,7 +987,7 @@ public class Platform {
         }
 
         if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
-            final IItemDefinition certusQuartzCrystal = ApiMaterials.certusQuartzCrystal();
+            final ItemDefinition certusQuartzCrystal = ApiItems.CERTUS_QUARTZ_CRYSTAL;
 
             return certusQuartzCrystal.isSameAs(b);
         }

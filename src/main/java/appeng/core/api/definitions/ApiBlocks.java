@@ -40,7 +40,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseBlockItemChargeable;
@@ -106,103 +105,92 @@ import appeng.fluids.block.FluidInterfaceBlock;
  */
 public final class ApiBlocks {
 
-    private static final List<IBlockDefinition> BLOCKS = new ArrayList<>();
-
-    private static final IBlockDefinition quartzOre;
-    private static final IBlockDefinition quartzOreCharged;
-    private static final IBlockDefinition matrixFrame;
-    private static final IBlockDefinition quartzBlock;
-    private static final IBlockDefinition quartzPillar;
-    private static final IBlockDefinition chiseledQuartzBlock;
-    private static final IBlockDefinition quartzGlass;
-    private static final IBlockDefinition quartzVibrantGlass;
-    private static final IBlockDefinition quartzFixture;
-    private static final IBlockDefinition fluixBlock;
-    private static final IBlockDefinition skyStoneBlock;
-    private static final IBlockDefinition smoothSkyStoneBlock;
-    private static final IBlockDefinition skyStoneBrick;
-    private static final IBlockDefinition skyStoneSmallBrick;
-    private static final IBlockDefinition skyStoneChest;
-    private static final IBlockDefinition smoothSkyStoneChest;
-    private static final IBlockDefinition skyCompass;
-    private static final IBlockDefinition grindstone;
-    private static final IBlockDefinition crank;
-    private static final IBlockDefinition inscriber;
-    private static final IBlockDefinition wirelessAccessPoint;
-    private static final IBlockDefinition charger;
-    private static final IBlockDefinition tinyTNT;
-    private static final IBlockDefinition securityStation;
-    private static final IBlockDefinition quantumRing;
-    private static final IBlockDefinition quantumLink;
-    private static final IBlockDefinition spatialPylon;
-    private static final IBlockDefinition spatialIOPort;
-    private static final IBlockDefinition spatialAnchor;
-    private static final IBlockDefinition multiPart;
-    private static final IBlockDefinition controller;
-    private static final IBlockDefinition drive;
-    private static final IBlockDefinition chest;
-    private static final IBlockDefinition iface;
-    private static final IBlockDefinition fluidIface;
-    private static final IBlockDefinition cellWorkbench;
-    private static final IBlockDefinition iOPort;
-    private static final IBlockDefinition condenser;
-    private static final IBlockDefinition energyAcceptor;
-    private static final IBlockDefinition vibrationChamber;
-    private static final IBlockDefinition quartzGrowthAccelerator;
-    private static final IBlockDefinition energyCell;
-    private static final IBlockDefinition energyCellDense;
-    private static final IBlockDefinition energyCellCreative;
-    private static final IBlockDefinition craftingUnit;
-    private static final IBlockDefinition craftingAccelerator;
-    private static final IBlockDefinition craftingStorage1k;
-    private static final IBlockDefinition craftingStorage4k;
-    private static final IBlockDefinition craftingStorage16k;
-    private static final IBlockDefinition craftingStorage64k;
-    private static final IBlockDefinition craftingMonitor;
-    private static final IBlockDefinition molecularAssembler;
-    private static final IBlockDefinition lightDetector;
-    private static final IBlockDefinition paint;
-
-    private static final IBlockDefinition skyStoneStairs;
-    private static final IBlockDefinition smoothSkyStoneStairs;
-    private static final IBlockDefinition skyStoneBrickStairs;
-    private static final IBlockDefinition skyStoneSmallBrickStairs;
-    private static final IBlockDefinition fluixStairs;
-    private static final IBlockDefinition quartzStairs;
-    private static final IBlockDefinition chiseledQuartzStairs;
-    private static final IBlockDefinition quartzPillarStairs;
-
-    private static final IBlockDefinition skyStoneWall;
-    private static final IBlockDefinition smoothSkyStoneWall;
-    private static final IBlockDefinition skyStoneBrickWall;
-    private static final IBlockDefinition skyStoneSmallBrickWall;
-    private static final IBlockDefinition fluixWall;
-    private static final IBlockDefinition quartzWall;
-    private static final IBlockDefinition chiseledQuartzWall;
-    private static final IBlockDefinition quartzPillarWall;
-
-    private static final IBlockDefinition skyStoneSlab;
-    private static final IBlockDefinition smoothSkyStoneSlab;
-    private static final IBlockDefinition skyStoneBrickSlab;
-    private static final IBlockDefinition skyStoneSmallBrickSlab;
-    private static final IBlockDefinition fluixSlab;
-    private static final IBlockDefinition quartzSlab;
-    private static final IBlockDefinition chiseledQuartzSlab;
-    private static final IBlockDefinition quartzPillarSlab;
-
-    private static final IBlockDefinition itemGen;
-    private static final IBlockDefinition chunkLoader;
-    private static final IBlockDefinition phantomNode;
-    private static final IBlockDefinition cubeGenerator;
-    private static final IBlockDefinition energyGenerator;
-
-    public static List<IBlockDefinition> getBlocks() {
-        return Collections.unmodifiableList(BLOCKS);
-    }
-
+    public static final BlockDefinition quartzOre;
+    public static final BlockDefinition quartzOreCharged;
+    public static final BlockDefinition matrixFrame;
+    public static final BlockDefinition quartzBlock;
+    public static final BlockDefinition quartzPillar;
+    public static final BlockDefinition chiseledQuartzBlock;
+    public static final BlockDefinition quartzGlass;
+    public static final BlockDefinition quartzVibrantGlass;
+    public static final BlockDefinition quartzFixture;
+    public static final BlockDefinition fluixBlock;
+    public static final BlockDefinition skyStoneBlock;
+    public static final BlockDefinition smoothSkyStoneBlock;
+    public static final BlockDefinition skyStoneBrick;
+    public static final BlockDefinition skyStoneSmallBrick;
+    public static final BlockDefinition skyStoneChest;
+    public static final BlockDefinition smoothSkyStoneChest;
+    public static final BlockDefinition skyCompass;
+    public static final BlockDefinition grindstone;
+    public static final BlockDefinition crank;
+    public static final BlockDefinition inscriber;
+    public static final BlockDefinition wirelessAccessPoint;
+    public static final BlockDefinition charger;
+    public static final BlockDefinition tinyTNT;
+    public static final BlockDefinition securityStation;
+    public static final BlockDefinition quantumRing;
+    public static final BlockDefinition quantumLink;
+    public static final BlockDefinition spatialPylon;
+    public static final BlockDefinition spatialIOPort;
+    public static final BlockDefinition spatialAnchor;
+    public static final BlockDefinition multiPart;
+    public static final BlockDefinition controller;
+    public static final BlockDefinition drive;
+    public static final BlockDefinition chest;
+    public static final BlockDefinition iface;
+    public static final BlockDefinition fluidIface;
+    public static final BlockDefinition cellWorkbench;
+    public static final BlockDefinition iOPort;
+    public static final BlockDefinition condenser;
+    public static final BlockDefinition energyAcceptor;
+    public static final BlockDefinition vibrationChamber;
+    public static final BlockDefinition quartzGrowthAccelerator;
+    public static final BlockDefinition energyCell;
+    public static final BlockDefinition energyCellDense;
+    public static final BlockDefinition energyCellCreative;
+    public static final BlockDefinition craftingUnit;
+    public static final BlockDefinition craftingAccelerator;
+    public static final BlockDefinition craftingStorage1k;
+    public static final BlockDefinition craftingStorage4k;
+    public static final BlockDefinition craftingStorage16k;
+    public static final BlockDefinition craftingStorage64k;
+    public static final BlockDefinition craftingMonitor;
+    public static final BlockDefinition molecularAssembler;
+    public static final BlockDefinition lightDetector;
+    public static final BlockDefinition paint;
+    public static final BlockDefinition skyStoneStairs;
+    public static final BlockDefinition smoothSkyStoneStairs;
+    public static final BlockDefinition skyStoneBrickStairs;
+    public static final BlockDefinition skyStoneSmallBrickStairs;
+    public static final BlockDefinition fluixStairs;
+    public static final BlockDefinition quartzStairs;
+    public static final BlockDefinition chiseledQuartzStairs;
+    public static final BlockDefinition quartzPillarStairs;
+    public static final BlockDefinition skyStoneWall;
+    public static final BlockDefinition smoothSkyStoneWall;
+    public static final BlockDefinition skyStoneBrickWall;
+    public static final BlockDefinition skyStoneSmallBrickWall;
+    public static final BlockDefinition fluixWall;
+    public static final BlockDefinition quartzWall;
+    public static final BlockDefinition chiseledQuartzWall;
+    public static final BlockDefinition quartzPillarWall;
+    public static final BlockDefinition skyStoneSlab;
+    public static final BlockDefinition smoothSkyStoneSlab;
+    public static final BlockDefinition skyStoneBrickSlab;
+    public static final BlockDefinition skyStoneSmallBrickSlab;
+    public static final BlockDefinition fluixSlab;
+    public static final BlockDefinition quartzSlab;
+    public static final BlockDefinition chiseledQuartzSlab;
+    public static final BlockDefinition quartzPillarSlab;
+    public static final BlockDefinition itemGen;
+    public static final BlockDefinition chunkLoader;
+    public static final BlockDefinition phantomNode;
+    public static final BlockDefinition cubeGenerator;
+    public static final BlockDefinition energyGenerator;
+    private static final List<BlockDefinition> BLOCKS = new ArrayList<>();
     private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
             .hardnessAndResistance(3, 5).setRequiresTool().harvestLevel(1);
-
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
             .hardnessAndResistance(50, 150).setRequiresTool();
 
@@ -373,21 +361,21 @@ public final class ApiBlocks {
                 .build();
 
         skyStoneStairs = decoBlock("sky_stone_stairs",
-                () -> new StairsBlock(skyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
+                () -> new StairsBlock(skyStoneBlock.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
         smoothSkyStoneStairs = decoBlock("smooth_sky_stone_stairs",
-                () -> new StairsBlock(smoothSkyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
+                () -> new StairsBlock(smoothSkyStoneBlock.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
         skyStoneBrickStairs = decoBlock("sky_stone_brick_stairs",
-                () -> new StairsBlock(skyStoneBrick().block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
+                () -> new StairsBlock(skyStoneBrick.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
         skyStoneSmallBrickStairs = decoBlock("sky_stone_small_brick_stairs",
-                () -> new StairsBlock(skyStoneSmallBrick().block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
+                () -> new StairsBlock(skyStoneSmallBrick.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
         fluixStairs = decoBlock("fluix_stairs",
-                () -> new StairsBlock(fluixBlock().block()::getDefaultState, QUARTZ_PROPERTIES)).build();
+                () -> new StairsBlock(fluixBlock.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
         quartzStairs = decoBlock("quartz_stairs",
-                () -> new StairsBlock(quartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES)).build();
+                () -> new StairsBlock(quartzBlock.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
         chiseledQuartzStairs = decoBlock("chiseled_quartz_stairs",
-                () -> new StairsBlock(chiseledQuartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES)).build();
+                () -> new StairsBlock(chiseledQuartzBlock.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
         quartzPillarStairs = decoBlock("quartz_pillar_stairs",
-                () -> new StairsBlock(quartzPillar().block()::getDefaultState, QUARTZ_PROPERTIES)).build();
+                () -> new StairsBlock(quartzPillar.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
 
         skyStoneWall = decoBlock("sky_stone_wall",
                 () -> new WallBlock(SKYSTONE_PROPERTIES)).build();
@@ -442,348 +430,28 @@ public final class ApiBlocks {
                 .build();
     }
 
-    public static IBlockDefinition quartzOre() {
-        return quartzOre;
+    public static List<BlockDefinition> getBlocks() {
+        return Collections.unmodifiableList(BLOCKS);
     }
 
-    public static IBlockDefinition quartzOreCharged() {
-        return quartzOreCharged;
-    }
-
-    public static IBlockDefinition matrixFrame() {
-        return matrixFrame;
-    }
-
-    public static IBlockDefinition quartzBlock() {
-        return quartzBlock;
-    }
-
-    public static IBlockDefinition quartzPillar() {
-        return quartzPillar;
-    }
-
-    public static IBlockDefinition chiseledQuartzBlock() {
-        return chiseledQuartzBlock;
-    }
-
-    public static IBlockDefinition quartzGlass() {
-        return quartzGlass;
-    }
-
-    public static IBlockDefinition quartzVibrantGlass() {
-        return quartzVibrantGlass;
-    }
-
-    public static IBlockDefinition quartzFixture() {
-        return quartzFixture;
-    }
-
-    public static IBlockDefinition fluixBlock() {
-        return fluixBlock;
-    }
-
-    public static IBlockDefinition skyStoneBlock() {
-        return skyStoneBlock;
-    }
-
-    public static IBlockDefinition smoothSkyStoneBlock() {
-        return smoothSkyStoneBlock;
-    }
-
-    public static IBlockDefinition skyStoneBrick() {
-        return skyStoneBrick;
-    }
-
-    public static IBlockDefinition skyStoneSmallBrick() {
-        return skyStoneSmallBrick;
-    }
-
-    public static IBlockDefinition skyStoneChest() {
-        return skyStoneChest;
-    }
-
-    public static IBlockDefinition smoothSkyStoneChest() {
-        return smoothSkyStoneChest;
-    }
-
-    public static IBlockDefinition skyCompass() {
-        return skyCompass;
-    }
-
-    public static IBlockDefinition skyStoneStairs() {
-        return skyStoneStairs;
-    }
-
-    public static IBlockDefinition smoothSkyStoneStairs() {
-        return smoothSkyStoneStairs;
-    }
-
-    public static IBlockDefinition skyStoneBrickStairs() {
-        return skyStoneBrickStairs;
-    }
-
-    public static IBlockDefinition skyStoneSmallBrickStairs() {
-        return skyStoneSmallBrickStairs;
-    }
-
-    public static IBlockDefinition fluixStairs() {
-        return fluixStairs;
-    }
-
-    public static IBlockDefinition quartzStairs() {
-        return quartzStairs;
-    }
-
-    public static IBlockDefinition chiseledQuartzStairs() {
-        return chiseledQuartzStairs;
-    }
-
-    public static IBlockDefinition quartzPillarStairs() {
-        return quartzPillarStairs;
-    }
-
-    public static IBlockDefinition skyStoneWall() {
-        return skyStoneWall;
-    }
-
-    public static IBlockDefinition smoothSkyStoneWall() {
-        return smoothSkyStoneWall;
-    }
-
-    public static IBlockDefinition skyStoneBrickWall() {
-        return skyStoneBrickWall;
-    }
-
-    public static IBlockDefinition skyStoneSmallBrickWall() {
-        return skyStoneSmallBrickWall;
-    }
-
-    public static IBlockDefinition fluixWall() {
-        return fluixWall;
-    }
-
-    public static IBlockDefinition quartzWall() {
-        return quartzWall;
-    }
-
-    public static IBlockDefinition chiseledQuartzWall() {
-        return chiseledQuartzWall;
-    }
-
-    public static IBlockDefinition quartzPillarWall() {
-        return quartzPillarWall;
-    }
-
-    public static IBlockDefinition skyStoneSlab() {
-        return skyStoneSlab;
-    }
-
-    public static IBlockDefinition smoothSkyStoneSlab() {
-        return smoothSkyStoneSlab;
-    }
-
-    public static IBlockDefinition skyStoneBrickSlab() {
-        return skyStoneBrickSlab;
-    }
-
-    public static IBlockDefinition skyStoneSmallBrickSlab() {
-        return skyStoneSmallBrickSlab;
-    }
-
-    public static IBlockDefinition fluixSlab() {
-        return fluixSlab;
-    }
-
-    public static IBlockDefinition quartzSlab() {
-        return quartzSlab;
-    }
-
-    public static IBlockDefinition chiseledQuartzSlab() {
-        return chiseledQuartzSlab;
-    }
-
-    public static IBlockDefinition quartzPillarSlab() {
-        return quartzPillarSlab;
-    }
-
-    public static IBlockDefinition grindstone() {
-        return grindstone;
-    }
-
-    public static IBlockDefinition crank() {
-        return crank;
-    }
-
-    public static IBlockDefinition inscriber() {
-        return inscriber;
-    }
-
-    public static IBlockDefinition wirelessAccessPoint() {
-        return wirelessAccessPoint;
-    }
-
-    public static IBlockDefinition charger() {
-        return charger;
-    }
-
-    public static IBlockDefinition tinyTNT() {
-        return tinyTNT;
-    }
-
-    public static IBlockDefinition securityStation() {
-        return securityStation;
-    }
-
-    public static IBlockDefinition quantumRing() {
-        return quantumRing;
-    }
-
-    public static IBlockDefinition quantumLink() {
-        return quantumLink;
-    }
-
-    public static IBlockDefinition spatialPylon() {
-        return spatialPylon;
-    }
-
-    public static IBlockDefinition spatialIOPort() {
-        return spatialIOPort;
-    }
-
-    public static IBlockDefinition spatialAnchor() {
-        return spatialAnchor;
-    }
-
-    public static IBlockDefinition multiPart() {
-        return multiPart;
-    }
-
-    public static IBlockDefinition controller() {
-        return controller;
-    }
-
-    public static IBlockDefinition drive() {
-        return drive;
-    }
-
-    public static IBlockDefinition chest() {
-        return chest;
-    }
-
-    public static IBlockDefinition iface() {
-        return iface;
-    }
-
-    public static IBlockDefinition fluidIface() {
-        return fluidIface;
-    }
-
-    public static IBlockDefinition cellWorkbench() {
-        return cellWorkbench;
-    }
-
-    public static IBlockDefinition iOPort() {
-        return iOPort;
-    }
-
-    public static IBlockDefinition condenser() {
-        return condenser;
-    }
-
-    public static IBlockDefinition energyAcceptor() {
-        return energyAcceptor;
-    }
-
-    public static IBlockDefinition vibrationChamber() {
-        return vibrationChamber;
-    }
-
-    public static IBlockDefinition quartzGrowthAccelerator() {
-        return quartzGrowthAccelerator;
-    }
-
-    public static IBlockDefinition energyCell() {
-        return energyCell;
-    }
-
-    public static IBlockDefinition energyCellDense() {
-        return energyCellDense;
-    }
-
-    public static IBlockDefinition energyCellCreative() {
-        return energyCellCreative;
-    }
-
-    public static IBlockDefinition craftingUnit() {
-        return craftingUnit;
-    }
-
-    public static IBlockDefinition craftingAccelerator() {
-        return craftingAccelerator;
-    }
-
-    public static IBlockDefinition craftingStorage1k() {
-        return craftingStorage1k;
-    }
-
-    public static IBlockDefinition craftingStorage4k() {
-        return craftingStorage4k;
-    }
-
-    public static IBlockDefinition craftingStorage16k() {
-        return craftingStorage16k;
-    }
-
-    public static IBlockDefinition craftingStorage64k() {
-        return craftingStorage64k;
-    }
-
-    public static IBlockDefinition craftingMonitor() {
-        return craftingMonitor;
-    }
-
-    public static IBlockDefinition molecularAssembler() {
-        return molecularAssembler;
-    }
-
-    public static IBlockDefinition lightDetector() {
-        return lightDetector;
-    }
-
-    public static IBlockDefinition paint() {
-        return paint;
-    }
-
-    public static IBlockDefinition chunkLoader() {
-        return chunkLoader;
-    }
-
-    public static IBlockDefinition itemGen() {
-        return itemGen;
-    }
-
-    public static IBlockDefinition phantomNode() {
-        return phantomNode;
-    }
-
-    public static IBlockDefinition cubeGenerator() {
-        return cubeGenerator;
-    }
-
-    public static IBlockDefinition energyGenerator() {
-        return energyGenerator;
+    private static Builder block(ResourceLocation id, Supplier<Block> blockSupplier) {
+        return new Builder(id, blockSupplier);
     }
 
     private static Builder block(String id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
+        return new Builder(AppEng.makeId(id), blockSupplier);
     }
 
     private static Builder decoBlock(String id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
+        return new Builder(AppEng.makeId(id), blockSupplier);
     }
 
     private static Builder craftingBlock(String id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
+        return new Builder(AppEng.makeId(id), blockSupplier);
+    }
+
+    // Used to control in which order static constructors are called
+    public static void init() {
     }
 
     private static class Builder {
@@ -796,8 +464,8 @@ public final class ApiBlocks {
 
         private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
 
-        Builder(String id, Supplier<? extends Block> blockSupplier) {
-            this.id = AppEng.makeId(id);
+        Builder(ResourceLocation id, Supplier<? extends Block> blockSupplier) {
+            this.id = id;
             this.blockSupplier = blockSupplier;
         }
 
@@ -845,10 +513,6 @@ public final class ApiBlocks {
                 return new BlockItem(block, itemProperties);
             }
         }
-    }
-
-    // Used to control in which order static constructors are called
-    public static void init() {
     }
 
 }

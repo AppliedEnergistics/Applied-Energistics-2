@@ -48,7 +48,6 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -59,6 +58,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.BlockDefinition;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
@@ -198,7 +198,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final IBlockDefinition multiPart = ApiBlocks.multiPart();
+        final BlockDefinition multiPart = ApiBlocks.multiPart;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -219,7 +219,7 @@ public class PartPlacement {
                 host = (IPartHost) tile;
             }
 
-            ItemStack multiPartStack = multiPart.stack(1);
+            ItemStack multiPartStack = multiPart.stack();
             Block multiPartBlock = multiPart.block();
             BlockItem multiPartBlockItem = multiPart.blockItem();
 
@@ -293,13 +293,11 @@ public class PartPlacement {
 
             final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
             if (mySide != null) {
-                multiPart.maybeBlock().ifPresent(multiPartBlock -> {
-                    BlockState blockState = world.getBlockState(pos);
-                    final SoundType ss = multiPartBlock.getSoundType(blockState, world, pos, player);
+                BlockState blockState = world.getBlockState(pos);
+                final SoundType ss = multiPart.block().getSoundType(blockState, world, pos, player);
 
-                    world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
-                            ss.getPitch() * 0.8F);
-                });
+                world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
+                        ss.getPitch() * 0.8F);
 
                 if (!player.isCreative()) {
                     held.grow(-1);
@@ -373,8 +371,8 @@ public class PartPlacement {
             } else {
                 final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
 
-                boolean supportedItem = ApiItems.memoryCard().isSameAs(held);
-                supportedItem |= ApiItems.colorApplicator().isSameAs(held);
+                boolean supportedItem = ApiItems.MEMORY_CARD.isSameAs(held);
+                supportedItem |= ApiItems.COLOR_APPLICATOR.isSameAs(held);
 
                 if (InteractionUtil.isInAlternateUseMode(event.getPlayer()) && !held.isEmpty() && supportedItem) {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));

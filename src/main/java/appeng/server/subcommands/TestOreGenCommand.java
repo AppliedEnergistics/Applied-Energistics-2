@@ -52,8 +52,8 @@ public class TestOreGenCommand implements ISubCommand {
     private final BlockState chargedQuartzOre;
 
     public TestOreGenCommand() {
-        quartzOre = ApiBlocks.quartzOre().block().getDefaultState();
-        chargedQuartzOre = ApiBlocks.quartzOreCharged().block().getDefaultState();
+        quartzOre = ApiBlocks.quartzOre.block().getDefaultState();
+        chargedQuartzOre = ApiBlocks.quartzOreCharged.block().getDefaultState();
     }
 
     @Override

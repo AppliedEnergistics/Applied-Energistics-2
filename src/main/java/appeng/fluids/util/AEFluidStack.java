@@ -219,7 +219,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     @Override
     public ItemStack asItemStackRepresentation() {
-        ItemStack is = ApiItems.dummyFluidItem().stack(1);
+        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
         if (!is.isEmpty()) {
             FluidDummyItem item = (FluidDummyItem) is.getItem();
             item.setFluidStack(is, this.getFluidStack());

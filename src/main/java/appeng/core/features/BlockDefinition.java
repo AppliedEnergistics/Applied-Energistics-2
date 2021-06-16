@@ -24,12 +24,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 
-import appeng.api.definitions.IBlockDefinition;
-
-public class BlockDefinition extends ItemDefinition implements IBlockDefinition {
+public class BlockDefinition extends ItemDefinition {
     private final Block block;
 
     private final BlockItem blockItem;
@@ -40,12 +36,10 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition 
         this.blockItem = item;
     }
 
-    @Override
     public final Block block() {
         return this.block;
     }
 
-    @Override
     public BlockItem blockItem() {
         return blockItem;
     }
@@ -57,8 +51,4 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition 
         return new ItemStack(block, stackSize);
     }
 
-    @Override
-    public final boolean isSameAs(final IBlockReader world, final BlockPos pos) {
-        return world.getBlockState(pos).getBlock() == this.block;
-    }
 }

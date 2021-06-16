@@ -75,16 +75,16 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     public ApiCellModelRegistry() {
         this.registry = new IdentityHashMap<>();
-        this.registry.put(ApiItems.cell1k().item(), MODEL_CELL_ITEMS_1K);
-        this.registry.put(ApiItems.cell4k().item(), MODEL_CELL_ITEMS_4K);
-        this.registry.put(ApiItems.cell16k().item(), MODEL_CELL_ITEMS_16K);
-        this.registry.put(ApiItems.cell64k().item(), MODEL_CELL_ITEMS_64K);
-        this.registry.put(ApiItems.fluidCell1k().item(), MODEL_CELL_FLUIDS_1K);
-        this.registry.put(ApiItems.fluidCell4k().item(), MODEL_CELL_FLUIDS_4K);
-        this.registry.put(ApiItems.fluidCell16k().item(), MODEL_CELL_FLUIDS_16K);
-        this.registry.put(ApiItems.fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(ApiItems.fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(ApiItems.cellCreative().item(), MODEL_CELL_CREATIVE);
+        this.registry.put(ApiItems.CELL1K.item(), MODEL_CELL_ITEMS_1K);
+        this.registry.put(ApiItems.CELL4K.item(), MODEL_CELL_ITEMS_4K);
+        this.registry.put(ApiItems.CELL16K.item(), MODEL_CELL_ITEMS_16K);
+        this.registry.put(ApiItems.CELL64K.item(), MODEL_CELL_ITEMS_64K);
+        this.registry.put(ApiItems.FLUID_CELL1K.item(), MODEL_CELL_FLUIDS_1K);
+        this.registry.put(ApiItems.FLUID_CELL4K.item(), MODEL_CELL_FLUIDS_4K);
+        this.registry.put(ApiItems.FLUID_CELL16K.item(), MODEL_CELL_FLUIDS_16K);
+        this.registry.put(ApiItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(ApiItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(ApiItems.CELL_CREATIVE.item(), MODEL_CELL_CREATIVE);
     }
 
     @Override

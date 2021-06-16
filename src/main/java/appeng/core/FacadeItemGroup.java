@@ -41,7 +41,7 @@ public final class FacadeItemGroup extends ItemGroup {
     public FacadeItemGroup() {
         super("appliedenergistics2.facades");
 
-        itemFacade = (FacadeItem) ApiItems.facade().item();
+        itemFacade = (FacadeItem) ApiItems.FACADE.item();
     }
 
     @Override

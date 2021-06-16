@@ -100,7 +100,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
         if (this.isInWater() && !this.world.isRemote()) // put out the fuse.
         {
-            ItemStack tntStack = ApiBlocks.tinyTNT().stack(1);
+            ItemStack tntStack = ApiBlocks.tinyTNT.stack();
 
             final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
                     tntStack);

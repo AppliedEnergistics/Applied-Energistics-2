@@ -18,8 +18,6 @@
 
 package appeng.tile.crafting;
 
-import java.util.Optional;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -37,27 +35,18 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
     protected ItemStack getItemFromTile() {
         final int storage = getStorageBytes() / KILO_SCALAR;
 
-        Optional<ItemStack> is;
-
         switch (storage) {
             case 1:
-                is = ApiBlocks.craftingStorage1k().maybeStack(1);
-                break;
+                return ApiBlocks.craftingStorage1k.stack();
             case 4:
-                is = ApiBlocks.craftingStorage4k().maybeStack(1);
-                break;
+                return ApiBlocks.craftingStorage4k.stack();
             case 16:
-                is = ApiBlocks.craftingStorage16k().maybeStack(1);
-                break;
+                return ApiBlocks.craftingStorage16k.stack();
             case 64:
-                is = ApiBlocks.craftingStorage64k().maybeStack(1);
-                break;
+                return ApiBlocks.craftingStorage64k.stack();
             default:
-                is = Optional.empty();
-                break;
+                return super.getItemFromTile();
         }
-
-        return is.orElseGet(super::getItemFromTile);
     }
 
     @Override

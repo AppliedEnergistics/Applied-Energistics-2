@@ -91,7 +91,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         this.coveredCableTexture = bakedTextureGetter.apply(TEXTURE_COVERED_CABLE);
         this.lightTexture = bakedTextureGetter.apply(TEXTURE_RING_LIGHT);
         this.lightCornerTexture = bakedTextureGetter.apply(TEXTURE_RING_LIGHT_CORNER);
-        this.linkBlock = ApiBlocks.quantumLink().block();
+        this.linkBlock = ApiBlocks.quantumLink.block();
     }
 
     @Override

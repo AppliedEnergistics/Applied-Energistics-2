@@ -69,11 +69,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
             final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        ApiItems.cell1k().maybeStack(1)
-                .ifPresent(cell1kStack -> this.drawItem(offsetX + 66 - 8, offsetY + 17, cell1kStack));
-
-        ApiBlocks.drive().maybeStack(1)
-                .ifPresent(driveStack -> this.drawItem(offsetX + 94 + 8, offsetY + 17, driveStack));
+        this.drawItem(offsetX + 66 - 8, offsetY + 17, ApiItems.CELL1K.stack());
+        this.drawItem(offsetX + 94 + 8, offsetY + 17, ApiBlocks.drive.stack());
     }
 
 }

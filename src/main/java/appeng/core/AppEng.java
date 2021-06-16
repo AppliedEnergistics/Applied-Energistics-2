@@ -55,7 +55,6 @@ import appeng.client.ClientHelper;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
@@ -99,7 +98,7 @@ public final class AppEng {
         // Initialize items in order
         ApiItems.init();
         ApiBlocks.init();
-        ApiMaterials.init();
+        ApiItems.init();
         ApiParts.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)

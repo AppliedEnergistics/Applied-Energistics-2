@@ -176,7 +176,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFromID(final int id) {
-        ItemStack facadeStack = ApiItems.facade().stack(1);
+        ItemStack facadeStack = ApiItems.FACADE.stack();
 
         // Convert back to a registry name...
         Item item = Registry.ITEM.getByValue(id);

@@ -31,28 +31,28 @@ import net.minecraft.data.SingleItemRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.features.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class DecorationRecipes extends RecipeProvider implements IAE2DataProvider {
 
-    IBlockDefinition[][] blocks = {
-            { ApiBlocks.skyStoneBlock(), ApiBlocks.skyStoneSlab(), ApiBlocks.skyStoneStairs(),
-                    ApiBlocks.skyStoneWall() },
-            { ApiBlocks.smoothSkyStoneBlock(), ApiBlocks.smoothSkyStoneSlab(), ApiBlocks.smoothSkyStoneStairs(),
-                    ApiBlocks.smoothSkyStoneWall() },
-            { ApiBlocks.skyStoneBrick(), ApiBlocks.skyStoneBrickSlab(), ApiBlocks.skyStoneBrickStairs(),
-                    ApiBlocks.skyStoneBrickWall() },
-            { ApiBlocks.skyStoneSmallBrick(), ApiBlocks.skyStoneSmallBrickSlab(), ApiBlocks.skyStoneSmallBrickStairs(),
-                    ApiBlocks.skyStoneSmallBrickWall() },
-            { ApiBlocks.fluixBlock(), ApiBlocks.fluixSlab(), ApiBlocks.fluixStairs(), ApiBlocks.fluixWall() },
-            { ApiBlocks.quartzBlock(), ApiBlocks.quartzSlab(), ApiBlocks.quartzStairs(), ApiBlocks.quartzWall() },
-            { ApiBlocks.chiseledQuartzBlock(), ApiBlocks.chiseledQuartzSlab(), ApiBlocks.chiseledQuartzStairs(),
-                    ApiBlocks.chiseledQuartzWall() },
-            { ApiBlocks.quartzPillar(), ApiBlocks.quartzPillarSlab(), ApiBlocks.quartzPillarStairs(),
-                    ApiBlocks.quartzPillarWall() }, };
+    BlockDefinition[][] blocks = {
+            { ApiBlocks.skyStoneBlock, ApiBlocks.skyStoneSlab, ApiBlocks.skyStoneStairs,
+                    ApiBlocks.skyStoneWall },
+            { ApiBlocks.smoothSkyStoneBlock, ApiBlocks.smoothSkyStoneSlab, ApiBlocks.smoothSkyStoneStairs,
+                    ApiBlocks.smoothSkyStoneWall },
+            { ApiBlocks.skyStoneBrick, ApiBlocks.skyStoneBrickSlab, ApiBlocks.skyStoneBrickStairs,
+                    ApiBlocks.skyStoneBrickWall },
+            { ApiBlocks.skyStoneSmallBrick, ApiBlocks.skyStoneSmallBrickSlab, ApiBlocks.skyStoneSmallBrickStairs,
+                    ApiBlocks.skyStoneSmallBrickWall },
+            { ApiBlocks.fluixBlock, ApiBlocks.fluixSlab, ApiBlocks.fluixStairs, ApiBlocks.fluixWall },
+            { ApiBlocks.quartzBlock, ApiBlocks.quartzSlab, ApiBlocks.quartzStairs, ApiBlocks.quartzWall },
+            { ApiBlocks.chiseledQuartzBlock, ApiBlocks.chiseledQuartzSlab, ApiBlocks.chiseledQuartzStairs,
+                    ApiBlocks.chiseledQuartzWall },
+            { ApiBlocks.quartzPillar, ApiBlocks.quartzPillarSlab, ApiBlocks.quartzPillarStairs,
+                    ApiBlocks.quartzPillarWall }, };
 
     public DecorationRecipes(DataGenerator generatorIn) {
         super(generatorIn);
@@ -60,14 +60,14 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     @Override
     public void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
-        for (IBlockDefinition[] block : blocks) {
+        for (BlockDefinition[] block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
             wallRecipe(consumer, block[0], block[3]);
         }
     }
 
-    private void slabRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition slabs) {
+    private void slabRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition slabs) {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
@@ -80,7 +80,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 .build(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
-    private void stairRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition stairs) {
+    private void stairRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
@@ -94,7 +94,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     }
 
-    private void wallRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition wall) {
+    private void wallRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition wall) {
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
@@ -114,7 +114,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 prefix + id.getPath());
     }
 
-    private String criterionName(IBlockDefinition block) {
+    private String criterionName(BlockDefinition block) {
         return String.format("has_%s", block.id().getPath());
     }
 

@@ -267,7 +267,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.iface().stack(1);
+        return ApiParts.iface.stack();
     }
 
     @Override

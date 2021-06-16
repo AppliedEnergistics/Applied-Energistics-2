@@ -14,31 +14,31 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.features.BlockDefinition;
 
 public final class InitAutoRotatingModel {
 
     /**
      * Blocks that should not use the auto rotation model.
      */
-    private static final Set<IBlockDefinition> NO_AUTO_ROTATION = ImmutableSet.of(
-            ApiBlocks.multiPart(),
-            ApiBlocks.controller(),
-            ApiBlocks.paint(),
-            ApiBlocks.quantumLink(),
-            ApiBlocks.quantumRing(),
-            ApiBlocks.craftingUnit(),
-            ApiBlocks.craftingAccelerator(),
-            ApiBlocks.craftingMonitor(),
-            ApiBlocks.craftingStorage1k(),
-            ApiBlocks.craftingStorage4k(),
-            ApiBlocks.craftingStorage16k(),
-            ApiBlocks.craftingStorage64k());
+    private static final Set<BlockDefinition> NO_AUTO_ROTATION = ImmutableSet.of(
+            ApiBlocks.multiPart,
+            ApiBlocks.controller,
+            ApiBlocks.paint,
+            ApiBlocks.quantumLink,
+            ApiBlocks.quantumRing,
+            ApiBlocks.craftingUnit,
+            ApiBlocks.craftingAccelerator,
+            ApiBlocks.craftingMonitor,
+            ApiBlocks.craftingStorage1k,
+            ApiBlocks.craftingStorage4k,
+            ApiBlocks.craftingStorage16k,
+            ApiBlocks.craftingStorage64k);
 
     // Maps from resource path to customizer
     private static final Map<String, Function<IBakedModel, IBakedModel>> CUSTOMIZERS = new HashMap<>();
@@ -47,9 +47,9 @@ public final class InitAutoRotatingModel {
     }
 
     public static void init(IEventBus modEventBus) {
-        register(ApiBlocks.craftingMonitor(), InitAutoRotatingModel::customizeCraftingMonitorModel);
+        register(ApiBlocks.craftingMonitor, InitAutoRotatingModel::customizeCraftingMonitorModel);
 
-        for (IBlockDefinition block : ApiBlocks.getBlocks()) {
+        for (BlockDefinition block : ApiBlocks.getBlocks()) {
             if (NO_AUTO_ROTATION.contains(block)) {
                 continue;
             }
@@ -64,7 +64,7 @@ public final class InitAutoRotatingModel {
         modEventBus.addListener(InitAutoRotatingModel::onModelBake);
     }
 
-    private static void register(IBlockDefinition block, Function<IBakedModel, IBakedModel> customizer) {
+    private static void register(BlockDefinition block, Function<IBakedModel, IBakedModel> customizer) {
         String path = block.block().getRegistryName().getPath();
         CUSTOMIZERS.put(path, customizer);
     }

@@ -6,11 +6,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.ItemDefinition;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 
@@ -24,7 +24,7 @@ public final class InitItemModelsProperties {
     }
 
     public static void init() {
-        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) ApiItems.colorApplicator().item();
+        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) ApiItems.COLOR_APPLICATOR.item();
         ItemModelsProperties.registerProperty(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
                 (itemStack, world, entity) -> {
                     // If the stack has no color, don't use the colored model since the impact of
@@ -35,9 +35,9 @@ public final class InitItemModelsProperties {
                     return col != null ? 1 : 0;
                 });
 
-        registerSeedGrowth(ApiItems.certusCrystalSeed());
-        registerSeedGrowth(ApiItems.fluixCrystalSeed());
-        registerSeedGrowth(ApiItems.netherQuartzSeed());
+        registerSeedGrowth(ApiItems.CERTUS_CRYSTAL_SEED);
+        registerSeedGrowth(ApiItems.FLUIX_CRYSTAL_SEED);
+        registerSeedGrowth(ApiItems.NETHER_QUARTZ_SEED);
 
         // Register the client-only item model property for chargeable items
         ForgeRegistries.ITEMS.forEach(item -> {
@@ -59,7 +59,7 @@ public final class InitItemModelsProperties {
     /**
      * Exposes a predicate "growth", which is used in the item model to differentiate the growth stages.
      */
-    private static void registerSeedGrowth(IItemDefinition definition) {
+    private static void registerSeedGrowth(ItemDefinition definition) {
         // Expose the growth of the seed to the model system
         ItemModelsProperties.registerProperty(definition.item(), new ResourceLocation("appliedenergistics2:growth"),
                 (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);

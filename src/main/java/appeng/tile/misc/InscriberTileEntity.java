@@ -52,7 +52,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
@@ -107,7 +107,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
         this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
 
-        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.inscriber(), this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.inscriber, this, this.getUpgradeSlots());
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 
@@ -429,7 +429,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             }
 
             if (inv == InscriberTileEntity.this.topItemHandler || inv == InscriberTileEntity.this.bottomItemHandler) {
-                if (ApiMaterials.namePress().isSameAs(stack)) {
+                if (ApiItems.NAME_PRESS.isSameAs(stack)) {
                     return true;
                 }
                 return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);

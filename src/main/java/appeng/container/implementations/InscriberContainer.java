@@ -24,13 +24,13 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.ItemDefinition;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
 
@@ -107,7 +107,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
-            IItemDefinition press = ApiMaterials.namePress();
+            ItemDefinition press = ApiItems.NAME_PRESS;
             if (press.isSameAs(top) || press.isSameAs(bot)) {
                 return !press.isSameAs(is);
             }
@@ -122,7 +122,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
             }
 
             // name presses
-            final IItemDefinition namePress = ApiMaterials.namePress();
+            final ItemDefinition namePress = ApiItems.NAME_PRESS;
             if (namePress.isSameAs(otherSlot)) {
                 return namePress.isSameAs(is);
             }

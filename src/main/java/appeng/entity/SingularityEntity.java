@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.api.definitions.ApiEntities;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
@@ -71,7 +71,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
         final ItemStack item = this.getItem();
 
-        if (ApiMaterials.singularity().isSameAs(item)) {
+        if (ApiItems.SINGULARITY.isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
                     this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -82,7 +82,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     if (!other.isEmpty()) {
                         boolean matches = false;
 
-                        if (ApiMaterials.enderDust().isSameAs(other)) {
+                        if (ApiItems.ENDER_DUST.isSameAs(other)) {
                             matches = true;
                         }
 
@@ -99,16 +99,15 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     e.remove();
                                 }
 
-                                ApiMaterials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
-                                    final CompoundNBT cmp = singularityStack.getOrCreateTag();
-                                    cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
-                                    randTickSeed++;
-                                    item.grow(-1);
+                                ItemStack singularityStack = ApiItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
+                                final CompoundNBT cmp = singularityStack.getOrCreateTag();
+                                cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
+                                randTickSeed++;
+                                item.grow(-1);
 
-                                    final SingularityEntity entity = new SingularityEntity(this.world, this.getPosX(),
-                                            this.getPosY(), this.getPosZ(), singularityStack);
-                                    this.world.addEntity(entity);
-                                });
+                                final SingularityEntity entity = new SingularityEntity(this.world, this.getPosX(),
+                                        this.getPosY(), this.getPosZ(), singularityStack);
+                                this.world.addEntity(entity);
                             }
 
                             if (item.getCount() <= 0) {

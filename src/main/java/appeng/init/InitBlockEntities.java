@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.ApiBlockEntities;
+import appeng.core.api.definitions.ApiBlockEntities;
 
 public final class InitBlockEntities {
     private InitBlockEntities() {

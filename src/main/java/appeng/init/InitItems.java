@@ -3,10 +3,10 @@ package appeng.init;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItemDefinition;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.BlockDefinition;
+import appeng.core.features.ItemDefinition;
 
 public final class InitItems {
 
@@ -14,10 +14,10 @@ public final class InitItems {
     }
 
     public static void init(IForgeRegistry<Item> registry) {
-        for (IBlockDefinition definition : ApiBlocks.getBlocks()) {
+        for (BlockDefinition definition : ApiBlocks.getBlocks()) {
             registry.register(definition.blockItem());
         }
-        for (IItemDefinition definition : ApiItems.getItems()) {
+        for (ItemDefinition definition : ApiItems.getItems()) {
             registry.register(definition.item());
         }
     }

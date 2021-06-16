@@ -451,7 +451,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiBlocks.drive().stack(1);
+        return ApiBlocks.drive.stack();
     }
 
     @Nonnull

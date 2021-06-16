@@ -48,13 +48,13 @@ public class FluidCellConfig extends CellConfig {
             super.insertItem(slot, stack, simulate);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent()) {
             return stack;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.insertItem(slot, is, simulate);
@@ -66,13 +66,13 @@ public class FluidCellConfig extends CellConfig {
             super.setStackInSlot(slot, stack);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent()) {
             return;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         super.setStackInSlot(slot, is);
@@ -84,13 +84,13 @@ public class FluidCellConfig extends CellConfig {
             super.isItemValid(slot, stack);
         }
         Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent() || !ApiItems.dummyFluidItem().maybeStack(1).isPresent()) {
+        if (!fluidOpt.isPresent()) {
             return false;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.dummyFluidItem().maybeStack(1).get();
+        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.isItemValid(slot, is);

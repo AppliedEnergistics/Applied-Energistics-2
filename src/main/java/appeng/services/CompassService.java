@@ -132,7 +132,7 @@ public final class CompassService {
         int cx = c.getPos().x;
         int cz = c.getPos().z;
 
-        Block skyStoneBlock = ApiBlocks.skyStoneBlock().block();
+        Block skyStoneBlock = ApiBlocks.skyStoneBlock.block();
         BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int i = 0; i < CHUNK_SIZE; i++) {
             pos.setX(i);

@@ -21,12 +21,12 @@ package appeng.util.inv.filter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.definitions.IItemDefinition;
+import appeng.core.features.ItemDefinition;
 
 public class AEItemDefinitionFilter implements IAEItemFilter {
-    private final IItemDefinition definition;
+    private final ItemDefinition definition;
 
-    public AEItemDefinitionFilter(IItemDefinition definition) {
+    public AEItemDefinitionFilter(ItemDefinition definition) {
         this.definition = definition;
     }
 

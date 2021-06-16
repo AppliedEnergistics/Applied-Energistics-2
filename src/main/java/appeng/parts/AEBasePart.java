@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import com.google.common.base.Preconditions;
@@ -411,11 +410,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            if (ApiParts.iface().isSameAs(is)) {
-                Optional<ItemStack> iface = ApiBlocks.iface().maybeStack(1);
-                if (iface.isPresent()) {
-                    is = iface.get();
-                }
+            if (ApiParts.iface.isSameAs(is)) {
+                is = ApiBlocks.iface.stack();
             }
 
             final String name = is.getTranslationKey();

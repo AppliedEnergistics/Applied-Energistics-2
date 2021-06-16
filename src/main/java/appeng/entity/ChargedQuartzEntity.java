@@ -38,7 +38,7 @@ import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.api.definitions.ApiEntities;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
@@ -91,7 +91,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     private boolean transform() {
         final ItemStack item = this.getItem();
 
-        if (ApiMaterials.certusQuartzCrystalCharged().isSameAs(item)) {
+        if (ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
                     this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -131,18 +131,16 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                     netherQuartz.remove();
                 }
 
-                ApiMaterials.fluixCrystal().maybeStack(2).ifPresent(is -> {
-                    final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
-                    final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
-                    final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;
-                    final double xSpeed = RANDOM.nextDouble() * .25 - 0.125;
-                    final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
-                    final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
+                final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
+                final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;
+                final double xSpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
 
-                    final ItemEntity entity = new ItemEntity(this.world, x, y, z, is);
-                    entity.setMotion(xSpeed, ySpeed, zSpeed);
-                    this.world.addEntity(entity);
-                });
+                final ItemEntity entity = new ItemEntity(this.world, x, y, z, ApiItems.FLUIX_CRYSTAL.stack(2));
+                entity.setMotion(xSpeed, ySpeed, zSpeed);
+                this.world.addEntity(entity);
 
                 return true;
             }

@@ -17,10 +17,10 @@ public final class InitDispenserBehavior {
     }
 
     public static void init() {
-        DispenserBlock.registerDispenseBehavior(ApiBlocks.tinyTNT(), new TinyTNTDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.entropyManipulator(), new BlockToolDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.massCannon(), new MatterCannonDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.colorApplicator(), new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(ApiBlocks.tinyTNT, new TinyTNTDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(ApiItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(ApiItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(ApiItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
     }
 
 }

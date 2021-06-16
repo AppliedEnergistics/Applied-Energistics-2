@@ -52,7 +52,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
 import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -149,10 +149,10 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
         switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
             case MATTER_BALLS:
-                return ApiMaterials.matterBall().stack(1);
+                return ApiItems.MATTER_BALL.stack();
 
             case SINGULARITY:
-                return ApiMaterials.singularity().stack(1);
+                return ApiItems.SINGULARITY.stack();
 
             case TRASH:
             default:

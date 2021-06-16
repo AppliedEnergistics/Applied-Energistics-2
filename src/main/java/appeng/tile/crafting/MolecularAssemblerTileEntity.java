@@ -106,7 +106,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         super(tileEntityTypeIn);
 
         this.getProxy().setIdlePowerUsage(0.0);
-        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.molecularAssembler(), this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.molecularAssembler, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
     }

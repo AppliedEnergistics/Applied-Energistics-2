@@ -33,7 +33,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.api.networking.IGridNode;
@@ -45,7 +44,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiMaterials;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.features.ItemDefinition;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
@@ -116,11 +116,11 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         final ItemStack myItem = this.inv.getStackInSlot(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
 
-            if (ApiMaterials.certusQuartzCrystal().isSameAs(myItem)) {
+            if (ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ApiMaterials.certusQuartzCrystalCharged().maybeStack(myItem.getCount())
-                        .ifPresent(charged -> this.inv.setStackInSlot(0, charged));
+                ItemStack charged = ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                this.inv.setStackInSlot(0, charged);
             }
         }
     }
@@ -156,7 +156,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         if (myItem.isEmpty()) {
             ItemStack held = player.inventory.getCurrentItem();
 
-            if (ApiMaterials.certusQuartzCrystal().isSameAs(held)
+            if (ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.inventory.decrStackSize(player.inventory.currentItem, 1);
                 this.inv.setStackInSlot(0, held);
@@ -214,13 +214,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                     }
                 }
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
-                    && ApiMaterials.certusQuartzCrystal().isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
-                                                                                                                // wait
+                    && ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
+                                                                                                            // wait
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ApiMaterials.certusQuartzCrystalCharged().maybeStack(myItem.getCount())
-                        .ifPresent(charged -> this.inv.setStackInSlot(0, charged));
+                ItemStack charged = ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                this.inv.setStackInSlot(0, charged);
 
                 changed = true;
             }
@@ -251,7 +251,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
-            final IItemDefinition cert = ApiMaterials.certusQuartzCrystal();
+            final ItemDefinition cert = ApiItems.CERTUS_QUARTZ_CRYSTAL;
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
@@ -267,7 +267,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                 }
             }
 
-            return ApiMaterials.certusQuartzCrystalCharged().isSameAs(extractedItem);
+            return ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(extractedItem);
         }
     }
 }

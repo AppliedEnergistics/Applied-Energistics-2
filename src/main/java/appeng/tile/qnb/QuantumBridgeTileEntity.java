@@ -20,11 +20,9 @@ package appeng.tile.qnb;
 
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -39,7 +37,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -48,6 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.features.BlockDefinition;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
@@ -135,7 +133,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     private boolean isCenter() {
-        return getBlockState().matchesBlock(ApiBlocks.quantumLink().block());
+        return getBlockState().matchesBlock(ApiBlocks.quantumLink.block());
     }
 
     @MENetworkEventSubscribe
@@ -153,16 +151,10 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     public void onReady() {
         super.onReady();
 
-        final IBlockDefinition quantumRing = ApiBlocks.quantumRing();
-        final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
-        final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack(1);
+        final BlockDefinition quantumRing = ApiBlocks.quantumRing;
 
-        final boolean isPresent = maybeLinkBlock.isPresent() && maybeLinkStack.isPresent();
-
-        if (isPresent && this.getBlockState().getBlock() == maybeLinkBlock.get()) {
-            final ItemStack linkStack = maybeLinkStack.get();
-
-            this.getProxy().setVisualRepresentation(linkStack);
+        if (this.getBlockState().getBlock() == quantumRing.block()) {
+            this.getProxy().setVisualRepresentation(quantumRing.stack());
         }
     }
 

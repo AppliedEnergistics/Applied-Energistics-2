@@ -142,7 +142,6 @@ import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.PartModels;
@@ -224,7 +223,7 @@ final class Registration {
         registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
         registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
-        registries.matterCannon().registerAmmoItem(ApiMaterials.matterBall().item(), 32);
+        registries.matterCannon().registerAmmoItem(ApiItems.MATTER_BALL.item(), 32);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -349,7 +348,7 @@ final class Registration {
     public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
-        FacadeItem facadeItem = (FacadeItem) ApiItems.facade().item();
+        FacadeItem facadeItem = (FacadeItem) ApiItems.FACADE.item();
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
                 EntropyRecipeSerializer.INSTANCE);
@@ -426,7 +425,7 @@ final class Registration {
 
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = ApiParts.iface().asItem().getTranslationKey();
+        String interfaceGroup = ApiParts.iface.asItem().getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
@@ -435,120 +434,110 @@ final class Registration {
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(ApiParts.iface(), 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(ApiBlocks.iface(), 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(ApiParts.iface, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(ApiBlocks.iface, 1, interfaceGroup);
 
         // IO Port!
-        Upgrades.SPEED.registerItem(ApiBlocks.iOPort(), 3);
-        Upgrades.REDSTONE.registerItem(ApiBlocks.iOPort(), 1);
+        Upgrades.SPEED.registerItem(ApiBlocks.iOPort, 3);
+        Upgrades.REDSTONE.registerItem(ApiBlocks.iOPort, 1);
 
         // Level Emitter!
-        Upgrades.FUZZY.registerItem(ApiParts.levelEmitter(), 1);
-        Upgrades.CRAFTING.registerItem(ApiParts.levelEmitter(), 1);
+        Upgrades.FUZZY.registerItem(ApiParts.levelEmitter, 1);
+        Upgrades.CRAFTING.registerItem(ApiParts.levelEmitter, 1);
 
         // Import Bus
-        Upgrades.FUZZY.registerItem(ApiParts.importBus(), 1, itemIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.importBus(), 1, itemIoBusGroup);
-        Upgrades.CAPACITY.registerItem(ApiParts.importBus(), 2, itemIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.importBus(), 4, itemIoBusGroup);
+        Upgrades.FUZZY.registerItem(ApiParts.importBus, 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.importBus, 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.importBus, 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.importBus, 4, itemIoBusGroup);
 
         // Fluid Import Bus
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidImportBus(), 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.fluidImportBus(), 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.fluidImportBus(), 4, fluidIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.fluidImportBus, 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.fluidImportBus, 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.fluidImportBus, 4, fluidIoBusGroup);
 
         // Export Bus
-        Upgrades.FUZZY.registerItem(ApiParts.exportBus(), 1, itemIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.exportBus(), 1, itemIoBusGroup);
-        Upgrades.CAPACITY.registerItem(ApiParts.exportBus(), 2, itemIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.exportBus(), 4, itemIoBusGroup);
-        Upgrades.CRAFTING.registerItem(ApiParts.exportBus(), 1, itemIoBusGroup);
+        Upgrades.FUZZY.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.exportBus, 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.exportBus, 4, itemIoBusGroup);
+        Upgrades.CRAFTING.registerItem(ApiParts.exportBus, 1, itemIoBusGroup);
 
         // Fluid Export Bus
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidExportBus(), 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(ApiParts.fluidExportBus(), 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(ApiParts.fluidExportBus(), 4, fluidIoBusGroup);
+        Upgrades.CAPACITY.registerItem(ApiParts.fluidExportBus, 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(ApiParts.fluidExportBus, 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(ApiParts.fluidExportBus, 4, fluidIoBusGroup);
 
         // Storage Cells
-        Upgrades.FUZZY.registerItem(ApiItems.cell1k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.cell1k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.CELL1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.CELL1K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(ApiItems.cell4k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.cell4k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.CELL4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.CELL4K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(ApiItems.cell16k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.cell16k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.CELL16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.CELL16K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(ApiItems.cell64k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.cell64k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.CELL64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.CELL64K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(ApiItems.portableCell1k(), 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(ApiItems.portableCell4k(), 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(ApiItems.portableCell16k(), 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(ApiItems.portableCell64k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.portableCell1k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.portableCell4k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.portableCell16k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.portableCell64k(), 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.PORTABLE_CELL1K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.PORTABLE_CELL4k, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.PORTABLE_CELL16K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(ApiItems.PORTABLE_CELL64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.PORTABLE_CELL1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.PORTABLE_CELL4k, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.PORTABLE_CELL16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.PORTABLE_CELL64K, 1, storageCellGroup);
 
-        Upgrades.INVERTER.registerItem(ApiItems.fluidCell1k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.fluidCell4k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.fluidCell16k(), 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(ApiItems.fluidCell64k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.FLUID_CELL1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.FLUID_CELL4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.FLUID_CELL16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(ApiItems.FLUID_CELL64K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(ApiItems.viewCell(), 1);
-        Upgrades.INVERTER.registerItem(ApiItems.viewCell(), 1);
+        Upgrades.FUZZY.registerItem(ApiItems.VIEW_CELL, 1);
+        Upgrades.INVERTER.registerItem(ApiItems.VIEW_CELL, 1);
 
         // Storage Bus
-        Upgrades.FUZZY.registerItem(ApiParts.storageBus(), 1);
-        Upgrades.INVERTER.registerItem(ApiParts.storageBus(), 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.storageBus(), 5);
+        Upgrades.FUZZY.registerItem(ApiParts.storageBus, 1);
+        Upgrades.INVERTER.registerItem(ApiParts.storageBus, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.storageBus, 5);
 
         // Storage Bus Fluids
-        Upgrades.INVERTER.registerItem(ApiParts.fluidStorageBus(), 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.fluidStorageBus(), 5);
+        Upgrades.INVERTER.registerItem(ApiParts.fluidStorageBus, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.fluidStorageBus, 5);
 
         // Formation Plane
-        Upgrades.FUZZY.registerItem(ApiParts.formationPlane(), 1);
-        Upgrades.INVERTER.registerItem(ApiParts.formationPlane(), 1);
-        Upgrades.CAPACITY.registerItem(ApiParts.formationPlane(), 5);
+        Upgrades.FUZZY.registerItem(ApiParts.formationPlane, 1);
+        Upgrades.INVERTER.registerItem(ApiParts.formationPlane, 1);
+        Upgrades.CAPACITY.registerItem(ApiParts.formationPlane, 5);
 
         // Matter Cannon
-        Upgrades.FUZZY.registerItem(ApiItems.massCannon(), 1);
-        Upgrades.INVERTER.registerItem(ApiItems.massCannon(), 1);
-        Upgrades.SPEED.registerItem(ApiItems.massCannon(), 4);
+        Upgrades.FUZZY.registerItem(ApiItems.MASS_CANNON, 1);
+        Upgrades.INVERTER.registerItem(ApiItems.MASS_CANNON, 1);
+        Upgrades.SPEED.registerItem(ApiItems.MASS_CANNON, 4);
 
         // Molecular Assembler
-        Upgrades.SPEED.registerItem(ApiBlocks.molecularAssembler(), 5);
+        Upgrades.SPEED.registerItem(ApiBlocks.molecularAssembler, 5);
 
         // Inscriber
-        Upgrades.SPEED.registerItem(ApiBlocks.inscriber(), 3);
+        Upgrades.SPEED.registerItem(ApiBlocks.inscriber, 3);
 
         // Wireless Terminal Handler
-        ApiItems.wirelessTerminal().maybeItem()
-                .ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+        registries.wireless().registerWirelessHandler((IWirelessTermHandler) ApiItems.WIRELESS_TERMINAL.item());
 
         // Charge Rates
-        ApiItems.chargedStaff().maybeItem()
-                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));
-        ApiItems.portableCell1k().maybeItem()
-                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
-        ApiItems.portableCell4k().maybeItem()
-                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
-        ApiItems.portableCell16k().maybeItem()
-                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
-        ApiItems.portableCell64k().maybeItem()
-                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
-        ApiItems.colorApplicator().maybeItem()
-                .ifPresent(colorApplicator -> registries.charger().addChargeRate(colorApplicator, 800d));
-        ApiItems.wirelessTerminal().maybeItem()
-                .ifPresent(terminal -> registries.charger().addChargeRate(terminal, 8000d));
-        ApiItems.entropyManipulator().maybeItem()
-                .ifPresent(entropyManipulator -> registries.charger().addChargeRate(entropyManipulator, 8000d));
-        ApiItems.massCannon().maybeItem()
-                .ifPresent(massCannon -> registries.charger().addChargeRate(massCannon, 8000d));
-        ApiBlocks.energyCell().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 8000d));
-        ApiBlocks.energyCellDense().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 16000d));
+        registries.charger().addChargeRate(ApiItems.CHARGED_STAFF, 320d);
+        registries.charger().addChargeRate(ApiItems.PORTABLE_CELL1K, 800d);
+        registries.charger().addChargeRate(ApiItems.PORTABLE_CELL4k, 800d);
+        registries.charger().addChargeRate(ApiItems.PORTABLE_CELL16K, 800d);
+        registries.charger().addChargeRate(ApiItems.PORTABLE_CELL64K, 800d);
+        registries.charger().addChargeRate(ApiItems.COLOR_APPLICATOR, 800d);
+        registries.charger().addChargeRate(ApiItems.WIRELESS_TERMINAL, 8000d);
+        registries.charger().addChargeRate(ApiItems.ENTROPY_MANIPULATOR, 8000d);
+        registries.charger().addChargeRate(ApiItems.MASS_CANNON, 8000d);
+        registries.charger().addChargeRate(ApiBlocks.energyCell, 8000d);
+        registries.charger().addChargeRate(ApiBlocks.energyCellDense, 16000d);
 
         // FIXME // add villager trading to black smiths for a few basic materials
         // FIXME if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
@@ -682,7 +671,7 @@ final class Registration {
 
     private static ConfiguredFeature<?, ?> registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = ApiBlocks.quartzOre().block().getDefaultState();
+        BlockState quartzOreState = ApiBlocks.quartzOre.block().getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("quartz_ore").toString(), Feature.ORE
                 .withConfiguration(
                         new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
@@ -693,8 +682,8 @@ final class Registration {
     }
 
     private static ConfiguredFeature<?, ?> registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = ApiBlocks.quartzOre().block().getDefaultState();
-        BlockState chargedQuartzOreState = ApiBlocks.quartzOreCharged().block()
+        BlockState quartzOreState = ApiBlocks.quartzOre.block().getDefaultState();
+        BlockState chargedQuartzOreState = ApiBlocks.quartzOreCharged.block()
                 .getDefaultState();
         return ConfiguredFeaturesAccessor.register(AppEng.makeId("charged_quartz_ore").toString(),
                 ChargedQuartzOreFeature.INSTANCE
