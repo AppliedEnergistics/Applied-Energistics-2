@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.primitives.Ints;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -40,7 +42,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.me.storage.ITickingMonitor;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 /**
@@ -87,9 +88,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
     @Override
     public IAEItemStack extractItems(IAEItemStack request, Actionable mode, IActionSource src) {
-
-        ItemStack requestedItemStack = request.createItemStack();
-        int remainingSize = requestedItemStack.getCount();
+        int remainingSize = Ints.saturatedCast(request.getStackSize());
 
         // Use this to gather the requested items
         ItemStack gathered = ItemStack.EMPTY;
@@ -99,7 +98,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         for (int i = 0; i < this.itemHandler.getSlots(); i++) {
             ItemStack stackInInventorySlot = this.itemHandler.getStackInSlot(i);
 
-            if (!Platform.itemComparisons().isSameItem(stackInInventorySlot, requestedItemStack)) {
+            if (!request.isSameType(stackInInventorySlot)) {
                 continue;
             }
 
