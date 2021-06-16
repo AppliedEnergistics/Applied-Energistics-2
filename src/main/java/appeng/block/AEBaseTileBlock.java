@@ -159,17 +159,22 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
-        // Inherit the item stack's display name, but only if it's a user defined string
-        // rather
-        // than a translation component, since our custom naming cannot handle
-        // untranslated
-        // I18N strings and we would translate it using the server's locale :-(
+        // Inherit the item stack's display name, but only if it's a user defined string rather than a translation
+        // component, since our custom naming cannot handle untranslated I18N strings and we would translate it using
+        // the server's locale :-(
         AEBaseTileEntity te = this.getTileEntity(w, pos);
-        if (te != null && is.hasDisplayName()) {
-            ITextComponent displayName = is.getDisplayName();
-            if (displayName instanceof StringTextComponent) {
-                te.setName(((StringTextComponent) displayName).getText());
-            }
+
+        if (te == null) {
+            return;
+        }
+
+        ITextComponent displayName = is.getDisplayName();
+        if (displayName instanceof StringTextComponent) {
+            te.setName(((StringTextComponent) displayName).getText());
+        }
+
+        if (is.hasTag()) {
+            te.uploadSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag());
         }
     }
 

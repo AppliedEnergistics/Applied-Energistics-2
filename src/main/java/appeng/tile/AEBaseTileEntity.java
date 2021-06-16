@@ -30,7 +30,6 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -310,13 +309,6 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         this.markForUpdate();
         Platform.notifyBlocksOfNeighbors(this.world, this.pos);
         this.saveChanges();
-    }
-
-    public void onPlacement(BlockItemUseContext context) {
-        ItemStack stack = context.getItem();
-        if (stack.hasTag()) {
-            this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTag());
-        }
     }
 
     /**
