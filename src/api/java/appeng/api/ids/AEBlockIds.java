@@ -1,4 +1,4 @@
-package appeng.api.definitions;
+package appeng.api.ids;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -11,17 +11,7 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_ORE = id("quartz_ore");
     public static final ResourceLocation QUARTZ_ORE_CHARGED = id("charged_quartz_ore");
     public static final ResourceLocation MATRIX_FRAME = id("matrix_frame");
-    public static final ResourceLocation QUARTZ_BLOCK = id("quartz_block");
-    public static final ResourceLocation QUARTZ_PILLAR = id("quartz_pillar");
-    public static final ResourceLocation CHISELED_QUARTZ_BLOCK = id("chiseled_quartz_block");
-    public static final ResourceLocation QUARTZ_GLASS = id("quartz_glass");
-    public static final ResourceLocation QUARTZ_VIBRANT_GLASS = id("quartz_vibrant_glass");
     public static final ResourceLocation QUARTZ_FIXTURE = id("quartz_fixture");
-    public static final ResourceLocation FLUIX_BLOCK = id("fluix_block");
-    public static final ResourceLocation SKY_STONE_BLOCK = id("sky_stone_block");
-    public static final ResourceLocation SMOOTH_SKY_STONE_BLOCK = id("smooth_sky_stone_block");
-    public static final ResourceLocation SKY_STONE_BRICK = id("sky_stone_brick");
-    public static final ResourceLocation SKY_STONE_SMALL_BRICK = id("sky_stone_small_brick");
     public static final ResourceLocation SKY_STONE_CHEST = id("sky_stone_chest");
     public static final ResourceLocation SMOOTH_SKY_STONE_CHEST = id("smooth_sky_stone_chest");
     public static final ResourceLocation SKY_COMPASS = id("sky_compass");
@@ -36,6 +26,7 @@ public final class AEBlockIds {
     public static final ResourceLocation QUANTUM_LINK = id("quantum_link");
     public static final ResourceLocation SPATIAL_PYLON = id("spatial_pylon");
     public static final ResourceLocation SPATIAL_IO_PORT = id("spatial_io_port");
+    public static final ResourceLocation SPATIAL_ANCHOR = id("spatial_anchor");
     public static final ResourceLocation CONTROLLER = id("controller");
     public static final ResourceLocation DRIVE = id("drive");
     public static final ResourceLocation CHEST = id("chest");
@@ -49,6 +40,13 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_GROWTH_ACCELERATOR = id("quartz_growth_accelerator");
     public static final ResourceLocation ENERGY_CELL = id("energy_cell");
     public static final ResourceLocation DENSE_ENERGY_CELL = id("dense_energy_cell");
+    public static final ResourceLocation LIGHT_DETECTOR = id("light_detector");
+    public static final ResourceLocation PAINT = id("paint");
+    public static final ResourceLocation CABLE_BUS = id("cable_bus");
+
+    ///
+    /// AUTO CRAFTING
+    ///
     public static final ResourceLocation CREATIVE_ENERGY_CELL = id("creative_energy_cell");
     public static final ResourceLocation CRAFTING_UNIT = id("crafting_unit");
     public static final ResourceLocation CRAFTING_ACCELERATOR = id("crafting_accelerator");
@@ -58,8 +56,24 @@ public final class AEBlockIds {
     public static final ResourceLocation CRAFTING_STORAGE_64K = id("64k_crafting_storage");
     public static final ResourceLocation CRAFTING_MONITOR = id("crafting_monitor");
     public static final ResourceLocation MOLECULAR_ASSEMBLER = id("molecular_assembler");
-    public static final ResourceLocation LIGHT_DETECTOR = id("light_detector");
-    public static final ResourceLocation PAINT = id("paint");
+
+    ///
+    /// DECORATIVE BLOCKS
+    ///
+    public static final ResourceLocation QUARTZ_BLOCK = id("quartz_block");
+    public static final ResourceLocation QUARTZ_PILLAR = id("quartz_pillar");
+    public static final ResourceLocation CHISELED_QUARTZ_BLOCK = id("chiseled_quartz_block");
+    public static final ResourceLocation FLUIX_BLOCK = id("fluix_block");
+    public static final ResourceLocation SKY_STONE_BLOCK = id("sky_stone_block");
+    public static final ResourceLocation SMOOTH_SKY_STONE_BLOCK = id("smooth_sky_stone_block");
+    public static final ResourceLocation SKY_STONE_BRICK = id("sky_stone_brick");
+    public static final ResourceLocation SKY_STONE_SMALL_BRICK = id("sky_stone_small_brick");
+    public static final ResourceLocation QUARTZ_GLASS = id("quartz_glass");
+    public static final ResourceLocation QUARTZ_VIBRANT_GLASS = id("quartz_vibrant_glass");
+
+    ///
+    /// STAIRS
+    ///
     public static final ResourceLocation SKY_STONE_STAIRS = id("sky_stone_stairs");
     public static final ResourceLocation SMOOTH_SKY_STONE_STAIRS = id("smooth_sky_stone_stairs");
     public static final ResourceLocation SKY_STONE_BRICK_STAIRS = id("sky_stone_brick_stairs");
@@ -68,6 +82,10 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_STAIRS = id("quartz_stairs");
     public static final ResourceLocation CHISELED_QUARTZ_STAIRS = id("chiseled_quartz_stairs");
     public static final ResourceLocation QUARTZ_PILLAR_STAIRS = id("quartz_pillar_stairs");
+
+    ///
+    /// WALLS
+    ///
     public static final ResourceLocation SKY_STONE_WALL = id("sky_stone_wall");
     public static final ResourceLocation SMOOTH_SKY_STONE_WALL = id("smooth_sky_stone_wall");
     public static final ResourceLocation SKY_STONE_BRICK_WALL = id("sky_stone_brick_wall");
@@ -76,7 +94,10 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_WALL = id("quartz_wall");
     public static final ResourceLocation CHISELED_QUARTZ_WALL = id("chiseled_quartz_wall");
     public static final ResourceLocation QUARTZ_PILLAR_WALL = id("quartz_pillar_wall");
-    public static final ResourceLocation MULTI_PART = id("cable_bus");
+
+    ///
+    /// SLABS
+    ///
     public static final ResourceLocation SKY_STONE_SLAB = id("sky_stone_slab");
     public static final ResourceLocation SMOOTH_SKY_STONE_SLAB = id("smooth_sky_stone_slab");
     public static final ResourceLocation SKY_STONE_BRICK_SLAB = id("sky_stone_brick_slab");
@@ -85,12 +106,6 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_SLAB = id("quartz_slab");
     public static final ResourceLocation CHISELED_QUARTZ_SLAB = id("chiseled_quartz_slab");
     public static final ResourceLocation QUARTZ_PILLAR_SLAB = id("quartz_pillar_slab");
-    public static final ResourceLocation SPATIAL_ANCHOR = id("spatial_anchor");
-    public static final ResourceLocation DEBUG_ITEM_GEN = id("debug_item_gen");
-    public static final ResourceLocation DEBUG_CHUNK_LOADER = id("debug_chunk_loader");
-    public static final ResourceLocation DEBUG_PHANTOM_NODE = id("debug_phantom_node");
-    public static final ResourceLocation DEBUG_CUBE_GEN = id("debug_cube_gen");
-    public static final ResourceLocation DEBUG_ENERGY_GEN = id("debug_energy_gen");
 
     private static ResourceLocation id(String id) {
         return new ResourceLocation("appliedenergistics2", id);

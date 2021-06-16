@@ -1,4 +1,4 @@
-package appeng.api.definitions;
+package appeng.api.ids;
 
 import java.util.Map;
 

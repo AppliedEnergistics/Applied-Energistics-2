@@ -24,15 +24,15 @@ public final class InitBlockEntityRenderers {
 
     public static void init() {
 
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.inscriber, InscriberTESR::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.INSCRIBER, InscriberTESR::new);
         ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.crank, CrankTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.charger, ChargerTESR.FACTORY);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.drive, DriveLedTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.chest, ChestTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.craftingMonitor, CraftingMonitorTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.molecularAssembler, MolecularAssemblerRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.multiPart, CableBusTESR::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CRANK, CrankTESR::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CHARGER, ChargerTESR.FACTORY);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.DRIVE, DriveLedTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CHEST, ChestTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CABLE_BUS, CableBusTESR::new);
         ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
 
     }

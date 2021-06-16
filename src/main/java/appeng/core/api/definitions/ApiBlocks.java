@@ -18,7 +18,29 @@
 
 package appeng.core.api.definitions;
 
-import appeng.api.definitions.AEBlockIds;
+import static appeng.block.AEBaseBlock.defaultProps;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.block.WallBlock;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
+
+import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseBlockItemChargeable;
@@ -61,6 +83,7 @@ import appeng.block.storage.DriveBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.SkyChestBlock;
 import appeng.core.AEItemGroup;
+import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.BlockDefinition;
 import appeng.debug.ChunkLoaderBlock;
@@ -77,27 +100,6 @@ import appeng.decorative.solid.QuartzPillarBlock;
 import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 import appeng.fluids.block.FluidInterfaceBlock;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.block.WallBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ToolType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
-import static appeng.block.AEBaseBlock.defaultProps;
 
 /**
  * Internal implementation for the API blocks
@@ -110,8 +112,10 @@ public final class ApiBlocks {
             .hardnessAndResistance(3, 5).setRequiresTool().harvestLevel(1);
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
             .hardnessAndResistance(50, 150).setRequiresTool();
-    private static final AbstractBlock.IExtendedPositionPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3, p4) -> false;
-    private static final AbstractBlock.Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
+    private static final AbstractBlock.IExtendedPositionPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
+            p4) -> false;
+    private static final AbstractBlock.Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.ROCK)
+            .hardnessAndResistance(50, 150).notSolid();
 
     // spotless:off
     public static final BlockDefinition QUARTZ_ORE = block(AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES)).build();
@@ -199,7 +203,7 @@ public final class ApiBlocks {
     public static final BlockDefinition CHISELED_QUARTZ_WALL = decoBlock(AEBlockIds.CHISELED_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
     public static final BlockDefinition QUARTZ_PILLAR_WALL = decoBlock(AEBlockIds.QUARTZ_PILLAR_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
 
-    public static final BlockDefinition MULTI_PART = block(AEBlockIds.MULTI_PART, CableBusBlock::new).build();
+    public static final BlockDefinition MULTI_PART = block(AEBlockIds.CABLE_BUS, CableBusBlock::new).build();
 
     public static final BlockDefinition SKY_STONE_SLAB = decoBlock(AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
     public static final BlockDefinition SMOOTH_SKY_STONE_SLAB = decoBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
@@ -213,12 +217,14 @@ public final class ApiBlocks {
 
     public static final BlockDefinition SPATIAL_ANCHOR = block(AEBlockIds.SPATIAL_ANCHOR, SpatialAnchorBlock::new).build();
 
-    // Debug blocks
-    public static final BlockDefinition DEBUG_ITEM_GEN = block(AEBlockIds.DEBUG_ITEM_GEN, ItemGenBlock::new).build();
-    public static final BlockDefinition DEBUG_CHUNK_LOADER = block(AEBlockIds.DEBUG_CHUNK_LOADER, ChunkLoaderBlock::new).build();
-    public static final BlockDefinition DEBUG_PHANTOM_NODE = block(AEBlockIds.DEBUG_PHANTOM_NODE, PhantomNodeBlock::new).build();
-    public static final BlockDefinition DEBUG_CUBE_GEN = block(AEBlockIds.DEBUG_CUBE_GEN, CubeGeneratorBlock::new).build();
-    public static final BlockDefinition DEBUG_ENERGY_GEN = block(AEBlockIds.DEBUG_ENERGY_GEN, EnergyGeneratorBlock::new).build();
+    ///
+    /// DEBUG BLOCKS
+    ///
+    public static final BlockDefinition DEBUG_ITEM_GEN = block(AppEng.makeId("debug_item_gen"), ItemGenBlock::new).build();
+    public static final BlockDefinition DEBUG_CHUNK_LOADER = block(AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new).build();
+    public static final BlockDefinition DEBUG_PHANTOM_NODE = block(AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new).build();
+    public static final BlockDefinition DEBUG_CUBE_GEN = block(AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new).build();
+    public static final BlockDefinition DEBUG_ENERGY_GEN = block(AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new).build();
     // spotless:on
 
     public static List<BlockDefinition> getBlocks() {

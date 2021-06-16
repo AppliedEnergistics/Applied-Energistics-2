@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import appeng.api.definitions.AEPartIds;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
+import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -79,7 +80,6 @@ import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.SemiDarkPanelPart;
 import appeng.parts.reporting.StorageMonitorPart;
 import appeng.parts.reporting.TerminalPart;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Internal implementation for the API parts
@@ -134,8 +134,8 @@ public final class ApiParts {
     // spotless:on
 
     private static <T extends IPart> ItemDefinition createPart(ResourceLocation id,
-                                                               Class<T> partClass,
-                                                               Function<ItemStack, T> factory) {
+            Class<T> partClass,
+            Function<ItemStack, T> factory) {
 
         // TODO
         PartModels partModels = (PartModels) Api.instance().registries().partModels();

@@ -32,8 +32,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.AEItemIds;
 import appeng.api.features.AEFeature;
+import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AEItemGroup;

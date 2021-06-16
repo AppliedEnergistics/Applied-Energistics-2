@@ -13,7 +13,7 @@ public final class InitBlockEntities {
     }
 
     public static void init(IForgeRegistry<TileEntityType<?>> registry) {
-        for (Map.Entry<ResourceLocation, TileEntityType<?>> entry : ApiBlockEntities.getTileEntityTypes().entrySet()) {
+        for (Map.Entry<ResourceLocation, TileEntityType<?>> entry : ApiBlockEntities.getBlockEntityTypes().entrySet()) {
             registry.register(entry.getValue());
         }
     }

@@ -40,19 +40,20 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     BlockDefinition[][] blocks = {
             { ApiBlocks.SKY_STONE_BLOCK, ApiBlocks.SKY_STONE_SLAB, ApiBlocks.SKY_STONE_STAIRS,
-                    ApiBlocks.SKY_STONE_WALL},
+                    ApiBlocks.SKY_STONE_WALL },
             { ApiBlocks.SMOOTH_SKY_STONE_BLOCK, ApiBlocks.SMOOTH_SKY_STONE_SLAB, ApiBlocks.SMOOTH_SKY_STONE_STAIRS,
-                    ApiBlocks.SMOOTH_SKY_STONE_WALL},
+                    ApiBlocks.SMOOTH_SKY_STONE_WALL },
             { ApiBlocks.SKY_STONE_BRICK, ApiBlocks.SKY_STONE_BRICK_SLAB, ApiBlocks.SKY_STONE_BRICK_STAIRS,
-                    ApiBlocks.SKY_STONE_BRICK_WALL},
-            { ApiBlocks.SKY_STONE_SMALL_BRICK, ApiBlocks.SKY_STONE_SMALL_BRICK_SLAB, ApiBlocks.SKY_STONE_SMALL_BRICK_STAIRS,
-                    ApiBlocks.SKY_STONE_SMALL_BRICK_WALL},
-            { ApiBlocks.FLUIX_BLOCK, ApiBlocks.FLUIX_SLAB, ApiBlocks.FLUIX_STAIRS, ApiBlocks.FLUIX_WALL},
-            { ApiBlocks.QUARTZ_BLOCK, ApiBlocks.QUARTZ_SLAB, ApiBlocks.QUARTZ_STAIRS, ApiBlocks.QUARTZ_WALL},
+                    ApiBlocks.SKY_STONE_BRICK_WALL },
+            { ApiBlocks.SKY_STONE_SMALL_BRICK, ApiBlocks.SKY_STONE_SMALL_BRICK_SLAB,
+                    ApiBlocks.SKY_STONE_SMALL_BRICK_STAIRS,
+                    ApiBlocks.SKY_STONE_SMALL_BRICK_WALL },
+            { ApiBlocks.FLUIX_BLOCK, ApiBlocks.FLUIX_SLAB, ApiBlocks.FLUIX_STAIRS, ApiBlocks.FLUIX_WALL },
+            { ApiBlocks.QUARTZ_BLOCK, ApiBlocks.QUARTZ_SLAB, ApiBlocks.QUARTZ_STAIRS, ApiBlocks.QUARTZ_WALL },
             { ApiBlocks.CHISELED_QUARTZ_BLOCK, ApiBlocks.CHISELED_QUARTZ_SLAB, ApiBlocks.CHISELED_QUARTZ_STAIRS,
-                    ApiBlocks.CHISELED_QUARTZ_WALL},
+                    ApiBlocks.CHISELED_QUARTZ_WALL },
             { ApiBlocks.QUARTZ_PILLAR, ApiBlocks.QUARTZ_PILLAR_SLAB, ApiBlocks.QUARTZ_PILLAR_STAIRS,
-                    ApiBlocks.QUARTZ_PILLAR_WALL}, };
+                    ApiBlocks.QUARTZ_PILLAR_WALL }, };
 
     public DecorationRecipes(DataGenerator generatorIn) {
         super(generatorIn);
