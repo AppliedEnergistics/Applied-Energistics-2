@@ -7,13 +7,13 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.mixin.structure.BiomeAccessor;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 
+import appeng.mixins.BiomeAccessor;
 import appeng.mixins.structure.GenerationSettingsAccessor;
 
 public final class BiomeModifier {
@@ -55,7 +55,7 @@ public final class BiomeModifier {
         // Add it to the structures that will generate pieces within this biome,
         // this is only half-correct since a structure can start in an adjacent biome
         // and extend into biomes that would usually not start the structure
-        Map<Integer, List<Structure<?>>> structuresByStage = biomeAccessor.getStructureLists();
+        Map<Integer, List<Structure<?>>> structuresByStage = biomeAccessor.appeng_getStructures();
         int step = structure.field_236268_b_.getDecorationStage().ordinal();
         if (!structuresByStage.containsKey(step)) {
             structuresByStage.put(step, new ArrayList<>());
