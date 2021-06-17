@@ -74,7 +74,7 @@ class ScreenRegistrationTest {
      */
     @Test
     void testBrokenStyles() throws IOException {
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.setResourceManager(MockResourceManager.create());
 
         List<String> errors = new ArrayList<>();
         for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {
@@ -108,7 +108,7 @@ class ScreenRegistrationTest {
             LanguageMap.func_240593_a_(in, i18n::put);
         }
 
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.setResourceManager(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();
         for (String path : ScreenRegistration.CONTAINER_STYLES.values()) {

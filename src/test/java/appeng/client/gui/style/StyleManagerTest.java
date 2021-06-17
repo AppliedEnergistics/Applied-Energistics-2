@@ -19,6 +19,7 @@
 package appeng.client.gui.style;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -29,6 +30,8 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
 
@@ -39,13 +42,14 @@ import appeng.container.SlotSemantic;
 class StyleManagerTest {
 
     @Captor
-    ArgumentCaptor<IFutureReloadListener> reloadCaptor;
+    ArgumentCaptor<IdentifiableResourceReloadListener> reloadCaptor;
 
     @Test
     void testInitialize() throws IOException {
         IReloadableResourceManager resourceManager = MockResourceManager.create();
-        StyleManager.initialize(resourceManager);
-        verify(resourceManager).addReloadListener(reloadCaptor.capture());
+        ResourceManagerHelper resourceManagerHelper = mock(ResourceManagerHelper.class);
+        StyleManager.registerReloadListener(resourceManagerHelper);
+        verify(resourceManagerHelper).registerReloadListener(reloadCaptor.capture());
         assertThat(reloadCaptor.getValue())
                 .isNotNull()
                 .isInstanceOf(IFutureReloadListener.class);
@@ -54,7 +58,7 @@ class StyleManagerTest {
 
     @Test
     void testLoadStyleDoc() throws IOException {
-        StyleManager.initialize(MockResourceManager.create());
+        StyleManager.setResourceManager(MockResourceManager.create());
 
         ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
 

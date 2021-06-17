@@ -188,10 +188,15 @@ public final class StyleManager {
     }
 
     public static void initialize() {
-        ResourceManagerHelper.get(ResourcePackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
+        registerReloadListener(ResourceManagerHelper.get(ResourcePackType.CLIENT_RESOURCES));
     }
 
-    private static void setResourceManager(IResourceManager resourceManager) {
+    // These two are public for use in tests.
+    public static void registerReloadListener(ResourceManagerHelper resourceManagerHelper) {
+        resourceManagerHelper.registerReloadListener(new ReloadListener());
+    }
+
+    public static void setResourceManager(IResourceManager resourceManager) {
         StyleManager.resourceManager = resourceManager;
         StyleManager.styleCache.clear();
     }
