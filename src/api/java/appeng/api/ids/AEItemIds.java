@@ -95,14 +95,12 @@ public final class AEItemIds {
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_WHITE = id("white_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_ORANGE = id("orange_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_MAGENTA = id("magenta_lumen_paint_ball");
-    public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_LIGHT_BLUE = new ResourceLocation(
-            "appliedenergistics2", "light_blue_lumen_paint_ball");
+    public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_LIGHT_BLUE = id("light_blue_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_YELLOW = id("yellow_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_LIME = id("lime_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_PINK = id("pink_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_GRAY = id("gray_lumen_paint_ball");
-    public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_LIGHT_GRAY = new ResourceLocation(
-            "appliedenergistics2", "light_gray_lumen_paint_ball");
+    public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_LIGHT_GRAY = id("light_gray_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_CYAN = id("cyan_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_PURPLE = id("purple_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_BLUE = id("blue_lumen_paint_ball");
