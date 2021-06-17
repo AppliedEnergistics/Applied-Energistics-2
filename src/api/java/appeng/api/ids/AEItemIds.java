@@ -13,8 +13,6 @@ import appeng.api.util.AEColor;
  */
 @SuppressWarnings("unused")
 public final class AEItemIds {
-    public static final ResourceLocation TOOL_DEBUG_CARD = id("debug_card");
-    public static final ResourceLocation TOOL_ERASER = id("debug_eraser");
     public static final ResourceLocation CERTUS_QUARTZ_AXE = id("certus_quartz_axe");
     public static final ResourceLocation CERTUS_QUARTZ_HOE = id("certus_quartz_hoe");
     public static final ResourceLocation NETHER_QUARTZ_HOE = id("nether_quartz_hoe");
@@ -81,8 +79,6 @@ public final class AEItemIds {
             .put(AEColor.BLACK, COLORED_PAINT_BALL_BLACK)
             .build();
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
-    public static final ResourceLocation TOOL_REPLICATOR_CARD = id("debug_replicator_card");
-    public static final ResourceLocation TOOL_METEORITE_PLACER = id("debug_meteorite_placer");
     public static final ResourceLocation FACADE = id("facade");
     public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
     public static final ResourceLocation COLOR_APPLICATOR = id("color_applicator");
