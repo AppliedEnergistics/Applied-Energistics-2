@@ -1,5 +1,6 @@
 package appeng.parts.misc;
 
+import javax.annotation.Nullable;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -16,15 +17,15 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
+import com.google.common.primitives.Ints;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * Wraps an Item Repository in such a way that it can be used as an IMEInventory for items.
@@ -39,6 +40,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     private final IGridProxyable proxyable;
     private final InventoryCache cache;
 
+    private ItemStack stackCache;
 
     ItemRepositoryAdapter( IItemRepository itemRepository, IGridProxyable proxy )
     {
@@ -50,12 +52,29 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     @Override
     public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
     {
-        ItemStack orgInput = iox.createItemStack();
-        ItemStack remaining = orgInput;
+        // Try to reuse the cached stack
+        @Nullable ItemStack currentCached = stackCache;
+        stackCache = null;
 
-        boolean simulate = ( type == Actionable.SIMULATE );
+        ItemStack orgInput;
+        if( currentCached != null && iox.isSameType( currentCached ) )
+        {
+            // Cache is suitable, just update the count
+            orgInput = currentCached;
+            currentCached.setCount( Ints.saturatedCast( iox.getStackSize() ) );
+        }
+        else
+        {
+            // We need a new stack :-(
+            orgInput = iox.createItemStack();
+        }
+        ItemStack remaining = this.itemRepository.insertItem( orgInput, type == Actionable.SIMULATE );
 
-        remaining = this.itemRepository.insertItem( remaining, simulate );
+        // Store the stack in the cache for next time.
+        if (!remaining.isEmpty() && remaining != orgInput)
+        {
+            stackCache = remaining;
+        }
 
         // At this point, we still have some items left...
         if( remaining == orgInput )
@@ -83,12 +102,11 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     @Override
     public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
     {
-        ItemStack requestedItemStack = request.getDefinition();
-        int remainingSize = (int) Math.min( Integer.MAX_VALUE, request.getStackSize() );
+        int remainingSize = Ints.saturatedCast(request.getStackSize());
 
         final boolean simulate = ( mode == Actionable.SIMULATE );
 
-        ItemStack extracted = this.itemRepository.extractItem( requestedItemStack, remainingSize, simulate );
+        ItemStack extracted = this.itemRepository.extractItem( request.getDefinition(), remainingSize, simulate );
 
         if( extracted.getCount() > remainingSize )
         {
@@ -184,7 +202,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
     private static class InventoryCache
     {
-        private IItemList<IAEItemStack> cachedAeStacks = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+        private IAEItemStack[] cachedAeStacks = new IAEItemStack[0];
         private final IItemRepository iItemRepository;
 
         public InventoryCache( IItemRepository iItemRepository )
@@ -194,7 +212,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
         {
-            this.cachedAeStacks.forEach( out::add );
+            Arrays.stream( this.cachedAeStacks ).forEach( out::add );
             return out;
         }
 
@@ -202,54 +220,93 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         {
             final List<IAEItemStack> changes = new ArrayList<>();
 
-            IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-            this.iItemRepository.getAllItems().stream().map( s -> AEItemStack.fromItemStack( s.itemPrototype ).setStackSize( s.count ) ).forEach( storage::add );
+            List<IAEItemStack> out = this.iItemRepository.getAllItems().stream().map( s -> AEItemStack.fromItemStack( s.itemPrototype ).setStackSize( s.count ) ).collect( Collectors.toList() );
 
-            IItemList<IAEItemStack> newCachedAeStacks = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+            final int size = out.size();
 
-            Iterator<IAEItemStack> cachedAeStacksIterator = cachedAeStacks.iterator();
-            while ( cachedAeStacksIterator.hasNext() )
+            // Make room for new slots
+            if( size > this.cachedAeStacks.length )
             {
-                IAEItemStack cachedStack = cachedAeStacksIterator.next();
-                IAEItemStack storedStack = storage.findPrecise( cachedStack );
-                if( storedStack == null )
+                this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, size );
+            }
+
+            for( int x = 0; x < size; x++ )
+            {
+                // Save the old stuff
+                final IAEItemStack oldAeIS = this.cachedAeStacks[x];
+                final IAEItemStack newIS = out.get( x );
+
+                this.handlePossibleSlotChanges( x, oldAeIS, newIS, changes );
+            }
+
+            // Handle cases where the number of slots actually is lower now than before
+            if( size < this.cachedAeStacks.length )
+            {
+                for( int x = 0; x < this.cachedAeStacks.length; x++ )
                 {
-                    changes.add( cachedStack.setStackSize( -cachedStack.getStackSize() ) );
-                }
-                else
-                {
-                    newCachedAeStacks.add( storedStack );
-                    if( cachedStack.getStackSize() != storedStack.getStackSize() )
+                    final IAEItemStack aeStack = this.cachedAeStacks[x];
+
+                    if( aeStack != null )
                     {
-                        handleStackSizeChanged( cachedStack, storedStack, changes );
+                        final IAEItemStack a = aeStack.copy();
+                        a.setStackSize( -a.getStackSize() );
+                        changes.add( a );
                     }
                 }
-            }
 
-            for( IAEItemStack storedStack : storage )
-            {
-                if( cachedAeStacks.findPrecise( storedStack ) == null )
-                {
-                    newCachedAeStacks.add( storedStack );
-                    changes.add( storedStack.copy() );
-                }
+                // Reduce the cache size
+                this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, size );
             }
-
-            this.cachedAeStacks = newCachedAeStacks;
 
             return changes;
         }
 
-        private void handleStackSizeChanged( IAEItemStack cachedStack, IAEItemStack storedStack, List<IAEItemStack> changes )
+        private void handlePossibleSlotChanges( int slot, IAEItemStack oldAeIS, IAEItemStack newIS, List<IAEItemStack> changes )
+        {
+            if( oldAeIS != null && oldAeIS.isSameType( newIS ) )
+            {
+                this.handleStackSizeChanged( slot, oldAeIS, newIS, changes );
+            }
+            else
+            {
+                this.handleItemChanged( slot, oldAeIS, newIS, changes );
+            }
+        }
+
+        private void handleStackSizeChanged( int slot, IAEItemStack oldAeIS, IAEItemStack newIS, List<IAEItemStack> changes )
         {
             // Still the same item, but amount might have changed
-            final long diff = storedStack.getStackSize() - cachedStack.getStackSize();
+            final long diff = newIS.getStackSize() - oldAeIS.getStackSize();
 
             if( diff != 0 )
             {
-                final IAEItemStack diffStack = cachedStack.copy();
-                diffStack.setStackSize( diff );
-                changes.add( diffStack );
+                final IAEItemStack stack = oldAeIS.copy();
+                stack.setStackSize( newIS.getStackSize() );
+
+                this.cachedAeStacks[slot] = stack;
+
+                final IAEItemStack a = stack.copy();
+                a.setStackSize( diff );
+                changes.add( a );
+            }
+        }
+
+        private void handleItemChanged( int slot, IAEItemStack oldAeIS, IAEItemStack newIS, List<IAEItemStack> changes )
+        {
+            // Completely different item
+            this.cachedAeStacks[slot] =  newIS ;
+
+            // If we had a stack previously in this slot, notify the network about its disappearance
+            if( oldAeIS != null )
+            {
+                oldAeIS.setStackSize( -oldAeIS.getStackSize() );
+                changes.add( oldAeIS );
+            }
+
+            // Notify the network about the new stack. Note that this is null if newIS was null
+            if( this.cachedAeStacks[slot] != null )
+            {
+                changes.add( this.cachedAeStacks[slot] );
             }
         }
 
