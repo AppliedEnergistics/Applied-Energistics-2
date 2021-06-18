@@ -505,7 +505,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getStoredPower()
 	{
-		if( this.availableTicksSinceUpdate > 90 )
+		if( this.availableTicksSinceUpdate > 2 )
 		{
 			this.refreshPower();
 		}
