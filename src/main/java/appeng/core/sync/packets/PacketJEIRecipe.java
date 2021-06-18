@@ -212,22 +212,20 @@ public class PacketJEIRecipe extends AppEngPacket
 									out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
 									if( out == null )
 									{
-										Collection<IAEItemStack> outList = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findFuzzy( request, FuzzyMode.IGNORE_ALL );
-										IAEItemStack mostDamaged = null;
-										for( IAEItemStack is : outList )
+										if( request.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && request.getItem() instanceof MetaTool ) )
 										{
-											if( !is.isCraftable() && (is.getItem().isDamageable() || (Platform.isModLoaded( "gregtech" ) && is.getItem() instanceof MetaTool ) ) )
+											Collection<IAEItemStack> outList = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findFuzzy( request, FuzzyMode.IGNORE_ALL );
+											for( IAEItemStack is : outList )
 											{
-												if( mostDamaged == null || mostDamaged.getItemDamage() < is.getItemDamage() )
+												if( is.getDefinition().getMetadata() == request.getDefinition().getMetadata() )
 												{
-													mostDamaged = is;
+													out = Platform.poweredExtraction( energy, storage, is.copy().setStackSize( 1 ), cct.getActionSource() );
+												}
+												if( out != null )
+												{
+													break;
 												}
 											}
-										}
-										if( mostDamaged != null )
-										{
-											mostDamaged.setStackSize( 1 );
-											out = Platform.poweredExtraction( energy, storage, mostDamaged, cct.getActionSource() );
 										}
 									}
 								}
