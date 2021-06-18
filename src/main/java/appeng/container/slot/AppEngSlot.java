@@ -157,7 +157,7 @@ public class AppEngSlot extends Slot
 	{
 		if( this.isSlotEnabled() )
 		{
-			return !this.itemHandler.extractItem( this.index, 1, true ).isEmpty();
+			return !this.itemHandler.extractItem( this.index, Integer.MAX_VALUE, true ).isEmpty();
 		}
 		return false;
 	}

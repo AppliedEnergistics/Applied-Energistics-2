@@ -446,7 +446,11 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 
 			if( notInserted != null && notInserted.getStackSize() > 0 )
 			{
-				AELog.error( "Fluid item [%s] reported a different possible amount to drain than it actually provided.", held.getDisplayName() );
+				IAEFluidStack spill = this.monitor.injectItems( notInserted, Actionable.MODULATE, this.getActionSource() );
+				if( spill != null && spill.getStackSize() > 0 )
+				{
+					fh.fill( spill.getFluidStack(), true );
+				}
 			}
 
 			player.inventory.setItemStack( fh.getContainer() );
