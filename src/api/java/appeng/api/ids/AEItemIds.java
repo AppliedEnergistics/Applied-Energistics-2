@@ -13,81 +13,45 @@ import appeng.api.util.AEColor;
  */
 @SuppressWarnings("unused")
 public final class AEItemIds {
-    public static final ResourceLocation CERTUS_QUARTZ_AXE = id("certus_quartz_axe");
-    public static final ResourceLocation CERTUS_QUARTZ_HOE = id("certus_quartz_hoe");
-    public static final ResourceLocation NETHER_QUARTZ_HOE = id("nether_quartz_hoe");
     public static final ResourceLocation NETWORK_TOOL = id("network_tool");
     public static final ResourceLocation VIEW_CELL = id("view_cell");
-    public static final ResourceLocation FLUID_CELL4K = id("4k_fluid_storage_cell");
+    public static final ResourceLocation MEMORY_CARD = id("memory_card");
+    public static final ResourceLocation ENCODED_PATTERN = id("encoded_pattern");
+    public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
+    public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
+    public static final ResourceLocation MASS_CANNON = id("matter_cannon");
+    public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
+    public static final ResourceLocation COLOR_APPLICATOR = id("color_applicator");
+    public static final ResourceLocation WIRELESS_TERMINAL = id("wireless_terminal");
+    public static final ResourceLocation NETHER_QUARTZ_SEED = id("nether_quartz_seed");
+    public static final ResourceLocation FLUIX_CRYSTAL_SEED = id("fluix_crystal_seed");
+    public static final ResourceLocation CERTUS_CRYSTAL_SEED = id("certus_crystal_seed");
+    public static final ResourceLocation DUMMY_FLUID_ITEM = id("dummy_fluid_item");
+    public static final ResourceLocation FACADE = id("facade");
+
+    ///
+    /// STORAGE CELLS
+    ///
+    public static final ResourceLocation CELL1K = id("1k_storage_cell");
+    public static final ResourceLocation CELL4K = id("4k_storage_cell");
+    public static final ResourceLocation CELL16K = id("16k_storage_cell");
+    public static final ResourceLocation CELL64K = id("64k_storage_cell");
     public static final ResourceLocation FLUID_CELL1K = id("1k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL4K = id("4k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL16K = id("16k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL64K = id("64k_fluid_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL2 = id("2_cubed_spatial_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL16 = id("16_cubed_spatial_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL128 = id("128_cubed_spatial_storage_cell");
     public static final ResourceLocation CELL_CREATIVE = id("creative_storage_cell");
     public static final ResourceLocation PORTABLE_CELL1K = id("1k_portable_cell");
     public static final ResourceLocation PORTABLE_CELL4K = id("4k_portable_cell");
     public static final ResourceLocation PORTABLE_CELL16K = id("16k_portable_cell");
     public static final ResourceLocation PORTABLE_CELL64K = id("64k_portable_cell");
-    public static final ResourceLocation CELL4K = id("4k_storage_cell");
-    public static final ResourceLocation FLUID_CELL64K = id("64k_fluid_storage_cell");
-    public static final ResourceLocation MEMORY_CARD = id("memory_card");
-    public static final ResourceLocation CELL64K = id("64k_storage_cell");
-    public static final ResourceLocation SPATIAL_CELL128 = id("128_cubed_spatial_storage_cell");
-    public static final ResourceLocation NETHER_QUARTZ_AXE = id("nether_quartz_axe");
-    public static final ResourceLocation NETHER_QUARTZ_SEED = id("nether_quartz_seed");
-    public static final ResourceLocation CELL16K = id("16k_storage_cell");
-    public static final ResourceLocation ENCODED_PATTERN = id("encoded_pattern");
-    public static final ResourceLocation SPATIAL_CELL16 = id("16_cubed_spatial_storage_cell");
-    public static final ResourceLocation MASS_CANNON = id("matter_cannon");
-    public static final ResourceLocation CERTUS_QUARTZ_PICK = id("certus_quartz_pickaxe");
-    public static final ResourceLocation CELL1K = id("1k_storage_cell");
-    public static final ResourceLocation SPATIAL_CELL2 = id("2_cubed_spatial_storage_cell");
-    public static final ResourceLocation FLUIX_CRYSTAL_SEED = id("fluix_crystal_seed");
-    public static final ResourceLocation DUMMY_FLUID_ITEM = id("dummy_fluid_item");
-    public static final ResourceLocation FLUID_CELL16K = id("16k_fluid_storage_cell");
-    public static final ResourceLocation NETHER_QUARTZ_PICK = id("nether_quartz_pickaxe");
-    public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
-    public static final ResourceLocation COLORED_PAINT_BALL_WHITE = id("white_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_ORANGE = id("orange_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_MAGENTA = id("magenta_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_LIGHT_BLUE = id("light_blue_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_YELLOW = id("yellow_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_LIME = id("lime_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_PINK = id("pink_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_GRAY = id("gray_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_LIGHT_GRAY = id("light_gray_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_CYAN = id("cyan_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_PURPLE = id("purple_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_BLUE = id("blue_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_BROWN = id("brown_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_GREEN = id("green_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_RED = id("red_paint_ball");
-    public static final ResourceLocation COLORED_PAINT_BALL_BLACK = id("black_paint_ball");
-    public static final Map<AEColor, ResourceLocation> COLORED_PAINT_BALL = ImmutableMap
-            .<AEColor, ResourceLocation>builder().put(AEColor.WHITE, COLORED_PAINT_BALL_WHITE)
-            .put(AEColor.ORANGE, COLORED_PAINT_BALL_ORANGE)
-            .put(AEColor.MAGENTA, COLORED_PAINT_BALL_MAGENTA)
-            .put(AEColor.LIGHT_BLUE, COLORED_PAINT_BALL_LIGHT_BLUE)
-            .put(AEColor.YELLOW, COLORED_PAINT_BALL_YELLOW)
-            .put(AEColor.LIME, COLORED_PAINT_BALL_LIME)
-            .put(AEColor.PINK, COLORED_PAINT_BALL_PINK)
-            .put(AEColor.GRAY, COLORED_PAINT_BALL_GRAY)
-            .put(AEColor.LIGHT_GRAY, COLORED_PAINT_BALL_LIGHT_GRAY)
-            .put(AEColor.CYAN, COLORED_PAINT_BALL_CYAN)
-            .put(AEColor.PURPLE, COLORED_PAINT_BALL_PURPLE)
-            .put(AEColor.BLUE, COLORED_PAINT_BALL_BLUE)
-            .put(AEColor.BROWN, COLORED_PAINT_BALL_BROWN)
-            .put(AEColor.GREEN, COLORED_PAINT_BALL_GREEN)
-            .put(AEColor.RED, COLORED_PAINT_BALL_RED)
-            .put(AEColor.BLACK, COLORED_PAINT_BALL_BLACK)
-            .build();
-    public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
-    public static final ResourceLocation FACADE = id("facade");
-    public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
-    public static final ResourceLocation COLOR_APPLICATOR = id("color_applicator");
-    public static final ResourceLocation WIRELESS_TERMINAL = id("wireless_terminal");
-    public static final ResourceLocation CERTUS_CRYSTAL_SEED = id("certus_crystal_seed");
-    public static final ResourceLocation CERTUS_QUARTZ_SHOVEL = id("certus_quartz_shovel");
-    public static final ResourceLocation NETHER_QUARTZ_SHOVEL = id("nether_quartz_shovel");
-    public static final ResourceLocation NETHER_QUARTZ_SWORD = id("nether_quartz_sword");
-    public static final ResourceLocation CERTUS_QUARTZ_SWORD = id("certus_quartz_sword");
+
+    ///
+    /// PAINT BALLS
+    ///
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_WHITE = id("white_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_ORANGE = id("orange_lumen_paint_ball");
     public static final ResourceLocation COLORED_LUMEN_PAINT_BALL_MAGENTA = id("magenta_lumen_paint_ball");
@@ -122,9 +86,59 @@ public final class AEItemIds {
             .put(AEColor.RED, COLORED_LUMEN_PAINT_BALL_RED)
             .put(AEColor.BLACK, COLORED_LUMEN_PAINT_BALL_BLACK)
             .build();
-    public static final ResourceLocation NETHER_QUARTZ_WRENCH = id("nether_quartz_wrench");
+
+    public static final ResourceLocation COLORED_PAINT_BALL_WHITE = id("white_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_ORANGE = id("orange_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_MAGENTA = id("magenta_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_LIGHT_BLUE = id("light_blue_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_YELLOW = id("yellow_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_LIME = id("lime_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_PINK = id("pink_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_GRAY = id("gray_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_LIGHT_GRAY = id("light_gray_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_CYAN = id("cyan_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_PURPLE = id("purple_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_BLUE = id("blue_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_BROWN = id("brown_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_GREEN = id("green_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_RED = id("red_paint_ball");
+    public static final ResourceLocation COLORED_PAINT_BALL_BLACK = id("black_paint_ball");
+    public static final Map<AEColor, ResourceLocation> COLORED_PAINT_BALL = ImmutableMap
+            .<AEColor, ResourceLocation>builder().put(AEColor.WHITE, COLORED_PAINT_BALL_WHITE)
+            .put(AEColor.ORANGE, COLORED_PAINT_BALL_ORANGE)
+            .put(AEColor.MAGENTA, COLORED_PAINT_BALL_MAGENTA)
+            .put(AEColor.LIGHT_BLUE, COLORED_PAINT_BALL_LIGHT_BLUE)
+            .put(AEColor.YELLOW, COLORED_PAINT_BALL_YELLOW)
+            .put(AEColor.LIME, COLORED_PAINT_BALL_LIME)
+            .put(AEColor.PINK, COLORED_PAINT_BALL_PINK)
+            .put(AEColor.GRAY, COLORED_PAINT_BALL_GRAY)
+            .put(AEColor.LIGHT_GRAY, COLORED_PAINT_BALL_LIGHT_GRAY)
+            .put(AEColor.CYAN, COLORED_PAINT_BALL_CYAN)
+            .put(AEColor.PURPLE, COLORED_PAINT_BALL_PURPLE)
+            .put(AEColor.BLUE, COLORED_PAINT_BALL_BLUE)
+            .put(AEColor.BROWN, COLORED_PAINT_BALL_BROWN)
+            .put(AEColor.GREEN, COLORED_PAINT_BALL_GREEN)
+            .put(AEColor.RED, COLORED_PAINT_BALL_RED)
+            .put(AEColor.BLACK, COLORED_PAINT_BALL_BLACK)
+            .build();
+
+    ///
+    /// TOOLS
+    ///
+    public static final ResourceLocation CERTUS_QUARTZ_AXE = id("certus_quartz_axe");
+    public static final ResourceLocation CERTUS_QUARTZ_HOE = id("certus_quartz_hoe");
+    public static final ResourceLocation CERTUS_QUARTZ_SHOVEL = id("certus_quartz_shovel");
+    public static final ResourceLocation CERTUS_QUARTZ_PICK = id("certus_quartz_pickaxe");
+    public static final ResourceLocation CERTUS_QUARTZ_SWORD = id("certus_quartz_sword");
     public static final ResourceLocation CERTUS_QUARTZ_WRENCH = id("certus_quartz_wrench");
     public static final ResourceLocation CERTUS_QUARTZ_KNIFE = id("certus_quartz_cutting_knife");
+
+    public static final ResourceLocation NETHER_QUARTZ_AXE = id("nether_quartz_axe");
+    public static final ResourceLocation NETHER_QUARTZ_HOE = id("nether_quartz_hoe");
+    public static final ResourceLocation NETHER_QUARTZ_SHOVEL = id("nether_quartz_shovel");
+    public static final ResourceLocation NETHER_QUARTZ_PICK = id("nether_quartz_pickaxe");
+    public static final ResourceLocation NETHER_QUARTZ_SWORD = id("nether_quartz_sword");
+    public static final ResourceLocation NETHER_QUARTZ_WRENCH = id("nether_quartz_wrench");
     public static final ResourceLocation NETHER_QUARTZ_KNIFE = id("nether_quartz_cutting_knife");
 
     ///
