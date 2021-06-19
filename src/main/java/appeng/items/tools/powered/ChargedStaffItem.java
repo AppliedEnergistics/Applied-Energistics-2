@@ -47,7 +47,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                     final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);
                     final float dy = (float) (Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY);
                     final float dz = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ);
-                    AppEng.proxy.sendToAllNearExcept(null, dx, dy, dz, 32.0, target.world,
+                    AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.world,
                             new LightningPacket(dx, dy, dz));
                 }
             }

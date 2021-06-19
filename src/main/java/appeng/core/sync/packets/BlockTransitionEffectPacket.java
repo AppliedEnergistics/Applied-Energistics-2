@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+import appeng.core.AppEngClient;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
@@ -108,7 +109,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
         for (int zz = 0; zz < 32; zz++) {
-            if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
                 // Distribute the spawn point across the entire block's area
                 double x = pos.getX() + Platform.getRandomFloat();
                 double y = pos.getY() + Platform.getRandomFloat();

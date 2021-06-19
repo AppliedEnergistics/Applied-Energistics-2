@@ -18,7 +18,11 @@
 
 package appeng.entity;
 
+import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AppEngClient;
+import appeng.util.Platform;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -108,7 +112,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
             int len = getTicksBetweenParticleEffects(progressPerTick);
             if (++this.progress_1000 >= len) {
                 this.progress_1000 = 0;
-                AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
+                AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
                         this.getPosZ(), null);
             }
         } else {

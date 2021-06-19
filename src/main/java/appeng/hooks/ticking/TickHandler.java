@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
+import appeng.core.AppEngClient;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -266,7 +267,7 @@ public class TickHandler {
             // Handle changes to the cable-rendering mode
             if (currentMode != this.crm) {
                 this.crm = currentMode;
-                AppEng.proxy.triggerUpdates();
+                AppEngClient.instance().triggerUpdates();
             }
         }
     }

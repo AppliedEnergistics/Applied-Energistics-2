@@ -322,11 +322,11 @@ public class PartPlacement {
     }
 
     private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vector3d pos) {
-        AppEng.proxy.setPartInteractionPlayer(player);
+        AppEng.instance().setPartInteractionPlayer(player);
         try {
             return host.selectPart(pos);
         } finally {
-            AppEng.proxy.setPartInteractionPlayer(null);
+            AppEng.instance().setPartInteractionPlayer(null);
         }
     }
 

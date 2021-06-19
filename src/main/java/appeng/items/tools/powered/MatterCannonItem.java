@@ -227,7 +227,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         }
 
         try {
-            AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
                                     : pos.getHitVec().squareDistanceTo(vec) + 1)));
@@ -329,7 +329,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             try {
-                AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
                                         : pos.getHitVec().squareDistanceTo(vec) + 1)));

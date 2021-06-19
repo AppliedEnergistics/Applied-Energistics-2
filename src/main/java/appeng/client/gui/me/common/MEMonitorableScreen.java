@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AppEngClient;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -504,7 +505,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 if (this.searchField.isFocused()) {
                     this.setListener(this.searchField);

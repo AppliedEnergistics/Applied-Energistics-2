@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.core.AppEngClient;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -333,7 +334,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }

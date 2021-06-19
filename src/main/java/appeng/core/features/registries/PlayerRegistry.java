@@ -54,7 +54,7 @@ public class PlayerRegistry implements IPlayerRegistry {
             return null;
         }
 
-        for (final PlayerEntity player : AppEng.proxy.getPlayers()) {
+        for (final PlayerEntity player : AppEng.instance().getPlayers()) {
             if (player.getUniqueID().equals(profileId)) {
                 return player;
             }

@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -62,7 +61,7 @@ public class MockExplosionPacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final World world = AppEng.proxy.getWorld();
+        final World world = player.getEntityWorld();
         world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
     }
 }

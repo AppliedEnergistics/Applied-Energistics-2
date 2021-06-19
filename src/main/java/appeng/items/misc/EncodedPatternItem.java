@@ -205,7 +205,7 @@ public class EncodedPatternItem extends AEBaseItem {
             return out;
         }
 
-        final World w = AppEng.proxy.getWorld();
+        final World w = AppEng.instance().getClientWorld();
         if (w == null) {
             return ItemStack.EMPTY;
         }

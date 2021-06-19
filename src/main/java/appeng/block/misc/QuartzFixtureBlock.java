@@ -24,6 +24,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AppEngClient;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -173,7 +174,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         final double yOff = -0.3 * up.getYOffset();
         final double zOff = -0.3 * up.getZOffset();
         for (int bolts = 0; bolts < 3; bolts++) {
-            if (AppEng.proxy.shouldAddParticles(r)) {
+            if (AppEngClient.instance().shouldAddParticles(r)) {
                 w.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
                         zOff + 0.5 + pos.getZ(), 0, 0, 0);
             }

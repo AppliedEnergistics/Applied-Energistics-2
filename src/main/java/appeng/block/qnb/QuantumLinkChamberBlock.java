@@ -22,6 +22,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AppEngClient;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -44,6 +45,8 @@ import appeng.core.AppEng;
 import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
@@ -60,10 +63,11 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
-        if (bridge != null && bridge.hasQES() && AppEng.proxy.shouldAddParticles(rand)) {
-            AppEng.proxy.spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+        if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
+            AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     null);
         }
     }

@@ -45,7 +45,7 @@ import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.api.definitions.ApiItems;
 import appeng.tile.misc.ChargerTileEntity;
 import appeng.util.InteractionUtil;
@@ -97,7 +97,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             final double zOff = 0.0;
 
             for (int bolts = 0; bolts < 3; bolts++) {
-                if (AppEng.proxy.shouldAddParticles(r)) {
+                if (AppEngClient.instance().shouldAddParticles(r)) {
                     Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
                             yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                 }

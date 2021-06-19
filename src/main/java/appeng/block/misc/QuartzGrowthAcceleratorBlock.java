@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import java.util.Random;
 
+import appeng.core.AppEngClient;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -71,7 +72,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
         final QuartzGrowthAcceleratorTileEntity cga = this.getTileEntity(w, pos);
 
-        if (cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles(r)) {
+        if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;
             final double d1 = r.nextFloat() - 0.5F;
 

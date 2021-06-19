@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+import appeng.core.AppEngClient;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -72,7 +73,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
-            if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
                 // Distribute the spawn point around the item's position
                 double x = this.x + Platform.getRandomFloat() * 0.5 - 0.25;
                 double y = this.y + Platform.getRandomFloat() * 0.5 - 0.25;

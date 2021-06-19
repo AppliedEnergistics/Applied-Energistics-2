@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.core.AppEngClient;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -83,7 +84,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.name.setFocused2(!this.name.isFocused());
                 return true;
             }

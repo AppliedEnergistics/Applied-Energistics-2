@@ -182,7 +182,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             }
         }
 
-        AppEng.proxy.sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
+        AppEng.instance().sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
                 new MockExplosionPacket(this.getPosX(), this.getPosY(), this.getPosZ()));
     }
 

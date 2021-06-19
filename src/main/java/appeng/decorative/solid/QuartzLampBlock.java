@@ -20,6 +20,7 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
+import appeng.core.AppEngClient;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,7 +44,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
             return;
         }
 
-        if (AppEng.proxy.shouldAddParticles(r)) {
+        if (AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
