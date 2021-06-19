@@ -18,19 +18,21 @@
 
 package appeng.core;
 
-import appeng.api.parts.CableRenderMode;
-import appeng.client.EffectType;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.BasePacket;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
+import appeng.api.parts.CableRenderMode;
+import appeng.client.EffectType;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.BasePacket;
 
 public interface AppEng {
 
@@ -63,7 +65,7 @@ public interface AppEng {
     void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w, BasePacket packet);
 
     void spawnEffect(final EffectType effect, final World world, final double posX, final double posY,
-                     final double posZ, final Object o);
+            final double posZ, final Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that

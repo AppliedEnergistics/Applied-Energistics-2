@@ -1,29 +1,11 @@
 package appeng.core;
 
-import appeng.api.parts.CableRenderMode;
-import appeng.client.ActionKey;
-import appeng.client.EffectType;
-import appeng.client.gui.style.StyleManager;
-import appeng.client.render.effects.EnergyParticleData;
-import appeng.client.render.effects.ParticleTypes;
-import appeng.client.render.overlay.OverlayManager;
-import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.tesr.SkyChestTESR;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.helpers.IMouseWheelItem;
-import appeng.init.client.InitAdditionalModels;
-import appeng.init.client.InitAutoRotatingModel;
-import appeng.init.client.InitBlockColors;
-import appeng.init.client.InitBlockEntityRenderers;
-import appeng.init.client.InitBuiltInModels;
-import appeng.init.client.InitEntityRendering;
-import appeng.init.client.InitItemColors;
-import appeng.init.client.InitItemModelsProperties;
-import appeng.init.client.InitParticleFactories;
-import appeng.init.client.InitRenderTypes;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
+import java.util.EnumMap;
+import java.util.Objects;
+import java.util.Random;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -40,15 +22,38 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import javax.annotation.Nonnull;
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.Random;
+import appeng.api.parts.CableRenderMode;
+import appeng.client.ActionKey;
+import appeng.client.EffectType;
+import appeng.client.gui.style.StyleManager;
+import appeng.client.render.effects.EnergyParticleData;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.overlay.OverlayManager;
+import appeng.client.render.tesr.InscriberTESR;
+import appeng.client.render.tesr.SkyChestTESR;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.ticking.TickHandler;
+import appeng.init.client.InitAdditionalModels;
+import appeng.init.client.InitAutoRotatingModel;
+import appeng.init.client.InitBlockColors;
+import appeng.init.client.InitBlockEntityRenderers;
+import appeng.init.client.InitBuiltInModels;
+import appeng.init.client.InitEntityRendering;
+import appeng.init.client.InitItemColors;
+import appeng.init.client.InitItemModelsProperties;
+import appeng.init.client.InitParticleFactories;
+import appeng.init.client.InitRenderTypes;
+import appeng.init.client.InitScreens;
+import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 
 /**
  * Client-specific functionality.
@@ -71,12 +76,11 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
 
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onClientTick);
+
         InitAutoRotatingModel.init(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
-
-        Minecraft minecraft = Minecraft.getInstance();
-        StyleManager.initialize(minecraft.getResourceManager());
 
         INSTANCE = this;
     }
@@ -109,9 +113,14 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            postClientSetup(minecraft);
+        });
 
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
         MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
+        MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
 
         for (ActionKey key : ActionKey.values()) {
             final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
@@ -120,8 +129,14 @@ public class AppEngClient extends AppEngBase {
         }
 
         InitEntityRendering.init();
+    }
 
-        MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
+    /**
+     * Called when other mods have finished initializing and the client is now available.
+     */
+    private void postClientSetup(Minecraft minecraft) {
+        StyleManager.initialize(minecraft.getResourceManager());
+        InitScreens.init();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -190,7 +205,7 @@ public class AppEngClient extends AppEngBase {
     // vanilla particle system
     @Override
     public void spawnEffect(final EffectType effect, final World world, final double posX, final double posY,
-                            final double posZ, final Object o) {
+            final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:

@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import appeng.core.AppEngClient;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -29,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;

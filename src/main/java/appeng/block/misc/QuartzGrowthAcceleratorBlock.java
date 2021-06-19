@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import java.util.Random;
 
-import appeng.core.AppEngClient;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -38,7 +37,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import appeng.util.Platform;
 

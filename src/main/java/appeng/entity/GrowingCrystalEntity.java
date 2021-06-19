@@ -18,11 +18,7 @@
 
 package appeng.entity;
 
-import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AppEngClient;
-import appeng.util.Platform;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

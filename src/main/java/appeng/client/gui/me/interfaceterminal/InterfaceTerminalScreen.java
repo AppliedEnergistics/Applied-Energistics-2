@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import appeng.core.AppEngClient;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -58,7 +57,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.DualityInterface;

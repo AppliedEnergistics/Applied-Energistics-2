@@ -20,7 +20,6 @@ package appeng.client.render.crafting;
 
 import java.util.Random;
 
-import appeng.core.AppEngClient;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
@@ -48,6 +47,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**

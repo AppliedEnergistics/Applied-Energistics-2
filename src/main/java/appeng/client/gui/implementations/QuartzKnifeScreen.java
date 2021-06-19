@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.core.AppEngClient;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -33,7 +32,7 @@ import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.QuartzKnifeContainer;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 

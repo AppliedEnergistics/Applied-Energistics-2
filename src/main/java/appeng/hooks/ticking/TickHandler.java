@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import appeng.core.AppEngClient;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -41,16 +40,13 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.LogicalSide;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -60,7 +56,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
@@ -100,27 +96,6 @@ public class TickHandler {
     }
 
     private TickHandler() {
-    }
-
-    public static void setup(IEventBus eventBus) {
-        eventBus.addListener(INSTANCE::onServerTick);
-        eventBus.addListener(INSTANCE::onWorldTick);
-        eventBus.addListener(INSTANCE::onUnloadChunk);
-        // Try to go first for world loads since we use it to initialize state
-        eventBus.addListener(EventPriority.HIGHEST, INSTANCE::onLoadWorld);
-        // Try to go last for world unloads since we use it to clean-up state
-        eventBus.addListener(EventPriority.LOWEST, INSTANCE::onUnloadWorld);
-
-        // DistExecutor does not like functional interfaces
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new SafeRunnable() {
-
-            private static final long serialVersionUID = 5221919736953944125L;
-
-            @Override
-            public void run() {
-                eventBus.addListener(INSTANCE::onClientTick);
-            }
-        });
     }
 
     public Map<Integer, PlayerColor> getPlayerColors() {
@@ -259,6 +234,7 @@ public class TickHandler {
     /**
      * Client side ticking similar to the global server tick.
      */
+    @OnlyIn(Dist.CLIENT)
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
             this.tickColors(this.cliPlayerColors);

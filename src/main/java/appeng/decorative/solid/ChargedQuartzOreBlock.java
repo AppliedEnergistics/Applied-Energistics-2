@@ -20,7 +20,6 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
-import appeng.core.AppEngClient;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 
 public class ChargedQuartzOreBlock extends QuartzOreBlock {
     public ChargedQuartzOreBlock(Properties props) {

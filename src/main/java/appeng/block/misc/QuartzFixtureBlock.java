@@ -24,7 +24,6 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AppEngClient;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -55,7 +54,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
 

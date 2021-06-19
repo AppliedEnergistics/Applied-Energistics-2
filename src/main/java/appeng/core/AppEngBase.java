@@ -1,49 +1,15 @@
 package appeng.core;
 
-import appeng.api.parts.CableRenderMode;
-import appeng.capabilities.Capabilities;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiParts;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.stats.AeStats;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.hooks.ticking.TickHandler;
-import appeng.init.InitBlockEntities;
-import appeng.init.InitBlocks;
-import appeng.init.InitContainerTypes;
-import appeng.init.InitDispenserBehavior;
-import appeng.init.InitEntityTypes;
-import appeng.init.InitItems;
-import appeng.init.InitRecipeSerializers;
-import appeng.init.client.InitParticleTypes;
-import appeng.init.client.InitScreens;
-import appeng.init.internal.InitCellHandlers;
-import appeng.init.internal.InitChargerRates;
-import appeng.init.internal.InitGridCaches;
-import appeng.init.internal.InitMatterCannonAmmo;
-import appeng.init.internal.InitP2PAttunements;
-import appeng.init.internal.InitSpatialMovableRegistry;
-import appeng.init.internal.InitUpgrades;
-import appeng.init.internal.InitWirelessHandlers;
-import appeng.init.worldgen.InitBiomeModifications;
-import appeng.init.worldgen.InitBiomes;
-import appeng.init.worldgen.InitFeatures;
-import appeng.init.worldgen.InitStructures;
-import appeng.integration.Integrations;
-import appeng.items.tools.NetworkToolItem;
-import appeng.parts.PartPlacement;
-import appeng.server.AECommand;
-import appeng.services.ChunkLoadingService;
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
-import appeng.util.Platform;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
 import com.mojang.brigadier.CommandDispatcher;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,11 +29,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -78,17 +43,48 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
+import appeng.api.parts.CableRenderMode;
+import appeng.capabilities.Capabilities;
+import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiParts;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
+import appeng.hooks.ticking.TickHandler;
+import appeng.init.InitBlockEntities;
+import appeng.init.InitBlocks;
+import appeng.init.InitContainerTypes;
+import appeng.init.InitDispenserBehavior;
+import appeng.init.InitEntityTypes;
+import appeng.init.InitItems;
+import appeng.init.InitRecipeSerializers;
+import appeng.init.InitStats;
+import appeng.init.client.InitParticleTypes;
+import appeng.init.internal.InitCellHandlers;
+import appeng.init.internal.InitChargerRates;
+import appeng.init.internal.InitGridCaches;
+import appeng.init.internal.InitMatterCannonAmmo;
+import appeng.init.internal.InitP2PAttunements;
+import appeng.init.internal.InitSpatialMovableRegistry;
+import appeng.init.internal.InitUpgrades;
+import appeng.init.internal.InitWirelessHandlers;
+import appeng.init.worldgen.InitBiomeModifications;
+import appeng.init.worldgen.InitBiomes;
+import appeng.init.worldgen.InitFeatures;
+import appeng.init.worldgen.InitStructures;
+import appeng.integration.Integrations;
+import appeng.items.tools.NetworkToolItem;
+import appeng.parts.PartPlacement;
+import appeng.server.AECommand;
+import appeng.services.ChunkLoadingService;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
  * Mod functionality that is common to both dedicated server and client.
- *
+ * <p>
  * Note that a client will still have zero or more embedded servers (although only one at a time).
  */
 public abstract class AppEngBase implements AppEng {
@@ -142,8 +138,13 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
 
-
-        TickHandler.setup(MinecraftForge.EVENT_BUS);
+        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onWorldTick);
+        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onUnloadChunk);
+        // Try to go first for world loads since we use it to initialize state
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, TickHandler.instance()::onLoadWorld);
+        // Try to go last for world unloads since we use it to clean-up state
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onUnloadWorld);
 
         MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
@@ -152,31 +153,36 @@ public abstract class AppEngBase implements AppEng {
 
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
         MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
-
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        InitDispenserBehavior.init();
+        event.enqueueWork(this::postRegistrationInitialization);
+    }
+
+    /**
+     * Runs after all mods have had time to run their registrations into registries.
+     */
+    public void postRegistrationInitialization() {
+        InitP2PAttunements.init();
+
+        // Do initialization that doesn't depend on mod registries being populated
+        InitStats.init();
+        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
 
         Capabilities.register();
-
+        InitDispenserBehavior.init();
         InitGridCaches.init();
         InitMatterCannonAmmo.init();
         InitCellHandlers.init();
-        AeStats.register();
-        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
 
-        InitP2PAttunements.init();
+        AEConfig.instance().save();
         InitWirelessHandlers.init();
         InitUpgrades.init();
         InitChargerRates.init();
         InitSpatialMovableRegistry.init();
-
-        AEConfig.instance().save();
-
         NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 
-        event.enqueueWork(ChunkLoadingService::register);
+        ChunkLoadingService.register();
 
         AddonLoader.loadAddons(Api.INSTANCE);
     }
@@ -212,10 +218,6 @@ public abstract class AppEngBase implements AppEng {
 
     public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
         InitContainerTypes.init(event.getRegistry());
-
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            InitScreens.init();
-        });
     }
 
     public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
@@ -276,7 +278,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
-                                    final double dist, final World w, final BasePacket packet) {
+            final double dist, final World w, final BasePacket packet) {
         if (w.isRemote()) {
             return;
         }

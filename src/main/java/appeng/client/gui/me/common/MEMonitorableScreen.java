@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AppEngClient;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -73,7 +72,7 @@ import appeng.container.me.common.MEMonitorableContainer;
 import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
