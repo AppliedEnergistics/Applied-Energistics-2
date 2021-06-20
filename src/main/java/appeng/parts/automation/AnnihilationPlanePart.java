@@ -79,13 +79,14 @@ import appeng.util.item.AEItemStack;
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
-            "blacklisted/annihilation_plane");
+            "blacklisted/item_annihilation_plane");
 
     private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
     private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
-    private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
+    private static final PlaneModels MODELS = new PlaneModels("part/item_annihilation_plane",
+            "part/item_annihilation_plane_on");
 
     @PartModels
     public static List<IPartModel> getModels() {

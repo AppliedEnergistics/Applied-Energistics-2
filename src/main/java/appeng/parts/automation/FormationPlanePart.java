@@ -83,7 +83,8 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
-    private static final PlaneModels MODELS = new PlaneModels("part/formation_plane", "part/formation_plane_on");
+    private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
+            "part/item_formation_plane_on");
     private static final Random RANDOM_OFFSET = new Random();
 
     @PartModels

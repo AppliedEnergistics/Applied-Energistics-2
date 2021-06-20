@@ -162,16 +162,16 @@ public final class ApiItems {
     /// PORTABLE CELLS
     ///
 
-    public static final ItemDefinition PORTABLE_CELL1K = item(AEItemIds.PORTABLE_CELL1K, props -> new PortableCellItem(StorageTier.SIZE_1K, props))
+    public static final ItemDefinition PORTABLE_CELL1K = item(AEItemIds.PORTABLE_ITEM_CELL1K, props -> new PortableCellItem(StorageTier.SIZE_1K, props))
             .props(UNSTACKABLE)
             .build();
-    public static final ItemDefinition PORTABLE_CELL4k = item(AEItemIds.PORTABLE_CELL4K, props -> new PortableCellItem(StorageTier.SIZE_4K, props))
+    public static final ItemDefinition PORTABLE_CELL4k = item(AEItemIds.PORTABLE_ITEM_CELL4K, props -> new PortableCellItem(StorageTier.SIZE_4K, props))
             .props(UNSTACKABLE)
             .build();
-    public static final ItemDefinition PORTABLE_CELL16K = item(AEItemIds.PORTABLE_CELL16K, props -> new PortableCellItem(StorageTier.SIZE_16K, props))
+    public static final ItemDefinition PORTABLE_CELL16K = item(AEItemIds.PORTABLE_ITEM_CELL16K, props -> new PortableCellItem(StorageTier.SIZE_16K, props))
             .props(UNSTACKABLE)
             .build();
-    public static final ItemDefinition PORTABLE_CELL64K = item(AEItemIds.PORTABLE_CELL64K, props -> new PortableCellItem(StorageTier.SIZE_64K, props))
+    public static final ItemDefinition PORTABLE_CELL64K = item(AEItemIds.PORTABLE_ITEM_CELL64K, props -> new PortableCellItem(StorageTier.SIZE_64K, props))
             .props(UNSTACKABLE)
             .build();
 
@@ -236,10 +236,10 @@ public final class ApiItems {
     public static final ItemDefinition SPATIAL_2_CELL_COMPONENT = item(AEItemIds.SPATIAL_2_CELL_COMPONENT, MaterialItem::new).build();
     public static final ItemDefinition SPATIAL_16_CELL_COMPONENT = item(AEItemIds.SPATIAL_16_CELL_COMPONENT, MaterialItem::new).build();
     public static final ItemDefinition SPATIAL_128_CELL_COMPONENT = item(AEItemIds.SPATIAL_128_CELL_COMPONENT, MaterialItem::new).build();
-    public static final ItemDefinition ITEM_1K_CELL_COMPONENT = item(AEItemIds.ITEM_1K_CELL_COMPONENT, props -> new StorageComponentItem(props, 1)).build();
-    public static final ItemDefinition ITEM_4K_CELL_COMPONENT = item(AEItemIds.ITEM_4K_CELL_COMPONENT, props -> new StorageComponentItem(props, 4)).build();
-    public static final ItemDefinition ITEM_16K_CELL_COMPONENT = item(AEItemIds.ITEM_16K_CELL_COMPONENT, props -> new StorageComponentItem(props, 16)).build();
-    public static final ItemDefinition ITEM_64K_CELL_COMPONENT = item(AEItemIds.ITEM_64K_CELL_COMPONENT, props -> new StorageComponentItem(props, 64)).build();
+    public static final ItemDefinition ITEM_1K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_1K, props -> new StorageComponentItem(props, 1)).build();
+    public static final ItemDefinition ITEM_4K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_4K, props -> new StorageComponentItem(props, 4)).build();
+    public static final ItemDefinition ITEM_16K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_16K, props -> new StorageComponentItem(props, 16)).build();
+    public static final ItemDefinition ITEM_64K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_64K, props -> new StorageComponentItem(props, 64)).build();
     public static final ItemDefinition EMPTY_STORAGE_CELL = item(AEItemIds.EMPTY_STORAGE_CELL, MaterialItem::new).build();
     public static final ItemDefinition WOODEN_GEAR = item(AEItemIds.WOODEN_GEAR, MaterialItem::new).build();
     public static final ItemDefinition WIRELESS_RECEIVER = item(AEItemIds.WIRELESS_RECEIVER, MaterialItem::new).build();
@@ -252,10 +252,10 @@ public final class ApiItems {
     public static final ItemDefinition QUANTUM_ENTANGLED_SINGULARITY = item(AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, props -> new CustomEntityItem(props, SingularityEntity::new)).build();
     public static final ItemDefinition BLANK_PATTERN = item(AEItemIds.BLANK_PATTERN, MaterialItem::new).build();
     public static final ItemDefinition CARD_CRAFTING = item(AEItemIds.CARD_CRAFTING, MaterialItem::new).build();
-    public static final ItemDefinition FLUID_1K_CELL_COMPONENT = item(AEItemIds.FLUID_1K_CELL_COMPONENT, MaterialItem::new).build();
-    public static final ItemDefinition FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_4K_CELL_COMPONENT, MaterialItem::new).build();
-    public static final ItemDefinition FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_16K_CELL_COMPONENT, MaterialItem::new).build();
-    public static final ItemDefinition FLUID_64K_CELL_COMPONENT = item(AEItemIds.FLUID_64K_CELL_COMPONENT, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_1K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_1K, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_4K, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_16K, MaterialItem::new).build();
+    public static final ItemDefinition FLUID_64K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_64K, MaterialItem::new).build();
 
     ///
     /// SEEDS
@@ -275,43 +275,43 @@ public final class ApiItems {
     /// CELLS
     ///
 
-    public static final ItemDefinition CELL_CREATIVE = item(AEItemIds.CELL_CREATIVE, CreativeStorageCellItem::new)
+    public static final ItemDefinition CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, CreativeStorageCellItem::new)
             .props(props -> props.maxStackSize(1).rarity(Rarity.EPIC))
             .build();
     public static final ItemDefinition VIEW_CELL = item(AEItemIds.VIEW_CELL, ViewCellItem::new).props(props -> props.maxStackSize(1))
             .build();
 
-    public static final ItemDefinition CELL1K = item(AEItemIds.CELL1K,
+    public static final ItemDefinition CELL1K = item(AEItemIds.ITEM_CELL_1K,
             props -> new BasicStorageCellItem(props, ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition CELL4K = item(AEItemIds.CELL4K,
+    public static final ItemDefinition CELL4K = item(AEItemIds.ITEM_CELL_4K,
             props -> new BasicStorageCellItem(props, ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition CELL16K = item(AEItemIds.CELL16K,
+    public static final ItemDefinition CELL16K = item(AEItemIds.ITEM_CELL_16K,
             props -> new BasicStorageCellItem(props, ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition CELL64K = item(AEItemIds.CELL64K,
+    public static final ItemDefinition CELL64K = item(AEItemIds.ITEM_CELL_64K,
             props -> new BasicStorageCellItem(props, ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512))
             .props(UNSTACKABLE).build();
 
-    public static final ItemDefinition FLUID_CELL1K = item(AEItemIds.FLUID_CELL1K,
+    public static final ItemDefinition FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K,
             props -> new BasicFluidStorageCell(props, FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition FLUID_CELL4K = item(AEItemIds.FLUID_CELL4K,
+    public static final ItemDefinition FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K,
             props -> new BasicFluidStorageCell(props, FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition FLUID_CELL16K = item(AEItemIds.FLUID_CELL16K,
+    public static final ItemDefinition FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K,
             props -> new BasicFluidStorageCell(props, FLUID_16K_CELL_COMPONENT, 16, 1.5f, 128))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition FLUID_CELL64K = item(AEItemIds.FLUID_CELL64K,
+    public static final ItemDefinition FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K,
             props -> new BasicFluidStorageCell(props, FLUID_64K_CELL_COMPONENT, 64, 2.0f, 512))
             .props(UNSTACKABLE).build();
 
-    public static final ItemDefinition SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL2, props -> new SpatialStorageCellItem(props, 2))
+    public static final ItemDefinition SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL_2, props -> new SpatialStorageCellItem(props, 2))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL16, props -> new SpatialStorageCellItem(props, 16))
+    public static final ItemDefinition SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL_16, props -> new SpatialStorageCellItem(props, 16))
             .props(UNSTACKABLE).build();
-    public static final ItemDefinition SPATIAL_CELL128 = item(AEItemIds.SPATIAL_CELL128, props -> new SpatialStorageCellItem(props, 128))
+    public static final ItemDefinition SPATIAL_CELL128 = item(AEItemIds.SPATIAL_CELL_128, props -> new SpatialStorageCellItem(props, 128))
             .props(UNSTACKABLE).build();
 
     ///

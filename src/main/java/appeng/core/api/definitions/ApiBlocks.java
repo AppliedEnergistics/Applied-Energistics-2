@@ -159,7 +159,7 @@ public final class ApiBlocks {
     public static final BlockDefinition CONTROLLER = block(AEBlockIds.CONTROLLER, ControllerBlock::new).build();
     public static final BlockDefinition DRIVE = block(AEBlockIds.DRIVE, DriveBlock::new).build();
     public static final BlockDefinition CHEST = block(AEBlockIds.CHEST, ChestBlock::new).build();
-    public static final BlockDefinition INTERFACE = block(AEBlockIds.INTERFACE, InterfaceBlock::new).build();
+    public static final BlockDefinition INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new).build();
     public static final BlockDefinition FLUID_INTERFACE = block(AEBlockIds.FLUID_INTERFACE, FluidInterfaceBlock::new).build();
     public static final BlockDefinition CELL_WORKBENCH = block(AEBlockIds.CELL_WORKBENCH, CellWorkbenchBlock::new).build();
     public static final BlockDefinition IO_PORT = block(AEBlockIds.IO_PORT, IOPortBlock::new).build();

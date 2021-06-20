@@ -76,19 +76,19 @@ import appeng.util.inv.InvOperation;
 public class InterfacePart extends BasicStatePart implements IGridTickable, IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_has_channel"));
 
     private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
 

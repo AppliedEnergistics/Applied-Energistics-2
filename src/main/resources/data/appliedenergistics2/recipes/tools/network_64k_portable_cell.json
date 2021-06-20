@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:64k_portable_cell"
+    "item": "appliedenergistics2:64k_portable_item_cell"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": ["abc"],
@@ -12,7 +12,7 @@
       "item": "appliedenergistics2:energy_cell"
     },
     "b": {
-      "item": "appliedenergistics2:64k_cell_component"
+      "item": "appliedenergistics2:64k_item_cell_component"
     }
   }
 }

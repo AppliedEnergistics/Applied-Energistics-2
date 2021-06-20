@@ -59,16 +59,16 @@ import appeng.util.item.AEItemStack;
 
 public class ImportBusPart extends SharedItemBusPart implements IInventoryDestination {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/import_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_has_channel"));
 
     private final IActionSource source;
     private int itemsToSend; // used in tickingRequest

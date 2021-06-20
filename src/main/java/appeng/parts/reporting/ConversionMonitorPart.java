@@ -49,15 +49,17 @@ import appeng.util.item.AEItemStack;
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/item_conversion_monitor_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/item_conversion_monitor_on");
     @PartModels
     public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
-            "part/conversion_monitor_locked_off");
+            "part/item_conversion_monitor_locked_off");
     @PartModels
     public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
-            "part/conversion_monitor_locked_on");
+            "part/item_conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);

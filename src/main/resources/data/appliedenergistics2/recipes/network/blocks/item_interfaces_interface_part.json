@@ -1,0 +1,11 @@
+{
+  "result": {
+    "item": "appliedenergistics2:cable_item_interface"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:item_interface"
+    }
+  ]
+}

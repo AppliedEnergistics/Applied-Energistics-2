@@ -5,7 +5,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "appliedenergistics2:level_emitter"
+      "item": "appliedenergistics2:item_level_emitter"
     },
     {
       "tag": "appliedenergistics2:illuminated_panel"

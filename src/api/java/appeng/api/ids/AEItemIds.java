@@ -55,22 +55,22 @@ public final class AEItemIds {
     ///
     /// STORAGE CELLS
     ///
-    public static final ResourceLocation CELL1K = id("1k_storage_cell");
-    public static final ResourceLocation CELL4K = id("4k_storage_cell");
-    public static final ResourceLocation CELL16K = id("16k_storage_cell");
-    public static final ResourceLocation CELL64K = id("64k_storage_cell");
-    public static final ResourceLocation FLUID_CELL1K = id("1k_fluid_storage_cell");
-    public static final ResourceLocation FLUID_CELL4K = id("4k_fluid_storage_cell");
-    public static final ResourceLocation FLUID_CELL16K = id("16k_fluid_storage_cell");
-    public static final ResourceLocation FLUID_CELL64K = id("64k_fluid_storage_cell");
-    public static final ResourceLocation SPATIAL_CELL2 = id("2_cubed_spatial_storage_cell");
-    public static final ResourceLocation SPATIAL_CELL16 = id("16_cubed_spatial_storage_cell");
-    public static final ResourceLocation SPATIAL_CELL128 = id("128_cubed_spatial_storage_cell");
-    public static final ResourceLocation CELL_CREATIVE = id("creative_storage_cell");
-    public static final ResourceLocation PORTABLE_CELL1K = id("1k_portable_cell");
-    public static final ResourceLocation PORTABLE_CELL4K = id("4k_portable_cell");
-    public static final ResourceLocation PORTABLE_CELL16K = id("16k_portable_cell");
-    public static final ResourceLocation PORTABLE_CELL64K = id("64k_portable_cell");
+    public static final ResourceLocation ITEM_CELL_1K = id("1k_item_storage_cell");
+    public static final ResourceLocation ITEM_CELL_4K = id("4k_item_storage_cell");
+    public static final ResourceLocation ITEM_CELL_16K = id("16k_item_storage_cell");
+    public static final ResourceLocation ITEM_CELL_64K = id("64k_item_storage_cell");
+    public static final ResourceLocation FLUID_CELL_1K = id("1k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL_4K = id("4k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL_16K = id("16k_fluid_storage_cell");
+    public static final ResourceLocation FLUID_CELL_64K = id("64k_fluid_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL_2 = id("2_cubed_spatial_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL_16 = id("16_cubed_spatial_storage_cell");
+    public static final ResourceLocation SPATIAL_CELL_128 = id("128_cubed_spatial_storage_cell");
+    public static final ResourceLocation ITEM_CELL_CREATIVE = id("creative_item_storage_cell");
+    public static final ResourceLocation PORTABLE_ITEM_CELL1K = id("1k_portable_item_cell");
+    public static final ResourceLocation PORTABLE_ITEM_CELL4K = id("4k_portable_item_cell");
+    public static final ResourceLocation PORTABLE_ITEM_CELL16K = id("16k_portable_item_cell");
+    public static final ResourceLocation PORTABLE_ITEM_CELL64K = id("64k_portable_item_cell");
 
     ///
     /// PAINT BALLS
@@ -201,13 +201,18 @@ public final class AEItemIds {
     public static final ResourceLocation FUZZY_CARD = id("fuzzy_card");
     public static final ResourceLocation SPEED_CARD = id("speed_card");
     public static final ResourceLocation INVERTER_CARD = id("inverter_card");
+    public static final ResourceLocation CARD_CRAFTING = id("crafting_card");
     public static final ResourceLocation SPATIAL_2_CELL_COMPONENT = id("2_cubed_spatial_cell_component");
     public static final ResourceLocation SPATIAL_16_CELL_COMPONENT = id("16_cubed_spatial_cell_component");
     public static final ResourceLocation SPATIAL_128_CELL_COMPONENT = id("128_cubed_spatial_cell_component");
-    public static final ResourceLocation ITEM_1K_CELL_COMPONENT = id("1k_cell_component");
-    public static final ResourceLocation ITEM_4K_CELL_COMPONENT = id("4k_cell_component");
-    public static final ResourceLocation ITEM_16K_CELL_COMPONENT = id("16k_cell_component");
-    public static final ResourceLocation ITEM_64K_CELL_COMPONENT = id("64k_cell_component");
+    public static final ResourceLocation ITEM_CELL_COMPONENT_1K = id("1k_item_cell_component");
+    public static final ResourceLocation ITEM_CELL_COMPONENT_4K = id("4k_item_cell_component");
+    public static final ResourceLocation ITEM_CELL_COMPONENT_16K = id("16k_item_cell_component");
+    public static final ResourceLocation ITEM_CELL_COMPONENT_64K = id("64k_item_cell_component");
+    public static final ResourceLocation FLUID_CELL_COMPONENT_1K = id("1k_fluid_cell_component");
+    public static final ResourceLocation FLUID_CELL_COMPONENT_4K = id("4k_fluid_cell_component");
+    public static final ResourceLocation FLUID_CELL_COMPONENT_16K = id("16k_fluid_cell_component");
+    public static final ResourceLocation FLUID_CELL_COMPONENT_64K = id("64k_fluid_cell_component");
     public static final ResourceLocation EMPTY_STORAGE_CELL = id("empty_storage_cell");
     public static final ResourceLocation WOODEN_GEAR = id("wooden_gear");
     public static final ResourceLocation WIRELESS_RECEIVER = id("wireless_receiver");
@@ -219,13 +224,8 @@ public final class AEItemIds {
     public static final ResourceLocation SINGULARITY = id("singularity");
     public static final ResourceLocation QUANTUM_ENTANGLED_SINGULARITY = id("quantum_entangled_singularity");
     public static final ResourceLocation BLANK_PATTERN = id("blank_pattern");
-    public static final ResourceLocation CARD_CRAFTING = id("crafting_card");
-    public static final ResourceLocation FLUID_1K_CELL_COMPONENT = id("1k_fluid_cell_component");
-    public static final ResourceLocation FLUID_4K_CELL_COMPONENT = id("4k_fluid_cell_component");
-    public static final ResourceLocation FLUID_16K_CELL_COMPONENT = id("16k_fluid_cell_component");
-    public static final ResourceLocation FLUID_64K_CELL_COMPONENT = id("64k_fluid_cell_component");
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation("appliedenergistics2", id);
+        return new ResourceLocation(AEConstants.MOD_ID, id);
     }
 }

@@ -41,41 +41,41 @@ public final class AEPartIds {
     /// CABLES
     ///
 
-    public static final ResourceLocation CABLE_SMART_WHITE = id("white_smart_cable");
-    public static final ResourceLocation CABLE_SMART_ORANGE = id("orange_smart_cable");
-    public static final ResourceLocation CABLE_SMART_MAGENTA = id("magenta_smart_cable");
-    public static final ResourceLocation CABLE_SMART_LIGHT_BLUE = id("light_blue_smart_cable");
-    public static final ResourceLocation CABLE_SMART_YELLOW = id("yellow_smart_cable");
-    public static final ResourceLocation CABLE_SMART_LIME = id("lime_smart_cable");
-    public static final ResourceLocation CABLE_SMART_PINK = id("pink_smart_cable");
-    public static final ResourceLocation CABLE_SMART_GRAY = id("gray_smart_cable");
-    public static final ResourceLocation CABLE_SMART_LIGHT_GRAY = id("light_gray_smart_cable");
-    public static final ResourceLocation CABLE_SMART_CYAN = id("cyan_smart_cable");
-    public static final ResourceLocation CABLE_SMART_PURPLE = id("purple_smart_cable");
-    public static final ResourceLocation CABLE_SMART_BLUE = id("blue_smart_cable");
-    public static final ResourceLocation CABLE_SMART_BROWN = id("brown_smart_cable");
-    public static final ResourceLocation CABLE_SMART_GREEN = id("green_smart_cable");
-    public static final ResourceLocation CABLE_SMART_RED = id("red_smart_cable");
-    public static final ResourceLocation CABLE_SMART_BLACK = id("black_smart_cable");
-    public static final ResourceLocation CABLE_SMART_TRANSPARENT = id("fluix_smart_cable");
-    public static final Map<AEColor, ResourceLocation> CABLE_SMART = ImmutableMap.<AEColor, ResourceLocation>builder()
-            .put(AEColor.WHITE, CABLE_SMART_WHITE)
-            .put(AEColor.ORANGE, CABLE_SMART_ORANGE)
-            .put(AEColor.MAGENTA, CABLE_SMART_MAGENTA)
-            .put(AEColor.LIGHT_BLUE, CABLE_SMART_LIGHT_BLUE)
-            .put(AEColor.YELLOW, CABLE_SMART_YELLOW)
-            .put(AEColor.LIME, CABLE_SMART_LIME)
-            .put(AEColor.PINK, CABLE_SMART_PINK)
-            .put(AEColor.GRAY, CABLE_SMART_GRAY)
-            .put(AEColor.LIGHT_GRAY, CABLE_SMART_LIGHT_GRAY)
-            .put(AEColor.CYAN, CABLE_SMART_CYAN)
-            .put(AEColor.PURPLE, CABLE_SMART_PURPLE)
-            .put(AEColor.BLUE, CABLE_SMART_BLUE)
-            .put(AEColor.BROWN, CABLE_SMART_BROWN)
-            .put(AEColor.GREEN, CABLE_SMART_GREEN)
-            .put(AEColor.RED, CABLE_SMART_RED)
-            .put(AEColor.BLACK, CABLE_SMART_BLACK)
-            .put(AEColor.TRANSPARENT, CABLE_SMART_TRANSPARENT)
+    public static final ResourceLocation CABLE_GLASS_WHITE = id("white_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_ORANGE = id("orange_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_MAGENTA = id("magenta_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_LIGHT_BLUE = id("light_blue_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_YELLOW = id("yellow_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_LIME = id("lime_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_PINK = id("pink_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_GRAY = id("gray_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_LIGHT_GRAY = id("light_gray_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_CYAN = id("cyan_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_PURPLE = id("purple_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_BLUE = id("blue_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_BROWN = id("brown_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_GREEN = id("green_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_RED = id("red_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_BLACK = id("black_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_TRANSPARENT = id("fluix_glass_cable");
+    public static final Map<AEColor, ResourceLocation> CABLE_GLASS = ImmutableMap.<AEColor, ResourceLocation>builder()
+            .put(AEColor.WHITE, CABLE_GLASS_WHITE)
+            .put(AEColor.ORANGE, CABLE_GLASS_ORANGE)
+            .put(AEColor.MAGENTA, CABLE_GLASS_MAGENTA)
+            .put(AEColor.LIGHT_BLUE, CABLE_GLASS_LIGHT_BLUE)
+            .put(AEColor.YELLOW, CABLE_GLASS_YELLOW)
+            .put(AEColor.LIME, CABLE_GLASS_LIME)
+            .put(AEColor.PINK, CABLE_GLASS_PINK)
+            .put(AEColor.GRAY, CABLE_GLASS_GRAY)
+            .put(AEColor.LIGHT_GRAY, CABLE_GLASS_LIGHT_GRAY)
+            .put(AEColor.CYAN, CABLE_GLASS_CYAN)
+            .put(AEColor.PURPLE, CABLE_GLASS_PURPLE)
+            .put(AEColor.BLUE, CABLE_GLASS_BLUE)
+            .put(AEColor.BROWN, CABLE_GLASS_BROWN)
+            .put(AEColor.GREEN, CABLE_GLASS_GREEN)
+            .put(AEColor.RED, CABLE_GLASS_RED)
+            .put(AEColor.BLACK, CABLE_GLASS_BLACK)
+            .put(AEColor.TRANSPARENT, CABLE_GLASS_TRANSPARENT)
             .build();
 
     public static final ResourceLocation CABLE_COVERED_WHITE = id("white_covered_cable");
@@ -115,41 +115,41 @@ public final class AEPartIds {
             .put(AEColor.TRANSPARENT, CABLE_COVERED_TRANSPARENT)
             .build();
 
-    public static final ResourceLocation CABLE_GLASS_WHITE = id("white_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_ORANGE = id("orange_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_MAGENTA = id("magenta_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_LIGHT_BLUE = id("light_blue_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_YELLOW = id("yellow_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_LIME = id("lime_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_PINK = id("pink_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_GRAY = id("gray_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_LIGHT_GRAY = id("light_gray_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_CYAN = id("cyan_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_PURPLE = id("purple_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_BLUE = id("blue_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_BROWN = id("brown_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_GREEN = id("green_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_RED = id("red_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_BLACK = id("black_glass_cable");
-    public static final ResourceLocation CABLE_GLASS_TRANSPARENT = id("fluix_glass_cable");
-    public static final Map<AEColor, ResourceLocation> CABLE_GLASS = ImmutableMap.<AEColor, ResourceLocation>builder()
-            .put(AEColor.WHITE, CABLE_GLASS_WHITE)
-            .put(AEColor.ORANGE, CABLE_GLASS_ORANGE)
-            .put(AEColor.MAGENTA, CABLE_GLASS_MAGENTA)
-            .put(AEColor.LIGHT_BLUE, CABLE_GLASS_LIGHT_BLUE)
-            .put(AEColor.YELLOW, CABLE_GLASS_YELLOW)
-            .put(AEColor.LIME, CABLE_GLASS_LIME)
-            .put(AEColor.PINK, CABLE_GLASS_PINK)
-            .put(AEColor.GRAY, CABLE_GLASS_GRAY)
-            .put(AEColor.LIGHT_GRAY, CABLE_GLASS_LIGHT_GRAY)
-            .put(AEColor.CYAN, CABLE_GLASS_CYAN)
-            .put(AEColor.PURPLE, CABLE_GLASS_PURPLE)
-            .put(AEColor.BLUE, CABLE_GLASS_BLUE)
-            .put(AEColor.BROWN, CABLE_GLASS_BROWN)
-            .put(AEColor.GREEN, CABLE_GLASS_GREEN)
-            .put(AEColor.RED, CABLE_GLASS_RED)
-            .put(AEColor.BLACK, CABLE_GLASS_BLACK)
-            .put(AEColor.TRANSPARENT, CABLE_GLASS_TRANSPARENT)
+    public static final ResourceLocation CABLE_SMART_WHITE = id("white_smart_cable");
+    public static final ResourceLocation CABLE_SMART_ORANGE = id("orange_smart_cable");
+    public static final ResourceLocation CABLE_SMART_MAGENTA = id("magenta_smart_cable");
+    public static final ResourceLocation CABLE_SMART_LIGHT_BLUE = id("light_blue_smart_cable");
+    public static final ResourceLocation CABLE_SMART_YELLOW = id("yellow_smart_cable");
+    public static final ResourceLocation CABLE_SMART_LIME = id("lime_smart_cable");
+    public static final ResourceLocation CABLE_SMART_PINK = id("pink_smart_cable");
+    public static final ResourceLocation CABLE_SMART_GRAY = id("gray_smart_cable");
+    public static final ResourceLocation CABLE_SMART_LIGHT_GRAY = id("light_gray_smart_cable");
+    public static final ResourceLocation CABLE_SMART_CYAN = id("cyan_smart_cable");
+    public static final ResourceLocation CABLE_SMART_PURPLE = id("purple_smart_cable");
+    public static final ResourceLocation CABLE_SMART_BLUE = id("blue_smart_cable");
+    public static final ResourceLocation CABLE_SMART_BROWN = id("brown_smart_cable");
+    public static final ResourceLocation CABLE_SMART_GREEN = id("green_smart_cable");
+    public static final ResourceLocation CABLE_SMART_RED = id("red_smart_cable");
+    public static final ResourceLocation CABLE_SMART_BLACK = id("black_smart_cable");
+    public static final ResourceLocation CABLE_SMART_TRANSPARENT = id("fluix_smart_cable");
+    public static final Map<AEColor, ResourceLocation> CABLE_SMART = ImmutableMap.<AEColor, ResourceLocation>builder()
+            .put(AEColor.WHITE, CABLE_SMART_WHITE)
+            .put(AEColor.ORANGE, CABLE_SMART_ORANGE)
+            .put(AEColor.MAGENTA, CABLE_SMART_MAGENTA)
+            .put(AEColor.LIGHT_BLUE, CABLE_SMART_LIGHT_BLUE)
+            .put(AEColor.YELLOW, CABLE_SMART_YELLOW)
+            .put(AEColor.LIME, CABLE_SMART_LIME)
+            .put(AEColor.PINK, CABLE_SMART_PINK)
+            .put(AEColor.GRAY, CABLE_SMART_GRAY)
+            .put(AEColor.LIGHT_GRAY, CABLE_SMART_LIGHT_GRAY)
+            .put(AEColor.CYAN, CABLE_SMART_CYAN)
+            .put(AEColor.PURPLE, CABLE_SMART_PURPLE)
+            .put(AEColor.BLUE, CABLE_SMART_BLUE)
+            .put(AEColor.BROWN, CABLE_SMART_BROWN)
+            .put(AEColor.GREEN, CABLE_SMART_GREEN)
+            .put(AEColor.RED, CABLE_SMART_RED)
+            .put(AEColor.BLACK, CABLE_SMART_BLACK)
+            .put(AEColor.TRANSPARENT, CABLE_SMART_TRANSPARENT)
             .build();
 
     public static final ResourceLocation CABLE_DENSE_COVERED_WHITE = id("white_covered_dense_cable");
@@ -226,38 +226,45 @@ public final class AEPartIds {
             .put(AEColor.TRANSPARENT, CABLE_DENSE_SMART_TRANSPARENT)
             .build();
 
+    ///
+    /// Buses
+    ///
     public static final ResourceLocation QUARTZ_FIBER = id("quartz_fiber");
     public static final ResourceLocation TOGGLE_BUS = id("toggle_bus");
     public static final ResourceLocation INVERTED_TOGGLE_BUS = id("inverted_toggle_bus");
     public static final ResourceLocation CABLE_ANCHOR = id("cable_anchor");
+    public static final ResourceLocation ITEM_STORAGE_BUS = id("item_storage_bus");
+    public static final ResourceLocation FLUID_STORAGE_BUS = id("fluid_storage_bus");
+    public static final ResourceLocation ITEM_IMPORT_BUS = id("item_import_bus");
+    public static final ResourceLocation FLUID_IMPORT_BUS = id("fluid_import_bus");
+    public static final ResourceLocation ITEM_EXPORT_BUS = id("item_export_bus");
+    public static final ResourceLocation FLUID_EXPORT_BUS = id("fluid_export_bus");
+    public static final ResourceLocation ITEM_LEVEL_EMITTER = id("item_level_emitter");
+    public static final ResourceLocation FLUID_LEVEL_EMITTER = id("fluid_level_emitter");
+    public static final ResourceLocation FLUID_INTERFACE = id("cable_fluid_interface");
+    public static final ResourceLocation ITEM_INTERFACE = id("cable_item_interface");
+    public static final ResourceLocation INTERFACE_TERMINAL = id("interface_terminal");
+    public static final ResourceLocation ITEM_CONVERSION_MONITOR = id("item_conversion_monitor");
+    public static final ResourceLocation ENERGY_ACCEPTOR = id("cable_energy_acceptor");
+
+    ///
+    /// Monitors and terminals
+    ///
     public static final ResourceLocation MONITOR = id("monitor");
     public static final ResourceLocation SEMI_DARK_MONITOR = id("semi_dark_monitor");
     public static final ResourceLocation DARK_MONITOR = id("dark_monitor");
-    public static final ResourceLocation STORAGE_BUS = id("storage_bus");
-    public static final ResourceLocation FLUID_STORAGE_BUS = id("fluid_storage_bus");
-    public static final ResourceLocation IMPORT_BUS = id("import_bus");
-    public static final ResourceLocation FLUID_IMPORT_BUS = id("fluid_import_bus");
-    public static final ResourceLocation EXPORT_BUS = id("export_bus");
-    public static final ResourceLocation FLUID_EXPORT_BUS = id("fluid_export_bus");
-    public static final ResourceLocation LEVEL_EMITTER = id("level_emitter");
-    public static final ResourceLocation FLUID_LEVEL_EMITTER = id("fluid_level_emitter");
     public static final ResourceLocation TERMINAL = id("terminal");
-    public static final ResourceLocation FLUID_INTERFACE = id("cable_fluid_interface");
     public static final ResourceLocation CRAFTING_TERMINAL = id("crafting_terminal");
-    public static final ResourceLocation STORAGE_MONITOR = id("storage_monitor");
-    public static final ResourceLocation FLUID_TERMINAL = id("fluid_terminal");
     public static final ResourceLocation PATTERN_TERMINAL = id("pattern_terminal");
-    public static final ResourceLocation INTERFACE = id("cable_interface");
-    public static final ResourceLocation INTERFACE_TERMINAL = id("interface_terminal");
-    public static final ResourceLocation CONVERSION_MONITOR = id("conversion_monitor");
-    public static final ResourceLocation ENERGY_ACCEPTOR = id("cable_energy_acceptor");
+    public static final ResourceLocation FLUID_TERMINAL = id("fluid_terminal");
+    public static final ResourceLocation STORAGE_MONITOR = id("storage_monitor");
 
     ///
     /// Planes
     ///
-    public static final ResourceLocation FORMATION_PLANE = id("formation_plane");
-    public static final ResourceLocation ANNIHILATION_PLANE = id("annihilation_plane");
-    public static final ResourceLocation IDENTITY_ANNIHILATION_PLANE = id("identity_annihilation_plane");
+    public static final ResourceLocation ITEM_FORMATION_PLANE = id("item_formation_plane");
+    public static final ResourceLocation ITEM_ANNIHILATION_PLANE = id("item_annihilation_plane");
+    public static final ResourceLocation ITEM_IDENTITY_ANNIHILATION_PLANE = id("item_identity_annihilation_plane");
     public static final ResourceLocation FLUID_FORMATION_PLANE = id("fluid_formation_plane");
     public static final ResourceLocation FLUID_ANNIHILATION_PLANE = id("fluid_annihilation_plane");
 
@@ -272,6 +279,6 @@ public final class AEPartIds {
     public static final ResourceLocation LIGHT_P2P_TUNNEL = id("light_p2p_tunnel");
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation("appliedenergistics2", id);
+        return new ResourceLocation(AEConstants.MOD_ID, id);
     }
 }

@@ -98,19 +98,19 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
 
     private final IActionSource mySrc;
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);

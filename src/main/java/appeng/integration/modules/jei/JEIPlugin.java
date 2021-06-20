@@ -236,11 +236,10 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
-        Collection<ItemStack> toRemove = new ArrayList<>();
-
-        // We use the internal API here as exception as debug tools are not part of the public one by design.
-
         if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
+            Collection<ItemStack> toRemove = new ArrayList<>();
+
+            // We use the internal API here as exception as debug tools are not part of the public one by design.
             toRemove.add(ApiBlocks.DEBUG_CUBE_GEN.stack());
             toRemove.add(ApiBlocks.DEBUG_CHUNK_LOADER.stack());
             toRemove.add(ApiBlocks.DEBUG_ENERGY_GEN.stack());
@@ -251,10 +250,11 @@ public class JEIPlugin implements IModPlugin {
             toRemove.add(ApiItems.DEBUG_ERASER.stack());
             toRemove.add(ApiItems.DEBUG_METEORITE_PLACER.stack());
             toRemove.add(ApiItems.DEBUG_REPLICATOR_CARD.stack());
+
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
+                    toRemove);
         }
 
-        jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
-                toRemove);
     }
 
 }
