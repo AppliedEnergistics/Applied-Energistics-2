@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 

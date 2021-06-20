@@ -31,8 +31,8 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 

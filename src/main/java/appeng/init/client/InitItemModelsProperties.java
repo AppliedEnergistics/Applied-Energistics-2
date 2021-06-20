@@ -27,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.tools.powered.ColorApplicatorItem;

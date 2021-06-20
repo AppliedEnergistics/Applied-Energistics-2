@@ -21,7 +21,7 @@ package appeng.init.internal;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 
 public final class InitWirelessHandlers {
 

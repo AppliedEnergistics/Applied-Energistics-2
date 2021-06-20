@@ -40,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;

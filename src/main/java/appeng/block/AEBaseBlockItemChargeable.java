@@ -35,7 +35,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {

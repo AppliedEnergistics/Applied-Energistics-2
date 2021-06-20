@@ -31,9 +31,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implements IAE2DataProvider {

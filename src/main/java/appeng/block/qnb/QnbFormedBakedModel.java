@@ -44,7 +44,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {

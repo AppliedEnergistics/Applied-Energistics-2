@@ -34,7 +34,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.NamePressItem;
 import appeng.tile.inventory.AppEngInternalInventory;

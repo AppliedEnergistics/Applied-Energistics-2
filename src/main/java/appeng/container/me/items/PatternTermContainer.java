@@ -54,7 +54,7 @@ import appeng.container.slot.PatternOutputsSlot;
 import appeng.container.slot.PatternTermSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;

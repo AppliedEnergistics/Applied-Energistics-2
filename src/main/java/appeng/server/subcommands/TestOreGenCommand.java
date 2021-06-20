@@ -40,7 +40,7 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
 
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.server.ISubCommand;
 
 /**

@@ -35,7 +35,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 

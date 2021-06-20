@@ -36,7 +36,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 
 public final class InitAutoRotatingModel {

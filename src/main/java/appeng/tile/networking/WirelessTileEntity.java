@@ -38,7 +38,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;

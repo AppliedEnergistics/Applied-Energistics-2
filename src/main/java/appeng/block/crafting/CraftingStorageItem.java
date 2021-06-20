@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 

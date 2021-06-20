@@ -51,7 +51,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.items.AEBaseItem;

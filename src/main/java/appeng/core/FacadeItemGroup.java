@@ -29,7 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeItemGroup extends ItemGroup {

@@ -47,8 +47,8 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.client.gui.Icon;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.tile.misc.CondenserTileEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {

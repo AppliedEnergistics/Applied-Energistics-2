@@ -33,8 +33,8 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEParts;
 import appeng.core.features.ItemDefinition;
 
 public final class InitP2PAttunements {

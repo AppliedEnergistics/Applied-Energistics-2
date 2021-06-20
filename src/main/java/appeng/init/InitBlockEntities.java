@@ -24,7 +24,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlockEntities;
 
 public final class InitBlockEntities {
     private InitBlockEntities() {

@@ -26,7 +26,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.util.InventoryAdaptor;
 
 public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack> {

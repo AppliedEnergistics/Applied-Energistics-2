@@ -21,7 +21,7 @@ package appeng.init;
 import net.minecraft.block.Block;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 
 public final class InitBlocks {

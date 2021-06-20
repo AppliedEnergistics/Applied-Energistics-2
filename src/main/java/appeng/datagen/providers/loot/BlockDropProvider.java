@@ -52,8 +52,8 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {

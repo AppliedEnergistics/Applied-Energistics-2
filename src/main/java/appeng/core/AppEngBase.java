@@ -63,9 +63,9 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.capabilities.Capabilities;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;

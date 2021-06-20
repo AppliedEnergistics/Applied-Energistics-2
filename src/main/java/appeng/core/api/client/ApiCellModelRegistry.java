@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.client.ICellModelRegistry;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 

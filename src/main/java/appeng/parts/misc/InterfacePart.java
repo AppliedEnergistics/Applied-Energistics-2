@@ -62,7 +62,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;

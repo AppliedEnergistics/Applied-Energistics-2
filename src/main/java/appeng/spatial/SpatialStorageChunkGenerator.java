@@ -42,7 +42,7 @@ import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 /**
  * Chunk generator the spatial storage world.

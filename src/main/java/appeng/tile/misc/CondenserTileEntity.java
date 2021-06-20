@@ -52,7 +52,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;

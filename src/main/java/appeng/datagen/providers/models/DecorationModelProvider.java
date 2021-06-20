@@ -25,7 +25,7 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 

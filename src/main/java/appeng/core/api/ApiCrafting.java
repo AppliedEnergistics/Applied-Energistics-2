@@ -40,7 +40,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;

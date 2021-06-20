@@ -60,7 +60,7 @@ import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;

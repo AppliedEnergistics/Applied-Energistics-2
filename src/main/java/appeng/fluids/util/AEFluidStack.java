@@ -38,7 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;

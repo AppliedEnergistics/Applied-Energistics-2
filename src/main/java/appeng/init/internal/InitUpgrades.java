@@ -19,9 +19,9 @@
 package appeng.init.internal;
 
 import appeng.api.config.Upgrades;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.core.localization.GuiText;
 
 public final class InitUpgrades {

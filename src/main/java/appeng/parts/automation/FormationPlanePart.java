@@ -71,7 +71,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.FormationPlaneContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;

@@ -21,8 +21,8 @@ package appeng.init;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.features.BlockDefinition;
 import appeng.core.features.ItemDefinition;
 

@@ -39,7 +39,7 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.util.WorldCoord;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 public class SpatialStorageHelper {
 

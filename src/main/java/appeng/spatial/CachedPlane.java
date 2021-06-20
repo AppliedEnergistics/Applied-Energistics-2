@@ -45,7 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.worlddata.WorldData;
 
 public class CachedPlane {

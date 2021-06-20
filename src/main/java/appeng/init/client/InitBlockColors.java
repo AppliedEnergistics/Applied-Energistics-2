@@ -26,7 +26,7 @@ import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
 import appeng.client.render.ColorableTileBlockColor;
 import appeng.client.render.StaticBlockColor;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 @OnlyIn(Dist.CLIENT)
 public final class InitBlockColors {

@@ -21,7 +21,7 @@ package appeng.init;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;

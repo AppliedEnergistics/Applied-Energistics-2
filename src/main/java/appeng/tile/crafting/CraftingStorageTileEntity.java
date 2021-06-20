@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;

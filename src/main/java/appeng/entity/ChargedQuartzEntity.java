@@ -37,8 +37,8 @@ import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEEntities;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEEntities;
+import appeng.core.definitions.AEItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 

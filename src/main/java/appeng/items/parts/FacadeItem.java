@@ -48,7 +48,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;

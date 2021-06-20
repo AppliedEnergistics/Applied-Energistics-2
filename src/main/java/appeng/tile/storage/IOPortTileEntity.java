@@ -57,7 +57,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;

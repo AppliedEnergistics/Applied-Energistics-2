@@ -20,8 +20,8 @@ package appeng.init;
 
 import net.minecraft.block.DispenserBlock;
 
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.hooks.BlockToolDispenseItemBehavior;
 import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.hooks.TinyTNTDispenseItemBehavior;

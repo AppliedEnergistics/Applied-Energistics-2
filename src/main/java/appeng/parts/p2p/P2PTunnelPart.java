@@ -46,7 +46,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;

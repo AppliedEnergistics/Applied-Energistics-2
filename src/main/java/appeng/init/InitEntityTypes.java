@@ -21,7 +21,7 @@ package appeng.init;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.AEEntities;
+import appeng.core.definitions.AEEntities;
 
 public final class InitEntityTypes {
 

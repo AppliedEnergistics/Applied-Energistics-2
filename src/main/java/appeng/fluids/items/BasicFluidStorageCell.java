@@ -27,7 +27,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.fluids.helper.FluidCellConfig;
 import appeng.items.storage.AbstractStorageCell;
 import appeng.util.InventoryAdaptor;

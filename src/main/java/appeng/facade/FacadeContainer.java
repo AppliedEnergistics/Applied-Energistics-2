@@ -28,7 +28,7 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 

@@ -42,7 +42,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.client.gui.Icon;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;

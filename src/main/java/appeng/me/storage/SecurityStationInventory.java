@@ -31,7 +31,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.SecurityStationTileEntity;
 

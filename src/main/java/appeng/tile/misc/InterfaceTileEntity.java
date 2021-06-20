@@ -59,7 +59,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;

@@ -29,7 +29,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AELog;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 
 /**
  * Allocates and manages plots for spatial storage in the spatial storage world.

@@ -27,7 +27,7 @@ import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;

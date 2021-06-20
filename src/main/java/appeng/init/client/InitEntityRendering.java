@@ -22,7 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
-import appeng.core.api.definitions.AEEntities;
+import appeng.core.definitions.AEEntities;
 import appeng.entity.TinyTNTPrimedRenderer;
 
 /**

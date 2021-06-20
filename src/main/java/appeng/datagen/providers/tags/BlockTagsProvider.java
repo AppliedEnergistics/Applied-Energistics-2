@@ -29,7 +29,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 

@@ -36,7 +36,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {

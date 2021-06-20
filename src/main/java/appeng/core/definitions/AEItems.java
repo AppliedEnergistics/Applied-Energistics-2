@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.api.definitions;
+package appeng.core.definitions;
 
 import java.util.ArrayList;
 import java.util.Collections;

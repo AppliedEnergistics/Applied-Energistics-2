@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;

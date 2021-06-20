@@ -25,8 +25,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.misc.PaintBallItem;

@@ -30,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.core.features.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 

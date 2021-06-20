@@ -37,7 +37,7 @@ import appeng.block.networking.CableBusBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.networktool.NetworkToolContainer;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;

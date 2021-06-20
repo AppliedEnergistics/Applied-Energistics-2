@@ -48,8 +48,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEEntities;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
 import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {

@@ -66,7 +66,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;

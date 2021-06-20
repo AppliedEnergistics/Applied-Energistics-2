@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberRecipe;
 

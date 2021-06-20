@@ -31,7 +31,7 @@ import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
-import appeng.core.api.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlockEntities;
 import appeng.tile.networking.CableBusTESR;
 
 @OnlyIn(Dist.CLIENT)

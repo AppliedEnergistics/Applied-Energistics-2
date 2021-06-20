@@ -63,7 +63,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEParts;
+import appeng.core.definitions.AEParts;
 import appeng.fluids.container.FluidFormationPlaneContainer;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;

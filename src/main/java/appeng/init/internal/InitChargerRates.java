@@ -20,8 +20,8 @@ package appeng.init.internal;
 
 import appeng.api.features.IChargerRegistry;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 
 public class InitChargerRates {
 

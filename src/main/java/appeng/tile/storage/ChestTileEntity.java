@@ -94,7 +94,7 @@ import appeng.capabilities.Capabilities;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;

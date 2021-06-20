@@ -42,7 +42,7 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;

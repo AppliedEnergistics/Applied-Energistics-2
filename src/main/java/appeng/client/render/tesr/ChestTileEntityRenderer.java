@@ -50,7 +50,7 @@ import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.tile.storage.ChestTileEntity;
 
 /**

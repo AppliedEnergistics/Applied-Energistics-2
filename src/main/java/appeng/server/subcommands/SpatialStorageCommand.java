@@ -49,7 +49,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import appeng.core.api.definitions.AEItems;
+import appeng.core.definitions.AEItems;
 import appeng.core.worlddata.WorldData;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.server.ISubCommand;

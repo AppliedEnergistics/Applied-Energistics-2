@@ -35,7 +35,7 @@ import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.AEEntities;
+import appeng.core.definitions.AEEntities;
 import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {

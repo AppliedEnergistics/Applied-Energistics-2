@@ -46,7 +46,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.core.api.definitions.AEBlocks;
+import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
