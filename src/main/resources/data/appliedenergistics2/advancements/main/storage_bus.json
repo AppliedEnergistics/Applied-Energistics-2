@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:storage_bus"
+      "item": "appliedenergistics2:item_storage_bus"
     },
     "title": {
       "translate": "achievement.ae2.StorageBus"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:storage_bus"
+            "item": "appliedenergistics2:item_storage_bus"
           }
         ]
       }

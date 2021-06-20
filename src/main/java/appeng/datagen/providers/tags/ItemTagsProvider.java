@@ -89,7 +89,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
 
         addAe2("metal_ingots", Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON);
 
-        addAe2("interface", AEParts.INTERFACE, AEBlocks.INTERFACE);
+        addAe2("item_interface", AEParts.INTERFACE, AEBlocks.INTERFACE);
         addAe2("fluid_interface", AEParts.FLUID_INTERFACE, AEBlocks.FLUID_INTERFACE);
 
         addAe2("illuminated_panel", AEParts.MONITOR,
