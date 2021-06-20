@@ -45,7 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;

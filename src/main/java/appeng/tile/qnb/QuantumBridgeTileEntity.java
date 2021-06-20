@@ -45,7 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;

@@ -85,7 +85,6 @@ import appeng.block.storage.SkyChestBlock;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.BlockDefinition;
 import appeng.debug.ChunkLoaderBlock;
 import appeng.debug.CubeGeneratorBlock;
 import appeng.debug.EnergyGeneratorBlock;

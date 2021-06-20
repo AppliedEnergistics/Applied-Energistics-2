@@ -30,7 +30,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider implements IAE2DataProvider {

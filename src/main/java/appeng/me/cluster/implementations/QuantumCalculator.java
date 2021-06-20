@@ -24,7 +24,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeTileEntity;

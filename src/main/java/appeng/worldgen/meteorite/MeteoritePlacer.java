@@ -38,7 +38,7 @@ import net.minecraft.world.IWorld;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;

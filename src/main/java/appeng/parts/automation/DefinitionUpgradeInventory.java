@@ -19,7 +19,7 @@
 package appeng.parts.automation;
 
 import appeng.api.config.Upgrades;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.util.inv.IAEAppEngInventory;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {

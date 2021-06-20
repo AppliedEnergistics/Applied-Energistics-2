@@ -30,7 +30,7 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberTileEntity;
 

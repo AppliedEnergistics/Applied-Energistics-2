@@ -40,7 +40,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public final class DisassembleRecipe extends SpecialRecipe {
     public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(

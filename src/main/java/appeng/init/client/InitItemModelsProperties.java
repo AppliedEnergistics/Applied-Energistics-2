@@ -28,7 +28,7 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 

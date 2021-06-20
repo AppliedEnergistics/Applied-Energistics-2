@@ -35,7 +35,7 @@ import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public final class InitP2PAttunements {
 

@@ -26,7 +26,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class DecorationModelProvider extends BlockStateProvider implements IAE2DataProvider {

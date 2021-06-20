@@ -34,7 +34,6 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AppEng;
-import appeng.core.features.BlockDefinition;
 import appeng.debug.ChunkLoaderTileEntity;
 import appeng.debug.CubeGeneratorTileEntity;
 import appeng.debug.EnergyGeneratorTileEntity;

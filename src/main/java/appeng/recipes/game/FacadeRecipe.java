@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends SpecialRecipe {

@@ -31,8 +31,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.ColoredItemDefinition;
-import appeng.core.features.ItemDefinition;
 import appeng.core.features.registries.PartModels;
 import appeng.fluids.parts.FluidAnnihilationPlanePart;
 import appeng.fluids.parts.FluidExportBusPart;

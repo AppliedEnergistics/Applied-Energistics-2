@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.BlockDefinition;
+import appeng.core.definitions.BlockDefinition;
 
 public final class InitBlocks {
 

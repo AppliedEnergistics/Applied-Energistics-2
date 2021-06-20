@@ -37,8 +37,6 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.ColoredItemDefinition;
-import appeng.core.features.ItemDefinition;
 import appeng.debug.DebugCardItem;
 import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;

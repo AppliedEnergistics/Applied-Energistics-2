@@ -23,8 +23,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.core.features.BlockDefinition;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.BlockDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public final class InitItems {
 

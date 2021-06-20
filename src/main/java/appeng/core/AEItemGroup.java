@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import appeng.core.definitions.AEBlocks;
-import appeng.core.features.ItemDefinition;
+import appeng.core.definitions.ItemDefinition;
 
 public class AEItemGroup extends ItemGroup {
 
