@@ -37,10 +37,8 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemDefinition;
-import appeng.core.features.ItemStackSrc;
 import appeng.debug.DebugCardItem;
 import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
@@ -273,8 +271,7 @@ public final class AEItems {
                 continue;
             }
 
-            ItemDefinition paintBall = item(id, p -> new PaintBallItem(p, color, lumen));
-            colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
+            colors.add(color, item(id, p -> new PaintBallItem(p, color, lumen)));
         }
         return colors;
     }

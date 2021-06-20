@@ -18,6 +18,8 @@
 
 package appeng.core.definitions;
 
+import static appeng.core.definitions.AEItems.item;
+
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
@@ -29,10 +31,8 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemDefinition;
-import appeng.core.features.ItemStackSrc;
 import appeng.core.features.registries.PartModels;
 import appeng.fluids.parts.FluidAnnihilationPlanePart;
 import appeng.fluids.parts.FluidExportBusPart;
@@ -134,7 +134,7 @@ public final class AEParts {
 
         PartModels partModels = (PartModels) Api.instance().registries().partModels();
         partModels.registerModels(PartModelsHelper.createModels(partClass));
-        return AEItems.item(id, props -> new PartItem<>(props, factory));
+        return item(id, props -> new PartItem<>(props, factory));
     }
 
     private static <T extends IPart> AEColoredItemDefinition constructColoredDefinition(String idSuffix,
@@ -148,10 +148,9 @@ public final class AEParts {
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
-            ItemDefinition itemDef = AEItems
-                    .item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color));
+            ItemDefinition itemDef = item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color));
 
-            definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
+            definition.add(color, itemDef);
         }
 
         return definition;
