@@ -29,11 +29,11 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.util.Platform;
 
-public class ItemDefinition implements IItemProvider {
+public class ItemDefinition<T extends Item> implements IItemProvider {
     private final ResourceLocation id;
-    private final Item item;
+    private final T item;
 
-    public ItemDefinition(ResourceLocation id, Item item) {
+    public ItemDefinition(ResourceLocation id, T item) {
         Preconditions.checkNotNull(id, "id");
         this.id = id;
         this.item = item;
@@ -42,10 +42,6 @@ public class ItemDefinition implements IItemProvider {
     @Nonnull
     public ResourceLocation id() {
         return this.id;
-    }
-
-    public Item item() {
-        return this.item;
     }
 
     public ItemStack stack() {
@@ -68,7 +64,7 @@ public class ItemDefinition implements IItemProvider {
     }
 
     @Override
-    public Item asItem() {
+    public T asItem() {
         return item;
     }
 }

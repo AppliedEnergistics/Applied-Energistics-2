@@ -51,7 +51,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
-import appeng.core.features.registries.WorldGenRegistry;
+import appeng.core.registries.WorldGenRegistry;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 

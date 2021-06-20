@@ -440,7 +440,7 @@ public class CraftingGridCache
 
         final CraftingJob job = new CraftingJob(world, grid, actionSrc, slotItem, cb);
 
-        return CRAFTING_POOL.submit(job, (ICraftingJob) job);
+        return CRAFTING_POOL.submit(job, job);
     }
 
     @Override

@@ -37,14 +37,12 @@ import appeng.items.parts.FacadeItem;
 public final class FacadeRecipe extends SpecialRecipe {
     public static SpecialRecipeSerializer<FacadeRecipe> SERIALIZER = null;
 
-    private final ItemDefinition anchor;
+    private final ItemDefinition<?> anchor = AEParts.CABLE_ANCHOR;
     private final FacadeItem facade;
 
     public FacadeRecipe(ResourceLocation id, FacadeItem facade) {
         super(id);
         this.facade = facade;
-
-        this.anchor = AEParts.CABLE_ANCHOR;
     }
 
     @Override

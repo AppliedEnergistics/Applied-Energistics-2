@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -36,7 +38,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
@@ -82,7 +83,6 @@ import appeng.block.storage.ChestBlock;
 import appeng.block.storage.DriveBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.SkyChestBlock;
-import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.debug.ChunkLoaderBlock;
@@ -106,7 +106,7 @@ import appeng.fluids.block.FluidInterfaceBlock;
 @SuppressWarnings("unused")
 public final class AEBlocks {
 
-    private static final List<BlockDefinition> BLOCKS = new ArrayList<>();
+    private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
             .hardnessAndResistance(3, 5).setRequiresTool().harvestLevel(1);
     private static final AbstractBlock.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK)
@@ -117,193 +117,158 @@ public final class AEBlocks {
             .hardnessAndResistance(50, 150).notSolid();
 
     // spotless:off
-    public static final BlockDefinition QUARTZ_ORE = block(AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_ORE_CHARGED = block(AEBlockIds.QUARTZ_ORE_CHARGED, () -> new ChargedQuartzOreBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition MATRIX_FRAME = block(AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new).build();
+    public static final BlockDefinition<QuartzOreBlock> QUARTZ_ORE = block(AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<ChargedQuartzOreBlock> QUARTZ_ORE_CHARGED = block(AEBlockIds.QUARTZ_ORE_CHARGED, () -> new ChargedQuartzOreBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<MatrixFrameBlock> MATRIX_FRAME = block(AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new);
 
-    public static final BlockDefinition QUARTZ_BLOCK = decoBlock(AEBlockIds.QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_PILLAR = decoBlock(AEBlockIds.QUARTZ_PILLAR, () -> new QuartzPillarBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition CHISELED_QUARTZ_BLOCK = decoBlock(AEBlockIds.CHISELED_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES)).build();
+    public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BLOCK = block(AEBlockIds.QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<QuartzPillarBlock> QUARTZ_PILLAR = block(AEBlockIds.QUARTZ_PILLAR, () -> new QuartzPillarBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> CHISELED_QUARTZ_BLOCK = block(AEBlockIds.CHISELED_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition QUARTZ_GLASS = block(AEBlockIds.QUARTZ_GLASS, () -> new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(NEVER_ALLOW_SPAWN))).build();
-    public static final BlockDefinition QUARTZ_VIBRANT_GLASS = decoBlock(AEBlockIds.QUARTZ_VIBRANT_GLASS, () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()
-            .setAllowsSpawn(NEVER_ALLOW_SPAWN))).build();
+    public static final BlockDefinition<QuartzGlassBlock> QUARTZ_GLASS = block(AEBlockIds.QUARTZ_GLASS, () -> new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid().setAllowsSpawn(NEVER_ALLOW_SPAWN)));
+    public static final BlockDefinition<QuartzLampBlock> QUARTZ_VIBRANT_GLASS = block(AEBlockIds.QUARTZ_VIBRANT_GLASS, () -> new QuartzLampBlock(defaultProps(Material.GLASS).setLightLevel(b -> 15).notSolid()
+            .setAllowsSpawn(NEVER_ALLOW_SPAWN)));
 
-    public static final BlockDefinition QUARTZ_FIXTURE = block(AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new).build();
-    public static final BlockDefinition FLUIX_BLOCK = block(AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_BLOCK = block(AEBlockIds.SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.STONE,
-            defaultProps(Material.ROCK).hardnessAndResistance(50, 150).setRequiresTool().harvestLevel(3))).build();
+    public static final BlockDefinition<QuartzFixtureBlock> QUARTZ_FIXTURE = block(AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new);
+    public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block(AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BLOCK = block(AEBlockIds.SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.STONE,
+            defaultProps(Material.ROCK).hardnessAndResistance(50, 150).setRequiresTool().harvestLevel(3)));
 
-    public static final BlockDefinition SMOOTH_SKY_STONE_BLOCK = block(AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.BLOCK, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_BRICK = decoBlock(AEBlockIds.SKY_STONE_BRICK, () -> new SkyStoneBlock(SkystoneType.BRICK, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_SMALL_BRICK = decoBlock(AEBlockIds.SKY_STONE_SMALL_BRICK, () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES)).build();
+    public static final BlockDefinition<SkyStoneBlock> SMOOTH_SKY_STONE_BLOCK = block(AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.BLOCK, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BRICK = block(AEBlockIds.SKY_STONE_BRICK, () -> new SkyStoneBlock(SkystoneType.BRICK, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_SMALL_BRICK = block(AEBlockIds.SKY_STONE_SMALL_BRICK, () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES));
 
-    public static final BlockDefinition SKY_STONE_CHEST = block(AEBlockIds.SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.STONE, SKY_STONE_CHEST_PROPS)).build();
-    public static final BlockDefinition SMOOTH_SKY_STONE_CHEST = block(AEBlockIds.SMOOTH_SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, SKY_STONE_CHEST_PROPS)).build();
+    public static final BlockDefinition<SkyChestBlock> SKY_STONE_CHEST = block(AEBlockIds.SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.STONE, SKY_STONE_CHEST_PROPS));
+    public static final BlockDefinition<SkyChestBlock> SMOOTH_SKY_STONE_CHEST = block(AEBlockIds.SMOOTH_SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, SKY_STONE_CHEST_PROPS));
 
-    public static final BlockDefinition SKY_COMPASS = block(AEBlockIds.SKY_COMPASS, () -> new SkyCompassBlock(defaultProps(Material.MISCELLANEOUS))).build();
-    public static final BlockDefinition GRINDSTONE = block(AEBlockIds.GRINDSTONE, () -> new GrinderBlock(defaultProps(Material.ROCK).hardnessAndResistance(3.2f))).build();
-    public static final BlockDefinition CRANK = block(AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).notSolid())).build();
-    public static final BlockDefinition INSCRIBER = block(AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.IRON).notSolid())).build();
-    public static final BlockDefinition WIRELESS_ACCESS_POINT = block(AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new).build();
-    public static final BlockDefinition CHARGER = block(AEBlockIds.CHARGER, ChargerBlock::new).build();
+    public static final BlockDefinition<SkyCompassBlock> SKY_COMPASS = block(AEBlockIds.SKY_COMPASS, () -> new SkyCompassBlock(defaultProps(Material.MISCELLANEOUS)));
+    public static final BlockDefinition<GrinderBlock> GRINDSTONE = block(AEBlockIds.GRINDSTONE, () -> new GrinderBlock(defaultProps(Material.ROCK).hardnessAndResistance(3.2f)));
+    public static final BlockDefinition<CrankBlock> CRANK = block(AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).notSolid()));
+    public static final BlockDefinition<InscriberBlock> INSCRIBER = block(AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.IRON).notSolid()));
+    public static final BlockDefinition<WirelessBlock> WIRELESS_ACCESS_POINT = block(AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new);
+    public static final BlockDefinition<ChargerBlock> CHARGER = block(AEBlockIds.CHARGER, ChargerBlock::new);
 
-    public static final BlockDefinition TINY_TNT = block(AEBlockIds.TINY_TNT, () -> new TinyTNTBlock(defaultProps(Material.TNT).sound(SoundType.GROUND).hardnessAndResistance(0).notSolid())).build();
-    public static final BlockDefinition SECURITY_STATION = block(AEBlockIds.SECURITY_STATION, SecurityStationBlock::new).build();
+    public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block(AEBlockIds.TINY_TNT, () -> new TinyTNTBlock(defaultProps(Material.TNT).sound(SoundType.GROUND).hardnessAndResistance(0).notSolid()));
+    public static final BlockDefinition<SecurityStationBlock> SECURITY_STATION = block(AEBlockIds.SECURITY_STATION, SecurityStationBlock::new);
 
-    public static final BlockDefinition QUANTUM_RING = block(AEBlockIds.QUANTUM_RING, QuantumRingBlock::new).build();
-    public static final BlockDefinition QUANTUM_LINK = block(AEBlockIds.QUANTUM_LINK, QuantumLinkChamberBlock::new).build();
-    public static final BlockDefinition SPATIAL_PYLON = block(AEBlockIds.SPATIAL_PYLON, SpatialPylonBlock::new).build();
-    public static final BlockDefinition SPATIAL_IO_PORT = block(AEBlockIds.SPATIAL_IO_PORT, SpatialIOPortBlock::new).build();
-    public static final BlockDefinition CONTROLLER = block(AEBlockIds.CONTROLLER, ControllerBlock::new).build();
-    public static final BlockDefinition DRIVE = block(AEBlockIds.DRIVE, DriveBlock::new).build();
-    public static final BlockDefinition CHEST = block(AEBlockIds.CHEST, ChestBlock::new).build();
-    public static final BlockDefinition INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new).build();
-    public static final BlockDefinition FLUID_INTERFACE = block(AEBlockIds.FLUID_INTERFACE, FluidInterfaceBlock::new).build();
-    public static final BlockDefinition CELL_WORKBENCH = block(AEBlockIds.CELL_WORKBENCH, CellWorkbenchBlock::new).build();
-    public static final BlockDefinition IO_PORT = block(AEBlockIds.IO_PORT, IOPortBlock::new).build();
-    public static final BlockDefinition CONDENSER = block(AEBlockIds.CONDENSER, CondenserBlock::new).build();
-    public static final BlockDefinition ENERGY_ACCEPTOR = block(AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new).build();
-    public static final BlockDefinition VIBRATION_CHAMBER = block(AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new).build();
-    public static final BlockDefinition QUARTZ_GROWTH_ACCELERATOR = block(AEBlockIds.QUARTZ_GROWTH_ACCELERATOR, QuartzGrowthAcceleratorBlock::new).build();
-    public static final BlockDefinition ENERGY_CELL = block(AEBlockIds.ENERGY_CELL, EnergyCellBlock::new).item(AEBaseBlockItemChargeable::new).build();
-    public static final BlockDefinition DENSE_ENERGY_CELL = block(AEBlockIds.DENSE_ENERGY_CELL, DenseEnergyCellBlock::new).item(AEBaseBlockItemChargeable::new).build();
-    public static final BlockDefinition CREATIVE_ENERGY_CELL = block(AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new).build();
+    public static final BlockDefinition<QuantumRingBlock> QUANTUM_RING = block(AEBlockIds.QUANTUM_RING, QuantumRingBlock::new);
+    public static final BlockDefinition<QuantumLinkChamberBlock> QUANTUM_LINK = block(AEBlockIds.QUANTUM_LINK, QuantumLinkChamberBlock::new);
+    public static final BlockDefinition<SpatialPylonBlock> SPATIAL_PYLON = block(AEBlockIds.SPATIAL_PYLON, SpatialPylonBlock::new);
+    public static final BlockDefinition<SpatialIOPortBlock> SPATIAL_IO_PORT = block(AEBlockIds.SPATIAL_IO_PORT, SpatialIOPortBlock::new);
+    public static final BlockDefinition<ControllerBlock> CONTROLLER = block(AEBlockIds.CONTROLLER, ControllerBlock::new);
+    public static final BlockDefinition<DriveBlock> DRIVE = block(AEBlockIds.DRIVE, DriveBlock::new);
+    public static final BlockDefinition<ChestBlock> CHEST = block(AEBlockIds.CHEST, ChestBlock::new);
+    public static final BlockDefinition<InterfaceBlock> INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new);
+    public static final BlockDefinition<FluidInterfaceBlock> FLUID_INTERFACE = block(AEBlockIds.FLUID_INTERFACE, FluidInterfaceBlock::new);
+    public static final BlockDefinition<CellWorkbenchBlock> CELL_WORKBENCH = block(AEBlockIds.CELL_WORKBENCH, CellWorkbenchBlock::new);
+    public static final BlockDefinition<IOPortBlock> IO_PORT = block(AEBlockIds.IO_PORT, IOPortBlock::new);
+    public static final BlockDefinition<CondenserBlock> CONDENSER = block(AEBlockIds.CONDENSER, CondenserBlock::new);
+    public static final BlockDefinition<EnergyAcceptorBlock> ENERGY_ACCEPTOR = block(AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new);
+    public static final BlockDefinition<VibrationChamberBlock> VIBRATION_CHAMBER = block(AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new);
+    public static final BlockDefinition<QuartzGrowthAcceleratorBlock> QUARTZ_GROWTH_ACCELERATOR = block(AEBlockIds.QUARTZ_GROWTH_ACCELERATOR, QuartzGrowthAcceleratorBlock::new);
+    public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block(AEBlockIds.ENERGY_CELL, EnergyCellBlock::new, AEBaseBlockItemChargeable::new);
+    public static final BlockDefinition<DenseEnergyCellBlock> DENSE_ENERGY_CELL = block(AEBlockIds.DENSE_ENERGY_CELL, DenseEnergyCellBlock::new, AEBaseBlockItemChargeable::new);
+    public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block(AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
-    public static final BlockDefinition CRAFTING_UNIT = craftingBlock(AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.IRON), CraftingUnitType.UNIT)).build();
-    public static final BlockDefinition CRAFTING_ACCELERATOR = craftingBlock(AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.IRON), CraftingUnitType.ACCELERATOR)).build();
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block(AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.IRON), CraftingUnitType.UNIT));
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = block(AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.IRON), CraftingUnitType.ACCELERATOR));
 
-    public static final BlockDefinition CRAFTING_STORAGE_1K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_1K)).item(CraftingStorageItem::new).build();
-    public static final BlockDefinition CRAFTING_STORAGE_4K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_4K)).item(CraftingStorageItem::new).build();
-    public static final BlockDefinition CRAFTING_STORAGE_16K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_16K)).item(CraftingStorageItem::new).build();
-    public static final BlockDefinition CRAFTING_STORAGE_64K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_64K)).item(CraftingStorageItem::new).build();
-    public static final BlockDefinition CRAFTING_MONITOR = craftingBlock(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.IRON))).build();
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_1K = block(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_1K), CraftingStorageItem::new);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_4K = block(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_4K), CraftingStorageItem::new);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = block(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_16K), CraftingStorageItem::new);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = block(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.IRON), CraftingUnitType.STORAGE_64K), CraftingStorageItem::new);
+    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = block(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.IRON)));
 
-    public static final BlockDefinition MOLECULAR_ASSEMBLER = block(AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid())).build();
+    public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block(AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()));
 
-    public static final BlockDefinition LIGHT_DETECTOR = block(AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new).build();
-    public static final BlockDefinition PAINT = block(AEBlockIds.PAINT, PaintSplotchesBlock::new).build();
+    public static final BlockDefinition<LightDetectorBlock> LIGHT_DETECTOR = block(AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new);
+    public static final BlockDefinition<PaintSplotchesBlock> PAINT = block(AEBlockIds.PAINT, PaintSplotchesBlock::new);
 
-    public static final BlockDefinition SKY_STONE_STAIRS = decoBlock(AEBlockIds.SKY_STONE_STAIRS, () -> new StairsBlock(SKY_STONE_BLOCK.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SMOOTH_SKY_STONE_STAIRS = decoBlock(AEBlockIds.SMOOTH_SKY_STONE_STAIRS, () -> new StairsBlock(SMOOTH_SKY_STONE_BLOCK.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_BRICK_STAIRS = decoBlock(AEBlockIds.SKY_STONE_BRICK_STAIRS, () -> new StairsBlock(SKY_STONE_BRICK.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_SMALL_BRICK_STAIRS = decoBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairsBlock(SKY_STONE_SMALL_BRICK.block()::getDefaultState, SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition FLUIX_STAIRS = decoBlock(AEBlockIds.FLUIX_STAIRS, () -> new StairsBlock(FLUIX_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_STAIRS = decoBlock(AEBlockIds.QUARTZ_STAIRS, () -> new StairsBlock(QUARTZ_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition CHISELED_QUARTZ_STAIRS = decoBlock(AEBlockIds.CHISELED_QUARTZ_STAIRS, () -> new StairsBlock(CHISELED_QUARTZ_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_PILLAR_STAIRS = decoBlock(AEBlockIds.QUARTZ_PILLAR_STAIRS, () -> new StairsBlock(QUARTZ_PILLAR.block()::getDefaultState, QUARTZ_PROPERTIES)).build();
+    public static final BlockDefinition<StairsBlock> SKY_STONE_STAIRS = block(AEBlockIds.SKY_STONE_STAIRS, () -> new StairsBlock(SKY_STONE_BLOCK.block()::getDefaultState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> SMOOTH_SKY_STONE_STAIRS = block(AEBlockIds.SMOOTH_SKY_STONE_STAIRS, () -> new StairsBlock(SMOOTH_SKY_STONE_BLOCK.block()::getDefaultState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> SKY_STONE_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_BRICK_STAIRS, () -> new StairsBlock(SKY_STONE_BRICK.block()::getDefaultState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> SKY_STONE_SMALL_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairsBlock(SKY_STONE_SMALL_BRICK.block()::getDefaultState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> FLUIX_STAIRS = block(AEBlockIds.FLUIX_STAIRS, () -> new StairsBlock(FLUIX_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> QUARTZ_STAIRS = block(AEBlockIds.QUARTZ_STAIRS, () -> new StairsBlock(QUARTZ_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> CHISELED_QUARTZ_STAIRS = block(AEBlockIds.CHISELED_QUARTZ_STAIRS, () -> new StairsBlock(CHISELED_QUARTZ_BLOCK.block()::getDefaultState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairsBlock> QUARTZ_PILLAR_STAIRS = block(AEBlockIds.QUARTZ_PILLAR_STAIRS, () -> new StairsBlock(QUARTZ_PILLAR.block()::getDefaultState, QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition SKY_STONE_WALL = decoBlock(AEBlockIds.SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SMOOTH_SKY_STONE_WALL = decoBlock(AEBlockIds.SMOOTH_SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_BRICK_WALL = decoBlock(AEBlockIds.SKY_STONE_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_SMALL_BRICK_WALL = decoBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition FLUIX_WALL = decoBlock(AEBlockIds.FLUIX_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_WALL = decoBlock(AEBlockIds.QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition CHISELED_QUARTZ_WALL = decoBlock(AEBlockIds.CHISELED_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_PILLAR_WALL = decoBlock(AEBlockIds.QUARTZ_PILLAR_WALL, () -> new WallBlock(QUARTZ_PROPERTIES)).build();
+    public static final BlockDefinition<WallBlock> SKY_STONE_WALL = block(AEBlockIds.SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<WallBlock> SMOOTH_SKY_STONE_WALL = block(AEBlockIds.SMOOTH_SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<WallBlock> SKY_STONE_BRICK_WALL = block(AEBlockIds.SKY_STONE_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<WallBlock> SKY_STONE_SMALL_BRICK_WALL = block(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<WallBlock> FLUIX_WALL = block(AEBlockIds.FLUIX_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> QUARTZ_WALL = block(AEBlockIds.QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> CHISELED_QUARTZ_WALL = block(AEBlockIds.CHISELED_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> QUARTZ_PILLAR_WALL = block(AEBlockIds.QUARTZ_PILLAR_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition MULTI_PART = block(AEBlockIds.CABLE_BUS, CableBusBlock::new).build();
+    public static final BlockDefinition<CableBusBlock> MULTI_PART = block(AEBlockIds.CABLE_BUS, CableBusBlock::new);
 
-    public static final BlockDefinition SKY_STONE_SLAB = decoBlock(AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SMOOTH_SKY_STONE_SLAB = decoBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_BRICK_SLAB = decoBlock(AEBlockIds.SKY_STONE_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
-    public static final BlockDefinition SKY_STONE_SMALL_BRICK_SLAB = decoBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES)).build();
+    public static final BlockDefinition<SlabBlock> SKY_STONE_SLAB = block(AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SMOOTH_SKY_STONE_SLAB = block(AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SKY_STONE_BRICK_SLAB = block(AEBlockIds.SKY_STONE_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SKY_STONE_SMALL_BRICK_SLAB = block(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
 
-    public static final BlockDefinition FLUIX_SLAB = decoBlock(AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_SLAB = decoBlock(AEBlockIds.QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition CHISELED_QUARTZ_SLAB = decoBlock(AEBlockIds.CHISELED_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES)).build();
-    public static final BlockDefinition QUARTZ_PILLAR_SLAB = decoBlock(AEBlockIds.QUARTZ_PILLAR_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES)).build();
+    public static final BlockDefinition<SlabBlock> FLUIX_SLAB = block(AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> QUARTZ_SLAB = block(AEBlockIds.QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> CHISELED_QUARTZ_SLAB = block(AEBlockIds.CHISELED_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> QUARTZ_PILLAR_SLAB = block(AEBlockIds.QUARTZ_PILLAR_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition SPATIAL_ANCHOR = block(AEBlockIds.SPATIAL_ANCHOR, SpatialAnchorBlock::new).build();
+    public static final BlockDefinition<SpatialAnchorBlock> SPATIAL_ANCHOR = block(AEBlockIds.SPATIAL_ANCHOR, SpatialAnchorBlock::new);
 
     ///
     /// DEBUG BLOCKS
     ///
-    public static final BlockDefinition DEBUG_ITEM_GEN = block(AppEng.makeId("debug_item_gen"), ItemGenBlock::new).build();
-    public static final BlockDefinition DEBUG_CHUNK_LOADER = block(AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new).build();
-    public static final BlockDefinition DEBUG_PHANTOM_NODE = block(AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new).build();
-    public static final BlockDefinition DEBUG_CUBE_GEN = block(AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new).build();
-    public static final BlockDefinition DEBUG_ENERGY_GEN = block(AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new).build();
+    public static final BlockDefinition<ItemGenBlock> DEBUG_ITEM_GEN = block(AppEng.makeId("debug_item_gen"), ItemGenBlock::new);
+    public static final BlockDefinition<ChunkLoaderBlock> DEBUG_CHUNK_LOADER = block(AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new);
+    public static final BlockDefinition<PhantomNodeBlock> DEBUG_PHANTOM_NODE = block(AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new);
+    public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block(AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
+    public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block(AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
     // spotless:on
 
-    public static List<BlockDefinition> getBlocks() {
+    public static List<BlockDefinition<?>> getBlocks() {
         return Collections.unmodifiableList(BLOCKS);
     }
 
-    private static Builder block(ResourceLocation id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
+    private static <T extends Block> BlockDefinition<T> block(ResourceLocation id, Supplier<T> blockSupplier) {
+        return block(id, blockSupplier, null);
     }
 
-    private static Builder decoBlock(ResourceLocation id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
-    }
+    private static <T extends Block> BlockDefinition<T> block(ResourceLocation id,
+            Supplier<T> blockSupplier,
+            @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
 
-    private static Builder craftingBlock(ResourceLocation id, Supplier<Block> blockSupplier) {
-        return new Builder(id, blockSupplier);
+        // Create block and matching item, and set factory name of both
+        T block = blockSupplier.get();
+        block.setRegistryName(id);
+
+        Item.Properties itemProperties = new Item.Properties();
+        itemProperties.group(CreativeTab.INSTANCE);
+
+        BlockItem item;
+        if (itemFactory != null) {
+            item = itemFactory.apply(block, itemProperties);
+            if (item == null) {
+                throw new IllegalArgumentException("BlockItem factory for " + id + " returned null");
+            }
+        } else if (block instanceof AEBaseBlock) {
+            item = new AEBaseBlockItem(block, itemProperties);
+        } else {
+            item = new BlockItem(block, itemProperties);
+        }
+        item.setRegistryName(id);
+
+        BlockDefinition<T> definition = new BlockDefinition<>(id, block, item);
+        CreativeTab.INSTANCE.add(definition);
+
+        BLOCKS.add(definition);
+
+        return definition;
+
     }
 
     // Used to control in which order static constructors are called
     public static void init() {
-    }
-
-    private static class Builder {
-
-        private final ResourceLocation id;
-
-        private final Supplier<? extends Block> blockSupplier;
-
-        private final ItemGroup itemGroup = CreativeTab.INSTANCE;
-
-        private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
-
-        Builder(ResourceLocation id, Supplier<? extends Block> blockSupplier) {
-            this.id = id;
-            this.blockSupplier = blockSupplier;
-        }
-
-        public Builder item(BiFunction<Block, Item.Properties, BlockItem> factory) {
-            this.itemFactory = factory;
-            return this;
-        }
-
-        public BlockDefinition build() {
-            // Create block and matching item, and set factory name of both
-            Block block = this.blockSupplier.get();
-            block.setRegistryName(this.id);
-
-            BlockItem item = this.constructItemFromBlock(block);
-            item.setRegistryName(this.id);
-
-            BlockDefinition definition = new BlockDefinition(this.id, block, item);
-
-            if (itemGroup instanceof AEItemGroup) {
-                ((AEItemGroup) itemGroup).add(definition);
-            }
-
-            BLOCKS.add(definition);
-
-            return definition;
-        }
-
-        private BlockItem constructItemFromBlock(Block block) {
-            Item.Properties itemProperties = new Item.Properties();
-
-            if (itemGroup != null) {
-                itemProperties.group(itemGroup);
-            }
-
-            if (this.itemFactory != null) {
-                BlockItem item = this.itemFactory.apply(block, itemProperties);
-                if (item == null) {
-                    throw new IllegalArgumentException("BlockItem factory for " + id + " returned null");
-                }
-                return item;
-            } else if (block instanceof AEBaseBlock) {
-                return new AEBaseBlockItem(block, itemProperties);
-            } else {
-                return new BlockItem(block, itemProperties);
-            }
-        }
     }
 
 }

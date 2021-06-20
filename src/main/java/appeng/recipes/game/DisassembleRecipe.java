@@ -52,8 +52,8 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
 
-    private final Map<ItemDefinition, ItemDefinition> cellMappings;
-    private final Map<ItemDefinition, ItemDefinition> nonCellMappings;
+    private final Map<ItemDefinition<?>, ItemDefinition<?>> cellMappings;
+    private final Map<ItemDefinition<?>, ItemDefinition<?>> nonCellMappings;
 
     public DisassembleRecipe(ResourceLocation id) {
         super(id);
@@ -117,7 +117,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     private ItemStack getCellOutput(final ItemStack compared) {
-        for (final Map.Entry<ItemDefinition, ItemDefinition> entry : this.cellMappings.entrySet()) {
+        for (final Map.Entry<ItemDefinition<?>, ItemDefinition<?>> entry : this.cellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
                 return entry.getValue().stack();
             }
@@ -128,7 +128,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     private ItemStack getNonCellOutput(final ItemStack compared) {
-        for (final Map.Entry<ItemDefinition, ItemDefinition> entry : this.nonCellMappings.entrySet()) {
+        for (final Map.Entry<ItemDefinition<?>, ItemDefinition<?>> entry : this.nonCellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
                 return entry.getValue().stack();
             }

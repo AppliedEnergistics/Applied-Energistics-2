@@ -24,7 +24,7 @@ import net.minecraftforge.client.model.ModelLoader;
 
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.core.Api;
-import appeng.core.features.registries.PartModels;
+import appeng.core.registries.PartModels;
 
 /**
  * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs

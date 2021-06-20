@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.registries;
 
 import java.util.EnumMap;
 import java.util.HashSet;

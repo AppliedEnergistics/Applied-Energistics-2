@@ -18,6 +18,8 @@
 
 package appeng.core.definitions;
 
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -25,23 +27,16 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDefinition extends ItemDefinition {
-    private final Block block;
+public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> {
+    private final T block;
 
-    private final BlockItem blockItem;
-
-    public BlockDefinition(ResourceLocation id, Block block, BlockItem item) {
+    public BlockDefinition(ResourceLocation id, T block, BlockItem item) {
         super(id, item);
-        this.block = block;
-        this.blockItem = item;
+        this.block = Objects.requireNonNull(block, "block");
     }
 
-    public final Block block() {
+    public final T block() {
         return this.block;
-    }
-
-    public BlockItem blockItem() {
-        return blockItem;
     }
 
     @Override

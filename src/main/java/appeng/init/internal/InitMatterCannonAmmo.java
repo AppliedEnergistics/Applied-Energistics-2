@@ -29,7 +29,7 @@ public final class InitMatterCannonAmmo {
 
     public static void init() {
         final IRegistryContainer registries = Api.INSTANCE.registries();
-        registries.matterCannon().registerAmmoItem(AEItems.MATTER_BALL.item(), 32);
+        registries.matterCannon().registerAmmoItem(AEItems.MATTER_BALL.asItem(), 32);
     }
 
 }

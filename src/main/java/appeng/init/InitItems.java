@@ -32,11 +32,11 @@ public final class InitItems {
     }
 
     public static void init(IForgeRegistry<Item> registry) {
-        for (BlockDefinition definition : AEBlocks.getBlocks()) {
-            registry.register(definition.blockItem());
+        for (BlockDefinition<?> definition : AEBlocks.getBlocks()) {
+            registry.register(definition.asItem());
         }
-        for (ItemDefinition definition : AEItems.getItems()) {
-            registry.register(definition.item());
+        for (ItemDefinition<?> definition : AEItems.getItems()) {
+            registry.register(definition.asItem());
         }
     }
 

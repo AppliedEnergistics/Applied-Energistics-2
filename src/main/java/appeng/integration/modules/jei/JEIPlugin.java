@@ -81,7 +81,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-        subtypeRegistry.useNbtForSubtypes(AEItems.FACADE.item());
+        subtypeRegistry.useNbtForSubtypes(AEItems.FACADE.asItem());
     }
 
     @Override
@@ -168,7 +168,7 @@ public class JEIPlugin implements IModPlugin {
 
     }
 
-    private void addDescription(IRecipeRegistration registry, ItemDefinition itemDefinition,
+    private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
             ITextComponent... message) {
         registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM, message);
     }
@@ -177,7 +177,7 @@ public class JEIPlugin implements IModPlugin {
     public void registerAdvanced(IAdvancedRegistration registration) {
 
         if (AEConfig.instance().isShowFacadesInJEIEnabled()) {
-            FacadeItem itemFacade = (FacadeItem) AEItems.FACADE.item();
+            FacadeItem itemFacade = AEItems.FACADE.asItem();
             ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }

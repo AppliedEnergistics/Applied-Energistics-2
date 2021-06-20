@@ -42,7 +42,7 @@ public final class InitItemModelsProperties {
     }
 
     public static void init() {
-        ColorApplicatorItem colorApplicatorItem = (ColorApplicatorItem) AEItems.COLOR_APPLICATOR.item();
+        ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
         ItemModelsProperties.registerProperty(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
                 (itemStack, world, entity) -> {
                     // If the stack has no color, don't use the colored model since the impact of
@@ -77,9 +77,9 @@ public final class InitItemModelsProperties {
     /**
      * Exposes a predicate "growth", which is used in the item model to differentiate the growth stages.
      */
-    private static void registerSeedGrowth(ItemDefinition definition) {
+    private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
-        ItemModelsProperties.registerProperty(definition.item(), new ResourceLocation("appliedenergistics2:growth"),
+        ItemModelsProperties.registerProperty(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
                 (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 

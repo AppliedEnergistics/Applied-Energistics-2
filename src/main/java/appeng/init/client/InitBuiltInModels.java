@@ -44,7 +44,7 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.registries.PartModels;
+import appeng.core.registries.PartModels;
 import appeng.parts.automation.PlaneModelLoader;
 
 @OnlyIn(Dist.CLIENT)

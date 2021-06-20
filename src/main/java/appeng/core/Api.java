@@ -30,8 +30,8 @@ import appeng.core.api.ApiCrafting;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
-import appeng.core.features.registries.PartModels;
-import appeng.core.features.registries.RegistryContainer;
+import appeng.core.registries.PartModels;
+import appeng.core.registries.RegistryContainer;
 
 public final class Api implements IAppEngApi {
 

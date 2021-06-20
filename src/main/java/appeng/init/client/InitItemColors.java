@@ -39,17 +39,17 @@ public final class InitItemColors {
     }
 
     public static void init(ItemColors itemColors) {
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.asItem());
         // I checked, the ME chest doesn't keep its color in item form
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
 
         itemColors.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
 
         itemColors.register(InitItemColors::getDummyFluidItemColor, AEItems.DUMMY_FLUID_ITEM);
 
         // Automatically register colors for certain items we register
-        for (ItemDefinition definition : AEItems.getItems()) {
-            Item item = definition.item();
+        for (ItemDefinition<?> definition : AEItems.getItems()) {
+            Item item = definition.asItem();
             if (item instanceof PartItem) {
                 AEColor color = AEColor.TRANSPARENT;
                 if (item instanceof ColoredPartItem) {

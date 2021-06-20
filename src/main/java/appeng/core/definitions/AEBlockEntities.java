@@ -187,7 +187,7 @@ public final class AEBlockEntities {
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
-        AEBaseTileEntity.registerTileItem(type, blockDefinitions[0].blockItem());
+        AEBaseTileEntity.registerTileItem(type, blockDefinitions[0].asItem());
 
         for (Block block : blocks) {
             if (block instanceof AEBaseTileBlock) {

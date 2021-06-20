@@ -107,7 +107,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
-            ItemDefinition press = AEItems.NAME_PRESS;
+            ItemDefinition<?> press = AEItems.NAME_PRESS;
             if (press.isSameAs(top) || press.isSameAs(bot)) {
                 return !press.isSameAs(is);
             }
@@ -122,7 +122,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
             }
 
             // name presses
-            final ItemDefinition namePress = AEItems.NAME_PRESS;
+            ItemDefinition<?> namePress = AEItems.NAME_PRESS;
             if (namePress.isSameAs(otherSlot)) {
                 return namePress.isSameAs(is);
             }

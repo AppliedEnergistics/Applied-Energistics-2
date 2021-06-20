@@ -18,29 +18,20 @@
 
 package appeng.core.definitions;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IItemProvider;
 
 import appeng.api.util.AEColor;
-import appeng.api.util.AEColoredItemDefinition;
 
-public final class ColoredItemDefinition implements AEColoredItemDefinition {
+public final class ColoredItemDefinition {
 
     private final IItemProvider[] colors = new IItemProvider[AEColor.values().length];
 
-    public void add(final AEColor v, final IItemProvider is) {
+    void add(final AEColor v, final IItemProvider is) {
         this.colors[v.ordinal()] = is;
     }
 
-    @Override
-    public Block block(final AEColor color) {
-        return null;
-    }
-
-    @Override
     public Item item(final AEColor color) {
         final IItemProvider is = this.colors[color.ordinal()];
 
@@ -51,12 +42,6 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition {
         return is.asItem();
     }
 
-    @Override
-    public Class<? extends TileEntity> entity(final AEColor color) {
-        return null;
-    }
-
-    @Override
     public ItemStack stack(final AEColor color, final int stackSize) {
         final IItemProvider is = this.colors[color.ordinal()];
 
@@ -67,23 +52,4 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition {
         return new ItemStack(is, stackSize);
     }
 
-    @Override
-    public ItemStack[] allStacks(final int stackSize) {
-        final ItemStack[] is = new ItemStack[this.colors.length];
-        for (int x = 0; x < is.length; x++) {
-            is[x] = new ItemStack(this.colors[x]);
-        }
-        return is;
-    }
-
-    @Override
-    public boolean sameAs(final AEColor color, final ItemStack comparableItem) {
-        final IItemProvider is = this.colors[color.ordinal()];
-
-        if (comparableItem.isEmpty() || is == null) {
-            return false;
-        }
-
-        return comparableItem.getItem() == is.asItem();
-    }
 }

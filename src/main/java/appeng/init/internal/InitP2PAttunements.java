@@ -186,7 +186,7 @@ public final class InitP2PAttunements {
         return myItemStack;
     }
 
-    private static void addNewAttunement(IP2PTunnelRegistry p2p, final ItemDefinition definition,
+    private static void addNewAttunement(IP2PTunnelRegistry p2p, final ItemDefinition<?> definition,
             final TunnelType type) {
         p2p.addNewAttunement(definition.stack(), type);
     }

@@ -221,7 +221,7 @@ public class PartPlacement {
 
             ItemStack multiPartStack = multiPart.stack();
             Block multiPartBlock = multiPart.block();
-            BlockItem multiPartBlockItem = multiPart.blockItem();
+            BlockItem multiPartBlockItem = (BlockItem) multiPart.asItem();
 
             boolean hostIsNotPresent = host == null;
             BlockState multiPartBlockState = multiPartBlock.getDefaultState();

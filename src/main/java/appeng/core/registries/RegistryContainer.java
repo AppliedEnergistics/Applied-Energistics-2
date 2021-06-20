@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.registries;
 
 import appeng.api.features.IChargerRegistry;
 import appeng.api.features.ILocatableRegistry;
@@ -30,8 +30,8 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
-import appeng.core.features.registries.cell.CellRegistry;
-import appeng.core.features.registries.charger.ChargerRegistry;
+import appeng.core.registries.cell.CellRegistry;
+import appeng.core.registries.charger.ChargerRegistry;
 
 /**
  * represents all registries

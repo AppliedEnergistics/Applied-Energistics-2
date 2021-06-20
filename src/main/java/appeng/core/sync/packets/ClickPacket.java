@@ -122,8 +122,8 @@ public class ClickPacket extends BasePacket {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
         final ItemStack is = player.getHeldItem(hand);
-        final ItemDefinition maybeMemoryCard = AEItems.MEMORY_CARD;
-        final ItemDefinition maybeColorApplicator = AEItems.COLOR_APPLICATOR;
+        final ItemDefinition<?> maybeMemoryCard = AEItems.MEMORY_CARD;
+        final ItemDefinition<?> maybeColorApplicator = AEItems.COLOR_APPLICATOR;
 
         if (this.leftClick) {
             final Block block = player.world.getBlockState(pos).getBlock();

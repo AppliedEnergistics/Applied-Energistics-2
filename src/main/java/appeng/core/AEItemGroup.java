@@ -30,7 +30,7 @@ import appeng.core.definitions.ItemDefinition;
 
 public class AEItemGroup extends ItemGroup {
 
-    private final List<ItemDefinition> itemDefs = new ArrayList<>();
+    private final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
     public AEItemGroup(String label) {
         super(label);
@@ -41,14 +41,14 @@ public class AEItemGroup extends ItemGroup {
         return AEBlocks.CONTROLLER.stack();
     }
 
-    public void add(ItemDefinition itemDef) {
+    public void add(ItemDefinition<?> itemDef) {
         this.itemDefs.add(itemDef);
     }
 
     @Override
     public void fill(NonNullList<ItemStack> items) {
-        for (ItemDefinition itemDef : this.itemDefs) {
-            itemDef.item().fillItemGroup(this, items);
+        for (ItemDefinition<?> itemDef : this.itemDefs) {
+            itemDef.asItem().fillItemGroup(this, items);
         }
     }
 

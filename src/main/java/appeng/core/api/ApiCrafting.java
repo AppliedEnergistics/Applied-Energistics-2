@@ -41,17 +41,10 @@ import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;
 
 public class ApiCrafting implements ICraftingHelper {
-
-    private final ItemDefinition encodedPattern;
-
-    public ApiCrafting() {
-        this.encodedPattern = AEItems.ENCODED_PATTERN;
-    }
 
     @Override
     public boolean isEncodedPattern(@Nullable IAEItemStack item) {
@@ -67,7 +60,7 @@ public class ApiCrafting implements ICraftingHelper {
     public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
-            stack = encodedPattern.stack();
+            stack = AEItems.ENCODED_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }
@@ -79,7 +72,7 @@ public class ApiCrafting implements ICraftingHelper {
     @Override
     public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out) {
         if (stack == null) {
-            stack = encodedPattern.stack();
+            stack = AEItems.ENCODED_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }

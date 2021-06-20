@@ -62,13 +62,13 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> droppingWithSilkTouch(AEBlocks.QUARTZ_ORE.block(),
                             withExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
-                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL.item())
+                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .put(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                     b -> droppingWithSilkTouch(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                             withExplosionDecay(AEBlocks.QUARTZ_ORE_CHARGED.block(),
-                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.item())
+                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();

@@ -20,9 +20,9 @@ package appeng.init.internal;
 
 import appeng.api.features.IRegistryContainer;
 import appeng.core.Api;
-import appeng.core.features.registries.cell.BasicCellHandler;
-import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
-import appeng.core.features.registries.cell.CreativeCellHandler;
+import appeng.core.registries.cell.BasicCellHandler;
+import appeng.core.registries.cell.BasicItemCellGuiHandler;
+import appeng.core.registries.cell.CreativeCellHandler;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 
 public final class InitCellHandlers {

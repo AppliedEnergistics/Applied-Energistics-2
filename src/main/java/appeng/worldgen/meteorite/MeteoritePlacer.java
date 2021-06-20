@@ -89,7 +89,7 @@ public final class MeteoritePlacer {
 
         this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().getDefaultState();
-        this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.item();
+        this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.asItem();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }

@@ -35,7 +35,7 @@ public final class InitRecipeSerializers {
     }
 
     public static void init(IForgeRegistry<IRecipeSerializer<?>> registry) {
-        FacadeItem facadeItem = (FacadeItem) AEItems.FACADE.item();
+        FacadeItem facadeItem = AEItems.FACADE.asItem();
         registry.registerAll(
                 DisassembleRecipe.SERIALIZER,
                 GrinderRecipeSerializer.INSTANCE,

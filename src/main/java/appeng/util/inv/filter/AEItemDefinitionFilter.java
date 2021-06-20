@@ -24,9 +24,9 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.core.definitions.ItemDefinition;
 
 public class AEItemDefinitionFilter implements IAEItemFilter {
-    private final ItemDefinition definition;
+    private final ItemDefinition<?> definition;
 
-    public AEItemDefinitionFilter(ItemDefinition definition) {
+    public AEItemDefinitionFilter(ItemDefinition<?> definition) {
         this.definition = definition;
     }
 

@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
-import appeng.core.features.registries.PartModels;
+import appeng.core.registries.PartModels;
 
 public class CableBusModelLoader implements IModelLoader<CableBusModel> {
 

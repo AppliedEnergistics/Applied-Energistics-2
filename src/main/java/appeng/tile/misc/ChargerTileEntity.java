@@ -45,7 +45,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
@@ -251,9 +250,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
-            final ItemDefinition cert = AEItems.CERTUS_QUARTZ_CRYSTAL;
-
-            return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
+            return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
         }
 
         @Override

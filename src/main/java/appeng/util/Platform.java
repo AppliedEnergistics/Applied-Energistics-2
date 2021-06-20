@@ -93,7 +93,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
@@ -987,9 +986,7 @@ public class Platform {
         }
 
         if (type == QuartzToolType.CERTUS) {
-            final ItemDefinition certusQuartzCrystal = AEItems.CERTUS_QUARTZ_CRYSTAL;
-
-            return certusQuartzCrystal.isSameAs(b);
+            return AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(b);
         }
 
         if (type == QuartzToolType.NETHER) {
