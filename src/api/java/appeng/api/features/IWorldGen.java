@@ -35,24 +35,6 @@ public interface IWorldGen {
      * @deprecated Scheduled for removal in 9.0.0.
      */
     @Deprecated
-    void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
-
-    /**
-     * This method does not do anything since Worldgen is centered around biomes, and not dimensions.
-     * <p>
-     *
-     * @deprecated Scheduled for removal in 9.0.0.
-     */
-    @Deprecated
-    void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
-
-    /**
-     * This method does not do anything since Worldgen is centered around biomes, and not dimensions.
-     * <p>
-     *
-     * @deprecated Scheduled for removal in 9.0.0.
-     */
-    @Deprecated
     boolean isWorldGenEnabled(WorldGenType type, ServerWorld w);
 
     /**

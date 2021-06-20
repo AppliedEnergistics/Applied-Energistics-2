@@ -43,14 +43,6 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID) {
-    }
-
-    @Override
-    public void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID) {
-    }
-
-    @Override
     public boolean isWorldGenEnabled(WorldGenType type, ServerWorld w) {
         return true;
     }
