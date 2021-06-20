@@ -19,10 +19,7 @@
 package appeng.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +50,6 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
-import appeng.api.features.AEFeature;
 import appeng.client.gui.NumberEntryType;
 import appeng.core.features.registries.WorldGenRegistry;
 import appeng.core.settings.TickRates;
@@ -68,7 +64,6 @@ public final class AEConfig {
     public static final ForgeConfigSpec COMMON_SPEC;
 
     // Default Energy Conversion Rates
-    private static final double DEFAULT_IC2_EXCHANGE = 2.0;
     private static final double DEFAULT_RF_EXCHANGE = 0.5;
 
     static {
@@ -82,13 +77,8 @@ public final class AEConfig {
         COMMON = commonPair.getLeft();
     }
 
-    public static final String VERSION = "@version@";
-    public static final String CHANNEL = "@aechannel@";
-
     // Config instance
     private static final AEConfig instance = new AEConfig();
-
-    private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf(AEFeature.class);
 
     // Misc
     private boolean removeCrashingItemsOnLoad;
@@ -96,7 +86,6 @@ public final class AEConfig {
     private boolean enableEffects;
     private boolean useLargeFonts;
     private boolean useColoredCraftingStatus;
-    private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
     private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
@@ -145,7 +134,6 @@ public final class AEConfig {
     }
 
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
@@ -160,7 +148,6 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        // PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
         PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
@@ -186,18 +173,6 @@ public final class AEConfig {
         this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
         this.matterCannonBattery = COMMON.matterCannonBattery.get();
 
-        this.featureFlags.clear();
-
-        for (final AEFeature feature : AEFeature.values()) {
-            if (feature.isVisible() && feature.isConfig()) {
-                if (COMMON.enabledFeatures.containsKey(feature) && COMMON.enabledFeatures.get(feature).get()) {
-                    this.featureFlags.add(feature);
-                }
-            } else {
-                this.featureFlags.add(feature);
-            }
-        }
-
         for (final TickRates tr : TickRates.values()) {
             tr.setMin(COMMON.tickRateMin.get(tr).get());
             tr.setMax(COMMON.tickRateMin.get(tr).get());
@@ -220,14 +195,6 @@ public final class AEConfig {
 
     public static AEConfig instance() {
         return instance;
-    }
-
-    public boolean isFeatureEnabled(final AEFeature f) {
-        return !f.isConfig() && f.isEnabled() || this.featureFlags.contains(f);
-    }
-
-    public boolean areFeaturesEnabled(Collection<AEFeature> features) {
-        return this.featureFlags.containsAll(features);
     }
 
     public double wireless_getDrainRate(final double range) {
@@ -310,6 +277,14 @@ public final class AEConfig {
         return this.removeCrashingItemsOnLoad;
     }
 
+    public boolean isBlockEntityFacadesEnabled() {
+        return COMMON.allowBlockEntityFacades.get();
+    }
+
+    public boolean isDebugToolsEnabled() {
+        return COMMON.debugTools.get();
+    }
+
     public int getFormationPlaneEntityLimit() {
         return this.formationPlaneEntityLimit;
     }
@@ -327,7 +302,11 @@ public final class AEConfig {
     }
 
     public boolean isDisableColoredCableRecipesInJEI() {
-        return this.disableColoredCableRecipesInJEI;
+        return CLIENT.disableColoredCableRecipesInJEI.get();
+    }
+
+    public boolean isShowFacadesInJEIEnabled() {
+        return CLIENT.showFacadesInJEI.get();
     }
 
     public int getCraftingCalculationTimePerTick() {
@@ -399,6 +378,66 @@ public final class AEConfig {
         return CLIENT.debugGuiOverlays.get();
     }
 
+    public boolean isGenerateMeteorites() {
+        return COMMON.generateMeteorites.get();
+    }
+
+    public boolean isSpawnPressesInMeteoritesEnabled() {
+        return COMMON.spawnPressesInMeteorites.get();
+    }
+
+    public boolean isGenerateQuartzOre() {
+        return COMMON.generateQuartzOre.get();
+    }
+
+    public boolean isMatterCanonBlockDamageEnabled() {
+        return COMMON.matterCannonBlockDamage.get();
+    }
+
+    public boolean isTinyTntBlockDamageEnabled() {
+        return COMMON.tinyTntBlockDamage.get();
+    }
+
+    public boolean isInWorldSingularityEnabled() {
+        return COMMON.inWorldSingularity.get();
+    }
+
+    public boolean isInWorldFluixEnabled() {
+        return COMMON.inWorldFluix.get();
+    }
+
+    public boolean isInWorldPurificationEnabled() {
+        return COMMON.inWorldPurification.get();
+    }
+
+    public boolean isDisassemblyCraftingEnabled() {
+        return COMMON.disassemblyCrafting.get();
+    }
+
+    public boolean isSecurityAuditLogEnabled() {
+        return COMMON.securityAuditLog.get();
+    }
+
+    public boolean isBlockUpdateLogEnabled() {
+        return COMMON.blockUpdateLog.get();
+    }
+
+    public boolean isPacketLogEnabled() {
+        return COMMON.packetLog.get();
+    }
+
+    public boolean isCraftingLogEnabled() {
+        return COMMON.craftingLog.get();
+    }
+
+    public boolean isDebugLogEnabled() {
+        return COMMON.debugLog.get();
+    }
+
+    public boolean isChunkLoggerTraceEnabled() {
+        return COMMON.chunkLoggerTrace.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -408,6 +447,7 @@ public final class AEConfig {
         public final BooleanValue useLargeFonts;
         public final BooleanValue useColoredCraftingStatus;
         public final BooleanValue disableColoredCableRecipesInJEI;
+        public final BooleanValue showFacadesInJEI;
         public final EnumValue<PowerUnits> selectedPowerUnit;
         public final BooleanValue debugGuiOverlays;
 
@@ -426,6 +466,7 @@ public final class AEConfig {
             builder.push("client");
             this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
                     true);
+            this.showFacadesInJEI = builder.define("showFacadesInJEI", true);
             this.enableEffects = builder.comment("TODO").define("enableEffects", true);
             this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
@@ -465,18 +506,33 @@ public final class AEConfig {
 
     private static class CommonConfig {
 
-        // Feature toggles
-        public final Map<AEFeature, BooleanValue> enabledFeatures = new EnumMap<>(AEFeature.class);
-
         // Misc
         public final BooleanValue removeCrashingItemsOnLoad;
         public final ConfigValue<Integer> formationPlaneEntityLimit;
         public final ConfigValue<Integer> craftingCalculationTimePerTick;
+        public final BooleanValue allowBlockEntityFacades;
+        public final BooleanValue debugTools;
+        public final BooleanValue matterCannonBlockDamage;
+        public final BooleanValue tinyTntBlockDamage;
+
+        // Crafting
+        public final BooleanValue inWorldSingularity;
+        public final BooleanValue inWorldFluix;
+        public final BooleanValue inWorldPurification;
+        public final BooleanValue disassemblyCrafting;
 
         // Spatial IO/Dimension
         public final ConfigValue<Double> spatialPowerExponent;
         public final ConfigValue<Double> spatialPowerMultiplier;
         public final ConfigValue<Boolean> spatialBlockTags;
+
+        // Logging
+        public final BooleanValue securityAuditLog;
+        public final BooleanValue blockUpdateLog;
+        public final BooleanValue packetLog;
+        public final BooleanValue craftingLog;
+        public final BooleanValue debugLog;
+        public final BooleanValue chunkLoggerTrace;
 
         // Grindstone
         public final DoubleValue oreDoublePercentage;
@@ -493,9 +549,12 @@ public final class AEConfig {
         public final DoubleValue spawnChargedChance;
         public final ConfigValue<Integer> quartzOresPerCluster;
         public final ConfigValue<Integer> quartzOresClusterAmount;
+        public final BooleanValue generateQuartzOre;
         public final ConfigValue<List<? extends String>> quartzOresBiomeBlacklist;
 
         // Meteors
+        public final BooleanValue generateMeteorites;
+        public final BooleanValue spawnPressesInMeteorites;
         public final ConfigValue<List<? extends String>> meteoriteBiomeBlacklist;
 
         // Wireless
@@ -508,7 +567,6 @@ public final class AEConfig {
         public final ConfigValue<Double> wirelessHighWirelessCount;
 
         // Power Ratios
-        // public final ConfigValue<Double> powerRatioIc2;
         public final ConfigValue<Double> powerRatioForgeEnergy;
         public final DoubleValue powerUsageMultiplier;
 
@@ -526,38 +584,27 @@ public final class AEConfig {
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
 
-            // Feature switches
-            builder.comment("Warning: Disabling a feature may disable other features depending on it.")
-                    .push("features");
-
-            // We need to group by feature category
-            Map<String, List<AEFeature>> groupedFeatures = Arrays.stream(AEFeature.values())
-                    .filter(AEFeature::isVisible) // Only provide config settings for visible features
-                    .collect(Collectors.groupingBy(AEFeature::category));
-
-            for (final String category : groupedFeatures.keySet()) {
-                List<AEFeature> featuresInGroup = groupedFeatures.get(category);
-
-                builder.push(category);
-                for (AEFeature feature : featuresInGroup) {
-                    if (feature.isConfig()) {
-                        enabledFeatures.put(feature, builder.comment(Strings.nullToEmpty(feature.comment()))
-                                .define(feature.key(), feature.isEnabled()));
-                    }
-                }
-                builder.pop();
-            }
-
-            builder.pop();
-
             builder.push("general");
             removeCrashingItemsOnLoad = builder.comment(
                     "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!")
                     .define("removeCrashingItemsOnLoad", false);
+            debugTools = builder.define("unsupportedDeveloperTools", false);
+            matterCannonBlockDamage = builder
+                    .comment("Enables the ability of the Matter Cannon to break blocks.")
+                    .define("matterCannonBlockDamage", true);
+            tinyTntBlockDamage = builder
+                    .comment("Enables the ability of Tiny TNT to break blocks.")
+                    .define("tinyTntBlockDamage", true);
             builder.pop();
 
             builder.push("automation");
             formationPlaneEntityLimit = builder.comment("TODO").define("formationPlaneEntityLimit", 128);
+            builder.pop();
+
+            builder.push("facades");
+            allowBlockEntityFacades = builder.comment(
+                    "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.")
+                    .define("allowBlockEntities", false);
             builder.pop();
 
             builder.push("craftingCPU");
@@ -566,12 +613,34 @@ public final class AEConfig {
 
             builder.pop();
 
+            builder.push("crafting");
+            inWorldSingularity = builder.comment("Enable the in-world crafting of singularities.")
+                    .define("inWorldSingularity", true);
+            inWorldFluix = builder.comment("Enable the in-world crafting of fluix crystals.").define("inWorldFluix",
+                    true);
+            inWorldPurification = builder.comment("Enable the in-world crafting of pure crystals.")
+                    .define("inWorldPurification", true);
+            disassemblyCrafting = builder
+                    .comment("Enable the recipes for disassembling storage cells and crafting units.")
+                    .define("disassemblyCrafting", true);
+            builder.pop();
+
             builder.push("spatialio");
             this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
             this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
             this.spatialBlockTags = builder
                     .comment("BE CAREFUL, CAN CORRUPT YOUR WORLD! Will use #spatial/whitelist as whitelist.")
                     .define("spatialBlockTags", false);
+            builder.pop();
+
+            builder.push("logging");
+            securityAuditLog = builder.define("securityAuditLog", false);
+            blockUpdateLog = builder.define("blockUpdateLog", false);
+            packetLog = builder.define("packetLog", false);
+            craftingLog = builder.define("craftingLog", false);
+            debugLog = builder.define("debugLog", false);
+            chunkLoggerTrace = builder.comment("Enable stack trace logging for the chunk loading debug command")
+                    .define("chunkLoggerTrace", false);
             builder.pop();
 
             builder.push("GrindStone");
@@ -591,10 +660,13 @@ public final class AEConfig {
             builder.push("worldGen");
 
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
+            this.generateMeteorites = builder.define("generateMeteorites", true);
             this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
                     Collections.emptyList(),
                     obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
+            this.spawnPressesInMeteorites = builder.define("spawnPressesInMeteorites", true);
 
+            this.generateQuartzOre = builder.define("generateQuartzOre", true);
             this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
             this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
@@ -614,7 +686,6 @@ public final class AEConfig {
             builder.pop();
 
             builder.push("PowerRatios");
-            // powerRatioIc2 = builder.define("IC2", DEFAULT_IC2_EXCHANGE);
             powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
             powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
             builder.pop();

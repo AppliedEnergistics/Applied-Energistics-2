@@ -53,7 +53,6 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.features.AEFeature;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.InscriberScreen;
@@ -132,7 +131,7 @@ public class JEIPlugin implements IModPlugin {
     private void registerDescriptions(IRecipeRegistration registry) {
 
         final ITextComponent[] message;
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
+        if (AEConfig.instance().isGenerateQuartzOre()) {
             // " " Used to enforce a new paragraph
             message = new ITextComponent[] { GuiText.ChargedQuartz.text(), new StringTextComponent(" "),
                     GuiText.ChargedQuartzFind.text() };
@@ -141,7 +140,7 @@ public class JEIPlugin implements IModPlugin {
         }
         this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+        if (AEConfig.instance().isGenerateMeteorites()) {
             this.addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.text());
             this.addDescription(registry, AEItems.CALCULATION_PROCESSOR_PRESS,
@@ -150,15 +149,15 @@ public class JEIPlugin implements IModPlugin {
                     GuiText.inWorldCraftingPresses.text());
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
+        if (AEConfig.instance().isInWorldFluixEnabled()) {
             this.addDescription(registry, AEItems.FLUIX_CRYSTAL, GuiText.inWorldFluix.text());
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
+        if (AEConfig.instance().isInWorldSingularityEnabled()) {
             this.addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY, GuiText.inWorldSingularity.text());
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
+        if (AEConfig.instance().isInWorldPurificationEnabled()) {
             this.addDescription(registry, AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL,
                     GuiText.inWorldPurificationCertus.text());
             this.addDescription(registry, AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL,
@@ -177,7 +176,7 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
+        if (AEConfig.instance().isShowFacadesInJEIEnabled()) {
             FacadeItem itemFacade = (FacadeItem) AEItems.FACADE.item();
             ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
@@ -236,7 +235,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
+        if (!AEConfig.instance().isDebugToolsEnabled()) {
             Collection<ItemStack> toRemove = new ArrayList<>();
 
             // We use the internal API here as exception as debug tools are not part of the public one by design.
@@ -250,6 +249,7 @@ public class JEIPlugin implements IModPlugin {
             toRemove.add(AEItems.DEBUG_ERASER.stack());
             toRemove.add(AEItems.DEBUG_METEORITE_PLACER.stack());
             toRemove.add(AEItems.DEBUG_REPLICATOR_CARD.stack());
+            toRemove.add(AEItems.DEBUG_PART_PLACER.stack());
 
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
                     toRemove);

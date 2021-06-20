@@ -45,7 +45,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -150,7 +149,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             e.attackEntityFrom(DamageSource.causeExplosionDamage(ex), 6);
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.TINY_TNT_BLOCK_DAMAGE)) {
+        if (AEConfig.instance().isTinyTntBlockDamageEnabled()) {
             this.setPosition(this.getPosX(), this.getPosY() - 0.25, this.getPosZ());
 
             for (int x = (int) (this.getPosX() - 2); x <= this.getPosX() + 2; x++) {

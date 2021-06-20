@@ -70,7 +70,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -98,6 +97,7 @@ import appeng.core.features.ItemDefinition;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -784,7 +784,7 @@ public class Platform {
         final boolean a_isSecure = isPowered(a.getGrid()) && a.getLastSecurityKey() != -1;
         final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.LOG_SECURITY_AUDITS)) {
+        if (AEConfig.instance().isSecurityAuditLogEnabled()) {
             final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
                     : "notInWorld";
             final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
@@ -981,18 +981,18 @@ public class Platform {
         }
     }
 
-    public static boolean canRepair(final AEFeature type, final ItemStack a, final ItemStack b) {
+    public static boolean canRepair(final QuartzToolType type, final ItemStack a, final ItemStack b) {
         if (b.isEmpty() || a.isEmpty()) {
             return false;
         }
 
-        if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
+        if (type == QuartzToolType.CERTUS) {
             final ItemDefinition certusQuartzCrystal = AEItems.CERTUS_QUARTZ_CRYSTAL;
 
             return certusQuartzCrystal.isSameAs(b);
         }
 
-        if (type == AEFeature.NETHER_QUARTZ_TOOLS) {
+        if (type == QuartzToolType.NETHER) {
             return Items.QUARTZ == b.getItem();
         }
 

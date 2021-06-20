@@ -42,7 +42,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.features.AEFeature;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
@@ -105,7 +104,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         // We only support the default state for facades. Sorry.
         BlockState blockState = block.getDefaultState();
 
-        final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
+        final boolean areTileEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 

@@ -31,7 +31,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
@@ -65,7 +64,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
             return;
         }
 
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
+        if (!AEConfig.instance().isInWorldSingularityEnabled()) {
             return;
         }
 

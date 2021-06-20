@@ -35,7 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -198,7 +197,7 @@ public final class MeteoritePlacer {
     }
 
     private void placeChest() {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
+        if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
             final TileEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue

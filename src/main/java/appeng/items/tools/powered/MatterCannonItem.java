@@ -55,7 +55,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -364,7 +363,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 } else if (pos instanceof BlockRayTraceResult) {
                     BlockRayTraceResult blockResult = (BlockRayTraceResult) pos;
 
-                    if (!AEConfig.instance().isFeatureEnabled(AEFeature.MASS_CANNON_BLOCK_DAMAGE)) {
+                    if (!AEConfig.instance().isMatterCanonBlockDamageEnabled()) {
                         penetration = 0;
                     } else {
                         BlockPos blockPos = blockResult.getPos();

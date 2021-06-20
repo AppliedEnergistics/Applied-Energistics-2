@@ -29,7 +29,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
@@ -81,7 +80,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private void applyGrowthTick(IGrowableCrystal cry, ItemStack is) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
+        if (!AEConfig.instance().isInWorldPurificationEnabled()) {
             return;
         }
 

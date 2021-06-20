@@ -33,7 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -59,7 +58,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     public void tick() {
         super.tick();
 
-        if (this.removed || !AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
+        if (this.removed || !AEConfig.instance().isInWorldFluixEnabled()) {
             return;
         }
 

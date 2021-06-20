@@ -31,7 +31,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.config.Upgrades;
-import appeng.api.features.AEFeature;
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -80,6 +79,7 @@ import appeng.items.tools.quartz.QuartzHoeItem;
 import appeng.items.tools.quartz.QuartzPickaxeItem;
 import appeng.items.tools.quartz.QuartzSpadeItem;
 import appeng.items.tools.quartz.QuartzSwordItem;
+import appeng.items.tools.quartz.QuartzToolType;
 import appeng.items.tools.quartz.QuartzWrenchItem;
 
 /**
@@ -95,25 +95,25 @@ public final class AEItems {
     /// CERTUS QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition CERTUS_QUARTZ_AXE = item(AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition CERTUS_QUARTZ_HOE = item(AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition CERTUS_QUARTZ_SHOVEL = item(AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.COMBAT);
+    public static final ItemDefinition CERTUS_QUARTZ_AXE = item(AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
+    public static final ItemDefinition CERTUS_QUARTZ_HOE = item(AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
+    public static final ItemDefinition CERTUS_QUARTZ_SHOVEL = item(AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
+    public static final ItemDefinition CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
+    public static final ItemDefinition CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), ItemGroup.COMBAT);
     public static final ItemDefinition CERTUS_QUARTZ_WRENCH = item(AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.maxStackSize(1)), ItemGroup.TOOLS);
-    public static final ItemDefinition CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxDamage(50).setNoRepair(), AEFeature.CERTUS_QUARTZ_TOOLS), ItemGroup.TOOLS);
+    public static final ItemDefinition CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxDamage(50).setNoRepair(), QuartzToolType.CERTUS), ItemGroup.TOOLS);
 
     ///
     /// NETHER QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition NETHER_QUARTZ_AXE = item(AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition NETHER_QUARTZ_HOE = item(AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition NETHER_QUARTZ_SHOVEL = item(AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.TOOLS);
-    public static final ItemDefinition NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.COMBAT);
+    public static final ItemDefinition NETHER_QUARTZ_AXE = item(AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
+    public static final ItemDefinition NETHER_QUARTZ_HOE = item(AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
+    public static final ItemDefinition NETHER_QUARTZ_SHOVEL = item(AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
+    public static final ItemDefinition NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
+    public static final ItemDefinition NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), ItemGroup.COMBAT);
     public static final ItemDefinition NETHER_QUARTZ_WRENCH = item(AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.maxStackSize(1)), ItemGroup.TOOLS);
-    public static final ItemDefinition NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxStackSize(1).maxDamage(50).setNoRepair(), AEFeature.NETHER_QUARTZ_TOOLS), ItemGroup.TOOLS);
+    public static final ItemDefinition NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxStackSize(1).maxDamage(50).setNoRepair(), QuartzToolType.NETHER), ItemGroup.TOOLS);
 
     ///
     /// VARIOUS POWERED TOOLS

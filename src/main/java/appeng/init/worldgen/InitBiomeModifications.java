@@ -25,7 +25,6 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
-import appeng.api.features.AEFeature;
 import appeng.api.features.IWorldGen;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -43,25 +42,23 @@ public final class InitBiomeModifications {
     }
 
     private static void addMeteoriteWorldGen(BiomeLoadingEvent e) {
-        if (shouldGenerateIn(e.getName(), AEFeature.METEORITE_WORLD_GEN, IWorldGen.WorldGenType.METEORITES,
+        if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateMeteorites(), IWorldGen.WorldGenType.METEORITES,
                 e.getCategory())) {
             e.getGeneration().withStructure(MeteoriteStructure.CONFIGURED_INSTANCE);
         }
     }
 
     private static void addQuartzWorldGen(BiomeLoadingEvent e) {
-        if (shouldGenerateIn(e.getName(), AEFeature.CERTUS_QUARTZ_WORLD_GEN, IWorldGen.WorldGenType.CERTUS_QUARTZ,
+        if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateQuartzOre(),
+                IWorldGen.WorldGenType.CERTUS_QUARTZ,
                 e.getCategory())) {
 
             ConfiguredFeature<?, ?> quartzOreFeature = getConfiguredFeature(WorldgenIds.QUARTZ_ORE);
-
             e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
 
-            if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-                ConfiguredFeature<?, ?> chargedQuartzOreFeature = getConfiguredFeature(WorldgenIds.CHARGED_QUARTZ_ORE);
-                e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
-                        chargedQuartzOreFeature);
-            }
+            ConfiguredFeature<?, ?> chargedQuartzOreFeature = getConfiguredFeature(WorldgenIds.CHARGED_QUARTZ_ORE);
+            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+                    chargedQuartzOreFeature);
         }
     }
 
@@ -71,27 +68,27 @@ public final class InitBiomeModifications {
     }
 
     private static boolean shouldGenerateIn(ResourceLocation id,
-            AEFeature feature,
+            boolean enabled,
             IWorldGen.WorldGenType worldGenType,
             Biome.Category category) {
         if (id == null) {
             return false; // We don't add to unnamed biomes
         }
 
-        if (!AEConfig.instance().isFeatureEnabled(feature)) {
-            AELog.debug("Not generating %s in %s because the feature is disabled", feature, id);
+        if (!enabled) {
+            AELog.debug("Not generating %s in %s because it is disabled in the config", worldGenType, id);
             return false;
         }
 
         if (category == Biome.Category.THEEND || category == Biome.Category.NETHER
                 || category == Biome.Category.NONE) {
-            AELog.debug("Not generating %s in %s because it's of category %s", feature, id, category);
+            AELog.debug("Not generating %s in %s because it's of category %s", worldGenType, id, category);
             return false;
         }
 
         if (Api.instance().registries().worldgen().isWorldGenDisabledForBiome(worldGenType, id)) {
             AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
-                    feature, id);
+                    worldGenType, id);
             return false;
         }
 
