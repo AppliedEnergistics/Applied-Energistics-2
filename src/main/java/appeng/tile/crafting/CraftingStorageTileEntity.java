@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
@@ -37,13 +37,13 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
 
         switch (storage) {
             case 1:
-                return ApiBlocks.CRAFTING_STORAGE_1K.stack();
+                return AEBlocks.CRAFTING_STORAGE_1K.stack();
             case 4:
-                return ApiBlocks.CRAFTING_STORAGE_4K.stack();
+                return AEBlocks.CRAFTING_STORAGE_4K.stack();
             case 16:
-                return ApiBlocks.CRAFTING_STORAGE_16K.stack();
+                return AEBlocks.CRAFTING_STORAGE_16K.stack();
             case 64:
-                return ApiBlocks.CRAFTING_STORAGE_64K.stack();
+                return AEBlocks.CRAFTING_STORAGE_64K.stack();
             default:
                 return super.getItemFromTile();
         }

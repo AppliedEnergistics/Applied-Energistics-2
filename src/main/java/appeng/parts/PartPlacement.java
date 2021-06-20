@@ -56,8 +56,8 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.BlockDefinition;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
@@ -198,7 +198,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final BlockDefinition multiPart = ApiBlocks.MULTI_PART;
+        final BlockDefinition multiPart = AEBlocks.MULTI_PART;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -371,8 +371,8 @@ public class PartPlacement {
             } else {
                 final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
 
-                boolean supportedItem = ApiItems.MEMORY_CARD.isSameAs(held);
-                supportedItem |= ApiItems.COLOR_APPLICATOR.isSameAs(held);
+                boolean supportedItem = AEItems.MEMORY_CARD.isSameAs(held);
+                supportedItem |= AEItems.COLOR_APPLICATOR.isSameAs(held);
 
                 if (InteractionUtil.isInAlternateUseMode(event.getPlayer()) && !held.isEmpty() && supportedItem) {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));

@@ -22,11 +22,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
-import appeng.core.api.definitions.ApiEntities;
+import appeng.core.api.definitions.AEEntities;
 import appeng.entity.TinyTNTPrimedRenderer;
 
 /**
- * Registers custom renderers for our {@link ApiEntities}.
+ * Registers custom renderers for our {@link AEEntities}.
  */
 public final class InitEntityRendering {
 
@@ -36,12 +36,12 @@ public final class InitEntityRendering {
 
     public static void init() {
 
-        RenderingRegistry.registerEntityRenderingHandler(ApiEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ApiEntities.SINGULARITY,
+        RenderingRegistry.registerEntityRenderingHandler(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(AEEntities.SINGULARITY,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(ApiEntities.GROWING_CRYSTAL,
+        RenderingRegistry.registerEntityRenderingHandler(AEEntities.GROWING_CRYSTAL,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(ApiEntities.CHARGED_QUARTZ,
+        RenderingRegistry.registerEntityRenderingHandler(AEEntities.CHARGED_QUARTZ,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
     }
 

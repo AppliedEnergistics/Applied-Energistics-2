@@ -63,9 +63,9 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.capabilities.Capabilities;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
@@ -133,10 +133,10 @@ public abstract class AppEngBase implements AppEng {
         CreativeTab.init();
 
         // Initialize items in order
-        ApiItems.init();
-        ApiBlocks.init();
-        ApiItems.init();
-        ApiParts.init();
+        AEItems.init();
+        AEBlocks.init();
+        AEItems.init();
+        AEParts.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 

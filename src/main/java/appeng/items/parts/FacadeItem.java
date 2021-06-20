@@ -48,7 +48,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -176,7 +176,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFromID(final int id) {
-        ItemStack facadeStack = ApiItems.FACADE.stack();
+        ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...
         Item item = Registry.ITEM.getByValue(id);

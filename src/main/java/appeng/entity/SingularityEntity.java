@@ -33,8 +33,8 @@ import net.minecraft.world.World;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.ApiEntities;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEEntities;
+import appeng.core.api.definitions.AEItems;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
@@ -47,7 +47,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     public SingularityEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(ApiEntities.SINGULARITY, w, x, y, z, is);
+        super(AEEntities.SINGULARITY, w, x, y, z, is);
     }
 
     @Override
@@ -71,7 +71,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
         final ItemStack item = this.getItem();
 
-        if (ApiItems.SINGULARITY.isSameAs(item)) {
+        if (AEItems.SINGULARITY.isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
                     this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -82,7 +82,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     if (!other.isEmpty()) {
                         boolean matches = false;
 
-                        if (ApiItems.ENDER_DUST.isSameAs(other)) {
+                        if (AEItems.ENDER_DUST.isSameAs(other)) {
                             matches = true;
                         }
 
@@ -99,7 +99,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     e.remove();
                                 }
 
-                                ItemStack singularityStack = ApiItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
+                                ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
                                 final CompoundNBT cmp = singularityStack.getOrCreateTag();
                                 cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                 randTickSeed++;

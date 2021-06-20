@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 
@@ -54,7 +54,7 @@ public class FluidCellConfig extends CellConfig {
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
+        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.insertItem(slot, is, simulate);
@@ -72,7 +72,7 @@ public class FluidCellConfig extends CellConfig {
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
+        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         super.setStackInSlot(slot, is);
@@ -90,7 +90,7 @@ public class FluidCellConfig extends CellConfig {
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = ApiItems.DUMMY_FLUID_ITEM.stack();
+        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return super.isItemValid(slot, is);

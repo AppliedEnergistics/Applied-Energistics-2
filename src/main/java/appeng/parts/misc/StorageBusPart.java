@@ -77,7 +77,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -556,7 +556,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.STORAGE_BUS.stack();
+        return AEParts.STORAGE_BUS.stack();
     }
 
     @Override

@@ -26,7 +26,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.util.InventoryAdaptor;
 
 public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack> {
@@ -58,7 +58,7 @@ public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack
 
     @Override
     protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
-        final ItemStack extraA = ia.addItems(ApiItems.EMPTY_STORAGE_CELL.stack());
+        final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
         if (!extraA.isEmpty()) {
             player.dropItem(extraA, false);
         }

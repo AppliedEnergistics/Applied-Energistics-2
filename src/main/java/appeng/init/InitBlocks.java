@@ -21,7 +21,7 @@ package appeng.init;
 import net.minecraft.block.Block;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 
 public final class InitBlocks {
@@ -30,7 +30,7 @@ public final class InitBlocks {
     }
 
     public static void init(IForgeRegistry<Block> registry) {
-        for (BlockDefinition definition : ApiBlocks.getBlocks()) {
+        for (BlockDefinition definition : AEBlocks.getBlocks()) {
             registry.register(definition.block());
         }
     }

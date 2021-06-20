@@ -37,7 +37,7 @@ import appeng.block.networking.CableBusBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.networktool.NetworkToolContainer;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -122,8 +122,8 @@ public class ClickPacket extends BasePacket {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
         final ItemStack is = player.getHeldItem(hand);
-        final ItemDefinition maybeMemoryCard = ApiItems.MEMORY_CARD;
-        final ItemDefinition maybeColorApplicator = ApiItems.COLOR_APPLICATOR;
+        final ItemDefinition maybeMemoryCard = AEItems.MEMORY_CARD;
+        final ItemDefinition maybeColorApplicator = AEItems.COLOR_APPLICATOR;
 
         if (this.leftClick) {
             final Block block = player.world.getBlockState(pos).getBlock();

@@ -20,8 +20,8 @@ package appeng.init;
 
 import net.minecraft.block.DispenserBlock;
 
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.hooks.BlockToolDispenseItemBehavior;
 import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
@@ -35,10 +35,10 @@ public final class InitDispenserBehavior {
     }
 
     public static void init() {
-        DispenserBlock.registerDispenseBehavior(ApiBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(ApiItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(AEBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(AEItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(AEItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
+        DispenserBlock.registerDispenseBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
     }
 
 }

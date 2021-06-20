@@ -57,7 +57,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -108,7 +108,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
-        final Block ioPortBlock = ApiBlocks.IO_PORT.block();
+        final Block ioPortBlock = AEBlocks.IO_PORT.block();
         this.upgrades = new BlockUpgradeInventory(ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS);
     }
 

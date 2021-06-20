@@ -61,9 +61,9 @@ import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.features.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
@@ -82,7 +82,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-        subtypeRegistry.useNbtForSubtypes(ApiItems.FACADE.item());
+        subtypeRegistry.useNbtForSubtypes(AEItems.FACADE.item());
     }
 
     @Override
@@ -119,13 +119,13 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack grindstone = ApiBlocks.GRINDSTONE.stack();
+        ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-        ItemStack condenser = ApiBlocks.CONDENSER.stack();
+        ItemStack condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        ItemStack inscriber = ApiBlocks.INSCRIBER.stack();
+        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
     }
 
@@ -139,31 +139,31 @@ public class JEIPlugin implements IModPlugin {
         } else {
             message = new ITextComponent[] { GuiText.ChargedQuartz.text() };
         }
-        this.addDescription(registry, ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
+        this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            this.addDescription(registry, ApiItems.LOGIC_PROCESSOR_PRESS,
+            this.addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.text());
-            this.addDescription(registry, ApiItems.CALCULATION_PROCESSOR_PRESS,
+            this.addDescription(registry, AEItems.CALCULATION_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.text());
-            this.addDescription(registry, ApiItems.ENGINEERING_PROCESSOR_PRESS,
+            this.addDescription(registry, AEItems.ENGINEERING_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
-            this.addDescription(registry, ApiItems.FLUIX_CRYSTAL, GuiText.inWorldFluix.text());
+            this.addDescription(registry, AEItems.FLUIX_CRYSTAL, GuiText.inWorldFluix.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
-            this.addDescription(registry, ApiItems.QUANTUM_ENTANGLED_SINGULARITY, GuiText.inWorldSingularity.text());
+            this.addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY, GuiText.inWorldSingularity.text());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
-            this.addDescription(registry, ApiItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL,
+            this.addDescription(registry, AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL,
                     GuiText.inWorldPurificationCertus.text());
-            this.addDescription(registry, ApiItems.PURIFIED_NETHER_QUARTZ_CRYSTAL,
+            this.addDescription(registry, AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL,
                     GuiText.inWorldPurificationNether.text());
-            this.addDescription(registry, ApiItems.PURIFIED_FLUIX_CRYSTAL,
+            this.addDescription(registry, AEItems.PURIFIED_FLUIX_CRYSTAL,
                     GuiText.inWorldPurificationFluix.text());
         }
 
@@ -178,8 +178,8 @@ public class JEIPlugin implements IModPlugin {
     public void registerAdvanced(IAdvancedRegistration registration) {
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
-            FacadeItem itemFacade = (FacadeItem) ApiItems.FACADE.item();
-            ItemStack cableAnchor = ApiParts.CABLE_ANCHOR.stack();
+            FacadeItem itemFacade = (FacadeItem) AEItems.FACADE.item();
+            ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
 
@@ -240,16 +240,16 @@ public class JEIPlugin implements IModPlugin {
             Collection<ItemStack> toRemove = new ArrayList<>();
 
             // We use the internal API here as exception as debug tools are not part of the public one by design.
-            toRemove.add(ApiBlocks.DEBUG_CUBE_GEN.stack());
-            toRemove.add(ApiBlocks.DEBUG_CHUNK_LOADER.stack());
-            toRemove.add(ApiBlocks.DEBUG_ENERGY_GEN.stack());
-            toRemove.add(ApiBlocks.DEBUG_ITEM_GEN.stack());
-            toRemove.add(ApiBlocks.DEBUG_PHANTOM_NODE.stack());
+            toRemove.add(AEBlocks.DEBUG_CUBE_GEN.stack());
+            toRemove.add(AEBlocks.DEBUG_CHUNK_LOADER.stack());
+            toRemove.add(AEBlocks.DEBUG_ENERGY_GEN.stack());
+            toRemove.add(AEBlocks.DEBUG_ITEM_GEN.stack());
+            toRemove.add(AEBlocks.DEBUG_PHANTOM_NODE.stack());
 
-            toRemove.add(ApiItems.DEBUG_CARD.stack());
-            toRemove.add(ApiItems.DEBUG_ERASER.stack());
-            toRemove.add(ApiItems.DEBUG_METEORITE_PLACER.stack());
-            toRemove.add(ApiItems.DEBUG_REPLICATOR_CARD.stack());
+            toRemove.add(AEItems.DEBUG_CARD.stack());
+            toRemove.add(AEItems.DEBUG_ERASER.stack());
+            toRemove.add(AEItems.DEBUG_METEORITE_PLACER.stack());
+            toRemove.add(AEItems.DEBUG_REPLICATOR_CARD.stack());
 
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
                     toRemove);

@@ -21,8 +21,8 @@ package appeng.init;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.BlockDefinition;
 import appeng.core.features.ItemDefinition;
 
@@ -32,10 +32,10 @@ public final class InitItems {
     }
 
     public static void init(IForgeRegistry<Item> registry) {
-        for (BlockDefinition definition : ApiBlocks.getBlocks()) {
+        for (BlockDefinition definition : AEBlocks.getBlocks()) {
             registry.register(definition.blockItem());
         }
-        for (ItemDefinition definition : ApiItems.getItems()) {
+        for (ItemDefinition definition : AEItems.getItems()) {
             registry.register(definition.item());
         }
     }

@@ -46,7 +46,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -114,7 +114,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return super.getItemStack(type);
         }
 
-        return ApiParts.ME_P2P_TUNNEL.stack();
+        return AEParts.ME_P2P_TUNNEL.stack();
     }
 
     @Override
@@ -207,27 +207,27 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             switch (tt) {
                 case LIGHT:
-                    newType = ApiParts.LIGHT_P2P_TUNNEL.stack();
+                    newType = AEParts.LIGHT_P2P_TUNNEL.stack();
                     break;
 
                 case FE_POWER:
-                    newType = ApiParts.FE_P2P_TUNNEL.stack();
+                    newType = AEParts.FE_P2P_TUNNEL.stack();
                     break;
 
                 case FLUID:
-                    newType = ApiParts.FLUID_P2P_TUNNEL.stack();
+                    newType = AEParts.FLUID_P2P_TUNNEL.stack();
                     break;
 
                 case ITEM:
-                    newType = ApiParts.ITEM_P2P_TUNNEL.stack();
+                    newType = AEParts.ITEM_P2P_TUNNEL.stack();
                     break;
 
                 case ME:
-                    newType = ApiParts.ME_P2P_TUNNEL.stack();
+                    newType = AEParts.ME_P2P_TUNNEL.stack();
                     break;
 
                 case REDSTONE:
-                    newType = ApiParts.REDSTONE_P2P_TUNNEL.stack();
+                    newType = AEParts.REDSTONE_P2P_TUNNEL.stack();
                     break;
 
                 /*

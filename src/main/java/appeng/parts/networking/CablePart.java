@@ -40,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -94,15 +94,15 @@ public class CablePart extends AEBasePart implements ICablePart {
             ItemStack newPart = null;
 
             if (this.getCableConnectionType() == AECableType.GLASS) {
-                newPart = ApiParts.GLASS_CABLE.stack(newColor, 1);
+                newPart = AEParts.GLASS_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.COVERED) {
-                newPart = ApiParts.COVERED_CABLE.stack(newColor, 1);
+                newPart = AEParts.COVERED_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.SMART) {
-                newPart = ApiParts.SMART_CABLE.stack(newColor, 1);
+                newPart = AEParts.SMART_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_COVERED) {
-                newPart = ApiParts.COVERED_DENSE_CABLE.stack(newColor, 1);
+                newPart = AEParts.COVERED_DENSE_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_SMART) {
-                newPart = ApiParts.SMART_DENSE_CABLE.stack(newColor, 1);
+                newPart = AEParts.SMART_DENSE_CABLE.stack(newColor, 1);
             }
 
             boolean hasPermission = true;

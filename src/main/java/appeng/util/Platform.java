@@ -93,7 +93,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
@@ -987,7 +987,7 @@ public class Platform {
         }
 
         if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
-            final ItemDefinition certusQuartzCrystal = ApiItems.CERTUS_QUARTZ_CRYSTAL;
+            final ItemDefinition certusQuartzCrystal = AEItems.CERTUS_QUARTZ_CRYSTAL;
 
             return certusQuartzCrystal.isSameAs(b);
         }

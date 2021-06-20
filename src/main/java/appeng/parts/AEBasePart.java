@@ -62,8 +62,8 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEParts;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
@@ -410,8 +410,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            if (ApiParts.INTERFACE.isSameAs(is)) {
-                is = ApiBlocks.INTERFACE.stack();
+            if (AEParts.INTERFACE.isSameAs(is)) {
+                is = AEBlocks.INTERFACE.stack();
             }
 
             final String name = is.getTranslationKey();

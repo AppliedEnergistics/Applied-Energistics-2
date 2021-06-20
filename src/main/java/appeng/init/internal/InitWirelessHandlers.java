@@ -21,7 +21,7 @@ package appeng.init.internal;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 
 public final class InitWirelessHandlers {
 
@@ -32,7 +32,7 @@ public final class InitWirelessHandlers {
         final IRegistryContainer registries = Api.instance().registries();
 
         // Wireless Terminal Handler
-        registries.wireless().registerWirelessHandler((IWirelessTermHandler) ApiItems.WIRELESS_TERMINAL.item());
+        registries.wireless().registerWirelessHandler((IWirelessTermHandler) AEItems.WIRELESS_TERMINAL.item());
     }
 
 }

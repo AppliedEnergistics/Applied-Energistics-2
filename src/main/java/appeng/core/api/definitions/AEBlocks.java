@@ -105,7 +105,7 @@ import appeng.fluids.block.FluidInterfaceBlock;
  * Internal implementation for the API blocks
  */
 @SuppressWarnings("unused")
-public final class ApiBlocks {
+public final class AEBlocks {
 
     private static final List<BlockDefinition> BLOCKS = new ArrayList<>();
     private static final AbstractBlock.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)

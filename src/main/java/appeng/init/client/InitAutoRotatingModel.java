@@ -36,7 +36,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 
 public final class InitAutoRotatingModel {
@@ -45,18 +45,18 @@ public final class InitAutoRotatingModel {
      * Blocks that should not use the auto rotation model.
      */
     private static final Set<BlockDefinition> NO_AUTO_ROTATION = ImmutableSet.of(
-            ApiBlocks.MULTI_PART,
-            ApiBlocks.CONTROLLER,
-            ApiBlocks.PAINT,
-            ApiBlocks.QUANTUM_LINK,
-            ApiBlocks.QUANTUM_RING,
-            ApiBlocks.CRAFTING_UNIT,
-            ApiBlocks.CRAFTING_ACCELERATOR,
-            ApiBlocks.CRAFTING_MONITOR,
-            ApiBlocks.CRAFTING_STORAGE_1K,
-            ApiBlocks.CRAFTING_STORAGE_4K,
-            ApiBlocks.CRAFTING_STORAGE_16K,
-            ApiBlocks.CRAFTING_STORAGE_64K);
+            AEBlocks.MULTI_PART,
+            AEBlocks.CONTROLLER,
+            AEBlocks.PAINT,
+            AEBlocks.QUANTUM_LINK,
+            AEBlocks.QUANTUM_RING,
+            AEBlocks.CRAFTING_UNIT,
+            AEBlocks.CRAFTING_ACCELERATOR,
+            AEBlocks.CRAFTING_MONITOR,
+            AEBlocks.CRAFTING_STORAGE_1K,
+            AEBlocks.CRAFTING_STORAGE_4K,
+            AEBlocks.CRAFTING_STORAGE_16K,
+            AEBlocks.CRAFTING_STORAGE_64K);
 
     // Maps from resource path to customizer
     private static final Map<String, Function<IBakedModel, IBakedModel>> CUSTOMIZERS = new HashMap<>();
@@ -65,9 +65,9 @@ public final class InitAutoRotatingModel {
     }
 
     public static void init(IEventBus modEventBus) {
-        register(ApiBlocks.CRAFTING_MONITOR, InitAutoRotatingModel::customizeCraftingMonitorModel);
+        register(AEBlocks.CRAFTING_MONITOR, InitAutoRotatingModel::customizeCraftingMonitorModel);
 
-        for (BlockDefinition block : ApiBlocks.getBlocks()) {
+        for (BlockDefinition block : AEBlocks.getBlocks()) {
             if (NO_AUTO_ROTATION.contains(block)) {
                 continue;
             }

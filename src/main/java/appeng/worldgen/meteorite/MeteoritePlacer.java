@@ -37,8 +37,8 @@ import net.minecraft.world.IWorld;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.BlockDefinition;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
@@ -88,9 +88,9 @@ public final class MeteoritePlacer {
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
-        this.skyChestDefinition = ApiBlocks.SKY_STONE_CHEST;
-        this.skyStone = ApiBlocks.SKY_STONE_BLOCK.block().getDefaultState();
-        this.skyStoneItem = ApiBlocks.SKY_STONE_BLOCK.item();
+        this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
+        this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().getDefaultState();
+        this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.item();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }
@@ -230,16 +230,16 @@ public final class MeteoritePlacer {
 
                         switch (r % 4) {
                             case 0:
-                                toAdd = ApiItems.CALCULATION_PROCESSOR_PRESS.stack();
+                                toAdd = AEItems.CALCULATION_PROCESSOR_PRESS.stack();
                                 break;
                             case 1:
-                                toAdd = ApiItems.ENGINEERING_PROCESSOR_PRESS.stack();
+                                toAdd = AEItems.ENGINEERING_PROCESSOR_PRESS.stack();
                                 break;
                             case 2:
-                                toAdd = ApiItems.LOGIC_PROCESSOR_PRESS.stack();
+                                toAdd = AEItems.LOGIC_PROCESSOR_PRESS.stack();
                                 break;
                             case 3:
-                                toAdd = ApiItems.SILICON_PRESS.stack();
+                                toAdd = AEItems.SILICON_PRESS.stack();
                                 break;
                             default:
                         }

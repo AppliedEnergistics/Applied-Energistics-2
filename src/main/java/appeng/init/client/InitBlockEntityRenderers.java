@@ -31,7 +31,7 @@ import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
-import appeng.core.api.definitions.ApiBlockEntities;
+import appeng.core.api.definitions.AEBlockEntities;
 import appeng.tile.networking.CableBusTESR;
 
 @OnlyIn(Dist.CLIENT)
@@ -42,16 +42,16 @@ public final class InitBlockEntityRenderers {
 
     public static void init() {
 
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.INSCRIBER, InscriberTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CRANK, CrankTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CHARGER, ChargerTESR.FACTORY);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.DRIVE, DriveLedTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CHEST, ChestTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.CABLE_BUS, CableBusTESR::new);
-        ClientRegistry.bindTileEntityRenderer(ApiBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.INSCRIBER, InscriberTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CRANK, CrankTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.DRIVE, DriveLedTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CHEST, ChestTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
+        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
 
     }
 

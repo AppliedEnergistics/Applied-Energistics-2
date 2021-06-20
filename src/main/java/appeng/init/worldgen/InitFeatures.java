@@ -27,7 +27,7 @@ import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AEConfig;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
@@ -49,7 +49,7 @@ public final class InitFeatures {
 
     private static void registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
+        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().getDefaultState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.QUARTZ_ORE.toString(), Feature.ORE
                 .withConfiguration(
                         new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
@@ -60,8 +60,8 @@ public final class InitFeatures {
     }
 
     private static void registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
-        BlockState chargedQuartzOreState = ApiBlocks.QUARTZ_ORE_CHARGED.block()
+        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().getDefaultState();
+        BlockState chargedQuartzOreState = AEBlocks.QUARTZ_ORE_CHARGED.block()
                 .getDefaultState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.CHARGED_QUARTZ_ORE.toString(),
                 ChargedQuartzOreFeature.INSTANCE

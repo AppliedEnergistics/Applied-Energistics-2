@@ -33,8 +33,8 @@ import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
-import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEItems;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
@@ -70,16 +70,16 @@ public final class AESubScreen {
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
             this.previousContainerType = priorityHost.getContainerType();
         } else if (containerHost instanceof WirelessTerminalGuiObject) {
-            this.previousContainerIcon = ApiItems.WIRELESS_TERMINAL.stack();
+            this.previousContainerIcon = AEItems.WIRELESS_TERMINAL.stack();
             this.previousContainerType = WirelessTermContainer.TYPE;
         } else if (containerHost instanceof TerminalPart) {
-            this.previousContainerIcon = ApiParts.TERMINAL.stack();
+            this.previousContainerIcon = AEParts.TERMINAL.stack();
             this.previousContainerType = ItemTerminalContainer.TYPE;
         } else if (containerHost instanceof CraftingTerminalPart) {
-            this.previousContainerIcon = ApiParts.CRAFTING_TERMINAL.stack();
+            this.previousContainerIcon = AEParts.CRAFTING_TERMINAL.stack();
             this.previousContainerType = CraftingTermContainer.TYPE;
         } else if (containerHost instanceof PatternTerminalPart) {
-            this.previousContainerIcon = ApiParts.PATTERN_TERMINAL.stack();
+            this.previousContainerIcon = AEParts.PATTERN_TERMINAL.stack();
             this.previousContainerType = PatternTermContainer.TYPE;
         } else {
             this.previousContainerIcon = null;

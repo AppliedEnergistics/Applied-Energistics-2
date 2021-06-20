@@ -48,8 +48,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiEntities;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEEntities;
 import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
@@ -63,7 +63,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
             final LivingEntity igniter) {
-        super(ApiEntities.TINY_TNT_PRIMED, w);
+        super(AEEntities.TINY_TNT_PRIMED, w);
         this.setPosition(x, y, z);
         double d0 = w.rand.nextDouble() * ((float) Math.PI * 2F);
         this.setMotion(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
@@ -100,7 +100,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
         if (this.isInWater() && !this.world.isRemote()) // put out the fuse.
         {
-            ItemStack tntStack = ApiBlocks.TINY_TNT.stack();
+            ItemStack tntStack = AEBlocks.TINY_TNT.stack();
 
             final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
                     tntStack);

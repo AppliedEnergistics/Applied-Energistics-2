@@ -35,7 +35,7 @@ import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiEntities;
+import appeng.core.api.definitions.AEEntities;
 import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
@@ -62,7 +62,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(ApiEntities.GROWING_CRYSTAL, w, x, y, z, is);
+        super(AEEntities.GROWING_CRYSTAL, w, x, y, z, is);
         this.setNoDespawn();
     }
 

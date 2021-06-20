@@ -49,7 +49,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.worlddata.WorldData;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.server.ISubCommand;
@@ -219,11 +219,11 @@ public class SpatialStorageCommand implements ISubCommand {
         ItemStack cell;
         int longestSide = getLongestSide(plot.getSize());
         if (longestSide <= 2) {
-            cell = ApiItems.SPATIAL_CELL2.stack();
+            cell = AEItems.SPATIAL_CELL2.stack();
         } else if (longestSide <= 16) {
-            cell = ApiItems.SPATIAL_CELL16.stack();
+            cell = AEItems.SPATIAL_CELL16.stack();
         } else {
-            cell = ApiItems.SPATIAL_CELL128.stack();
+            cell = AEItems.SPATIAL_CELL128.stack();
         }
 
         if (!(cell.getItem() instanceof SpatialStorageCellItem)) {

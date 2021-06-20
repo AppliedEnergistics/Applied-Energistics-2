@@ -40,7 +40,7 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
 
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.server.ISubCommand;
 
 /**
@@ -52,8 +52,8 @@ public class TestOreGenCommand implements ISubCommand {
     private final BlockState chargedQuartzOre;
 
     public TestOreGenCommand() {
-        quartzOre = ApiBlocks.QUARTZ_ORE.block().getDefaultState();
-        chargedQuartzOre = ApiBlocks.QUARTZ_ORE_CHARGED.block().getDefaultState();
+        quartzOre = AEBlocks.QUARTZ_ORE.block().getDefaultState();
+        chargedQuartzOre = AEBlocks.QUARTZ_ORE_CHARGED.block().getDefaultState();
     }
 
     @Override

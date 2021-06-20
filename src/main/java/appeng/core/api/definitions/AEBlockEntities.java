@@ -76,94 +76,117 @@ import appeng.tile.storage.IOPortTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
 
 @SuppressWarnings("unused")
-public final class ApiBlockEntities {
+public final class AEBlockEntities {
 
     private static final Map<ResourceLocation, TileEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
 
     public static final TileEntityType<GrinderTileEntity> GRINDSTONE = create("grindstone", GrinderTileEntity.class,
-            GrinderTileEntity::new, ApiBlocks.GRINDSTONE);
+            GrinderTileEntity::new, appeng.core.api.definitions.AEBlocks.GRINDSTONE);
     public static final TileEntityType<CrankTileEntity> CRANK = create("crank", CrankTileEntity.class,
-            CrankTileEntity::new, ApiBlocks.CRANK);
+            CrankTileEntity::new, appeng.core.api.definitions.AEBlocks.CRANK);
     public static final TileEntityType<InscriberTileEntity> INSCRIBER = create("inscriber", InscriberTileEntity.class,
-            InscriberTileEntity::new, ApiBlocks.INSCRIBER);
+            InscriberTileEntity::new, appeng.core.api.definitions.AEBlocks.INSCRIBER);
     public static final TileEntityType<WirelessTileEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
-            WirelessTileEntity.class, WirelessTileEntity::new, ApiBlocks.WIRELESS_ACCESS_POINT);
+            WirelessTileEntity.class, WirelessTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.WIRELESS_ACCESS_POINT);
     public static final TileEntityType<ChargerTileEntity> CHARGER = create("charger", ChargerTileEntity.class,
-            ChargerTileEntity::new, ApiBlocks.CHARGER);
+            ChargerTileEntity::new, appeng.core.api.definitions.AEBlocks.CHARGER);
     public static final TileEntityType<SecurityStationTileEntity> SECURITY_STATION = create("security_station",
-            SecurityStationTileEntity.class, SecurityStationTileEntity::new, ApiBlocks.SECURITY_STATION);
+            SecurityStationTileEntity.class, SecurityStationTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.SECURITY_STATION);
     public static final TileEntityType<QuantumBridgeTileEntity> QUANTUM_BRIDGE = create("quantum_ring",
-            QuantumBridgeTileEntity.class, QuantumBridgeTileEntity::new, ApiBlocks.QUANTUM_RING,
-            ApiBlocks.QUANTUM_LINK);
+            QuantumBridgeTileEntity.class, QuantumBridgeTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.QUANTUM_RING,
+            appeng.core.api.definitions.AEBlocks.QUANTUM_LINK);
     public static final TileEntityType<SpatialPylonTileEntity> SPATIAL_PYLON = create("spatial_pylon",
-            SpatialPylonTileEntity.class, SpatialPylonTileEntity::new, ApiBlocks.SPATIAL_PYLON);
+            SpatialPylonTileEntity.class, SpatialPylonTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.SPATIAL_PYLON);
     public static final TileEntityType<SpatialIOPortTileEntity> SPATIAL_IO_PORT = create("spatial_io_port",
-            SpatialIOPortTileEntity.class, SpatialIOPortTileEntity::new, ApiBlocks.SPATIAL_IO_PORT);
+            SpatialIOPortTileEntity.class, SpatialIOPortTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.SPATIAL_IO_PORT);
     public static final TileEntityType<SpatialAnchorTileEntity> SPATIAL_ANCHOR = create("spatial_anchor",
-            SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new, ApiBlocks.SPATIAL_ANCHOR);
+            SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.SPATIAL_ANCHOR);
     public static final TileEntityType<CableBusTileEntity> CABLE_BUS = create("cable_bus", CableBusTileEntity.class,
-            CableBusTileEntity::new, ApiBlocks.MULTI_PART);
+            CableBusTileEntity::new, appeng.core.api.definitions.AEBlocks.MULTI_PART);
     public static final TileEntityType<ControllerTileEntity> CONTROLLER = create("controller",
-            ControllerTileEntity.class, ControllerTileEntity::new, ApiBlocks.CONTROLLER);
+            ControllerTileEntity.class, ControllerTileEntity::new, appeng.core.api.definitions.AEBlocks.CONTROLLER);
     public static final TileEntityType<DriveTileEntity> DRIVE = create("drive", DriveTileEntity.class,
-            DriveTileEntity::new, ApiBlocks.DRIVE);
+            DriveTileEntity::new, appeng.core.api.definitions.AEBlocks.DRIVE);
     public static final TileEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
-            ChestTileEntity::new, ApiBlocks.CHEST);
+            ChestTileEntity::new, appeng.core.api.definitions.AEBlocks.CHEST);
     public static final TileEntityType<InterfaceTileEntity> INTERFACE = create("interface", InterfaceTileEntity.class,
-            InterfaceTileEntity::new, ApiBlocks.INTERFACE);
+            InterfaceTileEntity::new, appeng.core.api.definitions.AEBlocks.INTERFACE);
     public static final TileEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
-            FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new, ApiBlocks.FLUID_INTERFACE);
+            FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.FLUID_INTERFACE);
     public static final TileEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",
-            CellWorkbenchTileEntity.class, CellWorkbenchTileEntity::new, ApiBlocks.CELL_WORKBENCH);
+            CellWorkbenchTileEntity.class, CellWorkbenchTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.CELL_WORKBENCH);
     public static final TileEntityType<IOPortTileEntity> IO_PORT = create("io_port", IOPortTileEntity.class,
-            IOPortTileEntity::new, ApiBlocks.IO_PORT);
+            IOPortTileEntity::new, appeng.core.api.definitions.AEBlocks.IO_PORT);
     public static final TileEntityType<CondenserTileEntity> CONDENSER = create("condenser", CondenserTileEntity.class,
-            CondenserTileEntity::new, ApiBlocks.CONDENSER);
+            CondenserTileEntity::new, appeng.core.api.definitions.AEBlocks.CONDENSER);
     public static final TileEntityType<EnergyAcceptorTileEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
-            EnergyAcceptorTileEntity.class, EnergyAcceptorTileEntity::new, ApiBlocks.ENERGY_ACCEPTOR);
+            EnergyAcceptorTileEntity.class, EnergyAcceptorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.ENERGY_ACCEPTOR);
     public static final TileEntityType<VibrationChamberTileEntity> VIBRATION_CHAMBER = create("vibration_chamber",
-            VibrationChamberTileEntity.class, VibrationChamberTileEntity::new, ApiBlocks.VIBRATION_CHAMBER);
+            VibrationChamberTileEntity.class, VibrationChamberTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.VIBRATION_CHAMBER);
     public static final TileEntityType<QuartzGrowthAcceleratorTileEntity> QUARTZ_GROWTH_ACCELERATOR = create(
             "quartz_growth_accelerator", QuartzGrowthAcceleratorTileEntity.class,
-            QuartzGrowthAcceleratorTileEntity::new, ApiBlocks.QUARTZ_GROWTH_ACCELERATOR);
+            QuartzGrowthAcceleratorTileEntity::new, appeng.core.api.definitions.AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
     public static final TileEntityType<EnergyCellTileEntity> ENERGY_CELL = create("energy_cell",
-            EnergyCellTileEntity.class, EnergyCellTileEntity::new, ApiBlocks.ENERGY_CELL);
+            EnergyCellTileEntity.class, EnergyCellTileEntity::new, appeng.core.api.definitions.AEBlocks.ENERGY_CELL);
     public static final TileEntityType<DenseEnergyCellTileEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
-            DenseEnergyCellTileEntity.class, DenseEnergyCellTileEntity::new, ApiBlocks.DENSE_ENERGY_CELL);
+            DenseEnergyCellTileEntity.class, DenseEnergyCellTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.DENSE_ENERGY_CELL);
     public static final TileEntityType<CreativeEnergyCellTileEntity> CREATIVE_ENERGY_CELL = create(
             "creative_energy_cell",
-            CreativeEnergyCellTileEntity.class, CreativeEnergyCellTileEntity::new, ApiBlocks.CREATIVE_ENERGY_CELL);
+            CreativeEnergyCellTileEntity.class, CreativeEnergyCellTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.CREATIVE_ENERGY_CELL);
     public static final TileEntityType<CraftingTileEntity> CRAFTING_UNIT = create("crafting_unit",
-            CraftingTileEntity.class, CraftingTileEntity::new, ApiBlocks.CRAFTING_UNIT,
-            ApiBlocks.CRAFTING_ACCELERATOR);
+            CraftingTileEntity.class, CraftingTileEntity::new, appeng.core.api.definitions.AEBlocks.CRAFTING_UNIT,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_ACCELERATOR);
     public static final TileEntityType<CraftingStorageTileEntity> CRAFTING_STORAGE = create("crafting_storage",
-            CraftingStorageTileEntity.class, CraftingStorageTileEntity::new, ApiBlocks.CRAFTING_STORAGE_1K,
-            ApiBlocks.CRAFTING_STORAGE_4K, ApiBlocks.CRAFTING_STORAGE_16K, ApiBlocks.CRAFTING_STORAGE_64K);
+            CraftingStorageTileEntity.class, CraftingStorageTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_STORAGE_1K,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_STORAGE_4K,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_STORAGE_16K,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_STORAGE_64K);
     public static final TileEntityType<CraftingMonitorTileEntity> CRAFTING_MONITOR = create("crafting_monitor",
-            CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new, ApiBlocks.CRAFTING_MONITOR);
+            CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.CRAFTING_MONITOR);
     public static final TileEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create("molecular_assembler",
-            MolecularAssemblerTileEntity.class, MolecularAssemblerTileEntity::new, ApiBlocks.MOLECULAR_ASSEMBLER);
+            MolecularAssemblerTileEntity.class, MolecularAssemblerTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.MOLECULAR_ASSEMBLER);
     public static final TileEntityType<LightDetectorTileEntity> LIGHT_DETECTOR = create("light_detector",
-            LightDetectorTileEntity.class, LightDetectorTileEntity::new, ApiBlocks.LIGHT_DETECTOR);
+            LightDetectorTileEntity.class, LightDetectorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.LIGHT_DETECTOR);
     public static final TileEntityType<PaintSplotchesTileEntity> PAINT = create("paint", PaintSplotchesTileEntity.class,
-            PaintSplotchesTileEntity::new, ApiBlocks.PAINT);
+            PaintSplotchesTileEntity::new, appeng.core.api.definitions.AEBlocks.PAINT);
     public static final TileEntityType<SkyChestTileEntity> SKY_CHEST = create("sky_chest", SkyChestTileEntity.class,
-            SkyChestTileEntity::new, ApiBlocks.SKY_STONE_CHEST, ApiBlocks.SMOOTH_SKY_STONE_CHEST);
+            SkyChestTileEntity::new, appeng.core.api.definitions.AEBlocks.SKY_STONE_CHEST,
+            appeng.core.api.definitions.AEBlocks.SMOOTH_SKY_STONE_CHEST);
     public static final TileEntityType<SkyCompassTileEntity> SKY_COMPASS = create("sky_compass",
-            SkyCompassTileEntity.class, SkyCompassTileEntity::new, ApiBlocks.SKY_COMPASS);
+            SkyCompassTileEntity.class, SkyCompassTileEntity::new, appeng.core.api.definitions.AEBlocks.SKY_COMPASS);
 
     public static final TileEntityType<ItemGenTileEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
-            ItemGenTileEntity.class, ItemGenTileEntity::new, ApiBlocks.DEBUG_ITEM_GEN);
+            ItemGenTileEntity.class, ItemGenTileEntity::new, appeng.core.api.definitions.AEBlocks.DEBUG_ITEM_GEN);
     public static final TileEntityType<ChunkLoaderTileEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
-            ChunkLoaderTileEntity.class, ChunkLoaderTileEntity::new, ApiBlocks.DEBUG_CHUNK_LOADER);
+            ChunkLoaderTileEntity.class, ChunkLoaderTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.DEBUG_CHUNK_LOADER);
     public static final TileEntityType<PhantomNodeTileEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
-            PhantomNodeTileEntity.class, PhantomNodeTileEntity::new, ApiBlocks.DEBUG_PHANTOM_NODE);
+            PhantomNodeTileEntity.class, PhantomNodeTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.DEBUG_PHANTOM_NODE);
     public static final TileEntityType<CubeGeneratorTileEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
-            CubeGeneratorTileEntity.class, CubeGeneratorTileEntity::new, ApiBlocks.DEBUG_CUBE_GEN);
+            CubeGeneratorTileEntity.class, CubeGeneratorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.DEBUG_CUBE_GEN);
     public static final TileEntityType<EnergyGeneratorTileEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
-            EnergyGeneratorTileEntity.class, EnergyGeneratorTileEntity::new, ApiBlocks.DEBUG_ENERGY_GEN);
+            EnergyGeneratorTileEntity.class, EnergyGeneratorTileEntity::new,
+            appeng.core.api.definitions.AEBlocks.DEBUG_ENERGY_GEN);
 
-    private ApiBlockEntities() {
+    private AEBlockEntities() {
     }
 
     public static Map<ResourceLocation, TileEntityType<?>> getBlockEntityTypes() {

@@ -47,8 +47,8 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.client.gui.Icon;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.tile.misc.CondenserTileEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
@@ -71,7 +71,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
     public CondenserCategory(IGuiHelper guiHelper) {
         this.localizedName = I18n.format("gui.appliedenergistics2.Condenser");
-        this.icon = guiHelper.createDrawableIngredient(ApiBlocks.CONDENSER.stack());
+        this.icon = guiHelper.createDrawableIngredient(AEBlocks.CONDENSER.stack());
 
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
         this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
@@ -96,9 +96,9 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     private ItemStack getOutput(CondenserOutput recipe) {
         switch (recipe) {
             case MATTER_BALLS:
-                return ApiItems.MATTER_BALL.stack();
+                return AEItems.MATTER_BALL.stack();
             case SINGULARITY:
-                return ApiItems.SINGULARITY.stack();
+                return AEItems.SINGULARITY.stack();
             default:
                 return ItemStack.EMPTY;
         }
@@ -161,10 +161,10 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
     private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
         List<ItemStack> viableComponents = new ArrayList<>();
-        this.addViableComponent(condenserOutput, viableComponents, ApiItems.ITEM_1K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, ApiItems.ITEM_4K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, ApiItems.ITEM_16K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, ApiItems.ITEM_64K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_1K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_4K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_16K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_64K_CELL_COMPONENT.stack());
         return viableComponents;
     }
 

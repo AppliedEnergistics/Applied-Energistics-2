@@ -21,7 +21,7 @@ package appeng.init;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;
@@ -35,7 +35,7 @@ public final class InitRecipeSerializers {
     }
 
     public static void init(IForgeRegistry<IRecipeSerializer<?>> registry) {
-        FacadeItem facadeItem = (FacadeItem) ApiItems.FACADE.item();
+        FacadeItem facadeItem = (FacadeItem) AEItems.FACADE.item();
         registry.registerAll(
                 DisassembleRecipe.SERIALIZER,
                 GrinderRecipeSerializer.INSTANCE,

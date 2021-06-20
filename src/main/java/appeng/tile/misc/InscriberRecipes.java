@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -63,8 +63,8 @@ public final class InscriberRecipes {
     public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
-            boolean isNameA = ApiItems.NAME_PRESS.isSameAs(plateA);
-            boolean isNameB = ApiItems.NAME_PRESS.isSameAs(plateB);
+            boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
+            boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
 
             if (isNameA && isNameB || isNameA && plateB.isEmpty()) {
                 return makeNamePressRecipe(input, plateA, plateB);

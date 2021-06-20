@@ -39,7 +39,7 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.util.WorldCoord;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 
 public class SpatialStorageHelper {
 
@@ -154,7 +154,7 @@ public class SpatialStorageHelper {
     public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ,
             final ServerWorld dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
             final int scaleY, final int scaleZ) {
-        Block matrixFrameBlock = ApiBlocks.MATRIX_FRAME.block();
+        Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                 dstY + scaleY + 1, dstZ + scaleZ + 1,
                 new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld));

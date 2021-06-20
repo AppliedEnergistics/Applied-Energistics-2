@@ -45,7 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.worlddata.WorldData;
 
 public class CachedPlane {
@@ -70,7 +70,7 @@ public class CachedPlane {
     public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX,
             final int maxY, final int maxZ) {
 
-        Block matrixFrameBlock = ApiBlocks.MATRIX_FRAME.block();
+        Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         if (matrixFrameBlock != null) {
             this.matrixBlockState = matrixFrameBlock.getDefaultState();
         } else {

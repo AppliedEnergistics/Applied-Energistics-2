@@ -38,8 +38,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 
 public final class DisassembleRecipe extends SpecialRecipe {
@@ -61,16 +61,16 @@ public final class DisassembleRecipe extends SpecialRecipe {
         this.cellMappings = new HashMap<>(4);
         this.nonCellMappings = new HashMap<>(5);
 
-        this.cellMappings.put(ApiItems.CELL1K, ApiItems.ITEM_1K_CELL_COMPONENT);
-        this.cellMappings.put(ApiItems.CELL4K, ApiItems.ITEM_4K_CELL_COMPONENT);
-        this.cellMappings.put(ApiItems.CELL16K, ApiItems.ITEM_16K_CELL_COMPONENT);
-        this.cellMappings.put(ApiItems.CELL64K, ApiItems.ITEM_64K_CELL_COMPONENT);
+        this.cellMappings.put(AEItems.CELL1K, AEItems.ITEM_1K_CELL_COMPONENT);
+        this.cellMappings.put(AEItems.CELL4K, AEItems.ITEM_4K_CELL_COMPONENT);
+        this.cellMappings.put(AEItems.CELL16K, AEItems.ITEM_16K_CELL_COMPONENT);
+        this.cellMappings.put(AEItems.CELL64K, AEItems.ITEM_64K_CELL_COMPONENT);
 
-        this.nonCellMappings.put(ApiItems.ENCODED_PATTERN, ApiItems.BLANK_PATTERN);
-        this.nonCellMappings.put(ApiBlocks.CRAFTING_STORAGE_1K, ApiItems.ITEM_1K_CELL_COMPONENT);
-        this.nonCellMappings.put(ApiBlocks.CRAFTING_STORAGE_4K, ApiItems.ITEM_4K_CELL_COMPONENT);
-        this.nonCellMappings.put(ApiBlocks.CRAFTING_STORAGE_16K, ApiItems.ITEM_16K_CELL_COMPONENT);
-        this.nonCellMappings.put(ApiBlocks.CRAFTING_STORAGE_64K, ApiItems.ITEM_64K_CELL_COMPONENT);
+        this.nonCellMappings.put(AEItems.ENCODED_PATTERN, AEItems.BLANK_PATTERN);
+        this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_1K, AEItems.ITEM_1K_CELL_COMPONENT);
+        this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_4K, AEItems.ITEM_4K_CELL_COMPONENT);
+        this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_16K, AEItems.ITEM_16K_CELL_COMPONENT);
+        this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_64K, AEItems.ITEM_64K_CELL_COMPONENT);
     }
 
     @Override

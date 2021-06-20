@@ -29,7 +29,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
@@ -40,10 +40,10 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
 
     @Override
     protected void registerTags() {
-        addForge("ores/certus_quartz", ApiBlocks.QUARTZ_ORE, ApiBlocks.QUARTZ_ORE_CHARGED);
+        addForge("ores/certus_quartz", AEBlocks.QUARTZ_ORE, AEBlocks.QUARTZ_ORE_CHARGED);
         addForge("ores", "#forge:ores/certus_quartz");
 
-        addForge("storage_blocks/certus_quartz", ApiBlocks.QUARTZ_BLOCK);
+        addForge("storage_blocks/certus_quartz", AEBlocks.QUARTZ_BLOCK);
         addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
 
         addForge("terracotta", Blocks.TERRACOTTA,
@@ -72,19 +72,19 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         addAe2("whitelisted/facades",
                 Blocks.GLASS,
                 Tags.Blocks.STAINED_GLASS,
-                ApiBlocks.QUARTZ_GLASS,
-                ApiBlocks.QUARTZ_VIBRANT_GLASS);
+                AEBlocks.QUARTZ_GLASS,
+                AEBlocks.QUARTZ_VIBRANT_GLASS);
 
         // Special behavior is associated with this tag
         add(BlockTags.WALLS.getName(),
-                ApiBlocks.SKY_STONE_WALL.block(),
-                ApiBlocks.SMOOTH_SKY_STONE_WALL.block(),
-                ApiBlocks.SKY_STONE_BRICK_WALL.block(),
-                ApiBlocks.SKY_STONE_SMALL_BRICK_WALL.block(),
-                ApiBlocks.FLUIX_WALL.block(),
-                ApiBlocks.QUARTZ_WALL.block(),
-                ApiBlocks.CHISELED_QUARTZ_WALL.block(),
-                ApiBlocks.QUARTZ_PILLAR_WALL.block());
+                AEBlocks.SKY_STONE_WALL.block(),
+                AEBlocks.SMOOTH_SKY_STONE_WALL.block(),
+                AEBlocks.SKY_STONE_BRICK_WALL.block(),
+                AEBlocks.SKY_STONE_SMALL_BRICK_WALL.block(),
+                AEBlocks.FLUIX_WALL.block(),
+                AEBlocks.QUARTZ_WALL.block(),
+                AEBlocks.CHISELED_QUARTZ_WALL.block(),
+                AEBlocks.QUARTZ_PILLAR_WALL.block());
     }
 
     private void addForge(String tagName, Object... blockSources) {

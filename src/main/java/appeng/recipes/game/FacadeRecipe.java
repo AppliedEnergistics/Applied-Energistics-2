@@ -30,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.features.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 
@@ -44,7 +44,7 @@ public final class FacadeRecipe extends SpecialRecipe {
         super(id);
         this.facade = facade;
 
-        this.anchor = ApiParts.CABLE_ANCHOR;
+        this.anchor = AEParts.CABLE_ANCHOR;
     }
 
     @Override

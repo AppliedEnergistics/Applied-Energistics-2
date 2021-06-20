@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.client.ICellModelRegistry;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 
@@ -75,16 +75,16 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     public ApiCellModelRegistry() {
         this.registry = new IdentityHashMap<>();
-        this.registry.put(ApiItems.CELL1K.item(), MODEL_CELL_ITEMS_1K);
-        this.registry.put(ApiItems.CELL4K.item(), MODEL_CELL_ITEMS_4K);
-        this.registry.put(ApiItems.CELL16K.item(), MODEL_CELL_ITEMS_16K);
-        this.registry.put(ApiItems.CELL64K.item(), MODEL_CELL_ITEMS_64K);
-        this.registry.put(ApiItems.FLUID_CELL1K.item(), MODEL_CELL_FLUIDS_1K);
-        this.registry.put(ApiItems.FLUID_CELL4K.item(), MODEL_CELL_FLUIDS_4K);
-        this.registry.put(ApiItems.FLUID_CELL16K.item(), MODEL_CELL_FLUIDS_16K);
-        this.registry.put(ApiItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(ApiItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(ApiItems.CELL_CREATIVE.item(), MODEL_CELL_CREATIVE);
+        this.registry.put(AEItems.CELL1K.item(), MODEL_CELL_ITEMS_1K);
+        this.registry.put(AEItems.CELL4K.item(), MODEL_CELL_ITEMS_4K);
+        this.registry.put(AEItems.CELL16K.item(), MODEL_CELL_ITEMS_16K);
+        this.registry.put(AEItems.CELL64K.item(), MODEL_CELL_ITEMS_64K);
+        this.registry.put(AEItems.FLUID_CELL1K.item(), MODEL_CELL_FLUIDS_1K);
+        this.registry.put(AEItems.FLUID_CELL4K.item(), MODEL_CELL_FLUIDS_4K);
+        this.registry.put(AEItems.FLUID_CELL16K.item(), MODEL_CELL_FLUIDS_16K);
+        this.registry.put(AEItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(AEItems.FLUID_CELL64K.item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(AEItems.CELL_CREATIVE.item(), MODEL_CELL_CREATIVE);
     }
 
     @Override

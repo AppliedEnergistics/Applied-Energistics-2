@@ -37,8 +37,8 @@ import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiEntities;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEEntities;
+import appeng.core.api.definitions.AEItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
@@ -52,7 +52,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     }
 
     public ChargedQuartzEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(ApiEntities.CHARGED_QUARTZ, w, x, y, z, is);
+        super(AEEntities.CHARGED_QUARTZ, w, x, y, z, is);
     }
 
     @Override
@@ -92,7 +92,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     private boolean transform() {
         final ItemStack item = this.getItem();
 
-        if (ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(item)) {
+        if (AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
                     this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -139,7 +139,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
                 final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
 
-                final ItemEntity entity = new ItemEntity(this.world, x, y, z, ApiItems.FLUIX_CRYSTAL.stack(2));
+                final ItemEntity entity = new ItemEntity(this.world, x, y, z, AEItems.FLUIX_CRYSTAL.stack(2));
                 entity.setMotion(xSpeed, ySpeed, zSpeed);
                 this.world.addEntity(entity);
 

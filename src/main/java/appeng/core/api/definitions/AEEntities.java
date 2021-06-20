@@ -32,7 +32,7 @@ import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 
-public final class ApiEntities {
+public final class AEEntities {
 
     private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
 

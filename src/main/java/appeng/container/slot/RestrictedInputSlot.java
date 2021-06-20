@@ -42,7 +42,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.client.gui.Icon;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;
@@ -126,13 +126,13 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ENCODED_PATTERN:
                 return crafting.isEncodedPattern(stack);
             case BLANK_PATTERN:
-                return ApiItems.BLANK_PATTERN.isSameAs(stack);
+                return AEItems.BLANK_PATTERN.isSameAs(stack);
 
             case PATTERN:
-                return ApiItems.BLANK_PATTERN.isSameAs(stack) || crafting.isEncodedPattern(stack);
+                return AEItems.BLANK_PATTERN.isSameAs(stack) || crafting.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
-                if (ApiItems.NAME_PRESS.isSameAs(stack)) {
+                if (AEItems.NAME_PRESS.isSameAs(stack)) {
                     return true;
                 }
 
@@ -149,7 +149,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return isMetalIngot(stack);
 
             case VIEW_CELL:
-                return ApiItems.VIEW_CELL.isSameAs(stack);
+                return AEItems.VIEW_CELL.isSameAs(stack);
             case ORE:
                 return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
@@ -157,10 +157,10 @@ public class RestrictedInputSlot extends AppEngSlot {
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
-                return ApiItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack);
+                return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack);
 
             case RANGE_BOOSTER:
-                return ApiItems.WIRELESS_BOOSTER.isSameAs(stack);
+                return AEItems.WIRELESS_BOOSTER.isSameAs(stack);
 
             case SPATIAL_STORAGE_CELLS:
                 return stack.getItem() instanceof ISpatialStorageCell

@@ -18,8 +18,6 @@
 
 package appeng.core.api.definitions;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
@@ -85,10 +83,7 @@ import appeng.parts.reporting.TerminalPart;
  * Internal implementation for the API parts
  */
 @SuppressWarnings("unused")
-public final class ApiParts {
-    private static final List<ItemDefinition> UNCOLORED_PARTS = new ArrayList<>();
-    private static final List<AEColoredItemDefinition> COLORED_PARTS = new ArrayList<>();
-
+public final class AEParts {
     // spotless:off
     public static final AEColoredItemDefinition SMART_CABLE = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
     public static final AEColoredItemDefinition COVERED_CABLE = constructColoredDefinition("covered_cable", CoveredCablePart.class, CoveredCablePart::new);
@@ -137,19 +132,15 @@ public final class ApiParts {
             Class<T> partClass,
             Function<ItemStack, T> factory) {
 
-        // TODO
         PartModels partModels = (PartModels) Api.instance().registries().partModels();
         partModels.registerModels(PartModelsHelper.createModels(partClass));
-        ItemDefinition result = ApiItems.item(id, props -> new PartItem<>(props, factory)).build();
-        UNCOLORED_PARTS.add(result);
-        return result;
+        return AEItems.item(id, props -> new PartItem<>(props, factory));
     }
 
     private static <T extends IPart> AEColoredItemDefinition constructColoredDefinition(String idSuffix,
             Class<T> partClass,
             Function<ItemStack, T> factory) {
 
-        // TODO
         PartModels partModels = (PartModels) Api.instance().registries().partModels();
         partModels.registerModels(PartModelsHelper.createModels(partClass));
 
@@ -157,13 +148,11 @@ public final class ApiParts {
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
-            ItemDefinition itemDef = ApiItems
-                    .item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color)).build();
+            ItemDefinition itemDef = AEItems
+                    .item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color));
 
             definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
         }
-
-        COLORED_PARTS.add(definition);
 
         return definition;
     }

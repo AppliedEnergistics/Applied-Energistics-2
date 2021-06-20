@@ -71,7 +71,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.FormationPlaneContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -357,7 +357,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.FORMATION_PLANE.stack();
+        return AEParts.FORMATION_PLANE.stack();
     }
 
     @Override

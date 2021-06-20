@@ -25,8 +25,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.misc.PaintBallItem;
@@ -39,16 +39,16 @@ public final class InitItemColors {
     }
 
     public static void init(ItemColors itemColors) {
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.SECURITY_STATION.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.blockItem());
         // I checked, the ME chest doesn't keep its color in item form
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), ApiBlocks.CHEST.blockItem());
+        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.blockItem());
 
-        itemColors.register(InitItemColors::getColorApplicatorColor, ApiItems.COLOR_APPLICATOR);
+        itemColors.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
 
-        itemColors.register(InitItemColors::getDummyFluidItemColor, ApiItems.DUMMY_FLUID_ITEM);
+        itemColors.register(InitItemColors::getDummyFluidItemColor, AEItems.DUMMY_FLUID_ITEM);
 
         // Automatically register colors for certain items we register
-        for (ItemDefinition definition : ApiItems.getItems()) {
+        for (ItemDefinition definition : AEItems.getItems()) {
             Item item = definition.item();
             if (item instanceof PartItem) {
                 AEColor color = AEColor.TRANSPARENT;

@@ -38,7 +38,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.util.DimensionalCoord;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 
@@ -132,7 +132,7 @@ public final class CompassService {
         int cx = c.getPos().x;
         int cz = c.getPos().z;
 
-        Block skyStoneBlock = ApiBlocks.SKY_STONE_BLOCK.block();
+        Block skyStoneBlock = AEBlocks.SKY_STONE_BLOCK.block();
         BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int i = 0; i < CHUNK_SIZE; i++) {
             pos.setX(i);

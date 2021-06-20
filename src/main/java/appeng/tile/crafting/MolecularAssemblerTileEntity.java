@@ -60,7 +60,7 @@ import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -106,7 +106,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         super(tileEntityTypeIn);
 
         this.getProxy().setIdlePowerUsage(0.0);
-        this.upgrades = new DefinitionUpgradeInventory(ApiBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
     }

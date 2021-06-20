@@ -36,7 +36,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {
@@ -159,7 +159,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
 
     @Override
     protected ItemStack getItemFromTile() {
-        return ApiBlocks.CRAFTING_MONITOR.stack();
+        return AEBlocks.CRAFTING_MONITOR.stack();
     }
 
     @Nonnull

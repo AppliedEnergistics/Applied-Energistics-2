@@ -33,8 +33,8 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEParts;
 import appeng.core.features.ItemDefinition;
 
 public final class InitP2PAttunements {
@@ -56,10 +56,10 @@ public final class InitP2PAttunements {
          * Forge energy tunnel items
          */
 
-        addNewAttunement(p2p, ApiBlocks.DENSE_ENERGY_CELL, TunnelType.FE_POWER);
-        addNewAttunement(p2p, ApiBlocks.ENERGY_ACCEPTOR, TunnelType.FE_POWER);
-        addNewAttunement(p2p, ApiBlocks.ENERGY_CELL, TunnelType.FE_POWER);
-        addNewAttunement(p2p, ApiBlocks.CREATIVE_ENERGY_CELL, TunnelType.FE_POWER);
+        addNewAttunement(p2p, AEBlocks.DENSE_ENERGY_CELL, TunnelType.FE_POWER);
+        addNewAttunement(p2p, AEBlocks.ENERGY_ACCEPTOR, TunnelType.FE_POWER);
+        addNewAttunement(p2p, AEBlocks.ENERGY_CELL, TunnelType.FE_POWER);
+        addNewAttunement(p2p, AEBlocks.CREATIVE_ENERGY_CELL, TunnelType.FE_POWER);
 
         // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
         // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
@@ -95,11 +95,11 @@ public final class InitP2PAttunements {
          * attune based on lots of random item related stuff
          */
 
-        addNewAttunement(p2p, ApiBlocks.INTERFACE, TunnelType.ITEM);
-        addNewAttunement(p2p, ApiParts.INTERFACE, TunnelType.ITEM);
-        addNewAttunement(p2p, ApiParts.STORAGE_BUS, TunnelType.ITEM);
-        addNewAttunement(p2p, ApiParts.IMPORT_BUS, TunnelType.ITEM);
-        addNewAttunement(p2p, ApiParts.EXPORT_BUS, TunnelType.ITEM);
+        addNewAttunement(p2p, AEBlocks.INTERFACE, TunnelType.ITEM);
+        addNewAttunement(p2p, AEParts.INTERFACE, TunnelType.ITEM);
+        addNewAttunement(p2p, AEParts.STORAGE_BUS, TunnelType.ITEM);
+        addNewAttunement(p2p, AEParts.IMPORT_BUS, TunnelType.ITEM);
+        addNewAttunement(p2p, AEParts.EXPORT_BUS, TunnelType.ITEM);
 
         p2p.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
         p2p.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
@@ -143,10 +143,10 @@ public final class InitP2PAttunements {
         // FIXME // (opaque)
         // FIXME
         for (final AEColor c : AEColor.values()) {
-            p2p.addNewAttunement(ApiParts.GLASS_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(ApiParts.COVERED_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(ApiParts.SMART_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(ApiParts.SMART_DENSE_CABLE.stack(c, 1), TunnelType.ME);
+            p2p.addNewAttunement(AEParts.GLASS_CABLE.stack(c, 1), TunnelType.ME);
+            p2p.addNewAttunement(AEParts.COVERED_CABLE.stack(c, 1), TunnelType.ME);
+            p2p.addNewAttunement(AEParts.SMART_CABLE.stack(c, 1), TunnelType.ME);
+            p2p.addNewAttunement(AEParts.SMART_DENSE_CABLE.stack(c, 1), TunnelType.ME);
         }
 
         /*

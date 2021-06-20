@@ -53,7 +53,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiParts;
+import appeng.core.api.definitions.AEParts;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
@@ -210,7 +210,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return ApiParts.FLUID_INTERFACE.stack();
+        return AEParts.FLUID_INTERFACE.stack();
     }
 
     @Override

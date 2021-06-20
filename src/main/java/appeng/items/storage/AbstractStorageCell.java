@@ -45,7 +45,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -198,7 +198,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        return ApiItems.EMPTY_STORAGE_CELL.stack();
+        return AEItems.EMPTY_STORAGE_CELL.stack();
     }
 
     @Override

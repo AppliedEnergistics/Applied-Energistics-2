@@ -46,7 +46,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -77,9 +77,9 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     protected ItemStack getItemFromTile() {
         if (isAccelerator()) {
-            return ApiBlocks.CRAFTING_ACCELERATOR.stack();
+            return AEBlocks.CRAFTING_ACCELERATOR.stack();
         } else {
-            return ApiBlocks.CRAFTING_UNIT.stack();
+            return AEBlocks.CRAFTING_UNIT.stack();
         }
     }
 

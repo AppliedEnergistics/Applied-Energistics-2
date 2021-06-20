@@ -26,7 +26,7 @@ import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusColor;
 import appeng.client.render.ColorableTileBlockColor;
 import appeng.client.render.StaticBlockColor;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 
 @OnlyIn(Dist.CLIENT)
 public final class InitBlockColors {
@@ -35,10 +35,10 @@ public final class InitBlockColors {
     }
 
     public static void init(BlockColors blockColors) {
-        blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), ApiBlocks.WIRELESS_ACCESS_POINT.block());
-        blockColors.register(new CableBusColor(), ApiBlocks.MULTI_PART.block());
-        blockColors.register(ColorableTileBlockColor.INSTANCE, ApiBlocks.SECURITY_STATION.block());
-        blockColors.register(new ColorableTileBlockColor(), ApiBlocks.CHEST.block());
+        blockColors.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
+        blockColors.register(new CableBusColor(), AEBlocks.MULTI_PART.block());
+        blockColors.register(ColorableTileBlockColor.INSTANCE, AEBlocks.SECURITY_STATION.block());
+        blockColors.register(new ColorableTileBlockColor(), AEBlocks.CHEST.block());
     }
 
 }

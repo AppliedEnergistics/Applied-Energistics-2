@@ -31,8 +31,8 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
-import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEBlocks;
+import appeng.core.api.definitions.AEItems;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
@@ -69,8 +69,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
             final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        this.drawItem(offsetX + 66 - 8, offsetY + 17, ApiItems.CELL1K.stack());
-        this.drawItem(offsetX + 94 + 8, offsetY + 17, ApiBlocks.DRIVE.stack());
+        this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.CELL1K.stack());
+        this.drawItem(offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
     }
 
 }

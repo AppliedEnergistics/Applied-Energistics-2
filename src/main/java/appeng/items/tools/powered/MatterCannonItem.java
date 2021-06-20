@@ -68,7 +68,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MatterCannonPacket;
@@ -267,7 +267,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final BlockState whatsThere = w.getBlockState(hitPos);
                 if (whatsThere.getMaterial().isReplaceable() && w.isAirBlock(hitPos)) {
-                    w.setBlockState(hitPos, ApiBlocks.PAINT.block().getDefaultState(), 3);
+                    w.setBlockState(hitPos, AEBlocks.PAINT.block().getDefaultState(), 3);
                 }
 
                 final TileEntity te = w.getTileEntity(hitPos);

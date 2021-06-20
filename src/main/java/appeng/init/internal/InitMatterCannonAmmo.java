@@ -20,7 +20,7 @@ package appeng.init.internal;
 
 import appeng.api.features.IRegistryContainer;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 
 public final class InitMatterCannonAmmo {
 
@@ -29,7 +29,7 @@ public final class InitMatterCannonAmmo {
 
     public static void init() {
         final IRegistryContainer registries = Api.INSTANCE.registries();
-        registries.matterCannon().registerAmmoItem(ApiItems.MATTER_BALL.item(), 32);
+        registries.matterCannon().registerAmmoItem(AEItems.MATTER_BALL.item(), 32);
     }
 
 }

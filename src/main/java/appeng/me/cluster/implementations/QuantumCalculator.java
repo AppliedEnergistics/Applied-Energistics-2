@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
@@ -68,10 +68,10 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
 
             num++;
             if (num == 5) {
-                if (!this.isBlockAtLocation(w, p, ApiBlocks.QUANTUM_LINK)) {
+                if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_LINK)) {
                     return false;
                 }
-            } else if (!this.isBlockAtLocation(w, p, ApiBlocks.QUANTUM_RING)) {
+            } else if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_RING)) {
                 return false;
             }
         }

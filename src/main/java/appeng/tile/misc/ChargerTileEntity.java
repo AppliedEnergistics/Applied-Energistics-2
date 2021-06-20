@@ -44,7 +44,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
-import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.AEItems;
 import appeng.core.features.ItemDefinition;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
@@ -116,10 +116,10 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         final ItemStack myItem = this.inv.getStackInSlot(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
 
-            if (ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
+            if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ItemStack charged = ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
             }
         }
@@ -156,7 +156,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         if (myItem.isEmpty()) {
             ItemStack held = player.inventory.getCurrentItem();
 
-            if (ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
+            if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.inventory.decrStackSize(player.inventory.currentItem, 1);
                 this.inv.setStackInSlot(0, held);
@@ -214,12 +214,12 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                     }
                 }
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
-                    && ApiItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
-                                                                                                            // wait
+                    && AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
+                                                                                                           // wait
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ItemStack charged = ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
 
                 changed = true;
@@ -251,7 +251,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
-            final ItemDefinition cert = ApiItems.CERTUS_QUARTZ_CRYSTAL;
+            final ItemDefinition cert = AEItems.CERTUS_QUARTZ_CRYSTAL;
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
@@ -267,7 +267,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                 }
             }
 
-            return ApiItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(extractedItem);
+            return AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(extractedItem);
         }
     }
 }

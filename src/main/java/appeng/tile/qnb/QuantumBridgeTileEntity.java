@@ -44,7 +44,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.core.api.definitions.AEBlocks;
 import appeng.core.features.BlockDefinition;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
@@ -133,7 +133,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     private boolean isCenter() {
-        return getBlockState().matchesBlock(ApiBlocks.QUANTUM_LINK.block());
+        return getBlockState().matchesBlock(AEBlocks.QUANTUM_LINK.block());
     }
 
     @MENetworkEventSubscribe
@@ -151,7 +151,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     public void onReady() {
         super.onReady();
 
-        final BlockDefinition quantumRing = ApiBlocks.QUANTUM_RING;
+        final BlockDefinition quantumRing = AEBlocks.QUANTUM_RING;
 
         if (this.getBlockState().getBlock() == quantumRing.block()) {
             this.getProxy().setVisualRepresentation(quantumRing.stack());
