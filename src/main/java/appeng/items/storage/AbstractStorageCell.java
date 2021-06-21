@@ -28,6 +28,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,8 +36,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.exceptions.MissingDefinitionException;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventoryHandler;
@@ -45,10 +44,10 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
-import appeng.items.materials.MaterialType;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 
@@ -58,13 +57,16 @@ import appeng.util.InventoryAdaptor;
  * @since rv6 2018-01-17
  */
 public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T> {
-    protected final MaterialType component;
+    /**
+     * This can be retrieved when disassembling the storage cell.
+     */
+    protected final IItemProvider coreItem;
     protected final int totalBytes;
 
-    public AbstractStorageCell(Properties properties, final MaterialType whichCell, final int kilobytes) {
+    public AbstractStorageCell(Properties properties, final IItemProvider coreItem, final int kilobytes) {
         super(properties);
         this.totalBytes = kilobytes * 1024;
-        this.component = whichCell;
+        this.coreItem = coreItem;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -155,7 +157,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     playerInventory.setInventorySlotContents(playerInventory.currentItem, ItemStack.EMPTY);
 
                     // drop core
-                    final ItemStack extraB = ia.addItems(this.component.stack(1));
+                    final ItemStack extraB = ia.addItems(new ItemStack(coreItem));
                     if (!extraB.isEmpty()) {
                         player.dropItem(extraB, false);
                     }
@@ -195,14 +197,12 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        return Api.instance().definitions().materials().emptyStorageCell().maybeStack(1)
-                .orElseThrow(() -> new MissingDefinitionException(
-                        "Tried to use empty storage cells while basic storage cells are defined."));
+        return AEItems.EMPTY_STORAGE_CELL.stack();
     }
 
     @Override
     public boolean hasContainerItem(final ItemStack stack) {
-        return AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_DISASSEMBLY_CRAFTING);
+        return AEConfig.instance().isDisassemblyCraftingEnabled();
     }
 
 }

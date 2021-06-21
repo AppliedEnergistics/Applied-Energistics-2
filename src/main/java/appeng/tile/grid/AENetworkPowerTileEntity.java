@@ -33,7 +33,7 @@ import appeng.tile.powersink.AEBasePoweredTileEntity;
 
 public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IActionHost, IGridProxyable {
 
-    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
+    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
 
     public AENetworkPowerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);

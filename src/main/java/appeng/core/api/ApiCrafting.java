@@ -34,24 +34,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.ApiDefinitions;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;
 
 public class ApiCrafting implements ICraftingHelper {
-
-    private final IItemDefinition encodedPattern;
-
-    public ApiCrafting(ApiDefinitions definitions) {
-        this.encodedPattern = definitions.items().encodedPattern();
-    }
 
     @Override
     public boolean isEncodedPattern(@Nullable IAEItemStack item) {
@@ -67,7 +60,7 @@ public class ApiCrafting implements ICraftingHelper {
     public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
-            stack = encodedPattern.stack(1);
+            stack = AEItems.ENCODED_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }
@@ -79,7 +72,7 @@ public class ApiCrafting implements ICraftingHelper {
     @Override
     public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out) {
         if (stack == null) {
-            stack = encodedPattern.stack(1);
+            stack = AEItems.ENCODED_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }

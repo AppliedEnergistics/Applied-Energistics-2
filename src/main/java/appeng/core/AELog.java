@@ -28,7 +28,6 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
-import appeng.api.features.AEFeature;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
@@ -64,7 +63,7 @@ public final class AELog {
      * @return true when the log is enabled.
      */
     public static boolean isLogEnabled() {
-        return AEConfig.instance() == null || AEConfig.instance().isFeatureEnabled(AEFeature.LOGGING);
+        return true;
     }
 
     /**
@@ -245,34 +244,12 @@ public final class AELog {
      * @return true when the debug log is enabled.
      */
     public static boolean isDebugLogEnabled() {
-        return AEConfig.instance().isFeatureEnabled(AEFeature.DEBUG_LOGGING);
+        return AEConfig.instance().isDebugLogEnabled();
     }
 
     //
     // Specialized handlers
     //
-
-    /**
-     * A specialized logging for grinder recipes, can be disabled inside configuration file.
-     *
-     * @param message String to be logged
-     */
-    public static void grinder(@Nonnull final String message, final Object... params) {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.GRINDER_LOGGING)) {
-            log(Level.DEBUG, "grinder: " + message, params);
-        }
-    }
-
-    /**
-     * A specialized logging for mod integration errors, can be disabled inside configuration file.
-     *
-     * @param exception
-     */
-    public static void integration(@Nonnull final Throwable exception) {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.INTEGRATION_LOGGING)) {
-            debug(exception);
-        }
-    }
 
     /**
      * Logging of block updates.
@@ -287,7 +264,7 @@ public final class AELog {
      */
     public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState,
             @Nonnull BlockState newState, @Nonnull final AEBaseTileEntity aeBaseTile) {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.UPDATE_LOGGING)) {
+        if (AEConfig.instance().isBlockUpdateLogEnabled()) {
             info(BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState);
         }
     }
@@ -300,7 +277,7 @@ public final class AELog {
      * @return true when the crafting log is enabled.
      */
     public static boolean isCraftingLogEnabled() {
-        return AEConfig.instance().isFeatureEnabled(AEFeature.CRAFTING_LOG);
+        return AEConfig.instance().isCraftingLogEnabled();
     }
 
     /**
@@ -326,8 +303,8 @@ public final class AELog {
      * @return true when the crafting debug log is enabled.
      */
     public static boolean isCraftingDebugLogEnabled() {
-        return AEConfig.instance().isFeatureEnabled(AEFeature.CRAFTING_LOG)
-                && AEConfig.instance().isFeatureEnabled(AEFeature.DEBUG_LOGGING);
+        return AEConfig.instance().isCraftingLogEnabled()
+                && AEConfig.instance().isDebugLogEnabled();
     }
 
     /**

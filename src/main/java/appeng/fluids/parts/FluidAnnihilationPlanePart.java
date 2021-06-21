@@ -168,7 +168,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     this.storeFluid(AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
 
-                    AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+                    AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
                             new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),
                                     BlockTransitionEffectPacket.SoundMode.FLUID));
 

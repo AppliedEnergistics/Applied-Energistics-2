@@ -6,7 +6,7 @@
   "pattern": ["aba", "cdc", "aea"],
   "key": {
     "d": {
-      "item": "appliedenergistics2:16k_cell_component"
+      "item": "appliedenergistics2:16k_item_cell_component"
     },
     "e": {
       "item": "appliedenergistics2:engineering_processor"

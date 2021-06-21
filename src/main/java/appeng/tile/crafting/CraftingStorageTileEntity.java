@@ -18,14 +18,11 @@
 
 package appeng.tile.crafting;
 
-import java.util.Optional;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
-import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
 
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
@@ -35,31 +32,21 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
     }
 
     @Override
-    protected ItemStack getItemFromTile(final Object obj) {
-        final IBlocks blocks = Api.instance().definitions().blocks();
-        final int storage = ((CraftingTileEntity) obj).getStorageBytes() / KILO_SCALAR;
-
-        Optional<ItemStack> is;
+    protected ItemStack getItemFromTile() {
+        final int storage = getStorageBytes() / KILO_SCALAR;
 
         switch (storage) {
             case 1:
-                is = blocks.craftingStorage1k().maybeStack(1);
-                break;
+                return AEBlocks.CRAFTING_STORAGE_1K.stack();
             case 4:
-                is = blocks.craftingStorage4k().maybeStack(1);
-                break;
+                return AEBlocks.CRAFTING_STORAGE_4K.stack();
             case 16:
-                is = blocks.craftingStorage16k().maybeStack(1);
-                break;
+                return AEBlocks.CRAFTING_STORAGE_16K.stack();
             case 64:
-                is = blocks.craftingStorage64k().maybeStack(1);
-                break;
+                return AEBlocks.CRAFTING_STORAGE_64K.stack();
             default:
-                is = Optional.empty();
-                break;
+                return super.getItemFromTile();
         }
-
-        return is.orElseGet(() -> super.getItemFromTile(obj));
     }
 
     @Override

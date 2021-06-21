@@ -74,7 +74,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (w.isRemote()) {
-            final RayTraceResult mop = AppEng.proxy.getRTR();
+            final RayTraceResult mop = AppEng.instance().getCurrentMouseOver();
 
             if (mop == null || mop.getType() == RayTraceResult.Type.MISS) {
                 NetworkHandler.instance().sendToServer(new ClickPacket(hand));

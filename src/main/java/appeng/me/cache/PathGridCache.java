@@ -28,7 +28,6 @@ import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import appeng.api.features.AEFeature;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -45,7 +44,6 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.stats.IAdvancementTrigger;
@@ -282,7 +280,7 @@ public class PathGridCache implements IPathingGrid {
     }
 
     private void achievementPost() {
-        if (this.lastChannels != this.getChannelsInUse() && AEConfig.instance().isFeatureEnabled(AEFeature.CHANNELS)) {
+        if (this.lastChannels != this.getChannelsInUse()) {
             final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.getChannelsInUse());
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {

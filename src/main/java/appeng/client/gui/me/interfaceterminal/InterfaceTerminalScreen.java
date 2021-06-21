@@ -57,7 +57,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.InterfaceTerminalContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.DualityInterface;
@@ -333,7 +333,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 return true;
             }

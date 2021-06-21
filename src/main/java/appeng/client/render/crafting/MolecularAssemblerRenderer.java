@@ -47,6 +47,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**
@@ -115,7 +116,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
-            if (AppEng.proxy.shouldAddParticles(particleRandom)) {
+            if (AppEngClient.instance().shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
                     minecraft.particles.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }

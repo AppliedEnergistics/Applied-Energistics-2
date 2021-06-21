@@ -1,5 +1,5 @@
 {
-  "parent": "appliedenergistics2:item/export_bus",
+  "parent": "appliedenergistics2:item/item_export_bus",
   "textures": {
     "sides": "appliedenergistics2:part/export_bus_sides",
     "back": "appliedenergistics2:part/monitor_back",

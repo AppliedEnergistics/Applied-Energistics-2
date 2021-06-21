@@ -68,14 +68,14 @@ public class PartPlacementPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        AppEng.proxy.setPartInteractionPlayer(sender);
+        AppEng.instance().setPartInteractionPlayer(sender);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);
             PartPlacement.place(sender.getHeldItem(this.hand), new BlockPos(this.x, this.y, this.z),
                     Direction.values()[this.face], sender, this.hand, sender.world,
                     PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0);
         } finally {
-            AppEng.proxy.setPartInteractionPlayer(null);
+            AppEng.instance().setPartInteractionPlayer(null);
         }
     }
 }

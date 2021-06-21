@@ -54,7 +54,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
 
@@ -173,7 +173,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         final double yOff = -0.3 * up.getYOffset();
         final double zOff = -0.3 * up.getZOffset();
         for (int bolts = 0; bolts < 3; bolts++) {
-            if (AppEng.proxy.shouldAddParticles(r)) {
+            if (AppEngClient.instance().shouldAddParticles(r)) {
                 w.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
                         zOff + 0.5 + pos.getZ(), 0, 0, 0);
             }

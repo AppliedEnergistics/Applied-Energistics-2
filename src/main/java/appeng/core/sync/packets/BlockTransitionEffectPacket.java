@@ -40,7 +40,7 @@ import net.minecraftforge.registries.GameData;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -108,7 +108,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
         for (int zz = 0; zz < 32; zz++) {
-            if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
                 // Distribute the spawn point across the entire block's area
                 double x = pos.getX() + Platform.getRandomFloat();
                 double y = pos.getY() + Platform.getRandomFloat();

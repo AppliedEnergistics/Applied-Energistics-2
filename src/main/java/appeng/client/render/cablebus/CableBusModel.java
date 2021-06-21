@@ -40,7 +40,7 @@ import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.features.registries.PartModels;
+import appeng.core.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.

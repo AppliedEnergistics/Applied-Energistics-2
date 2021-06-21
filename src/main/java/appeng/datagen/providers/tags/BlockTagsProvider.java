@@ -28,8 +28,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
-import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider implements IAE2DataProvider {
@@ -39,10 +40,10 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
 
     @Override
     protected void registerTags() {
-        addForge("ores/certus_quartz", BLOCKS.quartzOre(), BLOCKS.quartzOreCharged());
+        addForge("ores/certus_quartz", AEBlocks.QUARTZ_ORE, AEBlocks.QUARTZ_ORE_CHARGED);
         addForge("ores", "#forge:ores/certus_quartz");
 
-        addForge("storage_blocks/certus_quartz", BLOCKS.quartzBlock());
+        addForge("storage_blocks/certus_quartz", AEBlocks.QUARTZ_BLOCK);
         addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
 
         addForge("terracotta", Blocks.TERRACOTTA,
@@ -71,19 +72,19 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         addAe2("whitelisted/facades",
                 Blocks.GLASS,
                 Tags.Blocks.STAINED_GLASS,
-                BLOCKS.quartzGlass(),
-                BLOCKS.quartzVibrantGlass());
+                AEBlocks.QUARTZ_GLASS,
+                AEBlocks.QUARTZ_VIBRANT_GLASS);
 
         // Special behavior is associated with this tag
         add(BlockTags.WALLS.getName(),
-                BLOCKS.skyStoneWall().block(),
-                BLOCKS.smoothSkyStoneWall().block(),
-                BLOCKS.skyStoneBrickWall().block(),
-                BLOCKS.skyStoneSmallBrickWall().block(),
-                BLOCKS.fluixWall().block(),
-                BLOCKS.quartzWall().block(),
-                BLOCKS.chiseledQuartzWall().block(),
-                BLOCKS.quartzPillarWall().block());
+                AEBlocks.SKY_STONE_WALL.block(),
+                AEBlocks.SMOOTH_SKY_STONE_WALL.block(),
+                AEBlocks.SKY_STONE_BRICK_WALL.block(),
+                AEBlocks.SKY_STONE_SMALL_BRICK_WALL.block(),
+                AEBlocks.FLUIX_WALL.block(),
+                AEBlocks.QUARTZ_WALL.block(),
+                AEBlocks.CHISELED_QUARTZ_WALL.block(),
+                AEBlocks.QUARTZ_PILLAR_WALL.block());
     }
 
     private void addForge(String tagName, Object... blockSources) {
@@ -101,8 +102,8 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         for (Object blockSource : blockSources) {
             if (blockSource instanceof Block) {
                 builder.add((Block) blockSource);
-            } else if (blockSource instanceof IBlockDefinition) {
-                builder.add(((IBlockDefinition) blockSource).block());
+            } else if (blockSource instanceof BlockDefinition) {
+                builder.add(((BlockDefinition) blockSource).block());
             } else if (blockSource instanceof ITag.INamedTag) {
                 builder.addTag(
                         (ITag.INamedTag<Block>) blockSource);

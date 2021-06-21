@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -47,6 +46,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -71,20 +71,16 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
     @Override
     protected AENetworkProxy createProxy() {
-        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(this), true);
+        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(), true);
     }
 
     @Override
-    protected ItemStack getItemFromTile(final Object obj) {
-        Optional<ItemStack> is;
-
-        if (((CraftingTileEntity) obj).isAccelerator()) {
-            is = Api.instance().definitions().blocks().craftingAccelerator().maybeStack(1);
+    protected ItemStack getItemFromTile() {
+        if (isAccelerator()) {
+            return AEBlocks.CRAFTING_ACCELERATOR.stack();
         } else {
-            is = Api.instance().definitions().blocks().craftingUnit().maybeStack(1);
+            return AEBlocks.CRAFTING_UNIT.stack();
         }
-
-        return is.orElseGet(() -> super.getItemFromTile(obj));
     }
 
     @Override
@@ -115,7 +111,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     public void onReady() {
         super.onReady();
-        this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
+        this.getProxy().setVisualRepresentation(this.getItemFromTile());
         this.calc.calculateMultiblock(world, pos);
     }
 

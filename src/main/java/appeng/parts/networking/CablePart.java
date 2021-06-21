@@ -27,7 +27,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -41,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.Api;
+import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -94,18 +93,16 @@ public class CablePart extends AEBasePart implements ICablePart {
         if (this.getCableColor() != newColor) {
             ItemStack newPart = null;
 
-            final IParts parts = Api.instance().definitions().parts();
-
             if (this.getCableConnectionType() == AECableType.GLASS) {
-                newPart = parts.cableGlass().stack(newColor, 1);
+                newPart = AEParts.GLASS_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.COVERED) {
-                newPart = parts.cableCovered().stack(newColor, 1);
+                newPart = AEParts.COVERED_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.SMART) {
-                newPart = parts.cableSmart().stack(newColor, 1);
+                newPart = AEParts.SMART_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_COVERED) {
-                newPart = parts.cableDenseCovered().stack(newColor, 1);
+                newPart = AEParts.COVERED_DENSE_CABLE.stack(newColor, 1);
             } else if (this.getCableConnectionType() == AECableType.DENSE_SMART) {
-                newPart = parts.cableDenseSmart().stack(newColor, 1);
+                newPart = AEParts.SMART_DENSE_CABLE.stack(newColor, 1);
             }
 
             boolean hasPermission = true;

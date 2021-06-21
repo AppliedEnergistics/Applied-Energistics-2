@@ -23,13 +23,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 
-import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 public class QuartzHoeItem extends HoeItem {
-    private final AEFeature type;
+    private final QuartzToolType type;
 
-    public QuartzHoeItem(Item.Properties props, final AEFeature type) {
+    public QuartzHoeItem(Item.Properties props, final QuartzToolType type) {
         super(ItemTier.IRON, -2, -1.0F, props);
         this.type = type;
     }

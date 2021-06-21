@@ -46,7 +46,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
@@ -166,7 +166,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().blocks().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return AEBlocks.FLUID_INTERFACE.stack();
     }
 
     @Override

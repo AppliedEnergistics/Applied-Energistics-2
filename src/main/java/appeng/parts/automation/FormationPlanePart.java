@@ -71,6 +71,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.FormationPlaneContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -82,7 +83,8 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
-    private static final PlaneModels MODELS = new PlaneModels("part/formation_plane", "part/formation_plane_on");
+    private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
+            "part/item_formation_plane_on");
     private static final Random RANDOM_OFFSET = new Random();
 
     @PartModels
@@ -355,7 +357,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().formationPlane().maybeStack(1).orElse(ItemStack.EMPTY);
+        return AEParts.FORMATION_PLANE.stack();
     }
 
     @Override

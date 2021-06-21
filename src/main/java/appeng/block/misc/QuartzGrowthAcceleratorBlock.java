@@ -37,7 +37,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import appeng.util.Platform;
 
@@ -71,7 +71,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
         final QuartzGrowthAcceleratorTileEntity cga = this.getTileEntity(w, pos);
 
-        if (cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles(r)) {
+        if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;
             final double d1 = r.nextFloat() - 0.5F;
 

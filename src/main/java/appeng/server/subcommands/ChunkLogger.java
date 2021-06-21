@@ -27,7 +27,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.server.ISubCommand;
@@ -37,7 +36,7 @@ public class ChunkLogger implements ISubCommand {
     private boolean enabled = false;
 
     private void displayStack() {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHUNK_LOGGER_TRACE)) {
+        if (AEConfig.instance().isChunkLoggerTraceEnabled()) {
             boolean output = false;
             for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
                 if (output) {

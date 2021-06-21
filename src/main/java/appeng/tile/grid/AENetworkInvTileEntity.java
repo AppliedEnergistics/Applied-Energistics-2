@@ -31,7 +31,7 @@ import appeng.tile.AEBaseInvTileEntity;
 
 public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IActionHost, IGridProxyable {
 
-    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
+    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
 
     public AENetworkInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);

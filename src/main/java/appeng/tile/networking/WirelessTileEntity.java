@@ -38,7 +38,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
-import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -56,7 +56,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     public WirelessTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.inv.setFilter(new AEItemDefinitionFilter(Api.instance().definitions().materials().wirelessBooster()));
+        this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
     }

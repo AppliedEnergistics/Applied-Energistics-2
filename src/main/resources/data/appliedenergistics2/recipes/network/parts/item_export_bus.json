@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "appliedenergistics2:item_export_bus"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["aba", " c "],
+  "key": {
+    "b": {
+      "item": "appliedenergistics2:formation_core"
+    },
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "minecraft:piston"
+    }
+  }
+}

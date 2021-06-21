@@ -72,7 +72,7 @@ import appeng.container.me.common.MEMonitorableContainer;
 import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -504,7 +504,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
-            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
                 this.searchField.setFocused2(!this.searchField.isFocused());
                 if (this.searchField.isFocused()) {
                     this.setListener(this.searchField);

@@ -33,8 +33,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.recipes.handlers.InscriberRecipe;
 
 class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
@@ -64,7 +64,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
         this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
                 false);
 
-        this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().inscriber().stack(1));
+        this.icon = guiHelper.createDrawableIngredient(AEBlocks.INSCRIBER.stack());
     }
 
     @Override

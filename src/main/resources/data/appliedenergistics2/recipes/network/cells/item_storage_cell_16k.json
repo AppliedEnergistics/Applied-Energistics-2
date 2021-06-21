@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "appliedenergistics2:16k_item_storage_cell"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["aba", "bcb", "ddd"],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "c": {
+      "item": "appliedenergistics2:16k_item_cell_component"
+    },
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "tag": "forge:dusts/redstone"
+    }
+  }
+}

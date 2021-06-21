@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.client.ICellModelRegistry;
-import appeng.core.ApiDefinitions;
+import appeng.core.definitions.AEItems;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 
@@ -73,18 +73,18 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     private final Map<Item, ResourceLocation> registry;
 
-    public ApiCellModelRegistry(ApiDefinitions definitions) {
+    public ApiCellModelRegistry() {
         this.registry = new IdentityHashMap<>();
-        this.registry.put(definitions.items().cell1k().item(), MODEL_CELL_ITEMS_1K);
-        this.registry.put(definitions.items().cell4k().item(), MODEL_CELL_ITEMS_4K);
-        this.registry.put(definitions.items().cell16k().item(), MODEL_CELL_ITEMS_16K);
-        this.registry.put(definitions.items().cell64k().item(), MODEL_CELL_ITEMS_64K);
-        this.registry.put(definitions.items().fluidCell1k().item(), MODEL_CELL_FLUIDS_1K);
-        this.registry.put(definitions.items().fluidCell4k().item(), MODEL_CELL_FLUIDS_4K);
-        this.registry.put(definitions.items().fluidCell16k().item(), MODEL_CELL_FLUIDS_16K);
-        this.registry.put(definitions.items().fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(definitions.items().fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
-        this.registry.put(definitions.items().cellCreative().item(), MODEL_CELL_CREATIVE);
+        this.registry.put(AEItems.CELL1K.asItem(), MODEL_CELL_ITEMS_1K);
+        this.registry.put(AEItems.CELL4K.asItem(), MODEL_CELL_ITEMS_4K);
+        this.registry.put(AEItems.CELL16K.asItem(), MODEL_CELL_ITEMS_16K);
+        this.registry.put(AEItems.CELL64K.asItem(), MODEL_CELL_ITEMS_64K);
+        this.registry.put(AEItems.FLUID_CELL1K.asItem(), MODEL_CELL_FLUIDS_1K);
+        this.registry.put(AEItems.FLUID_CELL4K.asItem(), MODEL_CELL_FLUIDS_4K);
+        this.registry.put(AEItems.FLUID_CELL16K.asItem(), MODEL_CELL_FLUIDS_16K);
+        this.registry.put(AEItems.FLUID_CELL64K.asItem(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(AEItems.FLUID_CELL64K.asItem(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(AEItems.CELL_CREATIVE.asItem(), MODEL_CELL_CREATIVE);
     }
 
     @Override

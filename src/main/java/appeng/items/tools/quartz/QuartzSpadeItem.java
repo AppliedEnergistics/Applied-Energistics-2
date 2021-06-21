@@ -23,13 +23,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.ShovelItem;
 
-import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 public class QuartzSpadeItem extends ShovelItem {
-    private final AEFeature type;
+    private final QuartzToolType type;
 
-    public QuartzSpadeItem(Item.Properties props, final AEFeature type) {
+    public QuartzSpadeItem(Item.Properties props, final QuartzToolType type) {
         super(ItemTier.IRON, 1.5F, -3.0F, props);
         this.type = type;
     }

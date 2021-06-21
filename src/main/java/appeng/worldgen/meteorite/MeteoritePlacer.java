@@ -35,12 +35,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IMaterials;
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.BlockDefinition;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -53,7 +51,7 @@ import appeng.worldgen.meteorite.fallout.FalloutSnow;
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
     private static final int SKYSTONE_SPAWN_LIMIT = 12;
-    private final IBlockDefinition skyChestDefinition;
+    private final BlockDefinition skyChestDefinition;
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
@@ -89,11 +87,9 @@ public final class MeteoritePlacer {
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
-        final IBlocks blocks = Api.instance().definitions().blocks();
-
-        this.skyChestDefinition = blocks.skyStoneChest();
-        this.skyStone = blocks.skyStoneBlock().block().getDefaultState();
-        this.skyStoneItem = blocks.skyStoneBlock().item();
+        this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
+        this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().getDefaultState();
+        this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.asItem();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }
@@ -201,7 +197,7 @@ public final class MeteoritePlacer {
     }
 
     private void placeChest() {
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
+        if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
             final TileEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue
@@ -230,20 +226,19 @@ public final class MeteoritePlacer {
                         }
 
                         ItemStack toAdd = ItemStack.EMPTY;
-                        final IMaterials materials = Api.instance().definitions().materials();
 
                         switch (r % 4) {
                             case 0:
-                                toAdd = materials.calcProcessorPress().maybeStack(1).orElse(ItemStack.EMPTY);
+                                toAdd = AEItems.CALCULATION_PROCESSOR_PRESS.stack();
                                 break;
                             case 1:
-                                toAdd = materials.engProcessorPress().maybeStack(1).orElse(ItemStack.EMPTY);
+                                toAdd = AEItems.ENGINEERING_PROCESSOR_PRESS.stack();
                                 break;
                             case 2:
-                                toAdd = materials.logicProcessorPress().maybeStack(1).orElse(ItemStack.EMPTY);
+                                toAdd = AEItems.LOGIC_PROCESSOR_PRESS.stack();
                                 break;
                             case 3:
-                                toAdd = materials.siliconPress().maybeStack(1).orElse(ItemStack.EMPTY);
+                                toAdd = AEItems.SILICON_PRESS.stack();
                                 break;
                             default:
                         }

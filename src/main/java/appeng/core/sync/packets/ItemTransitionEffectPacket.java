@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -72,7 +72,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
-            if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
                 // Distribute the spawn point around the item's position
                 double x = this.x + Platform.getRandomFloat() * 0.5 - 0.25;
                 double y = this.y + Platform.getRandomFloat() * 0.5 - 0.25;

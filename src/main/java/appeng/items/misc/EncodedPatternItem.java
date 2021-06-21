@@ -51,6 +51,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.items.AEBaseItem;
@@ -93,8 +94,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
             final PlayerInventory inv = player.inventory;
 
-            ItemStack is = Api.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
-                    .orElse(ItemStack.EMPTY);
+            ItemStack is = AEItems.BLANK_PATTERN.stack(stack.getCount());
             if (!is.isEmpty()) {
                 for (int s = 0; s < player.inventory.getSizeInventory(); s++) {
                     if (inv.getStackInSlot(s) == stack) {
@@ -205,7 +205,7 @@ public class EncodedPatternItem extends AEBaseItem {
             return out;
         }
 
-        final World w = AppEng.proxy.getWorld();
+        final World w = AppEng.instance().getClientWorld();
         if (w == null) {
             return ItemStack.EMPTY;
         }

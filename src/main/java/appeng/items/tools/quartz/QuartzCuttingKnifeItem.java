@@ -28,7 +28,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.container.ContainerLocator;
@@ -39,9 +38,9 @@ import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
-    private final AEFeature type;
+    private final QuartzToolType type;
 
-    public QuartzCuttingKnifeItem(Item.Properties props, final AEFeature type) {
+    public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);
         this.type = type;
     }

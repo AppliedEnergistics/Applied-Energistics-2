@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:64k_storage_cell"
+      "item": "appliedenergistics2:64k_item_storage_cell"
     },
     "title": {
       "translate": "achievement.ae2.StorageCell"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:1k_storage_cell"
+            "item": "appliedenergistics2:1k_item_storage_cell"
           }
         ]
       }
@@ -27,7 +27,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:4k_storage_cell"
+            "item": "appliedenergistics2:4k_item_storage_cell"
           }
         ]
       }
@@ -37,7 +37,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:16k_storage_cell"
+            "item": "appliedenergistics2:16k_item_storage_cell"
           }
         ]
       }
@@ -47,7 +47,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:64k_storage_cell"
+            "item": "appliedenergistics2:64k_item_storage_cell"
           }
         ]
       }

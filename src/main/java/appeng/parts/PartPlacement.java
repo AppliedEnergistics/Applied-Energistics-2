@@ -48,8 +48,6 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItems;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -57,8 +55,10 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.BlockDefinition;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
@@ -198,7 +198,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final IBlockDefinition multiPart = Api.instance().definitions().blocks().multiPart();
+        final BlockDefinition multiPart = AEBlocks.MULTI_PART;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -219,9 +219,9 @@ public class PartPlacement {
                 host = (IPartHost) tile;
             }
 
-            ItemStack multiPartStack = multiPart.stack(1);
+            ItemStack multiPartStack = multiPart.stack();
             Block multiPartBlock = multiPart.block();
-            BlockItem multiPartBlockItem = multiPart.blockItem();
+            BlockItem multiPartBlockItem = (BlockItem) multiPart.asItem();
 
             boolean hostIsNotPresent = host == null;
             BlockState multiPartBlockState = multiPartBlock.getDefaultState();
@@ -293,13 +293,11 @@ public class PartPlacement {
 
             final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
             if (mySide != null) {
-                multiPart.maybeBlock().ifPresent(multiPartBlock -> {
-                    BlockState blockState = world.getBlockState(pos);
-                    final SoundType ss = multiPartBlock.getSoundType(blockState, world, pos, player);
+                BlockState blockState = world.getBlockState(pos);
+                final SoundType ss = multiPart.block().getSoundType(blockState, world, pos, player);
 
-                    world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
-                            ss.getPitch() * 0.8F);
-                });
+                world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
+                        ss.getPitch() * 0.8F);
 
                 if (!player.isCreative()) {
                     held.grow(-1);
@@ -324,11 +322,11 @@ public class PartPlacement {
     }
 
     private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vector3d pos) {
-        AppEng.proxy.setPartInteractionPlayer(player);
+        AppEng.instance().setPartInteractionPlayer(player);
         try {
             return host.selectPart(pos);
         } finally {
-            AppEng.proxy.setPartInteractionPlayer(null);
+            AppEng.instance().setPartInteractionPlayer(null);
         }
     }
 
@@ -372,10 +370,9 @@ public class PartPlacement {
                 }
             } else {
                 final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
-                final IItems items = Api.instance().definitions().items();
 
-                boolean supportedItem = items.memoryCard().isSameAs(held);
-                supportedItem |= items.colorApplicator().isSameAs(held);
+                boolean supportedItem = AEItems.MEMORY_CARD.isSameAs(held);
+                supportedItem |= AEItems.COLOR_APPLICATOR.isSameAs(held);
 
                 if (InteractionUtil.isInAlternateUseMode(event.getPlayer()) && !held.isEmpty() && supportedItem) {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
