@@ -98,12 +98,6 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
 	}
 
 	@Override
-	protected boolean supportCapacity()
-	{
-		return true;
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
