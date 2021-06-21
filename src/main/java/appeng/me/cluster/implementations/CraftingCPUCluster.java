@@ -680,11 +680,6 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								}
 							}
 
-							if (m instanceof DualityInterface )
-							{
-								sum *= ( Math.pow( 4, ( (DualityInterface) m ).getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) );
-							}
-
 							// power...
 							if( eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG ) < sum - 0.01 )
 							{

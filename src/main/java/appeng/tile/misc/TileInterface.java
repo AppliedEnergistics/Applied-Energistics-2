@@ -164,6 +164,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 		super.onReady();
 		this.duality.initialize();
+		this.getProxy().setIdlePowerUsage( Math.pow( 4, ( this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) ) );
 	}
 
 	@Override

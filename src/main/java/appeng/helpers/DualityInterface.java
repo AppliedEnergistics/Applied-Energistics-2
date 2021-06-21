@@ -621,6 +621,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			BlockPos blockPos = this.getLocation().getPos();
 			Platform.spawnDrops( world, blockPos, dropList );
 		}
+
+		this.gridProxy.setIdlePowerUsage( Math.pow( 4, ( this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) ) );
 	}
 
 	@Override
