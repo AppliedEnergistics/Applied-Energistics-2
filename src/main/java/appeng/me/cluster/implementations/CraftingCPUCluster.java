@@ -23,7 +23,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
+import appeng.api.config.Upgrades;
+import appeng.helpers.DualityInterface;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -676,6 +677,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								{
 									sum += anInput.getStackSize();
 								}
+							}
+
+							if (m instanceof DualityInterface )
+							{
+								sum *= ( Math.pow( 4, ( (DualityInterface) m ).getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) );
 							}
 
 							// power...

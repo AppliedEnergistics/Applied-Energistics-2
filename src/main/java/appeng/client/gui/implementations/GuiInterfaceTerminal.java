@@ -24,8 +24,13 @@ import java.util.*;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.core.worlddata.IWorldPlayerMapping;
+import appeng.helpers.DualityInterface;
+import appeng.parts.misc.PartInterface;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.misc.TileInterface;
 import appeng.util.BlockPosUtils;
 import com.google.common.collect.HashMultimap;
 
@@ -69,6 +74,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
 	private final HashMap<ClientDCInternalInv,BlockPos> blockPosHashMap = new HashMap<>();
 	private final HashMap<GuiButton,ClientDCInternalInv> guiButtonHashMap = new HashMap<>();
+	private final Map<ClientDCInternalInv,Integer> numUpgradesMap = new HashMap<>();
 	private final ArrayList<String> names = new ArrayList<>();
 	private final ArrayList<Object> lines = new ArrayList<>();
 	private final Set<Object> matchedStacks = new HashSet<>();
@@ -91,7 +97,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.xSize = 208;
-		this.ySize = 256;
+		this.ySize = 255;
 	}
 
 	@Override
@@ -136,36 +142,43 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752 );
 
-		final int ex = this.getScrollBar().getCurrentScroll();
+		final int currentScroll = this.getScrollBar().getCurrentScroll();
 
-		this.guiButtonNextAssembler = new GuiImgButton(guiLeft + 123, guiTop + 25,Settings.ACTIONS, ActionItems.FREE_MOLECULAR_SLOT_SHORTCUT);
+		this.guiButtonNextAssembler = new GuiImgButton( guiLeft + 123, guiTop + 25, Settings.ACTIONS, ActionItems.FREE_MOLECULAR_SLOT_SHORTCUT );
 		this.buttonList.add( guiButtonNextAssembler );
 
-		guiButtonHide = new GuiImgButton( guiLeft + 141, guiTop + 25,Settings.ACTIONS, this.partInterfaceTerminal.onlyInterfacesWithFreeSlots ?
-																							ActionItems.TOGGLE_SHOW_FULL_INTERFACES_OFF :
-																							ActionItems.TOGGLE_SHOW_FULL_INTERFACES_ON);
+		guiButtonHide = new GuiImgButton( guiLeft + 141, guiTop + 25, Settings.ACTIONS, this.partInterfaceTerminal.onlyInterfacesWithFreeSlots ? ActionItems.TOGGLE_SHOW_FULL_INTERFACES_OFF : ActionItems.TOGGLE_SHOW_FULL_INTERFACES_ON );
 		this.buttonList.add( guiButtonHide );
 
 		this.inventorySlots.inventorySlots.removeIf( slot -> slot instanceof SlotDisconnected );
 
-		int offset = 51;
-		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
+		int offset = 52;
+		int linesDraw = 0;
+		for( int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && currentScroll + x < this.lines.size(); x++ )
 		{
-			final Object lineObj = this.lines.get( ex + x );
+			final Object lineObj = this.lines.get( currentScroll + x );
 			if( lineObj instanceof ClientDCInternalInv )
 			{
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-				for( int z = 0; z < inv.getInventory().getSlots(); z++ )
-				{
-					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 22, 1 + offset ) );
-					if (this.matchedStacks.contains(inv.getInventory().getStackInSlot(z)))
-						drawRect( z * 18 + 22, 1 + offset, z * 18 + 22 + 16, 1 + offset + 16, 0x2A00FF00 );
-				}
 
-				GuiButton guiButton = new GuiImgButton(guiLeft + 4, guiTop + offset + 1, Settings.ACTIONS, ActionItems.HIGHLIGHT_INTERFACE);
-				guiButtonHashMap.put( guiButton , inv);
+				GuiButton guiButton = new GuiImgButton( guiLeft + 4, guiTop + offset, Settings.ACTIONS, ActionItems.HIGHLIGHT_INTERFACE );
+				guiButtonHashMap.put( guiButton, inv );
 				this.buttonList.add( guiButton );
+				int extraLines = numUpgradesMap.get( inv );
 
+				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE ; ++row )
+				{
+					for( int z = 0; z < 9 ; z++ )
+					{
+						this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z + ( row * 9 ), ( z * 18 + 22 ), offset ) );
+						if( this.matchedStacks.contains( inv.getInventory().getStackInSlot( z + ( row * 9 ) ) ) )
+						{
+							drawRect( z * 18 + 22, offset, z * 18 + 22 + 16, offset + 16, 0x2A00FF00 );
+						}
+					}
+					linesDraw++;
+					offset += 18;
+				}
 			}
 			else if( lineObj instanceof String )
 			{
@@ -176,17 +189,17 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					name = name + " (" + rows + ')';
 				}
 
-				while( name.length() > 2 && this.fontRenderer.getStringWidth( name ) > 155 )
+				while ( name.length() > 2 && this.fontRenderer.getStringWidth( name ) > 155 )
 				{
 					name = name.substring( 0, name.length() - 1 );
 				}
-
-				this.fontRenderer.drawString( name, this.offsetX + 2, 6 + offset, 4210752 );
+				this.fontRenderer.drawString( name, this.offsetX + 2, 5 + offset, 4210752 );
+				linesDraw++;
+				offset += 18;
 			}
-			offset += 18;
 		}
 
-		if( searchFieldInputs.isMouseIn( mouseX , mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
+		if( searchFieldInputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
 		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Outputs OR names" );
 
 	}
@@ -264,19 +277,28 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		int offset = 51;
 		final int ex = this.getScrollBar().getCurrentScroll();
-
-		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
+		int linesDraw = 0;
+		for( int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
 			final Object lineObj = this.lines.get( ex + x );
 			if( lineObj instanceof ClientDCInternalInv )
 			{
-				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-
 				GlStateManager.color( 1, 1, 1, 1 );
-				final int width = inv.getInventory().getSlots() * 18;
-				this.drawTexturedModalRect( offsetX + 20, offsetY + offset, 20, 173, width, 18 );
+				final int width = 9 * 18;
+
+				int extraLines = numUpgradesMap.get( lineObj );
+
+				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row )
+				{
+					this.drawTexturedModalRect( offsetX + 20, offsetY + offset , 20, 173, width, 18 );
+					offset += 18;
+					linesDraw++;
+				}
 			}
-			offset += 18;
+			else {
+				offset += 18;
+				linesDraw++;
+			}
 		}
 
 		if( this.searchFieldInputs != null )
@@ -337,6 +359,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 					blockPosHashMap.put( current, NBTUtil.getPosFromTag( invData.getCompoundTag( "pos" )) );
 					dimHashMap.put( current, invData.getInteger( "dim" ));
+					numUpgradesMap.put( current, invData.getInteger("numUpgrades"));
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
@@ -458,7 +481,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			this.lines.addAll( clientInventories );
 		}
 
-		this.getScrollBar().setRange( 0, this.lines.size() - LINES_ON_PAGE, 2 );
+		this.getScrollBar().setRange( 0, this.lines.size() - 1, 1 );
 	}
 
 	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm,int pass )
@@ -548,7 +571,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		if( o == null )
 		{
-			this.byId.put( id, o = new ClientDCInternalInv( 9, id, sortBy, string ) );
+			this.byId.put( id, o = new ClientDCInternalInv( DualityInterface.NUMBER_OF_PATTERN_SLOTS, id, sortBy, string ) );
 			this.refreshList = true;
 		}
 

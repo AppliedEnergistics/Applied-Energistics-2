@@ -1,0 +1,49 @@
+{
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.card_capacity"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.basic_card"
+                }
+            ]
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.card_pattern_expansion"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "ci"
+    ],
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+        	"part": "material.advanced_card"
+        },
+        {
+			"key": "#"
+        }
+    ],
+    "key": {
+    "i": [
+        {
+			"item": "appliedenergistics2:interface"
+        },
+        {
+        	"type": "appliedenergistics2:part",
+        	"part": "part.interface"
+        }],
+        "c": {
+            "type": "appliedenergistics2:part",
+        	"part": "material.advanced_card"
+       }
+    
+  }
+}

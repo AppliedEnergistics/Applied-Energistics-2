@@ -20,10 +20,10 @@ package appeng.helpers;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import appeng.api.definitions.IItemDefinition;
 import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
 import appeng.util.*;
 import appeng.util.inv.*;
@@ -33,10 +33,9 @@ import de.ellpeck.actuallyadditions.api.tile.IPhantomTile;
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
-import gregtech.api.metatileentity.TieredMetaTileEntity;
-import gregtech.api.metatileentity.WorkableTieredMetaTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -115,7 +114,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
-	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
+	public static final int NUMBER_OF_PATTERN_SLOTS = 36;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<>( 100 );
 	private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
@@ -151,7 +150,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
-		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 1 );
+		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 4);
 		this.cm.registerSetting( Settings.BLOCK, YesNo.NO );
 		this.cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 
@@ -179,7 +178,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return;
 		}
-
 		if( inv == this.config )
 		{
 			this.readConfig();
@@ -279,10 +277,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		this.waitingToSendFacing = null;
-		final NBTTagCompound waitingListSided = data.getCompoundTag("sidedWaitList");
+		final NBTTagCompound waitingListSided = data.getCompoundTag( "sidedWaitList" );
 
-		for (EnumFacing s : EnumFacing.values())
-			if (waitingListSided.hasKey( s.name() )) {
+		for( EnumFacing s : EnumFacing.values() )
+			if( waitingListSided.hasKey( s.name() ) )
+			{
 				NBTTagList w = waitingListSided.getTagList( s.name(), 10 );
 				for( int x = 0; x < w.tagCount(); x++ )
 				{
@@ -290,14 +289,31 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					if( c != null )
 					{
 						final ItemStack is = new ItemStack( c );
-						this.addToSendListFacing( is , EnumFacing.getFront( s.getIndex() ) );
+						this.addToSendListFacing( is, EnumFacing.getFront( s.getIndex() ) );
 					}
 				}
 			}
 
 		this.craftingTracker.readFromNBT( data );
+
+		// fix upgrade slot size mismatch
+		NBTTagCompound up = data.getCompoundTag( "upgrades" );
+		if( up.hasKey( "Size" ) && up.getInteger( "Size" ) != this.upgrades.getSlots() )
+		{
+			up.setInteger( "Size", this.upgrades.getSlots() );
+			this.upgrades.writeToNBT( up, "upgrades" );
+		}
+
 		this.upgrades.readFromNBT( data, "upgrades" );
 		this.config.readFromNBT( data, "config" );
+
+		NBTTagCompound pa = data.getCompoundTag( "patterns" );
+		if( pa.hasKey( "Size" ) && pa.getInteger( "Size" ) != this.patterns.getSlots() )
+		{
+			pa.setInteger( "Size", this.patterns.getSlots() );
+			this.upgrades.writeToNBT( pa, "patterns" );
+		}
+
 		this.patterns.readFromNBT( data, "patterns" );
 		this.storage.readFromNBT( data, "storage" );
 		this.priority = data.getInteger( "priority" );
@@ -400,9 +416,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private void updateCraftingList()
 	{
-		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
-
-		assert ( accountedFor.length == this.patterns.getSlots() );
+		final Boolean[] accountedFor = new Boolean[this.patterns.getSlots()];
+		Arrays.fill( accountedFor, false );
 
 		if( !this.gridProxy.isReady() )
 		{
@@ -417,7 +432,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final ICraftingPatternDetails details = i.next();
 				boolean found = false;
 
-				for( int x = 0; x < accountedFor.length; x++ )
+				for( int x = 0; x < accountedFor.length ; x++ )
 				{
 					final ItemStack is = this.patterns.getStackInSlot( x );
 					if( details.getPattern() == is )
@@ -433,7 +448,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		for( int x = 0; x < accountedFor.length; x++ )
+		for( int x = 0; x < accountedFor.length ; x++ )
 		{
 			if( !accountedFor[x] )
 			{
@@ -584,6 +599,28 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 		return false;
+	}
+
+	public void dropExcessPatterns()
+	{
+		IItemHandler patterns = getPatterns();
+
+		List<ItemStack> dropList = new ArrayList<>();
+		for( int invSlot = 0; invSlot < patterns.getSlots(); invSlot++ )
+		{
+			if( invSlot >= 9 + ( this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) * 9 )
+			{
+				ItemStack is = patterns.getStackInSlot( invSlot );
+				if( is.isEmpty() ) continue;
+				dropList.add( patterns.extractItem( invSlot, Integer.MAX_VALUE, false ) );
+			}
+		}
+		if( dropList.size() > 1 )
+		{
+			World world = this.getLocation().getWorld();
+			BlockPos blockPos = this.getLocation().getPos();
+			Platform.spawnDrops( world, blockPos, dropList );
+		}
 	}
 
 	@Override

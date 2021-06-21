@@ -50,7 +50,7 @@ public class GuiInterface extends GuiUpgradeable
 	public GuiInterface( final InventoryPlayer inventoryPlayer, final IInterfaceHost te )
 	{
 		super( new ContainerInterface( inventoryPlayer, te ) );
-		this.ySize = 211;
+		this.ySize = 256;
 	}
 
 	@Override
@@ -62,8 +62,7 @@ public class GuiInterface extends GuiUpgradeable
 		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
 		this.buttonList.add( this.BlockMode );
 
-		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal
-				.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
+		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
 		this.buttonList.add( this.interfaceMode );
 	}
 
@@ -86,13 +85,20 @@ public class GuiInterface extends GuiUpgradeable
 		this.fontRenderer.drawString( GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752 );
 		this.fontRenderer.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
 
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
 	protected String getBackground()
 	{
-		return "guis/interface.png";
+		int upgrades = ( (ContainerInterface) this.cvb ).getPatternUpgrades();
+		if( upgrades == 0 )
+		{
+			return "guis/newinterface.png";
+		}
+		else
+		{
+			return "guis/newinterface" + upgrades + ".png";
+		}
 	}
 
 	@Override
@@ -117,4 +123,5 @@ public class GuiInterface extends GuiUpgradeable
 			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
 		}
 	}
+
 }

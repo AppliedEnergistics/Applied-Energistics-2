@@ -450,6 +450,7 @@ item.appliedenergistics2.material.basic_card.name=Basic Card
 item.appliedenergistics2.material.blank_pattern.name=Blank Pattern
 item.appliedenergistics2.material.calculation_processor.name=Calculation Processor
 item.appliedenergistics2.material.card_capacity.name=Capacity Card
+item.appliedenergistics2.material.card_pattern_expansion.name=Pattern Expansion Card
 item.appliedenergistics2.material.card_fuzzy.name=Fuzzy Card
 item.appliedenergistics2.material.card_inverter.name=Inverter Card
 item.appliedenergistics2.material.card_redstone.name=Redstone Card

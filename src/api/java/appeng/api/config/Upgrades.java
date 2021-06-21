@@ -46,7 +46,8 @@ public enum Upgrades
 	 */
 	FUZZY( 1 ),
 	SPEED( 1 ),
-	INVERTER( 1 );
+	INVERTER( 1 ),
+	PATTERN_EXPANSION(1);
 
 	private final int tier;
 	private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
