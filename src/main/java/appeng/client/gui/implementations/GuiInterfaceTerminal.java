@@ -418,8 +418,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found )
 			{
+				int slot = 0;
 				for( final ItemStack itemStack : entry.getInventory() )
 				{
+					if (slot > 8 + numUpgradesMap.get(entry) * 9) {
+						break;
+					}
 					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() ) {
 						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldInputs, 0) || this.itemStackMatchesSearchTerm(itemStack, searchFieldOutputs, 1)) {
 							found = true;
@@ -441,6 +445,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					// If only Interfaces with empty slots should be shown, check that here
 					if(itemStack.isEmpty())
 						interfaceHasFreeSlots = true;
+					slot++;
 				}
 			}
 			// if found, filter skipped or machine name matching the search term, add it

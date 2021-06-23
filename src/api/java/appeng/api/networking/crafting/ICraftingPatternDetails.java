@@ -31,6 +31,9 @@ import net.minecraft.world.World;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.storage.data.IAEItemStack;
 
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * do not implement provided by {@link ICraftingPatternItem}
@@ -83,6 +86,11 @@ public interface ICraftingPatternDetails
 	 * @return if this pattern is enabled to support substitutions.
 	 */
 	boolean canSubstitute();
+
+	default List<IAEItemStack> getSubstituteInputs( int slot )
+	{
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.

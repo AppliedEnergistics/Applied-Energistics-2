@@ -225,7 +225,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		final ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
-		out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
+		out = details != null ? details.getCondensedOutputs()[0].createItemStack() : ItemStack.EMPTY;
 
 		SIMPLE_CACHE.put( item, out );
 		return out;
