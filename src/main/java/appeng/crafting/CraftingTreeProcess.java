@@ -305,7 +305,7 @@ public class CraftingTreeProcess
 
 	void getPlan( final IItemList<IAEItemStack> plan )
 	{
-		for( IAEItemStack i : this.details.getOutputs() )
+		for( IAEItemStack i : this.details.getCondensedOutputs() )
 		{
 			i = i.copy();
 			i.setCountRequestable( i.getStackSize() * this.crafts );

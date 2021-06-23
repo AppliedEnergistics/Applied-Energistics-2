@@ -19,21 +19,18 @@
 package appeng.helpers;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -46,10 +43,16 @@ import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
 {
+
+	private static final int CRAFTING_GRID_DIMENSION = 3;
+	private static final int ALL_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
+	private static final int CRAFTING_OUTPUT_LIMIT = 1;
+	private static final int PROCESSING_OUTPUT_LIMIT = 3;
 
 	private final ItemStack patternItem;
 	private final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
@@ -60,6 +63,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private final IAEItemStack[] condensedOutputs;
 	private final IAEItemStack[] inputs;
 	private final IAEItemStack[] outputs;
+	private final Map<Integer, List<IAEItemStack>> substituteInputs;
 	private final boolean isCrafting;
 	private final boolean canSubstitute;
 	private final Set<TestLookup> failCache = new HashSet<>();
@@ -143,9 +147,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				}
 			}
 		}
+		final int outputLength = this.isCrafting ? CRAFTING_OUTPUT_LIMIT : PROCESSING_OUTPUT_LIMIT;
 
-		this.outputs = out.toArray( new IAEItemStack[out.size()] );
-		this.inputs = in.toArray( new IAEItemStack[in.size()] );
+		this.inputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
+		this.outputs = out.toArray(new IAEItemStack[outputLength]);
+		this.substituteInputs = new HashMap<>(ALL_INPUT_LIMIT);
 
 		final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
 
@@ -257,6 +263,14 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		this.testFrame.setInventorySlotContents( slotIndex, i );
 
+		// If we cannot substitute, the items must match exactly
+		if (!canSubstitute && slotIndex < inputs.length) {
+			if (!inputs[slotIndex].isSameType(i)) {
+				this.markItemAs(slotIndex, i, TestStatus.DECLINE);
+				return false;
+			}
+		}
+
 		if( this.standardRecipe.matches( this.testFrame, w ) )
 		{
 			final ItemStack testOutput = this.standardRecipe.getCraftingResult( this.testFrame );
@@ -267,25 +281,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
 				return true;
 			}
-		}
-		else if( AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_MANAGER_FALLBACK ) )
-		{
-			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
-
-			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
-			{
-				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
-				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
-
-				if( AELog.isCraftingDebugLogEnabled() )
-				{
-					this.warnAboutCraftingManager( true );
-				}
-
-				return true;
-			}
-
-			this.warnAboutCraftingManager( false );
 		}
 
 		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
@@ -328,6 +323,97 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return this.canSubstitute;
 	}
 
+	@Override
+	public List<IAEItemStack> getSubstituteInputs(int slot) {
+		if (this.inputs[slot] == null) {
+			return Collections.emptyList();
+		}
+
+		return this.substituteInputs.computeIfAbsent(slot, value -> {
+			ItemStack[] matchingStacks = getRecipeIngredient(slot).getMatchingStacks();
+			List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
+			for (ItemStack matchingStack : matchingStacks) {
+				itemList.add(AEItemStack.fromItemStack(matchingStack));
+			}
+
+			// Ensure that the specific item put in by the user is at the beginning,
+			// so that it takes precedence over substitutions
+			itemList.add(0, this.inputs[slot]);
+			return itemList;
+		});
+	}
+
+	/**
+	 * Gets the {@link Ingredient} from the actual used recipe for a given slot-index into {@link #getInputs()}.
+	 * <p/>
+	 * Conversion is needed for two reasons: our sparse ingredients are always organized in a 3x3 grid, while Vanilla's
+	 * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
+	 * shift the actual recipe input to the right and down.
+	 */
+	private Ingredient getRecipeIngredient(int slot) {
+
+		if (standardRecipe instanceof IShapedRecipe ) {
+			IShapedRecipe shapedRecipe = (IShapedRecipe) standardRecipe;
+
+			return getShapedRecipeIngredient(slot, shapedRecipe.getRecipeWidth());
+		} else {
+			return getShapelessRecipeIngredient(slot);
+		}
+	}
+
+	private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+		// Compute the offset of the user's input vs. crafting grid origin
+		// Which is >0 if they have empty rows above or to the left of their input
+		int topOffset = 0;
+		if (inputs[0] == null && inputs[1] == null && inputs[2] == null) {
+			topOffset++; // First row is fully empty
+			if (inputs[3] == null && inputs[4] == null && inputs[5] == null) {
+				topOffset++; // Second row is fully empty
+			}
+		}
+		int leftOffset = 0;
+		if (inputs[0] == null && inputs[3] == null && inputs[6] == null) {
+			leftOffset++; // First column is fully empty
+			if (inputs[1] == null && inputs[4] == null && inputs[7] == null) {
+				leftOffset++; // Second column is fully empty
+			}
+		}
+
+		// Compute the x,y of the slot, as-if the recipe was anchored to 0,0
+		int slotX = slot % CRAFTING_GRID_DIMENSION - leftOffset;
+		int slotY = slot / CRAFTING_GRID_DIMENSION - topOffset;
+
+		// Compute the index into the recipe's ingredient list now
+		int ingredientIndex = slotY * recipeWidth + slotX;
+
+		NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
+
+		if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
+			return Ingredient.EMPTY;
+		}
+
+		return ingredients.get(ingredientIndex);
+	}
+
+	private Ingredient getShapelessRecipeIngredient(int slot) {
+		// We map the list of *filled* sparse inputs to the shapeless (ergo unordered)
+		// ingredients. While these do not actually correspond to each other,
+		// since both lists have the same length, the mapping is at least stable.
+		int ingredientIndex = 0;
+		for (int i = 0; i < slot; i++) {
+			if (inputs[i] != null) {
+				ingredientIndex++;
+			}
+		}
+
+		NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
+		if (ingredientIndex < ingredients.size()) {
+			return ingredients.get(ingredientIndex);
+		}
+
+		return Ingredient.EMPTY;
+	}
+	
 	@Override
 	public ItemStack getOutput( final InventoryCrafting craftingInv, final World w )
 	{
@@ -404,24 +490,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public int hashCode()
 	{
 		return this.pattern.hashCode();
-	}
-
-	private void warnAboutCraftingManager( boolean foundAlternative )
-	{
-		final String foundAlternativeRecipe = foundAlternative ? "Found alternative recipe." : "NOT FOUND, please report.";
-
-		final StringJoiner joinActualInputs = new StringJoiner( ", " );
-		for( int j = 0; j < this.testFrame.getSizeInventory(); j++ )
-		{
-			final ItemStack stack = this.testFrame.getStackInSlot( j );
-			if( !stack.isEmpty() )
-			{
-				joinActualInputs.add( stack.toString() );
-			}
-		}
-
-		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s]. %s",
-				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
 	}
 
 	@Override

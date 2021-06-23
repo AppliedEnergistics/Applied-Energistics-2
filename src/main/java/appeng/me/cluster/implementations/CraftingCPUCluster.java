@@ -494,22 +494,87 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return null;
 	}
 
-	private boolean canCraft( final ICraftingPatternDetails details, final IAEItemStack[] condensedInputs )
+	private boolean canCraft(final ICraftingPatternDetails details, final IAEItemStack[] condensedInputs)
 	{
-		for( IAEItemStack g : condensedInputs )
+		if( !details.isCraftable() )
 		{
+			// Processing patterns are relatively easy
+			for ( IAEItemStack input : condensedInputs )
+			{
+				final IAEItemStack ais = this.inventory.extractItems( input.copy(), Actionable.SIMULATE,
+						this.machineSrc );
 
-			if( details.isCraftable() )
+				if( ais == null || ais.getStackSize() < input.getStackSize() )
+				{
+					return false;
+				}
+			}
+		}
+		else if( details.canSubstitute() )
+		{
+			// When substitutions are allowed, we have to keep track of which items we've reserved
+			IAEItemStack[] inputs = details.getInputs();
+			Map<IAEItemStack, Integer> consumedCount = new HashMap<>();
+			for ( int i = 0; i < inputs.length; i++ )
+			{
+				List<IAEItemStack> substitutes = details.getSubstituteInputs( i );
+				if( substitutes.isEmpty() )
+				{
+					continue;
+				}
+
+				boolean found = false;
+				for ( IAEItemStack substitute : substitutes )
+				{
+					for ( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( substitute, FuzzyMode.IGNORE_ALL ) )
+					{
+						int alreadyConsumed = consumedCount.getOrDefault( fuzz, 0 );
+						if( fuzz.getStackSize() - alreadyConsumed <= 0 )
+						{
+							continue; // Already fully consumed by a previous slot of this recipe
+						}
+
+						fuzz = fuzz.copy();
+						fuzz.setStackSize( 1 ); // We're iterating over non condensed inputs which means there's 1 of each needed
+						final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE,
+								this.machineSrc );
+
+						if( ais != null && ais.getStackSize() > 0 )
+						{
+							// Mark 1 of the stack as consumed
+							consumedCount.merge( fuzz, 1, Integer::sum );
+							found = true;
+							break;
+						}
+					}
+					if( found )
+					{
+						break;
+					}
+				}
+
+				if( !found )
+				{
+					return false;
+				}
+			}
+
+		}
+		else
+		{
+			// When no substitutions can occur, we can simply check that all items are accounted since
+			// each type of item should only occur once
+			for ( IAEItemStack g : condensedInputs )
 			{
 				boolean found = false;
 
-				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
+				for ( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
 					final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
 
-					if (ais != null && ais.getStackSize() == g.getStackSize())
+					if( ais != null && ais.getStackSize() >= g.getStackSize() )
 					{
 						found = true;
 						break;
@@ -526,15 +591,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					return false;
 				}
 			}
-			else
-			{
-				final IAEItemStack ais = this.inventory.extractItems( g.copy(), Actionable.SIMULATE, this.machineSrc );
 
-				if (ais == null || ais.getStackSize() < g.getStackSize())
-				{
-					return false;
-				}
-			}
 		}
 
 		return true;
@@ -689,71 +746,67 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 							boolean found = false;
 
-							for( int x = 0; x < input.length; x++ )
-							{
-								if( input[x] != null )
-								{
+							for (int x = 0; x < input.length; x++) {
+								if (input[x] != null) {
 									found = false;
 
-									if( details.isCraftable() )
-									{
+									if (details.isCraftable()) {
 										final Collection<IAEItemStack> itemList;
 
-										if( details.canSubstitute() )
-										{
-											itemList = this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL );
-										}
-										else
-										{
-											itemList = new ArrayList<>( 1 );
+										if (details.canSubstitute()) {
+											final List<IAEItemStack> substitutes = details.getSubstituteInputs(x);
+											itemList = new ArrayList<>(substitutes.size());
 
-											final IAEItemStack item = this.inventory.getItemList().findPrecise( input[x] );
+											for (IAEItemStack stack : substitutes) {
+												itemList.addAll(this.inventory.getItemList().findFuzzy(stack,
+														FuzzyMode.IGNORE_ALL));
+											}
+										} else {
+											itemList = new ArrayList<>(1);
 
-											if( item != null )
-											{
-												itemList.add( item );
+											final IAEItemStack item = this.inventory.getItemList()
+													.findPrecise(input[x]);
+
+											if (item != null) {
+												itemList.add(item);
 											}
 										}
 
-										for( IAEItemStack fuzz : itemList )
-										{
+										for (IAEItemStack fuzz : itemList) {
 											fuzz = fuzz.copy();
-											fuzz.setStackSize( input[x].getStackSize() );
+											fuzz.setStackSize(input[x].getStackSize());
 
-											if( details.isValidItemForSlot( x, fuzz.createItemStack(), this.getWorld() ) )
-											{
-												final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.MODULATE, this.machineSrc );
-												final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
+											if (details.isValidItemForSlot(x, fuzz.createItemStack(),
+													this.getWorld())) {
+												final IAEItemStack ais = this.inventory.extractItems(fuzz,
+														Actionable.MODULATE, this.machineSrc);
+												final ItemStack is = ais == null ? ItemStack.EMPTY
+														: ais.createItemStack();
 
-												if( !is.isEmpty() )
-												{
-													this.postChange( AEItemStack.fromItemStack( is ), this.machineSrc );
-													ic.setInventorySlotContents( x, is );
+												if (!is.isEmpty()) {
+													this.postChange(AEItemStack.fromItemStack(is), this.machineSrc);
+													ic.setInventorySlotContents(x, is);
 													found = true;
 													break;
 												}
 											}
 										}
-									}
-									else
-									{
-										final IAEItemStack ais = this.inventory.extractItems( input[x].copy(), Actionable.MODULATE, this.machineSrc );
+									} else {
+										final IAEItemStack ais = this.inventory.extractItems(input[x].copy(),
+												Actionable.MODULATE, this.machineSrc);
 										final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-										if( !is.isEmpty() )
-										{
-											this.postChange( input[x], this.machineSrc );
-											ic.setInventorySlotContents( x, is );
-											if( is.getCount() == input[x].getStackSize() )
-											{
+										if (!is.isEmpty()) {
+											this.postChange(input[x], this.machineSrc);
+											ic.setInventorySlotContents(x, is);
+											if (is.getCount() == input[x].getStackSize()) {
 												found = true;
 												continue;
 											}
 										}
 									}
 
-									if( !found )
-									{
+									if (!found) {
 										break;
 									}
 								}
