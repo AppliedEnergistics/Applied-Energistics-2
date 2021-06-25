@@ -18,32 +18,20 @@
         "type": "appliedenergistics2:part",
         "part": "material.card_pattern_expansion"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "ci"
-    ],
+    "type": "appliedenergistics2:part_shapeless",
     "ingredients": [
         {
             "type": "appliedenergistics2:part",
-        	"part": "material.advanced_card"
+            "part": "material.advanced_card"
         },
-        {
-			"key": "#"
-        }
-    ],
-    "key": {
-    "i": [
-        {
-			"item": "appliedenergistics2:interface"
-        },
-        {
-        	"type": "appliedenergistics2:part",
-        	"part": "part.interface"
-        }],
-        "c": {
-            "type": "appliedenergistics2:part",
-        	"part": "material.advanced_card"
-       }
-    
-  }
+        [
+        	{
+                "item": "appliedenergistics2:interface"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "part.interface"
+            }
+        ]
+    ]
 }
