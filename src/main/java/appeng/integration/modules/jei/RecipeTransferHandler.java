@@ -147,8 +147,12 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 						}
 
 						// prefer pure crystals.
-						for( ItemStack stack : ingredient.getAllIngredients() )
+						for ( ItemStack stack : ingredient.getAllIngredients() )
 						{
+							if( stack == null )
+							{
+								continue;
+							}
 							if( Platform.isRecipePrioritized( stack ) )
 							{
 								list.add( 0, stack );
@@ -159,7 +163,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 							}
 						}
 
-						for( final ItemStack is : list )
+						for ( final ItemStack is : list )
 						{
 							final NBTTagCompound tag = new NBTTagCompound();
 							is.writeToNBT( tag );
