@@ -608,14 +608,14 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		List<ItemStack> dropList = new ArrayList<>();
 		for( int invSlot = 0; invSlot < patterns.getSlots(); invSlot++ )
 		{
-			if( invSlot >= 9 + ( this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) ) * 9 )
+			if( invSlot > 8 +  this.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION ) * 9 )
 			{
 				ItemStack is = patterns.getStackInSlot( invSlot );
 				if( is.isEmpty() ) continue;
 				dropList.add( patterns.extractItem( invSlot, Integer.MAX_VALUE, false ) );
 			}
 		}
-		if( dropList.size() > 1 )
+		if( dropList.size() > 0 )
 		{
 			World world = this.getLocation().getWorld();
 			BlockPos blockPos = this.getLocation().getPos();
