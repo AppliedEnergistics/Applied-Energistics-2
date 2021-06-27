@@ -28,7 +28,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 
 public final class AECommand {
@@ -37,7 +36,7 @@ public final class AECommand {
 
         LiteralArgumentBuilder<CommandSource> builder = literal("ae2");
         for (Commands command : Commands.values()) {
-            if (command.test && !AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
+            if (command.test && !AEConfig.instance().isDebugToolsEnabled()) {
                 continue;
             }
             add(builder, command);

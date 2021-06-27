@@ -70,9 +70,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -95,9 +92,11 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -784,7 +783,7 @@ public class Platform {
         final boolean a_isSecure = isPowered(a.getGrid()) && a.getLastSecurityKey() != -1;
         final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.LOG_SECURITY_AUDITS)) {
+        if (AEConfig.instance().isSecurityAuditLogEnabled()) {
             final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
                     : "notInWorld";
             final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
@@ -981,32 +980,20 @@ public class Platform {
         }
     }
 
-    public static boolean canRepair(final AEFeature type, final ItemStack a, final ItemStack b) {
+    public static boolean canRepair(final QuartzToolType type, final ItemStack a, final ItemStack b) {
         if (b.isEmpty() || a.isEmpty()) {
             return false;
         }
 
-        if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
-            final IItemDefinition certusQuartzCrystal = Api.instance().definitions().materials().certusQuartzCrystal();
-
-            return certusQuartzCrystal.isSameAs(b);
+        if (type == QuartzToolType.CERTUS) {
+            return AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(b);
         }
 
-        if (type == AEFeature.NETHER_QUARTZ_TOOLS) {
+        if (type == QuartzToolType.NETHER) {
             return Items.QUARTZ == b.getItem();
         }
 
         return false;
-    }
-
-    public static boolean isRecipePrioritized(final ItemStack what) {
-        final IMaterials materials = Api.instance().definitions().materials();
-
-        boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs(what);
-        isPurified |= materials.purifiedFluixCrystal().isSameAs(what);
-        isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs(what);
-
-        return isPurified;
     }
 
     public static boolean isSortOrderAvailable(SortOrder order) {

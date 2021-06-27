@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "appliedenergistics2:item_annihilation_plane"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["aaa", "bcb"],
+  "key": {
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "a": {
+      "tag": "appliedenergistics2:crystals/fluix"
+    },
+    "c": {
+      "item": "appliedenergistics2:annihilation_core"
+    }
+  }
+}

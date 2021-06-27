@@ -1,6 +1,0 @@
-{
-  "loader": "appliedenergistics2:part_plane",
-  "front": "appliedenergistics2:part/formation_plane_on",
-  "sides": "appliedenergistics2:part/plane_sides",
-  "back": "appliedenergistics2:part/transition_plane_back"
-}

@@ -52,21 +52,23 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-            .put(BLOCKS.matrixFrame().block(), $ -> LootTable.builder())
-            .put(BLOCKS.quartzOre().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOre().block(),
-                            withExplosionDecay(BLOCKS.quartzOre().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+            .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.builder())
+            .put(AEBlocks.QUARTZ_ORE.block(),
+                    b -> droppingWithSilkTouch(AEBlocks.QUARTZ_ORE.block(),
+                            withExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
+                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
-            .put(BLOCKS.quartzOreCharged().block(),
-                    b -> droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
-                            withExplosionDecay(BLOCKS.quartzOreCharged().block(),
-                                    ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+            .put(AEBlocks.QUARTZ_ORE_CHARGED.block(),
+                    b -> droppingWithSilkTouch(AEBlocks.QUARTZ_ORE_CHARGED.block(),
+                            withExplosionDecay(AEBlocks.QUARTZ_ORE_CHARGED.block(),
+                                    ItemLootEntry.builder(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
                                             .acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
                                             .acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))))
             .build();

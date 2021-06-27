@@ -86,19 +86,19 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
-            "part/level_emitter_base_off");
+            "part/item_level_emitter_base_off");
     @PartModels
     public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
-            "part/level_emitter_base_on");
+            "part/item_level_emitter_base_on");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
-            "part/level_emitter_status_off");
+            "part/item_level_emitter_status_off");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
-            "part/level_emitter_status_on");
+            "part/item_level_emitter_status_on");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
-            "part/level_emitter_status_has_channel");
+            "part/item_level_emitter_status_has_channel");
 
     public static final PartModel MODEL_OFF_OFF = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_OFF);
     public static final PartModel MODEL_OFF_ON = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_ON);

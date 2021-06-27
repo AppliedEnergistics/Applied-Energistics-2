@@ -27,12 +27,12 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
 
@@ -69,13 +69,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
             final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        final IDefinitions definitions = Api.instance().definitions();
-
-        definitions.items().cell1k().maybeStack(1)
-                .ifPresent(cell1kStack -> this.drawItem(offsetX + 66 - 8, offsetY + 17, cell1kStack));
-
-        definitions.blocks().drive().maybeStack(1)
-                .ifPresent(driveStack -> this.drawItem(offsetX + 94 + 8, offsetY + 17, driveStack));
+        this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.CELL1K.stack());
+        this.drawItem(offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
     }
 
 }

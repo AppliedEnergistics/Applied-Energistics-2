@@ -23,13 +23,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.PickaxeItem;
 
-import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 public class QuartzPickaxeItem extends PickaxeItem {
-    private final AEFeature type;
+    private final QuartzToolType type;
 
-    public QuartzPickaxeItem(Item.Properties props, final AEFeature type) {
+    public QuartzPickaxeItem(Item.Properties props, final QuartzToolType type) {
         super(ItemTier.IRON, 1, -2.8F, props);
         this.type = type;
     }

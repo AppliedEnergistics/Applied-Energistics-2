@@ -29,24 +29,20 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends SpecialRecipe {
     public static SpecialRecipeSerializer<FacadeRecipe> SERIALIZER = null;
 
-    private final IComparableDefinition anchor;
+    private final ItemDefinition<?> anchor = AEParts.CABLE_ANCHOR;
     private final FacadeItem facade;
 
     public FacadeRecipe(ResourceLocation id, FacadeItem facade) {
         super(id);
         this.facade = facade;
-        final IDefinitions definitions = Api.instance().definitions();
-
-        this.anchor = definitions.parts().cableAnchor();
     }
 
     @Override

@@ -29,17 +29,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEEntities;
 import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
-
-    public static EntityType<GrowingCrystalEntity> TYPE;
 
     // Growth tick progress per tick by number of adjacent accelerators
     // Expressed as 1/1000th of a growth tick, applied to progress_1000
@@ -63,7 +61,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(TYPE, w, x, y, z, is);
+        super(AEEntities.GROWING_CRYSTAL, w, x, y, z, is);
         this.setNoDespawn();
     }
 
@@ -82,7 +80,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private void applyGrowthTick(IGrowableCrystal cry, ItemStack is) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
+        if (!AEConfig.instance().isInWorldPurificationEnabled()) {
             return;
         }
 
@@ -109,7 +107,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
             int len = getTicksBetweenParticleEffects(progressPerTick);
             if (++this.progress_1000 >= len) {
                 this.progress_1000 = 0;
-                AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
+                AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
                         this.getPosZ(), null);
             }
         } else {

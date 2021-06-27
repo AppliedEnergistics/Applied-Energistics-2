@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:interface"
+      "item": "appliedenergistics2:item_interface"
     },
     "title": {
       "translate": "achievement.ae2.Recursive"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:interface"
+            "item": "appliedenergistics2:item_interface"
           }
         ]
       }

@@ -38,7 +38,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
-import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -53,6 +52,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -146,14 +146,13 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     private ItemStack getOutput() {
-        final IMaterials materials = Api.instance().definitions().materials();
 
         switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
             case MATTER_BALLS:
-                return materials.matterBall().maybeStack(1).orElse(ItemStack.EMPTY);
+                return AEItems.MATTER_BALL.stack();
 
             case SINGULARITY:
-                return materials.singularity().maybeStack(1).orElse(ItemStack.EMPTY);
+                return AEItems.SINGULARITY.stack();
 
             case TRASH:
             default:

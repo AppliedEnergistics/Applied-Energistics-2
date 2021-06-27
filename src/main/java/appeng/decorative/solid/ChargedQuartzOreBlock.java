@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 
 public class ChargedQuartzOreBlock extends QuartzOreBlock {
     public ChargedQuartzOreBlock(Properties props) {
@@ -71,7 +71,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
                 break;
         }
 
-        if (AppEng.proxy.shouldAddParticles(r)) {
+        if (AppEngClient.instance().shouldAddParticles(r)) {
             Minecraft.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }

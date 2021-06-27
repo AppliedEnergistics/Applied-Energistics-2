@@ -44,11 +44,11 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.client.gui.Icon;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.tile.misc.CondenserTileEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
@@ -71,7 +71,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
     public CondenserCategory(IGuiHelper guiHelper) {
         this.localizedName = I18n.format("gui.appliedenergistics2.Condenser");
-        this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().condenser().stack(1));
+        this.icon = guiHelper.createDrawableIngredient(AEBlocks.CONDENSER.stack());
 
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
         this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
@@ -96,9 +96,9 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     private ItemStack getOutput(CondenserOutput recipe) {
         switch (recipe) {
             case MATTER_BALLS:
-                return Api.INSTANCE.definitions().materials().matterBall().stack(1);
+                return AEItems.MATTER_BALL.stack();
             case SINGULARITY:
-                return Api.INSTANCE.definitions().materials().singularity().stack(1);
+                return AEItems.SINGULARITY.stack();
             default:
                 return ItemStack.EMPTY;
         }
@@ -160,16 +160,11 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        IMaterials materials = Api.instance().definitions().materials();
         List<ItemStack> viableComponents = new ArrayList<>();
-        materials.cell1kPart().maybeStack(1)
-                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
-        materials.cell4kPart().maybeStack(1)
-                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
-        materials.cell16kPart().maybeStack(1)
-                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
-        materials.cell64kPart().maybeStack(1)
-                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_1K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_4K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_16K_CELL_COMPONENT.stack());
+        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_64K_CELL_COMPONENT.stack());
         return viableComponents;
     }
 

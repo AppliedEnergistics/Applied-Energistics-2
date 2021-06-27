@@ -123,7 +123,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         double d0 = this.pos.getX() + 0.5d;
         double d1 = this.pos.getY() + 0.5d;
         double d2 = this.pos.getZ() + 0.5d;
-        this.world.playSound((PlayerEntity) null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
+        this.world.playSound(null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
                 this.world.rand.nextFloat() * 0.1f + 0.9f);
     }
 

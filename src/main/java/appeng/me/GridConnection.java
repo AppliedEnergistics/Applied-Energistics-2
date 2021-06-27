@@ -25,7 +25,6 @@ import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.NullNodeConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
-import appeng.api.features.AEFeature;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -209,7 +208,7 @@ public class GridConnection implements IGridConnection, IPathItem {
         }
 
         if (!Platform.securityCheck(a, b)) {
-            if (AEConfig.instance().isFeatureEnabled(AEFeature.LOG_SECURITY_AUDITS)) {
+            if (AEConfig.instance().isSecurityAuditLogEnabled()) {
                 final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
                 final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
 

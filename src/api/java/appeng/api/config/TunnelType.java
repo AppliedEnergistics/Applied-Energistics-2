@@ -25,7 +25,6 @@ package appeng.api.config;
 
 public enum TunnelType {
     ME, // Network Tunnel
-    IC2_POWER, // EU Tunnel
     FE_POWER, // Forge Energy tunnel
     REDSTONE, // Redstone Tunnel
     FLUID, // Fluid Tunnel

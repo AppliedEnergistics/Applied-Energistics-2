@@ -31,6 +31,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implements IAE2DataProvider {
@@ -45,57 +48,57 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
 
         addAe2("blacklisted/annihilation_plane");
 
-        addAe2("dusts/certus_quartz", MATERIALS.certusQuartzDust());
-        addAe2("dusts/ender", MATERIALS.enderDust());
-        addAe2("dusts/fluix", MATERIALS.fluixDust());
+        addAe2("dusts/certus_quartz", AEItems.CERTUS_QUARTZ_DUST);
+        addAe2("dusts/ender", AEItems.ENDER_DUST);
+        addAe2("dusts/fluix", AEItems.FLUIX_DUST);
         addAe2("dusts/quartz", "#appliedenergistics2:dusts/certus_quartz", "#forge:dusts/quartz");
 
         addAe2("crystals/certus",
                 "#appliedenergistics2:crystals/certus_quartz",
-                MATERIALS.certusQuartzCrystalCharged(),
-                MATERIALS.purifiedCertusQuartzCrystal());
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
         addAe2("crystals/certus_quartz",
-                MATERIALS.certusQuartzCrystal());
+                AEItems.CERTUS_QUARTZ_CRYSTAL);
         addAe2("crystals/fluix",
-                MATERIALS.fluixCrystal(),
-                MATERIALS.purifiedFluixCrystal());
+                AEItems.FLUIX_CRYSTAL,
+                AEItems.PURIFIED_FLUIX_CRYSTAL);
         addAe2("crystals/nether",
                 Tags.Items.GEMS_QUARTZ,
-                MATERIALS.purifiedNetherQuartzCrystal());
+                AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL);
         addAe2("crystals/quartz",
                 Tags.Items.GEMS_QUARTZ,
                 "#appliedenergistics2:crystals/certus_quartz",
-                MATERIALS.certusQuartzCrystalCharged());
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
 
         addAe2("workbench", Items.CRAFTING_TABLE);
         addAe2("wool", ItemTags.WOOL);
 
         for (AEColor color : AEColor.values()) {
-            addAe2("smart_dense_cable", PARTS.cableDenseSmart().item(color));
-            addAe2("smart_cable", PARTS.cableSmart().item(color));
-            addAe2("glass_cable", PARTS.cableGlass().item(color));
-            addAe2("covered_cable", PARTS.cableCovered().item(color));
-            addAe2("covered_dense_cable", PARTS.cableDenseCovered().item(color));
+            addAe2("smart_dense_cable", AEParts.SMART_DENSE_CABLE.item(color));
+            addAe2("smart_cable", AEParts.SMART_CABLE.item(color));
+            addAe2("glass_cable", AEParts.GLASS_CABLE.item(color));
+            addAe2("covered_cable", AEParts.COVERED_CABLE.item(color));
+            addAe2("covered_dense_cable", AEParts.COVERED_DENSE_CABLE.item(color));
         }
 
-        addAe2("silicon", MATERIALS.silicon());
-        addAe2("quartz_wrench", ITEMS.certusQuartzWrench(), ITEMS.netherQuartzWrench());
-        addAe2("knife", ITEMS.certusQuartzKnife(), ITEMS.netherQuartzKnife());
+        addAe2("silicon", AEItems.SILICON);
+        addAe2("quartz_wrench", AEItems.CERTUS_QUARTZ_WRENCH, AEItems.NETHER_QUARTZ_WRENCH);
+        addAe2("knife", AEItems.CERTUS_QUARTZ_KNIFE, AEItems.NETHER_QUARTZ_KNIFE);
 
-        addAe2("nether_quartz_dust", MATERIALS.netherQuartzDust());
+        addAe2("nether_quartz_dust", AEItems.NETHER_QUARTZ_DUST);
 
         addAe2("metal_ingots", Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON);
 
-        addAe2("interface", PARTS.iface(), BLOCKS.iface());
-        addAe2("fluid_interface", PARTS.fluidIface(), BLOCKS.fluidIface());
+        addAe2("item_interface", AEParts.INTERFACE, AEBlocks.INTERFACE);
+        addAe2("fluid_interface", AEParts.FLUID_INTERFACE, AEBlocks.FLUID_INTERFACE);
 
-        addAe2("illuminated_panel", PARTS.monitor(),
-                PARTS.semiDarkMonitor(),
-                PARTS.darkMonitor());
+        addAe2("illuminated_panel", AEParts.MONITOR,
+                AEParts.SEMI_DARK_MONITOR,
+                AEParts.DARK_MONITOR);
 
         addAe2("glass", Items.GLASS, Tags.Items.GLASS);
 
-        addAe2("gears/wooden", MATERIALS.woodenGear());
+        addAe2("gears/wooden", AEItems.WOODEN_GEAR);
     }
 
     /**
@@ -108,17 +111,17 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
         mirrorForgeBlockTag("storage_blocks");
         mirrorForgeBlockTag("storage_blocks/certus_quartz");
 
-        addForge("dusts/gold", MATERIALS.goldDust());
-        addForge("dusts/iron", MATERIALS.ironDust());
-        addForge("dusts/quartz", MATERIALS.netherQuartzDust());
-        addForge("dusts/fluix", MATERIALS.fluixDust());
-        addForge("dusts/certus_quartz", MATERIALS.certusQuartzDust());
+        addForge("dusts/gold", AEItems.GOLD_DUST);
+        addForge("dusts/iron", AEItems.IRON_DUST);
+        addForge("dusts/quartz", AEItems.NETHER_QUARTZ_DUST);
+        addForge("dusts/fluix", AEItems.FLUIX_DUST);
+        addForge("dusts/certus_quartz", AEItems.CERTUS_QUARTZ_DUST);
 
-        addForge("silicon", MATERIALS.silicon());
+        addForge("silicon", AEItems.SILICON);
 
-        addForge("gems/fluix", MATERIALS.fluixCrystal());
-        addForge("gems/certus_quartz", MATERIALS.certusQuartzCrystal(),
-                MATERIALS.certusQuartzCrystalCharged());
+        addForge("gems/fluix", AEItems.FLUIX_CRYSTAL);
+        addForge("gems/certus_quartz", AEItems.CERTUS_QUARTZ_CRYSTAL,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
     }
 
     private void addForge(String tagName, Object... itemSources) {

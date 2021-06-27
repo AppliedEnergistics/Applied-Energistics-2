@@ -1,5 +1,5 @@
 {
-  "parent": "appliedenergistics2:part/storage_bus_base",
+  "parent": "appliedenergistics2:part/item_storage_bus_base",
   "textures": {
     "sides": "appliedenergistics2:part/storage_bus_sides",
     "sidesStatus": "appliedenergistics2:part/monitor_sides_status",

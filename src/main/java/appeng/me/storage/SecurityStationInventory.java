@@ -31,6 +31,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.SecurityStationTileEntity;
 
@@ -47,7 +48,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     @Override
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
         if (this.hasPermission(src)
-                && Api.instance().definitions().items().biometricCard().isSameAs(input.createItemStack())
+                && AEItems.BIOMETRIC_CARD.isSameAs(input.createItemStack())
                 && this.canAccept(input)) {
             if (type == Actionable.SIMULATE) {
                 return null;

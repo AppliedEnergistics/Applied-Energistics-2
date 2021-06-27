@@ -19,10 +19,7 @@
 package appeng.core.stats;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.stats.IStatFormatter;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 
 import appeng.core.AppEng;
 
@@ -49,15 +46,6 @@ public enum AeStats {
 
     public ResourceLocation getRegistryName() {
         return registryName;
-    }
-
-    public static void register() {
-        for (AeStats stat : AeStats.values()) {
-            // Compare with net.minecraft.stats.Stats#registerCustom
-            ResourceLocation registryName = stat.getRegistryName();
-            Registry.register(Registry.CUSTOM_STAT, registryName.getPath(), registryName);
-            Stats.CUSTOM.get(registryName, IStatFormatter.DEFAULT);
-        }
     }
 
 }

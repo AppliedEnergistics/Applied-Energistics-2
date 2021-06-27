@@ -35,12 +35,15 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.EffectType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.InteractionUtil;
@@ -60,10 +63,11 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
-        if (bridge != null && bridge.hasQES() && AppEng.proxy.shouldAddParticles(rand)) {
-            AppEng.proxy.spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+        if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
+            AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     null);
         }
     }

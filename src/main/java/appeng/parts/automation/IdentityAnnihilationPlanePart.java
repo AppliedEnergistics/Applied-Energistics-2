@@ -37,8 +37,8 @@ import appeng.items.parts.PartModels;
 
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
-    private static final PlaneModels MODELS = new PlaneModels("part/identity_annihilation_plane",
-            "part/identity_annihilation_plane_on");
+    private static final PlaneModels MODELS = new PlaneModels("part/item_identity_annihilation_plane",
+            "part/item_identity_annihilation_plane_on");
 
     @PartModels
     public static List<IPartModel> getModels() {

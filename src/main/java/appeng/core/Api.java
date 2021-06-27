@@ -30,8 +30,8 @@ import appeng.core.api.ApiCrafting;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
-import appeng.core.features.registries.PartModels;
-import appeng.core.features.registries.RegistryContainer;
+import appeng.core.registries.PartModels;
+import appeng.core.registries.RegistryContainer;
 
 public final class Api implements IAppEngApi {
 
@@ -59,7 +59,6 @@ public final class Api implements IAppEngApi {
     private final IRegistryContainer registryContainer;
     private final IStorageHelper storageHelper;
     private final IGridHelper networkHelper;
-    private final ApiDefinitions definitions;
     private final ICraftingHelper craftingHelper;
     private final IClientHelper client;
 
@@ -68,9 +67,8 @@ public final class Api implements IAppEngApi {
         this.networkHelper = new ApiGrid();
         this.registryContainer = new RegistryContainer();
         this.partHelper = new ApiPart();
-        this.definitions = new ApiDefinitions((PartModels) this.registryContainer.partModels());
-        this.craftingHelper = new ApiCrafting(this.definitions);
-        this.client = new ApiClientHelper(this.definitions);
+        this.craftingHelper = new ApiCrafting();
+        this.client = new ApiClientHelper();
     }
 
     public PartModels getPartModels() {
@@ -100,11 +98,6 @@ public final class Api implements IAppEngApi {
     @Override
     public ApiPart partHelper() {
         return this.partHelper;
-    }
-
-    @Override
-    public ApiDefinitions definitions() {
-        return this.definitions;
     }
 
     @Override

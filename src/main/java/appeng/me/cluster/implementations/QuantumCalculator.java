@@ -23,9 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IBlocks;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
@@ -68,12 +67,11 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
             }
 
             num++;
-            final IBlocks blocks = Api.instance().definitions().blocks();
             if (num == 5) {
-                if (!this.isBlockAtLocation(w, p, blocks.quantumLink())) {
+                if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_LINK)) {
                     return false;
                 }
-            } else if (!this.isBlockAtLocation(w, p, blocks.quantumRing())) {
+            } else if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_RING)) {
                 return false;
             }
         }
@@ -112,7 +110,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
         return te instanceof QuantumBridgeTileEntity;
     }
 
-    private boolean isBlockAtLocation(final IBlockReader w, final BlockPos pos, final IBlockDefinition def) {
-        return def.maybeBlock().map(block -> block == w.getBlockState(pos).getBlock()).orElse(false);
+    private boolean isBlockAtLocation(final IBlockReader w, final BlockPos pos, final BlockDefinition def) {
+        return def.block() == w.getBlockState(pos).getBlock();
     }
 }

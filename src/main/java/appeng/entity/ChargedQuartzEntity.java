@@ -33,18 +33,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IMaterials;
-import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEEntities;
+import appeng.core.definitions.AEItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     private static final Random RANDOM = new Random();
-
-    public static EntityType<ChargedQuartzEntity> TYPE;
 
     private int delay = 0;
     private int transformTime = 0;
@@ -54,19 +51,20 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     }
 
     public ChargedQuartzEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
-        super(TYPE, w, x, y, z, is);
+        super(AEEntities.CHARGED_QUARTZ, w, x, y, z, is);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.removed || !AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
+        if (this.removed || !AEConfig.instance().isInWorldFluixEnabled()) {
             return;
         }
 
         if (world.isRemote() && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
-            AppEng.proxy.spawnEffect(EffectType.Lightning, this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
+            AppEng.instance().spawnEffect(EffectType.Lightning, this.world, this.getPosX(), this.getPosY(),
+                    this.getPosZ(),
                     null);
             this.delay = 0;
         }
@@ -92,9 +90,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     private boolean transform() {
         final ItemStack item = this.getItem();
-        final IMaterials materials = Api.instance().definitions().materials();
 
-        if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
+        if (AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
                     this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
@@ -134,18 +131,16 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                     netherQuartz.remove();
                 }
 
-                materials.fluixCrystal().maybeStack(2).ifPresent(is -> {
-                    final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
-                    final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
-                    final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;
-                    final double xSpeed = RANDOM.nextDouble() * .25 - 0.125;
-                    final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
-                    final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double x = Math.floor(this.getPosX()) + .25d + RANDOM.nextDouble() * .5;
+                final double y = Math.floor(this.getPosY()) + .25d + RANDOM.nextDouble() * .5;
+                final double z = Math.floor(this.getPosZ()) + .25d + RANDOM.nextDouble() * .5;
+                final double xSpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
+                final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
 
-                    final ItemEntity entity = new ItemEntity(this.world, x, y, z, is);
-                    entity.setMotion(xSpeed, ySpeed, zSpeed);
-                    this.world.addEntity(entity);
-                });
+                final ItemEntity entity = new ItemEntity(this.world, x, y, z, AEItems.FLUIX_CRYSTAL.stack(2));
+                entity.setMotion(xSpeed, ySpeed, zSpeed);
+                this.world.addEntity(entity);
 
                 return true;
             }

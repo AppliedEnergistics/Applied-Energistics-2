@@ -25,7 +25,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.network.INetworkInfo;
@@ -68,7 +67,7 @@ public abstract class BasePacket {
                     "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!");
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.PACKET_LOGGING)) {
+        if (AEConfig.instance().isPacketLogEnabled()) {
             AELog.info(this.getClass().getName() + " : " + p.readableBytes());
         }
 

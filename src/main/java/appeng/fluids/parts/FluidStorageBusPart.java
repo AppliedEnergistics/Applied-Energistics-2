@@ -67,6 +67,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.helper.IConfigurableFluidInventory;
@@ -442,7 +443,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().parts().fluidStorageBus().maybeStack(1).orElse(ItemStack.EMPTY);
+        return AEParts.FLUID_STORAGE_BUS.stack();
     }
 
     @Override

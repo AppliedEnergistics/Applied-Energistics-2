@@ -1,0 +1,82 @@
+{
+  "parent": "appliedenergistics2:item/part_base",
+  "textures": {
+    "sides": "appliedenergistics2:part/monitor_sides",
+    "back": "appliedenergistics2:part/monitor_back",
+    "front": "appliedenergistics2:part/item_interface"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 7],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 10],
+      "to": [11, 11, 11],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 9],
+      "to": [11, 11, 10],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

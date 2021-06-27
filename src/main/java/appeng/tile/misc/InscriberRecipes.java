@@ -33,11 +33,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-import appeng.api.definitions.IComparableDefinition;
 import appeng.api.features.InscriberProcessType;
-import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.items.materials.MaterialItem;
+import appeng.core.definitions.AEItems;
+import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**
@@ -64,9 +63,8 @@ public final class InscriberRecipes {
     public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
-            IComparableDefinition namePress = Api.instance().definitions().materials().namePress();
-            boolean isNameA = namePress.isSameAs(plateA);
-            boolean isNameB = namePress.isSameAs(plateB);
+            boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
+            boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
 
             if (isNameA && isNameB || isNameA && plateB.isEmpty()) {
                 return makeNamePressRecipe(input, plateA, plateB);
@@ -93,12 +91,12 @@ public final class InscriberRecipes {
 
         if (!plateA.isEmpty()) {
             final CompoundNBT tag = plateA.getOrCreateTag();
-            name += tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
+            name += tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
             final CompoundNBT tag = plateB.getOrCreateTag();
-            name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
+            name += " " + tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
         final Ingredient startingItem = Ingredient.fromStacks(input.copy());

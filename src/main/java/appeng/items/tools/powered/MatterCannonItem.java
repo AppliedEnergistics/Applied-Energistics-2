@@ -55,7 +55,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -68,6 +67,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MatterCannonPacket;
@@ -226,7 +226,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         }
 
         try {
-            AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
                                     : pos.getHitVec().squareDistanceTo(vec) + 1)));
@@ -266,9 +266,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final BlockState whatsThere = w.getBlockState(hitPos);
                 if (whatsThere.getMaterial().isReplaceable() && w.isAirBlock(hitPos)) {
-                    Api.instance().definitions().blocks().paint().maybeBlock().ifPresent(paintBlock -> {
-                        w.setBlockState(hitPos, paintBlock.getDefaultState(), 3);
-                    });
+                    w.setBlockState(hitPos, AEBlocks.PAINT.block().getDefaultState(), 3);
                 }
 
                 final TileEntity te = w.getTileEntity(hitPos);
@@ -330,7 +328,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             try {
-                AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == RayTraceResult.Type.MISS ? 32
                                         : pos.getHitVec().squareDistanceTo(vec) + 1)));
@@ -365,7 +363,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 } else if (pos instanceof BlockRayTraceResult) {
                     BlockRayTraceResult blockResult = (BlockRayTraceResult) pos;
 
-                    if (!AEConfig.instance().isFeatureEnabled(AEFeature.MASS_CANNON_BLOCK_DAMAGE)) {
+                    if (!AEConfig.instance().isMatterCanonBlockDamageEnabled()) {
                         penetration = 0;
                     } else {
                         BlockPos blockPos = blockResult.getPos();

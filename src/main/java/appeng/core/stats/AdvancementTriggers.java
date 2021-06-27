@@ -18,7 +18,8 @@
 
 package appeng.core.stats;
 
-import appeng.bootstrap.ICriterionTriggerRegistry;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
 
 public class AdvancementTriggers {
     private AppEngAdvancementTrigger networkApprentice = new AppEngAdvancementTrigger("network_apprentice");
@@ -48,4 +49,10 @@ public class AdvancementTriggers {
     public IAdvancementTrigger getSpatialExplorer() {
         return this.spatialExplorer;
     }
+
+    @FunctionalInterface
+    public interface ICriterionTriggerRegistry {
+        void register(ICriterionTrigger<? extends ICriterionInstance> trigger);
+    }
+
 }

@@ -94,6 +94,7 @@ import appeng.capabilities.Capabilities;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -831,7 +832,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return Api.instance().definitions().blocks().chest().maybeStack(1).orElse(ItemStack.EMPTY);
+        return AEBlocks.CHEST.stack();
     }
 
     @Override

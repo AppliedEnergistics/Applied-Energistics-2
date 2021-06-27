@@ -29,7 +29,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AELog;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
 
 /**
  * Allocates and manages plots for spatial storage in the spatial storage world.
@@ -101,7 +101,7 @@ public final class SpatialStoragePlotManager {
 
             // This is slow, but it should usually be just an admin-command
             ServerWorld world = getWorld();
-            BlockState matrixFrame = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+            BlockState matrixFrame = AEBlocks.MATRIX_FRAME.block().getDefaultState();
             for (BlockPos blockPos : BlockPos.getAllInBoxMutable(from, to)) {
                 world.setBlockState(blockPos, matrixFrame);
             }

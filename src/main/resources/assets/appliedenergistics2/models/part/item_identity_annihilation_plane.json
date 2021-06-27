@@ -1,0 +1,6 @@
+{
+  "loader": "appliedenergistics2:part_plane",
+  "front": "appliedenergistics2:part/item_identity_annihilation_plane",
+  "sides": "appliedenergistics2:part/plane_sides",
+  "back": "appliedenergistics2:part/transition_plane_back"
+}

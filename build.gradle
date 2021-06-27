@@ -347,6 +347,7 @@ spotless {
         endWithNewline()
         indentWithSpaces()
         removeUnusedImports()
+        toggleOffOn()
         eclipse().configFile 'codeformat/codeformat.xml'
         importOrderFile 'codeformat/ae2.importorder'
     }

@@ -31,15 +31,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.CableBusBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.networktool.NetworkToolContainer;
-import appeng.core.Api;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.ItemDefinition;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.NetworkToolItem;
@@ -123,9 +122,8 @@ public class ClickPacket extends BasePacket {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
         final ItemStack is = player.getHeldItem(hand);
-        final IItems items = Api.instance().definitions().items();
-        final IComparableDefinition maybeMemoryCard = items.memoryCard();
-        final IComparableDefinition maybeColorApplicator = items.colorApplicator();
+        final ItemDefinition<?> maybeMemoryCard = AEItems.MEMORY_CARD;
+        final ItemDefinition<?> maybeColorApplicator = AEItems.COLOR_APPLICATOR;
 
         if (this.leftClick) {
             final Block block = player.world.getBlockState(pos).getBlock();

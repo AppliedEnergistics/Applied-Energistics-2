@@ -42,13 +42,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.exceptions.MissingDefinitionException;
-import appeng.api.features.AEFeature;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -105,7 +104,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         // We only support the default state for facades. Sorry.
         BlockState blockState = block.getDefaultState();
 
-        final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
+        final boolean areTileEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
@@ -176,8 +175,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFromID(final int id) {
-        ItemStack facadeStack = Api.instance().definitions().items().facade().maybeStack(1).orElseThrow(
-                () -> new MissingDefinitionException("Tried to create a facade, while facades are being deactivated."));
+        ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...
         Item item = Registry.ITEM.getByValue(id);

@@ -31,6 +31,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
@@ -44,15 +45,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
 import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
-
-    public static EntityType<TinyTNTPrimedEntity> TYPE;
 
     private LivingEntity placedBy;
 
@@ -63,7 +62,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
             final LivingEntity igniter) {
-        super(TYPE, w);
+        super(AEEntities.TINY_TNT_PRIMED, w);
         this.setPosition(x, y, z);
         double d0 = w.rand.nextDouble() * ((float) Math.PI * 2F);
         this.setMotion(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
@@ -100,18 +99,18 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
         if (this.isInWater() && !this.world.isRemote()) // put out the fuse.
         {
-            Api.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
-                final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
-                        tntStack);
+            ItemStack tntStack = AEBlocks.TINY_TNT.stack();
 
-                item.setMotion(this.getMotion());
-                item.prevPosX = this.prevPosX;
-                item.prevPosY = this.prevPosY;
-                item.prevPosZ = this.prevPosZ;
+            final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
+                    tntStack);
 
-                this.world.addEntity(item);
-                this.remove();
-            });
+            item.setMotion(this.getMotion());
+            item.prevPosX = this.prevPosX;
+            item.prevPosY = this.prevPosY;
+            item.prevPosZ = this.prevPosZ;
+
+            this.world.addEntity(item);
+            this.remove();
         }
 
         if (this.getFuse() <= 0) {
@@ -150,7 +149,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             e.attackEntityFrom(DamageSource.causeExplosionDamage(ex), 6);
         }
 
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.TINY_TNT_BLOCK_DAMAGE)) {
+        if (AEConfig.instance().isTinyTntBlockDamageEnabled()) {
             this.setPosition(this.getPosX(), this.getPosY() - 0.25, this.getPosZ());
 
             for (int x = (int) (this.getPosX() - 2); x <= this.getPosX() + 2; x++) {
@@ -182,7 +181,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             }
         }
 
-        AppEng.proxy.sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
+        AppEng.instance().sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
                 new MockExplosionPacket(this.getPosX(), this.getPosY(), this.getPosZ()));
     }
 

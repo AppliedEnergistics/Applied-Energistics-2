@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 
 public class QuartzLampBlock extends QuartzGlassBlock {
 
@@ -43,7 +43,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
             return;
         }
 
-        if (AppEng.proxy.shouldAddParticles(r)) {
+        if (AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
