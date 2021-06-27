@@ -55,6 +55,6 @@ public interface IP2PTunnelRegistry {
      *
      * @return null if no attunement can be found or attunement
      */
-    @Nonnull
+    @Nullable
     TunnelType getTunnelTypeByItem(ItemStack trigger);
 }
