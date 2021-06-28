@@ -22,6 +22,7 @@ src/generated
 !.gitmodules
 !.gitignore
 !.gitattributes
+!.git-blame-ignore-revs
 
 # code format to reduce noise in git commits
 !codeformat/
