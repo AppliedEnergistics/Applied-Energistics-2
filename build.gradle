@@ -93,7 +93,7 @@ archivesBaseName = artifact_basename
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
+        languageVersion = JavaLanguageVersion.of(16)
     }
 }
 
@@ -429,4 +429,19 @@ afterEvaluate {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+//    tasks.getByName("runData") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }
+//    tasks.getByName("runClient") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }
+//    tasks.getByName("runServer") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }
 }
