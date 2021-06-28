@@ -157,6 +157,11 @@ test {
     useJUnitPlatform()
 }
 
+def addOpens(net.minecraftforge.gradle.common.util.RunConfig config) {
+    config.jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
+    config.jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+}
+
 ////////////////////
 // Forge/Minecraft
 minecraft {
@@ -171,8 +176,8 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
             property "mixin.debug.export", "true"
-            jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
-            jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+            addOpens(it)
+
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
@@ -183,6 +188,7 @@ minecraft {
         server {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            addOpens(it)
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
@@ -193,6 +199,7 @@ minecraft {
         data {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            addOpens(it)
             // ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
             // a daemon is used for any reason.
             forceExit false
