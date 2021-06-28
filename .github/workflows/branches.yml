@@ -27,7 +27,7 @@ jobs:
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
-        run: ./gradlew runData --no-daemon --info
+        run: ./gradlew runData --no-daemon
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
