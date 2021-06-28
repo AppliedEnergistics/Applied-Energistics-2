@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.16', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.17', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -418,17 +418,14 @@ tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
-afterEvaluate {
-    tasks.getByName("compileMixinsJava") {
-        release = "8"
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    tasks.getByName("compileAccessorsJava") {
-        release = "8"
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+compileMixinsJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+compileAccessorsJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 //    tasks.getByName("runData") {
 //        javaLauncher = javaToolchains.launcherFor {
 //            languageVersion = JavaLanguageVersion.of(16)
@@ -444,4 +441,3 @@ afterEvaluate {
 //            languageVersion = JavaLanguageVersion.of(16)
 //        }
 //    }
-}
