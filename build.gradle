@@ -418,6 +418,9 @@ tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
+//
+// Remove this once Mixin itself supports classes with J16 class versions.
+//
 compileMixinsJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -426,18 +429,3 @@ compileAccessorsJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-//    tasks.getByName("runData") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
-//    tasks.getByName("runClient") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
-//    tasks.getByName("runServer") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
