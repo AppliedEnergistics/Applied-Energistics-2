@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.17', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -53,6 +53,7 @@ repositories {
         name 'modmaven'
         url "https://modmaven.dev/"
     }
+    maven { url = 'https://repo.spongepowered.org/maven' }
 }
 
 dependencies {
@@ -85,14 +86,15 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.3-SNAPSHOT:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
 }
 
 // ensure everything uses UTF-8 and not some random codepage chosen by gradle
@@ -125,9 +127,16 @@ ext.isBeta = project.version.contains("beta")
 
 sourceSets {
     api
+    accessors
+    mixins {
+        compileClasspath += sourceSets.main.output
+    }
     main {
+        runtimeClasspath += sourceSets.mixins.output
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.accessors.output
+        runtimeClasspath += sourceSets.accessors.output
         resources {
             srcDir 'src/generated/resources'
         }
@@ -139,11 +148,18 @@ sourceSets {
 }
 
 configurations {
-    apiCompile.extendsFrom(compile)
+    apiImplementation.extendsFrom(implementation)
+    mixinsImplementation.extendsFrom(implementation)
+    accessorsImplementation.extendsFrom(implementation)
 }
 
 test {
     useJUnitPlatform()
+}
+
+def addOpens(net.minecraftforge.gradle.common.util.RunConfig config) {
+    config.jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
+    config.jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
 }
 
 ////////////////////
@@ -160,6 +176,8 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
             property "mixin.debug.export", "true"
+            addOpens(it)
+
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
@@ -170,6 +188,7 @@ minecraft {
         server {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            addOpens(it)
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
@@ -180,6 +199,7 @@ minecraft {
         data {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            addOpens(it)
             // ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
             // a daemon is used for any reason.
             forceExit false
@@ -210,7 +230,7 @@ if (System.getenv("KEY_STORE_FILE")) {
     signProps['keyPass'] = System.getenv("KEY_STORE_KEY_PASS")
 }
 
-task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: 'reobfJar') {
+task signJar(type: net.minecraftforge.gradle.common.tasks.SignJar, dependsOn: 'reobfJar') {
     onlyIf { !signProps.isEmpty() }
 
     if (!signProps.isEmpty()) {
@@ -225,7 +245,7 @@ task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: 're
 }
 
 //////////////
-// Aritfacts
+// Artifacts
 processResources {
     exclude '.cache'
 
@@ -397,3 +417,27 @@ if (System.getProperty("idea.sync.active") == "true") {
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
+
+compileMixinsJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+compileAccessorsJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+//    tasks.getByName("runData") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }
+//    tasks.getByName("runClient") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }
+//    tasks.getByName("runServer") {
+//        javaLauncher = javaToolchains.launcherFor {
+//            languageVersion = JavaLanguageVersion.of(16)
+//        }
+//    }

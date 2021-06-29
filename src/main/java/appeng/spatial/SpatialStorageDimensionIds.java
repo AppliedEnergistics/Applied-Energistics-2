@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import appeng.core.AppEng;
-import appeng.mixins.spatial.DimensionTypeMixin;
 
 /**
  * IDs for the spatial storage world related dimension objects.
@@ -37,7 +36,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link DimensionType} used for the spatial storage world.
      * <p>
-     * This is defined in {@link DimensionTypeMixin}.
+     * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
     public static final RegistryKey<DimensionType> DIMENSION_TYPE_ID = RegistryKey
             .getOrCreateKey(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("spatial_storage"));
