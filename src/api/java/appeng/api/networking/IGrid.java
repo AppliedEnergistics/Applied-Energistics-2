@@ -41,12 +41,9 @@ public interface IGrid {
      * @param iface face
      *
      * @return the IGridCache you requested.
-     *
-     *         TODO: 1.17 breaking change: throw if iface is not a registered grid cache to fulfil contract TODO: 1.17
-     *         breaking chance: make the parameter Class<C>
      */
     @Nonnull
-    <C extends IGridCache> C getCache(@Nonnull Class<? extends IGridCache> iface);
+    <C extends IGridCache> C getCache(@Nonnull Class<C> iface);
 
     /**
      * Post an event into the network event bus.
@@ -77,7 +74,7 @@ public interface IGrid {
      * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
      */
     @Nonnull
-    IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses();
+    IReadOnlyCollection<Class<? extends IGridNodeHost>> getMachinesClasses();
 
     /**
      * Get machines on the network.
@@ -87,7 +84,7 @@ public interface IGrid {
      * @return IMachineSet of all nodes belonging to hosts of specified class.
      */
     @Nonnull
-    IMachineSet getMachines(@Nonnull Class<? extends IGridHost> gridHostClass);
+    IMachineSet getMachines(@Nonnull Class<? extends IGridNodeHost> gridHostClass);
 
     /**
      * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.

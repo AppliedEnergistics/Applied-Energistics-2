@@ -19,7 +19,6 @@
 package appeng.me.cache;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,9 +29,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
@@ -43,7 +41,6 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.stats.IAdvancementTrigger;
@@ -117,13 +114,11 @@ public class PathGridCache implements IPathingGrid {
                 final HashSet<IPathItem> closedList = new HashSet<>();
                 this.semiOpen = new HashSet<>();
 
-                // myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
-                // );
                 for (final IGridNode node : this.myGrid.getMachines(ControllerTileEntity.class)) {
                     closedList.add((IPathItem) node);
                     for (final IGridConnection gcc : node.getConnections()) {
-                        final GridConnection gc = (GridConnection) gcc;
-                        if (!(gc.getOtherSide(node).getMachine() instanceof ControllerTileEntity)) {
+                        var gc = (GridConnection) gcc;
+                        if (!(gc.getOtherSide(node).getHost() instanceof ControllerTileEntity)) {
                             final List<IPathItem> open = new ArrayList<>();
                             closedList.add(gc);
                             open.add(gc);
@@ -152,7 +147,7 @@ public class PathGridCache implements IPathingGrid {
                     final Iterator<ControllerTileEntity> controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
                         final ControllerTileEntity controller = controllerIterator.next();
-                        controller.getGridNode(AEPartLocation.INTERNAL).beginVisit(new ControllerChannelUpdater());
+                        controller.getGridNode().beginVisit(new ControllerChannelUpdater());
                     }
                 }
 
@@ -167,19 +162,17 @@ public class PathGridCache implements IPathingGrid {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ControllerTileEntity) {
             this.controllers.remove(machine);
             this.recalculateControllerNextTick = true;
         }
 
-        final EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
-
-        if (flags.contains(GridFlags.REQUIRE_CHANNEL)) {
+        if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
             this.requireChannels.remove(gridNode);
         }
 
-        if (flags.contains(GridFlags.CANNOT_CARRY_COMPRESSED)) {
+        if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
             this.blockDense.remove(gridNode);
         }
 
@@ -187,19 +180,17 @@ public class PathGridCache implements IPathingGrid {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ControllerTileEntity) {
             this.controllers.add((ControllerTileEntity) machine);
             this.recalculateControllerNextTick = true;
         }
 
-        final EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
-
-        if (flags.contains(GridFlags.REQUIRE_CHANNEL)) {
+        if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
             this.requireChannels.add(gridNode);
         }
 
-        if (flags.contains(GridFlags.CANNOT_CARRY_COMPRESSED)) {
+        if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
             this.blockDense.add(gridNode);
         }
 
@@ -228,14 +219,14 @@ public class PathGridCache implements IPathingGrid {
         if (this.controllers.isEmpty()) {
             this.controllerState = ControllerState.NO_CONTROLLER;
         } else {
-            final IGridNode startingNode = this.controllers.iterator().next().getGridNode(AEPartLocation.INTERNAL);
+            var startingController = this.controllers.iterator().next();
+            final IGridNode startingNode = startingController.getGridNode();
             if (startingNode == null) {
                 this.controllerState = ControllerState.CONTROLLER_CONFLICT;
                 return;
             }
 
-            final DimensionalCoord dc = startingNode.getGridBlock().getLocation();
-            final ControllerValidator cv = new ControllerValidator(dc.x, dc.y, dc.z);
+            final ControllerValidator cv = new ControllerValidator(startingController.getPos());
 
             startingNode.beginVisit(cv);
 
@@ -255,22 +246,21 @@ public class PathGridCache implements IPathingGrid {
         this.semiOpen.clear();
 
         int depth = 0;
-        for (final IGridNode nodes : this.requireChannels) {
-            if (!this.semiOpen.contains(nodes)) {
-                final IGridBlock gb = nodes.getGridBlock();
-                final EnumSet<GridFlags> flags = gb.getFlags();
-
-                if (flags.contains(GridFlags.COMPRESSED_CHANNEL) && !this.blockDense.isEmpty()) {
+        for (final IGridNode node : this.requireChannels) {
+            if (!this.semiOpen.contains(node)) {
+                if (node.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !this.blockDense.isEmpty()) {
                     return 9;
                 }
 
                 depth++;
 
-                if (flags.contains(GridFlags.MULTIBLOCK)) {
-                    final IGridMultiblock gmb = (IGridMultiblock) gb;
-                    final Iterator<IGridNode> i = gmb.getMultiblockNodes();
-                    while (i.hasNext()) {
-                        this.semiOpen.add((IPathItem) i.next());
+                if (node.hasFlag(GridFlags.MULTIBLOCK)) {
+                    IGridNodeHost machine = node.getHost();
+                    if (machine instanceof IGridMultiblock multiblock) {
+                        final Iterator<IGridNode> i = multiblock.getMultiblockNodes();
+                        while (i.hasNext()) {
+                            this.semiOpen.add((IPathItem) i.next());
+                        }
                     }
                 }
             }
@@ -285,7 +275,7 @@ public class PathGridCache implements IPathingGrid {
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
                 for (final IGridNode n : this.requireChannels) {
-                    PlayerEntity player = Api.instance().registries().players().findPlayer(n.getPlayerID());
+                    PlayerEntity player = Api.instance().registries().players().findPlayer(n.getOwner());
                     if (player instanceof ServerPlayerEntity) {
                         currentBracket.trigger((ServerPlayerEntity) player);
                     }
@@ -315,7 +305,7 @@ public class PathGridCache implements IPathingGrid {
     void updateNodReq(final MENetworkChannelChanged ev) {
         final IGridNode gridNode = ev.node;
 
-        if (gridNode.getGridBlock().getFlags().contains(GridFlags.REQUIRE_CHANNEL)) {
+        if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
             this.requireChannels.add(gridNode);
         } else {
             this.requireChannels.remove(gridNode);

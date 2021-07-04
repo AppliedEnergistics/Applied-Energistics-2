@@ -41,7 +41,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 
 /**
@@ -55,12 +54,12 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
     private final Map<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IFluidHandler fluidHandler;
-    private final IGridProxyable proxyable;
+    private final Runnable alertDevice;
     private final FluidHandlerAdapter.InventoryCache cache;
 
-    FluidHandlerAdapter(IFluidHandler fluidHandler, IGridProxyable proxy) {
+    FluidHandlerAdapter(IFluidHandler fluidHandler, Runnable alertDevice) {
         this.fluidHandler = fluidHandler;
-        this.proxyable = proxy;
+        this.alertDevice = alertDevice;
         this.cache = new FluidHandlerAdapter.InventoryCache(this.fluidHandler);
     }
 
@@ -77,11 +76,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
         }
 
         if (type == Actionable.MODULATE) {
-            try {
-                this.proxyable.getProxy().getTick().alertDevice(this.proxyable.getProxy().getNode());
-            } catch (GridAccessException ignore) {
-                // meh
-            }
+            this.alertDevice.run();
         }
 
         fluidStack.setAmount(remaining);
@@ -101,11 +96,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
         }
 
         if (mode == Actionable.MODULATE) {
-            try {
-                this.proxyable.getProxy().getTick().alertDevice(this.proxyable.getProxy().getNode());
-            } catch (GridAccessException ignore) {
-                // meh
-            }
+            this.alertDevice.run();
         }
         return AEFluidStack.fromFluidStack(gathered);
     }

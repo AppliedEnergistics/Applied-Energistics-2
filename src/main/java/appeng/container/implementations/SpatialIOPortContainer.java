@@ -22,11 +22,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
@@ -52,7 +49,6 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     public long reqPower;
     @GuiSync(3)
     public long eff;
-    private IGrid network;
     private int delay = 40;
 
     @GuiSync(31)
@@ -64,10 +60,6 @@ public class SpatialIOPortContainer extends AEBaseContainer {
 
     public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort);
-
-        if (isServer()) {
-            this.network = spatialIOPort.getGridNode(AEPartLocation.INTERNAL).getGrid();
-        }
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
                 spatialIOPort.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
@@ -83,29 +75,31 @@ public class SpatialIOPortContainer extends AEBaseContainer {
 
         if (isServer()) {
             this.delay++;
-            if (this.delay > 15 && this.network != null) {
+
+            var gridNode = ((SpatialIOPortTileEntity) getTileEntity()).getGridNode();
+            var grid = gridNode != null ? gridNode.getGrid() : null;
+
+            if (this.delay > 15 && grid != null) {
                 this.delay = 0;
 
-                final IEnergyGrid eg = this.network.getCache(IEnergyGrid.class);
-                final ISpatialCache sc = this.network.getCache(ISpatialCache.class);
-                if (eg != null) {
-                    this.setCurrentPower((long) (100.0 * eg.getStoredPower()));
-                    this.setMaxPower((long) (100.0 * eg.getMaxStoredPower()));
-                    this.setRequiredPower((long) (100.0 * sc.requiredPower()));
-                    this.setEfficency((long) (100.0f * sc.currentEfficiency()));
+                var eg = grid.getCache(IEnergyGrid.class);
+                var sc = grid.getCache(ISpatialCache.class);
+                this.setCurrentPower((long) (100.0 * eg.getStoredPower()));
+                this.setMaxPower((long) (100.0 * eg.getMaxStoredPower()));
+                this.setRequiredPower((long) (100.0 * sc.requiredPower()));
+                this.setEfficency((long) (100.0f * sc.currentEfficiency()));
 
-                    final DimensionalCoord min = sc.getMin();
-                    final DimensionalCoord max = sc.getMax();
+                var min = sc.getMin();
+                var max = sc.getMax();
 
-                    if (min != null && max != null && sc.isValidRegion()) {
-                        this.xSize = sc.getMax().x - sc.getMin().x - 1;
-                        this.ySize = sc.getMax().y - sc.getMin().y - 1;
-                        this.zSize = sc.getMax().z - sc.getMin().z - 1;
-                    } else {
-                        this.xSize = 0;
-                        this.ySize = 0;
-                        this.zSize = 0;
-                    }
+                if (min != null && max != null && sc.isValidRegion()) {
+                    this.xSize = sc.getMax().getX() - sc.getMin().getX() - 1;
+                    this.ySize = sc.getMax().getY() - sc.getMin().getY() - 1;
+                    this.zSize = sc.getMax().getZ() - sc.getMin().getZ() - 1;
+                } else {
+                    this.xSize = 0;
+                    this.ySize = 0;
+                    this.zSize = 0;
                 }
             }
         }

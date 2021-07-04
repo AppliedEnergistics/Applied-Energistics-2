@@ -21,7 +21,7 @@ package appeng.me;
 import java.util.Iterator;
 import java.util.Map;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 
 /**
@@ -34,7 +34,7 @@ public class GridNodeIterator implements Iterator<IGridNode> {
     private final Iterator<MachineSet> outerIterator;
     private Iterator<IGridNode> innerIterator;
 
-    public GridNodeIterator(final Map<Class<? extends IGridHost>, MachineSet> machines) {
+    public GridNodeIterator(final Map<Class<? extends IGridNodeHost>, MachineSet> machines) {
         this.outerIterator = machines.values().iterator();
         this.innerHasNext();
     }

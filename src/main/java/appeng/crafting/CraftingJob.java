@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -41,14 +41,13 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob {
     private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s ms";
-    private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s]";
+    private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s, %s]";
 
     private final MECraftingInventory original;
     private final World world;
@@ -325,10 +324,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
             } else if (this.actionSrc.machine().isPresent()) {
                 final IActionHost machineSource = this.actionSrc.machine().get();
                 final IGridNode actionableNode = machineSource.getActionableNode();
-                final IGridHost machine = actionableNode.getMachine();
-                final DimensionalCoord location = actionableNode.getGridBlock().getLocation();
-
-                actionSource = String.format(LOG_MACHINE_SOURCE_DETAILS, machine, location);
+                actionSource = actionableNode != null ? actionableNode.toString() : machineSource.toString();
             } else {
                 actionSource = "[unknown source]";
             }

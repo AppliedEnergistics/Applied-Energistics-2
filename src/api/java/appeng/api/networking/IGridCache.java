@@ -46,7 +46,7 @@ public interface IGridCache {
      * @param gridNode removed from that grid
      * @param machine  to be removed machine
      */
-    void removeNode(@Nonnull IGridNode gridNode, @Nonnull IGridHost machine);
+    void removeNode(@Nonnull IGridNode gridNode, @Nonnull IGridNodeHost machine);
 
     /**
      * informs you cache that a machine was added to the grid.
@@ -57,7 +57,7 @@ public interface IGridCache {
      * @param gridNode added to grid node
      * @param machine  to be added machine
      */
-    void addNode(@Nonnull IGridNode gridNode, @Nonnull IGridHost machine);
+    void addNode(@Nonnull IGridNode gridNode, @Nonnull IGridNodeHost machine);
 
     /**
      * Called when a grid splits into two grids, AE will call a split as it Iteratively processes changes. The

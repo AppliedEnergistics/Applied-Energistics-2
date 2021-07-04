@@ -37,7 +37,6 @@ import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
 import appeng.me.GridAccessException;
@@ -56,7 +55,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.DENSE_SMART;
     }
 
@@ -85,9 +84,9 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
         if (oldValid != this.isValid || force) {
             if (this.isValid) {
-                this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+                this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
             } else {
-                this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+                this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
             }
 
             this.updateMeta();
@@ -150,7 +149,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected void PowerEvent(final PowerEventType x) {
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkPowerStorage(this, x));
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, x));
         } catch (final GridAccessException e) {
             // not ready!
         }

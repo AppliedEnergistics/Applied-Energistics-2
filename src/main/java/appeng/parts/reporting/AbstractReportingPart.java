@@ -107,7 +107,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -202,7 +202,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
             World world = te.getWorld();
-            BlockPos pos = te.getPos().offset(this.getSide().getFacing());
+            BlockPos pos = te.getPos().offset(this.getSide().getDirection());
             this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);
         }
 

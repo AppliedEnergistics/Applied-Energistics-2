@@ -21,13 +21,13 @@ package appeng.me.cluster.implementations;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import net.minecraft.world.server.ServerWorld;
 
 public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, QuantumCluster> {
 
@@ -50,12 +50,12 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public QuantumCluster createCluster(final World w, final BlockPos min, final BlockPos max) {
+    public QuantumCluster createCluster(final ServerWorld w, final BlockPos min, final BlockPos max) {
         return new QuantumCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerWorld w, final BlockPos min, final BlockPos max) {
 
         byte num = 0;
 
@@ -79,7 +79,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public void updateTiles(final QuantumCluster c, final World w, final BlockPos min, final BlockPos max) {
+    public void updateTiles(final QuantumCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 

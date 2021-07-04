@@ -27,10 +27,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 
 /**
- * Usable on any {@link IGridHost}, or {@link IGridCache}
+ * Usable on any {@link IGridNodeHost}, or {@link IGridCache}
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MENetworkEventSubscribe {

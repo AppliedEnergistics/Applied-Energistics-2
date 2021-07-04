@@ -22,14 +22,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.IReadOnlyCollection;
 
 public class GridNodeCollection implements IReadOnlyCollection<IGridNode> {
-    private final Map<Class<? extends IGridHost>, MachineSet> machines;
+    private final Map<Class<? extends IGridNodeHost>, MachineSet> machines;
 
-    public GridNodeCollection(final Map<Class<? extends IGridHost>, MachineSet> machines) {
+    public GridNodeCollection(final Map<Class<? extends IGridNodeHost>, MachineSet> machines) {
         this.machines = machines;
     }
 
@@ -66,8 +66,8 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode> {
 
         if (maybeGridNode instanceof IGridNode) {
             final IGridNode node = (IGridNode) maybeGridNode;
-            final IGridHost machine = node.getMachine();
-            final Class<? extends IGridHost> machineClass = machine.getClass();
+            final IGridNodeHost machine = node.getHost();
+            final Class<? extends IGridNodeHost> machineClass = machine.getClass();
 
             final MachineSet machineSet = this.machines.get(machineClass);
 

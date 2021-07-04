@@ -30,7 +30,6 @@ import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
 
@@ -41,7 +40,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     public QuartzGrowthAcceleratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
         this.getProxy().setIdlePowerUsage(8);
     }
@@ -52,7 +51,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -77,7 +76,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        this.getProxy().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
     }
 
     @Override

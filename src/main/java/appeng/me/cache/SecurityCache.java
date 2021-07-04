@@ -30,7 +30,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -71,7 +71,7 @@ public class SecurityCache implements ISecurityGrid {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ISecurityProvider) {
             this.securityProvider.remove(machine);
             this.updateSecurityKey();
@@ -99,15 +99,15 @@ public class SecurityCache implements ISecurityGrid {
             for (final IGridNode n : this.getGrid().getNodes()) {
                 GridNode gridNode = (GridNode) n;
                 gridNode.setLastSecurityKey(this.securityKey);
-                if (gridNode.getPlayerID() != newOwner) {
-                    gridNode.setPlayerID(newOwner);
+                if (gridNode.getOwner() != newOwner) {
+                    gridNode.setOwner(newOwner);
                 }
             }
         }
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ISecurityProvider) {
             this.securityProvider.add((ISecurityProvider) machine);
             this.updateSecurityKey();

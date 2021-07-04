@@ -105,7 +105,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         final TileEntity te = this.getConnectedTE();
         if (te != null) {
             LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
+                    this.getSide().getDirection().getOpposite());
 
             if (fhOpt.isPresent()) {
                 try {

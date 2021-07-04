@@ -18,35 +18,19 @@
 
 package appeng.me.helpers;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
+import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
@@ -54,35 +38,48 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.StatisticsCache;
-import appeng.parts.networking.CablePart;
 import appeng.tile.AEBaseTileEntity;
-import appeng.util.Platform;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import org.jetbrains.annotations.NotNull;
 
-public class AENetworkProxy implements IGridBlock {
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
 
-    private final IGridProxyable gp;
-    private final boolean isWorldAccessible;
+/**
+ * Manages the lifecycle of a {@link IGridNode}.
+ */
+@SuppressWarnings("UnusedReturnValue")
+public class ManagedGridNode {
+
+    private final IGridNodeHost host;
     private final String nbtName; // name
-    private AEColor myColor = AEColor.TRANSPARENT;
     private CompoundNBT data = null; // input
-    private ItemStack myRepInstance;
     private boolean isReady = false;
-    private IGridNode node = null;
-    private EnumSet<Direction> validSides = EnumSet.allOf(Direction.class);
+    @Nullable
+    private IConfigurableGridNode node = null;
+
+    // The following values are used until the node is constructed, and then are applied to the node
+    private AEColor gridColor = AEColor.TRANSPARENT;
+    private Set<Direction> exposedOnSides = EnumSet.allOf(Direction.class);
+    private ItemStack visualRepresentation = ItemStack.EMPTY;
     private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
-    private double idleDraw = 1.0;
-    private PlayerEntity owner;
+    private double idlePowerUsage = 1.0;
+    private int owner = -1; // ME player id of owner
 
-    public AENetworkProxy(final IGridProxyable te, final String nbtName, final ItemStack visual,
-            final boolean inWorld) {
-        this.gp = Objects.requireNonNull(te);
+    public ManagedGridNode(IGridNodeHost host, final String nbtName) {
+        this.host = Objects.requireNonNull(host);
         this.nbtName = Objects.requireNonNull(nbtName);
-        this.isWorldAccessible = inWorld;
-        this.myRepInstance = Objects.requireNonNull(visual);
-    }
-
-    public void setVisualRepresentation(final ItemStack is) {
-        this.myRepInstance = Objects.requireNonNull(is);
     }
 
     public void writeToNBT(final CompoundNBT tag) {
@@ -91,16 +88,9 @@ public class AENetworkProxy implements IGridBlock {
         }
     }
 
-    public void setValidSides(final EnumSet<Direction> validSides) {
-        this.validSides = validSides;
-        if (this.node != null) {
-            this.node.updateState();
-        }
-    }
-
     public void validate() {
-        if (this.gp instanceof AEBaseTileEntity) {
-            TickHandler.instance().addInit((AEBaseTileEntity) this.gp);
+        if (this.host instanceof AEBaseTileEntity) {
+            TickHandler.instance().addInit((AEBaseTileEntity) this.host);
         }
     }
 
@@ -121,23 +111,26 @@ public class AENetworkProxy implements IGridBlock {
         this.isReady = true;
 
         // send orientation based directionality to the node.
-        if (this.gp instanceof IOrientable) {
-            final IOrientable ori = (IOrientable) this.gp;
+        if (this.host instanceof IOrientable ori) {
             if (ori.canBeRotated()) {
                 ori.setOrientation(ori.getForward(), ori.getUp());
             }
         }
 
-        this.getNode();
+        if (this.node == null && !host.getWorld().isRemote()) {
+            this.node = Api.instance().grid().createGridNode(host, flags);
+            this.node.setGridColor(gridColor);
+            this.node.setExposedOnSides(exposedOnSides);
+            this.node.setOwner(owner);
+            this.node.setIdlePowerUsage(idlePowerUsage);
+            this.node.setVisualRepresentation(visualRepresentation);
+            this.readFromNBT(this.data);
+            this.node.markReady();
+            this.node.updateState();
+        }
     }
 
     public IGridNode getNode() {
-        if (this.node == null && Platform.isServer() && this.isReady) {
-            this.node = Api.instance().grid().createGridNode(this);
-            this.readFromNBT(this.data);
-            this.node.updateState();
-        }
-
         return this.node;
     }
 
@@ -146,90 +139,6 @@ public class AENetworkProxy implements IGridBlock {
         if (this.node != null && this.data != null) {
             this.node.loadFromNBT(this.nbtName, this.data);
             this.data = null;
-        } else if (this.node != null && this.owner != null) {
-            final GameProfile profile = this.owner.getGameProfile();
-            final int playerID = WorldData.instance().playerData().getMePlayerId(profile);
-
-            this.node.setPlayerID(playerID);
-            this.owner = null;
-        }
-    }
-
-    @Override
-    public double getIdlePowerUsage() {
-        return this.idleDraw;
-    }
-
-    @Override
-    public EnumSet<GridFlags> getFlags() {
-        return this.flags;
-    }
-
-    @Override
-    public boolean isWorldAccessible() {
-        return this.isWorldAccessible;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return this.gp.getLocation();
-    }
-
-    @Override
-    public AEColor getGridColor() {
-        return this.getColor();
-    }
-
-    @Override
-    public void onGridNotification(final GridNotification notification) {
-        if (notification == GridNotification.OWNER_CHANGED) {
-            gp.saveChanges();
-            return;
-        }
-
-        if (this.gp instanceof CablePart) {
-            ((CablePart) this.gp).markForUpdate();
-        }
-    }
-
-    @Override
-    public EnumSet<Direction> getConnectableSides() {
-        return this.validSides;
-    }
-
-    @Override
-    public IGridHost getMachine() {
-        return this.gp;
-    }
-
-    @Override
-    public void gridChanged() {
-        this.gp.gridChanged();
-    }
-
-    @Override
-    public ItemStack getMachineRepresentation() {
-        return this.myRepInstance;
-    }
-
-    public void setFlags(final GridFlags... requireChannel) {
-        final EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
-
-        Collections.addAll(flags, requireChannel);
-
-        this.flags = flags;
-    }
-
-    public void setIdlePowerUsage(final double idle) {
-        this.idleDraw = idle;
-
-        if (this.node != null) {
-            try {
-                final IGrid g = this.getGrid();
-                g.postEvent(new MENetworkPowerIdleChange(this.node));
-            } catch (final GridAccessException e) {
-                // not ready for this yet..
-            }
         }
     }
 
@@ -253,16 +162,12 @@ public class AENetworkProxy implements IGridBlock {
         }
     }
 
-    public void setOwner(final PlayerEntity player) {
-        this.owner = player;
-    }
-
-    public AEColor getColor() {
-        return this.myColor;
-    }
-
-    public void setColor(final AEColor myColor) {
-        this.myColor = Objects.requireNonNull(myColor);
+    public void setOwner(@Nonnull PlayerEntity player) {
+        final GameProfile profile = player.getGameProfile();
+        this.owner = WorldData.instance().playerData().getMePlayerId(profile);
+        if (node != null) {
+            node.setOwner(owner);
+        }
     }
 
     /**
@@ -272,7 +177,7 @@ public class AENetworkProxy implements IGridBlock {
      * @throws GridAccessException of node or grid is null
      */
     @Nonnull
-    public IGrid getGrid() throws GridAccessException {
+    public IGrid getGridOrThrow() throws GridAccessException {
         if (this.node == null) {
             throw new GridAccessException();
         }
@@ -325,6 +230,61 @@ public class AENetworkProxy implements IGridBlock {
 
     @Nonnull
     private <T extends IGridCache> T getGridCache(Class<T> clazz) throws GridAccessException {
-        return this.getGrid().getCache(clazz);
+        return this.getGridOrThrow().getCache(clazz);
+    }
+
+    public ManagedGridNode setFlags(final GridFlags... requireChannel) {
+        Preconditions.checkState(node == null, "Flags cannot be changed when the node was already created.");
+        final EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
+        Collections.addAll(flags, requireChannel);
+        this.flags = flags;
+        return this;
+    }
+
+    public ManagedGridNode setExposedOnSides(@NotNull Set<Direction> directions) {
+        this.exposedOnSides = ImmutableSet.copyOf(directions);
+        if (node != null) {
+            node.setExposedOnSides(this.exposedOnSides);
+        }
+        return this;
+    }
+
+    public ManagedGridNode setIdlePowerUsage(double usagePerTick) {
+        this.idlePowerUsage = usagePerTick;
+        if (node != null) {
+            node.setIdlePowerUsage(usagePerTick);
+        }
+        return this;
+    }
+
+    public ManagedGridNode setVisualRepresentation(@NotNull ItemStack visualRepresentation) {
+        this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
+        if (node != null) {
+            node.setVisualRepresentation(visualRepresentation);
+        }
+        return this;
+    }
+
+    public ManagedGridNode setGridColor(@NotNull AEColor gridColor) {
+        this.gridColor = gridColor;
+        if (node != null) {
+            node.setGridColor(gridColor);
+        }
+        return this;
+    }
+
+    @Nonnegative
+    public double getIdlePowerUsage() {
+        return node != null ? node.getIdlePowerUsage() : idlePowerUsage;
+    }
+
+    @Nonnull
+    public ItemStack getVisualRepresentation() {
+        return node != null ? node.getVisualRepresentation() : visualRepresentation;
+    }
+
+    @Nonnull
+    public AEColor getGridColor() {
+        return node != null ? node.getGridColor() : gridColor;
     }
 }

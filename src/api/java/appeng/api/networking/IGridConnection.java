@@ -23,16 +23,18 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
+import net.minecraft.util.Direction;
+import org.jetbrains.annotations.NotNull;
 
-import appeng.api.util.AEPartLocation;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Access to AE's internal grid connections.
- *
+ * <p>
  * Messing with connection is generally completely unnecessary, you should be able to just use IGridNode.updateState()
  * to have AE manage them for you.
- *
+ * <p>
  * Don't Implement.
  */
 public interface IGridConnection {
@@ -41,21 +43,25 @@ public interface IGridConnection {
      * lets you get the opposing node of the connection by passing your own node.
      *
      * @param gridNode current grid node
-     *
      * @return the IGridNode which represents the opposite side of the connection.
      */
     @Nonnull
     IGridNode getOtherSide(IGridNode gridNode);
 
     /**
+     * @return True if this connection was established via the grid node host's sides, and {@link #getDirection(IGridNode)}
+     * returns a non-null value.
+     */
+    boolean isInWorld();
+
+    /**
      * determine the direction of the connection based on your node.
      *
-     * @param gridNode current grid node
-     *
-     * @return the direction of the connection, only valid for in world connections.
+     * @param sourceNode current grid node
+     * @return the direction of the connection, if {@link #isInWorld()} is true, otherwise null.
      */
-    @Nonnull
-    AEPartLocation getDirection(IGridNode gridNode);
+    @Nullable
+    Direction getDirection(IGridNode sourceNode);
 
     /**
      * by destroying a connection you may create new grids, and trigger un-expected behavior, you should only destroy
@@ -75,10 +81,6 @@ public interface IGridConnection {
     @Nonnull
     IGridNode b();
 
-    /**
-     * @return if the connection is invisible this returns false
-     */
-    boolean hasDirection();
 
     /**
      * @return how many channels pass over this connections.

@@ -55,8 +55,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.core.definitions.AEBlocks;
@@ -126,9 +125,9 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     private void configureNodeSides() {
         if (this.omniDirectional) {
-            this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+            this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
         } else {
-            this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+            this.getProxy().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         }
     }
 
@@ -138,7 +137,9 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void gridChanged() {
+    public void onGridChanged(IGridNode node) {
+        super.onGridChanged(node);
+
         this.duality.gridChanged();
     }
 
@@ -181,12 +182,12 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
     }
 
     @Override
-    public DimensionalCoord getLocation() {
+    public DimensionalBlockPos getLocation() {
         return this.duality.getLocation();
     }
 

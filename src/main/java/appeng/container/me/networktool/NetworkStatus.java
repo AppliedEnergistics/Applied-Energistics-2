@@ -29,8 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
@@ -63,10 +62,9 @@ public class NetworkStatus {
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
         Map<IAEItemStack, MachineGroup> groupedMachines = new HashMap<>();
-        for (final Class<? extends IGridHost> machineClass : grid.getMachinesClasses()) {
+        for (final Class<? extends IGridNodeHost> machineClass : grid.getMachinesClasses()) {
             for (IGridNode machine : grid.getMachines(machineClass)) {
-                IGridBlock blk = machine.getGridBlock();
-                ItemStack is = blk.getMachineRepresentation();
+                var is = machine.getVisualRepresentation();
                 IAEItemStack ais = AEItemStack.fromItemStack(is);
                 if (ais != null) {
                     ais.setStackSize(1);
@@ -77,7 +75,7 @@ public class NetworkStatus {
                     }
 
                     group.setCount(group.getCount() + 1);
-                    group.setIdlePowerUsage(group.getIdlePowerUsage() + blk.getIdlePowerUsage());
+                    group.setIdlePowerUsage(group.getIdlePowerUsage() + machine.getIdlePowerUsage());
                 }
             }
         }

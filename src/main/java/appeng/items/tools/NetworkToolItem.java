@@ -18,6 +18,7 @@
 
 package appeng.items.tools;
 
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,10 +38,10 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.items.IAEWrench;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAgent;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -67,8 +68,8 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         if (pos == null) {
             return new NetworkToolViewer(is, null, world.isRemote());
         }
-        final TileEntity te = world.getTileEntity(pos);
-        return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null), world.isRemote());
+        var host = Api.instance().grid().getNodeHost(world, pos);
+        return new NetworkToolViewer(is, host, world.isRemote());
     }
 
     @Override
@@ -124,14 +125,14 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         Hand hand = useContext.getHand();
         Direction side = useContext.getFace();
 
-        if (!Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
             return false;
         }
 
         final BlockState bs = w.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final TileEntity te = w.getTileEntity(pos);
-            if (!(te instanceof IGridHost) && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
+            if (!(te instanceof IGridNodeHost) && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                 bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
                 p.swingArm(hand);
                 return !w.isRemote;
@@ -145,7 +146,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
             final TileEntity te = w.getTileEntity(pos);
 
-            if (te instanceof IGridHost) {
+            if (te instanceof IGridNodeHost) {
                 ContainerOpener.openContainer(NetworkStatusContainer.TYPE, p,
                         ContainerLocator.forItemUseContext(useContext));
             } else {

@@ -24,7 +24,9 @@
 package appeng.api.networking.spatial;
 
 import appeng.api.networking.IGridCache;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public interface ISpatialCache extends IGridCache {
 
@@ -40,14 +42,19 @@ public interface ISpatialCache extends IGridCache {
     boolean isValidRegion();
 
     /**
+     * @return The world that the spatial region is in.
+     */
+    World getWorld();
+
+    /**
      * @return the minimum anchor point for the spatial region.
      */
-    DimensionalCoord getMin();
+    BlockPos getMin();
 
     /**
      * @return the maximum anchor point for the spatial region.
      */
-    DimensionalCoord getMax();
+    BlockPos getMax();
 
     /**
      * @return how many AE units are required to preform the activation

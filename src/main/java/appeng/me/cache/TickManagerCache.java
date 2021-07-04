@@ -28,7 +28,7 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ReportedException;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.ticking.IGridTickable;
@@ -124,7 +124,7 @@ public class TickManagerCache implements ITickManager {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof IGridTickable) {
             this.alertable.remove(gridNode);
             this.sleeping.remove(gridNode);
@@ -133,7 +133,7 @@ public class TickManagerCache implements ITickManager {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof IGridTickable) {
             final IGridTickable tickable = (IGridTickable) machine;
             final TickingRequest tr = tickable.getTickingRequest(gridNode);

@@ -172,7 +172,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public boolean isValid(final Object effectiveGrid) {
         try {
-            return this.getProxy().getGrid() == effectiveGrid;
+            return this.getProxy().getGridOrThrow() == effectiveGrid;
         } catch (final GridAccessException e) {
             return false;
         }
@@ -204,7 +204,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
             final TileEntity te = this.getHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
+            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getDirection()));
         }
     }
 
@@ -221,7 +221,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
                     this.getProxy().getStorage().getInventory(channel).removeListener(this);
                     this.stackWatcher.add(myStack);
                 } else {
-                    this.getProxy().getStorage().getInventory(channel).addListener(this, this.getProxy().getGrid());
+                    this.getProxy().getStorage().getInventory(channel).addListener(this, this.getProxy().getGridOrThrow());
                 }
 
                 final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory(channel);
@@ -267,7 +267,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getExternalCableConnectionType() {
         return AECableType.SMART;
     }
 

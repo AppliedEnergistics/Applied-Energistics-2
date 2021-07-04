@@ -63,8 +63,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.PlayerSecurityWrapper;
@@ -194,7 +193,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     public void inventoryChanged() {
         try {
             this.saveChanges();
-            this.getProxy().getGrid().postEvent(new MENetworkSecurityChange());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkSecurityChange());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -211,7 +210,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
@@ -239,8 +238,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     public boolean isActive() {
@@ -299,7 +298,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         }
 
         // make sure thea admin is Boss.
-        playerPerms.put(this.getProxy().getNode().getPlayerID(), EnumSet.allOf(SecurityPermissions.class));
+        playerPerms.put(this.getProxy().getNode().getOwner(), EnumSet.allOf(SecurityPermissions.class));
     }
 
     @Override
@@ -309,7 +308,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     @Override
     public int getOwner() {
-        return this.getProxy().getNode().getPlayerID();
+        return this.getProxy().getNode().getOwner();
     }
 
     @Override

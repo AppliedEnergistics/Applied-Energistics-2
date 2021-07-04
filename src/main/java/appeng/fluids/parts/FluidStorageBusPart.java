@@ -122,7 +122,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     private IMEInventory<IAEFluidStack> getInventoryWrapper(TileEntity target) {
-        Direction targetSide = this.getSide().getFacing().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
         // Prioritize a handler to directly link to another ME network
         IStorageMonitorableAccessor accessor = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
@@ -146,7 +146,13 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         IFluidHandler handlerExt = target.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide)
                 .orElse(null);
         if (handlerExt != null) {
-            return new FluidHandlerAdapter(handlerExt, this);
+            return new FluidHandlerAdapter(handlerExt, () -> {
+                try {
+                    this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+                } catch (GridAccessException ignore) {
+                    // meh
+                }
+            });
         }
 
         return null;
@@ -267,7 +273,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -335,7 +341,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         try {
             // force grid to update handlers...
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
         } catch (final GridAccessException ignore) {
             // :3
         }
@@ -383,7 +389,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             return 0;
         }
 
-        final Direction targetSide = this.getSide().getFacing().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);

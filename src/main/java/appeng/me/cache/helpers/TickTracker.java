@@ -26,7 +26,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
-import appeng.api.util.DimensionalCoord;
 
 public class TickTracker implements Comparable<TickTracker> {
 
@@ -64,8 +63,7 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        if (this.getGridTickable() instanceof IPart) {
-            final IPart part = (IPart) this.getGridTickable();
+        if (this.getGridTickable() instanceof IPart part) {
             part.addEntityCrashInfo(crashreportcategory);
         }
 
@@ -73,13 +71,9 @@ public class TickTracker implements Comparable<TickTracker> {
         crashreportcategory.addDetail("MinTickRate", this.getRequest().minTickRate);
         crashreportcategory.addDetail("MaxTickRate", this.getRequest().maxTickRate);
         crashreportcategory.addDetail("MachineType", this.getGridTickable().getClass().getName());
-        crashreportcategory.addDetail("GridBlockType", this.getNode().getGridBlock().getClass().getName());
+        crashreportcategory.addDetail("GridHostType", this.getNode().getHost().getClass().getName());
         crashreportcategory.addDetail("ConnectedSides", this.getNode().getConnectedSides());
-
-        final DimensionalCoord dc = this.getNode().getGridBlock().getLocation();
-        if (dc != null) {
-            crashreportcategory.addDetail("Location", dc);
-        }
+        crashreportcategory.addDetail("Location", this.getNode());
     }
 
     public int getCurrentRate() {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
@@ -32,11 +33,10 @@ import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.statistics.MENetworkChunkEvent;
-import appeng.api.util.DimensionalCoord;
 
 /**
  * A grid providing precomupted statistics about a network.
@@ -45,13 +45,13 @@ import appeng.api.util.DimensionalCoord;
  */
 public class StatisticsCache implements IGridCache {
 
-    private IGrid grid;
+    private final IGrid grid;
 
     /**
      * This uses a {@link Multiset} so we can simply add or remove {@link IGridNode} without having to take into account
      * that others still might exist without explicitly counting these.
      */
-    private Map<IWorld, Multiset<ChunkPos>> chunks;
+    private final Map<IWorld, Multiset<ChunkPos>> chunks;
 
     public StatisticsCache(final IGrid g) {
         this.grid = g;
@@ -63,20 +63,16 @@ public class StatisticsCache implements IGridCache {
     }
 
     @Override
-    public void removeNode(final IGridNode node, final IGridHost machine) {
-        if (node.getGridBlock().isWorldAccessible()) {
-            DimensionalCoord loc = node.getGridBlock().getLocation();
-
-            this.removeChunk(loc.getWorld(), loc.getBlockPos());
+    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
+        if (machine instanceof IInWorldGridNodeHost inWorldHost) {
+            this.removeChunk(inWorldHost.getWorld(), inWorldHost.getLocation());
         }
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridHost machine) {
-        if (node.getGridBlock().isWorldAccessible()) {
-            DimensionalCoord loc = node.getGridBlock().getLocation();
-
-            this.addChunk(loc.getWorld(), loc.getBlockPos());
+    public void addNode(final IGridNode node, final IGridNodeHost machine) {
+        if (machine instanceof IInWorldGridNodeHost inWorldHost) {
+            this.addChunk(inWorldHost.getWorld(), inWorldHost.getLocation());
         }
     }
 

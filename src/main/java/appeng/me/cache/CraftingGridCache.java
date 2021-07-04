@@ -47,7 +47,7 @@ import net.minecraft.world.World;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -152,7 +152,7 @@ public class CraftingGridCache
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ICraftingWatcherHost) {
             final ICraftingWatcher craftingWatcher = this.craftingWatchers.get(machine);
             if (craftingWatcher != null) {
@@ -180,7 +180,7 @@ public class CraftingGridCache
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
         if (machine instanceof ICraftingWatcherHost) {
             final ICraftingWatcherHost watcherHost = (ICraftingWatcherHost) machine;
             final CraftingWatcher watcher = new CraftingWatcher(this, watcherHost);
@@ -271,7 +271,7 @@ public class CraftingGridCache
         this.craftingCPUClusters.clear();
 
         for (final IGridNode cst : this.grid.getMachines(CraftingStorageTileEntity.class)) {
-            final CraftingStorageTileEntity tile = (CraftingStorageTileEntity) cst.getMachine();
+            final CraftingStorageTileEntity tile = (CraftingStorageTileEntity) cst.getHost();
             final CraftingCPUCluster cluster = tile.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);

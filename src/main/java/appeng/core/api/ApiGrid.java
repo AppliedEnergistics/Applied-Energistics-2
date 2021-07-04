@@ -18,17 +18,24 @@
 
 package appeng.core.api;
 
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IConfigurableGridNode;
+import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IInWorldGridNodeHost;
 import com.google.common.base.Preconditions;
 
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
-import appeng.util.Platform;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
+
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author yueh
@@ -37,15 +44,28 @@ import appeng.util.Platform;
  */
 public class ApiGrid implements IGridHelper {
 
+    @Nullable
     @Override
-    public IGridNode createGridNode(final IGridBlock blk) {
-        Preconditions.checkNotNull(blk);
+    public IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos) {
+        if (world.isBlockLoaded(pos)) {
+            final TileEntity te = world.getTileEntity(pos);
+            if (te instanceof IInWorldGridNodeHost host) {
+                return host;
+            }
+        }
+        return null;
+    }
 
-        if (Platform.isClient()) {
-            throw new IllegalStateException("Grid features for " + blk + " are server side only.");
+    @Override
+    public IConfigurableGridNode createGridNode(IGridNodeHost host, Set<GridFlags> flags) {
+        Preconditions.checkNotNull(host);
+        Preconditions.checkNotNull(flags);
+
+        if (host.getWorld().isRemote()) {
+            throw new IllegalStateException("Grid features for " + host + " are server side only.");
         }
 
-        return new GridNode(blk);
+        return new GridNode(host, flags);
     }
 
     @Override
@@ -53,7 +73,7 @@ public class ApiGrid implements IGridHelper {
         Preconditions.checkNotNull(a);
         Preconditions.checkNotNull(b);
 
-        return GridConnection.create(a, b, AEPartLocation.INTERNAL);
+        return GridConnection.create(a, b, null);
     }
 
 }

@@ -23,15 +23,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonTileEntity;
+import net.minecraft.world.server.ServerWorld;
 
 public class SpatialPylonCluster implements IAECluster {
 
-    private final World world;
+    private final ServerWorld world;
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
     private final List<SpatialPylonTileEntity> line = new ArrayList<>();
@@ -40,7 +40,7 @@ public class SpatialPylonCluster implements IAECluster {
     private Axis currentAxis = Axis.UNFORMED;
     private boolean isValid;
 
-    public SpatialPylonCluster(final World world, final BlockPos boundsMin, final BlockPos boundsMax) {
+    public SpatialPylonCluster(ServerWorld world, BlockPos boundsMin, BlockPos boundsMax) {
         this.world = world;
         this.boundsMin = boundsMin.toImmutable();
         this.boundsMax = boundsMax.toImmutable();
@@ -111,7 +111,7 @@ public class SpatialPylonCluster implements IAECluster {
         this.isValid = isValid;
     }
 
-    public World getWorld() {
+    public ServerWorld getWorld() {
         return world;
     }
 

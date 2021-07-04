@@ -41,7 +41,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
@@ -247,7 +247,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             this.myWap = null;
 
             for (final IGridNode n : tw) {
-                final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
+                final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getHost();
                 if (this.testWap(wap)) {
                     this.myWap = wap;
                 }
@@ -262,12 +262,12 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 
-        final DimensionalCoord dc = wap.getLocation();
+        final DimensionalBlockPos dc = wap.getLocation();
 
         if (dc.getWorld() == this.myPlayer.world) {
-            final double offX = dc.x - this.myPlayer.getPosX();
-            final double offY = dc.y - this.myPlayer.getPosY();
-            final double offZ = dc.z - this.myPlayer.getPosZ();
+            var offX = dc.getX() - this.myPlayer.getPosX();
+            var offY = dc.getY() - this.myPlayer.getPosY();
+            var offZ = dc.getZ() - this.myPlayer.getPosZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r && wap.isActive()) {

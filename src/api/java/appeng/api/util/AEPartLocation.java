@@ -20,6 +20,8 @@ package appeng.api.util;
 
 import net.minecraft.util.Direction;
 
+import javax.annotation.Nullable;
+
 /**
  * Stand in for previous Forge Direction, Several uses of this class are simply legacy where as some uses of this class
  * are intended.
@@ -64,7 +66,7 @@ public enum AEPartLocation {
     public final int yOffset;
     public final int zOffset;
 
-    private static final Direction[] facings = { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH,
+    private static final Direction[] directions = { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH,
             Direction.WEST, Direction.EAST, null };
     private static final int[] OPPOSITES = { 1, 0, 3, 2, 5, 4, 6 };
 
@@ -93,7 +95,7 @@ public enum AEPartLocation {
      * @param side
      * @return proper Part Location for a facing enum.
      */
-    public static AEPartLocation fromFacing(final Direction side) {
+    public static AEPartLocation fromFacing(@Nullable final Direction side) {
         if (side == null) {
             return INTERNAL;
         }
@@ -110,8 +112,8 @@ public enum AEPartLocation {
     /**
      * @return EnumFacing Equivalence, if Center returns null.
      */
-    public Direction getFacing() {
-        return facings[this.ordinal()];
+    public Direction getDirection() {
+        return directions[this.ordinal()];
     }
 
 }

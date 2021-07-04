@@ -21,11 +21,11 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
+import appeng.core.Api;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
@@ -34,7 +34,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -86,15 +86,14 @@ public class DebugCardItem extends AEBaseItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            final TileEntity te = world.getTileEntity(pos);
-
-            if (te instanceof IGridHost) {
-                final GridNode node = (GridNode) ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(side));
+            var gh = Api.instance().grid().getNodeHost(world, pos);
+            if (gh != null) {
+                final GridNode node = (GridNode) gh.getGridNode(side);
                 if (node != null) {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
-                    this.outputMsg(player, "This Node: " + node.toString());
-                    this.outputMsg(player, "Center Node: " + center.toString());
+                    this.outputMsg(player, "This Node: " + node);
+                    this.outputMsg(player, "Center Node: " + center);
 
                     final IPathingGrid pg = g.getCache(IPathingGrid.class);
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
@@ -110,7 +109,7 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getMachine() instanceof ControllerTileEntity) {
+                                if (n.getHost() instanceof ControllerTileEntity) {
                                     break outer;
                                 }
 
@@ -129,12 +128,12 @@ public class DebugCardItem extends AEBaseItem {
                         this.outputMsg(player, "Cable Distance: " + length);
                     }
 
-                    if (center.getMachine() instanceof P2PTunnelPart) {
-                        this.outputMsg(player, "Freq: " + ((P2PTunnelPart<?>) center.getMachine()).getFrequency());
+                    if (center.getHost() instanceof P2PTunnelPart) {
+                        this.outputMsg(player, "Freq: " + ((P2PTunnelPart<?>) center.getHost()).getFrequency());
                     }
 
-                    final TickManagerCache tmc = g.getCache(ITickManager.class);
-                    for (final Class<? extends IGridHost> c : g.getMachineClasses()) {
+                    var tmc = (TickManagerCache) g.getCache(ITickManager.class);
+                    for (final Class<? extends IGridNodeHost> c : g.getMachineClasses()) {
                         int o = 0;
                         long nanos = 0;
                         for (final IGridNode oj : g.getMachines(c)) {
@@ -155,27 +154,24 @@ public class DebugCardItem extends AEBaseItem {
                 this.outputMsg(player, "Not Networked Block");
             }
 
-            if (te instanceof IPartHost) {
-                final IPart center = ((IPartHost) te).getPart(AEPartLocation.INTERNAL);
-                ((IPartHost) te).markForUpdate();
+            var te = world.getTileEntity(pos);
+            if (te instanceof IPartHost partHost) {
+                final IPart center = partHost.getPart(AEPartLocation.INTERNAL);
+                partHost.markForUpdate();
                 if (center != null) {
                     final GridNode n = (GridNode) center.getGridNode();
                     this.outputMsg(player, "Node Channels: " + n.usedChannels());
-                    for (final IGridConnection gc : n.getConnections()) {
-                        final AEPartLocation fd = gc.getDirection(n);
-                        if (fd != AEPartLocation.INTERNAL) {
-                            this.outputMsg(player, fd.toString() + ": " + gc.getUsedChannels());
-                        }
+                    for (var entry : n.getInWorldConnections().entrySet()) {
+                        this.outputMsg(player, entry.getKey() + ": " + entry.getValue().getUsedChannels());
                     }
                 }
             }
 
-            if (te instanceof IAEPowerStorage) {
-                final IAEPowerStorage ps = (IAEPowerStorage) te;
+            if (te instanceof IAEPowerStorage ps) {
                 this.outputMsg(player, "Energy: " + ps.getAECurrentPower() + " / " + ps.getAEMaxPower());
 
-                if (te instanceof IGridHost) {
-                    final IGridNode node = ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(side));
+                if (gh != null) {
+                    final IGridNode node = gh.getGridNode(side);
                     if (node != null && node.getGrid() != null) {
                         final IEnergyGrid eg = node.getGrid().getCache(IEnergyGrid.class);
                         this.outputMsg(player,

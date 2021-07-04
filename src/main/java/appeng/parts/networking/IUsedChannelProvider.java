@@ -19,7 +19,6 @@
 package appeng.parts.networking;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
@@ -49,8 +48,7 @@ public interface IUsedChannelProvider extends IPart {
     default int getMaxChannelsInfo() {
         IGridNode node = this.getGridNode();
         if (node != null) {
-            IGridBlock gridBlock = node.getGridBlock();
-            return gridBlock.getFlags().contains(GridFlags.DENSE_CAPACITY) ? 32 : 8;
+            return node.hasFlag(GridFlags.DENSE_CAPACITY) ? 32 : 8;
         }
         return 0;
     }

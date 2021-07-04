@@ -27,7 +27,7 @@ import com.google.common.collect.Multimap;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -79,7 +79,7 @@ public class P2PCache implements IGridCache {
     }
 
     @Override
-    public void removeNode(final IGridNode node, final IGridHost machine) {
+    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof P2PTunnelPart) {
             if (machine instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
@@ -99,7 +99,7 @@ public class P2PCache implements IGridCache {
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridHost machine) {
+    public void addNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof P2PTunnelPart) {
             if (machine instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;

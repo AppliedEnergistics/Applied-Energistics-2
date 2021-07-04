@@ -18,22 +18,28 @@
 
 package appeng.tile.grid;
 
+import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.block.IOwnerAwareTile;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
+import appeng.api.util.DimensionalBlockPos;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.tile.powersink.AEBasePoweredTileEntity;
+import net.minecraft.util.Direction;
 
-public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IActionHost, IGridProxyable {
+import javax.annotation.Nullable;
 
-    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
+public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IActionHost, IInWorldGridNodeHost, IOwnerAwareTile {
+
+    private final ManagedGridNode gridProxy = new ManagedGridNode(this, "proxy")
+            .setVisualRepresentation(getItemFromTile());
 
     public AENetworkPowerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -52,28 +58,34 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity i
         return data;
     }
 
-    @Override
-    public AENetworkProxy getProxy() {
+    protected final ManagedGridNode getProxy() {
         return this.gridProxy;
     }
 
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    @Nullable
+    public IGridNode getGridNode() {
+        return this.gridProxy.getNode();
     }
 
     @Override
-    public void gridChanged() {
-
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
-        return this.getProxy().getNode();
+    public IGridNode getGridNode(Direction dir) {
+        var node = this.getProxy().getNode();
+
+        // Check if the proxy exposes the node on this side
+        if (node != null && node.isExposedOnSide(dir)) {
+            return node;
+        }
+
+        return null;
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
@@ -106,4 +118,8 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity i
         return this.getProxy().getNode();
     }
 
+    @Override
+    public void setOwner(PlayerEntity owner) {
+        getProxy().setOwner(owner);
+    }
 }

@@ -52,7 +52,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
     private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
     private int myPass = 0;
 
-    public NetworkInventoryHandler(final IStorageChannel<T> chan, final SecurityCache security) {
+    public NetworkInventoryHandler(final IStorageChannel<T> chan, SecurityCache security) {
         this.myChannel = chan;
         this.security = security;
         this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);

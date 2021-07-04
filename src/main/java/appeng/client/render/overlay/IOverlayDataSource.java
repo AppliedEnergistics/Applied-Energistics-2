@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.ChunkPos;
 
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 
 /**
  * A source providing data for a chunk overlay.
@@ -56,7 +56,7 @@ public interface IOverlayDataSource {
      * @return the location of this source.
      */
     @Nonnull
-    DimensionalCoord getOverlaySourceLocation();
+    DimensionalBlockPos getOverlaySourceLocation();
 
     /**
      * The color used for the overlay as ARGB

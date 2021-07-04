@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
+import appeng.api.networking.IConfigurableGridNode;
+import appeng.me.GridNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -211,18 +213,18 @@ public class TickHandler {
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
         if (!ev.getWorld().isRemote()) {
-            final List<IGridNode> toDestroy = new ArrayList<>();
+            var toDestroy = new ArrayList<GridNode>();
 
             this.grids.updateNetworks();
             for (final Grid g : this.grids.getNetworks()) {
-                for (final IGridNode n : g.getNodes()) {
+                for (var n : g.getNodes()) {
                     if (n.getWorld() == ev.getWorld()) {
-                        toDestroy.add(n);
+                        toDestroy.add((GridNode) n);
                     }
                 }
             }
 
-            for (final IGridNode n : toDestroy) {
+            for (var n : toDestroy) {
                 n.destroy();
             }
 

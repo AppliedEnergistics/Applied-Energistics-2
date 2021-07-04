@@ -20,13 +20,20 @@ package appeng.tile.spatial;
 
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridMultiblock;
+import appeng.api.networking.IGridNode;
+import appeng.tile.crafting.CraftingTileEntity;
+import appeng.util.iterators.ChainedIterator;
+import com.google.common.collect.Iterators;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -39,11 +46,9 @@ import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTileEntity;
 
-public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMultiBlock<SpatialPylonCluster> {
+public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMultiBlock<SpatialPylonCluster>, IGridMultiblock {
 
     // The lower 6 bits are used
     public static final ModelProperty<Integer> STATE = new ModelProperty<>(value -> ((value & ~0x3F) == 0));
@@ -69,12 +74,6 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK);
         this.getProxy().setIdlePowerUsage(0.5);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
-    }
-
-    @Override
-    protected AENetworkProxy createProxy() {
-        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(), true);
     }
 
     @Override
@@ -86,7 +85,9 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     @Override
     public void onReady() {
         super.onReady();
-        this.calc.calculateMultiblock(world, pos);
+        if (world instanceof ServerWorld serverWorld) {
+            this.calc.calculateMultiblock(serverWorld, pos);
+        }
     }
 
     @Override
@@ -96,7 +97,9 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     public void neighborChanged(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
+        if (world instanceof ServerWorld serverWorld) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, pos, changedPos);
+        }
     }
 
     @Override
@@ -119,7 +122,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
 
     public void updateStatus(final SpatialPylonCluster c) {
         this.cluster = c;
-        this.getProxy().setValidSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
+        this.getProxy().setExposedOnSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
         this.recalculateDisplay();
     }
 
@@ -228,4 +231,12 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         return new ModelDataMap.Builder().withInitial(STATE, getDisplayBits()).build();
     }
 
+    @Nonnull
+    @Override
+    public Iterator<IGridNode> getMultiblockNodes() {
+        if (this.getCluster() == null) {
+            return new ChainedIterator<>();
+        }
+        return Iterators.transform(this.getCluster().getTiles(), SpatialPylonTileEntity::getGridNode);
+    }
 }

@@ -107,7 +107,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public void gridChanged() {
+    public void onGridChanged(IGridNode node) {
         this.duality.gridChanged();
     }
 
@@ -154,7 +154,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide().getFacing());
+        return EnumSet.of(this.getSide().getDirection());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.duality.getCapability(capabilityClass, this.getSide().getFacing());
+        return this.duality.getCapability(capabilityClass, this.getSide().getDirection());
     }
 
     @Override

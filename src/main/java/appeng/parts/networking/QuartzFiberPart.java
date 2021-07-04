@@ -42,7 +42,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
@@ -51,20 +51,16 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
-    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer",
-            this.getProxy().getMachineRepresentation(), true);
+    private final ManagedGridNode outerProxy;
 
     public QuartzFiberPart(final ItemStack is) {
         super(is);
         this.getProxy().setIdlePowerUsage(0);
         this.getProxy().setFlags(GridFlags.CANNOT_CARRY);
-        this.outerProxy.setIdlePowerUsage(0);
-        this.outerProxy.setFlags(GridFlags.CANNOT_CARRY);
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.GLASS;
+        this.outerProxy = new ManagedGridNode(this, "outer")
+                .setIdlePowerUsage(0)
+                .setVisualRepresentation(is)
+                .setFlags(GridFlags.CANNOT_CARRY);
     }
 
     @Override
@@ -99,7 +95,7 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+        this.outerProxy.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override

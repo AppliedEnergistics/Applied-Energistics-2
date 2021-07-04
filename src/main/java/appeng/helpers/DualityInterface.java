@@ -85,14 +85,13 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
@@ -121,7 +120,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
     private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
     private final MultiCraftingTracker craftingTracker;
-    private final AENetworkProxy gridProxy;
+    private final ManagedGridNode gridProxy;
     private final IInterfaceHost iHost;
     private final IActionSource mySource;
     private final IActionSource interfaceRequestSource;
@@ -142,11 +141,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private int isWorking = -1;
     private final Accessor accessor = new Accessor();
 
-    public DualityInterface(final AENetworkProxy networkProxy, final IInterfaceHost ih) {
+    public DualityInterface(final ManagedGridNode networkProxy, final IInterfaceHost ih) {
         this.gridProxy = networkProxy;
         this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 
-        this.upgrades = new StackUpgradeInventory(this.gridProxy.getMachineRepresentation(), this, 1);
+        this.upgrades = new StackUpgradeInventory(this.gridProxy.getVisualRepresentation(), this, 1);
         this.cm.registerSetting(Settings.BLOCK, YesNo.NO);
         this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
@@ -334,7 +333,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
 
         try {
-            this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
+            this.gridProxy.getGridOrThrow().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
         } catch (final GridAccessException e) {
             // :P
         }
@@ -398,7 +397,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     public void notifyNeighbors() {
         if (this.gridProxy.isActive()) {
             try {
-                this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
+                this.gridProxy.getGridOrThrow().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
                 this.gridProxy.getTick().wakeDevice(this.gridProxy.getNode());
             } catch (final GridAccessException e) {
                 // :P
@@ -465,12 +464,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.notifyNeighbors();
     }
 
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getTileEntity());
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this.iHost.getTileEntity());
     }
 
     public IItemHandler getInternalInventory() {
@@ -634,7 +633,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         try {
             if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
                 return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(),
+                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGridOrThrow(), this.gridProxy.getCrafting(),
                         this.mySource);
             }
         } catch (final GridAccessException e) {
@@ -755,7 +754,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             final TileEntity te = w.getTileEntity(tile.getPos().offset(s));
             if (te instanceof IInterfaceHost) {
                 try {
-                    if (((IInterfaceHost) te).getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
+                    if (((IInterfaceHost) te).getInterfaceDuality().sameGrid(this.gridProxy.getGridOrThrow())) {
                         continue;
                     }
                 } catch (final GridAccessException e) {
@@ -828,7 +827,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     private boolean sameGrid(final IGrid grid) throws GridAccessException {
-        return grid == this.gridProxy.getGrid();
+        return grid == this.gridProxy.getGridOrThrow();
     }
 
     private boolean isBlocking() {
@@ -948,7 +947,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
             if (directedTile instanceof IInterfaceHost) {
                 try {
-                    if (((IInterfaceHost) directedTile).getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
+                    if (((IInterfaceHost) directedTile).getInterfaceDuality().sameGrid(this.gridProxy.getGridOrThrow())) {
                         continue;
                     }
                 } catch (final GridAccessException e) {
@@ -1018,7 +1017,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.iHost.saveChanges();
 
         try {
-            this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
+            this.gridProxy.getGridOrThrow().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
         } catch (final GridAccessException e) {
             // :P
         }

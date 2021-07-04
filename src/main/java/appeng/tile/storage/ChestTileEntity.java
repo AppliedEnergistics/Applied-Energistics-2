@@ -165,7 +165,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     protected void PowerEvent(final PowerEventType x) {
         if (x == PowerEventType.REQUEST_POWER) {
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException e) {
                 // :(
             }
@@ -191,7 +191,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -346,8 +346,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                 }
             }
         } catch (final GridAccessException e) {
-            final double powerUsed = this.extractAEPower(this.getProxy().getIdlePowerUsage(), Actionable.MODULATE,
-                    PowerMultiplier.CONFIG); // drain
+            final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
             if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                 this.recalculateDisplay();
             }
@@ -453,7 +452,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             this.isCached = false; // recalculate the storage cell.
 
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
                 final IStorageGrid gs = this.getProxy().getStorage();
                 Platform.postChanges(gs, removed, added, this.mySrc);
             } catch (final GridAccessException ignored) {
@@ -522,7 +521,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.isCached = false; // recalculate the storage cell.
 
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -662,21 +661,19 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             if (ChestTileEntity.this.getTile() instanceof IActionHost && requiredPermission != null) {
 
                 final IGridNode gn = ((IActionHost) ChestTileEntity.this.getTile()).getActionableNode();
-                if (gn != null) {
+                if (gn != null && gn.getGrid() != null) {
                     final IGrid g = gn.getGrid();
-                    if (g != null) {
-                        final boolean requirePower = false;
-                        if (requirePower) {
-                            final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
-                            if (!eg.isNetworkPowered()) {
-                                return false;
-                            }
+                    final boolean requirePower = false;
+                    if (requirePower) {
+                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        if (!eg.isNetworkPowered()) {
+                            return false;
                         }
+                    }
 
-                        final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
-                        if (sg.hasPermission(player, requiredPermission)) {
-                            return true;
-                        }
+                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    if (sg.hasPermission(player, requiredPermission)) {
+                        return true;
                     }
                 }
 

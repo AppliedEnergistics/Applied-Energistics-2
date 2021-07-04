@@ -41,8 +41,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -63,14 +62,14 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     public ChargerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
         this.getProxy().setIdlePowerUsage(0);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -99,7 +98,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        this.getProxy().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
         this.setPowerSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
     }
 
@@ -147,7 +146,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     public void activate(final PlayerEntity player) {
-        if (!Platform.hasPermissions(new DimensionalCoord(this), player)) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
             return;
         }
 

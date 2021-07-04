@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +42,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
@@ -64,7 +65,7 @@ public class ToggleBusPart extends BasicStatePart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
     private static final int REDSTONE_FLAG = 4;
-    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer", ItemStack.EMPTY, true);
+    private final ManagedGridNode outerProxy = new ManagedGridNode(this, "outer");
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
@@ -88,11 +89,6 @@ public class ToggleBusPart extends BasicStatePart {
 
     protected boolean getIntention() {
         return this.getHost().hasRedstone(this.getSide());
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.GLASS;
     }
 
     @Override
@@ -140,7 +136,7 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+        this.outerProxy.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override
@@ -179,7 +175,7 @@ public class ToggleBusPart extends BasicStatePart {
         }
     }
 
-    AENetworkProxy getOuterProxy() {
+    ManagedGridNode getOuterProxy() {
         return this.outerProxy;
     }
 

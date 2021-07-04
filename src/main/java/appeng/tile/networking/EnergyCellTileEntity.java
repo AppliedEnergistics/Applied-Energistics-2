@@ -21,6 +21,7 @@ package appeng.tile.networking;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.api.config.AccessRestriction;
@@ -30,7 +31,6 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
@@ -51,7 +51,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -194,7 +194,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
         if (wasFull && amt > 0.001) {
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException ignored) {
 
             }

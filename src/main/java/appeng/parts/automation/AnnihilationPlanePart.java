@@ -132,7 +132,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
             connectionHelper.updateConnections();
@@ -291,7 +291,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 final TileEntity te = this.getTile();
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
-                final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
+                final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
                 final IEnergyGrid energy = this.getProxy().getEnergy();
 
                 final BlockState blockState = w.getBlockState(pos);

@@ -28,7 +28,7 @@ import java.util.Set;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.IMachineSet;
@@ -42,7 +42,7 @@ import appeng.util.ReadOnlyCollection;
 
 public class Grid implements IGrid {
     private final NetworkEventBus eventBus = new NetworkEventBus();
-    private final Map<Class<? extends IGridHost>, MachineSet> machines = new HashMap<>();
+    private final Map<Class<? extends IGridNodeHost>, MachineSet> machines = new HashMap<>();
     private final Map<Class<? extends IGridCache>, GridCacheWrapper> caches;
     private GridNode pivot;
     private int priority; // how import is this network?
@@ -93,7 +93,7 @@ public class Grid implements IGrid {
         return this.caches;
     }
 
-    public Iterable<Class<? extends IGridHost>> getMachineClasses() {
+    public Iterable<Class<? extends IGridNodeHost>> getMachineClasses() {
         return this.machines.keySet();
     }
 
@@ -107,11 +107,11 @@ public class Grid implements IGrid {
 
     void remove(final GridNode gridNode) {
         for (final IGridCache c : this.caches.values()) {
-            final IGridHost machine = gridNode.getMachine();
+            final IGridNodeHost machine = gridNode.getHost();
             c.removeNode(gridNode, machine);
         }
 
-        final Class<? extends IGridHost> machineClass = gridNode.getMachineClass();
+        final Class<? extends IGridNodeHost> machineClass = gridNode.getMachineClass();
         final Set<IGridNode> nodes = this.machines.get(machineClass);
         if (nodes != null) {
             nodes.remove(gridNode);
@@ -132,7 +132,7 @@ public class Grid implements IGrid {
     }
 
     void add(final GridNode gridNode) {
-        final Class<? extends IGridHost> mClass = gridNode.getMachineClass();
+        final Class<? extends IGridNodeHost> mClass = gridNode.getMachineClass();
 
         MachineSet nodes = this.machines.get(mClass);
         if (nodes == null) {
@@ -184,17 +184,18 @@ public class Grid implements IGrid {
         nodes.add(gridNode);
 
         for (final IGridCache cache : this.caches.values()) {
-            final IGridHost machine = gridNode.getMachine();
+            final IGridNodeHost machine = gridNode.getHost();
             cache.addNode(gridNode, machine);
         }
-
-        gridNode.getGridProxy().gridChanged();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <C extends IGridCache> C getCache(final Class<? extends IGridCache> iface) {
-        return (C) this.caches.get(iface).getCache();
+    public <C extends IGridCache> C getCache(final Class<C> iface) {
+        var wrapper = this.caches.get(iface);
+        if (wrapper == null) {
+            throw new IllegalArgumentException("Cache " + iface + " is not registered");
+        }
+        return iface.cast(wrapper.getCache());
     }
 
     @Override
@@ -208,14 +209,14 @@ public class Grid implements IGrid {
     }
 
     @Override
-    public IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses() {
-        final Set<Class<? extends IGridHost>> machineKeys = this.machines.keySet();
+    public IReadOnlyCollection<Class<? extends IGridNodeHost>> getMachinesClasses() {
+        final Set<Class<? extends IGridNodeHost>> machineKeys = this.machines.keySet();
 
         return new ReadOnlyCollection<>(machineKeys);
     }
 
     @Override
-    public IMachineSet getMachines(final Class<? extends IGridHost> c) {
+    public IMachineSet getMachines(final Class<? extends IGridNodeHost> c) {
         final MachineSet s = this.machines.get(c);
         if (s == null) {
             return new MachineSet(c);

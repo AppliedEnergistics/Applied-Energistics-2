@@ -25,6 +25,10 @@ import java.util.LinkedList;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridMultiblock;
+import appeng.api.networking.IGridNode;
+import appeng.util.iterators.ChainedIterator;
+import com.google.common.collect.Iterators;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,6 +36,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
@@ -50,13 +55,11 @@ import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.Platform;
 
 public class CraftingTileEntity extends AENetworkTileEntity
-        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
+        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState, IGridMultiblock {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
     private CompoundNBT previousState = null;
@@ -66,12 +69,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     public CraftingTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
-    }
-
-    @Override
-    protected AENetworkProxy createProxy() {
-        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(), true);
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     @Override
@@ -112,11 +110,15 @@ public class CraftingTileEntity extends AENetworkTileEntity
     public void onReady() {
         super.onReady();
         this.getProxy().setVisualRepresentation(this.getItemFromTile());
-        this.calc.calculateMultiblock(world, pos);
+        if (world instanceof ServerWorld serverWorld) {
+            this.calc.calculateMultiblock(serverWorld, pos);
+        }
     }
 
     public void updateMultiBlock(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
+        if (world instanceof ServerWorld serverWorld) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, pos, changedPos);
+        }
     }
 
     public void updateStatus(final CraftingCPUCluster c) {
@@ -157,9 +159,9 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
         if (updateFormed) {
             if (formed) {
-                this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+                this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
             } else {
-                this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+                this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
             }
         }
     }
@@ -361,4 +363,12 @@ public class CraftingTileEntity extends AENetworkTileEntity
         requestModelDataUpdate();
     }
 
+    @Nonnull
+    @Override
+    public Iterator<IGridNode> getMultiblockNodes() {
+        if (this.getCluster() == null) {
+            return new ChainedIterator<>();
+        }
+        return Iterators.transform(this.getCluster().getTiles(), CraftingTileEntity::getGridNode);
+    }
 }

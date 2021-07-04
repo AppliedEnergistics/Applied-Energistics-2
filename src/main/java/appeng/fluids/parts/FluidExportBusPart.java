@@ -110,7 +110,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
             fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
+                    this.getSide().getDirection().getOpposite());
         }
         if (fhOpt.isPresent()) {
             try {

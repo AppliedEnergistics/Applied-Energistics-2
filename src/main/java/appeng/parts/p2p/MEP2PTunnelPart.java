@@ -27,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -47,7 +48,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
 import appeng.me.cache.helpers.TunnelConnection;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -59,7 +60,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     private final Connections connection = new Connections(this);
-    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer", ItemStack.EMPTY, true);
+    private final ManagedGridNode outerProxy = new ManagedGridNode(this, "outer");
 
     public MEP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -97,7 +98,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getExternalCableConnectionType() {
         return AECableType.DENSE_SMART;
     }
 
@@ -116,7 +117,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+        this.outerProxy.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override
@@ -170,7 +171,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
                 try {
-                    if (cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid()
+                    if (cw.getTunnel().getProxy().getGridOrThrow() != this.getProxy().getGridOrThrow()
                             || !cw.getTunnel().getProxy().isActive()) {
                         cw.getConnection().destroy();
                         i.remove();

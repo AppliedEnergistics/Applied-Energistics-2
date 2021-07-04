@@ -25,14 +25,14 @@ package appeng.api.implementations.tiles;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 
 public interface IWirelessAccessPoint extends IActionHost {
 
     /**
      * @return location of WAP
      */
-    DimensionalCoord getLocation();
+    DimensionalBlockPos getLocation();
 
     /**
      * @return max range for this WAP

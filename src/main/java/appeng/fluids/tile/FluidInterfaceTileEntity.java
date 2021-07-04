@@ -43,8 +43,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
@@ -93,7 +92,9 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void gridChanged() {
+    public void onGridChanged(IGridNode node) {
+        super.onGridChanged(node);
+
         this.duality.gridChanged();
     }
 
@@ -111,12 +112,12 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
     }
 
     @Override
-    public DimensionalCoord getLocation() {
+    public DimensionalBlockPos getLocation() {
         return this.duality.getLocation();
     }
 

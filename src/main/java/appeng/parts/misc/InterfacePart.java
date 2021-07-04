@@ -118,7 +118,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public void gridChanged() {
+    public void onGridChanged(IGridNode node) {
         this.duality.gridChanged();
     }
 
@@ -201,7 +201,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide().getFacing());
+        return EnumSet.of(this.getSide().getDirection());
     }
 
     @Override
@@ -262,7 +262,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.duality.getCapability(capabilityClass, this.getSide().getFacing());
+        return this.duality.getCapability(capabilityClass, this.getSide().getDirection());
     }
 
     @Override

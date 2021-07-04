@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.parts.AEBasePart;
 
 /**
@@ -130,8 +130,8 @@ public final class ContainerLocator {
 
     public static ContainerLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
-        DimensionalCoord pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos.getBlockPos(), part.getSide());
+        DimensionalBlockPos pos = host.getLocation();
+        return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos, part.getSide());
     }
 
     public boolean hasItemIndex() {

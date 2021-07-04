@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import net.minecraft.util.math.BlockPos;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 
 public interface IAECluster {
 
@@ -46,5 +46,5 @@ public interface IAECluster {
      */
     boolean isDestroyed();
 
-    Iterator<? extends IGridHost> getTiles();
+    Iterator<? extends IGridNodeHost> getTiles();
 }

@@ -45,7 +45,6 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -60,7 +59,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -140,16 +138,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
                 if (host instanceof IPortableCell || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
-                } else if (host instanceof IGridHost || host instanceof IActionHost) {
-                    final IGridNode node;
-                    if (host instanceof IGridHost) {
-                        node = ((IGridHost) host).getGridNode(AEPartLocation.INTERNAL);
-                    } else if (host instanceof IActionHost) {
-                        node = ((IActionHost) host).getActionableNode();
-                    } else {
-                        node = null;
-                    }
-
+                } else if (host instanceof IActionHost actionHost) {
+                    var node = actionHost.getActionableNode();
                     if (node != null) {
                         this.networkNode = node;
                         final IGrid g = node.getGrid();

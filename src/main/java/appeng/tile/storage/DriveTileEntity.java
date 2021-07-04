@@ -60,8 +60,7 @@ import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
@@ -123,7 +122,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     @Override
     public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(inForward)));
+        this.getProxy().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
 
     @Override
@@ -290,7 +289,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -312,13 +311,13 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override
@@ -335,7 +334,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         }
 
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
 
             final IStorageGrid gs = this.getProxy().getStorage();
             Platform.postChanges(gs, removed, added, this.mySrc);
@@ -419,7 +418,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         this.updateState();
 
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :P
         }

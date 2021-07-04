@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import appeng.api.networking.IGridNodeHost;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -60,7 +61,6 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -69,18 +69,16 @@ import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.parts.automation.LevelEmitterPart;
-import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject {
+public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, IUpgradeableHost, ICustomNameObject {
 
-    private final AENetworkProxy proxy;
+    private final ManagedGridNode proxy;
     private final ItemStack is;
     private TileEntity tile = null;
     private IPartHost host = null;
@@ -90,8 +88,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         Preconditions.checkNotNull(is);
 
         this.is = is;
-        this.proxy = new AENetworkProxy(this, "part", is, this instanceof CablePart);
-        this.proxy.setValidSides(EnumSet.noneOf(Direction.class));
+        this.proxy = new ManagedGridNode(this, "part")
+                .setVisualRepresentation(is)
+                .setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     public final boolean isRemote() {
@@ -102,16 +101,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     public IPartHost getHost() {
         return this.host;
-    }
-
-    @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
-        return this.proxy.getNode();
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.GLASS;
     }
 
     @Override
@@ -147,19 +136,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.tile;
     }
 
-    @Override
-    public AENetworkProxy getProxy() {
+    public ManagedGridNode getProxy() {
         return this.proxy;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.tile);
-    }
-
-    @Override
-    public void gridChanged() {
-
     }
 
     @Override
@@ -170,6 +148,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     @Override
     public void saveChanges() {
         this.host.markForSave();
+    }
+
+    @Override
+    public World getWorld() {
+        return this.tile.getWorld();
     }
 
     @Override
@@ -489,5 +472,14 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     public ItemStack getItemStack() {
         return this.is;
+    }
+
+    @Override
+    public void onOwnerChanged(IGridNode node) {
+        saveChanges();
+    }
+
+    @Override
+    public void onGridChanged(IGridNode node) {
     }
 }

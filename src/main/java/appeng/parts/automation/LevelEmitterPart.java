@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -157,7 +158,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             final TileEntity te = this.getHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
+            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getDirection()));
         }
     }
 
@@ -225,7 +226,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         }
 
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.getProxy().getNode()));
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCraftingPatternChange(this, this.getProxy().getNode()));
         } catch (final GridAccessException e1) {
             // :/
         }
@@ -263,7 +264,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
                 this.getProxy().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
-                        .addListener(this, this.getProxy().getGrid());
+                        .addListener(this, this.getProxy().getGridOrThrow());
             } else {
                 this.getProxy().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
@@ -340,7 +341,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     @Override
     public boolean isValid(final Object effectiveGrid) {
         try {
-            return this.getProxy().getGrid() == effectiveGrid;
+            return this.getProxy().getGridOrThrow() == effectiveGrid;
         } catch (final GridAccessException e) {
             return false;
         }
@@ -360,11 +361,6 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         } catch (final GridAccessException e) {
             // ;P
         }
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.SMART;
     }
 
     @Override
@@ -394,6 +390,11 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             world.addParticle(RedstoneParticleData.REDSTONE_DUST, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
                     0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
         }
+    }
+
+    @Override
+    public AECableType getDesiredConnectionType() {
+        return AECableType.SMART; // TODO: This was previously in an unused method getCableConnectionType intended for external connections, check if this visual change is desirable
     }
 
     @Override

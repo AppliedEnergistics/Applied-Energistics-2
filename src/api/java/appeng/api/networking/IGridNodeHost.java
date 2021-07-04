@@ -24,41 +24,49 @@
 package appeng.api.networking;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import appeng.api.util.DimensionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.parts.IPart;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
+import net.minecraft.world.World;
 
 /**
  * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or tile entity to
  * become part of a grid.
  */
-public interface IGridHost {
-
-    /**
-     * get the grid node for a particular side of a block, you can return null, by returning a valid node later and
-     * calling updateState, you can join the Grid when your block is ready.
-     *
-     * @param dir feel free to ignore this, most blocks will use the same node for every side.
-     *
-     * @return a new IGridNode, create these with AEApi.INSTANCE().createGridNode( MyIGridBlock )
-     */
-    @Nullable
-    IGridNode getGridNode(@Nonnull AEPartLocation dir);
-
-    /**
-     * Determines how cables render when they connect to this block. Priority is Smart &gt; Covered &gt; Glass
-     *
-     * @param dir direction
-     */
-    @Nonnull
-    AECableType getCableConnectionType(@Nonnull AEPartLocation dir);
+public interface IGridNodeHost {
 
     /**
      * break this host, its violating security rules, just break your block, or part.
      */
     void securityBreak();
+
+    World getWorld();
+
+    /**
+     * Notifies the grid host that properties of a node have changed that need to be saved to disk.
+     * Can be implemented on tile-entities by delegating to {@link TileEntity#markDirty()} for example.
+     */
+    void saveChanges();
+
+    /**
+     * Called by the {@link IGridNode} when the visible connections for the node have changed, useful for cable.
+     */
+    default void onInWorldConnectionChanged(IGridNode node) {
+    }
+
+    /**
+     * Called by the {@link IGridNode} when the node's owner has changed. The node's state needs to be saved.
+     */
+    default void onOwnerChanged(IGridNode node) {
+    }
+
+    /**
+     * called when the grid for the node has changed, the general grid state should not be trusted at this point.
+     */
+    default void onGridChanged(IGridNode node) {
+        saveChanges();
+    }
+
 }

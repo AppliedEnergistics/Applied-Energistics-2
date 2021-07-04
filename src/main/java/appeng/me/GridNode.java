@@ -18,71 +18,91 @@
 
 package appeng.me;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
+import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridConnectionVisitor;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridVisitor;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IWorldCallable;
-import appeng.util.ReadOnlyCollection;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
-public class GridNode implements IGridNode, IPathItem {
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+public class GridNode implements IConfigurableGridNode, IPathItem {
     private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
-    private static final int[] CHANNEL_COUNT = { 0, 8, 32 };
 
-    private final List<IGridConnection> connections = new ArrayList<>();
-    private final IGridBlock gridProxy;
+    /**
+     * Indicates whether this node will be available for connections or will attempt to make connections.
+     */
+    private boolean ready;
+    private final List<GridConnection> connections = new ArrayList<>();
+    private final IGridNodeHost host;
+    @Nullable
+    private final IInWorldGridNodeHost inWorldHost;
     // old power draw, used to diff
     private double previousDraw = 0.0;
+    // idle power usage per tick in AE
+    private double idlePowerUsage = 1.0;
+    @Nonnull
+    private ItemStack visualRepresentation = ItemStack.EMPTY;
+    @Nonnull
+    private AEColor gridColor = AEColor.TRANSPARENT;
     private long lastSecurityKey = -1;
-    private int playerID = -1;
+    private int owner = -1;
     private GridStorage myStorage = null;
     private Grid myGrid;
     private Object visitorIterationNumber = null;
     // connection criteria
-    private int compressedData = 0;
     private int usedChannels = 0;
     private int lastUsedChannels = 0;
+    private final EnumSet<GridFlags> flags;
+    private final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
 
-    public GridNode(final IGridBlock what) {
-        this.gridProxy = what;
+    public GridNode(@Nonnull IInWorldGridNodeHost host, Set<GridFlags> flags) {
+        this.host = Objects.requireNonNull(host);
+        this.inWorldHost = host;
+        this.flags = EnumSet.copyOf(flags);
     }
 
-    IGridBlock getGridProxy() {
-        return this.gridProxy;
+    public GridNode(@Nonnull IGridNodeHost host, Set<GridFlags> flags) {
+        this.host = host;
+        this.inWorldHost = null;
+        this.flags = EnumSet.copyOf(flags);
     }
 
     Grid getMyGrid() {
@@ -93,25 +113,23 @@ public class GridNode implements IGridNode, IPathItem {
         return this.lastUsedChannels;
     }
 
-    Class<? extends IGridHost> getMachineClass() {
-        return this.getMachine().getClass();
+    Class<? extends IGridNodeHost> getMachineClass() {
+        return this.getHost().getClass();
     }
 
     void addConnection(final IGridConnection gridConnection) {
-        this.connections.add(gridConnection);
-        if (gridConnection.hasDirection()) {
-            this.gridProxy.onGridNotification(GridNotification.CONNECTIONS_CHANGED);
+        connections.add((GridConnection) gridConnection);
+        if (gridConnection.isInWorld()) {
+            host.onInWorldConnectionChanged(this);
         }
 
-        final IGridNode gn = this;
-
-        Collections.sort(this.connections, new ConnectionComparator(gn));
+        connections.sort(new ConnectionComparator(this));
     }
 
     void removeConnection(final IGridConnection gridConnection) {
-        this.connections.remove(gridConnection);
-        if (gridConnection.hasDirection()) {
-            this.gridProxy.onGridNotification(GridNotification.CONNECTIONS_CHANGED);
+        connections.remove((GridConnection) gridConnection);
+        if (gridConnection.isInWorld()) {
+            host.onInWorldConnectionChanged(this);
         }
     }
 
@@ -150,9 +168,8 @@ public class GridNode implements IGridNode, IPathItem {
 
         this.visitorIterationNumber = tracker;
 
-        if (g instanceof IGridConnectionVisitor) {
+        if (g instanceof IGridConnectionVisitor gcv) {
             final Deque<IGridConnection> nextConn = new ArrayDeque<>();
-            final IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
             while (!nextRun.isEmpty()) {
                 while (!nextConn.isEmpty()) {
@@ -180,24 +197,61 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public void updateState() {
-        final EnumSet<GridFlags> set = this.gridProxy.getFlags();
-
-        this.compressedData = set.contains(GridFlags.CANNOT_CARRY) ? 0
-                : set.contains(GridFlags.DENSE_CAPACITY) ? 2 : 1;
-
-        this.compressedData |= this.gridProxy.getGridColor().ordinal() << 3;
-
-        for (final Direction dir : this.gridProxy.getConnectableSides()) {
-            this.compressedData |= 1 << dir.ordinal() + 8;
+        if (ready) {
+            this.findInWorldConnections();
+            this.getInternalGrid();
         }
+    }
 
-        this.findConnections();
-        this.getInternalGrid();
+    public void setExposedOnSides(Set<Direction> directions) {
+        exposedOnSides.clear();
+        exposedOnSides.addAll(directions);
+        updateState();
     }
 
     @Override
-    public IGridHost getMachine() {
-        return this.gridProxy.getMachine();
+    public void setOwner(int ownerPlayerId) {
+        if (ownerPlayerId >= 0 && this.owner != ownerPlayerId) {
+            this.owner = ownerPlayerId;
+            if (ready) {
+                host.onOwnerChanged(this);
+            }
+        }
+    }
+
+    /**
+     * @param usagePerTick The power in AE/t that will be drained by this node.
+     */
+    @Override
+    public void setIdlePowerUsage(@Nonnegative double usagePerTick) {
+        this.idlePowerUsage = usagePerTick;
+        if (myGrid != null && ready) {
+            myGrid.postEvent(new MENetworkPowerIdleChange(this));
+        }
+    }
+
+    /**
+     * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
+     * {@link ItemStack#EMPTY} to hide the node from UIs.
+     */
+    @Override
+    public void setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
+        this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
+    }
+
+    /**
+     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates
+     * that the node will connect to nodes of any color.
+     */
+    @Override
+    public void setGridColor(@Nonnull AEColor color) {
+        this.gridColor = Objects.requireNonNull(color);
+        this.updateState();
+    }
+
+    @Override
+    public IGridNodeHost getHost() {
+        return this.host;
     }
 
     @Override
@@ -224,6 +278,7 @@ public class GridNode implements IGridNode, IPathItem {
 
         this.myGrid = grid;
         this.myGrid.add(this);
+        host.onGridChanged(this);
     }
 
     @Override
@@ -246,35 +301,51 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public IWorld getWorld() {
-        return this.gridProxy.getLocation().getWorld();
+    public void markReady() {
+        Preconditions.checkState(!ready);
+        ready = true;
+        updateState();
     }
 
     @Override
-    public EnumSet<AEPartLocation> getConnectedSides() {
-        final EnumSet<AEPartLocation> set = EnumSet.noneOf(AEPartLocation.class);
-        for (final IGridConnection gc : this.connections) {
-            set.add(gc.getDirection(this));
+    public boolean isReady() {
+        return ready && myGrid != null;
+    }
+
+    @Override
+    public EnumSet<Direction> getConnectedSides() {
+        var result = EnumSet.noneOf(Direction.class);
+        for (IGridConnection connection : this.connections) {
+            if (connection.isInWorld()) {
+                result.add(connection.getDirection(this));
+            }
         }
-        return set;
+        return result;
+    }
+
+    @Nonnull
+    @Override
+    public Map<Direction, IGridConnection> getInWorldConnections() {
+        var result = new EnumMap<Direction, IGridConnection>(Direction.class);
+        for (IGridConnection connection : this.connections) {
+            var direction = connection.getDirection(this);
+            if (direction != null) {
+                result.put(direction, connection);
+            }
+        }
+        return result;
     }
 
     @Override
-    public IReadOnlyCollection<IGridConnection> getConnections() {
-        return new ReadOnlyCollection<>(this.connections);
-    }
-
-    @Override
-    public IGridBlock getGridBlock() {
-        return this.gridProxy;
+    public List<IGridConnection> getConnections() {
+        return ImmutableList.copyOf(this.connections);
     }
 
     @Override
     public boolean isActive() {
-        final IGrid g = this.getGrid();
-        if (g != null) {
-            final IPathingGrid pg = g.getCache(IPathingGrid.class);
-            final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+        if (ready && myGrid != null) {
+            final IPathingGrid pg = myGrid.getCache(IPathingGrid.class);
+            final IEnergyGrid eg = myGrid.getCache(IEnergyGrid.class);
             return eg.isNetworkPowered() && !pg.isNetworkBooting() && this.meetsChannelRequirements();
         }
         return false;
@@ -282,9 +353,10 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public void loadFromNBT(final String name, final CompoundNBT nodeData) {
+        Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
         if (this.myGrid == null) {
             final CompoundNBT node = nodeData.getCompound(name);
-            this.playerID = node.getInt("p");
+            this.owner = node.getInt("p");
             this.setLastSecurityKey(node.getLong("k"));
 
             final long storageID = node.getLong("g");
@@ -300,7 +372,7 @@ public class GridNode implements IGridNode, IPathItem {
         if (this.myStorage != null) {
             final CompoundNBT node = new CompoundNBT();
 
-            node.putInt("p", this.playerID);
+            node.putInt("p", this.owner);
             node.putLong("k", this.getLastSecurityKey());
             node.putLong("g", this.myStorage.getID());
 
@@ -312,147 +384,153 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public boolean meetsChannelRequirements() {
-        return !this.gridProxy.getFlags().contains(GridFlags.REQUIRE_CHANNEL) || this.getUsedChannels() > 0;
+        return !flags.contains(GridFlags.REQUIRE_CHANNEL) || this.getUsedChannels() > 0;
     }
 
     @Override
     public boolean hasFlag(final GridFlags flag) {
-        return this.gridProxy.getFlags().contains(flag);
+        return flags.contains(flag);
     }
 
     @Override
-    public int getPlayerID() {
-        return this.playerID;
+    public double getIdlePowerUsage() {
+        return idlePowerUsage;
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getVisualRepresentation() {
+        return visualRepresentation;
+    }
+
+    @NotNull
+    @Override
+    public AEColor getGridColor() {
+        return gridColor;
     }
 
     @Override
-    public void setPlayerID(final int playerID) {
-        if (playerID >= 0 && this.playerID != playerID) {
-            this.playerID = playerID;
-            gridProxy.onGridNotification(GridNotification.OWNER_CHANGED);
-        }
+    public boolean isExposedOnSide(@NotNull Direction side) {
+        return exposedOnSides.contains(side);
+    }
+
+    @Override
+    public int getOwner() {
+        return this.owner;
     }
 
     private int getUsedChannels() {
         return this.usedChannels;
     }
 
-    private void findConnections() {
-        if (!this.gridProxy.isWorldAccessible()) {
-            return;
+    private void findInWorldConnections() {
+        if (inWorldHost == null) {
+            return;// Not hosted in-world
         }
 
-        final EnumSet<AEPartLocation> newSecurityConnections = EnumSet.noneOf(AEPartLocation.class);
+        final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
 
-        final DimensionalCoord dc = this.gridProxy.getLocation();
-        for (final AEPartLocation f : AEPartLocation.SIDE_LOCATIONS) {
-            final IGridHost te = this.findGridHost(dc.getWorld(), dc.x + f.xOffset, dc.y + f.yOffset, dc.z + f.zOffset);
-            if (te != null) {
-                final GridNode node = (GridNode) te.getGridNode(f.getOpposite());
-                if (node == null) {
-                    continue;
-                }
+        var gridApi = Api.INSTANCE.grid();
 
-                final boolean isValidConnection = this.canConnect(node, f) && node.canConnect(this, f.getOpposite());
+        // Clean up any connections that we might have left over to nodes that we can no longer reach
+        cleanupConnections();
 
-                IGridConnection con = null; // find the connection for this
-                // direction..
-                for (final IGridConnection c : this.getConnections()) {
-                    if (c.getDirection(this) == f) {
-                        con = c;
-                        break;
-                    }
-                }
+        // Find adjacent nodes in the world based on the sides of the host this node is exposed on
+        sides: for (var direction : exposedOnSides) {
+            var adjacentNode = (GridNode) gridApi.getAdjacentNode(inWorldHost, direction);
+            if (adjacentNode == null) {
+                continue;
+            }
 
-                if (con != null) {
-                    final IGridNode os = con.getOtherSide(this);
-                    if (os == node) {
-                        // if this connection is no longer valid, destroy it.
-                        if (!isValidConnection) {
-                            con.destroy();
-                        }
+            // It is implied that the other node is exposed on the side since the host did return it for the side
+            // so the only remaining condition is that the grid colors are compatible
+            if (!hasCompatibleColor(adjacentNode)) {
+                continue;
+            }
+
+            // Clean up phantom node connections for this side, if applicable
+            for (var c : this.connections) {
+                if (c.isInWorld() && c.getDirection(this) == direction) {
+                    // This can essentially only occur if the adjacent node has changed, but the previous node has
+                    // not properly severed their connection
+                    var os = c.getOtherSide(this);
+                    if (os == adjacentNode) {
+                        // Keep the existing connection and carry on
+                        continue sides;
                     } else {
-                        con.destroy();
-                        // throw new GridException( "invalid state found, encountered connection to
-                        // phantom block." );
+                        AELog.warn("Grid node %s did not disconnect properly and is now replaced with %s",
+                                os, adjacentNode);
+                        c.destroy();
                     }
-                } else if (isValidConnection) {
-                    if (node.getLastSecurityKey() != -1) {
-                        newSecurityConnections.add(f);
-                    } else {
-                        // construct a new connection between these two nodes.
-                        try {
-                            GridConnection.create(node, this, f.getOpposite());
-                        } catch (SecurityConnectionException e) {
-                            AELog.debug(e);
-                            TickHandler.instance().addCallable(node.getWorld(), new MachineSecurityBreak(this));
-
-                            return;
-                        } catch (final FailedConnectionException e) {
-                            AELog.debug(e);
-
-                            return;
-                        }
-                    }
+                    break;
                 }
             }
-        }
 
-        for (final AEPartLocation f : newSecurityConnections) {
-            final IGridHost te = this.findGridHost(dc.getWorld(), dc.x + f.xOffset, dc.y + f.yOffset, dc.z + f.zOffset);
-            if (te != null) {
-                final GridNode node = (GridNode) te.getGridNode(f.getOpposite());
-                if (node == null) {
-                    continue;
-                }
-
-                // construct a new connection between these two nodes.
-                try {
-                    GridConnection.create(node, this, f.getOpposite());
-                } catch (SecurityConnectionException e) {
-                    AELog.debug(e);
-
-                    TickHandler.instance().addCallable(node.getWorld(), new MachineSecurityBreak(this));
-
-                    return;
-                } catch (final FailedConnectionException e) {
-                    AELog.debug(e);
-
+            if (adjacentNode.getLastSecurityKey() != -1) {
+                newSecurityConnections.add(direction);
+            } else {
+                if (!connectTo(direction, adjacentNode)) {
                     return;
                 }
             }
         }
-    }
 
-    private IGridHost findGridHost(final IWorld world, final int x, final int y, final int z) {
-        final BlockPos pos = new BlockPos(x, y, z);
-        if (world.isBlockLoaded(pos)) {
-            final TileEntity te = world.getTileEntity(pos);
-            if (te instanceof IGridHost) {
-                return (IGridHost) te;
+        for (var direction : newSecurityConnections) {
+            var adjacentNode = gridApi.getAdjacentNode(inWorldHost, direction);
+            if (adjacentNode == null) {
+                continue;
+            }
+
+            if (!connectTo(direction, adjacentNode)) {
+                return;
             }
         }
-        return null;
     }
 
-    private boolean canConnect(final GridNode from, final AEPartLocation dir) {
-        if (!this.isValidDirection(dir)) {
+    // construct a new connection between this and another nodes.
+    private boolean connectTo(Direction direction, IGridNode adjacentNode) {
+        try {
+            GridConnection.create(adjacentNode, this, direction.getOpposite());
+            return true;
+        } catch (SecurityConnectionException e) {
+            AELog.debug(e);
+            TickHandler.instance().addCallable(adjacentNode.getWorld(), new MachineSecurityBreak(this));
+
+            return false;
+        } catch (final FailedConnectionException e) {
+            AELog.debug(e);
+
             return false;
         }
+    }
 
-        if (!from.getColor().matches(this.getColor())) {
-            return false;
+    private void cleanupConnections() {
+        // NOTE: this makes a defensive copy of the connections
+        for (var connection : getConnections()) {
+            if (!connection.isInWorld()) {
+                continue; // Purely internal connections are never cleaned up
+            }
+
+            var ourSide = connection.getDirection(this);
+            // If our external side is no longer exposed, the connection is invalid
+            if (!isExposedOnSide(ourSide)) {
+                connection.destroy();
+                continue;
+            }
+
+            var theirSide = ourSide.getOpposite();
+            IGridNode otherNode = connection.getOtherSide(this);
+            if (!otherNode.isExposedOnSide(theirSide)) {
+                connection.destroy();
+                continue;
+            }
         }
-
-        return true;
     }
 
-    private boolean isValidDirection(final AEPartLocation dir) {
-        return (this.compressedData & 1 << 8 + dir.ordinal()) > 0;
-    }
-
-    private AEColor getColor() {
-        return AEColor.values()[this.compressedData >> 3 & 0x1F];
+    private boolean hasCompatibleColor(IGridNode otherNode) {
+        var ourColor = getGridColor();
+        var theirColor = otherNode.getGridColor();
+        return ourColor == AEColor.TRANSPARENT || theirColor == AEColor.TRANSPARENT || ourColor == theirColor;
     }
 
     private void visitorConnection(final Object tracker, final IGridVisitor g, final Deque<GridNode> nextRun,
@@ -506,11 +584,11 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public IPathItem getControllerRoute() {
-        if (this.connections.isEmpty() || this.getFlags().contains(GridFlags.CANNOT_CARRY)) {
+        if (this.connections.isEmpty() || this.hasFlag(GridFlags.CANNOT_CARRY)) {
             return null;
         }
 
-        return (IPathItem) this.connections.get(0);
+        return this.connections.get(0);
     }
 
     @Override
@@ -519,10 +597,12 @@ public class GridNode implements IGridNode, IPathItem {
             this.usedChannels = 0;
         }
 
-        final int idx = this.connections.indexOf(fast);
+        GridConnection connection = (GridConnection) fast;
+
+        final int idx = this.connections.indexOf(connection);
         if (idx > 0) {
-            this.connections.remove(fast);
-            this.connections.add(0, (IGridConnection) fast);
+            this.connections.remove(connection);
+            this.connections.add(0, connection);
         }
     }
 
@@ -532,12 +612,18 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     private int getMaxChannels() {
-        return CHANNEL_COUNT[this.compressedData & 0x03];
+        if (flags.contains(GridFlags.CANNOT_CARRY)) {
+            return 0;
+        } else if (!flags.contains(GridFlags.DENSE_CAPACITY)) {
+            return 8;
+        } else {
+            return 32;
+        }
     }
 
     @Override
-    public IReadOnlyCollection<IPathItem> getPossibleOptions() {
-        return (IReadOnlyCollection) this.getConnections();
+    public Iterable<IPathItem> getPossibleOptions() {
+        return ImmutableList.copyOf(this.connections);
     }
 
     @Override
@@ -546,13 +632,8 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public EnumSet<GridFlags> getFlags() {
-        return this.gridProxy.getFlags();
-    }
-
-    @Override
     public void finalizeChannels() {
-        if (this.getFlags().contains(GridFlags.CANNOT_CARRY)) {
+        if (hasFlag(GridFlags.CANNOT_CARRY)) {
             return;
         }
 
@@ -594,7 +675,7 @@ public class GridNode implements IGridNode, IPathItem {
 
         @Override
         public Void call(final World world) throws Exception {
-            this.node.getMachine().securityBreak();
+            this.node.getHost().securityBreak();
 
             return null;
         }
@@ -615,4 +696,14 @@ public class GridNode implements IGridNode, IPathItem {
             return preferredA == preferredB ? 0 : preferredA ? -1 : 1;
         }
     }
+
+    @Override
+    public String toString() {
+        if (inWorldHost != null) {
+            return inWorldHost.getLocation() + " hosted by " + getMachineClass().getName();
+        } else {
+            return "internal node hosted by " + getMachineClass().getName();
+        }
+    }
+
 }

@@ -20,14 +20,14 @@ package appeng.fluids.helper;
 
 import java.util.EnumSet;
 
+import appeng.api.networking.IGridNodeHost;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;
-import appeng.me.helpers.IGridProxyable;
 
-public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgradeableHost {
+public interface IFluidInterfaceHost extends IActionHost, IGridNodeHost, IUpgradeableHost {
     DualityFluidInterface getDualityFluidInterface();
 
     EnumSet<Direction> getTargets();

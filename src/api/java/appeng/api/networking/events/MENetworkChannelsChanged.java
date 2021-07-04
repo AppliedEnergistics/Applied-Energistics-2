@@ -23,10 +23,10 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 
 /**
- * Posted to the {@link IGridHost} when the channels on the node connections are altered.
+ * Posted to the {@link IGridNodeHost} when the channels on the node connections are altered.
  *
  * Never posted IGridCaches.
  */

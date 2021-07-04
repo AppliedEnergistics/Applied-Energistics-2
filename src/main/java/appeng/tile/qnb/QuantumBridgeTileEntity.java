@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -41,8 +42,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -71,7 +71,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     public QuantumBridgeTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
         this.getProxy().setIdlePowerUsage(22);
     }
@@ -177,7 +177,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         this.cluster = null;
 
         if (affectWorld) {
-            this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+            this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
         }
     }
 
@@ -202,9 +202,9 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
             if (this.isCorner() || this.isCenter()) {
                 EnumSet<Direction> sides = EnumSet.copyOf(this.getAdjacentQuantumBridges());
-                this.getProxy().setValidSides(sides);
+                this.getProxy().setExposedOnSides(sides);
             } else {
-                this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+                this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
             }
         }
     }
@@ -256,17 +256,19 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.DENSE_SMART;
     }
 
     public void neighborUpdate(BlockPos fromPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.pos, fromPos);
+        if (world instanceof ServerWorld serverWorld) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, this.pos, fromPos);
+        }
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     public boolean hasQES() {

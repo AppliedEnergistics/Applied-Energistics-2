@@ -27,18 +27,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
-import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
-import appeng.me.GridAccessException;
 import appeng.me.cache.StatisticsCache;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 
@@ -53,8 +49,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             .build("spatialanchor");
 
     private static final int UPDATE_DELAY = 20;
-
-    private IGrid network;
 
     // Updated with the delay for an immediate sync after construction
     private int delay = UPDATE_DELAY;
@@ -78,10 +72,6 @@ public class SpatialAnchorContainer extends AEBaseContainer {
 
     public SpatialAnchorContainer(int id, final PlayerInventory ip, final SpatialAnchorTileEntity spatialAnchor) {
         super(TYPE, id, ip, spatialAnchor);
-
-        if (isServer()) {
-            this.network = spatialAnchor.getGridNode(AEPartLocation.INTERNAL).getGrid();
-        }
     }
 
     @Override
@@ -92,27 +82,28 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) this.getTileEntity();
             this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 
+            var gridNode = anchor.getGridNode();
+
             this.delay++;
-            if (this.delay > UPDATE_DELAY && this.network != null) {
-                StatisticsCache statistics = this.network.getCache(StatisticsCache.class);
+            if (this.delay > UPDATE_DELAY && gridNode != null && gridNode.getGrid() != null) {
+                var grid = gridNode.getGrid();
 
-                this.powerConsumption = (long) anchor.getProxy().getIdlePowerUsage();
-                this.loadedChunks = ((SpatialAnchorTileEntity) this.getTileEntity()).countLoadedChunks();
+                var statistics = grid.getCache(StatisticsCache.class);
 
-                try {
-                    HashMap<World, Integer> stats = new HashMap<>();
-                    IMachineSet anchors = anchor.getProxy().getGrid().getMachines(SpatialAnchorTileEntity.class);
+                this.powerConsumption = (long) gridNode.getIdlePowerUsage();
+                this.loadedChunks = anchor.countLoadedChunks();
 
-                    for (IGridNode machine : anchors) {
-                        SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getMachine();
-                        World world = machine.getGridBlock().getLocation().getWorld();
-                        stats.merge(world, a.countLoadedChunks(), Math::max);
-                    }
+                HashMap<IWorld, Integer> stats = new HashMap<>();
+                IMachineSet anchors = grid.getMachines(SpatialAnchorTileEntity.class);
 
-                    this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);
-                    this.allLoadedWorlds = stats.keySet().size();
-                } catch (GridAccessException ignored) {
+                for (IGridNode machine : anchors) {
+                    SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getHost();
+                    IWorld world = machine.getWorld();
+                    stats.merge(world, a.countLoadedChunks(), Math::max);
                 }
+
+                this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);
+                this.allLoadedWorlds = stats.keySet().size();
 
                 this.allWorlds = statistics.getChunks().size();
                 this.allChunks = 0;

@@ -33,5 +33,5 @@ public interface IMachineSet extends IReadOnlyCollection<IGridNode> {
      * @return the machine class for this set.
      */
     @Nonnull
-    Class<? extends IGridHost> getMachineClass();
+    Class<? extends IGridNodeHost> getMachineClass();
 }

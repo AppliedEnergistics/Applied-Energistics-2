@@ -18,20 +18,25 @@
 
 package appeng.tile.grid;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.block.IOwnerAwareTile;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.util.AEPartLocation;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.tile.AEBaseInvTileEntity;
+import net.minecraft.util.Direction;
 
-public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IActionHost, IGridProxyable {
+import javax.annotation.Nullable;
 
-    private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
+public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IActionHost, IInWorldGridNodeHost, IOwnerAwareTile {
+
+    private final ManagedGridNode gridProxy = new ManagedGridNode(this, "proxy")
+            .setVisualRepresentation(this.getItemFromTile());
 
     public AENetworkInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -50,19 +55,25 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
         return data;
     }
 
-    @Override
-    public AENetworkProxy getProxy() {
+    protected final ManagedGridNode getProxy() {
         return this.gridProxy;
     }
 
-    @Override
-    public void gridChanged() {
-
+    @Nullable
+    public IGridNode getGridNode() {
+        return getProxy().getNode();
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
-        return this.getProxy().getNode();
+    public IGridNode getGridNode(final Direction dir) {
+        var node = this.getProxy().getNode();
+
+        // Check if the proxy exposes the node on this side
+        if (node != null && node.isExposedOnSide(dir)) {
+            return node;
+        }
+
+        return null;
     }
 
     @Override
@@ -97,4 +108,10 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     public IGridNode getActionableNode() {
         return this.getProxy().getNode();
     }
+
+    @Override
+    public void setOwner(PlayerEntity owner) {
+        getProxy().setOwner(owner);
+    }
+
 }

@@ -18,6 +18,8 @@
 
 package appeng.me.storage;
 
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.me.cache.SecurityCache;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.AccessRestriction;
@@ -32,7 +34,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.me.GridAccessException;
 import appeng.tile.misc.SecurityStationTileEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
@@ -63,11 +64,9 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
-            try {
-                return this.securityTile.getProxy().getSecurity().hasPermission(src.player().get(),
-                        SecurityPermissions.SECURITY);
-            } catch (final GridAccessException e) {
-                // :P
+            var security = ISecurityGrid.get(this.securityTile.getGridNode());
+            if (security != null) {
+                return security.hasPermission(src.player().get(), SecurityPermissions.SECURITY);
             }
         }
         return false;

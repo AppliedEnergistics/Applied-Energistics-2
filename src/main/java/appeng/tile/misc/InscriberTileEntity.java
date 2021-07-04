@@ -49,7 +49,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -102,7 +101,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     public InscriberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.setInternalMaxPower(1600);
         this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
@@ -122,7 +121,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -189,7 +188,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+        this.getProxy().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
     }
 

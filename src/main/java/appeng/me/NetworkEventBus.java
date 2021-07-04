@@ -102,7 +102,7 @@ public class NetworkEventBus {
                         // stil part of grid?
                         if (machines.contains(obj)) {
                             x++;
-                            target.invoke(obj.getMachine(), e);
+                            target.invoke(obj.getHost(), e);
                         }
                     }
                 }
@@ -124,7 +124,7 @@ public class NetworkEventBus {
                 final MENetworkEventInfo target = subscribers.get(node.getMachineClass());
                 if (target != null) {
                     x++;
-                    target.invoke(node.getMachine(), e);
+                    target.invoke(node.getHost(), e);
                 }
             }
         } catch (final NetworkEventDone done) {

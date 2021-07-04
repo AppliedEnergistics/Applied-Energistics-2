@@ -18,9 +18,6 @@
 
 package appeng.me;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.NullNodeConnectionException;
@@ -30,27 +27,27 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
-import appeng.util.ReadOnlyCollection;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.util.Direction;
+
+import javax.annotation.Nullable;
 
 public class GridConnection implements IGridConnection, IPathItem {
 
-    private static final String EXISTING_CONNECTION_MESSAGE = "Connection between node [machine=%s, %s] and [machine=%s, %s] on [%s] already exists.";
-
     private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
+
     private int channelData = 0;
     private Object visitorIterationNumber = null;
     private GridNode sideA;
-    private AEPartLocation fromAtoB;
+    @Nullable
+    private Direction fromAtoB;
     private GridNode sideB;
 
-    private GridConnection(final GridNode aNode, final GridNode bNode, final AEPartLocation fromAtoB) {
+    private GridConnection(final GridNode aNode, final GridNode bNode, @Nullable Direction fromAtoB) {
         this.sideA = aNode;
         this.fromAtoB = fromAtoB;
         this.sideB = bNode;
@@ -73,9 +70,9 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public AEPartLocation getDirection(final IGridNode side) {
-        if (this.fromAtoB == AEPartLocation.INTERNAL) {
-            return this.fromAtoB;
+    public Direction getDirection(final IGridNode side) {
+        if (this.fromAtoB == null) {
+            return null;
         }
 
         if (this.sideA == side) {
@@ -109,8 +106,8 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public boolean hasDirection() {
-        return this.fromAtoB != AEPartLocation.INTERNAL;
+    public boolean isInWorld() {
+        return this.fromAtoB != null;
     }
 
     @Override
@@ -120,7 +117,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public IPathItem getControllerRoute() {
-        if (this.sideA.getFlags().contains(GridFlags.CANNOT_CARRY)) {
+        if (this.sideA.hasFlag(GridFlags.CANNOT_CARRY)) {
             return null;
         }
         return this.sideA;
@@ -146,8 +143,8 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public IReadOnlyCollection<IPathItem> getPossibleOptions() {
-        return new ReadOnlyCollection<>(Arrays.asList((IPathItem) this.a(), (IPathItem) this.b()));
+    public Iterable<IPathItem> getPossibleOptions() {
+        return ImmutableList.of((IPathItem) this.a(), (IPathItem) this.b());
     }
 
     @Override
@@ -156,8 +153,8 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public EnumSet<GridFlags> getFlags() {
-        return EnumSet.noneOf(GridFlags.class);
+    public boolean hasFlag(GridFlags flag) {
+        return false;
     }
 
     @Override
@@ -188,7 +185,7 @@ public class GridConnection implements IGridConnection, IPathItem {
         this.visitorIterationNumber = visitorIterationNumber;
     }
 
-    public static GridConnection create(final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB)
+    public static GridConnection create(final IGridNode aNode, final IGridNode bNode, @Nullable Direction externalDirection)
             throws FailedConnectionException {
         if (aNode == null || bNode == null) {
             throw new NullNodeConnectionException();
@@ -198,31 +195,20 @@ public class GridConnection implements IGridConnection, IPathItem {
         final GridNode b = (GridNode) bNode;
 
         if (a.hasConnection(b) || b.hasConnection(a)) {
-            final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
-            final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
-            final String aCoordinates = a.getGridBlock().getLocation().toString();
-            final String bCoordinates = b.getGridBlock().getLocation().toString();
-
-            throw new ExistingConnectionException(String.format(EXISTING_CONNECTION_MESSAGE, aMachineClass,
-                    aCoordinates, bMachineClass, bCoordinates, fromAtoB));
+            throw new ExistingConnectionException(String.format("Connection between node [%s] and [%s] on [%s] already exists.", a, b, externalDirection));
         }
 
         if (!Platform.securityCheck(a, b)) {
             if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-                final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
-                final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
-
-                AELog.info("Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(),
-                        a.getPlayerID());
-                AELog.info("Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(),
-                        b.getPlayerID());
+                AELog.info("Security audit 1 failed at [%s] belonging to player [id=%d]", a, a.getOwner());
+                AELog.info("Security audit 2 failed at [%s] belonging to player [id=%d]", b, b.getOwner());
             }
 
             throw new SecurityConnectionException();
         }
 
         // Create the actual connection
-        final GridConnection connection = new GridConnection(a, b, fromAtoB);
+        final GridConnection connection = new GridConnection(a, b, externalDirection);
 
         // Update both nodes with the new connection.
         if (a.getMyGrid() == null) {

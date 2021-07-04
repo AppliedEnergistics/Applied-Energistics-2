@@ -19,7 +19,7 @@
 package appeng.crafting;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.me.cache.CraftingGridCache;
 
 public class CraftingLinkNexus {
@@ -115,7 +115,7 @@ public class CraftingLinkNexus {
         }
     }
 
-    public boolean isMachine(final IGridHost machine) {
+    public boolean isMachine(final IGridNodeHost machine) {
         return this.getRequest() == machine;
     }
 

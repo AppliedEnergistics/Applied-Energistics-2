@@ -40,8 +40,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -142,16 +141,15 @@ public class EnergyGridCache implements IEnergyGrid {
 
     @MENetworkEventSubscribe
     public void postInit(final MENetworkPostCacheConstruction pcc) {
-        this.pgc = this.myGrid.getCache(IPathingGrid.class);
+        this.pgc = (PathGridCache) this.myGrid.getCache(IPathingGrid.class);
     }
 
     @MENetworkEventSubscribe
     public void nodeIdlePowerChangeHandler(final MENetworkPowerIdleChange ev) {
         // update power usage based on event.
-        final GridNode node = (GridNode) ev.node;
-        final IGridBlock gb = node.getGridBlock();
+        final var node = (GridNode) ev.node;
 
-        final double newDraw = gb.getIdlePowerUsage();
+        final double newDraw = node.getIdlePowerUsage();
         final double diffDraw = newDraw - node.getPreviousDraw();
         node.setPreviousDraw(newDraw);
 
@@ -460,7 +458,7 @@ public class EnergyGridCache implements IEnergyGrid {
     }
 
     @Override
-    public void removeNode(final IGridNode node, final IGridHost machine) {
+    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof IEnergyGridProvider) {
             this.energyGridProviders.remove(machine);
         }
@@ -518,15 +516,14 @@ public class EnergyGridCache implements IEnergyGrid {
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridHost machine) {
+    public void addNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof IEnergyGridProvider) {
             this.energyGridProviders.add((IEnergyGridProvider) machine);
         }
 
         // idle draw...
         final GridNode gridNode = (GridNode) node;
-        final IGridBlock gb = gridNode.getGridBlock();
-        gridNode.setPreviousDraw(gb.getIdlePowerUsage());
+        gridNode.setPreviousDraw(node.getIdlePowerUsage());
         this.drainPerTick += gridNode.getPreviousDraw();
 
         // power storage

@@ -109,7 +109,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected TileEntity getConnectedTE() {
         TileEntity self = this.getHost().getTile();
-        return this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        return this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {

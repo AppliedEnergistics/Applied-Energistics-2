@@ -88,7 +88,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -99,7 +99,7 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
@@ -211,11 +211,11 @@ public class Platform {
         return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
-    public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
+    public static boolean hasPermissions(final DimensionalBlockPos dc, final PlayerEntity player) {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
-        return player.world.isBlockModifiable(player, dc.getPos());
+        return player.world.isBlockModifiable(player, dc);
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -784,15 +784,10 @@ public class Platform {
         final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
 
         if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-            final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-            final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-
             AELog.info(
-                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
-                    a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(),
-                    b.getPlayerID(), locationB);
+                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, %s] vs Node B[isSecure=%b, key=%d, playerID=%d, %s]",
+                    a_isSecure, a.getLastSecurityKey(), a.getOwner(), a, b_isSecure, b.getLastSecurityKey(),
+                    b.getOwner(), b);
         }
 
         // can't do that son...
@@ -801,11 +796,11 @@ public class Platform {
         }
 
         if (!a_isSecure && b_isSecure) {
-            return checkPlayerPermissions(b.getGrid(), a.getPlayerID());
+            return checkPlayerPermissions(b.getGrid(), a.getOwner());
         }
 
         if (a_isSecure && !b_isSecure) {
-            return checkPlayerPermissions(a.getGrid(), b.getPlayerID());
+            return checkPlayerPermissions(a.getGrid(), b.getOwner());
         }
 
         return true;
@@ -871,7 +866,7 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
+    public static boolean canAccess(final ManagedGridNode gridProxy, final IActionSource src) {
         try {
             if (src.player().isPresent()) {
                 return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
@@ -882,7 +877,7 @@ public class Platform {
                     return false;
                 }
 
-                final int playerID = n.getPlayerID();
+                final int playerID = n.getOwner();
                 return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
             } else {
                 return false;

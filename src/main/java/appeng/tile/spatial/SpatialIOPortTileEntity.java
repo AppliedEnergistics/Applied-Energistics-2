@@ -40,10 +40,8 @@ import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkSpatialEvent;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.cache.SpatialPylonCache;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
@@ -114,19 +112,18 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
 
     @Override
     public Void call(final World world) throws Exception {
-        if (!(this.world instanceof ServerWorld)) {
+        if (!(this.world instanceof ServerWorld serverWorld)) {
             return null;
         }
-        ServerWorld serverWorld = (ServerWorld) this.world;
 
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
-            final IGrid gi = this.getProxy().getGrid();
+            final IGrid gi = this.getProxy().getGridOrThrow();
             final IEnergyGrid energy = this.getProxy().getEnergy();
 
             final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
-            final SpatialPylonCache spc = gi.getCache(ISpatialCache.class);
+            var spc = gi.getCache(ISpatialCache.class);
             if (spc.hasRegion() && spc.isValidRegion()) {
                 final double req = spc.requiredPower();
                 final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
@@ -139,7 +136,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                         if (this.getProxy().getSecurity().isAvailable()) {
                             playerId = this.getProxy().getSecurity().getOwner();
                         } else {
-                            playerId = this.getProxy().getNode().getPlayerID();
+                            playerId = this.getProxy().getNode().getOwner();
                         }
 
                         boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
@@ -158,13 +155,13 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override

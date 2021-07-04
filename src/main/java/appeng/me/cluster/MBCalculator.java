@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
+import net.minecraft.world.server.ServerWorld;
 
 public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
@@ -56,7 +57,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final World world, final BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(final ServerWorld world, final BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();
@@ -81,8 +82,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         }
     }
 
-    public void calculateMultiblock(final World world, final BlockPos loc) {
-        if (world.isRemote() || isModificationInProgress()) {
+    public void calculateMultiblock(final ServerWorld world, final BlockPos loc) {
+        if (isModificationInProgress()) {
             return;
         }
 
@@ -173,7 +174,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final World w, final BlockPos min, final BlockPos max) {
+    private boolean verifyUnownedRegion(final ServerWorld w, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
             if (this.verifyUnownedRegionInner(w, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
                     side)) {
@@ -192,9 +193,9 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param max max world coord
      * @return created cluster
      */
-    public abstract TCluster createCluster(World w, BlockPos min, BlockPos max);
+    public abstract TCluster createCluster(ServerWorld w, BlockPos min, BlockPos max);
 
-    public abstract boolean verifyInternalStructure(World world, BlockPos min, BlockPos max);
+    public abstract boolean verifyInternalStructure(ServerWorld world, BlockPos min, BlockPos max);
 
     /**
      * disassembles the multi-block.
@@ -211,7 +212,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param min min world coord
      * @param max max world coord
      */
-    public abstract void updateTiles(TCluster c, World w, BlockPos min, BlockPos max);
+    public abstract void updateTiles(TCluster c, ServerWorld w, BlockPos min, BlockPos max);
 
     /**
      * check if the tile entities are correct for the structure.
@@ -221,7 +222,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     public abstract boolean isValidTile(TileEntity te);
 
-    private boolean verifyUnownedRegionInner(final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
+    private boolean verifyUnownedRegionInner(final ServerWorld w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
             final AEPartLocation side) {
         switch (side) {
             case WEST:

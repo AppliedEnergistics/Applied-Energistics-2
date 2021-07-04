@@ -141,7 +141,7 @@ public class StorageBusPart extends UpgradeablePart
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
                 this.getHost().markForUpdate();
             } catch (final GridAccessException e) {
                 // :P
@@ -254,7 +254,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             final TileEntity te = w.getTileEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
@@ -329,7 +329,7 @@ public class StorageBusPart extends UpgradeablePart
 
     private IMEInventory<IAEItemStack> getInventoryWrapper(TileEntity target) {
 
-        Direction targetSide = this.getSide().getFacing().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
 
         // Prioritize a handler to directly link to another ME network
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
@@ -356,7 +356,13 @@ public class StorageBusPart extends UpgradeablePart
         final LazyOptional<IItemHandler> handlerExtOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
-            return new ItemHandlerAdapter(handlerExtOpt.orElse(null), this);
+            return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
+                try {
+                    this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+                } catch (GridAccessException ex) {
+                    // meh
+                }
+            });
         }
 
         return null;
@@ -369,7 +375,7 @@ public class StorageBusPart extends UpgradeablePart
             return 0;
         }
 
-        final Direction targetSide = this.getSide().getFacing().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
@@ -398,7 +404,7 @@ public class StorageBusPart extends UpgradeablePart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -472,7 +478,7 @@ public class StorageBusPart extends UpgradeablePart
 
         try {
             // force grid to update handlers...
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :3
         }

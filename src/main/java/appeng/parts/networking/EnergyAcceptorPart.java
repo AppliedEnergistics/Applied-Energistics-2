@@ -21,6 +21,7 @@ package appeng.parts.networking;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -65,11 +66,6 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
         }
 
         return super.getCapability(capability);
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.GLASS;
     }
 
     @Override

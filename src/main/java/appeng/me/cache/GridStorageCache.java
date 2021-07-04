@@ -29,7 +29,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -81,7 +81,7 @@ public class GridStorageCache implements IStorageGrid {
     }
 
     @Override
-    public void removeNode(final IGridNode node, final IGridHost machine) {
+    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof ICellContainer) {
             final ICellContainer cc = (ICellContainer) machine;
             final CellChangeTracker tracker = new CellChangeTracker();
@@ -104,7 +104,7 @@ public class GridStorageCache implements IStorageGrid {
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridHost machine) {
+    public void addNode(final IGridNode node, final IGridNodeHost machine) {
         if (machine instanceof ICellContainer) {
             final ICellContainer cc = (ICellContainer) machine;
             this.inactiveCellProviders.add(cc);
@@ -228,9 +228,9 @@ public class GridStorageCache implements IStorageGrid {
 
     private <T extends IAEStack<T>, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
             final C chan) {
-        final SecurityCache security = this.getGrid().getCache(ISecurityGrid.class);
+        var security = (SecurityCache) this.getGrid().getCache(ISecurityGrid.class);
 
-        final NetworkInventoryHandler<T> storageNetwork = new NetworkInventoryHandler<>(chan, security);
+        final NetworkInventoryHandler<T> storageNetwork = new NetworkInventoryHandler<T>(chan, security);
 
         for (final ICellProvider cc : this.activeCellProviders) {
             for (final IMEInventoryHandler<T> h : cc.getCellArray(chan)) {

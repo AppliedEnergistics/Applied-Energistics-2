@@ -20,6 +20,7 @@ package appeng.block;
 
 import java.util.List;
 
+import appeng.api.networking.IGridNodeHost;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +40,6 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTileEntity;
 
 public class AEBaseBlockItem extends BlockItem {
@@ -146,8 +146,8 @@ public class AEBaseBlockItem extends BlockItem {
                 ori.setOrientation(forward, up);
             }
 
-            if (tile instanceof IGridProxyable) {
-                ((IGridProxyable) tile).getProxy().setOwner(player);
+            if (tile instanceof IOwnerAwareTile ownerAwareTile) {
+                ownerAwareTile.setOwner(player);
             }
 
             tile.onPlacement(context);

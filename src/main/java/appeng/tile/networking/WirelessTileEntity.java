@@ -35,8 +35,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.me.GridAccessException;
@@ -58,13 +57,13 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getForward().getOpposite()));
+        this.getProxy().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
     }
 
     @MENetworkEventSubscribe
@@ -107,13 +106,13 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override
@@ -165,7 +164,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     @Override
     public IGrid getGrid() {
         try {
-            return this.getProxy().getGrid();
+            return this.getProxy().getGridOrThrow();
         } catch (final GridAccessException e) {
             return null;
         }

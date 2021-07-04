@@ -374,7 +374,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        final CraftingGridCache sg = this.getGrid().getCache(ICraftingGrid.class);
+        var sg = (CraftingGridCache) this.getGrid().getCache(ICraftingGrid.class);
 
         if (sg.getInterestManager().containsKey(diff)) {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
@@ -437,10 +437,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         for (final CraftingTileEntity r : this.tiles) {
             final IGridNode gn = r.getActionableNode();
             if (gn != null) {
-                final IGrid g = gn.getGrid();
-                if (g != null) {
-                    return r.getActionableNode().getGrid();
-                }
+                return gn.getGrid();
             }
         }
 
@@ -952,7 +949,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private void submitLink(final ICraftingLink myLastLink2) {
         if (this.getGrid() != null) {
-            final CraftingGridCache cc = this.getGrid().getCache(ICraftingGrid.class);
+            var cc = (CraftingGridCache) this.getGrid().getCache(ICraftingGrid.class);
             cc.addLink((CraftingLink) myLastLink2);
         }
     }

@@ -27,6 +27,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.tile.grid.AENetworkTileEntity;
+import net.minecraft.util.Direction;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 
@@ -36,7 +37,7 @@ public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 

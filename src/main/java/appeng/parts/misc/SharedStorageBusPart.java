@@ -64,7 +64,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
                 this.getHost().markForUpdate();
             } catch (final GridAccessException ignore) {
                 // :P
@@ -135,7 +135,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             this.resetCache(false);
         }
     }

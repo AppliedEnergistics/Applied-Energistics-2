@@ -38,7 +38,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
@@ -133,11 +133,11 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         boolean forceFullUpdate;
     }
 
-    private <T extends IInterfaceHost & IGridHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
-            VisitorState state) {
+    private <T extends IInterfaceHost & IGridNodeHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+                                                                                VisitorState state) {
         for (final IGridNode gn : grid.getMachines(machineClass)) {
             if (gn.isActive()) {
-                final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+                final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
                 final DualityInterface dual = ih.getInterfaceDuality();
                 if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
                     continue;
@@ -263,7 +263,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         for (final IGridNode gn : grid.getMachines(InterfaceTileEntity.class)) {
-            final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+            final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
             final DualityInterface dual = ih.getInterfaceDuality();
             if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
@@ -271,7 +271,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         for (final IGridNode gn : grid.getMachines(InterfacePart.class)) {
-            final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+            final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
             final DualityInterface dual = ih.getInterfaceDuality();
             if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));

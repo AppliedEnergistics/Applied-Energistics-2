@@ -55,8 +55,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
@@ -65,7 +64,7 @@ import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
@@ -81,7 +80,7 @@ public class DualityFluidInterface
     public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
 
     private final ConfigManager cm = new ConfigManager(this);
-    private final AENetworkProxy gridProxy;
+    private final ManagedGridNode gridProxy;
     private final IFluidInterfaceHost iHost;
     private final IActionSource mySource;
     private final IActionSource interfaceRequestSource;
@@ -98,7 +97,7 @@ public class DualityFluidInterface
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
             new NullInventory<IAEFluidStack>(), Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
-    public DualityFluidInterface(final AENetworkProxy networkProxy, final IFluidInterfaceHost ih) {
+    public DualityFluidInterface(final ManagedGridNode networkProxy, final IFluidInterfaceHost ih) {
         this.gridProxy = networkProxy;
         this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
         this.iHost = ih;
@@ -198,12 +197,12 @@ public class DualityFluidInterface
         this.notifyNeighbors();
     }
 
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getTileEntity());
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this.iHost.getTileEntity());
     }
 
     @SuppressWarnings("unchecked")

@@ -177,7 +177,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     private IGridNode getNode() {
-        return this.center.getGridNode(AEPartLocation.INTERNAL);
+        return this.center.getGridNode();
     }
 
     private boolean hasQES() {

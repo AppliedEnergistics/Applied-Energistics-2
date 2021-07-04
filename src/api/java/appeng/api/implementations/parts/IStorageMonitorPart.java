@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.parts;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.INetworkToolAgent;
@@ -31,7 +31,7 @@ import appeng.api.util.INetworkToolAgent;
 /**
  * The Storage monitor is a {@link IPart} located on the sides of a IPartHost
  */
-public interface IStorageMonitorPart extends IMonitorPart, IPart, IGridHost, INetworkToolAgent {
+public interface IStorageMonitorPart extends IMonitorPart, IPart, IGridNodeHost, INetworkToolAgent {
 
     /**
      * @return the item being displayed on the storage monitor, in AEStack Form, can be either a IAEItemStack or an

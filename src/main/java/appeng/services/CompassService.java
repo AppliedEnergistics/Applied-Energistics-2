@@ -37,7 +37,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.definitions.AEBlocks;
 import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
@@ -57,7 +57,7 @@ public final class CompassService {
         this.jobSize = 0;
     }
 
-    public Future<?> getCompassDirection(final DimensionalCoord coord, final int maxRange, final ICompassCallback cc) {
+    public Future<?> getCompassDirection(final DimensionalBlockPos coord, final int maxRange, final ICompassCallback cc) {
         this.jobSize++;
         return this.executor.submit(new CMDirectionRequest(coord, maxRange, cc));
     }
@@ -226,10 +226,10 @@ public final class CompassService {
     private class CMDirectionRequest implements Runnable {
 
         public final int maxRange;
-        public final DimensionalCoord coord;
+        public final DimensionalBlockPos coord;
         public final ICompassCallback callback;
 
-        public CMDirectionRequest(final DimensionalCoord coord, final int getMaxRange, final ICompassCallback cc) {
+        public CMDirectionRequest(final DimensionalBlockPos coord, final int getMaxRange, final ICompassCallback cc) {
             this.coord = coord;
             this.maxRange = getMaxRange;
             this.callback = cc;
@@ -242,8 +242,8 @@ public final class CompassService {
 
             CompassService.this.jobSize--;
 
-            final int cx = this.coord.x >> 4;
-            final int cz = this.coord.z >> 4;
+            final int cx = this.coord.getX() >> 4;
+            final int cz = this.coord.getZ() >> 4;
 
             final CompassReader cr = CompassService.this.getReader(world);
 

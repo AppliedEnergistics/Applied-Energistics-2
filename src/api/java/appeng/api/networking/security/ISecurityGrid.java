@@ -25,13 +25,23 @@ package appeng.api.networking.security;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import appeng.api.networking.IGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridCache;
 
 public interface ISecurityGrid extends IGridCache {
+
+    @Nullable
+    static ISecurityGrid get(@Nullable IGridNode node) {
+        if (node != null && node.getGrid() != null) {
+            return node.getGrid().getCache(ISecurityGrid.class);
+        }
+        return null;
+    }
 
     /**
      * @return true if a security provider is in the network ( and only 1 )

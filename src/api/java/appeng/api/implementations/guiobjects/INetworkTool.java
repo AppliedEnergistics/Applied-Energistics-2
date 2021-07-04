@@ -23,15 +23,16 @@
 
 package appeng.api.implementations.guiobjects;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNodeHost;
 
 /**
  * Obtained via {@link IGuiItem} getGuiObject
  */
 public interface INetworkTool extends IGuiItemObject {
-    IGridHost getGridHost(); // null for most purposes.
+    IInWorldGridNodeHost getGridHost(); // null for most purposes.
 
     IItemHandler getInventory();
 }
