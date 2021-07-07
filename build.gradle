@@ -18,7 +18,7 @@
 
 plugins {
     id 'java'
-    id 'forgified-fabric-loom'
+    id 'dev.architectury.loom'
     id 'maven-publish'
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
