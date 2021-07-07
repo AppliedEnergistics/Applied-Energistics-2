@@ -28,8 +28,8 @@ plugins {
 
 repositories {
     mavenLocal()
-    mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
+    mavenCentral()
     maven {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
