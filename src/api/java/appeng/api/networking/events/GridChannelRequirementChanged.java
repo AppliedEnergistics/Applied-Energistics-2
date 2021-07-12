@@ -23,36 +23,17 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.IGridNode;
 
 /**
- * informs the network, that a {@link IAEPowerStorage} block that had either run, out of power, or was full, is no
- * longer in that state.
- *
- * failure to post this event when your {@link IAEPowerStorage} changes state will result in your block not charging, or
- * not-discharging.
- *
- * you do not need to send this event when your node is added / removed from the grid.
+ * Posted by storage devices to inform AE the channel cache that the included node has changed its mind about its
+ * channel requirements.
  */
-public class MENetworkPowerStorage extends MENetworkEvent {
+public class GridChannelRequirementChanged extends GridEvent {
 
-    public final IAEPowerStorage storage;
-    public final PowerEventType type;
+    public final IGridNode node;
 
-    public MENetworkPowerStorage(final IAEPowerStorage t, final PowerEventType y) {
-        this.storage = t;
-        this.type = y;
-    }
-
-    public enum PowerEventType {
-        /**
-         * informs the network this tile is ready to receive power again.
-         */
-        REQUEST_POWER,
-
-        /**
-         * informs the network this tile is ready to provide power again.
-         */
-        PROVIDE_POWER
+    public GridChannelRequirementChanged(final IGridNode n) {
+        this.node = n;
     }
 }

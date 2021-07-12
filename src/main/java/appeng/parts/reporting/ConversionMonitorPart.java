@@ -79,7 +79,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -113,7 +113,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -134,7 +134,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -151,8 +151,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     private void insertItem(final PlayerEntity player, final Hand hand, final boolean allItems) {
         try {
-            final IEnergySource energy = this.getProxy().getEnergy();
-            final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
+            final IEnergySource energy = this.getMainNode().getEnergy();
+            final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             if (allItems) {
@@ -189,12 +189,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         final IAEItemStack input = this.getDisplayed();
         if (input != null) {
             try {
-                if (!this.getProxy().isActive()) {
+                if (!this.getMainNode().isActive()) {
                     return;
                 }
 
-                final IEnergySource energy = this.getProxy().getEnergy();
-                final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
+                final IEnergySource energy = this.getMainNode().getEnergy();
+                final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
                 input.setStackSize(count);

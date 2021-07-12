@@ -40,6 +40,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     public SharedItemBusPart(final ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -134,9 +135,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     private void updateState() {
         try {
             if (!this.isSleeping()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
             }
         } catch (final GridAccessException e) {
             // :P

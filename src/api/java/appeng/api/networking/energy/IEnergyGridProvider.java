@@ -29,11 +29,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNodeService;
 
 /**
  * internal use only.
  */
-public interface IEnergyGridProvider {
+public interface IEnergyGridProvider extends IGridNodeService {
     /**
      * internal use only
      *

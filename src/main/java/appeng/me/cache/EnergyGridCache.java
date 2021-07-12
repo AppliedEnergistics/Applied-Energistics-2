@@ -29,6 +29,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 
+import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.events.GridPowerStatusChange;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.core.Api;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -40,7 +45,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -48,19 +52,25 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPostCacheConstruction;
-import appeng.api.networking.events.MENetworkPowerIdleChange;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridPowerIdleChange;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
-public class EnergyGridCache implements IEnergyGrid {
+public class EnergyGridCache implements IEnergyGrid, IGridCacheProvider {
+
+    static {
+        Api.instance().grid().addGridCacheEventHandler(GridPowerIdleChange.class, IEnergyGrid.class, (cache, event) -> {
+            ((EnergyGridCache) cache).nodeIdlePowerChangeHandler(event);
+        });
+
+        Api.instance().grid().addGridCacheEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class, (cache, event) -> {
+            ((EnergyGridCache) cache).storagePowerChangeHandler(event);
+        });
+    }
 
     private static final double MAX_BUFFER_STORAGE = 800;
 
@@ -128,24 +138,19 @@ public class EnergyGridCache implements IEnergyGrid {
     private boolean hasPower = true;
     private long ticksSinceHasPowerChange = 900;
 
-    private PathGridCache pgc;
+    private final PathGridCache pgc;
     private double lastStoredPower = -1;
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
-    public EnergyGridCache(final IGrid g) {
+    public EnergyGridCache(final IGrid g, IPathingGrid pgc) {
         this.myGrid = g;
+        this.pgc = (PathGridCache) pgc;
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
 
-    @MENetworkEventSubscribe
-    public void postInit(final MENetworkPostCacheConstruction pcc) {
-        this.pgc = (PathGridCache) this.myGrid.getCache(IPathingGrid.class);
-    }
-
-    @MENetworkEventSubscribe
-    public void nodeIdlePowerChangeHandler(final MENetworkPowerIdleChange ev) {
+    public void nodeIdlePowerChangeHandler(final GridPowerIdleChange ev) {
         // update power usage based on event.
         final var node = (GridNode) ev.node;
 
@@ -156,8 +161,7 @@ public class EnergyGridCache implements IEnergyGrid {
         this.drainPerTick += diffDraw;
     }
 
-    @MENetworkEventSubscribe
-    public void storagePowerChangeHandler(final MENetworkPowerStorage ev) {
+    public void storagePowerChangeHandler(final GridPowerStorageStateChanged ev) {
         if (ev.storage.isAEPublicPowerStorage()) {
             switch (ev.type) {
                 case PROVIDE_POWER:
@@ -270,7 +274,11 @@ public class EnergyGridCache implements IEnergyGrid {
 
         this.publicHasPower = newState;
         ((Grid) this.myGrid).setImportantFlag(0, this.publicHasPower);
-        grid.postEvent(new MENetworkPowerStatusChange());
+        grid.postEvent(new GridPowerStatusChange());
+
+        for (IGridNode node : grid.getNodes()) {
+            ((GridNode) node).notifyStatusChange(IGridNodeListener.ActiveChangeReason.POWER);
+        }
     }
 
     /**
@@ -458,9 +466,10 @@ public class EnergyGridCache implements IEnergyGrid {
     }
 
     @Override
-    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
-        if (machine instanceof IEnergyGridProvider) {
-            this.energyGridProviders.remove(machine);
+    public void removeNode(final IGridNode node) {
+        var gridProvider = node.getService(IEnergyGridProvider.class);
+        if (gridProvider != null) {
+            this.energyGridProviders.remove(gridProvider);
         }
 
         // idle draw.
@@ -468,8 +477,8 @@ public class EnergyGridCache implements IEnergyGrid {
         this.drainPerTick -= gridNode.getPreviousDraw();
 
         // power storage.
-        if (machine instanceof IAEPowerStorage) {
-            final IAEPowerStorage ps = (IAEPowerStorage) machine;
+        var ps = node.getService(IAEPowerStorage.class);
+        if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
                 if (ps.getPowerFlow() != AccessRestriction.WRITE) {
                     this.globalMaxPower -= ps.getAEMaxPower();
@@ -481,13 +490,9 @@ public class EnergyGridCache implements IEnergyGrid {
             }
         }
 
-        if (machine instanceof IEnergyWatcherHost) {
-            final IEnergyWatcher watcher = this.watchers.get(node);
-
-            if (watcher != null) {
-                watcher.reset();
-                this.watchers.remove(node);
-            }
+        var watcher = this.watchers.remove(node);
+        if (watcher != null) {
+            watcher.reset();
         }
     }
 
@@ -516,9 +521,10 @@ public class EnergyGridCache implements IEnergyGrid {
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridNodeHost machine) {
-        if (machine instanceof IEnergyGridProvider) {
-            this.energyGridProviders.add((IEnergyGridProvider) machine);
+    public void addNode(final IGridNode node) {
+        var gridProvider = node.getService(IEnergyGridProvider.class);
+        if (gridProvider != null) {
+            this.energyGridProviders.add(gridProvider);
         }
 
         // idle draw...
@@ -527,8 +533,8 @@ public class EnergyGridCache implements IEnergyGrid {
         this.drainPerTick += gridNode.getPreviousDraw();
 
         // power storage
-        if (machine instanceof IAEPowerStorage) {
-            final IAEPowerStorage ps = (IAEPowerStorage) machine;
+        var ps = node.getService(IAEPowerStorage.class);
+        if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
                 final double max = ps.getAEMaxPower();
                 final double current = ps.getAECurrentPower();
@@ -548,15 +554,12 @@ public class EnergyGridCache implements IEnergyGrid {
             }
         }
 
-        if (machine instanceof IEnergyWatcherHost) {
-            final IEnergyWatcherHost swh = (IEnergyWatcherHost) machine;
-            final EnergyWatcher iw = new EnergyWatcher(this, swh);
-
+        var ews = node.getService(IEnergyWatcherHost.class);
+        if (ews != null) {
+            var iw = new EnergyWatcher(this, ews);
             this.watchers.put(node, iw);
-            swh.updateWatcher(iw);
+            ews.updateWatcher(iw);
         }
-
-        this.myGrid.postEventTo(node, new MENetworkPowerStatusChange());
     }
 
     @Override
@@ -639,7 +642,7 @@ public class EnergyGridCache implements IEnergyGrid {
             this.stored += amount;
 
             if (this.stored > 0.01) {
-                EnergyGridCache.this.myGrid.postEvent(new MENetworkPowerStorage(this, PowerEventType.PROVIDE_POWER));
+                EnergyGridCache.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
             }
         }
 
@@ -647,7 +650,7 @@ public class EnergyGridCache implements IEnergyGrid {
             this.stored -= amount;
 
             if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyGridCache.this.myGrid.postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
+                EnergyGridCache.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             }
         }
     }

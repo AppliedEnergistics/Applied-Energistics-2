@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
+import appeng.api.networking.IGridCacheProvider;
+import appeng.core.Api;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
@@ -30,17 +32,21 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkSecurityChange;
+import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
-public class SecurityCache implements ISecurityGrid {
+public class SecurityCache implements ISecurityGrid, IGridCacheProvider {
+
+    static {
+        Api.instance().grid().addGridCacheEventHandler(GridSecurityChange.class, ISecurityGrid.class, (cache, event) -> {
+            ((SecurityCache) cache).updatePermissions();
+        });
+    }
 
     private final IGrid myGrid;
     private final List<ISecurityProvider> securityProvider = new ArrayList<>();
@@ -51,8 +57,7 @@ public class SecurityCache implements ISecurityGrid {
         this.myGrid = g;
     }
 
-    @MENetworkEventSubscribe
-    public void updatePermissions(final MENetworkSecurityChange ev) {
+    private void updatePermissions() {
         this.playerPerms.clear();
         if (this.securityProvider.isEmpty()) {
             return;
@@ -66,14 +71,10 @@ public class SecurityCache implements ISecurityGrid {
     }
 
     @Override
-    public void onUpdateTick() {
-
-    }
-
-    @Override
-    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof ISecurityProvider) {
-            this.securityProvider.remove(machine);
+    public void removeNode(final IGridNode gridNode) {
+        var security = gridNode.getService(ISecurityProvider.class);
+        if (security != null) {
+            this.securityProvider.remove(security);
             this.updateSecurityKey();
         }
     }
@@ -81,7 +82,7 @@ public class SecurityCache implements ISecurityGrid {
     private void updateSecurityKey() {
         final long lastCode = this.securityKey;
 
-        /**
+        /*
          * Placing a security station will propagate the security station's owner to all connected grid nodes to prevent
          * the network from not reforming due to different owners later.
          */
@@ -95,40 +96,27 @@ public class SecurityCache implements ISecurityGrid {
         }
 
         if (lastCode != this.securityKey) {
-            this.getGrid().postEvent(new MENetworkSecurityChange());
-            for (final IGridNode n : this.getGrid().getNodes()) {
+            this.getGrid().postEvent(new GridSecurityChange());
+            for (var n : this.getGrid().getNodes()) {
                 GridNode gridNode = (GridNode) n;
                 gridNode.setLastSecurityKey(this.securityKey);
-                if (gridNode.getOwner() != newOwner) {
-                    gridNode.setOwner(newOwner);
+                if (gridNode.getOwningPlayerId() != newOwner) {
+                    gridNode.setOwningPlayerId(newOwner);
                 }
             }
         }
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof ISecurityProvider) {
-            this.securityProvider.add((ISecurityProvider) machine);
+    public void addNode(final IGridNode gridNode) {
+        var security = gridNode.getService(ISecurityProvider.class);
+
+        if (security != null) {
+            this.securityProvider.add(security);
             this.updateSecurityKey();
         } else {
             ((GridNode) gridNode).setLastSecurityKey(this.securityKey);
         }
-    }
-
-    @Override
-    public void onSplit(final IGridStorage destinationStorage) {
-
-    }
-
-    @Override
-    public void onJoin(final IGridStorage sourceStorage) {
-
-    }
-
-    @Override
-    public void populateGridStorage(final IGridStorage destinationStorage) {
-
     }
 
     @Override

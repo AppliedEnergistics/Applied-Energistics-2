@@ -70,10 +70,8 @@ public class TickTracker implements Comparable<TickTracker> {
         crashreportcategory.addDetail("CurrentTickRate", this.getCurrentRate());
         crashreportcategory.addDetail("MinTickRate", this.getRequest().minTickRate);
         crashreportcategory.addDetail("MaxTickRate", this.getRequest().maxTickRate);
-        crashreportcategory.addDetail("MachineType", this.getGridTickable().getClass().getName());
-        crashreportcategory.addDetail("GridHostType", this.getNode().getHost().getClass().getName());
+        crashreportcategory.addDetail("Node", this.getNode());
         crashreportcategory.addDetail("ConnectedSides", this.getNode().getConnectedSides());
-        crashreportcategory.addDetail("Location", this.getNode());
     }
 
     public int getCurrentRate() {

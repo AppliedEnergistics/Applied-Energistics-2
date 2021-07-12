@@ -90,6 +90,11 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
+    public void saveChanges() {
+        this.getHost().markForSave();
+    }
+
+    @Override
     public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
@@ -118,7 +123,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         try {
-            return this.getProxy().getStorage().getInventory(channel);
+            return this.getMainNode().getStorage().getInventory(channel);
         } catch (final GridAccessException e) {
             // err nope?
         }

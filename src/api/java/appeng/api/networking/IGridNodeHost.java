@@ -37,36 +37,6 @@ import net.minecraft.world.World;
  */
 public interface IGridNodeHost {
 
-    /**
-     * break this host, its violating security rules, just break your block, or part.
-     */
-    void securityBreak();
-
     World getWorld();
-
-    /**
-     * Notifies the grid host that properties of a node have changed that need to be saved to disk.
-     * Can be implemented on tile-entities by delegating to {@link TileEntity#markDirty()} for example.
-     */
-    void saveChanges();
-
-    /**
-     * Called by the {@link IGridNode} when the visible connections for the node have changed, useful for cable.
-     */
-    default void onInWorldConnectionChanged(IGridNode node) {
-    }
-
-    /**
-     * Called by the {@link IGridNode} when the node's owner has changed. The node's state needs to be saved.
-     */
-    default void onOwnerChanged(IGridNode node) {
-    }
-
-    /**
-     * called when the grid for the node has changed, the general grid state should not be trusted at this point.
-     */
-    default void onGridChanged(IGridNode node) {
-        saveChanges();
-    }
 
 }

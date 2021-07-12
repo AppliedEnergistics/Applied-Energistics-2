@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.helpers.ManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -47,6 +49,14 @@ import appeng.parts.AEBasePart;
 
 public class CablePart extends AEBasePart implements ICablePart {
 
+    private static final IGridNodeListener<CablePart> NODE_LISTENER = new NodeListener<>() {
+        @Override
+        public void onInWorldConnectionChanged(CablePart nodeOwner, IGridNode node) {
+            super.onInWorldConnectionChanged(nodeOwner, node);
+            nodeOwner.markForUpdate();
+        }
+    };
+
     private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
     private Set<Direction> connections = Collections.emptySet();
@@ -54,13 +64,19 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     public CablePart(final ItemStack is) {
         super(is);
-        this.getProxy()
+        this.getMainNode()
             .setFlags(GridFlags.PREFERRED)
             .setIdlePowerUsage(0.0)
+            .setInWorldNode(true)
             .setExposedOnSides(EnumSet.allOf(Direction.class));
         if (is.getItem() instanceof ColoredPartItem<?> coloredPartItem) {
-            this.getProxy().setGridColor(coloredPartItem.getColor());
+            this.getMainNode().setGridColor(coloredPartItem.getColor());
         }
+    }
+
+    @Override
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, NODE_LISTENER);
     }
 
     @Override
@@ -70,7 +86,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        return this.getProxy().getGridColor();
+        return this.getMainNode().getGridColor();
     }
 
     @Override
@@ -109,7 +125,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             boolean hasPermission = true;
 
             try {
-                hasPermission = this.getProxy().getSecurity().hasPermission(who, SecurityPermissions.BUILD);
+                hasPermission = this.getMainNode().getSecurity().hasPermission(who, SecurityPermissions.BUILD);
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -129,7 +145,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public void setExposedOnSides(final EnumSet<Direction> sides) {
-        this.getProxy().setExposedOnSides(sides);
+        this.getMainNode().setExposedOnSides(sides);
     }
 
     @Override
@@ -250,7 +266,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         }
 
         try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+            if (this.getMainNode().getEnergy().isNetworkPowered()) {
                 flags |= 1 << AEPartLocation.INTERNAL.ordinal();
             }
         } catch (final GridAccessException e) {
@@ -327,8 +343,4 @@ public class CablePart extends AEBasePart implements ICablePart {
         this.connections = connections;
     }
 
-    @Override
-    public void onInWorldConnectionChanged(IGridNode node) {
-        markForUpdate();
-    }
 }

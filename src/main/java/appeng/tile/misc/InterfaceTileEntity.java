@@ -18,14 +18,29 @@
 
 package appeng.tile.misc;
 
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import appeng.api.config.Actionable;
+import appeng.api.config.Upgrades;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalBlockPos;
+import appeng.api.util.IConfigManager;
+import appeng.container.implementations.InterfaceContainer;
+import appeng.core.definitions.AEBlocks;
+import appeng.helpers.DualityInterface;
+import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IPriorityHost;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.tile.grid.AENetworkInvTileEntity;
+import appeng.me.helpers.TileEntityNodeListener;
+import appeng.util.Platform;
+import appeng.util.inv.IInventoryDestination;
+import appeng.util.inv.InvOperation;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -41,36 +56,22 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.Upgrades;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
-import appeng.api.util.IConfigManager;
-import appeng.container.implementations.InterfaceContainer;
-import appeng.core.definitions.AEBlocks;
-import appeng.helpers.DualityInterface;
-import appeng.helpers.IInterfaceHost;
-import appeng.helpers.IPriorityHost;
-import appeng.tile.grid.AENetworkInvTileEntity;
-import appeng.util.Platform;
-import appeng.util.inv.IInventoryDestination;
-import appeng.util.inv.InvOperation;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.List;
 
 public class InterfaceTileEntity extends AENetworkInvTileEntity
-        implements IGridTickable, IInventoryDestination, IInterfaceHost, IPriorityHost {
+        implements IInventoryDestination, IInterfaceHost, IPriorityHost {
 
-    private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
+    private static final IGridNodeListener<InterfaceTileEntity> NODE_LISTENER = new TileEntityNodeListener<>() {
+        @Override
+        public void onGridChanged(InterfaceTileEntity nodeOwner, IGridNode node) {
+            nodeOwner.duality.gridChanged();
+        }
+    };
+
+    private final DualityInterface duality = new DualityInterface(this.getMainNode(), this, getItemFromTile());
 
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
@@ -79,13 +80,13 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         super(tileEntityTypeIn);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkChannelsChanged c) {
-        this.duality.notifyNeighbors();
+    @Override
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, NODE_LISTENER);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkPowerStatusChange c) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         this.duality.notifyNeighbors();
     }
 
@@ -125,22 +126,15 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     private void configureNodeSides() {
         if (this.omniDirectional) {
-            this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
+            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
         } else {
-            this.getProxy().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+            this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         }
     }
 
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         this.duality.addDrops(drops);
-    }
-
-    @Override
-    public void onGridChanged(IGridNode node) {
-        super.onGridChanged(node);
-
-        this.duality.gridChanged();
     }
 
     @Override
@@ -199,16 +193,6 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     @Override
     public IItemHandler getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return this.duality.getTickingRequest(node);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.duality.tickingRequest(node, ticksSinceLastCall);
     }
 
     @Override

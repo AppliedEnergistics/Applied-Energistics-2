@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -39,7 +40,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.ToolType;
@@ -49,9 +49,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.IGridTickable;
@@ -72,11 +69,10 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
-import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
+public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/item_annihilation_plane");
@@ -101,12 +97,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     public AnnihilationPlanePart(final ItemStack is) {
         super(is);
+        getMainNode()
+                .addService(IGridTickable.class, this);
     }
 
-    @Override
-    public TickRateModulation call(final World world) {
+    private void finishBreakBlock() {
         this.breaking = false;
-        return this.breakBlock(true);
+        this.breakBlock(true);
     }
 
     @Override
@@ -142,7 +139,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Override
     public void onEntityCollision(final Entity entity) {
         if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && !isRemote()
-                && this.getProxy().isActive()) {
+                && this.getMainNode().isActive()) {
 
             ItemEntity itemEntity = (ItemEntity) entity;
             if (isItemBlacklisted(itemEntity.getItem().getItem())) {
@@ -232,8 +229,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private IAEItemStack storeItemStack(final ItemStack item) {
         final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
         try {
-            final IStorageGrid storage = this.getProxy().getStorage();
-            final IEnergyGrid energy = this.getProxy().getEnergy();
+            final IStorageGrid storage = this.getMainNode().getStorage();
+            final IEnergyGrid energy = this.getMainNode().getEnergy();
             final IAEItemStack overflow = Platform.poweredInsert(energy,
                     storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
                     itemToStore, this.mySrc);
@@ -272,27 +269,19 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void chanRender(final MENetworkChannelsChanged c) {
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        super.onMainNodeStateChanged(reason);
         this.refresh();
-        this.getHost().markForUpdate();
-    }
-
-    @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.refresh();
-        this.getHost().markForUpdate();
     }
 
     private TickRateModulation breakBlock(final boolean modulate) {
-        if (this.isAccepting && this.getProxy().isActive()) {
+        if (this.isAccepting && this.getMainNode().isActive()) {
             try {
                 final TileEntity te = this.getTile();
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
                 final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+                final IEnergyGrid energy = this.getMainNode().getEnergy();
 
                 final BlockState blockState = w.getBlockState(pos);
                 if (this.canHandleBlock(w, pos, blockState)) {
@@ -309,7 +298,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                             performBreakBlock(w, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
-                            TickHandler.instance().addCallable(this.getTile().getWorld(), this);
+                            TickHandler.instance().addCallable(this.getTile().getWorld(), this::finishBreakBlock);
                         }
                         return TickRateModulation.URGENT;
                     }
@@ -426,7 +415,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         boolean canStore = itemStacks.isEmpty();
 
         try {
-            final IStorageGrid storage = this.getProxy().getStorage();
+            final IStorageGrid storage = this.getMainNode().getStorage();
 
             for (final ItemStack itemStack : itemStacks) {
                 final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);
@@ -470,7 +459,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         getTile().requestModelDataUpdate();
 
         try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
         } catch (final GridAccessException e) {
             // :P
         }

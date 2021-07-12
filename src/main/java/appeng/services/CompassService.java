@@ -242,8 +242,8 @@ public final class CompassService {
 
             CompassService.this.jobSize--;
 
-            final int cx = this.coord.getX() >> 4;
-            final int cz = this.coord.getZ() >> 4;
+            final int cx = this.coord.getPos().getX() >> 4;
+            final int cz = this.coord.getPos().getZ() >> 4;
 
             final CompassReader cr = CompassService.this.getReader(world);
 

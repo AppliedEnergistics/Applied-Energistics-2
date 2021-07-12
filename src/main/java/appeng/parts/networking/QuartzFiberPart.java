@@ -46,21 +46,26 @@ import appeng.me.helpers.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
-public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
+public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
-    private final ManagedGridNode outerProxy;
+    private final ManagedGridNode outerNode;
 
     public QuartzFiberPart(final ItemStack is) {
         super(is);
-        this.getProxy().setIdlePowerUsage(0);
-        this.getProxy().setFlags(GridFlags.CANNOT_CARRY);
-        this.outerProxy = new ManagedGridNode(this, "outer")
+        var energyBridge = new GridBridgeProvider();
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .setFlags(GridFlags.CANNOT_CARRY)
+                .addService(IEnergyGridProvider.class, energyBridge);
+        this.outerNode = new ManagedGridNode(this, NodeListener.INSTANCE)
+                .setTagName("outer")
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(is)
-                .setFlags(GridFlags.CANNOT_CARRY);
+                .setFlags(GridFlags.CANNOT_CARRY)
+                .addService(IEnergyGridProvider.class, energyBridge);
     }
 
     @Override
@@ -71,36 +76,36 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.outerProxy.readFromNBT(extra);
+        this.outerNode.readFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.outerProxy.writeToNBT(extra);
+        this.outerNode.writeToNBT(extra);
     }
 
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.outerProxy.remove();
+        this.outerNode.remove();
     }
 
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerProxy.onReady();
+        this.outerNode.create(getWorld(), getTile().getPos());
     }
 
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setExposedOnSides(EnumSet.of(side.getDirection()));
+        this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override
     public IGridNode getExternalFacingNode() {
-        return this.outerProxy.getNode();
+        return this.outerNode.getNode();
     }
 
     @Override
@@ -112,59 +117,67 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.outerProxy.setOwner(player);
-    }
-
-    @Override
-    public Collection<IEnergyGridProvider> providers() {
-        Collection<IEnergyGridProvider> providers = new ArrayList<>();
-
-        try {
-            final IEnergyGrid eg = this.getProxy().getEnergy();
-
-            providers.add(eg);
-        } catch (final GridAccessException e) {
-            // :P
-        }
-
-        try {
-            final IEnergyGrid eg = this.outerProxy.getEnergy();
-
-            providers.add(eg);
-        } catch (final GridAccessException e) {
-            // :P
-        }
-
-        return providers;
-    }
-
-    @Override
-    public double extractProviderPower(final double amt, final Actionable mode) {
-        return 0;
-    }
-
-    @Override
-    public double injectProviderPower(final double amt, final Actionable mode) {
-        return amt;
-    }
-
-    @Override
-    public double getProviderEnergyDemand(final double amt) {
-        return 0;
-    }
-
-    @Override
-    public double getProviderStoredEnergy() {
-        return 0;
-    }
-
-    @Override
-    public double getProviderMaxEnergy() {
-        return 0;
+        this.outerNode.setOwner(player);
     }
 
     @Override
     public IPartModel getStaticModels() {
         return MODELS;
     }
+
+    /**
+     * A provider of energy grids that makes both connected energy grids accessible to each other.
+     */
+    private class GridBridgeProvider implements IEnergyGridProvider {
+
+        @Override
+        public Collection<IEnergyGridProvider> providers() {
+            var providers = new ArrayList<IEnergyGridProvider>(2);
+
+            try {
+                final IEnergyGrid eg = getMainNode().getEnergy();
+
+                providers.add(eg);
+            } catch (final GridAccessException e) {
+                // :P
+            }
+
+            try {
+                final IEnergyGrid eg = outerNode.getEnergy();
+
+                providers.add(eg);
+            } catch (final GridAccessException e) {
+                // :P
+            }
+
+            return providers;
+        }
+
+        @Override
+        public double extractProviderPower(final double amt, final Actionable mode) {
+            return 0;
+        }
+
+        @Override
+        public double injectProviderPower(final double amt, final Actionable mode) {
+            return amt;
+        }
+
+        @Override
+        public double getProviderEnergyDemand(final double amt) {
+            return 0;
+        }
+
+        @Override
+        public double getProviderStoredEnergy() {
+            return 0;
+        }
+
+        @Override
+        public double getProviderMaxEnergy() {
+            return 0;
+        }
+
+    }
+
 }

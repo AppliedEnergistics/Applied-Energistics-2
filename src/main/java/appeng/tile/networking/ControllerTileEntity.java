@@ -20,6 +20,9 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.events.GridControllerChange;
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -30,11 +33,8 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkControllerChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
 import appeng.block.networking.ControllerBlock;
@@ -44,14 +44,23 @@ import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.util.inv.InvOperation;
 
 public class ControllerTileEntity extends AENetworkPowerTileEntity {
+
+    static {
+        Api.instance().grid().addNodeOwnerEventHandler(
+                GridControllerChange.class,
+                ControllerTileEntity.class,
+                ControllerTileEntity::updateState
+        );
+    }
+
     private boolean isValid = false;
 
     public ControllerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
-        this.getProxy().setIdlePowerUsage(3);
-        this.getProxy().setFlags(GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY);
+        this.getMainNode().setIdlePowerUsage(3);
+        this.getMainNode().setFlags(GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY);
     }
 
     @Override
@@ -63,6 +72,11 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     public void onReady() {
         this.onNeighborChange(true);
         super.onReady();
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        this.updateState();
     }
 
     public void onNeighborChange(final boolean force) {
@@ -84,28 +98,28 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
         if (oldValid != this.isValid || force) {
             if (this.isValid) {
-                this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
+                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
             } else {
-                this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
+                this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
             }
 
-            this.updateMeta();
+            this.updateState();
         }
 
     }
 
-    private void updateMeta() {
-        if (!this.getProxy().isReady()) {
+    private void updateState() {
+        if (!this.getMainNode().isReady()) {
             return;
         }
 
         ControllerBlockState metaState = ControllerBlockState.offline;
 
         try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+            if (this.getMainNode().getEnergy().isNetworkPowered()) {
                 metaState = ControllerBlockState.online;
 
-                if (this.getProxy().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
+                if (this.getMainNode().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
                     metaState = ControllerBlockState.conflicted;
                 }
             }
@@ -124,7 +138,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected double getFunnelPowerDemand(final double maxReceived) {
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyGrid grid = this.getMainNode().getEnergy();
 
             return grid.getEnergyDemand(maxReceived);
         } catch (final GridAccessException e) {
@@ -136,7 +150,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyGrid grid = this.getMainNode().getEnergy();
             final double leftOver = grid.injectPower(power, mode);
 
             return leftOver;
@@ -149,20 +163,10 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected void PowerEvent(final PowerEventType x) {
         try {
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, x));
+            this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, x));
         } catch (final GridAccessException e) {
             // not ready!
         }
-    }
-
-    @MENetworkEventSubscribe
-    public void onControllerChange(final MENetworkControllerChange status) {
-        this.updateMeta();
-    }
-
-    @MENetworkEventSubscribe
-    public void onPowerChange(final MENetworkPowerStatusChange status) {
-        this.updateMeta();
     }
 
     @Override

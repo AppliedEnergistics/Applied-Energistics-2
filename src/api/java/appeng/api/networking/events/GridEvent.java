@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 TeamAppliedEnergistics
+ * Copyright (c) 2013 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,17 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.events.statistics;
+package appeng.api.networking.events;
 
-import appeng.api.networking.events.MENetworkEvent;
+import appeng.api.networking.IGrid;
 
 /**
- * An event send from the statistics grid.
- * 
- * Refer to the specific subtypes for more details.
- * 
- * This is still subject to change as long as the statistics grid is not part of the public API.
+ * Part of AE's Event Bus.
+ *
+ * Posted via {@link IGrid}.postEvent.
  */
-public class MENetworkStatisticsEvent extends MENetworkEvent {
-
+public abstract class GridEvent {
 }

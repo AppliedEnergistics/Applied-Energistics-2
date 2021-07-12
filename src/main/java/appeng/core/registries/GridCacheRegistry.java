@@ -18,54 +18,117 @@
 
 package appeng.core.registries;
 
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridCacheRegistry;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridCacheFactory;
-import appeng.api.networking.IGridCacheRegistry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class GridCacheRegistry implements IGridCacheRegistry {
 
+    // This must not be re-sorted because of interdependencies between the registrations
     private final List<GridCacheRegistration<?>> registry = new ArrayList<>();
 
     @Override
-    public synchronized <T extends IGridCache> void registerGridCache(@Nonnull Class<T> iface,
-            @Nonnull IGridCacheFactory<T> factory) {
-
-        if (registry.stream().anyMatch(r -> r.cacheClass.equals(iface))) {
-            throw new IllegalArgumentException("Implementation for grid cache " + iface + " is already registered!");
+    public synchronized final <T extends IGridCacheProvider> void registerGridCache(Class<? super T> publicInterface,
+                                                                                    Class<T> implClass) {
+        if (isRegistered(publicInterface)) {
+            throw new IllegalArgumentException("Implementation for grid cache " + publicInterface + " is already registered!");
         }
 
-        registry.add(new GridCacheRegistration<>(iface, factory));
+        var registration = new GridCacheRegistration<>(implClass, publicInterface);
 
-    }
-
-    @Override
-    public Map<Class<? extends IGridCache>, IGridCache> createCacheInstance(final IGrid g) {
-        final Map<Class<? extends IGridCache>, IGridCache> map = new HashMap<>(registry.size());
-
-        for (GridCacheRegistration<?> registration : registry) {
-            map.put(registration.cacheClass, registration.factory.createCache(g));
+        // Check if the registration has unmet dependencies. This frees us from dealing
+        // with circular dependencies too.
+        for (Class<?> dependency : registration.dependencies) {
+            if (!isRegistered(dependency)) {
+                throw new IllegalStateException("Missing dependency declared in constructor of "
+                        + implClass + ": " + dependency);
+            }
         }
 
-        return map;
+        registry.add(registration);
     }
 
-    private static class GridCacheRegistration<T extends IGridCache> {
+    private boolean isRegistered(Class<?> publicInterface) {
+        return registry.stream().anyMatch(r -> r.publicInterface.equals(publicInterface));
+    }
 
-        private final Class<T> cacheClass;
+    public Map<Class<?>, IGridCacheProvider> createCacheInstance(final IGrid g) {
+        var result = new HashMap<Class<?>, IGridCacheProvider>(registry.size());
 
-        private final IGridCacheFactory<T> factory;
+        for (var registration : registry) {
+            result.put(registration.publicInterface, registration.construct(g, result));
+        }
 
-        public GridCacheRegistration(Class<T> cacheClass, IGridCacheFactory<T> factory) {
-            this.cacheClass = cacheClass;
-            this.factory = factory;
+        return result;
+    }
+
+    private static class GridCacheRegistration<T extends IGridCacheProvider> {
+
+        private final Class<T> implClass;
+
+        private final Class<?> publicInterface;
+
+        private final Constructor<T> constructor;
+
+        private final Class<?>[] constructorParameterTypes;
+
+        private final Set<Class<?>> dependencies;
+
+        @SuppressWarnings("unchecked")
+        public GridCacheRegistration(Class<T> implClass, Class<?> publicInterface) {
+            this.publicInterface = publicInterface;
+            this.implClass = implClass;
+
+            // Find the constructor
+            var ctors = (Constructor<T>[]) implClass.getConstructors();
+            if (ctors.length != 1) {
+                throw new IllegalArgumentException("Grid cache implementation " + implClass
+                        + " has " + ctors.length + " public constructors. It needs exactly 1.");
+            }
+            this.constructor = ctors[0];
+            this.constructorParameterTypes = this.constructor.getParameterTypes();
+            this.dependencies = Arrays.stream(this.constructorParameterTypes)
+                    .filter(t -> !t.equals(IGrid.class))
+                    .collect(Collectors.toSet());
+        }
+
+        @NotNull
+        public IGridCacheProvider construct(IGrid g, Map<Class<?>, IGridCacheProvider> createdServices) {
+            // Fill the constructor arguments
+            var ctorArgs = new Object[constructorParameterTypes.length];
+            for (int i = 0; i < constructorParameterTypes.length; i++) {
+                var paramType = constructorParameterTypes[i];
+                if (paramType.equals(IGrid.class)) {
+                    ctorArgs[i] = g;
+                } else {
+                    ctorArgs[i] = createdServices.get(paramType);
+                    if (ctorArgs[i] == null) {
+                        throw new IllegalStateException("Unsatisfied constructor dependency " + paramType + " in "
+                                + constructor);
+                    }
+                }
+            }
+
+            // Finally call the constructor
+            IGridCacheProvider provider;
+            try {
+                provider = constructor.newInstance(ctorArgs);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Failed to create grid because grid service " + implClass
+                        + " failed to construct.", e);
+            }
+            return provider;
         }
 
     }

@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,9 +39,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
@@ -80,23 +78,18 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         super(is);
 
         if (requireChannel) {
-            this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-            this.getProxy().setIdlePowerUsage(1.0 / 2.0);
+            this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+            this.getMainNode().setIdlePowerUsage(1.0 / 2.0);
         } else {
-            this.getProxy().setIdlePowerUsage(1.0 / 16.0); // lights drain a little bit.
+            this.getMainNode().setIdlePowerUsage(1.0 / 16.0); // lights drain a little bit.
         }
     }
 
-    @MENetworkEventSubscribe
-    public final void bootingRender(final MENetworkBootingStatusChange c) {
-        if (!this.isLightSource()) {
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        if (reason != IGridNodeListener.ActiveChangeReason.GRID_BOOT || !this.isLightSource()) {
             this.getHost().markForUpdate();
         }
-    }
-
-    @MENetworkEventSubscribe
-    public final void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
     }
 
     @Override
@@ -131,15 +124,15 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         this.clientFlags = this.getSpin() & 3;
 
         try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+            if (this.getMainNode().getEnergy().isNetworkPowered()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.POWERED_FLAG;
             }
 
-            if (this.getProxy().getPath().isNetworkBooting()) {
+            if (this.getMainNode().getPath().isNetworkBooting()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.BOOTING_FLAG;
             }
 
-            if (this.getProxy().getNode().meetsChannelRequirements()) {
+            if (this.getMainNode().getNode().meetsChannelRequirements()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.CHANNEL_FLAG;
             }
         } catch (final GridAccessException e) {
@@ -179,7 +172,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
-                this.saveChanges();
+                this.getHost().markForSave();
             }
             return true;
         } else {
@@ -213,7 +206,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public final boolean isPowered() {
         try {
             if (!isRemote()) {
-                return this.getProxy().getEnergy().isNetworkPowered();
+                return this.getMainNode().getEnergy().isNetworkPowered();
             } else {
                 return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
             }

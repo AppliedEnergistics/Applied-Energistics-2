@@ -76,6 +76,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     public AbstractMonitorPart(final ItemStack is) {
         super(is);
+
+        getMainNode().addService(IStackWatcherHost.class, this);
     }
 
     @Override
@@ -138,7 +140,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -165,7 +167,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -196,7 +198,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                     this.myWatcher.add(this.configuredItem);
                 }
 
-                this.updateReportingValue(this.getProxy().getStorage()
+                this.updateReportingValue(this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
             }
         } catch (final GridAccessException e) {

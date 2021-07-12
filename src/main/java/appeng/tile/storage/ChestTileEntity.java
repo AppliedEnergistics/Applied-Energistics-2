@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -60,12 +61,9 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridCellArrayUpdate;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
@@ -145,7 +143,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     public ChestTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
@@ -165,7 +163,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     protected void PowerEvent(final PowerEventType x) {
         if (x == PowerEventType.REQUEST_POWER) {
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
+                this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException e) {
                 // :(
             }
@@ -187,11 +185,11 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             this.state &= ~BIT_POWER_MASK;
         }
 
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
+                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -231,7 +229,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                         }
                     }
 
-                    this.getProxy().setIdlePowerUsage(power);
+                    this.getMainNode().setIdlePowerUsage(power);
                     this.accessor = new Accessor();
 
                     if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
@@ -299,7 +297,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         if (!gridPowered) {
             try {
-                gridPowered = this.getProxy().getEnergy().isNetworkPowered();
+                gridPowered = this.getMainNode().getEnergy().isNetworkPowered();
             } catch (final GridAccessException ignored) {
             }
         }
@@ -317,7 +315,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         double stash = 0.0;
 
         try {
-            final IEnergyGrid eg = this.getProxy().getEnergy();
+            final IEnergyGrid eg = this.getMainNode().getEnergy();
             stash = eg.extractAEPower(amt, mode, PowerMultiplier.ONE);
             if (stash >= amt) {
                 return stash;
@@ -336,10 +334,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             return;
         }
 
-        final double idleUsage = this.getProxy().getIdlePowerUsage();
+        final double idleUsage = this.getMainNode().getIdlePowerUsage();
 
         try {
-            if (!this.getProxy().getEnergy().isNetworkPowered()) {
+            if (!this.getMainNode().getEnergy().isNetworkPowered()) {
                 final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
                 if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                     this.recalculateDisplay();
@@ -418,13 +416,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         return data;
     }
 
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.recalculateDisplay();
-    }
-
-    @MENetworkEventSubscribe
-    public void channelRender(final MENetworkChannelsChanged c) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         this.recalculateDisplay();
     }
 
@@ -452,8 +445,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             this.isCached = false; // recalculate the storage cell.
 
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
-                final IStorageGrid gs = this.getProxy().getStorage();
+                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
+                final IStorageGrid gs = this.getMainNode().getStorage();
                 Platform.postChanges(gs, removed, added, this.mySrc);
             } catch (final GridAccessException ignored) {
 
@@ -499,7 +492,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (this.getProxy().isActive()) {
+        if (this.getMainNode().isActive()) {
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
@@ -521,7 +514,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.isCached = false; // recalculate the storage cell.
 
         try {
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
+            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -617,8 +610,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             if (source == ChestTileEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestTileEntity.this).orElse(false)) {
                 try {
-                    if (ChestTileEntity.this.getProxy().isActive()) {
-                        ChestTileEntity.this.getProxy().getStorage().postAlterationOfStoredItems(this.chan, change,
+                    if (ChestTileEntity.this.getMainNode().isActive()) {
+                        ChestTileEntity.this.getMainNode().getStorage().postAlterationOfStoredItems(this.chan, change,
                                 ChestTileEntity.this.mySrc);
                     }
                 } catch (final GridAccessException e) {
@@ -710,7 +703,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         @Nullable
         @Override
         public IStorageMonitorable getInventory(IActionSource src) {
-            if (Platform.canAccess(ChestTileEntity.this.getProxy(), src)) {
+            if (Platform.canAccess(ChestTileEntity.this.getMainNode(), src)) {
                 return ChestTileEntity.this;
             }
             return null;

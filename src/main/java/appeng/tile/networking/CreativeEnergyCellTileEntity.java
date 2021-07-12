@@ -25,7 +25,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.tile.grid.AENetworkTileEntity;
 import net.minecraft.util.Direction;
 
@@ -33,7 +32,9 @@ public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements
 
     public CreativeEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .addService(IAEPowerStorage.class, this);
     }
 
     @Override

@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.IItemHandler;
 
@@ -36,28 +35,29 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkEvent;
-import appeng.api.networking.events.MENetworkSpatialEvent;
+import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.IWorldCallable;
+import appeng.util.IWorldRunnable;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements IWorldCallable<Void> {
+public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
     private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
+    private final IWorldRunnable transitionCallback = world -> transition();
+
     public SpatialIOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
         if (!isRemote()) {
             final ItemStack cell = this.inv.getStackInSlot(0);
             if (this.isSpatialCell(cell)) {
-                TickHandler.instance().addCallable(null, this);// this needs to be cross world synced.
+                TickHandler.instance().addCallable(null, transitionCallback);// this needs to be cross world synced.
             }
         }
     }
@@ -110,16 +110,15 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
         return false;
     }
 
-    @Override
-    public Void call(final World world) throws Exception {
+    private void transition() throws Exception {
         if (!(this.world instanceof ServerWorld serverWorld)) {
-            return null;
+            return;
         }
 
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
-            final IGrid gi = this.getProxy().getGridOrThrow();
-            final IEnergyGrid energy = this.getProxy().getEnergy();
+            final IGrid gi = this.getMainNode().getGridOrThrow();
+            final IEnergyGrid energy = this.getMainNode().getEnergy();
 
             final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
@@ -128,15 +127,15 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                 final double req = spc.requiredPower();
                 final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
                 if (Math.abs(pr - req) < req * 0.001) {
-                    final MENetworkEvent res = gi.postEvent(new MENetworkSpatialEvent(this, req));
-                    if (!res.isCanceled()) {
+                    var evt = gi.postEvent(new GridSpatialEvent(this, req));
+                    if (!evt.isTransitionPrevented()) {
                         // Prefer player id from security system, but if unavailable, use the
                         // player who placed the grid node (if any)
                         int playerId;
-                        if (this.getProxy().getSecurity().isAvailable()) {
-                            playerId = this.getProxy().getSecurity().getOwner();
+                        if (this.getMainNode().getSecurity().isAvailable()) {
+                            playerId = this.getMainNode().getSecurity().getOwner();
                         } else {
-                            playerId = this.getProxy().getNode().getOwner();
+                            playerId = this.getMainNode().getNode().getOwningPlayerId();
                         }
 
                         boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
@@ -150,8 +149,6 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                 }
             }
         }
-
-        return null;
     }
 
     @Override

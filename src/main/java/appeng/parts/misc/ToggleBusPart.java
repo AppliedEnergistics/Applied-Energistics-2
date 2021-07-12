@@ -20,11 +20,11 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
+import appeng.parts.AEBasePart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -65,22 +65,25 @@ public class ToggleBusPart extends BasicStatePart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
     private static final int REDSTONE_FLAG = 4;
-    private final ManagedGridNode outerProxy = new ManagedGridNode(this, "outer");
+
+    private final ManagedGridNode outerNode = new ManagedGridNode(this, AEBasePart.NodeListener.INSTANCE)
+            .setTagName("outer")
+            .setIdlePowerUsage(0.0)
+            .setFlags();
+
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
     public ToggleBusPart(final ItemStack is) {
         super(is);
 
-        this.getProxy().setIdlePowerUsage(0.0);
-        this.getOuterProxy().setIdlePowerUsage(0.0);
-        this.getProxy().setFlags();
-        this.getOuterProxy().setFlags();
+        this.getMainNode().setIdlePowerUsage(0.0);
+        this.getMainNode().setFlags();
     }
 
     @Override
-    protected int populateFlags(final int cf) {
-        return cf | (this.getIntention() ? REDSTONE_FLAG : 0);
+    protected int calculateClientFlags() {
+        return super.calculateClientFlags() | (this.getIntention() ? REDSTONE_FLAG : 0);
     }
 
     public boolean hasRedstoneFlag() {
@@ -110,25 +113,25 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.getOuterProxy().readFromNBT(extra);
+        this.getOuterNode().readFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.getOuterProxy().writeToNBT(extra);
+        this.getOuterNode().writeToNBT(extra);
     }
 
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.getOuterProxy().remove();
+        this.getOuterNode().remove();
     }
 
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.getOuterProxy().onReady();
+        this.getOuterNode().create(getWorld(), getTile().getPos());
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
         this.updateInternalState();
     }
@@ -136,12 +139,12 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setExposedOnSides(EnumSet.of(side.getDirection()));
+        this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override
     public IGridNode getExternalFacingNode() {
-        return this.getOuterProxy().getNode();
+        return this.getOuterNode().getNode();
     }
 
     @Override
@@ -153,17 +156,17 @@ public class ToggleBusPart extends BasicStatePart {
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.getOuterProxy().setOwner(player);
+        this.getOuterNode().setOwner(player);
     }
 
     private void updateInternalState() {
         final boolean intention = this.getIntention();
         if (intention == (this.connection == null)
-                && this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null) {
+                && this.getMainNode().getNode() != null && this.getOuterNode().getNode() != null) {
             if (intention) {
                 try {
-                    this.connection = Api.instance().grid().createGridConnection(this.getProxy().getNode(),
-                            this.getOuterProxy().getNode());
+                    this.connection = Api.instance().grid().createGridConnection(this.getMainNode().getNode(),
+                            this.getOuterNode().getNode());
                 } catch (final FailedConnectionException e) {
                     // :(
                     AELog.debug(e);
@@ -175,8 +178,8 @@ public class ToggleBusPart extends BasicStatePart {
         }
     }
 
-    ManagedGridNode getOuterProxy() {
-        return this.outerProxy;
+    ManagedGridNode getOuterNode() {
+        return this.outerNode;
     }
 
     @Override

@@ -215,7 +215,7 @@ public class Platform {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
-        return player.world.isBlockModifiable(player, dc);
+        return player.world.isBlockModifiable(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -786,8 +786,8 @@ public class Platform {
         if (AEConfig.instance().isSecurityAuditLogEnabled()) {
             AELog.info(
                     "Audit: Node A [isSecure=%b, key=%d, playerID=%d, %s] vs Node B[isSecure=%b, key=%d, playerID=%d, %s]",
-                    a_isSecure, a.getLastSecurityKey(), a.getOwner(), a, b_isSecure, b.getLastSecurityKey(),
-                    b.getOwner(), b);
+                    a_isSecure, a.getLastSecurityKey(), a.getOwningPlayerId(), a, b_isSecure, b.getLastSecurityKey(),
+                    b.getOwningPlayerId(), b);
         }
 
         // can't do that son...
@@ -796,11 +796,11 @@ public class Platform {
         }
 
         if (!a_isSecure && b_isSecure) {
-            return checkPlayerPermissions(b.getGrid(), a.getOwner());
+            return checkPlayerPermissions(b.getGrid(), a.getOwningPlayerId());
         }
 
         if (a_isSecure && !b_isSecure) {
-            return checkPlayerPermissions(a.getGrid(), b.getOwner());
+            return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
         }
 
         return true;
@@ -877,7 +877,7 @@ public class Platform {
                     return false;
                 }
 
-                final int playerID = n.getOwner();
+                final int playerID = n.getOwningPlayerId();
                 return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
             } else {
                 return false;

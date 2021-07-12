@@ -34,7 +34,7 @@ import com.google.common.collect.Queues;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.networking.events.MENetworkStorageEvent;
+import appeng.api.networking.events.GridStorageEvent;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -280,7 +280,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     void onTick() {
         if (this.sendEvent) {
             this.sendEvent = false;
-            this.myGridCache.getGrid().postEvent(new MENetworkStorageEvent(this, this.myChannel));
+            this.myGridCache.getGrid().postEvent(new GridStorageEvent(this, this.myChannel));
         }
     }
 }

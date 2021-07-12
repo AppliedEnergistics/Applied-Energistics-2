@@ -23,13 +23,24 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.networking.IGridNode;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageChannel;
 
-public class MENetworkCraftingCpuChange extends MENetworkEvent {
+/**
+ * posted by the network when the networks Storage Changes, you can use the currentItems list to check levels, and
+ * update status.
+ *
+ * this is the least useful method of getting info about changes in the network.
+ *
+ * Do not modify the list or its contents in anyway.
+ */
+public class GridStorageEvent extends GridEvent {
 
-    public final IGridNode node;
+    public final IMEMonitor monitor;
+    public final IStorageChannel channel;
 
-    public MENetworkCraftingCpuChange(final IGridNode n) {
-        this.node = n;
+    public GridStorageEvent(final IMEMonitor o, final IStorageChannel chan) {
+        this.monitor = o;
+        this.channel = chan;
     }
 }

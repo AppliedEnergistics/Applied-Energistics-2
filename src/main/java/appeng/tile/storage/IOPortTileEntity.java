@@ -53,7 +53,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
@@ -100,7 +99,9 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     public IOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
         this.manager = new ConfigManager(this);
         this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
@@ -144,9 +145,9 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     private void updateTask() {
         try {
             if (this.hasWork()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
             }
         } catch (final GridAccessException e) {
             // :P
@@ -241,7 +242,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return TickRateModulation.IDLE;
         }
 
@@ -261,7 +262,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
         }
 
         try {
-            final IEnergySource energy = this.getProxy().getEnergy();
+            final IEnergySource energy = this.getMainNode().getEnergy();
             for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
                 final ItemStack is = this.inputCells.getStackInSlot(x);
                 if (!is.isEmpty()) {
@@ -269,7 +270,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
                     for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
                         if (itemsToMove > 0) {
-                            final IMEMonitor<? extends IAEStack<?>> network = this.getProxy().getStorage()
+                            final IMEMonitor<? extends IAEStack<?>> network = this.getMainNode().getStorage()
                                     .getInventory(c);
                             final IMEInventory<?> inv = this.getInv(is, c);
 

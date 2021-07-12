@@ -23,29 +23,30 @@
 
 package appeng.api.networking;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * A registry of grid caches to extend grid functionality.
  */
+@ThreadSafe
 public interface IGridCacheRegistry {
 
     /**
      * Register a new grid cache for use during operation, must be called during the loading phase.
+     * <p/>
+     * AE will automatically construct instances of the given implementation class by looking up a constructor.
+     * There must be a single constructor.
+     * The following constructor parameter types are allowed:
+     * <ul>
+     *     <li>Other grid cache's public interfaces (see interfaces extending {@link IGridCache}).</li>
+     *     <li>{@link IGrid}, which will be the grid that the cache is being constructed for.</li>
+     * </ul>
      *
-     * @param iface   grid cache class
-     * @param factory Factory for creating a new instance for each constructed grid
+     * @param publicInterface The public facing interface of the grid service you want to register. This class or interface
+     *                        will also be used to query the service from any grid via {@link IGrid#getCache(Class)}.
+     * @param implClass       The class used to construct the grid cache for each grid. Must have a single
+     *                        constructor.
      */
-    <T extends IGridCache> void registerGridCache(@Nonnull Class<T> iface, @Nonnull IGridCacheFactory<T> factory);
+    <T extends IGridCacheProvider> void registerGridCache(Class<? super T> publicInterface, Class<T> implClass);
 
-    /**
-     * requests a new INSTANCE of a grid cache for use, used internally
-     *
-     * @param grid grid
-     *
-     * @return a new Map of IGridCaches from the registry, called from IGrid when constructing a new grid.
-     */
-    Map<Class<? extends IGridCache>, IGridCache> createCacheInstance(IGrid grid);
 }

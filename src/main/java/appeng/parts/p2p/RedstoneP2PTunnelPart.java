@@ -20,6 +20,7 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
@@ -30,10 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -60,11 +57,6 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         return 0.5f;
     }
 
-    @MENetworkEventSubscribe
-    public void changeStateA(final MENetworkBootingStatusChange bs) {
-        this.setNetworkReady();
-    }
-
     private void setNetworkReady() {
         if (this.isOutput()) {
             final RedstoneP2PTunnelPart in = this.getInput();
@@ -80,7 +72,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
 
         this.recursive = true;
-        if (this.isOutput() && this.getProxy().isActive()) {
+        if (this.isOutput() && this.getMainNode().isActive()) {
             final int newPower = (Integer) o;
             if (this.power != newPower) {
                 this.power = newPower;
@@ -101,13 +93,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
     }
 
-    @MENetworkEventSubscribe
-    public void changeStateB(final MENetworkChannelsChanged bs) {
-        this.setNetworkReady();
-    }
-
-    @MENetworkEventSubscribe
-    public void changeStateC(final MENetworkPowerStatusChange bs) {
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        super.onMainNodeStateChanged(reason);
         this.setNetworkReady();
     }
 

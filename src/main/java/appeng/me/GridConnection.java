@@ -25,7 +25,7 @@ import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -37,8 +37,6 @@ import net.minecraft.util.Direction;
 import javax.annotation.Nullable;
 
 public class GridConnection implements IGridConnection, IPathItem {
-
-    private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 
     private int channelData = 0;
     private Object visitorIterationNumber = null;
@@ -164,11 +162,11 @@ public class GridConnection implements IGridConnection, IPathItem {
             this.channelData |= this.channelData << 8;
 
             if (this.sideA.getInternalGrid() != null) {
-                this.sideA.getInternalGrid().postEventTo(this.sideA, EVENT);
+                this.sideA.notifyStatusChange(IGridNodeListener.ActiveChangeReason.CHANNEL);
             }
 
             if (this.sideB.getInternalGrid() != null) {
-                this.sideB.getInternalGrid().postEventTo(this.sideB, EVENT);
+                this.sideB.notifyStatusChange(IGridNodeListener.ActiveChangeReason.CHANNEL);
             }
         }
     }
@@ -200,8 +198,8 @@ public class GridConnection implements IGridConnection, IPathItem {
 
         if (!Platform.securityCheck(a, b)) {
             if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-                AELog.info("Security audit 1 failed at [%s] belonging to player [id=%d]", a, a.getOwner());
-                AELog.info("Security audit 2 failed at [%s] belonging to player [id=%d]", b, b.getOwner());
+                AELog.info("Security audit 1 failed at [%s] belonging to player [id=%d]", a, a.getOwningPlayerId());
+                AELog.info("Security audit 2 failed at [%s] belonging to player [id=%d]", b, b.getOwningPlayerId());
             }
 
             throw new SecurityConnectionException();

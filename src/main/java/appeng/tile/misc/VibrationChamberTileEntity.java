@@ -39,7 +39,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
@@ -67,8 +66,10 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
     public VibrationChamberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
-        this.getProxy().setFlags();
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .setFlags()
+                .addService(IGridTickable.class, this);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
             try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } catch (final GridAccessException e) {
                 // wake up!
             }
@@ -181,7 +182,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
 
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyGrid grid = this.getMainNode().getEnergy();
             final double newPower = timePassed * POWER_PER_TICK;
             final double overFlow = grid.injectPower(newPower, Actionable.SIMULATE);
 
@@ -225,7 +226,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
         if (this.getBurnTime() > 0) {
             try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } catch (final GridAccessException e) {
                 // gah!
             }

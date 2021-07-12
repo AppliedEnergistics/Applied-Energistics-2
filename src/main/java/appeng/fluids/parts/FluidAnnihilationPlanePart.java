@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.fluid.Fluid;
@@ -42,9 +43,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.IGridTickable;
@@ -90,6 +88,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     public FluidAnnihilationPlanePart(final ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -117,28 +116,20 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private void refresh() {
         try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
         } catch (final GridAccessException e) {
             // :P
         }
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void chanRender(final MENetworkChannelsChanged c) {
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        super.onMainNodeStateChanged(reason);
         this.refresh();
-        this.getHost().markForUpdate();
-    }
-
-    @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.refresh();
-        this.getHost().markForUpdate();
     }
 
     private TickRateModulation pickupFluid() {
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return TickRateModulation.SLEEP;
         }
 
@@ -195,16 +186,16 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private boolean storeFluid(IAEFluidStack stack, boolean modulate) {
         try {
-            final IStorageGrid storage = this.getProxy().getStorage();
+            final IStorageGrid storage = this.getMainNode().getStorage();
             final IMEInventory<IAEFluidStack> inv = storage
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
             if (modulate) {
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+                final IEnergyGrid energy = this.getMainNode().getEnergy();
                 return Platform.poweredInsert(energy, inv, stack, this.mySrc) == null;
             } else {
                 final float requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+                final IEnergyGrid energy = this.getMainNode().getEnergy();
 
                 if (energy.extractAEPower(requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG) < requiredPower) {
                     return false;

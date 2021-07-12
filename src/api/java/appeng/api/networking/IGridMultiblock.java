@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
  * will call the method to get a list of all related nodes and give each of them a channel simultaneously for the entire
  * set. This means your entire Multiblock can work with a single channel, instead of one channel per block.
  */
-public interface IGridMultiblock extends IGridNodeHost {
+public interface IGridMultiblock extends IGridNodeService {
 
     /**
      * Used to acquire a list of all nodes that are part of the multiblock.

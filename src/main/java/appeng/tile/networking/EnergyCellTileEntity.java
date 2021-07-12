@@ -28,8 +28,8 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.me.GridAccessException;
@@ -47,7 +47,9 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
     public EnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .addService(IAEPowerStorage.class, this);
     }
 
     @Override
@@ -135,8 +137,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
         }
 
         if (this.internalCurrentPower < 0.01 && amt > 0.01) {
-            this.getProxy().getNode().getGrid()
-                    .postEvent(new MENetworkPowerStorage(this, PowerEventType.PROVIDE_POWER));
+            this.getMainNode().getNode().getGrid()
+                    .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
         }
 
         this.internalCurrentPower += amt;
@@ -194,7 +196,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
         if (wasFull && amt > 0.001) {
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
+                this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException ignored) {
 
             }

@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -49,10 +50,7 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkSecurityChange;
+import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -93,8 +91,10 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     public SecurityStationTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.getProxy().setIdlePowerUsage(2.0);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setIdlePowerUsage(2.0)
+                .addService(ISecurityProvider.class, this);
         difference++;
 
         this.securityKey = System.currentTimeMillis() * 10 + difference;
@@ -143,7 +143,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     @Override
     protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
-        data.writeBoolean(this.getProxy().isActive());
+        data.writeBoolean(this.getMainNode().isActive());
         data.writeByte(this.paintedColor.ordinal());
     }
 
@@ -193,19 +193,14 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     public void inventoryChanged() {
         try {
             this.saveChanges();
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkSecurityChange());
+            this.getMainNode().getGridOrThrow().postEvent(new GridSecurityChange());
         } catch (final GridAccessException e) {
             // :P
         }
     }
 
-    @MENetworkEventSubscribe
-    public void bootUpdate(final MENetworkChannelsChanged changed) {
-        this.markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerUpdate(final MENetworkPowerStatusChange changed) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         this.markForUpdate();
     }
 
@@ -265,7 +260,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     public boolean isPowered() {
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
@@ -298,17 +293,17 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         }
 
         // make sure thea admin is Boss.
-        playerPerms.put(this.getProxy().getNode().getOwner(), EnumSet.allOf(SecurityPermissions.class));
+        playerPerms.put(this.getMainNode().getNode().getOwningPlayerId(), EnumSet.allOf(SecurityPermissions.class));
     }
 
     @Override
     public boolean isSecurityEnabled() {
-        return this.isActive && this.getProxy().isActive();
+        return this.isActive && this.getMainNode().isActive();
     }
 
     @Override
     public int getOwner() {
-        return this.getProxy().getNode().getOwner();
+        return this.getMainNode().getNode().getOwningPlayerId();
     }
 
     @Override

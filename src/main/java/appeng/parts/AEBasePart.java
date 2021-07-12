@@ -18,40 +18,13 @@
 
 package appeng.parts;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import appeng.api.networking.IGridNodeHost;
-import com.google.common.base.Preconditions;
-
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -75,10 +48,35 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import com.google.common.base.Preconditions;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, IUpgradeableHost, ICustomNameObject {
 
-    private final ManagedGridNode proxy;
+    private final ManagedGridNode mainNode;
     private final ItemStack is;
     private TileEntity tile = null;
     private IPartHost host = null;
@@ -88,9 +86,21 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
         Preconditions.checkNotNull(is);
 
         this.is = is;
-        this.proxy = new ManagedGridNode(this, "part")
+        this.mainNode = createMainNode()
                 .setVisualRepresentation(is)
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
+    }
+
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, NodeListener.INSTANCE);
+    }
+
+    /**
+     * Called if one of the properties that result in a node becoming active or inactive change.
+     *
+     * @param reason Indicates which of the properties has changed.
+     */
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
     }
 
     public final boolean isRemote() {
@@ -101,17 +111,6 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     public IPartHost getHost() {
         return this.host;
-    }
-
-    @Override
-    public void securityBreak() {
-        if (this.getItemStack().getCount() > 0 && this.getGridNode() != null) {
-            final List<ItemStack> items = new ArrayList<>();
-            items.add(this.is.copy());
-            this.host.removePart(this.side, false);
-            Platform.spawnDrops(this.tile.getWorld(), this.tile.getPos(), items);
-            this.is.setCount(0);
-        }
     }
 
     protected AEColor getColor() {
@@ -136,18 +135,13 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
         return this.tile;
     }
 
-    public ManagedGridNode getProxy() {
-        return this.proxy;
+    public ManagedGridNode getMainNode() {
+        return this.mainNode;
     }
 
     @Override
     public IGridNode getActionableNode() {
-        return this.proxy.getNode();
-    }
-
-    @Override
-    public void saveChanges() {
-        this.host.markForSave();
+        return this.mainNode.getNode();
     }
 
     @Override
@@ -197,12 +191,12 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     @Override
     public void readFromNBT(final CompoundNBT data) {
-        this.proxy.readFromNBT(data);
+        this.mainNode.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT data) {
-        this.proxy.writeToNBT(data);
+        this.mainNode.writeToNBT(data);
     }
 
     @Override
@@ -227,7 +221,7 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     @Override
     public IGridNode getGridNode() {
-        return this.proxy.getNode();
+        return this.mainNode.getNode();
     }
 
     @Override
@@ -237,12 +231,12 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     @Override
     public void removeFromWorld() {
-        this.proxy.remove();
+        this.mainNode.remove();
     }
 
     @Override
     public void addToWorld() {
-        this.proxy.onReady();
+        this.mainNode.create(getWorld(), getTile().getPos());
     }
 
     @Override
@@ -448,8 +442,8 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     @Override
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
-        this.proxy.setOwner(player);
+                            final AEPartLocation side) {
+        this.mainNode.setOwner(player);
     }
 
     @Override
@@ -474,12 +468,33 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
         return this.is;
     }
 
-    @Override
-    public void onOwnerChanged(IGridNode node) {
-        saveChanges();
-    }
+    /**
+     * Simple {@link IGridNodeListener} for {@link AEBasePart} that host nodes.
+     */
+    public static class NodeListener<T extends AEBasePart> implements IGridNodeListener<T> {
 
-    @Override
-    public void onGridChanged(IGridNode node) {
+        public static final NodeListener<AEBasePart> INSTANCE = new NodeListener<>();
+
+        @Override
+        public void onSecurityBreak(T nodeOwner, IGridNode node) {
+            var is = nodeOwner.getItemStack();
+            if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
+                var items = List.of(is.copy());
+                nodeOwner.getHost().removePart(nodeOwner.getSide(), false);
+                var tile = nodeOwner.getTile();
+                Platform.spawnDrops(tile.getWorld(), tile.getPos(), items);
+                is.setCount(0);
+            }
+        }
+
+        @Override
+        public void onSaveChanges(T nodeOwner, IGridNode node) {
+            nodeOwner.getHost().markForSave();
+        }
+
+        @Override
+        public void onActiveChanged(T nodeOwner, IGridNode node, ActiveChangeReason reason) {
+            nodeOwner.onMainNodeStateChanged(reason);
+        }
     }
 }

@@ -21,17 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking;
+package appeng.api.networking.events;
 
-import javax.annotation.Nonnull;
+import appeng.api.networking.IGridNodeHost;
 
-import appeng.api.util.IReadOnlyCollection;
-
-public interface IMachineSet extends IReadOnlyCollection<IGridNode> {
+/**
+ * An event that is posted whenever a spatial IO is active, called for IGridCache
+ */
+public class GridSpatialEvent extends GridEvent {
+    public final IGridNodeHost host;
+    public final double spatialEnergyUsage;
+    private boolean preventTransition;
 
     /**
-     * @return the machine class for this set.
+     * @param SpatialIO   ( INSTANCE of the SpatialIO block )
+     * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
      */
-    @Nonnull
-    Class<? extends IGridNodeHost> getMachineClass();
+    public GridSpatialEvent(final IGridNodeHost SpatialIO, final double EnergyUsage) {
+        this.host = SpatialIO;
+        this.spatialEnergyUsage = EnergyUsage;
+    }
+
+    /**
+     * Prevent the Spatial IO transition from happening.
+     */
+    public void preventTransition() {
+        this.preventTransition = true;
+    }
+
+    /**
+     * @return True if the transition into the spatial IO should not be allowed.
+     */
+    public boolean isTransitionPrevented() {
+        return preventTransition;
+    }
+
 }

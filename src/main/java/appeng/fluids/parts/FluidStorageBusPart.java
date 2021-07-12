@@ -24,6 +24,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.parts.BasicStatePart;
+import appeng.parts.misc.StorageBusPart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -44,7 +46,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.ITickManager;
@@ -148,7 +150,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         if (handlerExt != null) {
             return new FluidHandlerAdapter(handlerExt, () -> {
                 try {
-                    this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
                 } catch (GridAccessException ignore) {
                     // meh
                 }
@@ -213,7 +215,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         }
 
         try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -255,8 +257,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change,
             final IActionSource source) {
         try {
-            if (this.getProxy().isActive()) {
-                this.getProxy().getStorage().postAlterationOfStoredItems(
+            if (this.getMainNode().isActive()) {
+                this.getMainNode().getStorage().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
             }
         } catch (final GridAccessException e) {
@@ -328,11 +330,11 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
             try {
-                final ITickManager tm = this.getProxy().getTick();
+                final ITickManager tm = this.getMainNode().getTick();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getProxy().getNode());
+                    tm.sleepDevice(this.getMainNode().getNode());
                 } else {
-                    tm.wakeDevice(this.getProxy().getNode());
+                    tm.wakeDevice(this.getMainNode().getNode());
                 }
             } catch (final GridAccessException ignore) {
                 // :(
@@ -341,7 +343,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         try {
             // force grid to update handlers...
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
+            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
         } catch (final GridAccessException ignore) {
             // :3
         }
@@ -375,7 +377,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (channel == this.getStorageChannel()) {
-            final IMEInventoryHandler<IAEFluidStack> out = this.getProxy().isActive() ? this.getInternalHandler()
+            final IMEInventoryHandler<IAEFluidStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
                     : null;
             if (out != null) {
                 return Collections.singletonList(out);

@@ -30,7 +30,6 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
@@ -242,12 +241,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(WirelessTileEntity.class);
-
             this.myWap = null;
 
-            for (final IGridNode n : tw) {
-                final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getHost();
+            for (var wap : this.targetGrid.getMachines(WirelessTileEntity.class)) {
                 if (this.testWap(wap)) {
                     this.myWap = wap;
                 }
@@ -265,9 +261,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         final DimensionalBlockPos dc = wap.getLocation();
 
         if (dc.getWorld() == this.myPlayer.world) {
-            var offX = dc.getX() - this.myPlayer.getPosX();
-            var offY = dc.getY() - this.myPlayer.getPosY();
-            var offZ = dc.getZ() - this.myPlayer.getPosZ();
+            var offX = dc.getPos().getX() - this.myPlayer.getPosX();
+            var offY = dc.getPos().getY() - this.myPlayer.getPosY();
+            var offZ = dc.getPos().getZ() - this.myPlayer.getPosZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r && wap.isActive()) {

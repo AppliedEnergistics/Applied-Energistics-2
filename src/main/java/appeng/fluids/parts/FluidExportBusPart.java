@@ -97,7 +97,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
 
     @Override
     protected boolean canDoBusWork() {
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
         if (fhOpt.isPresent()) {
             try {
                 final IFluidHandler fh = fhOpt.orElse(null);
-                final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
+                final IMEMonitor<IAEFluidStack> inv = this.getMainNode().getStorage().getInventory(this.getChannel());
 
                 if (fh != null) {
                     for (int i = 0; i < this.getConfig().getSlots(); i++) {

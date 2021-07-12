@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -44,10 +45,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.IGridTickable;
@@ -128,30 +126,25 @@ public class StorageBusPart extends UpgradeablePart
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         this.mySrc = new MachineSource(this);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.updateStatus();
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        updateStatus();
     }
 
     private void updateStatus() {
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
                 this.getHost().markForUpdate();
+                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
             } catch (final GridAccessException e) {
                 // :P
             }
         }
-    }
-
-    @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
-        this.updateStatus();
     }
 
     @Override
@@ -216,7 +209,7 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -231,8 +224,8 @@ public class StorageBusPart extends UpgradeablePart
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
             final IActionSource source) {
         try {
-            if (this.getProxy().isActive()) {
-                this.getProxy().getStorage().postAlterationOfStoredItems(
+            if (this.getMainNode().isActive()) {
+                this.getMainNode().getStorage().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IItemStorageChannel.class), change, this.mySrc);
             }
         } catch (final GridAccessException e) {
@@ -358,7 +351,7 @@ public class StorageBusPart extends UpgradeablePart
         if (handlerExtOpt.isPresent()) {
             return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
                 try {
-                    this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
                 } catch (GridAccessException ex) {
                     // meh
                 }
@@ -465,11 +458,11 @@ public class StorageBusPart extends UpgradeablePart
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
             try {
-                final ITickManager tm = this.getProxy().getTick();
+                final ITickManager tm = this.getMainNode().getTick();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getProxy().getNode());
+                    tm.sleepDevice(this.getMainNode().getNode());
                 } else {
-                    tm.wakeDevice(this.getProxy().getNode());
+                    tm.wakeDevice(this.getMainNode().getNode());
                 }
             } catch (final GridAccessException e) {
                 // :(
@@ -478,7 +471,7 @@ public class StorageBusPart extends UpgradeablePart
 
         try {
             // force grid to update handlers...
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
+            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :3
         }
@@ -512,7 +505,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
-            final IMEInventoryHandler<IAEItemStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
+            final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
             if (out != null) {
                 return Collections.singletonList(out);
             }

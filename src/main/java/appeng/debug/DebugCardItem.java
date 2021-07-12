@@ -21,7 +21,10 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.core.Api;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import com.google.common.collect.Iterables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,10 +34,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -80,7 +82,7 @@ public class DebugCardItem extends AEBaseItem {
 
             for (final Grid g : TickHandler.instance().getGridList()) {
                 grids++;
-                totalNodes += g.getNodes().size();
+                totalNodes += g.size();
             }
 
             this.outputMsg(player, "Grids: " + grids);
@@ -88,14 +90,29 @@ public class DebugCardItem extends AEBaseItem {
         } else {
             var gh = Api.instance().grid().getNodeHost(world, pos);
             if (gh != null) {
-                final GridNode node = (GridNode) gh.getGridNode(side);
+                this.outputMsg(player, "---------------------------------------------------");
+                var node = (GridNode) gh.getGridNode(side);
+                // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
+                if (node == null) {
+                    if (gh instanceof IGridConnectedTileEntity gridConnectedTileEntity) {
+                        node = (GridNode) gridConnectedTileEntity.getMainNode().getNode();
+                        this.outputMsg(player, "Main node of IGridConnectedTileEntity");
+                    }
+                } else {
+                    this.outputMsg(player, "Node exposed on side " + side);
+                }
                 if (node != null) {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
-                    this.outputMsg(player, "This Node: " + node);
-                    this.outputMsg(player, "Center Node: " + center);
+                    this.outputMsg(player, "Grid Powered:", String.valueOf(g.getCache(IEnergyGrid.class).isNetworkPowered()));
+                    this.outputMsg(player, "Grid Booted:", String.valueOf(!g.getCache(IPathingGrid.class).isNetworkBooting()));
+                    this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
+                    this.outputMsg(player, "Grid Pivot Node:", String.valueOf(center));
 
-                    final IPathingGrid pg = g.getCache(IPathingGrid.class);
+                    this.outputMsg(player, "This Node:", String.valueOf(node));
+                    this.outputMsg(player, "This Node Active:", String.valueOf(node.isActive()));
+
+                    var pg = g.getCache(IPathingGrid.class);
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
 
                         Set<IGridNode> next = new HashSet<>();
@@ -109,11 +126,11 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getHost() instanceof ControllerTileEntity) {
+                                if (n.getNodeOwner() instanceof ControllerTileEntity) {
                                     break outer;
                                 }
 
-                                for (final IGridConnection c : n.getConnections()) {
+                                for (var c : n.getConnections()) {
                                     next.add(c.getOtherSide(n));
                                 }
                             }
@@ -128,15 +145,15 @@ public class DebugCardItem extends AEBaseItem {
                         this.outputMsg(player, "Cable Distance: " + length);
                     }
 
-                    if (center.getHost() instanceof P2PTunnelPart) {
-                        this.outputMsg(player, "Freq: " + ((P2PTunnelPart<?>) center.getHost()).getFrequency());
+                    if (center.getNodeOwner() instanceof P2PTunnelPart<?> tunnelPart) {
+                        this.outputMsg(player, "Freq: " + tunnelPart.getFrequency());
                     }
 
                     var tmc = (TickManagerCache) g.getCache(ITickManager.class);
-                    for (final Class<? extends IGridNodeHost> c : g.getMachineClasses()) {
+                    for (var c : g.getMachineClasses()) {
                         int o = 0;
                         long nanos = 0;
-                        for (final IGridNode oj : g.getMachines(c)) {
+                        for (var oj : g.getMachineNodes(c)) {
                             o++;
                             nanos += tmc.getAvgNanoTime(oj);
                         }
@@ -185,6 +202,12 @@ public class DebugCardItem extends AEBaseItem {
 
     private void outputMsg(final Entity player, final String string) {
         player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
+    }
+
+    private void outputMsg(final Entity player, String label, String value) {
+        player.sendMessage(new StringTextComponent("")
+                .appendSibling(new StringTextComponent(label).mergeStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
+                .appendString(value), Util.DUMMY_UUID);
     }
 
     private String timeMeasurement(final long nanos) {

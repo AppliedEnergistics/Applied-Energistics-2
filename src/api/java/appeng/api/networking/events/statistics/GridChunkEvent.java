@@ -31,12 +31,12 @@ import net.minecraft.world.server.ServerWorld;
  * 
  * Listeners will not receive updates about pre-existing chunks when joining a network.
  */
-public abstract class MENetworkChunkEvent extends MENetworkStatisticsEvent {
+public abstract class GridChunkEvent extends GridStatisticsEvent {
 
     private final ServerWorld world;
     private final ChunkPos chunkPos;
 
-    public MENetworkChunkEvent(ServerWorld world, ChunkPos chunkPos) {
+    public GridChunkEvent(ServerWorld world, ChunkPos chunkPos) {
         this.world = world;
         this.chunkPos = chunkPos;
     }
@@ -52,9 +52,9 @@ public abstract class MENetworkChunkEvent extends MENetworkStatisticsEvent {
     /**
      * A chunk was added to the area this network spans.
      */
-    public static class MENetworkChunkAdded extends MENetworkChunkEvent {
+    public static class GridChunkAdded extends GridChunkEvent {
 
-        public MENetworkChunkAdded(ServerWorld world, ChunkPos chunkPos) {
+        public GridChunkAdded(ServerWorld world, ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 
@@ -63,9 +63,9 @@ public abstract class MENetworkChunkEvent extends MENetworkStatisticsEvent {
     /**
      * A chunk was removed to the area this network spans.
      */
-    public static class MENetworkChunkRemoved extends MENetworkChunkEvent {
+    public static class GridChunkRemoved extends GridChunkEvent {
 
-        public MENetworkChunkRemoved(ServerWorld world, ChunkPos chunkPos) {
+        public GridChunkRemoved(ServerWorld world, ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 

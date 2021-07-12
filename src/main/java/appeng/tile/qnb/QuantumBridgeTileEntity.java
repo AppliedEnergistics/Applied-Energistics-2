@@ -23,6 +23,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -39,8 +40,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.qnb.QnbFormedState;
@@ -71,9 +70,9 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     public QuantumBridgeTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
-        this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
-        this.getProxy().setIdlePowerUsage(22);
+        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
+        this.getMainNode().setIdlePowerUsage(22);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
             out |= this.hasSingularity;
         }
 
-        if (this.getProxy().isActive() && this.constructed != -1) {
+        if (this.getMainNode().isActive() && this.constructed != -1) {
             out |= this.powered;
         }
 
@@ -136,8 +135,8 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         return getBlockState().matchesBlock(AEBlocks.QUANTUM_LINK.block());
     }
 
-    @MENetworkEventSubscribe
-    public void onPowerStatusChange(final MENetworkPowerStatusChange c) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         this.updateStatus = true;
     }
 
@@ -151,10 +150,10 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     public void onReady() {
         super.onReady();
 
-        final BlockDefinition quantumRing = AEBlocks.QUANTUM_RING;
+        var quantumRing = AEBlocks.QUANTUM_RING;
 
         if (this.getBlockState().getBlock() == quantumRing.block()) {
-            this.getProxy().setVisualRepresentation(quantumRing.stack());
+            this.getMainNode().setVisualRepresentation(quantumRing.stack());
         }
     }
 
@@ -177,7 +176,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         this.cluster = null;
 
         if (affectWorld) {
-            this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
+            this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         }
     }
 
@@ -202,9 +201,9 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
             if (this.isCorner() || this.isCenter()) {
                 EnumSet<Direction> sides = EnumSet.copyOf(this.getAdjacentQuantumBridges());
-                this.getProxy().setExposedOnSides(sides);
+                this.getMainNode().setExposedOnSides(sides);
             } else {
-                this.getProxy().setExposedOnSides(EnumSet.allOf(Direction.class));
+                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
             }
         }
     }
@@ -243,7 +242,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         }
 
         try {
-            return this.getProxy().getEnergy().isNetworkPowered();
+            return this.getMainNode().getEnergy().isNetworkPowered();
         } catch (final GridAccessException e) {
             // :P
         }

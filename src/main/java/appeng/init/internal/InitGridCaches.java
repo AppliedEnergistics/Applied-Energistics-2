@@ -18,8 +18,6 @@
 
 package appeng.init.internal;
 
-import appeng.api.features.IRegistryContainer;
-import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
@@ -38,22 +36,23 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.StatisticsCache;
 import appeng.me.cache.TickManagerCache;
 
+import java.util.function.Function;
+
 public final class InitGridCaches {
     private InitGridCaches() {
     }
 
     public static void init() {
-        final IRegistryContainer registries = Api.INSTANCE.registries();
 
-        final IGridCacheRegistry gcr = registries.gridCache();
-        gcr.registerGridCache(ITickManager.class, TickManagerCache::new);
-        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache::new);
-        gcr.registerGridCache(IPathingGrid.class, PathGridCache::new);
-        gcr.registerGridCache(IStorageGrid.class, GridStorageCache::new);
-        gcr.registerGridCache(P2PCache.class, P2PCache::new);
-        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
-        gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
-        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
-        gcr.registerGridCache(StatisticsCache.class, StatisticsCache::new);
+        var gcr = Api.INSTANCE.registries().gridCache();
+        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
+        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
+        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
+        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
+        gcr.registerGridCache(P2PCache.class, P2PCache.class);
+        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
+        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
+        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
+        gcr.registerGridCache(StatisticsCache.class, StatisticsCache.class);
     }
 }

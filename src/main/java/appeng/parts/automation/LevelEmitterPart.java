@@ -21,13 +21,13 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -46,14 +46,11 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
@@ -83,7 +80,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherHost, IStackWatcherHost,
-        ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
+        ICraftingWatcherNode, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -127,6 +124,10 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     public LevelEmitterPart(final ItemStack is) {
         super(is);
 
+        getMainNode()
+                .addService(IEnergyWatcherHost.class, this)
+                .addService(IStackWatcherHost.class, this);
+
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL);
@@ -146,9 +147,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         }
     }
 
-    @MENetworkEventSubscribe
-    public void powerChanged(final MENetworkPowerStatusChange c) {
-        this.updateState();
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        updateState();
     }
 
     private void updateState() {
@@ -168,13 +169,13 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
             try {
-                return this.getProxy().getCrafting().isRequesting(this.config.getAEStackInSlot(0));
+                return this.getMainNode().getCrafting().isRequesting(this.config.getAEStackInSlot(0));
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -188,14 +189,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
                 : this.reportingValue < this.lastReportedValue + 1;
     }
 
-    @MENetworkEventSubscribe
-    public void channelChanged(final MENetworkChannelsChanged c) {
-        this.updateState();
-    }
-
     @Override
-    protected int populateFlags(final int cf) {
-        return cf | (this.prevState ? FLAG_ON : 0);
+    protected int calculateClientFlags() {
+        return super.calculateClientFlags() | (this.prevState ? FLAG_ON : 0);
     }
 
     @Override
@@ -226,7 +222,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         }
 
         try {
-            this.getProxy().getGridOrThrow().postEvent(new MENetworkCraftingPatternChange(this, this.getProxy().getNode()));
+            this.getMainNode().getGridOrThrow().postEvent(new GridCraftingPatternChange(this, this.getMainNode().getNode()));
         } catch (final GridAccessException e1) {
             // :/
         }
@@ -246,11 +242,11 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
             try {
                 // update to power...
-                this.lastReportedValue = (long) this.getProxy().getEnergy().getStoredPower();
+                this.lastReportedValue = (long) this.getMainNode().getEnergy().getStoredPower();
                 this.updateState();
 
                 // no more item stuff..
-                this.getProxy().getStorage()
+                this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
                         .removeListener(this);
             } catch (final GridAccessException e) {
@@ -262,11 +258,11 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
         try {
             if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
-                this.getProxy().getStorage()
+                this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
-                        .addListener(this, this.getProxy().getGridOrThrow());
+                        .addListener(this, this.getMainNode().getGridOrThrow());
             } else {
-                this.getProxy().getStorage()
+                this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
                         .removeListener(this);
 
@@ -275,7 +271,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
                 }
             }
 
-            this.updateReportingValue(this.getProxy().getStorage()
+            this.updateReportingValue(this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
         } catch (final GridAccessException e) {
             // >.>
@@ -341,7 +337,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     @Override
     public boolean isValid(final Object effectiveGrid) {
         try {
-            return this.getProxy().getGridOrThrow() == effectiveGrid;
+            return this.getMainNode().getGridOrThrow() == effectiveGrid;
         } catch (final GridAccessException e) {
             return false;
         }
@@ -356,7 +352,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     @Override
     public void onListUpdate() {
         try {
-            this.updateReportingValue(this.getProxy().getStorage()
+            this.updateReportingValue(this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
         } catch (final GridAccessException e) {
             // ;P

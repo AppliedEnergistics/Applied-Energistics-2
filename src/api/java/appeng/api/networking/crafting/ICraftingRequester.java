@@ -23,13 +23,14 @@
 
 package appeng.api.networking.crafting;
 
+import appeng.api.networking.IGridNodeService;
 import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEItemStack;
 
-public interface ICraftingRequester extends IActionHost {
+public interface ICraftingRequester extends IActionHost, IGridNodeService {
 
     /**
      * called when the host is added to the grid, and should return all crafting links it poses so they can be connected

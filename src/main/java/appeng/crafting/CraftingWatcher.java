@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.cache.CraftingGridCache;
 
@@ -33,15 +33,15 @@ import appeng.me.cache.CraftingGridCache;
 public class CraftingWatcher implements ICraftingWatcher {
 
     private final CraftingGridCache gsc;
-    private final ICraftingWatcherHost host;
+    private final ICraftingWatcherNode host;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public CraftingWatcher(final CraftingGridCache cache, final ICraftingWatcherHost host) {
+    public CraftingWatcher(final CraftingGridCache cache, final ICraftingWatcherNode host) {
         this.gsc = cache;
         this.host = host;
     }
 
-    public ICraftingWatcherHost getHost() {
+    public ICraftingWatcherNode getHost() {
         return this.host;
     }
 

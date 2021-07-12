@@ -21,14 +21,13 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
@@ -40,14 +39,16 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     public QuartzGrowthAcceleratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
-        this.getProxy().setFlags();
-        this.getProxy().setIdlePowerUsage(8);
+        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode().setFlags();
+        this.getMainNode().setIdlePowerUsage(8);
     }
 
-    @MENetworkEventSubscribe
-    public void onPower(final MENetworkPowerStatusChange ch) {
-        this.markForUpdate();
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        if (reason == IGridNodeListener.ActiveChangeReason.POWER) {
+            this.markForUpdate();
+        }
     }
 
     @Override
@@ -67,7 +68,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
         try {
-            data.writeBoolean(this.getProxy().getEnergy().isNetworkPowered());
+            data.writeBoolean(this.getMainNode().getEnergy().isNetworkPowered());
         } catch (final GridAccessException e) {
             data.writeBoolean(false);
         }
@@ -76,14 +77,20 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+    }
+
+    @Override
+    public void onReady() {
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        super.onReady();
     }
 
     @Override
     public boolean isPowered() {
         if (!isRemote()) {
             try {
-                return this.getProxy().getEnergy().isNetworkPowered();
+                return this.getMainNode().getEnergy().isNetworkPowered();
             } catch (final GridAccessException e) {
                 return false;
             }

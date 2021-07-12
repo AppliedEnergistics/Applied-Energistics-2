@@ -27,11 +27,12 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGridNodeService;
 
 /**
  * Implemented on Security Terminal to interface with security cache.
  */
-public interface ISecurityProvider {
+public interface ISecurityProvider extends IGridNodeService {
 
     /**
      * used to represent the security key for the network, should be based on a unique timestamp.

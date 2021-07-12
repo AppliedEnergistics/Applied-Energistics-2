@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import appeng.api.networking.IConfigurableGridNode;
 import appeng.me.GridNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -53,7 +52,6 @@ import net.minecraftforge.fml.LogicalSide;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
-import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -63,7 +61,7 @@ import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.tile.AEBaseTileEntity;
-import appeng.util.IWorldCallable;
+import appeng.util.IWorldRunnable;
 import appeng.util.Platform;
 
 public class TickHandler {
@@ -74,9 +72,9 @@ public class TickHandler {
     private static final int TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS = 25;
 
     private static final TickHandler INSTANCE = new TickHandler();
-    private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
+    private final Queue<IWorldRunnable> serverQueue = new ArrayDeque<>();
     private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<IWorld, Queue<IWorldCallable<?>>> callQueue = new HashMap<>();
+    private final Map<IWorld, Queue<IWorldRunnable>> callQueue = new HashMap<>();
     private final ServerTileRepo tiles = new ServerTileRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
@@ -107,6 +105,10 @@ public class TickHandler {
         return this.cliPlayerColors;
     }
 
+    public void addCallable(final IWorld w, Runnable c) {
+        addCallable(w, ignored -> c.run());
+    }
+
     /**
      * Add a server or world callback which gets called the next time the queue is ticked.
      * <p>
@@ -118,13 +120,13 @@ public class TickHandler {
      * @param w null or the specific {@link World}
      * @param c the callback
      */
-    public void addCallable(final IWorld w, final IWorldCallable<?> c) {
+    public void addCallable(final IWorld w, IWorldRunnable c) {
         Preconditions.checkArgument(w == null || !w.isRemote(), "Can only register serverside callbacks");
 
         if (w == null) {
             this.serverQueue.add(c);
         } else {
-            Queue<IWorldCallable<?>> queue = this.callQueue.get(w);
+            Queue<IWorldRunnable> queue = this.callQueue.get(w);
 
             if (queue == null) {
                 queue = new ArrayDeque<>();
@@ -265,7 +267,7 @@ public class TickHandler {
         }
 
         if (ev.phase == Phase.START) {
-            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
+            final Queue<IWorldRunnable> queue = this.callQueue.get(world);
             processQueueElementsRemaining += this.processQueue(queue, world);
         } else if (ev.phase == Phase.END) {
             this.simulateCraftingJobs(world);
@@ -396,7 +398,7 @@ public class TickHandler {
     }
 
     /**
-     * Process the {@link IWorldCallable} queue in this {@link World}
+     * Process the {@link IWorldRunnable} queue in this {@link World}
      * <p>
      * This has a hard limit of about 50 ms before deferring further processing into the next tick.
      *
@@ -404,7 +406,7 @@ public class TickHandler {
      * @param world the world in which the queue is processed or null for the server queue
      * @return the amount of remaining callbacks
      */
-    private int processQueue(final Queue<IWorldCallable<?>> queue, final World world) {
+    private int processQueue(final Queue<IWorldRunnable> queue, final World world) {
         if (queue == null) {
             return 0;
         }

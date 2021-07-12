@@ -20,16 +20,22 @@ package appeng.parts;
 
 import java.io.IOException;
 
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.helpers.ManagedGridNode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.me.GridAccessException;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+/**
+ * Provides a simple way of synchronizing up to 8 flags of state to the client.
+ * By default, it includes the power and channel state of the connected grid node.
+ * See {@link IGridNode#isPowered()} and {@link IGridNode#meetsChannelRequirements()}.
+ */
 public abstract class BasicStatePart extends AEBasePart implements IPowerChannelState {
 
     protected static final int POWERED_FLAG = 1;
@@ -39,44 +45,44 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     public BasicStatePart(final ItemStack is) {
         super(is);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
-    @MENetworkEventSubscribe
-    public void chanRender(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
+    @Override
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, NodeListener.INSTANCE);
     }
 
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        if (calculateClientFlags() != getClientFlags()) {
+            getHost().markForUpdate();
+        }
     }
 
     @Override
     public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
 
-        this.setClientFlags(0);
-
-        try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
-                this.setClientFlags(this.getClientFlags() | POWERED_FLAG);
-            }
-
-            if (this.getProxy().getNode().meetsChannelRequirements()) {
-                this.setClientFlags(this.getClientFlags() | CHANNEL_FLAG);
-            }
-
-            this.setClientFlags(this.populateFlags(this.getClientFlags()));
-        } catch (final GridAccessException e) {
-            // meh
-        }
-
-        data.writeByte((byte) this.getClientFlags());
+        var flags = this.calculateClientFlags();
+        this.setClientFlags(flags);
+        data.writeByte((byte) flags);
     }
 
-    protected int populateFlags(final int cf) {
-        return cf;
+    @OverridingMethodsMustInvokeSuper
+    protected int calculateClientFlags() {
+        var flags = 0;
+
+        var node = getMainNode().getNode();
+        if (node.isPowered()) {
+            flags |= POWERED_FLAG;
+        }
+
+        if (node.meetsChannelRequirements()) {
+            flags |= CHANNEL_FLAG;
+        }
+
+        return flags;
     }
 
     @Override
@@ -106,4 +112,5 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     private void setClientFlags(final int clientFlags) {
         this.clientFlags = clientFlags;
     }
+
 }

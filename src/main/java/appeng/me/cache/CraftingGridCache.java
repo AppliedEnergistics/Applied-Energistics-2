@@ -18,36 +18,10 @@
 
 package appeng.me.cache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.World;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IGridCacheProvider;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -61,12 +35,11 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPostCacheConstruction;
+import appeng.api.networking.events.GridCraftingCpuChange;
+import appeng.api.networking.events.GridCraftingPatternChange;
+import appeng.api.networking.events.GridPostCacheConstruction;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventoryHandler;
@@ -87,9 +60,33 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 public class CraftingGridCache
-        implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
+        implements ICraftingGrid, IGridCacheProvider, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
 
     private static final ExecutorService CRAFTING_POOL;
     private static final Comparator<ICraftingPatternDetails> COMPARATOR = (firstDetail,
@@ -103,6 +100,13 @@ public class CraftingGridCache
         };
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
+
+        Api.instance().grid().addGridCacheEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class, (cache, event) -> {
+            ((CraftingGridCache) cache).updatePatterns();
+        });
+        Api.instance().grid().addGridCacheEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class, (cache, event) -> {
+            ((CraftingGridCache) cache).updateList = true;
+        });
     }
 
     private final Set<CraftingCPUCluster> craftingCPUClusters = new HashSet<>();
@@ -116,18 +120,14 @@ public class CraftingGridCache
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
     private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<>(
             this.interests);
-    private IStorageGrid storageGrid;
-    private IEnergyGrid energyGrid;
+    private final IStorageGrid storageGrid;
+    private final IEnergyGrid energyGrid;
     private boolean updateList = false;
 
-    public CraftingGridCache(final IGrid grid) {
+    public CraftingGridCache(IGrid grid, IStorageGrid storageGrid, IEnergyGrid energyGrid) {
         this.grid = grid;
-    }
-
-    @MENetworkEventSubscribe
-    public void afterCacheConstruction(final MENetworkPostCacheConstruction cacheConstruction) {
-        this.storageGrid = this.grid.getCache(IStorageGrid.class);
-        this.energyGrid = this.grid.getCache(IEnergyGrid.class);
+        this.storageGrid = storageGrid;
+        this.energyGrid = energyGrid;
 
         this.storageGrid.registerCellProvider(this);
     }
@@ -139,12 +139,7 @@ public class CraftingGridCache
             this.updateCPUClusters();
         }
 
-        final Iterator<CraftingLinkNexus> craftingLinkIterator = this.craftingLinks.values().iterator();
-        while (craftingLinkIterator.hasNext()) {
-            if (craftingLinkIterator.next().isDead(this.grid, this)) {
-                craftingLinkIterator.remove();
-            }
-        }
+        this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
             cpu.updateCraftingLogic(this.grid, this.energyGrid, this);
@@ -152,72 +147,61 @@ public class CraftingGridCache
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof ICraftingWatcherHost) {
-            final ICraftingWatcher craftingWatcher = this.craftingWatchers.get(machine);
-            if (craftingWatcher != null) {
-                craftingWatcher.reset();
-                this.craftingWatchers.remove(machine);
-            }
+    public void removeNode(final IGridNode gridNode) {
+
+        var craftingWatcher = this.craftingWatchers.remove(gridNode);
+        if (craftingWatcher != null) {
+            craftingWatcher.reset();
         }
 
-        if (machine instanceof ICraftingRequester) {
+        var requester = gridNode.getService(ICraftingRequester.class);
+        if (requester != null) {
             for (final CraftingLinkNexus link : this.craftingLinks.values()) {
-                if (link.isMachine(machine)) {
+                if (link.isRequester(requester)) {
                     link.removeNode();
                 }
             }
         }
 
-        if (machine instanceof CraftingTileEntity) {
-            this.updateList = true;
+        var provider = gridNode.getService(ICraftingProvider.class);
+        if (provider != null) {
+            this.craftingProviders.remove(provider);
+            this.updatePatterns();
         }
 
-        if (machine instanceof ICraftingProvider) {
-            this.craftingProviders.remove(machine);
-            this.updatePatterns();
+        if (gridNode.getNodeOwner() instanceof CraftingTileEntity) {
+            this.updateList = true;
         }
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof ICraftingWatcherHost) {
-            final ICraftingWatcherHost watcherHost = (ICraftingWatcherHost) machine;
-            final CraftingWatcher watcher = new CraftingWatcher(this, watcherHost);
+    public void addNode(IGridNode gridNode) {
+
+        var watchingNode = gridNode.getService(ICraftingWatcherNode.class);
+        if (watchingNode != null) {
+            final CraftingWatcher watcher = new CraftingWatcher(this, watchingNode);
             this.craftingWatchers.put(gridNode, watcher);
-            watcherHost.updateWatcher(watcher);
+            watchingNode.updateWatcher(watcher);
         }
 
-        if (machine instanceof ICraftingRequester) {
-            for (final ICraftingLink link : ((ICraftingRequester) machine).getRequestedJobs()) {
+        var craftingRequester = gridNode.getService(ICraftingRequester.class);
+        if (craftingRequester != null) {
+            for (final ICraftingLink link : craftingRequester.getRequestedJobs()) {
                 if (link instanceof CraftingLink) {
                     this.addLink((CraftingLink) link);
                 }
             }
         }
 
-        if (machine instanceof CraftingTileEntity) {
-            this.updateList = true;
-        }
-
-        if (machine instanceof ICraftingProvider) {
-            this.craftingProviders.add((ICraftingProvider) machine);
+        var craftingProvider = gridNode.getService(ICraftingProvider.class);
+        if (craftingProvider != null) {
+            this.craftingProviders.add(craftingProvider);
             this.updatePatterns();
         }
-    }
 
-    @Override
-    public void onSplit(final IGridStorage destinationStorage) { // nothing!
-    }
-
-    @Override
-    public void onJoin(final IGridStorage sourceStorage) {
-        // nothing!
-    }
-
-    @Override
-    public void populateGridStorage(final IGridStorage destinationStorage) {
-        // nothing!
+        if (gridNode.getNodeOwner() instanceof CraftingTileEntity) {
+            this.updateList = true;
+        }
     }
 
     private void updatePatterns() {
@@ -247,11 +231,7 @@ public class CraftingGridCache
                 out.reset();
                 out.setCraftable(true);
 
-                Set<ICraftingPatternDetails> methods = tmpCraft.get(out);
-
-                if (methods == null) {
-                    tmpCraft.put(out, methods = new TreeSet<>(COMPARATOR));
-                }
+                var methods = tmpCraft.computeIfAbsent(out, k -> new TreeSet<>(COMPARATOR));
 
                 methods.add(details);
             }
@@ -270,8 +250,7 @@ public class CraftingGridCache
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (final IGridNode cst : this.grid.getMachines(CraftingStorageTileEntity.class)) {
-            final CraftingStorageTileEntity tile = (CraftingStorageTileEntity) cst.getHost();
+        for (var tile : this.grid.getMachines(CraftingStorageTileEntity.class)) {
             final CraftingCPUCluster cluster = tile.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
@@ -295,16 +274,6 @@ public class CraftingGridCache
         }
 
         link.setNexus(nexus);
-    }
-
-    @MENetworkEventSubscribe
-    public void updateCPUClusters(final MENetworkCraftingCpuChange c) {
-        this.updateList = true;
-    }
-
-    @MENetworkEventSubscribe
-    public void updateCPUClusters(final MENetworkCraftingPatternChange c) {
-        this.updatePatterns();
     }
 
     @Override

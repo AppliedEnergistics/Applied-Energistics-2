@@ -18,16 +18,16 @@
 
 package appeng.tile.grid;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.block.IOwnerAwareTile;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.TileEntityNodeListener;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.me.helpers.ManagedGridNode;
@@ -36,35 +36,42 @@ import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
-public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IActionHost, IInWorldGridNodeHost, IOwnerAwareTile {
+public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
-    private final ManagedGridNode gridProxy = new ManagedGridNode(this, "proxy")
-            .setVisualRepresentation(getItemFromTile());
+    private final ManagedGridNode mainNode = createMainNode()
+            .setVisualRepresentation(getItemFromTile())
+            .addService(IAEPowerStorage.class, this)
+            .setInWorldNode(true)
+            .setTagName("proxy");
 
     public AENetworkPowerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, TileEntityNodeListener.INSTANCE);
+    }
+
     @Override
     public void read(BlockState blockState, final CompoundNBT data) {
         super.read(blockState, data);
-        this.getProxy().readFromNBT(data);
+        this.getMainNode().readFromNBT(data);
     }
 
     @Override
     public CompoundNBT write(final CompoundNBT data) {
         super.write(data);
-        this.getProxy().writeToNBT(data);
+        this.getMainNode().writeToNBT(data);
         return data;
     }
 
-    protected final ManagedGridNode getProxy() {
-        return this.gridProxy;
+    public final ManagedGridNode getMainNode() {
+        return this.mainNode;
     }
 
     @Nullable
     public IGridNode getGridNode() {
-        return this.gridProxy.getNode();
+        return this.mainNode.getNode();
     }
 
     @Override
@@ -74,7 +81,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity i
 
     @Override
     public IGridNode getGridNode(Direction dir) {
-        var node = this.getProxy().getNode();
+        var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side
         if (node != null && node.isExposedOnSide(dir)) {
@@ -92,34 +99,25 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity i
     @Override
     public void validate() {
         super.validate();
-        this.getProxy().validate();
+        TickHandler.instance().addInit(this); // Required for onReady to be called
     }
 
     @Override
     public void remove() {
         super.remove();
-        this.getProxy().remove();
+        this.getMainNode().remove();
     }
 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        this.getProxy().onChunkUnloaded();
+        this.getMainNode().onChunkUnloaded();
     }
 
     @Override
     public void onReady() {
         super.onReady();
-        this.getProxy().onReady();
+        this.getMainNode().create(getWorld(), getTile().getPos());
     }
 
-    @Override
-    public IGridNode getActionableNode() {
-        return this.getProxy().getNode();
-    }
-
-    @Override
-    public void setOwner(PlayerEntity owner) {
-        getProxy().setOwner(owner);
-    }
 }

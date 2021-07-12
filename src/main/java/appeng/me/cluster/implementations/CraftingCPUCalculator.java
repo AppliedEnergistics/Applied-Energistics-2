@@ -22,13 +22,9 @@ import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.CraftingTileEntity;
@@ -98,7 +94,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
             if (n != null) {
                 final IGrid g = n.getGrid();
                 if (g != null) {
-                    g.postEvent(new MENetworkCraftingCpuChange(n));
+                    g.postEvent(new GridCraftingCpuChange(n));
                     return;
                 }
             }

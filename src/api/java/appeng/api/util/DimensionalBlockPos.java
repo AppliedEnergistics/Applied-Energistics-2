@@ -34,13 +34,16 @@ import java.util.Objects;
 /**
  * Represents a location in the Minecraft Universe
  */
-public final class DimensionalBlockPos extends BlockPos {
+public final class DimensionalBlockPos {
 
     @Nonnull
     private final World world;
 
+    @Nonnull
+    private final BlockPos pos;
+
     public DimensionalBlockPos(DimensionalBlockPos coordinate) {
-        this(coordinate.getWorld(), coordinate);
+        this(coordinate.getWorld(), coordinate.pos);
     }
 
     public DimensionalBlockPos(TileEntity tileEntity) {
@@ -52,36 +55,39 @@ public final class DimensionalBlockPos extends BlockPos {
     }
 
     public DimensionalBlockPos(World world, int x, int y, int z) {
-        super(x, y, z);
         this.world = Objects.requireNonNull(world, "world");
+        this.pos = new BlockPos(x, y, z);
     }
 
     @Override
-    public DimensionalBlockPos toImmutable() {
-        return this;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DimensionalBlockPos that = (DimensionalBlockPos) o;
+        return world.equals(that.world) && pos.equals(that.pos);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode() ^ this.world.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof DimensionalBlockPos dimPos && dimPos.world == world && super.equals(obj);
+        return Objects.hash(world, pos);
     }
 
     @Override
     public String toString() {
-        return getX() + "," + getY() + "," + getZ() + " in " + getWorld().getDimensionKey().getLocation();
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getWorld().getDimensionKey().getLocation();
     }
 
     public boolean isInWorld(final IWorld world) {
         return this.world == world;
     }
 
+    @Nonnull
     public World getWorld() {
         return this.world;
     }
 
+    @Nonnull
+    public BlockPos getPos() {
+        return pos;
+    }
 }

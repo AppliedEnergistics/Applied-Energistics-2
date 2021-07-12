@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNode;
 
 /**
  * AE's Power system.
@@ -59,8 +59,8 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
      * that determines the networks "powered state" if the network is considered off-line, your machines should not
      * function.
      *
-     * {@link MENetworkPowerStatusChange} events are posted when this value changes if you need to be notified of the
-     * change, most machines can simply test the value when they operate.
+     * Nodes are notfied via {@link appeng.api.networking.IGridNodeListener#onPowerChanged(Object, IGridNode)} when
+     * this value changes. Most machines can simply test the value when they operate without listening to this event.
      *
      * @return if the network is powered or not.
      */

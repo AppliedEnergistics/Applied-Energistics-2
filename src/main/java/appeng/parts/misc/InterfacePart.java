@@ -21,6 +21,9 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.parts.AEBasePart;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,12 +46,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
@@ -73,10 +70,18 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 
-public class InterfacePart extends BasicStatePart implements IGridTickable, IStorageMonitorable, IInventoryDestination,
+public class InterfacePart extends BasicStatePart implements IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
+
+    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
+        @Override
+        public void onGridChanged(InterfacePart nodeOwner, IGridNode node) {
+            super.onGridChanged(nodeOwner, node);
+            nodeOwner.getInterfaceDuality().gridChanged();
+        }
+    };
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -90,19 +95,26 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/item_interface_has_channel"));
 
-    private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
+    private final DualityInterface duality;
 
     public InterfacePart(final ItemStack is) {
         super(is);
+        this.duality = new DualityInterface(this.getMainNode(), this, is);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkChannelsChanged c) {
-        this.duality.notifyNeighbors();
+    @Override
+    public void saveChanges() {
+        getHost().markForSave();
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkPowerStatusChange c) {
+    @Override
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, NODE_LISTENER);
+    }
+
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        super.onMainNodeStateChanged(reason);
         this.duality.notifyNeighbors();
     }
 
@@ -115,11 +127,6 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     @Override
     public int getInstalledUpgrades(final Upgrades u) {
         return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public void onGridChanged(IGridNode node) {
-        this.duality.gridChanged();
     }
 
     @Override
@@ -176,16 +183,6 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return this.duality.getInventory(channel);
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return this.duality.getTickingRequest(node);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.duality.tickingRequest(node, ticksSinceLastCall);
     }
 
     @Override

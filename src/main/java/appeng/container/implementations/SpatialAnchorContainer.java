@@ -18,25 +18,21 @@
 
 package appeng.container.implementations;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
+import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
+import appeng.me.cache.StatisticsCache;
+import appeng.tile.spatial.SpatialAnchorTileEntity;
 import com.google.common.collect.Multiset;
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
-import appeng.container.AEBaseContainer;
-import appeng.container.guisync.GuiSync;
-import appeng.me.cache.StatisticsCache;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen
@@ -94,12 +90,10 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                 this.loadedChunks = anchor.countLoadedChunks();
 
                 HashMap<IWorld, Integer> stats = new HashMap<>();
-                IMachineSet anchors = grid.getMachines(SpatialAnchorTileEntity.class);
 
-                for (IGridNode machine : anchors) {
-                    SpatialAnchorTileEntity a = (SpatialAnchorTileEntity) machine.getHost();
+                for (var machine : grid.getMachines(SpatialAnchorTileEntity.class)) {
                     IWorld world = machine.getWorld();
-                    stats.merge(world, a.countLoadedChunks(), Math::max);
+                    stats.merge(world, machine.countLoadedChunks(), Math::max);
                 }
 
                 this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);

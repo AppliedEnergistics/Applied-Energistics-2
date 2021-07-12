@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGridNodeListener;
+import appeng.core.Api;
 import com.google.common.collect.Multiset;
 
 import net.minecraft.block.BlockState;
@@ -44,17 +46,13 @@ import appeng.api.config.YesNo;
 import appeng.api.movable.IMovableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.statistics.MENetworkChunkEvent.MENetworkChunkAdded;
-import appeng.api.networking.events.statistics.MENetworkChunkEvent.MENetworkChunkRemoved;
+import appeng.api.networking.events.statistics.GridChunkEvent.GridChunkAdded;
+import appeng.api.networking.events.statistics.GridChunkEvent.GridChunkRemoved;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -68,6 +66,11 @@ import appeng.util.IConfigManagerHost;
 
 public class SpatialAnchorTileEntity extends AENetworkTileEntity
         implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableTile {
+
+    static {
+        Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::chunkAdded);
+        Api.instance().grid().addNodeOwnerEventHandler(GridChunkRemoved.class, SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::chunkRemoved);
+    }
 
     /**
      * Loads this radius after being move via a spatial transfer. This accounts for the anchor not being placed in the
@@ -87,7 +90,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     public SpatialAnchorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
         this.manager.registerSetting(Settings.OVERLAY_MODE, YesNo.NO);
     }
 
@@ -170,15 +174,13 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         return 0x80000000 | AEColor.TRANSPARENT.mediumVariant;
     }
 
-    @MENetworkEventSubscribe
-    public void chunkAdded(final MENetworkChunkAdded changed) {
+    public void chunkAdded(final GridChunkAdded changed) {
         if (changed.getWorld() == this.getServerWorld()) {
             this.force(changed.getChunkPos());
         }
     }
 
-    @MENetworkEventSubscribe
-    public void chunkRemoved(final MENetworkChunkRemoved changed) {
+    public void chunkRemoved(final GridChunkRemoved changed) {
         if (changed.getWorld() == this.getServerWorld()) {
             this.release(changed.getChunkPos(), true);
             // Need to wake up the anchor to potentially perform another cleanup
@@ -186,16 +188,12 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         }
     }
 
-    @MENetworkEventSubscribe
-    public void powerChange(final MENetworkPowerStatusChange powerChange) {
-        this.markForUpdate();
-        this.wakeUp();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerChange(final MENetworkChannelsChanged powerChange) {
-        this.markForUpdate();
-        this.wakeUp();
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        if (reason != IGridNodeListener.ActiveChangeReason.GRID_BOOT) {
+            this.markForUpdate();
+            this.wakeUp();
+        }
     }
 
     @Override
@@ -224,7 +222,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     private void wakeUp() {
         // Wake the anchor to allow for unloading chunks some time after power loss
         try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
         } catch (GridAccessException e) {
             // Can be ignored
         }
@@ -240,7 +238,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     @Nonnull
     public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
         // Initialize once the network is ready and there are no entries marked as loaded.
-        if (!this.initialized && this.getProxy().isActive() && this.getProxy().isPowered()) {
+        if (!this.initialized && this.getMainNode().isActive() && this.getMainNode().isPowered()) {
             this.forceAll();
             this.initialized = true;
         } else {
@@ -249,7 +247,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
         // Be a bit lenient to not unload all chunks immediately upon power loss
         if (this.powerlessTicks > 200) {
-            if (!this.getProxy().isPowered() || !this.getProxy().isActive()) {
+            if (!this.getMainNode().isPowered() || !this.getMainNode().isActive()) {
                 this.releaseAll();
             }
             this.powerlessTicks = 0;
@@ -259,7 +257,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         }
 
         // Count ticks without power
-        if (!this.getProxy().isPowered() || !this.getProxy().isActive()) {
+        if (!this.getMainNode().isPowered() || !this.getMainNode().isActive()) {
             this.powerlessTicks += ticksSinceLastCall;
             return TickRateModulation.SAME;
         }
@@ -277,7 +275,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     public boolean isPowered() {
-        return this.getProxy().isActive() && this.getProxy().isPowered();
+        return this.getMainNode().isActive() && this.getMainNode().isPowered();
     }
 
     public boolean isActive() {
@@ -298,7 +296,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     private void updatePowerConsumption() {
         int energy = 80 + this.chunks.size() * (this.chunks.size() + 1) / 2;
-        this.getProxy().setIdlePowerUsage(energy);
+        this.getMainNode().setIdlePowerUsage(energy);
     }
 
     /**
@@ -307,7 +305,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      */
     private void cleanUp() {
         try {
-            Multiset<ChunkPos> requiredChunks = this.getProxy().getStatistics().getChunks().get(this.getServerWorld());
+            Multiset<ChunkPos> requiredChunks = this.getMainNode().getStatistics().getChunks().get(this.getServerWorld());
 
             // Release all chunks, which are no longer part of the network.s
             for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
@@ -368,7 +366,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     private void forceAll() {
         try {
-            for (ChunkPos chunkPos : this.getProxy().getStatistics().getChunks().get(this.getServerWorld())
+            for (ChunkPos chunkPos : this.getMainNode().getStatistics().getChunks().get(this.getServerWorld())
                     .elementSet()) {
                 this.force(chunkPos);
             }

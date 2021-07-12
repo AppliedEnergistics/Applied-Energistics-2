@@ -23,24 +23,13 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-
 /**
- * posted by the network when the networks Storage Changes, you can use the currentItems list to check levels, and
- * update status.
+ * Posted by storage devices to inform AE to refresh its storage structure.
  *
- * this is the least useful method of getting info about changes in the network.
+ * This is done in cases such as a storage cell being removed or added to a drive.
  *
- * Do not modify the list or its contents in anyway.
+ * you do not need to send this event when your node is added / removed from the grid.
  */
-public class MENetworkStorageEvent extends MENetworkEvent {
+public class GridCellArrayUpdate extends GridEvent {
 
-    public final IMEMonitor monitor;
-    public final IStorageChannel channel;
-
-    public MENetworkStorageEvent(final IMEMonitor o, final IStorageChannel chan) {
-        this.monitor = o;
-        this.channel = chan;
-    }
 }

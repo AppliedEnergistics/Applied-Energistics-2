@@ -69,7 +69,7 @@ public interface IConfigurableGridNode extends IGridNode {
      *
      * @param ownerPlayerId ME player id of the owner. See {@link appeng.api.features.IPlayerRegistry}.
      */
-    void setOwner(int ownerPlayerId);
+    void setOwningPlayerId(int ownerPlayerId);
 
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
@@ -87,4 +87,15 @@ public interface IConfigurableGridNode extends IGridNode {
      * that the node will connect to nodes of any color.
      */
     void setGridColor(@Nonnull AEColor gridColor);
+
+    /**
+     * Adds a service to this grid node that can be used by overlay grids such as
+     * {@link appeng.api.networking.crafting.ICraftingGrid}.
+     *
+     * @param serviceClass The service interface that should be provided by this node.
+     * @param service      The implementation of the service.
+     * @throws IllegalStateException If the node has already been marked as ready. Services can only be added while a
+     *                               node has not been fully initialized yet.
+     */
+    <T extends IGridNodeService> void addService(Class<T> serviceClass, T service);
 }

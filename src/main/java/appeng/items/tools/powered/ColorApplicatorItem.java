@@ -428,6 +428,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public FuzzyMode getFuzzyMode(final ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        if (fz.isEmpty()) {
+            return FuzzyMode.IGNORE_ALL;
+        }
         try {
             return FuzzyMode.valueOf(fz);
         } catch (final Throwable t) {

@@ -24,10 +24,11 @@
 package appeng.api.networking;
 
 import appeng.api.IAppEngApi;
+import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -46,20 +47,28 @@ import java.util.Set;
 public interface IGridNode {
 
     /**
+     * Tries to get a service that was attached to this grid node when it was created.
+     * Used by overlay grids such as the {@link appeng.api.networking.crafting.ICraftingGrid}.
+     */
+    @Nullable
+    <T extends IGridNodeService> T getService(Class<T> serviceClass);
+
+    /**
+     * Gets the host of the grid node, which does not necessarily have a representation in the game world.
+     * In most cases, this will be the game object that has created the node, for example a
+     * {@link net.minecraft.tileentity.TileEntity} or {@link appeng.api.parts.IPart}, but may also represent
+     * something entirely different.
+     */
+    @Nonnull
+    Object getNodeOwner();
+
+    /**
      * lets you walk the grid stating at the current node using a IGridVisitor, generally not needed, please use only if
      * required.
      *
      * @param visitor visitor
      */
     void beginVisit(@Nonnull IGridVisitor visitor);
-
-    /**
-     * get the machine represented by the node.
-     *
-     * @return grid host
-     */
-    @Nonnull
-    IGridNodeHost getHost();
 
     /**
      * get the grid for the node, this can change at a moments notice.
@@ -78,9 +87,7 @@ public interface IGridNode {
      * @return the world the node is located in
      */
     @Nonnull
-    default IWorld getWorld() {
-        return getHost().getWorld();
-    }
+    ServerWorld getWorld();
 
     /**
      * @return The externally accessible sides of the host that this grid node has formed a connection through.
@@ -104,12 +111,25 @@ public interface IGridNode {
     List<IGridConnection> getConnections();
 
     /**
-     * Reflects the networks status, returns true only if the network is powered, and the network is not booting, this
-     * also takes into account channels.
-     *
-     * @return true if is Network node active, and participating.
+     * Reflects the networks status, returns true only if the network is powered, and the network has fully booted,
+     * and this node has the channels it needs (if any).
      */
-    boolean isActive();
+    default boolean isActive() {
+        return isPowered() && hasGridBooted() && meetsChannelRequirements();
+    }
+
+    /**
+     * @return True if the grid is connected to a network, and that network has fully booted.
+     * @see IPathingGrid#isNetworkBooting()
+     */
+    boolean hasGridBooted();
+
+    /**
+     * @return True if the node has power from it's connected grid. Can be used to show a machine being powered,
+     * even if the machine doesn't have it's required channel or the network is still booting.
+     * @see #isActive()
+     */
+    boolean isPowered();
 
     /**
      * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
@@ -129,7 +149,7 @@ public interface IGridNode {
      * @return the ownerID this represents the person who placed the node.
      * @see appeng.api.features.IPlayerRegistry
      */
-    int getOwner();
+    int getOwningPlayerId();
 
     /**
      * @return The power in AE/t that will be drained by this node.

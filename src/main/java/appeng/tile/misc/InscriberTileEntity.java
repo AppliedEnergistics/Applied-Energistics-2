@@ -101,9 +101,11 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     public InscriberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
-        this.getProxy().setExposedOnSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode()
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .setIdlePowerUsage(0)
+                .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
-        this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
 
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, this.getUpgradeSlots());
@@ -188,7 +190,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
     }
 
@@ -222,7 +224,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             }
 
             this.cachedTask = null;
-            this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+            this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -290,7 +292,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             }
         } else {
             try {
-                final IEnergyGrid eg = this.getProxy().getEnergy();
+                final IEnergyGrid eg = this.getMainNode().getEnergy();
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card

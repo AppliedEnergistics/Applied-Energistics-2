@@ -60,7 +60,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     public P2PTunnelPart(final ItemStack is) {
         super(is);
-        this.getProxy().setIdlePowerUsage(this.getPowerDrainPerTick());
+        this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
     }
 
     protected float getPowerDrainPerTick() {
@@ -83,7 +83,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         }
 
         try {
-            final P2PTunnelPart tunnel = this.getProxy().getP2P().getInput(this.getFrequency());
+            final P2PTunnelPart tunnel = this.getMainNode().getP2P().getInput(this.getFrequency());
             if (this.getClass().isInstance(tunnel)) {
                 return (T) tunnel;
             }
@@ -94,8 +94,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     public TunnelCollection<T> getOutputs() throws GridAccessException {
-        if (this.getProxy().isActive()) {
-            return (TunnelCollection<T>) this.getProxy().getP2P().getOutputs(this.getFrequency(), this.getClass());
+        if (this.getMainNode().isActive()) {
+            return (TunnelCollection<T>) this.getMainNode().getP2P().getOutputs(this.getFrequency(), this.getClass());
         }
         return new TunnelCollection(new ArrayList(), this.getClass());
     }
@@ -187,7 +187,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                         newTunnel.setOutput(true);
 
                         try {
-                            final P2PCache p2p = newTunnel.getProxy().getP2P();
+                            final P2PCache p2p = newTunnel.getMainNode().getP2P();
                             p2p.updateFreq(newTunnel, freq);
                         } catch (final GridAccessException e) {
                             // :P
@@ -254,7 +254,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     newTunnel.onTunnelNetworkChange();
 
                     try {
-                        final P2PCache p2p = newTunnel.getProxy().getP2P();
+                        final P2PCache p2p = newTunnel.getMainNode().getP2P();
                         p2p.updateFreq(newTunnel, myFreq);
                     } catch (final GridAccessException e) {
                         // :P
@@ -289,10 +289,10 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             try {
                 if (needsNewFrequency) {
-                    newFreq = this.getProxy().getP2P().newFrequency();
+                    newFreq = this.getMainNode().getP2P().newFrequency();
                 }
 
-                this.getProxy().getP2P().updateFreq(this, newFreq);
+                this.getMainNode().getP2P().updateFreq(this, newFreq);
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -334,7 +334,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
 
         try {
-            this.getProxy().getEnergy().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE);
+            this.getMainNode().getEnergy().extractAEPower(ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE);
         } catch (final GridAccessException e) {
             // :P
         }

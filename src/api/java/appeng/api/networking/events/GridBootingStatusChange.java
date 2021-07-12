@@ -31,6 +31,6 @@ import appeng.api.networking.IGridNode;
  *
  * Note: Most machines just need to check {@link IGridNode}.isActive()
  */
-public class MENetworkBootingStatusChange extends MENetworkEvent {
+public class GridBootingStatusChange extends GridEvent {
 
 }

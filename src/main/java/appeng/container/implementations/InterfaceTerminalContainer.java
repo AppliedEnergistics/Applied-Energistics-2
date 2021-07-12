@@ -135,21 +135,18 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
     private <T extends IInterfaceHost & IGridNodeHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
                                                                                 VisitorState state) {
-        for (final IGridNode gn : grid.getMachines(machineClass)) {
-            if (gn.isActive()) {
-                final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
-                final DualityInterface dual = ih.getInterfaceDuality();
-                if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
-                    continue;
-                }
-
-                final InvTracker t = this.diList.get(ih);
-                if (t == null || !t.name.equals(dual.getTermName())) {
-                    state.forceFullUpdate = true;
-                }
-
-                state.total++;
+        for (var ih : grid.getActiveMachines(machineClass)) {
+            final DualityInterface dual = ih.getInterfaceDuality();
+            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
+                continue;
             }
+
+            final InvTracker t = this.diList.get(ih);
+            if (t == null || !t.name.equals(dual.getTermName())) {
+                state.forceFullUpdate = true;
+            }
+
+            state.total++;
         }
     }
 
@@ -262,18 +259,16 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return new InterfaceTerminalPacket(true, new CompoundNBT());
         }
 
-        for (final IGridNode gn : grid.getMachines(InterfaceTileEntity.class)) {
-            final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
+        for (var ih : grid.getActiveMachines(InterfaceTileEntity.class)) {
             final DualityInterface dual = ih.getInterfaceDuality();
-            if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
             }
         }
 
-        for (final IGridNode gn : grid.getMachines(InterfacePart.class)) {
-            final IInterfaceHost ih = (IInterfaceHost) gn.getHost();
+        for (var ih : grid.getActiveMachines(InterfacePart.class)) {
             final DualityInterface dual = ih.getInterfaceDuality();
-            if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
             }
         }

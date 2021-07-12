@@ -23,21 +23,10 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.networking.IGridNodeHost;
-
 /**
- * An event that is posted whenever a spatial IO is active, called for IGridCache
+ * Posted after all the caches are available, but before the grid is fully constructed, can be used to perform cross
+ * cache construction processes.
  */
-public class MENetworkSpatialEvent extends MENetworkEvent {
-    public final IGridNodeHost host;
-    public final double spatialEnergyUsage;
+public class GridPostCacheConstruction extends GridEvent {
 
-    /**
-     * @param SpatialIO   ( INSTANCE of the SpatialIO block )
-     * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
-     */
-    public MENetworkSpatialEvent(final IGridNodeHost SpatialIO, final double EnergyUsage) {
-        this.host = SpatialIO;
-        this.spatialEnergyUsage = EnergyUsage;
-    }
 }

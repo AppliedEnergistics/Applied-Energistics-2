@@ -21,25 +21,38 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.crafting;
+package appeng.api.networking.events;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.networking.energy.IAEPowerStorage;
 
-public interface ICraftingWatcherHost {
+/**
+ * informs the network, that a {@link IAEPowerStorage} block that had either run, out of power, or was full, is no
+ * longer in that state.
+ *
+ * failure to post this event when your {@link IAEPowerStorage} changes state will result in your block not charging, or
+ * not-discharging.
+ *
+ * you do not need to send this event when your node is added / removed from the grid.
+ */
+public class GridPowerStorageStateChanged extends GridEvent {
 
-    /**
-     * provides the ICraftingWatcher for this host, for the current network, is called when the hot changes networks.
-     * You do not need to clear your old watcher, its already been removed by the time this gets called.
-     *
-     * @param newWatcher crafting watcher for this host
-     */
-    void updateWatcher(ICraftingWatcher newWatcher);
+    public final IAEPowerStorage storage;
+    public final PowerEventType type;
 
-    /**
-     * Called when a crafting status changes.
-     *
-     * @param craftingGrid current crafting grid
-     * @param what         change
-     */
-    void onRequestChange(ICraftingGrid craftingGrid, IAEItemStack what);
+    public GridPowerStorageStateChanged(final IAEPowerStorage t, final PowerEventType y) {
+        this.storage = t;
+        this.type = y;
+    }
+
+    public enum PowerEventType {
+        /**
+         * informs the network this tile is ready to receive power again.
+         */
+        REQUEST_POWER,
+
+        /**
+         * informs the network this tile is ready to provide power again.
+         */
+        PROVIDE_POWER
+    }
 }

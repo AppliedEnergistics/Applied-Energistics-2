@@ -18,27 +18,23 @@
 
 package appeng.parts.networking;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 
 public class SmartCablePart extends CablePart implements IUsedChannelProvider {
     public SmartCablePart(final ItemStack is) {
         super(is);
     }
 
-    @MENetworkEventSubscribe
-    public void channelUpdated(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
+    /**
+     * Send info about changed channels/power to client to update the on-cable display of channels/power.
+     * @param reason
+     */
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         this.getHost().markForUpdate();
     }
 

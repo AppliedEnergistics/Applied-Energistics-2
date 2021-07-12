@@ -23,10 +23,16 @@
 
 package appeng.api.networking.events;
 
-/**
- * Posted after all the caches are available, but before the grid is fully constructed, can be used to perform cross
- * cache construction processes.
- */
-public class MENetworkPostCacheConstruction extends MENetworkEvent {
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingProvider;
 
+public class GridCraftingPatternChange extends GridEvent {
+
+    public final ICraftingProvider provider;
+    public final IGridNode node;
+
+    public GridCraftingPatternChange(final ICraftingProvider p, final IGridNode n) {
+        this.provider = p;
+        this.node = n;
+    }
 }

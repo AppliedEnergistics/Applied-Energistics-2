@@ -20,7 +20,6 @@ package appeng.me.pathfinding;
 
 import net.minecraft.util.math.BlockPos;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.tile.networking.ControllerTileEntity;
@@ -47,8 +46,7 @@ public class ControllerValidator implements IGridVisitor {
 
     @Override
     public boolean visitNode(final IGridNode n) {
-        final IGridNodeHost host = n.getHost();
-        if (this.isValid() && host instanceof final ControllerTileEntity c) {
+        if (this.isValid() && n.getNodeOwner() instanceof ControllerTileEntity c) {
 
             final BlockPos pos = c.getPos();
 

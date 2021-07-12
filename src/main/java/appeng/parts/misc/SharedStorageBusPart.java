@@ -21,16 +21,14 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Settings;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventoryHandler;
@@ -57,24 +55,25 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
 
     public SharedStorageBusPart(ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     protected void updateStatus() {
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             try {
-                this.getProxy().getGridOrThrow().postEvent(new MENetworkCellArrayUpdate());
                 this.getHost().markForUpdate();
+                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
             } catch (final GridAccessException ignore) {
                 // :P
             }
         }
     }
 
-    @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
-        this.updateStatus();
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        updateStatus();
     }
 
     /**
@@ -113,12 +112,6 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
         this.priority = newValue;
         this.getHost().markForSave();
         this.resetCache(true);
-    }
-
-    @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.updateStatus();
     }
 
     @Override
@@ -168,4 +161,5 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     public float getCableConnectionLength(AECableType cable) {
         return 4;
     }
+
 }

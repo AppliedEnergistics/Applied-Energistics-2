@@ -24,7 +24,6 @@ import appeng.api.networking.IGridNode;
 import appeng.me.cache.PathGridCache;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -66,8 +65,9 @@ public class PathSegment {
                             }
 
                             if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
-                                if (((IGridNode) pi).getHost() instanceof IGridMultiblock multiblock) {
-                                    final Iterator<IGridNode> oni = multiblock.getMultiblockNodes();
+                                var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
+                                if (multiblock != null) {
+                                    var oni = multiblock.getMultiblockNodes();
                                     while (oni.hasNext()) {
                                         final IGridNode otherNodes = oni.next();
                                         if (otherNodes != pi) {

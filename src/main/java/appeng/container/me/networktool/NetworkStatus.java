@@ -25,7 +25,6 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
@@ -62,8 +61,8 @@ public class NetworkStatus {
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
         Map<IAEItemStack, MachineGroup> groupedMachines = new HashMap<>();
-        for (final Class<? extends IGridNodeHost> machineClass : grid.getMachinesClasses()) {
-            for (IGridNode machine : grid.getMachines(machineClass)) {
+        for (var machineClass : grid.getMachineClasses()) {
+            for (IGridNode machine : grid.getMachineNodes(machineClass)) {
                 var is = machine.getVisualRepresentation();
                 IAEItemStack ais = AEItemStack.fromItemStack(is);
                 if (ais != null) {

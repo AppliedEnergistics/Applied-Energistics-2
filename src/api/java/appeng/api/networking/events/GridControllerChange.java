@@ -23,16 +23,10 @@
 
 package appeng.api.networking.events;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridNodeHost;
-
 /**
- * Usable on any {@link IGridNodeHost}, or {@link IGridCache}
+ * Event posted when the networks controller state changes, this can be from no controller to 1 controller, or any time
+ * the network changes from conflicted to not conflicted.
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MENetworkEventSubscribe {
+public class GridControllerChange extends GridEvent {
 
 }

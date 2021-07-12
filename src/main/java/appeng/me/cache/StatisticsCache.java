@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IGridCacheProvider;
+import appeng.me.InWorldGridNode;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
@@ -33,17 +34,16 @@ import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
-import appeng.api.networking.events.statistics.MENetworkChunkEvent;
+import appeng.api.networking.events.statistics.GridChunkEvent;
 
 /**
  * A grid providing precomupted statistics about a network.
  * <p>
  * Currently this tracks the chunks a network is occupying.
  */
-public class StatisticsCache implements IGridCache {
+public class StatisticsCache implements IGridCache, IGridCacheProvider {
 
     private final IGrid grid;
 
@@ -59,36 +59,17 @@ public class StatisticsCache implements IGridCache {
     }
 
     @Override
-    public void onUpdateTick() {
-    }
-
-    @Override
-    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
-        if (machine instanceof IInWorldGridNodeHost inWorldHost) {
-            this.removeChunk(inWorldHost.getWorld(), inWorldHost.getLocation());
+    public void removeNode(final IGridNode node) {
+        if (node instanceof InWorldGridNode inWorldNode) {
+            this.removeChunk(inWorldNode.getWorld(), inWorldNode.getLocation());
         }
     }
 
     @Override
-    public void addNode(final IGridNode node, final IGridNodeHost machine) {
-        if (machine instanceof IInWorldGridNodeHost inWorldHost) {
-            this.addChunk(inWorldHost.getWorld(), inWorldHost.getLocation());
+    public void addNode(final IGridNode node) {
+        if (node instanceof InWorldGridNode inWorldNode) {
+            this.addChunk(inWorldNode.getWorld(), inWorldNode.getLocation());
         }
-    }
-
-    @Override
-    public void onSplit(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void onJoin(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void populateGridStorage(final IGridStorage storage) {
-
     }
 
     public IGrid getGrid() {
@@ -129,7 +110,7 @@ public class StatisticsCache implements IGridCache {
         final ChunkPos position = new ChunkPos(pos);
 
         if (!this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkAdded((ServerWorld) world, position));
+            this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerWorld) world, position));
         }
 
         return this.getChunks(world).add(position);
@@ -150,7 +131,7 @@ public class StatisticsCache implements IGridCache {
         boolean ret = this.getChunks(world).remove(position);
 
         if (ret && !this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new MENetworkChunkEvent.MENetworkChunkRemoved((ServerWorld) world, position));
+            this.grid.postEvent(new GridChunkEvent.GridChunkRemoved((ServerWorld) world, position));
         }
 
         this.clearWorld(world);

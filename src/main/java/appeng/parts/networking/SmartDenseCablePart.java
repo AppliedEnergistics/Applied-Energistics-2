@@ -18,6 +18,7 @@
 
 package appeng.parts.networking;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.util.AECableType;
@@ -32,4 +33,14 @@ public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelP
     public AECableType getCableConnectionType() {
         return AECableType.DENSE_SMART;
     }
+
+    /**
+     * Send info about changed channels/power to client to update the on-cable display of channels/power.
+     * @param reason
+     */
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        this.getHost().markForUpdate();
+    }
+
 }

@@ -19,54 +19,60 @@
 package appeng.tile.grid;
 
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.block.IOwnerAwareTile;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.TileEntityNodeListener;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionHost;
 import appeng.me.helpers.ManagedGridNode;
 import appeng.tile.AEBaseInvTileEntity;
 import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
-public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IActionHost, IInWorldGridNodeHost, IOwnerAwareTile {
+public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
-    private final ManagedGridNode gridProxy = new ManagedGridNode(this, "proxy")
-            .setVisualRepresentation(this.getItemFromTile());
+    private final ManagedGridNode mainNode = createMainNode()
+            .setVisualRepresentation(this.getItemFromTile())
+            .setInWorldNode(true)
+            .setTagName("proxy");
 
     public AENetworkInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, TileEntityNodeListener.INSTANCE);
+    }
+
     @Override
     public void read(BlockState blockState, final CompoundNBT data) {
         super.read(blockState, data);
-        this.getProxy().readFromNBT(data);
+        this.getMainNode().readFromNBT(data);
     }
 
     @Override
     public CompoundNBT write(final CompoundNBT data) {
         super.write(data);
-        this.getProxy().writeToNBT(data);
+        this.getMainNode().writeToNBT(data);
         return data;
     }
 
-    protected final ManagedGridNode getProxy() {
-        return this.gridProxy;
+    public final ManagedGridNode getMainNode() {
+        return this.mainNode;
     }
 
     @Nullable
     public IGridNode getGridNode() {
-        return getProxy().getNode();
+        return getMainNode().getNode();
     }
 
     @Override
     public IGridNode getGridNode(final Direction dir) {
-        var node = this.getProxy().getNode();
+        var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side
         if (node != null && node.isExposedOnSide(dir)) {
@@ -79,13 +85,13 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        this.getProxy().onChunkUnloaded();
+        this.getMainNode().onChunkUnloaded();
     }
 
     @Override
     public void onReady() {
         super.onReady();
-        this.getProxy().onReady();
+        this.getMainNode().create(world, pos);
     }
 
     @Override
@@ -95,23 +101,13 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
         // markForUpdate
         // and cause the block state to be changed back to non-air
         updateContainingBlockInfo();
-        this.getProxy().remove();
+        this.getMainNode().remove();
     }
 
     @Override
     public void validate() {
         super.validate();
-        this.getProxy().validate();
-    }
-
-    @Override
-    public IGridNode getActionableNode() {
-        return this.getProxy().getNode();
-    }
-
-    @Override
-    public void setOwner(PlayerEntity owner) {
-        getProxy().setOwner(owner);
+        TickHandler.instance().addInit(this); // Required for onReady to be called
     }
 
 }

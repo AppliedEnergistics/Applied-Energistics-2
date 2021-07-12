@@ -28,11 +28,12 @@ import javax.annotation.Nonnull;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNodeService;
 
 /**
  * Used to access information about AE's various power accepting blocks for monitoring purposes.
  */
-public interface IAEPowerStorage extends IEnergySource {
+public interface IAEPowerStorage extends IEnergySource, IGridNodeService {
 
     /**
      * Inject amt, power into the device, it will store what it can, and return the amount unable to be stored.

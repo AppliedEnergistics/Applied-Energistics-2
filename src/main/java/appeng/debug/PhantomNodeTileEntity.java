@@ -20,11 +20,11 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import appeng.me.helpers.TileEntityNodeListener;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.ManagedGridNode;
 import appeng.tile.grid.AENetworkTileEntity;
 
@@ -49,9 +49,10 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     @Override
     public void onReady() {
         super.onReady();
-        this.proxy = new ManagedGridNode(this, "proxy")
+        this.proxy = new ManagedGridNode(this, TileEntityNodeListener.INSTANCE)
+                .setInWorldNode(true)
                 .setVisualRepresentation(getItemFromTile());
-        this.proxy.onReady();
+        this.proxy.create(world, pos);
         this.crashMode = true;
     }
 

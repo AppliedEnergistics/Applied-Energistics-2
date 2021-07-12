@@ -54,7 +54,7 @@ import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
@@ -162,7 +162,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     @Override
     public void updateStatus(final boolean updateGrid) {
         for (final CraftingTileEntity r : this.tiles) {
-            r.updateMeta(true);
+            r.updateSubType(true);
         }
     }
 
@@ -185,7 +185,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 if (n != null && !posted) {
                     final IGrid g = n.getGrid();
                     if (g != null) {
-                        g.postEvent(new MENetworkCraftingCpuChange(n));
+                        g.postEvent(new GridCraftingCpuChange(n));
                         posted = true;
                     }
                 }

@@ -21,6 +21,7 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import appeng.api.networking.IGridCacheProvider;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReport;
@@ -28,16 +29,14 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ReportedException;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.cache.helpers.TickTracker;
 
-public class TickManagerCache implements ITickManager {
+public class TickManagerCache implements ITickManager, IGridCacheProvider {
 
     private final HashMap<IGridNode, TickTracker> alertable = new HashMap<>();
     private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<>();
@@ -124,8 +123,9 @@ public class TickManagerCache implements ITickManager {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof IGridTickable) {
+    public void removeNode(final IGridNode gridNode) {
+        var tickable = gridNode.getService(IGridTickable.class);
+        if (tickable != null) {
             this.alertable.remove(gridNode);
             this.sleeping.remove(gridNode);
             this.awake.remove(gridNode);
@@ -133,14 +133,14 @@ public class TickManagerCache implements ITickManager {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode, final IGridNodeHost machine) {
-        if (machine instanceof IGridTickable) {
-            final IGridTickable tickable = (IGridTickable) machine;
-            final TickingRequest tr = tickable.getTickingRequest(gridNode);
+    public void addNode(final IGridNode gridNode) {
+        var tickable = gridNode.getService(IGridTickable.class);
+        if (tickable != null) {
+            var tr = tickable.getTickingRequest(gridNode);
 
             Preconditions.checkNotNull(tr);
 
-            final TickTracker tt = new TickTracker(tr, gridNode, (IGridTickable) machine, this.currentTick);
+            final TickTracker tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
 
             if (tr.canBeAlerted) {
                 this.alertable.put(gridNode, tt);
@@ -153,21 +153,6 @@ public class TickManagerCache implements ITickManager {
                 this.addToQueue(tt);
             }
         }
-    }
-
-    @Override
-    public void onSplit(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void onJoin(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void populateGridStorage(final IGridStorage storage) {
-
     }
 
     @Override

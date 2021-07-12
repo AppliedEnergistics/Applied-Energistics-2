@@ -22,9 +22,6 @@ import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.util.Direction;
@@ -33,7 +30,7 @@ public abstract class DenseCablePart extends CablePart {
     public DenseCablePart(final ItemStack is) {
         super(is);
 
-        this.getProxy().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
+        this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
     }
 
     @Override
@@ -111,13 +108,4 @@ public abstract class DenseCablePart extends CablePart {
         return false;
     }
 
-    @MENetworkEventSubscribe
-    public void channelUpdated(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
-    }
 }

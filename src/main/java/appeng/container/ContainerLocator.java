@@ -131,7 +131,7 @@ public final class ContainerLocator {
     public static ContainerLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
         DimensionalBlockPos pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos, part.getSide());
+        return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos.getPos(), part.getSide());
     }
 
     public boolean hasItemIndex() {

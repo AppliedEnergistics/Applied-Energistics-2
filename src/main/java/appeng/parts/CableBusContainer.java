@@ -404,11 +404,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void saveChanges() {
-        this.tcb.markForSave();
-    }
-
-    @Override
     public void partChanged() {
         if (this.getCenter() == null) {
             final List<ItemStack> facades = new ArrayList<>();
@@ -606,7 +601,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public AECableType getCableConnectionType(Direction dir) {
         final IPart part = this.getPart(dir);
 
-        if (part.getExternalFacingNode() != null) {
+        if (part != null && part.getExternalFacingNode() != null) {
             return part.getExternalCableConnectionType();
         }
 
@@ -622,16 +617,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return this.getPart(AEPartLocation.INTERNAL) instanceof ICablePart
                 ? this.getPart(AEPartLocation.INTERNAL).getCableConnectionLength(cable)
                 : -1;
-    }
-
-    @Override
-    public void securityBreak() {
-        for (final AEPartLocation d : AEPartLocation.values()) {
-            final IPart p = this.getPart(d);
-            if (p instanceof IGridNodeHost) {
-                ((IGridNodeHost) p).securityBreak();
-            }
-        }
     }
 
     @Override

@@ -97,9 +97,10 @@ public class DualityFluidInterface
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
             new NullInventory<IAEFluidStack>(), Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
-    public DualityFluidInterface(final ManagedGridNode networkProxy, final IFluidInterfaceHost ih) {
-        this.gridProxy = networkProxy;
-        this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+    public DualityFluidInterface(final ManagedGridNode mainNode, final IFluidInterfaceHost ih) {
+        this.gridProxy = mainNode
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
         this.iHost = ih;
 
         this.mySource = new MachineSource(this.iHost);

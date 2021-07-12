@@ -19,7 +19,7 @@
 package appeng.crafting;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.me.cache.CraftingGridCache;
 
 public class CraftingLinkNexus {
@@ -115,8 +115,8 @@ public class CraftingLinkNexus {
         }
     }
 
-    public boolean isMachine(final IGridNodeHost machine) {
-        return this.getRequest() == machine;
+    public boolean isRequester(final ICraftingRequester requester) {
+        return this.getRequest().getRequester() == requester;
     }
 
     public void removeNode() {

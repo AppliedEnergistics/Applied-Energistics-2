@@ -23,21 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.tile.spatial.SpatialPylonTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-public class SpatialPylonCache implements ISpatialCache {
+public class SpatialPylonCache implements ISpatialCache, IGridCacheProvider {
+
+    static {
+        Api.instance().grid().addGridCacheEventHandler(GridBootingStatusChange.class, ISpatialCache.class, (cache, evt) -> {
+            ((SpatialPylonCache) cache).bootingRender(evt);
+        });
+    }
 
     private final IGrid myGrid;
     private long powerRequired = 0;
@@ -53,8 +56,7 @@ public class SpatialPylonCache implements ISpatialCache {
         this.myGrid = g;
     }
 
-    @MENetworkEventSubscribe
-    public void bootingRender(final MENetworkBootingStatusChange c) {
+    public void bootingRender(final GridBootingStatusChange c) {
         this.reset(this.myGrid);
     }
 
@@ -63,14 +65,13 @@ public class SpatialPylonCache implements ISpatialCache {
         this.clusters = new HashMap<>();
         this.ioPorts = new ArrayList<>();
 
-        for (final IGridNode gm : grid.getMachines(SpatialIOPortTileEntity.class)) {
-            this.ioPorts.add((SpatialIOPortTileEntity) gm.getHost());
+        for (var gm : grid.getMachineNodes(SpatialIOPortTileEntity.class)) {
+            this.ioPorts.add((SpatialIOPortTileEntity) gm.getNodeOwner());
         }
 
-        final IReadOnlyCollection<IGridNode> set = grid.getMachines(SpatialPylonTileEntity.class);
-        for (final IGridNode gm : set) {
+        for (var gm : grid.getMachineNodes(SpatialPylonTileEntity.class)) {
             if (gm.meetsChannelRequirements()) {
-                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getHost()).getCluster();
+                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getNodeOwner()).getCluster();
                 if (c != null) {
                     this.clusters.put(c, c);
                 }
@@ -218,32 +219,4 @@ public class SpatialPylonCache implements ISpatialCache {
         return (float) this.efficiency * 100;
     }
 
-    @Override
-    public void onUpdateTick() {
-    }
-
-    @Override
-    public void removeNode(final IGridNode node, final IGridNodeHost machine) {
-
-    }
-
-    @Override
-    public void addNode(final IGridNode node, final IGridNodeHost machine) {
-
-    }
-
-    @Override
-    public void onSplit(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void onJoin(final IGridStorage storageB) {
-
-    }
-
-    @Override
-    public void populateGridStorage(final IGridStorage storage) {
-
-    }
 }

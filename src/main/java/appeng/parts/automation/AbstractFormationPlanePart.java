@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -69,12 +70,17 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     }
 
     public void stateChanged() {
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             this.updateHandler();
             this.getHost().markForUpdate();
         }
+    }
+
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        stateChanged();
     }
 
     @Override
