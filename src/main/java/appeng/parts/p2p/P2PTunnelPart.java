@@ -48,8 +48,8 @@ import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.me.GridAccessException;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.helpers.TunnelCollection;
+import appeng.me.service.P2PService;
+import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.BasicStatePart;
 import appeng.util.Platform;
 
@@ -187,7 +187,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                         newTunnel.setOutput(true);
 
                         try {
-                            final P2PCache p2p = newTunnel.getMainNode().getP2P();
+                            final P2PService p2p = newTunnel.getMainNode().getP2P();
                             p2p.updateFreq(newTunnel, freq);
                         } catch (final GridAccessException e) {
                             // :P
@@ -254,7 +254,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     newTunnel.onTunnelNetworkChange();
 
                     try {
-                        final P2PCache p2p = newTunnel.getMainNode().getP2P();
+                        final P2PService p2p = newTunnel.getMainNode().getP2P();
                         p2p.updateFreq(newTunnel, myFreq);
                     } catch (final GridAccessException e) {
                         // :P

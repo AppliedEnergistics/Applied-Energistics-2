@@ -26,11 +26,11 @@ package appeng.api.networking;
 import javax.annotation.Nonnull;
 
 /**
- * Allows you to create a network wise service, AE2 uses these for providing item, spatial, and tunnel services.
+ * Allows you to create a grid-wide service. AE2 uses these for providing item, spatial, and tunnel services.
  * <p>
- * Any Class that implements this, should have a public default constructor that takes a single argument of type IGrid.
+ * Any class that implements this needs to be registered with {@link IGridServiceRegistry}.
  */
-public interface IGridCacheProvider {
+public interface IGridServiceProvider {
     /**
      * Called each tick for the network, allows you to have active network wide behaviors.
      */
@@ -38,7 +38,7 @@ public interface IGridCacheProvider {
     }
 
     /**
-     * inform your cache, that a machine was removed from the grid.
+     * Informs the grid service, that a node was removed from the grid.
      * <p>
      * Important: Do not trust the grids state in this method, interact only with the node you are passed, if you need
      * to manage other grid information, do it on the next updateTick.
@@ -49,7 +49,7 @@ public interface IGridCacheProvider {
     }
 
     /**
-     * informs you cache that a machine was added to the grid.
+     * Informs the grid service about a node that was added to the grid.
      * <p>
      * Important: Do not trust the grids state in this method, interact only with the node you are passed, if you need
      * to manage other grid information, do it on the next updateTick.
@@ -60,8 +60,8 @@ public interface IGridCacheProvider {
     }
 
     /**
-     * Called when a grid splits into two grids, AE will call a split as it Iteratively processes changes. The
-     * destination should receive half, and the current cache should receive half.
+     * Called when a grid splits into two grids, AE will call a split as it iteratively processes changes. The
+     * destination should receive half, and the current service should retain half.
      *
      * @param destinationStorage storage which receives half of old grid
      */
@@ -70,7 +70,7 @@ public interface IGridCacheProvider {
 
     /**
      * Called when two grids merge into one, AE will call a join as it Iteratively processes changes. Use this method to
-     * incorporate all the data from the source into your cache.
+     * incorporate all the data from the source into your service.
      *
      * @param sourceStorage old storage
      */

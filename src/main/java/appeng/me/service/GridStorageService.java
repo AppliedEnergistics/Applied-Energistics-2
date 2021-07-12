@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +25,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -52,10 +51,10 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
-public class GridStorageCache implements IStorageGrid, IGridCacheProvider {
+public class GridStorageService implements IStorageGrid, IGridServiceProvider {
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridCellArrayUpdate.class, IStorageGrid.class, (cache, evt) -> {
-            ((GridStorageCache) cache).cellUpdate();
+        Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageGrid.class, (service, evt) -> {
+            ((GridStorageService) service).cellUpdate();
         });
     }
 
@@ -68,7 +67,7 @@ public class GridStorageCache implements IStorageGrid, IGridCacheProvider {
     private Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
     private Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
 
-    public GridStorageCache(final IGrid g) {
+    public GridStorageService(final IGrid g) {
         this.myGrid = g;
         this.storageNetworks = new IdentityHashMap<>();
         this.storageMonitors = new IdentityHashMap<>();
@@ -210,7 +209,7 @@ public class GridStorageCache implements IStorageGrid, IGridCacheProvider {
 
     private <T extends IAEStack<T>, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
             final C chan) {
-        var security = (SecurityCache) this.getGrid().getCache(ISecurityGrid.class);
+        var security = (SecurityService) this.getGrid().getService(ISecurityGrid.class);
 
         final NetworkInventoryHandler<T> storageNetwork = new NetworkInventoryHandler<T>(chan, security);
 
@@ -266,7 +265,7 @@ public class GridStorageCache implements IStorageGrid, IGridCacheProvider {
         }
 
         public void applyChanges() {
-            GridStorageCache.this.postChangesToNetwork(this.channel, this.up_or_down, this.list, this.src);
+            GridStorageService.this.postChangesToNetwork(this.channel, this.up_or_down, this.list, this.src);
         }
     }
 

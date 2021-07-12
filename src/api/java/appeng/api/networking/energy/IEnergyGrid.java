@@ -27,13 +27,13 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
 
 /**
  * AE's Power system.
  */
-public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvider {
+public interface IEnergyGrid extends IGridService, IEnergySource, IEnergyGridProvider {
 
     /**
      * @return the current calculated idle energy drain each tick, is used internally to drain power for each tick.

@@ -44,7 +44,7 @@ public interface IGrid {
      * @return the IGridCache you requested.
      */
     @Nonnull
-    <C extends IGridCache> C getCache(@Nonnull Class<C> iface);
+    <C extends IGridService> C getService(@Nonnull Class<C> iface);
 
     /**
      * Post an event into the network event bus.

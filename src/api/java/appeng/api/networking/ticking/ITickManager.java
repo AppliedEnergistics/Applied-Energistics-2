@@ -25,13 +25,13 @@ package appeng.api.networking.ticking;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
 
 /**
  * The network tick manager.
  */
-public interface ITickManager extends IGridCache {
+public interface ITickManager extends IGridService {
 
     /**
      * immediately sets the node to tick, only valid if your node is marked as "Alertable" in its TickingRequest

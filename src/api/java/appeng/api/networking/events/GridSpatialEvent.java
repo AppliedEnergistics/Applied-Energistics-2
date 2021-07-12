@@ -26,7 +26,7 @@ package appeng.api.networking.events;
 import appeng.api.networking.IGridNodeHost;
 
 /**
- * An event that is posted whenever a spatial IO is active, called for IGridCache
+ * An event that is posted whenever a spatial IO is active.
  */
 public class GridSpatialEvent extends GridEvent {
     public final IGridNodeHost host;

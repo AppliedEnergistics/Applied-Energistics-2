@@ -21,48 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.spatial;
+package appeng.api.networking;
 
-import appeng.api.networking.IGridCache;
-import appeng.api.util.DimensionalBlockPos;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-public interface ISpatialCache extends IGridCache {
-
-    /**
-     * @return true if a region is defined at all, it doesn't have to be valid, but all points must be in the same
-     *         world.
-     */
-    boolean hasRegion();
-
-    /**
-     * @return true if the region defined is valid according to all rules.
-     */
-    boolean isValidRegion();
-
-    /**
-     * @return The world that the spatial region is in.
-     */
-    World getWorld();
-
-    /**
-     * @return the minimum anchor point for the spatial region.
-     */
-    BlockPos getMin();
-
-    /**
-     * @return the maximum anchor point for the spatial region.
-     */
-    BlockPos getMax();
-
-    /**
-     * @return how many AE units are required to preform the activation
-     */
-    long requiredPower();
-
-    /**
-     * @return current 100% - 0% efficiency.
-     */
-    float currentEfficiency();
+/**
+ * Allows you to create a network wise service, AE2 uses these for providing item, spatial, and tunnel services.
+ */
+public interface IGridService {
 }

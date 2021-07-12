@@ -30,7 +30,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridNodeService;
 
 /**
- * Implemented on Security Terminal to interface with security cache.
+ * Implemented on Security Terminal to interface with security service.
  */
 public interface ISecurityProvider extends IGridNodeService {
 
@@ -42,7 +42,7 @@ public interface ISecurityProvider extends IGridNodeService {
     long getSecurityKey();
 
     /**
-     * Push permission data into security cache.
+     * Push permission data into security service.
      *
      * @param playerPerms player permissions
      */

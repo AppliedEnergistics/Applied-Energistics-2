@@ -21,7 +21,6 @@ package appeng.core.api;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.events.GridEvent;

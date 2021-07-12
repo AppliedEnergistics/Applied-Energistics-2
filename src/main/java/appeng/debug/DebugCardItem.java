@@ -21,7 +21,6 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.core.Api;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import com.google.common.collect.Iterables;
@@ -50,7 +49,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.me.cache.TickManagerCache;
+import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
 import appeng.util.InteractionUtil;
@@ -104,15 +103,15 @@ public class DebugCardItem extends AEBaseItem {
                 if (node != null) {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
-                    this.outputMsg(player, "Grid Powered:", String.valueOf(g.getCache(IEnergyGrid.class).isNetworkPowered()));
-                    this.outputMsg(player, "Grid Booted:", String.valueOf(!g.getCache(IPathingGrid.class).isNetworkBooting()));
+                    this.outputMsg(player, "Grid Powered:", String.valueOf(g.getService(IEnergyGrid.class).isNetworkPowered()));
+                    this.outputMsg(player, "Grid Booted:", String.valueOf(!g.getService(IPathingGrid.class).isNetworkBooting()));
                     this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
                     this.outputMsg(player, "Grid Pivot Node:", String.valueOf(center));
 
                     this.outputMsg(player, "This Node:", String.valueOf(node));
                     this.outputMsg(player, "This Node Active:", String.valueOf(node.isActive()));
 
-                    var pg = g.getCache(IPathingGrid.class);
+                    var pg = g.getService(IPathingGrid.class);
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
 
                         Set<IGridNode> next = new HashSet<>();
@@ -149,7 +148,7 @@ public class DebugCardItem extends AEBaseItem {
                         this.outputMsg(player, "Freq: " + tunnelPart.getFrequency());
                     }
 
-                    var tmc = (TickManagerCache) g.getCache(ITickManager.class);
+                    var tmc = (TickManagerService) g.getService(ITickManager.class);
                     for (var c : g.getMachineClasses()) {
                         int o = 0;
                         long nanos = 0;
@@ -190,7 +189,7 @@ public class DebugCardItem extends AEBaseItem {
                 if (gh != null) {
                     final IGridNode node = gh.getGridNode(side);
                     if (node != null && node.getGrid() != null) {
-                        final IEnergyGrid eg = node.getGrid().getCache(IEnergyGrid.class);
+                        final IEnergyGrid eg = node.getGrid().getService(IEnergyGrid.class);
                         this.outputMsg(player,
                                 "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                     }

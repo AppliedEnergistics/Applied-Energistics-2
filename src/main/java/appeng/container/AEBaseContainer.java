@@ -149,13 +149,13 @@ public abstract class AEBaseContainer extends Container {
                 final IGrid g = gn.getGrid();
                 if (g != null) {
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }
                     }
 
-                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    final ISecurityGrid sg = g.getService(ISecurityGrid.class);
                     if (sg.hasPermission(this.getPlayerInventory().player, perm)) {
                         return true;
                     }

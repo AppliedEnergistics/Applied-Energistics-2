@@ -21,23 +21,47 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking;
+package appeng.api.networking.spatial;
 
-import javax.annotation.Nonnull;
+import appeng.api.networking.IGridService;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-/**
- * A factory for grid cache implementations.
- */
-@FunctionalInterface
-public interface IGridCacheFactory<T extends IGridCache> {
+public interface ISpatialService extends IGridService {
 
     /**
-     * Creates a grid cache for the given grid.
-     *
-     * @param grid The grid for which the cache should be created.
-     * @return A new grid cache instance.
+     * @return true if a region is defined at all, it doesn't have to be valid, but all points must be in the same
+     *         world.
      */
-    @Nonnull
-    T createCache(IGrid grid);
+    boolean hasRegion();
 
+    /**
+     * @return true if the region defined is valid according to all rules.
+     */
+    boolean isValidRegion();
+
+    /**
+     * @return The world that the spatial region is in.
+     */
+    World getWorld();
+
+    /**
+     * @return the minimum anchor point for the spatial region.
+     */
+    BlockPos getMin();
+
+    /**
+     * @return the maximum anchor point for the spatial region.
+     */
+    BlockPos getMax();
+
+    /**
+     * @return how many AE units are required to preform the activation
+     */
+    long requiredPower();
+
+    /**
+     * @return current 100% - 0% efficiency.
+     */
+    float currentEfficiency();
 }

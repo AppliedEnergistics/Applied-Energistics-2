@@ -356,7 +356,7 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         if (myGrid == null) {
             return false;
         }
-        return !myGrid.getCache(IPathingGrid.class).isNetworkBooting();
+        return !myGrid.getService(IPathingGrid.class).isNetworkBooting();
     }
 
     @Override
@@ -364,7 +364,7 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         if (myGrid == null) {
             return false;
         }
-        return myGrid.getCache(IEnergyGrid.class).isNetworkPowered();
+        return myGrid.getService(IEnergyGrid.class).isNetworkPowered();
     }
 
     @Override

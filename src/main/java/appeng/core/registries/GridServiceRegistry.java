@@ -19,8 +19,8 @@
 package appeng.core.registries;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCacheProvider;
-import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.IGridServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -33,16 +33,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class GridCacheRegistry implements IGridCacheRegistry {
+public final class GridServiceRegistry implements IGridServiceRegistry {
 
     // This must not be re-sorted because of interdependencies between the registrations
     private final List<GridCacheRegistration<?>> registry = new ArrayList<>();
 
     @Override
-    public synchronized final <T extends IGridCacheProvider> void registerGridCache(Class<? super T> publicInterface,
-                                                                                    Class<T> implClass) {
+    public synchronized final <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
+                                                                             Class<T> implClass) {
         if (isRegistered(publicInterface)) {
-            throw new IllegalArgumentException("Implementation for grid cache " + publicInterface + " is already registered!");
+            throw new IllegalArgumentException("Implementation for grid service " + publicInterface + " is already registered!");
         }
 
         var registration = new GridCacheRegistration<>(implClass, publicInterface);
@@ -63,8 +63,8 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
         return registry.stream().anyMatch(r -> r.publicInterface.equals(publicInterface));
     }
 
-    public Map<Class<?>, IGridCacheProvider> createCacheInstance(final IGrid g) {
-        var result = new HashMap<Class<?>, IGridCacheProvider>(registry.size());
+    public Map<Class<?>, IGridServiceProvider> createGridServices(final IGrid g) {
+        var result = new HashMap<Class<?>, IGridServiceProvider>(registry.size());
 
         for (var registration : registry) {
             result.put(registration.publicInterface, registration.construct(g, result));
@@ -73,7 +73,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
         return result;
     }
 
-    private static class GridCacheRegistration<T extends IGridCacheProvider> {
+    private static class GridCacheRegistration<T extends IGridServiceProvider> {
 
         private final Class<T> implClass;
 
@@ -93,7 +93,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
             // Find the constructor
             var ctors = (Constructor<T>[]) implClass.getConstructors();
             if (ctors.length != 1) {
-                throw new IllegalArgumentException("Grid cache implementation " + implClass
+                throw new IllegalArgumentException("Grid service implementation " + implClass
                         + " has " + ctors.length + " public constructors. It needs exactly 1.");
             }
             this.constructor = ctors[0];
@@ -104,7 +104,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
         }
 
         @NotNull
-        public IGridCacheProvider construct(IGrid g, Map<Class<?>, IGridCacheProvider> createdServices) {
+        public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {
             // Fill the constructor arguments
             var ctorArgs = new Object[constructorParameterTypes.length];
             for (int i = 0; i < constructorParameterTypes.length; i++) {
@@ -121,7 +121,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
             }
 
             // Finally call the constructor
-            IGridCacheProvider provider;
+            IGridServiceProvider provider;
             try {
                 provider = constructor.newInstance(ctorArgs);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

@@ -16,14 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -39,7 +38,6 @@ import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
-import appeng.api.networking.events.GridPostCacheConstruction;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventoryHandler;
@@ -85,8 +83,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-public class CraftingGridCache
-        implements ICraftingGrid, IGridCacheProvider, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
+public class CraftingGridService
+        implements ICraftingGrid, IGridServiceProvider, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
 
     private static final ExecutorService CRAFTING_POOL;
     private static final Comparator<ICraftingPatternDetails> COMPARATOR = (firstDetail,
@@ -101,11 +99,11 @@ public class CraftingGridCache
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        Api.instance().grid().addGridCacheEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class, (cache, event) -> {
-            ((CraftingGridCache) cache).updatePatterns();
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class, (service, event) -> {
+            ((CraftingGridService) service).updatePatterns();
         });
-        Api.instance().grid().addGridCacheEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class, (cache, event) -> {
-            ((CraftingGridCache) cache).updateList = true;
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class, (service, event) -> {
+            ((CraftingGridService) service).updateList = true;
         });
     }
 
@@ -124,7 +122,7 @@ public class CraftingGridCache
     private final IEnergyGrid energyGrid;
     private boolean updateList = false;
 
-    public CraftingGridCache(IGrid grid, IStorageGrid storageGrid, IEnergyGrid energyGrid) {
+    public CraftingGridService(IGrid grid, IStorageGrid storageGrid, IEnergyGrid energyGrid) {
         this.grid = grid;
         this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;

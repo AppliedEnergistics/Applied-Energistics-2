@@ -16,13 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.me.InWorldGridNode;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -33,9 +33,8 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.statistics.GridChunkEvent;
 
 /**
@@ -43,7 +42,7 @@ import appeng.api.networking.events.statistics.GridChunkEvent;
  * <p>
  * Currently this tracks the chunks a network is occupying.
  */
-public class StatisticsCache implements IGridCache, IGridCacheProvider {
+public class StatisticsService implements IGridService, IGridServiceProvider {
 
     private final IGrid grid;
 
@@ -53,7 +52,7 @@ public class StatisticsCache implements IGridCache, IGridCacheProvider {
      */
     private final Map<IWorld, Multiset<ChunkPos>> chunks;
 
-    public StatisticsCache(final IGrid g) {
+    public StatisticsService(final IGrid g) {
         this.grid = g;
         this.chunks = new HashMap<>();
     }

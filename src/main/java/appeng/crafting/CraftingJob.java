@@ -29,7 +29,6 @@ import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -81,8 +80,8 @@ public class CraftingJob implements Runnable, ICraftingJob {
         this.actionSrc = actionSrc;
 
         this.callback = callback;
-        final ICraftingGrid cc = grid.getCache(ICraftingGrid.class);
-        final IStorageGrid sg = grid.getCache(IStorageGrid.class);
+        final ICraftingGrid cc = grid.getService(ICraftingGrid.class);
+        final IStorageGrid sg = grid.getService(IStorageGrid.class);
         this.original = new MECraftingInventory(
                 sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
                 false, false, false);

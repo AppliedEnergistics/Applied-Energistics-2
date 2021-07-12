@@ -82,7 +82,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             if (n != null) {
                 this.targetGrid = n.getGrid();
                 if (this.targetGrid != null) {
-                    this.sg = this.targetGrid.getCache(IStorageGrid.class);
+                    this.sg = this.targetGrid.getService(IStorageGrid.class);
                     if (this.sg != null) {
                         this.itemStorage = this.sg
                                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

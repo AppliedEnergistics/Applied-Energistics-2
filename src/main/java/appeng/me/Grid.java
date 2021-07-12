@@ -24,13 +24,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridService;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
 import appeng.core.Api;
-import appeng.core.registries.GridCacheRegistry;
+import appeng.core.registries.GridServiceRegistry;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
 import com.google.common.collect.ImmutableSet;
@@ -39,7 +39,7 @@ import com.google.common.collect.SetMultimap;
 
 public class Grid implements IGrid {
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Map<Class<?>, IGridCacheProvider> caches;
+    private final Map<Class<?>, IGridServiceProvider> services;
     private GridNode pivot;
     private int priority; // how import is this network?
     private GridStorage myStorage;
@@ -61,8 +61,8 @@ public class Grid implements IGrid {
     private Grid(final GridNode center) {
         this.pivot = Objects.requireNonNull(center);
 
-        var cacheRegistry = (GridCacheRegistry) Api.instance().registries().gridCache();
-        this.caches = cacheRegistry.createCacheInstance(this);
+        var serviceRegistry = (GridServiceRegistry) Api.instance().registries().gridService();
+        this.services = serviceRegistry.createGridServices(this);
     }
 
     int getPriority() {
@@ -73,8 +73,8 @@ public class Grid implements IGrid {
         return this.myStorage;
     }
 
-    Collection<IGridCacheProvider> getProviders() {
-        return this.caches.values();
+    Collection<IGridServiceProvider> getProviders() {
+        return this.services.values();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Grid implements IGrid {
     }
 
     void remove(final GridNode gridNode) {
-        for (var c : this.caches.values()) {
+        for (var c : this.services.values()) {
             c.removeNode(gridNode);
         }
 
@@ -115,7 +115,7 @@ public class Grid implements IGrid {
                 this.myStorage = gs;
                 this.myStorage.setGrid(this);
 
-                for (var gc : this.caches.values()) {
+                for (var gc : this.services.values()) {
                     gc.onJoin(this.myStorage);
                 }
             } else if (grid != this) {
@@ -128,11 +128,11 @@ public class Grid implements IGrid {
                 if (!gs.hasDivided(this.myStorage)) {
                     gs.addDivided(this.myStorage);
 
-                    for (var gc : ((Grid) grid).caches.values()) {
+                    for (var gc : ((Grid) grid).services.values()) {
                         gc.onSplit(tmp);
                     }
 
-                    for (var gc : this.caches.values()) {
+                    for (var gc : this.services.values()) {
                         gc.onJoin(tmp);
                     }
                 }
@@ -148,19 +148,19 @@ public class Grid implements IGrid {
         // track node.
         this.machines.put(gridNode.getNodeOwner().getClass(), gridNode);
 
-        for (var cache : this.caches.values()) {
-            cache.addNode(gridNode);
+        for (var service : this.services.values()) {
+            service.addNode(gridNode);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <C extends IGridCache> C getCache(final Class<C> iface) {
-        var cache = this.caches.get(iface);
-        if (cache == null) {
-            throw new IllegalArgumentException("Cache " + iface + " is not registered");
+    public <C extends IGridService> C getService(final Class<C> iface) {
+        var service = this.services.get(iface);
+        if (service == null) {
+            throw new IllegalArgumentException("Service " + iface + " is not registered");
         }
-        return (C) cache;
+        return (C) service;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class Grid implements IGrid {
     }
 
     public void update() {
-        for (var gc : this.caches.values()) {
+        for (var gc : this.services.values()) {
             // are there any nodes left?
             if (this.pivot != null) {
                 gc.onUpdateTick();
@@ -233,7 +233,7 @@ public class Grid implements IGrid {
     }
 
     void saveState() {
-        for (var c : this.caches.values()) {
+        for (var c : this.services.values()) {
             c.populateGridStorage(this.myStorage);
         }
     }

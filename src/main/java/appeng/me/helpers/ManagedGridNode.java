@@ -21,7 +21,7 @@ package appeng.me.helpers;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
@@ -35,8 +35,8 @@ import appeng.api.util.AEColor;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridAccessException;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.StatisticsCache;
+import appeng.me.service.P2PService;
+import appeng.me.service.StatisticsService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
@@ -265,47 +265,47 @@ public class ManagedGridNode {
 
     @Nonnull
     public IPathingGrid getPath() throws GridAccessException {
-        return this.getGridCache(IPathingGrid.class);
+        return this.getGridService(IPathingGrid.class);
     }
 
     @Nonnull
     public ITickManager getTick() throws GridAccessException {
-        return this.getGridCache(ITickManager.class);
+        return this.getGridService(ITickManager.class);
     }
 
     @Nonnull
     public IStorageGrid getStorage() throws GridAccessException {
-        return this.getGridCache(IStorageGrid.class);
+        return this.getGridService(IStorageGrid.class);
     }
 
     @Nonnull
-    public P2PCache getP2P() throws GridAccessException {
-        return this.getGridCache(P2PCache.class);
+    public P2PService getP2P() throws GridAccessException {
+        return this.getGridService(P2PService.class);
     }
 
     @Nonnull
     public ISecurityGrid getSecurity() throws GridAccessException {
-        return this.getGridCache(ISecurityGrid.class);
+        return this.getGridService(ISecurityGrid.class);
     }
 
     @Nonnull
     public ICraftingGrid getCrafting() throws GridAccessException {
-        return this.getGridCache(ICraftingGrid.class);
+        return this.getGridService(ICraftingGrid.class);
     }
 
     @Nonnull
-    public StatisticsCache getStatistics() throws GridAccessException {
-        return this.getGridCache(StatisticsCache.class);
+    public StatisticsService getStatistics() throws GridAccessException {
+        return this.getGridService(StatisticsService.class);
     }
 
     @Nonnull
     public IEnergyGrid getEnergy() throws GridAccessException {
-        return this.getGridCache(IEnergyGrid.class);
+        return this.getGridService(IEnergyGrid.class);
     }
 
     @Nonnull
-    private <T extends IGridCache> T getGridCache(Class<T> clazz) throws GridAccessException {
-        return this.getGridOrThrow().getCache(clazz);
+    private <T extends IGridService> T getGridService(Class<T> clazz) throws GridAccessException {
+        return this.getGridOrThrow().getService(clazz);
     }
 
     public ManagedGridNode setFlags(final GridFlags... requireChannel) {

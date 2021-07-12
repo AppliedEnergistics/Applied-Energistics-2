@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
@@ -33,7 +33,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
@@ -51,11 +50,11 @@ import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
 import appeng.tile.networking.ControllerTileEntity;
 
-public class PathGridCache implements IPathingGrid, IGridCacheProvider {
+public class PathGridService implements IPathingGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridChannelRequirementChanged.class, IPathingGrid.class, (cache, event) -> {
-            ((PathGridCache) cache).updateNodReq(event);
+        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingGrid.class, (service, event) -> {
+            ((PathGridService) service).updateNodReq(event);
         });
     }
 
@@ -75,7 +74,7 @@ public class PathGridCache implements IPathingGrid, IGridCacheProvider {
     private int lastChannels = 0;
     private HashSet<IPathItem> semiOpen = new HashSet<>();
 
-    public PathGridCache(final IGrid g) {
+    public PathGridService(final IGrid g) {
         this.myGrid = g;
     }
 

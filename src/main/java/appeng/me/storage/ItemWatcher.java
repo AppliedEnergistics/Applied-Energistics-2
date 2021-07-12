@@ -25,19 +25,19 @@ import java.util.Set;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.storage.data.IAEStack;
-import appeng.me.cache.GridStorageCache;
+import appeng.me.service.GridStorageService;
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class ItemWatcher implements IStackWatcher {
 
-    private final GridStorageCache gsc;
+    private final GridStorageService service;
     private final IStackWatcherHost myObject;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public ItemWatcher(final GridStorageCache cache, final IStackWatcherHost host) {
-        this.gsc = cache;
+    public ItemWatcher(final GridStorageService service, final IStackWatcherHost host) {
+        this.service = service;
         this.myObject = host;
     }
 
@@ -51,12 +51,12 @@ public class ItemWatcher implements IStackWatcher {
             return false;
         }
 
-        return this.myInterests.add(e.copy()) && this.gsc.getInterestManager().put(e, this);
+        return this.myInterests.add(e.copy()) && this.service.getInterestManager().put(e, this);
     }
 
     @Override
     public boolean remove(final IAEStack o) {
-        return this.myInterests.remove(o) && this.gsc.getInterestManager().remove(o, this);
+        return this.myInterests.remove(o) && this.service.getInterestManager().remove(o, this);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ItemWatcher implements IStackWatcher {
         final Iterator<IAEStack> i = this.myInterests.iterator();
 
         while (i.hasNext()) {
-            this.gsc.getInterestManager().remove(i.next(), this);
+            this.service.getInterestManager().remove(i.next(), this);
             i.remove();
         }
     }

@@ -22,37 +22,35 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.Api;
-import appeng.me.cache.CraftingGridCache;
-import appeng.me.cache.EnergyGridCache;
-import appeng.me.cache.GridStorageCache;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.PathGridCache;
-import appeng.me.cache.SecurityCache;
-import appeng.me.cache.SpatialPylonCache;
-import appeng.me.cache.StatisticsCache;
-import appeng.me.cache.TickManagerCache;
+import appeng.me.service.CraftingGridService;
+import appeng.me.service.EnergyGridService;
+import appeng.me.service.GridStorageService;
+import appeng.me.service.P2PService;
+import appeng.me.service.PathGridService;
+import appeng.me.service.SecurityService;
+import appeng.me.service.SpatialPylonService;
+import appeng.me.service.StatisticsService;
+import appeng.me.service.TickManagerService;
 
-import java.util.function.Function;
-
-public final class InitGridCaches {
-    private InitGridCaches() {
+public final class InitGridServices {
+    private InitGridServices() {
     }
 
     public static void init() {
 
-        var gcr = Api.INSTANCE.registries().gridCache();
-        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
-        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
-        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
-        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
-        gcr.registerGridCache(P2PCache.class, P2PCache.class);
-        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
-        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
-        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
-        gcr.registerGridCache(StatisticsCache.class, StatisticsCache.class);
+        var gcr = Api.INSTANCE.registries().gridService();
+        gcr.register(ITickManager.class, TickManagerService.class);
+        gcr.register(IPathingGrid.class, PathGridService.class);
+        gcr.register(IEnergyGrid.class, EnergyGridService.class);
+        gcr.register(IStorageGrid.class, GridStorageService.class);
+        gcr.register(P2PService.class, P2PService.class);
+        gcr.register(ISpatialService.class, SpatialPylonService.class);
+        gcr.register(ISecurityGrid.class, SecurityService.class);
+        gcr.register(ICraftingGrid.class, CraftingGridService.class);
+        gcr.register(StatisticsService.class, StatisticsService.class);
     }
 }

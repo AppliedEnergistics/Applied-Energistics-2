@@ -50,13 +50,13 @@ public interface IGridHelper {
     <T extends GridEvent> void addEventHandler(Class<T> eventClass, BiConsumer<IGrid, T> handler);
 
     /**
-     * Forwards grid-wide events to the {@link IGridCache} attached to that particular {@link IGrid}.
+     * Forwards grid-wide events to the {@link IGridService} attached to that particular {@link IGrid}.
      */
-    default <T extends GridEvent, C extends IGridCache> void addGridCacheEventHandler(Class<T> eventClass,
-                                                                                      Class<C> cacheClass,
-                                                                                      BiConsumer<C, T> eventHandler) {
+    default <T extends GridEvent, C extends IGridService> void addGridServiceEventHandler(Class<T> eventClass,
+                                                                                          Class<C> cacheClass,
+                                                                                          BiConsumer<C, T> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
-            eventHandler.accept(grid.getCache(cacheClass), event);
+            eventHandler.accept(grid.getService(cacheClass), event);
         });
     }
 

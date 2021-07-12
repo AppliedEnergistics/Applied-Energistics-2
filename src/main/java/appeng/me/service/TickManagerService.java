@@ -16,12 +16,12 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReport;
@@ -30,13 +30,12 @@ import net.minecraft.crash.ReportedException;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.me.cache.helpers.TickTracker;
+import appeng.me.service.helpers.TickTracker;
 
-public class TickManagerCache implements ITickManager, IGridCacheProvider {
+public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     private final HashMap<IGridNode, TickTracker> alertable = new HashMap<>();
     private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<>();
@@ -45,7 +44,7 @@ public class TickManagerCache implements ITickManager, IGridCacheProvider {
 
     private long currentTick = 0;
 
-    public TickManagerCache(@SuppressWarnings("unused") final IGrid g) {
+    public TickManagerService(@SuppressWarnings("unused") final IGrid g) {
     }
 
     public long getAvgNanoTime(final IGridNode node) {

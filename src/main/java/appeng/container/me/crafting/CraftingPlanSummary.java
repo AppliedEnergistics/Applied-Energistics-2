@@ -108,7 +108,7 @@ public class CraftingPlanSummary {
 
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
-        final IStorageGrid sg = grid.getCache(IStorageGrid.class);
+        final IStorageGrid sg = grid.getService(IStorageGrid.class);
         final IMEInventory<IAEItemStack> items = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 

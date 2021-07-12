@@ -23,7 +23,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
-import appeng.me.cache.StatisticsCache;
+import appeng.me.service.StatisticsService;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
 import com.google.common.collect.Multiset;
 import net.minecraft.entity.player.PlayerInventory;
@@ -84,7 +84,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             if (this.delay > UPDATE_DELAY && gridNode != null && gridNode.getGrid() != null) {
                 var grid = gridNode.getGrid();
 
-                var statistics = grid.getCache(StatisticsCache.class);
+                var statistics = grid.getService(StatisticsService.class);
 
                 this.powerConsumption = (long) gridNode.getIdlePowerUsage();
                 this.loadedChunks = anchor.countLoadedChunks();

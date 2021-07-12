@@ -70,7 +70,7 @@ import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
-import appeng.me.cache.CraftingGridCache;
+import appeng.me.service.CraftingGridService;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
@@ -374,7 +374,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        var sg = (CraftingGridCache) this.getGrid().getCache(ICraftingGrid.class);
+        var sg = (CraftingGridService) this.getGrid().getService(ICraftingGrid.class);
 
         if (sg.getInterestManager().containsKey(diff)) {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
@@ -558,7 +558,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.storeItems(); // marks dirty
     }
 
-    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingGridCache cc) {
+    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingGridService cc) {
         if (!this.getCore().isActive()) {
             return;
         }
@@ -601,7 +601,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    private void executeCrafting(final IEnergyGrid eg, final CraftingGridCache cc) {
+    private void executeCrafting(final IEnergyGrid eg, final CraftingGridService cc) {
         final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
         while (i.hasNext()) {
@@ -786,7 +786,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        final IStorageGrid sg = g.getCache(IStorageGrid.class);
+        final IStorageGrid sg = g.getService(IStorageGrid.class);
         final IMEInventory<IAEItemStack> ii = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
@@ -825,7 +825,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return null;
         }
 
-        final IStorageGrid sg = g.getCache(IStorageGrid.class);
+        final IStorageGrid sg = g.getService(IStorageGrid.class);
         final IMEInventory<IAEItemStack> storage = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         final MECraftingInventory ci = new MECraftingInventory(storage, true, false, false);
@@ -949,7 +949,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private void submitLink(final ICraftingLink myLastLink2) {
         if (this.getGrid() != null) {
-            var cc = (CraftingGridCache) this.getGrid().getCache(ICraftingGrid.class);
+            var cc = (CraftingGridService) this.getGrid().getService(ICraftingGrid.class);
             cc.addLink((CraftingLink) myLastLink2);
         }
     }

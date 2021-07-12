@@ -31,14 +31,14 @@ import appeng.api.networking.IGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 
-public interface ISecurityGrid extends IGridCache {
+public interface ISecurityGrid extends IGridService {
 
     @Nullable
     static ISecurityGrid get(@Nullable IGridNode node) {
         if (node != null && node.getGrid() != null) {
-            return node.getGrid().getCache(ISecurityGrid.class);
+            return node.getGrid().getService(ISecurityGrid.class);
         }
         return null;
     }

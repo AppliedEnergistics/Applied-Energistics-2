@@ -151,7 +151,7 @@ public class CraftAmountContainer extends AEBaseContainer {
 
             Future<ICraftingJob> futureJob = null;
             try {
-                final ICraftingGrid cg = g.getCache(ICraftingGrid.class);
+                final ICraftingGrid cg = g.getService(ICraftingGrid.class);
                 futureJob = cg.beginCraftingJob(getWorld(), getGrid(), getActionSrc(),
                         this.itemToCreate, null);
 

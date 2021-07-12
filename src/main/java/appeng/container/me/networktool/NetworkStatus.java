@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
@@ -50,7 +49,7 @@ public class NetworkStatus {
     private List<MachineGroup> groupedMachines = Collections.emptyList();
 
     public static NetworkStatus fromGrid(IGrid grid) {
-        IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
+        IEnergyGrid eg = grid.getService(IEnergyGrid.class);
 
         NetworkStatus status = new NetworkStatus();
 

@@ -658,13 +658,13 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                     final IGrid g = gn.getGrid();
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }
                     }
 
-                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    final ISecurityGrid sg = g.getService(ISecurityGrid.class);
                     if (sg.hasPermission(player, requiredPermission)) {
                         return true;
                     }

@@ -16,14 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.core.Api;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
@@ -33,18 +33,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
-public class SecurityCache implements ISecurityGrid, IGridCacheProvider {
+public class SecurityService implements ISecurityGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridSecurityChange.class, ISecurityGrid.class, (cache, event) -> {
-            ((SecurityCache) cache).updatePermissions();
+        Api.instance().grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityGrid.class, (service, event) -> {
+            ((SecurityService) service).updatePermissions();
         });
     }
 
@@ -53,7 +52,7 @@ public class SecurityCache implements ISecurityGrid, IGridCacheProvider {
     private final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<>();
     private long securityKey = -1;
 
-    public SecurityCache(final IGrid g) {
+    public SecurityService(final IGrid g) {
         this.myGrid = g;
     }
 

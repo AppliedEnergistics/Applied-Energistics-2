@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache.helpers;
+package appeng.me.service.helpers;
 
 import javax.annotation.Nonnull;
 

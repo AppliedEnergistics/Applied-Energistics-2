@@ -228,14 +228,14 @@ public class Platform {
                 if (g != null) {
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
                         if (!eg.isNetworkPowered()) {
                             // FIXME trace logging?
                             return false;
                         }
                     }
 
-                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    final ISecurityGrid sg = g.getService(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
                                 .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
@@ -811,7 +811,7 @@ public class Platform {
             return false;
         }
 
-        final IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
+        final IEnergyGrid eg = grid.getService(IEnergyGrid.class);
         return eg.isNetworkPowered();
     }
 
@@ -820,7 +820,7 @@ public class Platform {
             return true;
         }
 
-        final ISecurityGrid gs = grid.getCache(ISecurityGrid.class);
+        final ISecurityGrid gs = grid.getService(ISecurityGrid.class);
 
         if (gs == null) {
             return true;

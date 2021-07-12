@@ -25,9 +25,9 @@ package appeng.api.networking.pathing;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 
-public interface IPathingGrid extends IGridCache {
+public interface IPathingGrid extends IGridService {
 
     /**
      * @return true if the network is in its booting stage

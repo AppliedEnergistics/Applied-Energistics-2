@@ -144,7 +144,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
                         this.networkNode = node;
                         final IGrid g = node.getGrid();
                         if (g != null) {
-                            powerSource = new ChannelPowerSrc(this.networkNode, g.getCache(IEnergyGrid.class));
+                            powerSource = new ChannelPowerSrc(this.networkNode, g.getService(IEnergyGrid.class));
                         }
                     }
                 }
@@ -294,7 +294,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         }
 
         int activeJobs = 0;
-        ICraftingGrid craftingGrid = grid.getCache(ICraftingGrid.class);
+        ICraftingGrid craftingGrid = grid.getService(ICraftingGrid.class);
         for (ICraftingCPU cpus : craftingGrid.getCpus()) {
             if (cpus.isBusy()) {
                 activeJobs++;

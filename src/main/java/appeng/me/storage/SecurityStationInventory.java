@@ -19,7 +19,6 @@
 package appeng.me.storage;
 
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.me.cache.SecurityCache;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.AccessRestriction;

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -29,7 +29,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -60,15 +60,15 @@ import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
-public class EnergyGridCache implements IEnergyGrid, IGridCacheProvider {
+public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridPowerIdleChange.class, IEnergyGrid.class, (cache, event) -> {
-            ((EnergyGridCache) cache).nodeIdlePowerChangeHandler(event);
+        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyGrid.class, (service, event) -> {
+            ((EnergyGridService) service).nodeIdlePowerChangeHandler(event);
         });
 
-        Api.instance().grid().addGridCacheEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class, (cache, event) -> {
-            ((EnergyGridCache) cache).storagePowerChangeHandler(event);
+        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class, (service, event) -> {
+            ((EnergyGridService) service).storagePowerChangeHandler(event);
         });
     }
 
@@ -138,14 +138,14 @@ public class EnergyGridCache implements IEnergyGrid, IGridCacheProvider {
     private boolean hasPower = true;
     private long ticksSinceHasPowerChange = 900;
 
-    private final PathGridCache pgc;
+    private final PathGridService pgc;
     private double lastStoredPower = -1;
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
-    public EnergyGridCache(final IGrid g, IPathingGrid pgc) {
+    public EnergyGridService(final IGrid g, IPathingGrid pgc) {
         this.myGrid = g;
-        this.pgc = (PathGridCache) pgc;
+        this.pgc = (PathGridService) pgc;
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
@@ -642,7 +642,7 @@ public class EnergyGridCache implements IEnergyGrid, IGridCacheProvider {
             this.stored += amount;
 
             if (this.stored > 0.01) {
-                EnergyGridCache.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
+                EnergyGridService.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
             }
         }
 
@@ -650,7 +650,7 @@ public class EnergyGridCache implements IEnergyGrid, IGridCacheProvider {
             this.stored -= amount;
 
             if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyGridCache.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
+                EnergyGridService.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             }
         }
     }

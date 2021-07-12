@@ -38,7 +38,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.cache.SecurityCache;
+import appeng.me.service.SecurityService;
 
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
 
@@ -48,11 +48,11 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
     private static int currentPass = 0;
     private final IStorageChannel<T> myChannel;
-    private final SecurityCache security;
+    private final SecurityService security;
     private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
     private int myPass = 0;
 
-    public NetworkInventoryHandler(final IStorageChannel<T> chan, SecurityCache security) {
+    public NetworkInventoryHandler(final IStorageChannel<T> chan, SecurityService security) {
         this.myChannel = chan;
         this.security = security;
         this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);
@@ -129,7 +129,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             final IGrid gn = n.getGrid();
             if (gn != this.security.getGrid()) {
 
-                final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
+                final ISecurityGrid sg = gn.getService(ISecurityGrid.class);
                 final int playerID = sg.getOwner();
 
                 if (!this.security.hasPermission(playerID, permission)) {

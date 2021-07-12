@@ -36,7 +36,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridSpatialEvent;
-import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
@@ -122,7 +122,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
 
             final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
-            var spc = gi.getCache(ISpatialCache.class);
+            var spc = gi.getService(ISpatialService.class);
             if (spc.hasRegion() && spc.isValidRegion()) {
                 final double req = spc.requiredPower();
                 final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);

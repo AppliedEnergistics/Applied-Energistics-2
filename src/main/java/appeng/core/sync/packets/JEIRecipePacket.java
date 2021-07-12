@@ -165,14 +165,14 @@ public class JEIRecipePacket extends BasePacket {
         final IGrid grid = node.getGrid();
         Preconditions.checkArgument(grid != null);
 
-        final IStorageGrid inv = grid.getCache(IStorageGrid.class);
+        final IStorageGrid inv = grid.getService(IStorageGrid.class);
         Preconditions.checkArgument(inv != null);
 
-        final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        final ISecurityGrid security = grid.getService(ISecurityGrid.class);
         Preconditions.checkArgument(security != null);
 
-        final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-        final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
+        final IEnergyGrid energy = grid.getService(IEnergyGrid.class);
+        final ICraftingGrid crafting = grid.getService(ICraftingGrid.class);
         final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
         final IItemHandler playerInventory = cct.getInventoryByName("player");
 

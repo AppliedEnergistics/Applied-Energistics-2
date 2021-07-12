@@ -16,12 +16,12 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.HashMap;
 import java.util.Random;
 
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.core.Api;
 import com.google.common.collect.LinkedHashMultimap;
@@ -29,23 +29,22 @@ import com.google.common.collect.Multimap;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
-import appeng.me.cache.helpers.TunnelCollection;
+import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.parts.p2p.P2PTunnelPart;
 
-public class P2PCache implements IGridCache, IGridCacheProvider {
+public class P2PService implements IGridService, IGridServiceProvider {
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridBootingStatusChange.class, P2PCache.class, (cache, evt) -> {
-            cache.wakeInputTunnels();
+        Api.instance().grid().addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class, (service, evt) -> {
+            service.wakeInputTunnels();
         });
-        Api.instance().grid().addGridCacheEventHandler(GridPowerStatusChange.class, P2PCache.class, (cache, evt) -> {
-            cache.wakeInputTunnels();
+        Api.instance().grid().addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class, (service, evt) -> {
+            service.wakeInputTunnels();
         });
     }
 
@@ -57,13 +56,13 @@ public class P2PCache implements IGridCache, IGridCacheProvider {
     private final Multimap<Short, P2PTunnelPart> outputs = LinkedHashMultimap.create();
     private final Random frequencyGenerator;
 
-    public P2PCache(final IGrid g) {
+    public P2PService(final IGrid g) {
         this.myGrid = g;
         this.frequencyGenerator = new Random(g.hashCode());
     }
 
     public void wakeInputTunnels() {
-        var tm = this.myGrid.getCache(ITickManager.class);
+        var tm = this.myGrid.getService(ITickManager.class);
         for (var tunnel : this.inputs.values()) {
             if (tunnel instanceof MEP2PTunnelPart) {
                 tm.wakeDevice(tunnel.getGridNode());

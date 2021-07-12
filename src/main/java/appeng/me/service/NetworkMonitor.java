@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -49,7 +49,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
 
     @Nonnull
-    private final GridStorageCache myGridCache;
+    private final GridStorageService service;
     @Nonnull
     private final IStorageChannel<T> myChannel;
     @Nonnull
@@ -62,8 +62,8 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     @Nonnegative
     private int localDepthSemaphore = 0;
 
-    public NetworkMonitor(final GridStorageCache cache, final IStorageChannel<T> chan) {
-        this.myGridCache = cache;
+    public NetworkMonitor(final GridStorageService service, final IStorageChannel<T> chan) {
+        this.service = service;
         this.myChannel = chan;
         this.cachedList = chan.createList();
         this.listeners = new HashMap<>();
@@ -167,7 +167,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
 
     @Nullable
     private IMEInventoryHandler<T> getHandler() {
-        return this.myGridCache.getInventoryHandler(this.myChannel);
+        return this.service.getInventoryHandler(this.myChannel);
     }
 
     private Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners() {
@@ -230,8 +230,8 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
                 difference.setStackSize(-changedItem.getStackSize());
             }
 
-            if (this.myGridCache.getInterestManager().containsKey(changedItem)) {
-                final Collection<ItemWatcher> list = this.myGridCache.getInterestManager().get(changedItem);
+            if (this.service.getInterestManager().containsKey(changedItem)) {
+                final Collection<ItemWatcher> list = this.service.getInterestManager().get(changedItem);
 
                 if (!list.isEmpty()) {
                     IAEStack<T> fullStack = this.getStorageList().findPrecise(changedItem);
@@ -241,14 +241,14 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
                         fullStack.setStackSize(0);
                     }
 
-                    this.myGridCache.getInterestManager().enableTransactions();
+                    this.service.getInterestManager().enableTransactions();
 
                     for (final ItemWatcher iw : list) {
                         iw.getHost().onStackChange(this.getStorageList(), fullStack, difference, src,
                                 this.getChannel());
                     }
 
-                    this.myGridCache.getInterestManager().disableTransactions();
+                    this.service.getInterestManager().disableTransactions();
                 }
             }
         }
@@ -280,7 +280,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     void onTick() {
         if (this.sendEvent) {
             this.sendEvent = false;
-            this.myGridCache.getGrid().postEvent(new GridStorageEvent(this, this.myChannel));
+            this.service.getGrid().postEvent(new GridStorageEvent(this, this.myChannel));
         }
     }
 }

@@ -43,9 +43,7 @@ import net.minecraft.world.World;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalBlockPos;
+import appeng.api.networking.spatial.ISpatialService;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
@@ -134,7 +132,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                         final IGrid g = n.getGrid();
 
                         if (g != null) {
-                            final ISpatialCache sc = g.getCache(ISpatialCache.class);
+                            final ISpatialService sc = g.getService(ISpatialService.class);
 
                             if (sc.isValidRegion()) {
                                 var min = sc.getMin();

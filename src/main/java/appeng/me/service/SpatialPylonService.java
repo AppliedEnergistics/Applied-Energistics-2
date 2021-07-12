@@ -16,16 +16,16 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.cache;
+package appeng.me.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCacheProvider;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
-import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
@@ -34,11 +34,11 @@ import appeng.tile.spatial.SpatialPylonTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-public class SpatialPylonCache implements ISpatialCache, IGridCacheProvider {
+public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridCacheEventHandler(GridBootingStatusChange.class, ISpatialCache.class, (cache, evt) -> {
-            ((SpatialPylonCache) cache).bootingRender(evt);
+        Api.instance().grid().addGridServiceEventHandler(GridBootingStatusChange.class, ISpatialService.class, (service, evt) -> {
+            ((SpatialPylonService) service).bootingRender(evt);
         });
     }
 
@@ -52,7 +52,7 @@ public class SpatialPylonCache implements ISpatialCache, IGridCacheProvider {
     private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
-    public SpatialPylonCache(final IGrid g) {
+    public SpatialPylonService(final IGrid g) {
         this.myGrid = g;
     }
 

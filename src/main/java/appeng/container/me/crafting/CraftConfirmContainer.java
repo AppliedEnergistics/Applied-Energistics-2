@@ -178,7 +178,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         }
 
         if (this.result != null && !this.result.isSimulation()) {
-            final ICraftingGrid cc = this.getGrid().getCache(ICraftingGrid.class);
+            final ICraftingGrid cc = this.getGrid().getService(ICraftingGrid.class);
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
             if (g != null && originalGui != null && this.getLocator() != null) {

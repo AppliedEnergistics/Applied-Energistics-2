@@ -26,27 +26,28 @@ package appeng.api.networking;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * A registry of grid caches to extend grid functionality.
+ * A registry of grid services to extend grid functionality.
  */
 @ThreadSafe
-public interface IGridCacheRegistry {
+public interface IGridServiceRegistry {
 
     /**
-     * Register a new grid cache for use during operation, must be called during the loading phase.
+     * Register a new grid service for use during operation, must be called during the loading phase.
      * <p/>
      * AE will automatically construct instances of the given implementation class by looking up a constructor.
      * There must be a single constructor.
+     * <p/>
      * The following constructor parameter types are allowed:
      * <ul>
-     *     <li>Other grid cache's public interfaces (see interfaces extending {@link IGridCache}).</li>
-     *     <li>{@link IGrid}, which will be the grid that the cache is being constructed for.</li>
+     *     <li>Other grid services public interfaces (see interfaces extending {@link IGridService}).</li>
+     *     <li>{@link IGrid}, which will be the grid that the service is being constructed for.</li>
      * </ul>
      *
      * @param publicInterface The public facing interface of the grid service you want to register. This class or interface
-     *                        will also be used to query the service from any grid via {@link IGrid#getCache(Class)}.
-     * @param implClass       The class used to construct the grid cache for each grid. Must have a single
+     *                        will also be used to query the service from any grid via {@link IGrid#getService(Class)}.
+     * @param implClass       The class used to construct the grid service for each grid. Must have a single
      *                        constructor.
      */
-    <T extends IGridCacheProvider> void registerGridCache(Class<? super T> publicInterface, Class<T> implClass);
+    <T extends IGridServiceProvider> void register(Class<? super T> publicInterface, Class<T> implClass);
 
 }

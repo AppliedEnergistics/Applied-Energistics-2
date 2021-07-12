@@ -31,11 +31,11 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 
-public interface ICraftingGrid extends IGridCache {
+public interface ICraftingGrid extends IGridService {
 
     /**
      * @param whatToCraft requested craft
