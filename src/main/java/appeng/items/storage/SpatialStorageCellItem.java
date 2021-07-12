@@ -35,7 +35,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;

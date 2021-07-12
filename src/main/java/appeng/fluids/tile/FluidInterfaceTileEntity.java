@@ -22,9 +22,6 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
-import appeng.me.helpers.TileEntityNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -39,6 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
@@ -48,6 +46,8 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class FluidInterfaceTileEntity extends AENetworkTileEntity

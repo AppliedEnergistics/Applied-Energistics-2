@@ -19,7 +19,6 @@
 package appeng.helpers;
 
 import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
 

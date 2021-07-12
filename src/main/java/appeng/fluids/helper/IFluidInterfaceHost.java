@@ -20,7 +20,6 @@ package appeng.fluids.helper;
 
 import java.util.EnumSet;
 
-import appeng.api.networking.IGridNodeHost;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 

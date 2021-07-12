@@ -18,22 +18,22 @@
 
 package appeng.tile.grid;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedTileEntity;
-import appeng.me.helpers.TileEntityNodeListener;
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
-import appeng.me.helpers.ManagedGridNode;
-import appeng.tile.AEBaseTileEntity;
 import net.minecraft.util.Direction;
 
-import javax.annotation.Nullable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalBlockPos;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.me.helpers.TileEntityNodeListener;
+import appeng.tile.AEBaseTileEntity;
 
 public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 

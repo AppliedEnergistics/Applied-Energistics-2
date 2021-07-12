@@ -20,7 +20,6 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,6 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
@@ -216,7 +216,8 @@ public class FluidLevelEmitterPart extends UpgradeablePart
                     this.getMainNode().getStorage().getInventory(channel).removeListener(this);
                     this.stackWatcher.add(myStack);
                 } else {
-                    this.getMainNode().getStorage().getInventory(channel).addListener(this, this.getMainNode().getGridOrThrow());
+                    this.getMainNode().getStorage().getInventory(channel).addListener(this,
+                            this.getMainNode().getGridOrThrow());
                 }
 
                 final IMEMonitor<IAEFluidStack> inventory = this.getMainNode().getStorage().getInventory(channel);

@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-import appeng.parts.AEBasePart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,9 +45,10 @@ import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.parts.AEBasePart;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -68,8 +68,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     public MEP2PTunnelPart(final ItemStack is) {
         super(is);
         this.getMainNode()
-            .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
-            .addService(IGridTickable.class, this);
+                .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
+                .addService(IGridTickable.class, this);
     }
 
     @Override

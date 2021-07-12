@@ -18,34 +18,6 @@
 
 package appeng.me;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridConnectionVisitor;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IGridVisitor;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.GridPowerIdleChange;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.util.AEColor;
-import appeng.core.worlddata.WorldData;
-import appeng.me.pathfinding.IPathItem;
-import appeng.api.networking.IGridNodeService;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.MutableClassToInstanceMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,11 +29,43 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.world.server.ServerWorld;
+
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IConfigurableGridNode;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridConnectionVisitor;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridNodeService;
+import appeng.api.networking.IGridVisitor;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.GridPowerIdleChange;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.util.AEColor;
+import appeng.core.worlddata.WorldData;
+import appeng.me.pathfinding.IPathItem;
+
 public class GridNode implements IConfigurableGridNode, IPathItem {
     private final ServerWorld world;
     /**
-     * This is the logical host of the node, which could be any object.
-     * In many cases this will be a tile-entity or part.
+     * This is the logical host of the node, which could be any object. In many cases this will be a tile-entity or
+     * part.
      */
     @Nonnull
     private final Object nodeOwner;
@@ -94,9 +98,9 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
     private ClassToInstanceMap<IGridNodeService> services;
 
     public <T> GridNode(@Nonnull ServerWorld world,
-                    @Nonnull T nodeOwner,
-                    @Nonnull IGridNodeListener<T> listener,
-                    Set<GridFlags> flags) {
+            @Nonnull T nodeOwner,
+            @Nonnull IGridNodeListener<T> listener,
+            Set<GridFlags> flags) {
         this.world = world;
         this.nodeOwner = nodeOwner;
         this.listener = listener;
@@ -255,8 +259,8 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
     }
 
     /**
-     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates
-     * that the node will connect to nodes of any color.
+     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
+     * node will connect to nodes of any color.
      */
     @Override
     public void setGridColor(@Nonnull AEColor color) {

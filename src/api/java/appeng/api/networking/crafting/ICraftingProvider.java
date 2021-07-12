@@ -27,8 +27,8 @@ import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.events.GridCraftingPatternChange;
 
 /**
- * Allows a IGridHost to provide crafting patterns to the network, post a {@link GridCraftingPatternChange} to tell
- * AE2 to update.
+ * Allows a IGridHost to provide crafting patterns to the network, post a {@link GridCraftingPatternChange} to tell AE2
+ * to update.
  */
 public interface ICraftingProvider extends IGridNodeService, ICraftingMedium {
 

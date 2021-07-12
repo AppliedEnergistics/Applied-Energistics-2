@@ -27,10 +27,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 
 public interface ISecurityGrid extends IGridService {

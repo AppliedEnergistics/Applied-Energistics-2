@@ -28,8 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-import appeng.api.util.WorldCoord;
-
 /**
  * Implemented on a {@link Item}
  */

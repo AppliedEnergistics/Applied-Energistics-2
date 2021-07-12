@@ -21,31 +21,33 @@ package appeng.me.service;
 import java.util.HashMap;
 import java.util.Random;
 
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.events.GridPowerStatusChange;
-import appeng.core.Api;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridService;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
+import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.parts.p2p.P2PTunnelPart;
 
 public class P2PService implements IGridService, IGridServiceProvider {
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class, (service, evt) -> {
-            service.wakeInputTunnels();
-        });
-        Api.instance().grid().addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class, (service, evt) -> {
-            service.wakeInputTunnels();
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class,
+                (service, evt) -> {
+                    service.wakeInputTunnels();
+                });
+        Api.instance().grid().addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class,
+                (service, evt) -> {
+                    service.wakeInputTunnels();
+                });
     }
 
     private static final TunnelCollection<P2PTunnelPart> NULL_COLLECTION = new TunnelCollection<P2PTunnelPart>(null,
@@ -72,7 +74,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void removeNode(final IGridNode node) {
-        if (node.getNodeOwner() instanceof P2PTunnelPart<?> tunnel) {
+        if (node.getNodeOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }
@@ -91,7 +93,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void addNode(final IGridNode node) {
-        if (node.getNodeOwner() instanceof P2PTunnelPart<?> tunnel) {
+        if (node.getNodeOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }

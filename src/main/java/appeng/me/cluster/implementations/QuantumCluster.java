@@ -34,9 +34,9 @@ import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.me.service.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
+import appeng.me.service.helpers.ConnectionWrapper;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.iterators.ChainedIterator;
 

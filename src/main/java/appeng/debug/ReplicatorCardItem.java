@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -41,9 +40,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.spatial.ISpatialService;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 

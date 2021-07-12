@@ -18,9 +18,9 @@
 
 package appeng.parts.networking;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 
@@ -31,6 +31,7 @@ public class SmartCablePart extends CablePart implements IUsedChannelProvider {
 
     /**
      * Send info about changed channels/power to client to update the on-cable display of channels/power.
+     * 
      * @param reason
      */
     @Override

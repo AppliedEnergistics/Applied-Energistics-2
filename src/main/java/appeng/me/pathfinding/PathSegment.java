@@ -18,14 +18,14 @@
 
 package appeng.me.pathfinding;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.me.service.PathGridService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class PathSegment {
 
@@ -36,7 +36,7 @@ public class PathSegment {
     private List<IPathItem> open;
 
     public PathSegment(final PathGridService myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
-                       final Set<IPathItem> closed) {
+            final Set<IPathItem> closed) {
         this.open = open;
         this.semiOpen = semiOpen;
         this.closed = closed;

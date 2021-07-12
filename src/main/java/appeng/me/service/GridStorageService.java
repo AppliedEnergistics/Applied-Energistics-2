@@ -25,12 +25,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.api.networking.IGridServiceProvider;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -53,9 +53,10 @@ import appeng.me.storage.NetworkInventoryHandler;
 
 public class GridStorageService implements IStorageGrid, IGridServiceProvider {
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageGrid.class, (service, evt) -> {
-            ((GridStorageService) service).cellUpdate();
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageGrid.class,
+                (service, evt) -> {
+                    ((GridStorageService) service).cellUpdate();
+                });
     }
 
     private final IGrid myGrid;

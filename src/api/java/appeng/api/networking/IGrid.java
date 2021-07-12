@@ -23,11 +23,11 @@
 
 package appeng.api.networking;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.events.GridEvent;
-
-import java.util.Set;
 
 /**
  * Gives you access to Grid based information.
@@ -80,8 +80,8 @@ public interface IGrid {
      *
      * @param machineClass class of the machine associated with a grid node
      *
-     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes,
-     *         this will only return the machine once.
+     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
+     *         will only return the machine once.
      */
     @Nonnull
     <T> Set<T> getMachines(@Nonnull Class<T> machineClass);
@@ -91,8 +91,8 @@ public interface IGrid {
      *
      * @param machineClass class of the machine associated with a grid node
      *
-     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes,
-     *         this will only return the machine once.
+     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
+     *         will only return the machine once.
      */
     @Nonnull
     <T> Set<T> getActiveMachines(@Nonnull Class<T> machineClass);

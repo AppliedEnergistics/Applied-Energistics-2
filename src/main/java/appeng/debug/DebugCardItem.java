@@ -21,9 +21,8 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
-import appeng.core.Api;
-import appeng.me.helpers.IGridConnectedTileEntity;
 import com.google.common.collect.Iterables;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -45,10 +44,12 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
+import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
@@ -103,8 +104,10 @@ public class DebugCardItem extends AEBaseItem {
                 if (node != null) {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
-                    this.outputMsg(player, "Grid Powered:", String.valueOf(g.getService(IEnergyGrid.class).isNetworkPowered()));
-                    this.outputMsg(player, "Grid Booted:", String.valueOf(!g.getService(IPathingGrid.class).isNetworkBooting()));
+                    this.outputMsg(player, "Grid Powered:",
+                            String.valueOf(g.getService(IEnergyGrid.class).isNetworkPowered()));
+                    this.outputMsg(player, "Grid Booted:",
+                            String.valueOf(!g.getService(IPathingGrid.class).isNetworkBooting()));
                     this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
                     this.outputMsg(player, "Grid Pivot Node:", String.valueOf(center));
 
@@ -144,7 +147,7 @@ public class DebugCardItem extends AEBaseItem {
                         this.outputMsg(player, "Cable Distance: " + length);
                     }
 
-                    if (center.getNodeOwner() instanceof P2PTunnelPart<?> tunnelPart) {
+                    if (center.getNodeOwner() instanceof P2PTunnelPart<?>tunnelPart) {
                         this.outputMsg(player, "Freq: " + tunnelPart.getFrequency());
                     }
 
@@ -205,7 +208,8 @@ public class DebugCardItem extends AEBaseItem {
 
     private void outputMsg(final Entity player, String label, String value) {
         player.sendMessage(new StringTextComponent("")
-                .appendSibling(new StringTextComponent(label).mergeStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
+                .appendSibling(
+                        new StringTextComponent(label).mergeStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
                 .appendString(value), Util.DUMMY_UUID);
     }
 

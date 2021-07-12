@@ -21,7 +21,6 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -41,6 +40,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -222,7 +222,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         }
 
         try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridCraftingPatternChange(this, this.getMainNode().getNode()));
+            this.getMainNode().getGridOrThrow()
+                    .postEvent(new GridCraftingPatternChange(this, this.getMainNode().getNode()));
         } catch (final GridAccessException e1) {
             // :/
         }
@@ -390,7 +391,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public AECableType getDesiredConnectionType() {
-        return AECableType.SMART; // TODO: This was previously in an unused method getCableConnectionType intended for external connections, check if this visual change is desirable
+        return AECableType.SMART; // TODO: This was previously in an unused method getCableConnectionType intended for
+                                  // external connections, check if this visual change is desirable
     }
 
     @Override

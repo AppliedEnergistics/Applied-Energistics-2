@@ -21,13 +21,13 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;

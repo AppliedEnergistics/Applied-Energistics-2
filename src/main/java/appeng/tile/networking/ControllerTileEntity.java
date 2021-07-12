@@ -20,9 +20,6 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.events.GridControllerChange;
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -32,13 +29,16 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.util.inv.InvOperation;
@@ -49,8 +49,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
         Api.instance().grid().addNodeOwnerEventHandler(
                 GridControllerChange.class,
                 ControllerTileEntity.class,
-                ControllerTileEntity::updateState
-        );
+                ControllerTileEntity::updateState);
     }
 
     private boolean isValid = false;

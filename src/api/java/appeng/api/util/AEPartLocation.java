@@ -18,9 +18,9 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.Direction;
-
 import javax.annotation.Nullable;
+
+import net.minecraft.util.Direction;
 
 /**
  * Stand in for previous Forge Direction, Several uses of this class are simply legacy where as some uses of this class

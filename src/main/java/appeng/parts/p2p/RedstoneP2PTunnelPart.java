@@ -20,7 +20,6 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
@@ -31,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;

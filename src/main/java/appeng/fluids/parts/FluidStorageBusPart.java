@@ -24,8 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import appeng.parts.BasicStatePart;
-import appeng.parts.misc.StorageBusPart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;

@@ -20,12 +20,12 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import appeng.me.helpers.TileEntityNodeListener;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.me.helpers.ManagedGridNode;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class PhantomNodeTileEntity extends AENetworkTileEntity {

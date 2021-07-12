@@ -18,14 +18,14 @@
 
 package appeng.me;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.events.GridEvent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.events.GridEvent;
 
 public final class GridEventBus {
     private static final Map<Class<? extends GridEvent>, Subscriptions<?>> EVENTS = new HashMap<>();

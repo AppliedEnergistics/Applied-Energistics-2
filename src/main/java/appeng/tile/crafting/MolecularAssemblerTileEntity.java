@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -47,6 +46,7 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -500,8 +500,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         boolean newState = false;
 
         try {
-            newState = this.getMainNode().isActive() && this.getMainNode().getEnergy().extractAEPower(1, Actionable.SIMULATE,
-                    PowerMultiplier.CONFIG) > 0.0001;
+            newState = this.getMainNode().isActive()
+                    && this.getMainNode().getEnergy().extractAEPower(1, Actionable.SIMULATE,
+                            PowerMultiplier.CONFIG) > 0.0001;
         } catch (final GridAccessException ignored) {
 
         }

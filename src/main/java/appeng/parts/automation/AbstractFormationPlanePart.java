@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -27,6 +26,7 @@ import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventory;

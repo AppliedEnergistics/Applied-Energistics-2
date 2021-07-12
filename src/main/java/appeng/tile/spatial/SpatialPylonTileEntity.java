@@ -24,11 +24,8 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridMultiblock;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.util.iterators.ChainedIterator;
 import com.google.common.collect.Iterators;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -39,11 +36,15 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridMultiblock;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.grid.AENetworkTileEntity;
+import appeng.util.iterators.ChainedIterator;
 
 public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMultiBlock<SpatialPylonCluster> {
 
@@ -120,7 +121,8 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
 
     public void updateStatus(final SpatialPylonCluster c) {
         this.cluster = c;
-        this.getMainNode().setExposedOnSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
+        this.getMainNode()
+                .setExposedOnSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
         this.recalculateDisplay();
     }
 

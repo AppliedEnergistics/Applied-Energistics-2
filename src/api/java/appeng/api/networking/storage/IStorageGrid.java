@@ -24,11 +24,9 @@
 package appeng.api.networking.storage;
 
 import appeng.api.networking.IGridService;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.cells.ICellContainer;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 
@@ -52,8 +50,8 @@ public interface IStorageGrid extends IGridService, IStorageMonitorable {
     /**
      * Used to add a cell provider to the storage system
      * <p/>
-     * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link ICellProvider} SERVICE.
-     * Those are automatically handled by the storage system.
+     * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link ICellProvider}
+     * SERVICE. Those are automatically handled by the storage system.
      *
      * @param cc to be added cell provider
      */

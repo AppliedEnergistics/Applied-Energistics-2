@@ -21,7 +21,6 @@ package appeng.me.service;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import appeng.api.networking.IGridServiceProvider;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReport;
@@ -30,6 +29,7 @@ import net.minecraft.crash.ReportedException;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;

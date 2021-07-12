@@ -23,11 +23,10 @@
 
 package appeng.api.networking;
 
-import net.minecraft.util.Direction;
-import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import net.minecraft.util.Direction;
 
 /**
  * Access to AE's internal grid connections.
@@ -49,8 +48,8 @@ public interface IGridConnection {
     IGridNode getOtherSide(IGridNode gridNode);
 
     /**
-     * @return True if this connection was established via the grid node host's sides, and {@link #getDirection(IGridNode)}
-     * returns a non-null value.
+     * @return True if this connection was established via the grid node host's sides, and
+     *         {@link #getDirection(IGridNode)} returns a non-null value.
      */
     boolean isInWorld();
 
@@ -80,7 +79,6 @@ public interface IGridConnection {
      */
     @Nonnull
     IGridNode b();
-
 
     /**
      * @return how many channels pass over this connections.

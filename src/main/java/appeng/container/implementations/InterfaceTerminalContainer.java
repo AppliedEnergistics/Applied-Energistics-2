@@ -38,8 +38,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -134,7 +134,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     private <T extends IInterfaceHost & IGridNodeHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
-                                                                                VisitorState state) {
+            VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             final DualityInterface dual = ih.getInterfaceDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {

@@ -196,7 +196,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
         if (wasFull && amt > 0.001) {
             try {
-                this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
+                this.getMainNode().getGridOrThrow()
+                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException ignored) {
 
             }

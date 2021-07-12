@@ -23,10 +23,10 @@ import java.lang.ref.WeakReference;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
-import net.minecraft.world.server.ServerWorld;
 
 public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
@@ -222,7 +222,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     public abstract boolean isValidTile(TileEntity te);
 
-    private boolean verifyUnownedRegionInner(final ServerWorld w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
+    private boolean verifyUnownedRegionInner(final ServerWorld w, int minX, int minY, int minZ, int maxX, int maxY,
+            int maxZ,
             final AEPartLocation side) {
         switch (side) {
             case WEST:

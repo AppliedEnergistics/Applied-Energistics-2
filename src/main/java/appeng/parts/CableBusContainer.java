@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import appeng.me.GridNode;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -51,7 +50,6 @@ import net.minecraftforge.common.util.Constants;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -74,6 +72,7 @@ import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
+import appeng.me.GridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;

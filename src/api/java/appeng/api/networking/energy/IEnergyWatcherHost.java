@@ -23,9 +23,9 @@
 
 package appeng.api.networking.energy;
 
-import appeng.api.networking.IGridNodeService;
-
 import javax.annotation.Nonnull;
+
+import appeng.api.networking.IGridNodeService;
 
 public interface IEnergyWatcherHost extends IGridNodeService {
 

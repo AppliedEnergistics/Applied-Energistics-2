@@ -18,6 +18,16 @@
 
 package appeng.container.implementations;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Multiset;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -25,14 +35,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
-import com.google.common.collect.Multiset;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen

@@ -23,10 +23,9 @@
 
 package appeng.api.implementations.guiobjects;
 
-import appeng.api.networking.IInWorldGridNodeHost;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IInWorldGridNodeHost;
 
 /**
  * Obtained via {@link IGuiItem} getGuiObject

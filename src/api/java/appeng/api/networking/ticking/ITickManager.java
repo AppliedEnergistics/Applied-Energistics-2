@@ -25,8 +25,8 @@ package appeng.api.networking.ticking;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridService;
 
 /**
  * The network tick manager.

@@ -21,7 +21,6 @@ package appeng.parts.p2p;
 import java.io.IOException;
 import java.util.List;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -31,6 +30,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;

@@ -21,13 +21,13 @@ package appeng.me.cluster.implementations;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
-import net.minecraft.world.server.ServerWorld;
 
 public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, QuantumCluster> {
 

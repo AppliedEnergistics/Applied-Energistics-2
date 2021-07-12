@@ -21,13 +21,13 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Settings;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;

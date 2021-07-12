@@ -23,11 +23,15 @@
 
 package appeng.api.parts;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -51,11 +55,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import appeng.api.networking.IGridNode;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -194,16 +197,16 @@ public interface IPart extends ICustomCableConnection {
      * used for tunnels.
      *
      * @return a grid node that represents the external facing side and allows external connections. this nodes
-     * {@link appeng.api.networking.IConfigurableGridNode#setExposedOnSides(Set)} will be automatically updated
-     * with the side the part is placed on.
+     *         {@link appeng.api.networking.IConfigurableGridNode#setExposedOnSides(Set)} will be automatically updated
+     *         with the side the part is placed on.
      *
      */
     IGridNode getExternalFacingNode();
 
     /**
-     * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is
-     * returned for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the
-     * part host for the side this part is on.
+     * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is returned
+     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the part host for the
+     * side this part is on.
      */
     default AECableType getExternalCableConnectionType() {
         return AECableType.GLASS;
@@ -375,8 +378,8 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * This method may be implemented by a part to request a specific type of cable connection for rendering.
-     * Mechanics are not affected by this in any way.
+     * This method may be implemented by a part to request a specific type of cable connection for rendering. Mechanics
+     * are not affected by this in any way.
      */
     default AECableType getDesiredConnectionType() {
         return AECableType.GLASS;

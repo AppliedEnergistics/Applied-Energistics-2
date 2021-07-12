@@ -159,9 +159,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     /**
-     * Deferred tile-initialization when tiles actually start first ticking in a chunk.
-     * The tile needs to override {@link #validate()} and call <code>TickHandler.instance().addInit(this);</code>
-     * to make this work.
+     * Deferred tile-initialization when tiles actually start first ticking in a chunk. The tile needs to override
+     * {@link #validate()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
      */
     public void onReady() {
     }

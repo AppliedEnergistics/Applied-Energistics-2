@@ -23,13 +23,14 @@
 
 package appeng.api.util;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import java.util.Objects;
 
 /**
  * Represents a location in the Minecraft Universe
@@ -61,8 +62,10 @@ public final class DimensionalBlockPos {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         DimensionalBlockPos that = (DimensionalBlockPos) o;
         return world.equals(that.world) && pos.equals(that.pos);
     }

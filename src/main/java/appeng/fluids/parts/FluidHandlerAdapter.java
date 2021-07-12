@@ -40,7 +40,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
-import appeng.me.GridAccessException;
 import appeng.me.storage.ITickingMonitor;
 
 /**

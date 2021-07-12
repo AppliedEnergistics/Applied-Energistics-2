@@ -29,11 +29,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.events.GridPowerStatusChange;
-import appeng.api.networking.events.GridPowerStorageStateChanged;
-import appeng.core.Api;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -46,6 +41,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -53,8 +50,11 @@ import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.GridPowerIdleChange;
+import appeng.api.networking.events.GridPowerStatusChange;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.core.Api;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
@@ -63,13 +63,15 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyGrid.class, (service, event) -> {
-            ((EnergyGridService) service).nodeIdlePowerChangeHandler(event);
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyGrid.class,
+                (service, event) -> {
+                    ((EnergyGridService) service).nodeIdlePowerChangeHandler(event);
+                });
 
-        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class, (service, event) -> {
-            ((EnergyGridService) service).storagePowerChangeHandler(event);
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class,
+                (service, event) -> {
+                    ((EnergyGridService) service).storagePowerChangeHandler(event);
+                });
     }
 
     private static final double MAX_BUFFER_STORAGE = 800;
@@ -642,7 +644,8 @@ public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
             this.stored += amount;
 
             if (this.stored > 0.01) {
-                EnergyGridService.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
+                EnergyGridService.this.myGrid
+                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
             }
         }
 
@@ -650,7 +653,8 @@ public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
             this.stored -= amount;
 
             if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyGridService.this.myGrid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
+                EnergyGridService.this.myGrid
+                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             }
         }
     }

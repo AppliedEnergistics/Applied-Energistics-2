@@ -18,13 +18,37 @@
 
 package appeng.me.helpers;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
+import appeng.api.networking.IGridService;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
@@ -37,26 +61,6 @@ import appeng.core.worlddata.WorldData;
 import appeng.me.GridAccessException;
 import appeng.me.service.P2PService;
 import appeng.me.service.StatisticsService;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MutableClassToInstanceMap;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Manages the lifecycle of a {@link IGridNode}.
@@ -89,7 +93,8 @@ public class ManagedGridNode {
             IConfigurableGridNode node;
             if (inWorldNode) {
                 Preconditions.checkState(pos != null, "No position was set for an in-world node");
-                node = Api.instance().grid().createInWorldGridNode(logicalHost, listener, (ServerWorld) world, pos, flags);
+                node = Api.instance().grid().createInWorldGridNode(logicalHost, listener, (ServerWorld) world, pos,
+                        flags);
                 node.setExposedOnSides(exposedOnSides);
             } else {
                 node = Api.instance().grid().createInternalGridNode(logicalHost, listener, (ServerWorld) world, flags);
@@ -112,8 +117,8 @@ public class ManagedGridNode {
     }
 
     /**
-     * This will be set in the constructor and initialization data will be aggregated in this field until
-     * the node is finally constructed. At that point, this field will be set to null to clear the memory.
+     * This will be set in the constructor and initialization data will be aggregated in this field until the node is
+     * finally constructed. At that point, this field will be set to null to clear the memory.
      */
     @Nullable
     private InitData<?> initData;
@@ -364,7 +369,8 @@ public class ManagedGridNode {
     @Nonnull
     private InitData<?> getInitData() {
         if (initData == null) {
-            throw new IllegalStateException("The node has already been initialized. Initialization data cannot be changed anymore.");
+            throw new IllegalStateException(
+                    "The node has already been initialized. Initialization data cannot be changed anymore.");
         }
         return initData;
     }

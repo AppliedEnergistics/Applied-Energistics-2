@@ -18,13 +18,13 @@
 
 package appeng.parts.networking;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
-import net.minecraft.util.Direction;
+import appeng.core.Api;
 
 public abstract class DenseCablePart extends CablePart {
     public DenseCablePart(final ItemStack is) {

@@ -34,17 +34,18 @@ public interface IGridServiceRegistry {
     /**
      * Register a new grid service for use during operation, must be called during the loading phase.
      * <p/>
-     * AE will automatically construct instances of the given implementation class by looking up a constructor.
-     * There must be a single constructor.
+     * AE will automatically construct instances of the given implementation class by looking up a constructor. There
+     * must be a single constructor.
      * <p/>
      * The following constructor parameter types are allowed:
      * <ul>
-     *     <li>Other grid services public interfaces (see interfaces extending {@link IGridService}).</li>
-     *     <li>{@link IGrid}, which will be the grid that the service is being constructed for.</li>
+     * <li>Other grid services public interfaces (see interfaces extending {@link IGridService}).</li>
+     * <li>{@link IGrid}, which will be the grid that the service is being constructed for.</li>
      * </ul>
      *
-     * @param publicInterface The public facing interface of the grid service you want to register. This class or interface
-     *                        will also be used to query the service from any grid via {@link IGrid#getService(Class)}.
+     * @param publicInterface The public facing interface of the grid service you want to register. This class or
+     *                        interface will also be used to query the service from any grid via
+     *                        {@link IGrid#getService(Class)}.
      * @param implClass       The class used to construct the grid service for each grid. Must have a single
      *                        constructor.
      */

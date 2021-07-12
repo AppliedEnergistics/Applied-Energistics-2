@@ -18,18 +18,18 @@
 
 package appeng.container.me.networktool;
 
-import appeng.api.networking.IInWorldGridNodeHost;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.Direction;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.sync.packets.NetworkStatusPacket;
-import net.minecraft.util.Direction;
 
 /**
  * @see NetworkStatusScreen

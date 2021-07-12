@@ -25,7 +25,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -60,6 +59,7 @@ import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -163,7 +163,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     protected void PowerEvent(final PowerEventType x) {
         if (x == PowerEventType.REQUEST_POWER) {
             try {
-                this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
+                this.getMainNode().getGridOrThrow()
+                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             } catch (final GridAccessException e) {
                 // :(
             }

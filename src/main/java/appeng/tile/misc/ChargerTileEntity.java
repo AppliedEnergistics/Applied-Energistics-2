@@ -63,10 +63,10 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     public ChargerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
-            .setExposedOnSides(EnumSet.noneOf(Direction.class))
-            .setFlags()
-            .setIdlePowerUsage(0)
-            .addService(IGridTickable.class, this);
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .setFlags()
+                .setIdlePowerUsage(0)
+                .addService(IGridTickable.class, this);
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
     }
 

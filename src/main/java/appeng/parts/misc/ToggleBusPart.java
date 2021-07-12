@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import appeng.parts.AEBasePart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,6 +42,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.ManagedGridNode;
+import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 

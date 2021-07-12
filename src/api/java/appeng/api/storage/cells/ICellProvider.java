@@ -28,7 +28,6 @@ import java.util.List;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
 
 /**
  * Allows you to provide cells via non IGridHosts directly to the storage system, drives, and similar features should go

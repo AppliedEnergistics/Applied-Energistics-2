@@ -18,13 +18,12 @@
 
 package appeng.items.contents;
 
-import appeng.api.networking.IInWorldGridNodeHost;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;

@@ -38,9 +38,8 @@ public interface IGridNodeListener<T> {
     }
 
     /**
-     * Called when {@link IGridNode#isActive()} of the node has potentially changed. Since the active-state
-     * depends on several factors, this might be called for different reasons, and even if the active status
-     * has remained the same.
+     * Called when {@link IGridNode#isActive()} of the node has potentially changed. Since the active-state depends on
+     * several factors, this might be called for different reasons, and even if the active status has remained the same.
      *
      * @param reason Indicates why the active state might have changed.
      */

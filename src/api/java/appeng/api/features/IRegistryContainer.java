@@ -43,8 +43,8 @@ public interface IRegistryContainer {
     IMovableRegistry movable();
 
     /**
-     * Add new grid-wide services for use during run time. The registry may only be used before the first grid
-     * is created.
+     * Add new grid-wide services for use during run time. The registry may only be used before the first grid is
+     * created.
      */
     IGridServiceRegistry gridService();
 

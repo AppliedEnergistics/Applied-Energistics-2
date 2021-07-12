@@ -23,11 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonTileEntity;
-import net.minecraft.world.server.ServerWorld;
 
 public class SpatialPylonCluster implements IAECluster {
 

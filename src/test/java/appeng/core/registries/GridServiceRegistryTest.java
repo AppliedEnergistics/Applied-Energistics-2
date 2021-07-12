@@ -1,13 +1,14 @@
 package appeng.core.registries;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridServiceProvider;
 
 @MockitoSettings
 class GridServiceRegistryTest {
@@ -54,8 +55,7 @@ class GridServiceRegistryTest {
                 PublicInterface.class,
                 GridService2.class,
                 GridService3.class,
-                GridService4.class
-        );
+                GridService4.class);
 
         var service3 = (GridService3) services.get(GridService3.class);
         assertThat(service3.service1).isSameAs(services.get(PublicInterface.class));

@@ -20,9 +20,6 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
-import appeng.parts.AEBasePart;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -39,6 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
@@ -57,6 +55,8 @@ import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 

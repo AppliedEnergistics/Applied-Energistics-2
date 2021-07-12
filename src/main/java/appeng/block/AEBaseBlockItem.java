@@ -20,7 +20,6 @@ package appeng.block;
 
 import java.util.List;
 
-import appeng.api.networking.IGridNodeHost;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;

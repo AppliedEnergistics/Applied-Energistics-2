@@ -22,13 +22,13 @@ import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.CraftingTileEntity;
-import net.minecraft.world.server.ServerWorld;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
 

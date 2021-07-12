@@ -18,9 +18,9 @@
 
 package appeng.parts.networking;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 
 public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
@@ -36,6 +36,7 @@ public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelP
 
     /**
      * Send info about changed channels/power to client to update the on-cable display of channels/power.
+     * 
      * @param reason
      */
     @Override

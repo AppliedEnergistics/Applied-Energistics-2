@@ -23,10 +23,10 @@
 
 package appeng.api.networking.crafting;
 
-import appeng.api.networking.IGridNodeService;
 import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEItemStack;
 

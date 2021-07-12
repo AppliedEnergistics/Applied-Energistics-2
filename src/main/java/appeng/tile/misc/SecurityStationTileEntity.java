@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -50,6 +49,7 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.IMEInventoryHandler;

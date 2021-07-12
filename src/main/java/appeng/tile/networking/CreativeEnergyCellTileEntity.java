@@ -19,6 +19,7 @@
 package appeng.tile.networking;
 
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -26,7 +27,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTileEntity;
-import net.minecraft.util.Direction;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 

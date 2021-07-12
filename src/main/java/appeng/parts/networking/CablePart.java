@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -33,8 +31,9 @@ import net.minecraft.util.Direction;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeHost;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
@@ -45,6 +44,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.parts.AEBasePart;
 
 public class CablePart extends AEBasePart implements ICablePart {
@@ -65,11 +65,11 @@ public class CablePart extends AEBasePart implements ICablePart {
     public CablePart(final ItemStack is) {
         super(is);
         this.getMainNode()
-            .setFlags(GridFlags.PREFERRED)
-            .setIdlePowerUsage(0.0)
-            .setInWorldNode(true)
-            .setExposedOnSides(EnumSet.allOf(Direction.class));
-        if (is.getItem() instanceof ColoredPartItem<?> coloredPartItem) {
+                .setFlags(GridFlags.PREFERRED)
+                .setIdlePowerUsage(0.0)
+                .setInWorldNode(true)
+                .setExposedOnSides(EnumSet.allOf(Direction.class));
+        if (is.getItem() instanceof ColoredPartItem<?>coloredPartItem) {
             this.getMainNode().setGridColor(coloredPartItem.getColor());
         }
     }

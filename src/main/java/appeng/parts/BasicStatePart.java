@@ -20,21 +20,21 @@ package appeng.parts;
 
 import java.io.IOException;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
-
-import javax.annotation.OverridingMethodsMustInvokeSuper;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.helpers.ManagedGridNode;
 
 /**
- * Provides a simple way of synchronizing up to 8 flags of state to the client.
- * By default, it includes the power and channel state of the connected grid node.
- * See {@link IGridNode#isPowered()} and {@link IGridNode#meetsChannelRequirements()}.
+ * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and
+ * channel state of the connected grid node. See {@link IGridNode#isPowered()} and
+ * {@link IGridNode#meetsChannelRequirements()}.
  */
 public abstract class BasicStatePart extends AEBasePart implements IPowerChannelState {
 

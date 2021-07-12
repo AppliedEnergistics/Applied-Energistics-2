@@ -23,18 +23,20 @@
 
 package appeng.api.networking;
 
-import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.events.GridEvent;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.events.GridEvent;
 
 /**
  * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
@@ -53,8 +55,8 @@ public interface IGridHelper {
      * Forwards grid-wide events to the {@link IGridService} attached to that particular {@link IGrid}.
      */
     default <T extends GridEvent, C extends IGridService> void addGridServiceEventHandler(Class<T> eventClass,
-                                                                                          Class<C> cacheClass,
-                                                                                          BiConsumer<C, T> eventHandler) {
+            Class<C> cacheClass,
+            BiConsumer<C, T> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
             eventHandler.accept(grid.getService(cacheClass), event);
         });
@@ -67,8 +69,8 @@ public interface IGridHelper {
      *                       included.
      */
     default <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
-                                                                   Class<C> nodeOwnerClass,
-                                                                   BiConsumer<C, T> eventHandler) {
+            Class<C> nodeOwnerClass,
+            BiConsumer<C, T> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
             for (C machine : grid.getMachines(nodeOwnerClass)) {
                 eventHandler.accept(machine, event);
@@ -81,8 +83,8 @@ public interface IGridHelper {
      * doesn't care about the actual event object.
      */
     default <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
-                                                                   Class<C> nodeOwnerClass,
-                                                                   Consumer<C> eventHandler) {
+            Class<C> nodeOwnerClass,
+            Consumer<C> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
             for (C machine : grid.getMachines(nodeOwnerClass)) {
                 eventHandler.accept(machine);
@@ -97,8 +99,8 @@ public interface IGridHelper {
     IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos);
 
     /**
-     * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making connections)
-     * on another host in the world.
+     * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making
+     * connections) on another host in the world.
      *
      * @see #getNodeHost(IWorld, BlockPos)
      */
@@ -122,10 +124,10 @@ public interface IGridHelper {
      */
     @Nonnull
     <T> IConfigurableGridNode createInWorldGridNode(@Nonnull T logicalHost,
-                                                    @Nonnull IGridNodeListener<T> listener,
-                                                    @Nonnull ServerWorld world,
-                                                    @Nonnull BlockPos pos,
-                                                    @Nonnull Set<GridFlags> flags);
+            @Nonnull IGridNodeListener<T> listener,
+            @Nonnull ServerWorld world,
+            @Nonnull BlockPos pos,
+            @Nonnull Set<GridFlags> flags);
 
     /**
      * Create an internal grid node that isn't accessible to the world, and won't automatically connect to other
@@ -133,9 +135,9 @@ public interface IGridHelper {
      */
     @Nonnull
     <T> IConfigurableGridNode createInternalGridNode(@Nonnull T logicalHost,
-                                                     @Nonnull IGridNodeListener<T> listener,
-                                                     @Nonnull ServerWorld world,
-                                                     @Nonnull Set<GridFlags> flags);
+            @Nonnull IGridNodeListener<T> listener,
+            @Nonnull ServerWorld world,
+            @Nonnull Set<GridFlags> flags);
 
     /**
      * Create a direct connection between two {@link IGridNode}.

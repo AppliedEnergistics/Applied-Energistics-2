@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-import appeng.api.networking.security.ISecurityGrid;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.AccessRestriction;
@@ -26,6 +25,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;

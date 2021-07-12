@@ -20,7 +20,6 @@ package appeng.me.service.helpers;
 
 import java.util.HashMap;
 
-
 import appeng.api.networking.IGridNode;
 import appeng.parts.p2p.MEP2PTunnelPart;
 

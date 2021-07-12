@@ -23,7 +23,6 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -40,11 +39,11 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;

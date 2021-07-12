@@ -23,9 +23,10 @@
 
 package appeng.api.networking.spatial;
 
-import appeng.api.networking.IGridService;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import appeng.api.networking.IGridService;
 
 public interface ISpatialService extends IGridService {
 

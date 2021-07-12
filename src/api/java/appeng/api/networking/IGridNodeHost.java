@@ -23,13 +23,10 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
-
-import appeng.api.util.DimensionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import appeng.api.parts.IPart;
-import net.minecraft.world.World;
 
 /**
  * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or tile entity to

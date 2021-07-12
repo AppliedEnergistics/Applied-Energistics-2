@@ -91,8 +91,8 @@ import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.ManagedGridNode;
 import appeng.me.helpers.MachineSource;
+import appeng.me.helpers.ManagedGridNode;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
@@ -143,8 +143,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     public DualityInterface(final ManagedGridNode gridNode, final IInterfaceHost ih, ItemStack is) {
         this.gridProxy = gridNode
-            .setFlags(GridFlags.REQUIRE_CHANNEL)
-            .addService(IGridTickable.class, this);
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
 
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.cm.registerSetting(Settings.BLOCK, YesNo.NO);
@@ -398,7 +398,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     public void notifyNeighbors() {
         if (this.gridProxy.isActive()) {
             try {
-                this.gridProxy.getGridOrThrow().postEvent(new GridCraftingPatternChange(this, this.gridProxy.getNode()));
+                this.gridProxy.getGridOrThrow()
+                        .postEvent(new GridCraftingPatternChange(this, this.gridProxy.getNode()));
                 this.gridProxy.getTick().wakeDevice(this.gridProxy.getNode());
             } catch (final GridAccessException e) {
                 // :P
@@ -634,7 +635,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         try {
             if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
                 return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGridOrThrow(), this.gridProxy.getCrafting(),
+                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGridOrThrow(),
+                        this.gridProxy.getCrafting(),
                         this.mySource);
             }
         } catch (final GridAccessException e) {
@@ -948,7 +950,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
             if (directedTile instanceof IInterfaceHost) {
                 try {
-                    if (((IInterfaceHost) directedTile).getInterfaceDuality().sameGrid(this.gridProxy.getGridOrThrow())) {
+                    if (((IInterfaceHost) directedTile).getInterfaceDuality()
+                            .sameGrid(this.gridProxy.getGridOrThrow())) {
                         continue;
                     }
                 } catch (final GridAccessException e) {

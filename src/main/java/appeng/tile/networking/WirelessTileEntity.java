@@ -21,7 +21,6 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
@@ -32,6 +31,7 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;

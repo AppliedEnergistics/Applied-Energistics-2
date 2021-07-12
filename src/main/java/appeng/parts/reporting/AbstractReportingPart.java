@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,6 +38,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;

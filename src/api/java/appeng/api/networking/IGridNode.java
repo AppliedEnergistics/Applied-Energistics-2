@@ -23,19 +23,21 @@
 
 package appeng.api.networking;
 
-import appeng.api.IAppEngApi;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.util.AEColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.server.ServerWorld;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.world.server.ServerWorld;
+
+import appeng.api.IAppEngApi;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.util.AEColor;
 
 /**
  * Gives you a view into a Nodes connections and information.
@@ -47,17 +49,17 @@ import java.util.Set;
 public interface IGridNode {
 
     /**
-     * Tries to get a service that was attached to this grid node when it was created.
-     * Used by overlay grids such as the {@link appeng.api.networking.crafting.ICraftingGrid}.
+     * Tries to get a service that was attached to this grid node when it was created. Used by overlay grids such as the
+     * {@link appeng.api.networking.crafting.ICraftingGrid}.
      */
     @Nullable
     <T extends IGridNodeService> T getService(Class<T> serviceClass);
 
     /**
-     * Gets the host of the grid node, which does not necessarily have a representation in the game world.
-     * In most cases, this will be the game object that has created the node, for example a
-     * {@link net.minecraft.tileentity.TileEntity} or {@link appeng.api.parts.IPart}, but may also represent
-     * something entirely different.
+     * Gets the host of the grid node, which does not necessarily have a representation in the game world. In most
+     * cases, this will be the game object that has created the node, for example a
+     * {@link net.minecraft.tileentity.TileEntity} or {@link appeng.api.parts.IPart}, but may also represent something
+     * entirely different.
      */
     @Nonnull
     Object getNodeOwner();
@@ -96,23 +98,23 @@ public interface IGridNode {
     Set<Direction> getConnectedSides();
 
     /**
-     * lets you iterate a nodes connections that have been made via the grid host's exposed sides to other adjacent
-     * grid nodes.
+     * lets you iterate a nodes connections that have been made via the grid host's exposed sides to other adjacent grid
+     * nodes.
      */
     @Nonnull
     Map<Direction, IGridConnection> getInWorldConnections();
 
     /**
-     * lets you iterate all of a nodes connections that have been made either internally within the grid host,
-     * or to other grid hosts, including connections made through the hosts sides and indirectly (QNB, tunnels).
-     * Includes connections from {@link #getInWorldConnections()}.
+     * lets you iterate all of a nodes connections that have been made either internally within the grid host, or to
+     * other grid hosts, including connections made through the hosts sides and indirectly (QNB, tunnels). Includes
+     * connections from {@link #getInWorldConnections()}.
      */
     @Nonnull
     List<IGridConnection> getConnections();
 
     /**
-     * Reflects the networks status, returns true only if the network is powered, and the network has fully booted,
-     * and this node has the channels it needs (if any).
+     * Reflects the networks status, returns true only if the network is powered, and the network has fully booted, and
+     * this node has the channels it needs (if any).
      */
     default boolean isActive() {
         return isPowered() && hasGridBooted() && meetsChannelRequirements();
@@ -125,15 +127,15 @@ public interface IGridNode {
     boolean hasGridBooted();
 
     /**
-     * @return True if the node has power from it's connected grid. Can be used to show a machine being powered,
-     * even if the machine doesn't have it's required channel or the network is still booting.
+     * @return True if the node has power from it's connected grid. Can be used to show a machine being powered, even if
+     *         the machine doesn't have it's required channel or the network is still booting.
      * @see #isActive()
      */
     boolean isPowered();
 
     /**
      * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
-     * status.
+     *         status.
      */
     boolean meetsChannelRequirements();
 
@@ -164,14 +166,14 @@ public interface IGridNode {
 
     /**
      * @return An itemstack that will only be used to represent this grid node in user interfaces. Can return an
-     * {@link ItemStack#isEmpty() empty stack} to indicate the node should not be shown in the UI.
+     *         {@link ItemStack#isEmpty() empty stack} to indicate the node should not be shown in the UI.
      */
     @Nonnull
     ItemStack getVisualRepresentation();
 
     /**
-     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates
-     * that the node will connect to nodes of any color.
+     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
+     * node will connect to nodes of any color.
      */
     @Nonnull
     AEColor getGridColor();

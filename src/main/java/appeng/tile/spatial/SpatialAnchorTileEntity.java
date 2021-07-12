@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.core.Api;
 import com.google.common.collect.Multiset;
 
 import net.minecraft.block.BlockState;
@@ -46,6 +44,7 @@ import appeng.api.config.YesNo;
 import appeng.api.movable.IMovableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.statistics.GridChunkEvent.GridChunkAdded;
 import appeng.api.networking.events.statistics.GridChunkEvent.GridChunkRemoved;
 import appeng.api.networking.ticking.IGridTickable;
@@ -58,6 +57,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.services.ChunkLoadingService;
 import appeng.tile.grid.AENetworkTileEntity;
@@ -68,8 +68,10 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableTile {
 
     static {
-        Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::chunkAdded);
-        Api.instance().grid().addNodeOwnerEventHandler(GridChunkRemoved.class, SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::chunkRemoved);
+        Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorTileEntity.class,
+                SpatialAnchorTileEntity::chunkAdded);
+        Api.instance().grid().addNodeOwnerEventHandler(GridChunkRemoved.class, SpatialAnchorTileEntity.class,
+                SpatialAnchorTileEntity::chunkRemoved);
     }
 
     /**
@@ -305,7 +307,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      */
     private void cleanUp() {
         try {
-            Multiset<ChunkPos> requiredChunks = this.getMainNode().getStatistics().getChunks().get(this.getServerWorld());
+            Multiset<ChunkPos> requiredChunks = this.getMainNode().getStatistics().getChunks()
+                    .get(this.getServerWorld());
 
             // Release all chunks, which are no longer part of the network.s
             for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {

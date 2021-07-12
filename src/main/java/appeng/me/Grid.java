@@ -23,19 +23,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.SetMultimap;
+
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
 import appeng.core.Api;
 import appeng.core.registries.GridServiceRegistry;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.SetMultimap;
 
 public class Grid implements IGrid {
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();

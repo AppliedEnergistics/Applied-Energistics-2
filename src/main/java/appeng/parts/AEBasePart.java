@@ -18,6 +18,33 @@
 
 package appeng.parts;
 
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+
+import com.google.common.base.Preconditions;
+
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
@@ -48,31 +75,6 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
-import com.google.common.base.Preconditions;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
 
 public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, IUpgradeableHost, ICustomNameObject {
 
@@ -442,7 +444,7 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
 
     @Override
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-                            final AEPartLocation side) {
+            final AEPartLocation side) {
         this.mainNode.setOwner(player);
     }
 

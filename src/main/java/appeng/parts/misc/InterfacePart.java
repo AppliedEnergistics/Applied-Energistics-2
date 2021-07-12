@@ -21,9 +21,6 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
-import appeng.parts.AEBasePart;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,6 +40,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -64,6 +62,8 @@ import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 import appeng.util.inv.IAEAppEngInventory;

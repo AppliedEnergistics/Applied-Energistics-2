@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import appeng.api.networking.IGridServiceProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
@@ -33,6 +32,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
@@ -53,9 +53,10 @@ import appeng.tile.networking.ControllerTileEntity;
 public class PathGridService implements IPathingGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingGrid.class, (service, event) -> {
-            ((PathGridService) service).updateNodReq(event);
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingGrid.class,
+                (service, event) -> {
+                    ((PathGridService) service).updateNodReq(event);
+                });
     }
 
     private final List<PathSegment> active = new ArrayList<>();

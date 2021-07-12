@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,6 +47,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.container.me.networktool.NetworkToolContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;

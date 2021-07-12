@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import appeng.me.GridNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -60,6 +59,7 @@ import appeng.core.AppEngClient;
 import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
+import appeng.me.GridNode;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldRunnable;
 import appeng.util.Platform;

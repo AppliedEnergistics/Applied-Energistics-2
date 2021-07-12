@@ -57,7 +57,8 @@ public final class CompassService {
         this.jobSize = 0;
     }
 
-    public Future<?> getCompassDirection(final DimensionalBlockPos coord, final int maxRange, final ICompassCallback cc) {
+    public Future<?> getCompassDirection(final DimensionalBlockPos coord, final int maxRange,
+            final ICompassCallback cc) {
         this.jobSize++;
         return this.executor.submit(new CMDirectionRequest(coord, maxRange, cc));
     }

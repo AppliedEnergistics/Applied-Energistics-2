@@ -18,31 +18,34 @@
 
 package appeng.core.api;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.events.GridEvent;
-import appeng.me.GridEventBus;
-import appeng.me.InWorldGridNode;
+import java.util.Set;
+import java.util.function.BiConsumer;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
-import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridHelper;
-import appeng.api.networking.IGridNode;
-import appeng.me.GridConnection;
-import appeng.me.GridNode;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.function.BiConsumer;
+import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IConfigurableGridNode;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridHelper;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.events.GridEvent;
+import appeng.me.GridConnection;
+import appeng.me.GridEventBus;
+import appeng.me.GridNode;
+import appeng.me.InWorldGridNode;
 
 /**
  * @author yueh
@@ -70,7 +73,9 @@ public class ApiGrid implements IGridHelper {
 
     @NotNull
     @Override
-    public <T> IConfigurableGridNode createInWorldGridNode(@NotNull T logicalHost, @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull BlockPos pos, @NotNull Set<GridFlags> flags) {
+    public <T> IConfigurableGridNode createInWorldGridNode(@NotNull T logicalHost,
+            @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull BlockPos pos,
+            @NotNull Set<GridFlags> flags) {
         Preconditions.checkNotNull(logicalHost);
         Preconditions.checkNotNull(listener);
         Preconditions.checkNotNull(world);
@@ -82,7 +87,8 @@ public class ApiGrid implements IGridHelper {
 
     @NotNull
     @Override
-    public <T> IConfigurableGridNode createInternalGridNode(@NotNull T logicalHost, @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull Set<GridFlags> flags) {
+    public <T> IConfigurableGridNode createInternalGridNode(@NotNull T logicalHost,
+            @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull Set<GridFlags> flags) {
         Preconditions.checkNotNull(logicalHost);
         Preconditions.checkNotNull(listener);
         Preconditions.checkNotNull(world);

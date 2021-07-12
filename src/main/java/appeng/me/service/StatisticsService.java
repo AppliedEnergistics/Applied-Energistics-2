@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.api.networking.IGridServiceProvider;
-import appeng.me.InWorldGridNode;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
@@ -33,9 +31,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridService;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.statistics.GridChunkEvent;
+import appeng.me.InWorldGridNode;
 
 /**
  * A grid providing precomupted statistics about a network.

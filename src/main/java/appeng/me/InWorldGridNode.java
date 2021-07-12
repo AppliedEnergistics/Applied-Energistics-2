@@ -18,6 +18,15 @@
 
 package appeng.me;
 
+import java.util.EnumSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
@@ -27,23 +36,16 @@ import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 public class InWorldGridNode extends GridNode {
 
     private final BlockPos location;
 
     public InWorldGridNode(ServerWorld world,
-                           BlockPos location,
-                           Object logicalHost,
-                           @NotNull IGridNodeListener listener,
-                           Set<GridFlags> flags) {
+            BlockPos location,
+            Object logicalHost,
+            @NotNull IGridNodeListener listener,
+            Set<GridFlags> flags) {
         super(world, logicalHost, listener, flags);
         this.location = location;
     }
@@ -59,8 +61,7 @@ public class InWorldGridNode extends GridNode {
 
         // Find adjacent nodes in the world based on the sides of the host this node is exposed on
         var pos = new BlockPos.Mutable();
-        sides:
-        for (var direction : exposedOnSides) {
+        sides: for (var direction : exposedOnSides) {
             pos.setAndMove(location, direction);
             var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
             if (adjacentNode == null) {
@@ -156,8 +157,7 @@ public class InWorldGridNode extends GridNode {
             AELog.debug(e);
             TickHandler.instance().addCallable(
                     adjacentNode.getWorld(),
-                    () -> callListener(IGridNodeListener::onSecurityBreak)
-            );
+                    () -> callListener(IGridNodeListener::onSecurityBreak));
 
             return false;
         } catch (final FailedConnectionException e) {

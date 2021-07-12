@@ -18,6 +18,29 @@
 
 package appeng.tile.misc;
 
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -35,31 +58,11 @@ import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.ManagedGridNode;
-import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
+import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.List;
 
 public class InterfaceTileEntity extends AENetworkInvTileEntity
         implements IInventoryDestination, IInterfaceHost, IPriorityHost {

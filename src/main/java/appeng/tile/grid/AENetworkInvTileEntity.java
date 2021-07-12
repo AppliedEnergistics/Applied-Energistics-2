@@ -18,22 +18,23 @@
 
 package appeng.tile.grid;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedTileEntity;
-import appeng.me.helpers.TileEntityNodeListener;
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-
-import appeng.api.networking.IGridNode;
-import appeng.me.helpers.ManagedGridNode;
-import appeng.tile.AEBaseInvTileEntity;
 import net.minecraft.util.Direction;
 
-import javax.annotation.Nullable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.ManagedGridNode;
+import appeng.me.helpers.TileEntityNodeListener;
+import appeng.tile.AEBaseInvTileEntity;
 
-public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity implements IInWorldGridNodeHost, IGridConnectedTileEntity {
+public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
+        implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
     private final ManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(this.getItemFromTile())

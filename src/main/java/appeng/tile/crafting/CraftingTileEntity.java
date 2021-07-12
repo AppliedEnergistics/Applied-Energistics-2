@@ -25,11 +25,8 @@ import java.util.LinkedList;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.IGridMultiblock;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.util.iterators.ChainedIterator;
 import com.google.common.collect.Iterators;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,6 +40,9 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridMultiblock;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -55,6 +55,7 @@ import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.Platform;
+import appeng.util.iterators.ChainedIterator;
 
 public class CraftingTileEntity extends AENetworkTileEntity
         implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
@@ -67,8 +68,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
     public CraftingTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
-            .setExposedOnSides(EnumSet.noneOf(Direction.class))
-            .addService(IGridMultiblock.class, this::getMultiblockNodes);
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
     @Override
@@ -364,6 +365,5 @@ public class CraftingTileEntity extends AENetworkTileEntity
         }
         return Iterators.transform(this.getCluster().getTiles(), CraftingTileEntity::getGridNode);
     }
-
 
 }

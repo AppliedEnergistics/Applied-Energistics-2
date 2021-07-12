@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.api.networking.IGridNodeListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -45,6 +44,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -505,7 +505,8 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
-            final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
+            final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
+                    : null;
             if (out != null) {
                 return Collections.singletonList(out);
             }

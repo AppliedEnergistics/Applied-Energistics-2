@@ -18,11 +18,6 @@
 
 package appeng.core.registries;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridServiceRegistry;
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,6 +28,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.IGridServiceRegistry;
+
 public final class GridServiceRegistry implements IGridServiceRegistry {
 
     // This must not be re-sorted because of interdependencies between the registrations
@@ -40,9 +41,10 @@ public final class GridServiceRegistry implements IGridServiceRegistry {
 
     @Override
     public synchronized final <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
-                                                                             Class<T> implClass) {
+            Class<T> implClass) {
         if (isRegistered(publicInterface)) {
-            throw new IllegalArgumentException("Implementation for grid service " + publicInterface + " is already registered!");
+            throw new IllegalArgumentException(
+                    "Implementation for grid service " + publicInterface + " is already registered!");
         }
 
         var registration = new GridCacheRegistration<>(implClass, publicInterface);

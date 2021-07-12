@@ -1,17 +1,18 @@
 package appeng.api.networking;
 
-import appeng.api.util.AEColor;
+import java.util.Set;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import java.util.Set;
+import appeng.api.util.AEColor;
 
 /**
- * This interface is intended for the host that created this node. It is used to configure
- * the node's properties.
+ * This interface is intended for the host that created this node. It is used to configure the node's properties.
  */
 public interface IConfigurableGridNode extends IGridNode {
     /**
@@ -21,8 +22,8 @@ public interface IConfigurableGridNode extends IGridNode {
     void destroy();
 
     /**
-     * Mark as node as ready, which means it'll try to make a connection to adjacent nodes if it's exposed on the
-     * host, and it'll be available for connections from other nodes.
+     * Mark as node as ready, which means it'll try to make a connection to adjacent nodes if it's exposed on the host,
+     * and it'll be available for connections from other nodes.
      */
     void markReady();
 
@@ -83,8 +84,8 @@ public interface IConfigurableGridNode extends IGridNode {
     void setVisualRepresentation(@Nonnull ItemStack visualRepresentation);
 
     /**
-     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates
-     * that the node will connect to nodes of any color.
+     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
+     * node will connect to nodes of any color.
      */
     void setGridColor(@Nonnull AEColor gridColor);
 

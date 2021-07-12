@@ -18,11 +18,37 @@
 
 package appeng.me.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+
+import net.minecraft.world.World;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -58,33 +84,10 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 public class CraftingGridService
-        implements ICraftingGrid, IGridServiceProvider, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
+        implements ICraftingGrid, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
+        IMEInventoryHandler<IAEItemStack> {
 
     private static final ExecutorService CRAFTING_POOL;
     private static final Comparator<ICraftingPatternDetails> COMPARATOR = (firstDetail,
@@ -99,12 +102,14 @@ public class CraftingGridService
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class, (service, event) -> {
-            ((CraftingGridService) service).updatePatterns();
-        });
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class, (service, event) -> {
-            ((CraftingGridService) service).updateList = true;
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class,
+                (service, event) -> {
+                    ((CraftingGridService) service).updatePatterns();
+                });
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class,
+                (service, event) -> {
+                    ((CraftingGridService) service).updateList = true;
+                });
     }
 
     private final Set<CraftingCPUCluster> craftingCPUClusters = new HashSet<>();

@@ -18,6 +18,12 @@
 
 package appeng.me;
 
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.util.Direction;
+
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.NullNodeConnectionException;
@@ -31,10 +37,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.util.Direction;
-
-import javax.annotation.Nullable;
 
 public class GridConnection implements IGridConnection, IPathItem {
 
@@ -183,7 +185,8 @@ public class GridConnection implements IGridConnection, IPathItem {
         this.visitorIterationNumber = visitorIterationNumber;
     }
 
-    public static GridConnection create(final IGridNode aNode, final IGridNode bNode, @Nullable Direction externalDirection)
+    public static GridConnection create(final IGridNode aNode, final IGridNode bNode,
+            @Nullable Direction externalDirection)
             throws FailedConnectionException {
         if (aNode == null || bNode == null) {
             throw new NullNodeConnectionException();
@@ -193,7 +196,8 @@ public class GridConnection implements IGridConnection, IPathItem {
         final GridNode b = (GridNode) bNode;
 
         if (a.hasConnection(b) || b.hasConnection(a)) {
-            throw new ExistingConnectionException(String.format("Connection between node [%s] and [%s] on [%s] already exists.", a, b, externalDirection));
+            throw new ExistingConnectionException(String
+                    .format("Connection between node [%s] and [%s] on [%s] already exists.", a, b, externalDirection));
         }
 
         if (!Platform.securityCheck(a, b)) {

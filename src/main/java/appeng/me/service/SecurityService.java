@@ -23,8 +23,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
-import appeng.api.networking.IGridServiceProvider;
-import appeng.core.Api;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
@@ -33,18 +31,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.ISecurityProvider;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
 public class SecurityService implements ISecurityGrid, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityGrid.class, (service, event) -> {
-            ((SecurityService) service).updatePermissions();
-        });
+        Api.instance().grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityGrid.class,
+                (service, event) -> {
+                    ((SecurityService) service).updatePermissions();
+                });
     }
 
     private final IGrid myGrid;
