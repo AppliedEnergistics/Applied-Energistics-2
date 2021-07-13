@@ -29,7 +29,7 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 
 /**
  * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and

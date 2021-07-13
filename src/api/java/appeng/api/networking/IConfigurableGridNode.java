@@ -28,17 +28,6 @@ public interface IConfigurableGridNode extends IGridNode {
     void markReady();
 
     /**
-     * inform the node that your IGridBlock has changed its internal state, and force the node to update.
-     * <p>
-     * ALWAYS make sure that your tile entity is in the world, and has its node properly saved to be returned from the
-     * host before updating state,
-     * <p>
-     * If your entity is not in the world, or if you IGridHost returns a different node for the same side you will
-     * likely crash the game.
-     */
-    void updateState();
-
-    /**
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
      * your nods on a single compound using name.
      * <p>

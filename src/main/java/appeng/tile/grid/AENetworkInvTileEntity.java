@@ -29,7 +29,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedTileEntity;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.AEBaseInvTileEntity;
 

@@ -99,7 +99,7 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;

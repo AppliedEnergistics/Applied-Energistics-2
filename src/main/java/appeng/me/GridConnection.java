@@ -66,7 +66,7 @@ public class GridConnection implements IGridConnection, IPathItem {
             return this.sideA;
         }
 
-        throw new GridException("Invalid Side of Connection");
+        throw new IllegalArgumentException("The given grid node does not participate in this connection.");
     }
 
     @Override

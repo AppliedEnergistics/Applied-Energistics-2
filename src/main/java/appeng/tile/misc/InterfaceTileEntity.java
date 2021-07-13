@@ -57,7 +57,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.util.Platform;

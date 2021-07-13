@@ -32,7 +32,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedTileEntity;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.powersink.AEBasePoweredTileEntity;
 

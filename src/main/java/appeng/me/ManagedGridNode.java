@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.helpers;
+package appeng.me;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -58,7 +58,6 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import appeng.me.GridAccessException;
 import appeng.me.service.P2PService;
 import appeng.me.service.StatisticsService;
 

@@ -65,7 +65,7 @@ import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;

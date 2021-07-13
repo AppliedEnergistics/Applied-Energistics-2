@@ -1,5 +1,6 @@
 package appeng.me.helpers;
 
+import appeng.me.ManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.networking.IGridNode;
