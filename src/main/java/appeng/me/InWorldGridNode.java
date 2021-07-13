@@ -37,14 +37,18 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
+/**
+ * A grid node that is accessible from within the world will also look actively for connections to nodes
+ * that are adjacent in the world.
+ */
 public class InWorldGridNode extends GridNode {
 
     private final BlockPos location;
 
-    public InWorldGridNode(ServerWorld world,
+    public <T> InWorldGridNode(ServerWorld world,
             BlockPos location,
-            Object logicalHost,
-            @NotNull IGridNodeListener listener,
+            T logicalHost,
+            @NotNull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
         super(world, logicalHost, listener, flags);
         this.location = location;

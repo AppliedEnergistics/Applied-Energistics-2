@@ -69,7 +69,7 @@ import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.parts.automation.LevelEmitterPart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;

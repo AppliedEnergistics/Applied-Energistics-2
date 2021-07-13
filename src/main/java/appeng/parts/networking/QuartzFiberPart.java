@@ -42,7 +42,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 

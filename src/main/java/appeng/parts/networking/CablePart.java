@@ -44,7 +44,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.ManagedGridNode;
+import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 
 public class CablePart extends AEBasePart implements ICablePart {

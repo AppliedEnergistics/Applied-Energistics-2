@@ -214,8 +214,7 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         }
     }
 
-    @Override
-    public void updateState() {
+    private void updateState() {
         if (ready) {
             this.findInWorldConnections();
             this.getInternalGrid();
