@@ -115,11 +115,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private void refresh() {
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.getMainNode().getTickService().alertDevice(this.getMainNode());
     }
 
     @Override

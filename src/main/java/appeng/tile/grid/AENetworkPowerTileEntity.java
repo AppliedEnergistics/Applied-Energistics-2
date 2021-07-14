@@ -70,11 +70,6 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
         return this.mainNode;
     }
 
-    @Nullable
-    public IGridNode getGridNode() {
-        return this.mainNode.getNode();
-    }
-
     @Override
     public DimensionalBlockPos getLocation() {
         return new DimensionalBlockPos(this);

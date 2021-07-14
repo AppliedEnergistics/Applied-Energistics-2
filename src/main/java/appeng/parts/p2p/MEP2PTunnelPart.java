@@ -93,11 +93,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     public void onTunnelNetworkChange() {
         super.onTunnelNetworkChange();
         if (!this.isOutput()) {
-            try {
-                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            this.getMainNode().getTickService().wakeDevice(this.getMainNode());
         }
     }
 

@@ -208,11 +208,7 @@ public class StorageBusPart extends UpgradeablePart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.getMainNode().getTickService().alertDevice(this.getMainNode());
     }
 
     @Override
@@ -350,11 +346,7 @@ public class StorageBusPart extends UpgradeablePart
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
             return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
-                try {
-                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-                } catch (GridAccessException ex) {
-                    // meh
-                }
+                this.getMainNode().getTickService().alertDevice(this.getMainNode().getNode());
             });
         }
 
@@ -457,15 +449,11 @@ public class StorageBusPart extends UpgradeablePart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getMainNode().getTick();
-                if (this.monitor == null) {
-                    tm.sleepDevice(this.getMainNode().getNode());
-                } else {
-                    tm.wakeDevice(this.getMainNode().getNode());
-                }
-            } catch (final GridAccessException e) {
-                // :(
+            var tm = this.getMainNode().getTickService();
+            if (this.monitor == null) {
+                tm.sleepDevice(this.getMainNode());
+            } else {
+                tm.wakeDevice(this.getMainNode());
             }
         }
 

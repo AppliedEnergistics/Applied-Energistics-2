@@ -171,11 +171,7 @@ public class DualityFluidInterface
 
     public void notifyNeighbors() {
         if (this.gridProxy.isActive()) {
-            try {
-                this.gridProxy.getTick().wakeDevice(this.gridProxy.getNode());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            this.gridProxy.getTickService().wakeDevice(this.gridProxy);
         }
 
         final TileEntity te = this.iHost.getTileEntity();
@@ -239,14 +235,10 @@ public class DualityFluidInterface
         final boolean has = this.hasWorkToDo();
 
         if (had != has) {
-            try {
-                if (has) {
-                    this.gridProxy.getTick().alertDevice(this.gridProxy.getNode());
-                } else {
-                    this.gridProxy.getTick().sleepDevice(this.gridProxy.getNode());
-                }
-            } catch (final GridAccessException e) {
-                // :P
+            if (has) {
+                this.gridProxy.getTickService().alertDevice(this.gridProxy);
+            } else {
+                this.gridProxy.getTickService().sleepDevice(this.gridProxy);
             }
         }
 
@@ -383,14 +375,10 @@ public class DualityFluidInterface
             final boolean now = this.hasWorkToDo();
 
             if (had != now) {
-                try {
-                    if (now) {
-                        this.gridProxy.getTick().alertDevice(this.gridProxy.getNode());
-                    } else {
-                        this.gridProxy.getTick().sleepDevice(this.gridProxy.getNode());
-                    }
-                } catch (final GridAccessException e) {
-                    // :P
+                if (now) {
+                    this.gridProxy.getTickService().alertDevice(this.gridProxy);
+                } else {
+                    this.gridProxy.getTickService().sleepDevice(this.gridProxy);
                 }
             }
         }

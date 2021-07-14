@@ -458,11 +458,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         getTile().requestModelDataUpdate();
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.getMainNode().getTickService().alertDevice(this.getMainNode());
     }
 
     @Override

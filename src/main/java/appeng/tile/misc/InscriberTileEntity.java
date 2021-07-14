@@ -214,20 +214,16 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        try {
-            if (slot == 0) {
-                this.setProcessingTime(0);
-            }
-
-            if (!this.isSmash()) {
-                this.markForUpdate();
-            }
-
-            this.cachedTask = null;
-            this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
+        if (slot == 0) {
+            this.setProcessingTime(0);
         }
+
+        if (!this.isSmash()) {
+            this.markForUpdate();
+        }
+
+        this.cachedTask = null;
+        this.getMainNode().getTickService().wakeDevice(this.getMainNode());
     }
 
     //
