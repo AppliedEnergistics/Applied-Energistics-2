@@ -148,10 +148,10 @@ public class PathGridService implements IPathingGrid, IGridServiceProvider {
 
             if (this.active.isEmpty() && this.ticksUntilReady <= 0) {
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    final Iterator<ControllerTileEntity> controllerIterator = this.controllers.iterator();
+                    var controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
-                        final ControllerTileEntity controller = controllerIterator.next();
-                        controller.getGridNode().beginVisit(new ControllerChannelUpdater());
+                        var controller = controllerIterator.next();
+                        controller.getMainNode().beginVisit(new ControllerChannelUpdater());
                     }
                 }
 
@@ -209,8 +209,8 @@ public class PathGridService implements IPathingGrid, IGridServiceProvider {
             this.controllerState = ControllerState.NO_CONTROLLER;
         } else {
             var startingController = this.controllers.iterator().next();
-            final IGridNode startingNode = startingController.getGridNode();
-            if (startingNode == null) {
+            var startingNode = startingController.getMainNode();
+            if (!startingNode.isReady()) {
                 this.controllerState = ControllerState.CONTROLLER_CONFLICT;
                 return;
             }

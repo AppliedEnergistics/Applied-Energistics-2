@@ -147,11 +147,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 .orElse(null);
         if (handlerExt != null) {
             return new FluidHandlerAdapter(handlerExt, () -> {
-                try {
-                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-                } catch (GridAccessException ignore) {
-                    // meh
-                }
+                this.getMainNode().getTickService().alertDevice(this.getMainNode());
             });
         }
 
@@ -212,11 +208,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.getMainNode().getTickService().alertDevice(this.getMainNode());
     }
 
     @Override
@@ -327,15 +319,11 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getMainNode().getTick();
-                if (this.monitor == null) {
-                    tm.sleepDevice(this.getMainNode().getNode());
-                } else {
-                    tm.wakeDevice(this.getMainNode().getNode());
-                }
-            } catch (final GridAccessException ignore) {
-                // :(
+            var tm = this.getMainNode().getTickService();
+            if (this.monitor == null) {
+                tm.sleepDevice(this.getMainNode());
+            } else {
+                tm.wakeDevice(this.getMainNode());
             }
         }
 

@@ -62,6 +62,14 @@ import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IConfigurableGridNode, IPathItem {
+
+    public static GridNode of(IGridNode gridNode) {
+        if (gridNode instanceof ManagedGridNode) {
+            gridNode = ((ManagedGridNode) gridNode).getNode();
+        }
+        return (GridNode) gridNode;
+    }
+
     private final ServerWorld world;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a tile-entity or

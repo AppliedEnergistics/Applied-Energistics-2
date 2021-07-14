@@ -31,6 +31,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.ticking.ITickManager;
+import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.server.ServerWorld;
@@ -177,5 +180,26 @@ public interface IGridNode {
      */
     @Nonnull
     AEColor getGridColor();
+
+    /**
+     * Post an event to the grid this node is connected to.
+     * Does nothing if the node isn't connected to any grid.
+     */
+    default <T extends GridEvent> T postEvent(T e) {
+        var grid = getGrid();
+        if (grid != null) {
+            grid.postEvent(e);
+        }
+        return e;
+    }
+
+    /**
+     * @return An {@link ITickManager} for managing the ticking behavior of machines connected to this grid.
+     * If the grid node is not connected to a grid, a noop implementation will be returned.
+     */
+    default ITickManager getTickService() {
+        var grid = getGrid();
+        return grid != null ? grid.getService(ITickManager.class) : ITickManager.NOOP;
+    }
 
 }
