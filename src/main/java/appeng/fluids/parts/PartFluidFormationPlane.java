@@ -204,7 +204,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+		if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
 			final List<IMEInventoryHandler> handler = new ArrayList<>( 1 );
 			handler.add( this.myHandler );

@@ -21,10 +21,12 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.util.AEFluidStack;
-import appeng.util.item.AEStack;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,7 +45,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.parts.IPartStorageMonitor;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartModel;
@@ -52,7 +53,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
@@ -385,19 +385,87 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		this.configureWatchers();
 	}
 
+	@MENetworkEventSubscribe
+	public void powerStatusChange( final MENetworkPowerStatusChange ev )
+	{
+		if( !this.getProxy().isPowered() )
+		{
+			if( this.myWatcher != null )
+			{
+				if( this.configuredItem != null )
+				{
+					this.configuredItem.setStackSize( 0 );
+				}
+				if( this.configuredFluid != null )
+				{
+					this.configuredFluid.setStackSize( 0 );
+				}
+			}
+		}
+		else
+		{
+			try
+			{
+				if( this.configuredItem != null )
+				{
+					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+				}
+				if( this.configuredFluid != null )
+				{
+					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
+				}
+			}
+			catch( final GridAccessException e )
+			{
+				// ;P
+			}
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public void channelChanged( final MENetworkChannelsChanged c )
+	{
+		if( !this.getProxy().isPowered() )
+		{
+			if( this.myWatcher != null )
+			{
+				if( this.configuredItem != null )
+				{
+					this.configuredItem.setStackSize( 0 );
+				}
+				if( this.configuredFluid != null )
+				{
+					this.configuredFluid.setStackSize( 0 );
+				}
+			}
+		}
+		else
+		{
+			try
+			{
+				if( this.configuredItem != null )
+				{
+					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+				}
+				if( this.configuredFluid != null )
+				{
+					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
+				}
+			}
+			catch( final GridAccessException e )
+			{
+				// ;P
+			}
+		}
+	}
+
 	@Override
-	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
+	public void onStackChange( final IAEStack diffStack, final IStorageChannel chan )
 	{
 		if( this.configuredItem != null )
 		{
-			if( fullStack == null )
-			{
-				this.configuredItem.setStackSize( 0 );
-			}
-			else
-			{
-				this.configuredItem.setStackSize( fullStack.getStackSize() );
-			}
+			long diff = this.configuredItem.getStackSize() + diffStack.getStackSize();
+			this.configuredItem.setStackSize( diff >= 0 ? this.configuredItem.getStackSize() + diffStack.getStackSize() : 0 );
 
 			final long stackSize = this.configuredItem.getStackSize();
 			final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm( stackSize );
@@ -410,14 +478,8 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 		else if( this.configuredFluid != null )
 		{
-			if( fullStack == null )
-			{
-				this.configuredFluid.setStackSize( 0 );
-			}
-			else
-			{
-				this.configuredFluid.setStackSize( fullStack.getStackSize() );
-			}
+			long diff = this.configuredFluid.getStackSize() + diffStack.getStackSize();
+			this.configuredFluid.setStackSize( diff >= 0 ? this.configuredFluid.getStackSize() + diffStack.getStackSize() : 0 );
 
 			final long stackSize = this.configuredFluid.getStackSize() / 1000;
 			final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm( stackSize ) + "B";

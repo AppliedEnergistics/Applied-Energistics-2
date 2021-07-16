@@ -264,19 +264,15 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource source )
 	{
-		if( source == this.source || source.machine().map( machine -> machine == this ).orElse( false ) )
+		try
 		{
-			try
+			if( this.getProxy().isActive() )
 			{
-				if( this.getProxy().isActive() )
-				{
-					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
-				}
+				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
 			}
-			catch( final GridAccessException e )
-			{
-				// :(
-			}
+		} catch ( final GridAccessException e )
+		{
+			// :(
 		}
 	}
 
@@ -415,7 +411,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	{
 		if( channel == this.getStorageChannel() )
 		{
-			final IMEInventoryHandler<IAEFluidStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
+			final IMEInventoryHandler<IAEFluidStack> out = this.getInternalHandler();
 			if( out != null )
 			{
 				return Collections.singletonList( out );

@@ -19,40 +19,9 @@
 package appeng.parts.automation;
 
 
-import java.util.Random;
-
-import appeng.me.Grid;
-import appeng.me.GridNode;
-import appeng.util.item.AEItemStack;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.AEApi;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.config.*;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
@@ -72,7 +41,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
@@ -81,10 +49,28 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.cache.NetworkMonitor;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import appeng.util.item.OreHelper;
+import appeng.util.item.OreReference;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.Optional;
+import java.util.Random;
 
 
 public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
@@ -123,9 +109,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	private double centerX;
 	private double centerY;
 	private double centerZ;
-	static Object2LongMap<Grid> gridItemCount = new Object2LongOpenHashMap<>();
-	static Object2ObjectOpenHashMap<Grid, Object2LongMap<AEItemStack>> fuzzyAEItemStackCount = new Object2ObjectOpenHashMap<>();
-	static Object2ObjectOpenHashMap<Grid, Object2LongMap<AEItemStack>> preciseAEItemStackCount = new Object2ObjectOpenHashMap<>();
 
 	@Reflected
 	public PartLevelEmitter( final ItemStack is )
@@ -154,12 +137,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			this.updateState();
 		}
-	}
-
-	@MENetworkEventSubscribe
-	public void powerChanged( final MENetworkPowerStatusChange c )
-	{
-		this.updateState();
 	}
 
 	private void updateState()
@@ -207,8 +184,22 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@MENetworkEventSubscribe
+	public void powerStatusChange( final MENetworkPowerStatusChange powerEvent )
+	{
+		if (this.getProxy().isActive())
+		{
+			onListUpdate();
+		}
+		this.updateState();
+	}
+
+	@MENetworkEventSubscribe
 	public void channelChanged( final MENetworkChannelsChanged c )
 	{
+		if (this.getProxy().isActive())
+		{
+			onListUpdate();
+		}
 		this.updateState();
 	}
 
@@ -296,24 +287,37 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		try
 		{
-			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
+
+			if( myStack == null )
 			{
-				this.getProxy()
-						.getStorage()
-						.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-						.addListener( this,
-								this.getProxy().getGrid() );
+				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).addListener( this, this.getProxy().getGrid() );
 			}
 			else
 			{
 				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
-
 				if( this.myWatcher != null )
 				{
-					this.myWatcher.add( myStack );
+					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+					{
+						Optional<OreReference> ores = OreHelper.INSTANCE.getOre( myStack.getDefinition() );
+						if( ores.isPresent() )
+						{
+							for( IAEItemStack iaeItemStack : ores.get().getAEEquivalents() )
+							{
+								this.myWatcher.add( iaeItemStack );
+							}
+						}
+						else
+						{
+							this.myWatcher.add( myStack );
+						}
+					}
+					else
+					{
+						this.myWatcher.add( myStack );
+					}
 				}
 			}
-
 			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
@@ -324,89 +328,28 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	private void updateReportingValue( final IMEMonitor<IAEItemStack> monitor )
 	{
-		updateReportingValue( monitor,null );
-	}
-
-	private void updateReportingValue( final IMEMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change )
-	{
 		final IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
-		GridNode node = (GridNode) (this.getGridNode());
-
-		if( node != null )
+		if( myStack == null )
 		{
-
-			final Grid g = node.getInternalGrid();
-
-			if( myStack == null )
+			if( monitor instanceof NetworkMonitor )
 			{
-				if( change != null )
-				{
-					if( gridItemCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
-					}
-				}
-				gridItemCount.computeIfAbsent( g, ( aLong ) -> {
-					this.lastReportedValue = 0;
-					monitor.getStorageList().forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
-					return ( lastReportedValue );
-				} );
-				this.lastReportedValue = gridItemCount.get( g );
+				this.lastReportedValue = ( (NetworkMonitor<IAEItemStack>) monitor ).getGridCurrentCount();
 			}
+		}
 
-			else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			{
-				final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-				if( change != null )
-				{
-					if( fuzzyAEItemStackCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> {
-							if( iaeItemStack.sameOre( myStack ) ) lastReportedValue += iaeItemStack.getStackSize();
-						} );
-					}
-				}
+		else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		{
+			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
-				fuzzyAEItemStackCount.computeIfAbsent( g, ( grid -> new Object2LongOpenHashMap<>() ) );
-				fuzzyAEItemStackCount.get( g ).computeIfAbsent( (AEItemStack) myStack, ( aLong -> {
-					this.lastReportedValue = 0;
-					monitor.getStorageList().findFuzzy( myStack, fzMode ).forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
-					return ( lastReportedValue );
-				} ) );
-
-				this.lastReportedValue = fuzzyAEItemStackCount.get( g ).get( myStack );
-				if( this.lastReportedValue == 0 )
-				{
-					fuzzyAEItemStackCount.get( g ).remove( myStack );
-					fuzzyAEItemStackCount.trim();
-				}
-			}
-			else
-			{
-				if( change != null )
-				{
-					if( preciseAEItemStackCount.containsKey( g ) )
-					{
-						change.forEach( iaeItemStack -> {
-							if( iaeItemStack.isSameType( myStack ) ) lastReportedValue += iaeItemStack.getStackSize();
-						} );
-					}
-				}
-				preciseAEItemStackCount.computeIfAbsent( g, ( grid -> new Object2LongOpenHashMap<>() ) );
-				preciseAEItemStackCount.get( g ).computeIfAbsent( (AEItemStack) myStack, ( aLong -> {
-					this.lastReportedValue = 0;
-					IAEItemStack precise = monitor.getStorageList().findPrecise( myStack );
-					if( precise != null ) lastReportedValue = precise.getStackSize();
-					return ( lastReportedValue );
-				} ) );
-				this.lastReportedValue = preciseAEItemStackCount.get( g ).get( myStack );
-				if( this.lastReportedValue == 0 )
-				{
-					preciseAEItemStackCount.get( g ).remove( myStack );
-					preciseAEItemStackCount.trim();
-				}
-			}
+			this.lastReportedValue = 0;
+			monitor.getStorageList().findFuzzy( myStack, fzMode ).forEach( iaeItemStack -> lastReportedValue += iaeItemStack.getStackSize() );
+		}
+		else
+		{
+			this.lastReportedValue = 0;
+			IAEItemStack precise = monitor.getStorageList().findPrecise( myStack );
+			if( precise != null ) lastReportedValue = precise.getStackSize();
 		}
 		this.updateState();
 	}
@@ -419,12 +362,23 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
+	public void onStackChange( final IAEStack diffStack, final IStorageChannel chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this
-				.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			this.lastReportedValue = fullStack.getStackSize();
+			IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
+			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+			{
+				final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+				if( Platform.itemComparisons().isFuzzyEqualItem( myStack.getDefinition(), ( (IAEItemStack) diffStack ).getDefinition(), fzMode ) )
+				{
+					this.lastReportedValue += diffStack.getStackSize();
+				}
+			}
+			else if( diffStack.equals( myStack ) )
+			{
+				this.lastReportedValue += diffStack.getStackSize();
+			}
 			this.updateState();
 		}
 	}
@@ -459,7 +413,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
 	{
-		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor, change );
+		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override
@@ -636,9 +590,4 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 	}
 
-	public static void wipeCache(){
-		fuzzyAEItemStackCount.clear();
-		preciseAEItemStackCount.clear();
-		gridItemCount.clear();
-	}
 }
