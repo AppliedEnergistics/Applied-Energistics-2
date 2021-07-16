@@ -24,6 +24,9 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.SlotPlayerHotBar;
+import appeng.container.slot.SlotPlayerInv;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -70,6 +73,7 @@ import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraftforge.items.IItemHandler;
 
 
 /**
@@ -343,6 +347,89 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
+	public ItemStack transferStackInSlot( final EntityPlayer p, final int idx )
+	{
+		if( Platform.isClient() )
+		{
+			return ItemStack.EMPTY;
+		}
+		EntityPlayerMP player = (EntityPlayerMP) p;
+		if( this.inventorySlots.get( idx ) instanceof SlotPlayerInv || this.inventorySlots.get( idx ) instanceof SlotPlayerHotBar )
+		{
+			final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
+			ItemStack itemStack = clickSlot.getStack();
+
+			ItemStack copy = itemStack.copy();
+			copy.setCount( 1 );
+			IFluidHandlerItem fh = FluidUtil.getFluidHandler( copy );
+			if( fh == null )
+			{
+				// only fluid handlers items
+				return ItemStack.EMPTY;
+			}
+
+			int heldAmount = itemStack.getCount();
+			for( int i = 0; i < heldAmount; i++ )
+			{
+				copy = itemStack.copy();
+				copy.setCount( 1 );
+				fh = FluidUtil.getFluidHandler( copy );
+
+				final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
+				if( extract == null || extract.amount < 1 )
+				{
+					return ItemStack.EMPTY;
+				}
+
+				// Check if we can push into the system
+				final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource(), Actionable.SIMULATE );
+
+				if( notStorable != null && notStorable.getStackSize() > 0 )
+				{
+					final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
+					final FluidStack storable = fh.drain( toStore, false );
+
+					if( storable == null || storable.amount == 0 )
+					{
+						return ItemStack.EMPTY;
+					}
+					else
+					{
+						extract.amount = storable.amount;
+					}
+				}
+
+				// Actually drain
+				final FluidStack drained = fh.drain( extract, true );
+				extract.amount = drained.amount;
+
+				final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource() );
+
+				if( notInserted != null && notInserted.getStackSize() > 0 )
+				{
+					IAEFluidStack spill = this.monitor.injectItems( notInserted, Actionable.MODULATE, this.getActionSource() );
+					if( spill != null && spill.getStackSize() > 0 )
+					{
+						fh.fill( spill.getFluidStack(), true );
+					}
+				}
+
+				if( notInserted == null )
+				{
+					if( !player.inventory.addItemStackToInventory( fh.getContainer() ) )
+					{
+						player.dropItem( fh.getContainer(), false );
+					}
+					clickSlot.decrStackSize( 1 );
+				}
+			}
+			this.detectAndSendChanges();
+			return ItemStack.EMPTY;
+		}
+		return super.transferStackInSlot( p, idx );
+	}
+
+	@Override
 	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
 	{
 		if( action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM )
@@ -352,13 +439,9 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		}
 
 		final ItemStack held = player.inventory.getItemStack();
-		if( held.getCount() != 1 )
-		{
-			// only support stacksize 1 for now
-			return;
-		}
-
-		final IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
+		ItemStack heldCopy = held.copy();
+		heldCopy.setCount( 1 );
+		IFluidHandlerItem fh = FluidUtil.getFluidHandler( heldCopy );
 		if( fh == null )
 		{
 			// only fluid handlers items
@@ -372,88 +455,122 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			// Check how much we can store in the item
 			stack.setStackSize( Integer.MAX_VALUE );
 			int amountAllowed = fh.fill( stack.getFluidStack(), false );
-			stack.setStackSize( amountAllowed );
-
-			// Check if we can pull out of the system
-			final IAEFluidStack canPull = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource(), Actionable.SIMULATE );
-			if( canPull == null || canPull.getStackSize() < 1 )
+			int heldAmount = held.getCount();
+			for( int i = 0; i < heldAmount; i++ )
 			{
-				return;
-			}
+				ItemStack copiedFluidContainer = held.copy();
+				copiedFluidContainer.setCount( 1 );
+				fh = FluidUtil.getFluidHandler( copiedFluidContainer );
 
-			// How much could fit into the container
-			final int canFill = fh.fill( canPull.getFluidStack(), false );
-			if( canFill == 0 )
-			{
-				return;
-			}
-
-			// Now actually pull out of the system
-			stack.setStackSize( canFill );
-			final IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource() );
-			if( pulled == null || pulled.getStackSize() < 1 )
-			{
-				// Something went wrong
-				AELog.error( "Unable to pull fluid out of the ME system even though the simulation said yes " );
-				return;
-			}
-
-			// Actually fill
-			final int used = fh.fill( pulled.getFluidStack(), true );
-
-			if( used != canFill )
-			{
-				AELog.error( "Fluid item [%s] reported a different possible amount than it actually accepted.", held.getDisplayName() );
-			}
-
-			player.inventory.setItemStack( fh.getContainer() );
-			this.updateHeld( player );
-		}
-		else if( action == InventoryAction.EMPTY_ITEM )
-		{
-			// See how much we can drain from the item
-			final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
-			if( extract == null || extract.amount < 1 )
-			{
-				return;
-			}
-
-			// Check if we can push into the system
-			final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
-					this.getActionSource(), Actionable.SIMULATE );
-
-			if( notStorable != null && notStorable.getStackSize() > 0 )
-			{
-				final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
-				final FluidStack storable = fh.drain( toStore, false );
-
-				if( storable == null || storable.amount == 0 )
+				// Check if we can pull out of the system
+				final IAEFluidStack canPull = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack.setStackSize( amountAllowed ), this.getActionSource(), Actionable.SIMULATE );
+				if( canPull == null || canPull.getStackSize() < 1 )
 				{
 					return;
 				}
+
+				// How much could fit into the container
+				final int canFill = fh.fill( canPull.getFluidStack(), false );
+				if( canFill == 0 )
+				{
+					return;
+				}
+
+				// Now actually pull out of the system
+				final IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack.setStackSize( canFill ), this.getActionSource() );
+				if( pulled == null || pulled.getStackSize() < 1 )
+				{
+					// Something went wrong
+					AELog.error( "Unable to pull fluid out of the ME system even though the simulation said yes " );
+					return;
+				}
+
+				// Actually fill
+				final int used = fh.fill( pulled.getFluidStack(), true );
+
+				if( used != canFill )
+				{
+					AELog.error( "Fluid item [%s] reported a different possible amount than it actually accepted.", held.getDisplayName() );
+				}
+
+				if( held.getCount() == 1 )
+				{
+					player.inventory.setItemStack( fh.getContainer() );
+				}
 				else
 				{
-					extract.amount = storable.amount;
+					player.inventory.getItemStack().shrink( 1 );
+					if( !player.inventory.addItemStackToInventory( fh.getContainer() ) )
+					{
+						player.dropItem( fh.getContainer(), false );
+					}
 				}
 			}
+			this.updateHeld( player );
 
-			// Actually drain
-			final FluidStack drained = fh.drain( extract, true );
-			extract.amount = drained.amount;
-
-			final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
-					this.getActionSource() );
-
-			if( notInserted != null && notInserted.getStackSize() > 0 )
+		}
+		else if( action == InventoryAction.EMPTY_ITEM )
+		{
+			int heldAmount = held.getCount();
+			for( int i = 0; i < heldAmount; i++ )
 			{
-				IAEFluidStack spill = this.monitor.injectItems( notInserted, Actionable.MODULATE, this.getActionSource() );
-				if( spill != null && spill.getStackSize() > 0 )
+				ItemStack copiedFluidContainer = held.copy();
+				copiedFluidContainer.setCount( 1 );
+				fh = FluidUtil.getFluidHandler( copiedFluidContainer );
+
+				// See how much we can drain from the item
+				final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
+				if( extract == null || extract.amount < 1 )
 				{
-					fh.fill( spill.getFluidStack(), true );
+					return;
+				}
+
+				// Check if we can push into the system
+				final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource(), Actionable.SIMULATE );
+
+				if( notStorable != null && notStorable.getStackSize() > 0 )
+				{
+					final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
+					final FluidStack storable = fh.drain( toStore, false );
+
+					if( storable == null || storable.amount == 0 )
+					{
+						return;
+					}
+					else
+					{
+						extract.amount = storable.amount;
+					}
+				}
+
+				// Actually drain
+				final FluidStack drained = fh.drain( extract, true );
+				extract.amount = drained.amount;
+
+				final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource() );
+
+				if( notInserted != null && notInserted.getStackSize() > 0 )
+				{
+					IAEFluidStack spill = this.monitor.injectItems( notInserted, Actionable.MODULATE, this.getActionSource() );
+					if( spill != null && spill.getStackSize() > 0 )
+					{
+						fh.fill( spill.getFluidStack(), true );
+					}
+				}
+
+				if( held.getCount() == 1 )
+				{
+					player.inventory.setItemStack( fh.getContainer() );
+				}
+				else
+				{
+					player.inventory.getItemStack().shrink( 1 );
+					if( !player.inventory.addItemStackToInventory( fh.getContainer() ) )
+					{
+						player.dropItem( fh.getContainer(), false );
+					}
 				}
 			}
-
-			player.inventory.setItemStack( fh.getContainer() );
 			this.updateHeld( player );
 		}
 	}
