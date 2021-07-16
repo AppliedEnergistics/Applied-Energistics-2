@@ -20,7 +20,6 @@ package appeng.fluids.parts;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.Map;
 
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.me.GridAccessException;
 import appeng.parts.misc.PartStorageBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -45,7 +45,6 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.fluids.util.AEFluidStack;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 
@@ -123,6 +122,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			return null;
 		}
 
+		IAEFluidStack gatheredAEFluidstack = AEFluidStack.fromFluidStack( gathered );
 		if( mode == Actionable.MODULATE )
 		{
 			try
@@ -134,7 +134,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 				// meh
 			}
 		}
-		return AEFluidStack.fromFluidStack( gathered );
+		return gatheredAEFluidstack;
 	}
 
 	@Override
@@ -202,9 +202,9 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
 	private static class InventoryCache
 	{
-		private IAEFluidStack[] cachedAeStacks = new IAEFluidStack[0];
 		private final IFluidHandler fluidHandler;
 		private final StorageFilter mode;
+		IItemList<IAEFluidStack> currentlyCached = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 
 		public InventoryCache( IFluidHandler fluidHandler, StorageFilter mode )
 		{
@@ -216,19 +216,12 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 		{
 			final List<IAEFluidStack> changes = new ArrayList<>();
 			final IFluidTankProperties[] tankProperties = this.fluidHandler.getTankProperties();
-			final int slots = tankProperties.length;
 
-			// Make room for new slots
-			if( slots > this.cachedAeStacks.length )
-			{
-				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
-			}
+			IItemList<IAEFluidStack> currentlyOnStorage = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 
-			for( int slot = 0; slot < slots; slot++ )
+			for( IFluidTankProperties tankProperty : tankProperties )
 			{
-				// Save the old stuff
-				final IAEFluidStack oldAEFS = this.cachedAeStacks[slot];
-				FluidStack newFS = tankProperties[slot].getContents();
+				FluidStack newFS = tankProperty.getContents();
 				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && newFS != null )
 				{
 					if( this.fluidHandler.drain( 1, false ) == null )
@@ -236,82 +229,40 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 						newFS = null;
 					}
 				}
-				this.handlePossibleSlotChanges( slot, oldAEFS, newFS, changes );
-			}
-
-			// Handle cases where the number of slots actually is lower now than before
-			if( slots < this.cachedAeStacks.length )
-			{
-				for( int slot = slots; slot < this.cachedAeStacks.length; slot++ )
+				if( newFS != null )
 				{
-					final IAEFluidStack aeStack = this.cachedAeStacks[slot];
-
-					if( aeStack != null )
-					{
-						final IAEFluidStack a = aeStack.copy();
-						a.setStackSize( -a.getStackSize() );
-						changes.add( a );
-					}
+					currentlyOnStorage.add( AEFluidStack.fromFluidStack( newFS ) );
 				}
-
-				this.cachedAeStacks = Arrays.copyOf( this.cachedAeStacks, slots );
 			}
+
+			for ( final IAEFluidStack is : currentlyCached )
+			{
+				is.setStackSize( -is.getStackSize() );
+			}
+
+			for ( final IAEFluidStack is : currentlyOnStorage )
+			{
+				currentlyCached.add( is );
+			}
+
+			for ( final IAEFluidStack is : currentlyCached )
+			{
+				if( is.getStackSize() != 0 )
+				{
+					changes.add( is );
+				}
+			}
+
+			currentlyCached = currentlyOnStorage;
+
 			return changes;
 		}
 
 		public IItemList<IAEFluidStack> getAvailableItems( IItemList<IAEFluidStack> out )
 		{
-			Arrays.stream( this.cachedAeStacks ).forEach( out::add );
+			currentlyCached.iterator().forEachRemaining( out::add );
 			return out;
 		}
 
-		private void handlePossibleSlotChanges( int slot, IAEFluidStack oldAeFS, FluidStack newFS, List<IAEFluidStack> changes )
-		{
-			if( oldAeFS != null && oldAeFS.getFluidStack().isFluidEqual( newFS ) )
-			{
-				this.handleStackSizeChanged( slot, oldAeFS, newFS, changes );
-			}
-			else
-			{
-				this.handleFluidChanged( slot, oldAeFS, newFS, changes );
-			}
-		}
-
-		private void handleStackSizeChanged( int slot, IAEFluidStack oldAeFS, FluidStack newFS, List<IAEFluidStack> changes )
-		{
-			// Still the same fluid, but amount might have changed
-			final long diff = newFS.amount - oldAeFS.getStackSize();
-
-			if( diff != 0 )
-			{
-				final IAEFluidStack stack = oldAeFS.copy();
-				stack.setStackSize( newFS.amount );
-
-				this.cachedAeStacks[slot] = stack;
-
-				final IAEFluidStack a = stack.copy();
-				a.setStackSize( diff );
-				changes.add( a );
-			}
-		}
-
-		private void handleFluidChanged( int slot, IAEFluidStack oldAeFS, FluidStack newFS, List<IAEFluidStack> changes )
-		{
-			// Completely different fluid
-			this.cachedAeStacks[slot] = AEFluidStack.fromFluidStack( newFS );
-
-			// If we had a stack previously in this slot, notify the network about its disappearance
-			if( oldAeFS != null )
-			{
-				oldAeFS.setStackSize( -oldAeFS.getStackSize() );
-				changes.add( oldAeFS );
-			}
-
-			// Notify the network about the new stack. Note that this is null if newFS was null
-			if( this.cachedAeStacks[slot] != null )
-			{
-				changes.add( this.cachedAeStacks[slot] );
-			}
-		}
 	}
 }

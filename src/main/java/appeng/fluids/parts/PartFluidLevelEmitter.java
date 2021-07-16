@@ -4,7 +4,9 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
+import appeng.api.networking.events.MENetworkChannelChanged;
 import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.me.cache.NetworkMonitor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +36,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
@@ -112,11 +113,11 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
+	public void onStackChange( IAEStack<?> diffStack, IStorageChannel<?> chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && fullStack.equals( this.config.getFluidInSlot( 0 ) ) )
+		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && diffStack.equals( this.config.getFluidInSlot( 0 ) ) )
 		{
-			this.lastReportedValue = fullStack.getStackSize();
+			this.lastReportedValue += diffStack.getStackSize();
 			this.updateState();
 		}
 	}
@@ -128,14 +129,22 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@MENetworkEventSubscribe
-	public void channelChanged( final MENetworkChannelsChanged c )
+	public void powerStatusChange( final MENetworkPowerStatusChange powerEvent )
 	{
+		if (this.getProxy().isActive())
+		{
+			onListUpdate();
+		}
 		this.updateState();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerChanged( final MENetworkPowerStatusChange c )
+	public void channelChanged( final MENetworkChannelsChanged c )
 	{
+		if (this.getProxy().isActive())
+		{
+			onListUpdate();
+		}
 		this.updateState();
 	}
 
@@ -247,10 +256,9 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 
 		if( myStack == null )
 		{
-			this.lastReportedValue = 0;
-			for( final IAEFluidStack st : monitor.getStorageList() )
+			if( monitor instanceof NetworkMonitor )
 			{
-				this.lastReportedValue += st.getStackSize();
+				this.lastReportedValue = ( (NetworkMonitor<IAEFluidStack>) monitor ).getGridCurrentCount();
 			}
 		}
 		else

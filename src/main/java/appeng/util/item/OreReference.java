@@ -43,7 +43,7 @@ public class OreReference
 		return this.otherOptions;
 	}
 
-	List<IAEItemStack> getAEEquivalents()
+	public List<IAEItemStack> getAEEquivalents()
 	{
 		if( this.aeOtherOptions == null )
 		{

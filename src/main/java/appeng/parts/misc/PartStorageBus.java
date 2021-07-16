@@ -258,7 +258,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource source )
 	{
-		if( source == this.mySrc || source.machine().map( machine -> machine == this ).orElse( false ) )
+		if( this.mySrc == source || this.mySrc.machine().map( machine -> machine == this ).orElse( false ) )
 		{
 			try
 			{
@@ -266,8 +266,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				{
 					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change, this.mySrc );
 				}
-			}
-			catch( final GridAccessException e )
+			} catch ( final GridAccessException e )
 			{
 				// :(
 			}
@@ -598,7 +597,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			final IMEInventoryHandler<IAEItemStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
+			final IMEInventoryHandler<IAEItemStack> out = this.getInternalHandler();
 			if( out != null )
 			{
 				return Collections.singletonList( out );

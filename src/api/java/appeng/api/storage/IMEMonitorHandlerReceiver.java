@@ -52,4 +52,5 @@ public interface IMEMonitorHandlerReceiver<T extends IAEStack<T>>
 	 * called when the list updates its contents, this is mostly for handling power events.
 	 */
 	void onListUpdate();
+
 }

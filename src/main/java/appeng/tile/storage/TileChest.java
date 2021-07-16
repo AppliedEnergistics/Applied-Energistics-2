@@ -554,14 +554,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( this.getProxy().isActive() )
+		this.updateHandler();
+		if( this.cellHandler != null && this.cellHandler.getChannel() == channel )
 		{
-			this.updateHandler();
-
-			if( this.cellHandler != null && this.cellHandler.getChannel() == channel )
-			{
-				return Collections.singletonList( this.cellHandler );
-			}
+			return Collections.singletonList( this.cellHandler );
 		}
 		return Collections.emptyList();
 	}
@@ -692,7 +688,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		@Override
 		public void postChange( final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source )
 		{
-			if( source == TileChest.this.mySrc || source.machine().map( machine -> machine == TileChest.this ).orElse( false ) )
+			if( TileChest.this.mySrc == source || TileChest.this.mySrc.machine().map( machine -> machine == TileChest.this ).orElse( false ) )
 			{
 				try
 				{
@@ -700,14 +696,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 					{
 						TileChest.this.getProxy().getStorage().postAlterationOfStoredItems( this.chan, change, TileChest.this.mySrc );
 					}
-				}
-				catch( final GridAccessException e )
+				} catch ( final GridAccessException e )
 				{
 					// :(
 				}
+				TileChest.this.blinkCell( 0 );
 			}
-
-			TileChest.this.blinkCell( 0 );
 		}
 
 		@Override

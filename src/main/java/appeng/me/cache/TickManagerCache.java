@@ -138,7 +138,6 @@ public class TickManagerCache implements ITickManager
 			tt.addEntityCrashInfo( crashreportcategory );
 			throw new ReportedException( crashreport );
 		}
-		PartLevelEmitter.wipeCache();
 	}
 
 	private void addToQueue( final TickTracker tt )
