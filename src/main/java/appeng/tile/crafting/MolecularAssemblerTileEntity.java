@@ -143,10 +143,14 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         final boolean wasEnabled = this.isAwake;
         this.isAwake = this.myPlan != null && this.hasMats() || this.canPush();
         if (wasEnabled != this.isAwake) {
-            if (this.isAwake) {
-                this.getMainNode().getTickService().wakeDevice(this.getMainNode());
-            } else {
-                this.getMainNode().getTickService().sleepDevice(this.getMainNode());
+            try {
+                if (this.isAwake) {
+                    this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+                } else {
+                    this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+                }
+            } catch (final GridAccessException e) {
+                // :P
             }
         }
     }
