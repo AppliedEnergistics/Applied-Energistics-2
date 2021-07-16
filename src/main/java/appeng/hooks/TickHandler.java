@@ -187,20 +187,15 @@ public class TickHandler
 		if( ev.type == Type.WORLD && ev.phase == Phase.END )
 		{
 			final WorldTickEvent wte = (WorldTickEvent) ev;
-			synchronized( this.craftingJobs )
+			synchronized ( this.craftingJobs )
 			{
 				final Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
-				if( !jobSet.isEmpty() )
-				{
-					final Iterator<CraftingJob> i = jobSet.iterator();
-					while( i.hasNext() )
-					{
-						final CraftingJob cj = i.next();
-						if( !cj.simulateFor() )
-						{
-							i.remove();
-						}
-					}
+				if (!jobSet.isEmpty()) {
+					final int jobSize = jobSet.size();
+					final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
+					final int simTime = Math.max(1, microSecondsPerTick / jobSize);
+
+					jobSet.removeIf( cj -> !cj.simulateFor( simTime ) );
 				}
 			}
 		}
