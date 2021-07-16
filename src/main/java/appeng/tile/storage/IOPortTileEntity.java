@@ -143,10 +143,14 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     private void updateTask() {
-        if (this.hasWork()) {
-            this.getMainNode().getTickService().wakeDevice(this.getMainNode());
-        } else {
-            this.getMainNode().getTickService().sleepDevice(this.getMainNode());
+        try {
+            if (this.hasWork()) {
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+            } else {
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+            }
+        } catch (final GridAccessException e) {
+            // :P
         }
     }
 

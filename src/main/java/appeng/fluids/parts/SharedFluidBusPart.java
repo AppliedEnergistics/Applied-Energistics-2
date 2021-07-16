@@ -79,10 +79,14 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     private void updateState() {
-        if (!this.isSleeping()) {
-            this.getMainNode().getTickService().wakeDevice(this.getMainNode());
-        } else {
-            this.getMainNode().getTickService().sleepDevice(this.getMainNode());
+        try {
+            if (!this.isSleeping()) {
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+            } else {
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+            }
+        } catch (final GridAccessException e) {
+            // :P
         }
     }
 

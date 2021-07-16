@@ -18,29 +18,22 @@
 
 package appeng.me;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IGridNodeService;
-import appeng.api.networking.IGridService;
-import appeng.api.networking.IGridVisitor;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.util.AEColor;
-import appeng.core.Api;
-import appeng.core.worlddata.WorldData;
-import appeng.me.service.P2PService;
-import appeng.me.service.StatisticsService;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -48,25 +41,31 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Consumer;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IConfigurableGridNode;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridNodeService;
+import appeng.api.networking.IGridService;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
+import appeng.api.util.AEColor;
+import appeng.core.Api;
+import appeng.core.worlddata.WorldData;
+import appeng.me.service.P2PService;
+import appeng.me.service.StatisticsService;
 
 /**
  * Manages the lifecycle of a {@link IGridNode}.
  */
 @SuppressWarnings("UnusedReturnValue")
-public class ManagedGridNode implements IGridNode
-{
+public class ManagedGridNode {
     private static class InitData<T> {
         private final T logicalHost;
         private final IGridNodeListener<T> listener;
@@ -216,7 +215,6 @@ public class ManagedGridNode implements IGridNode
         }
     }
 
-    @Override
     public boolean isReady() {
         return initData == null && node != null;
     }
@@ -224,16 +222,14 @@ public class ManagedGridNode implements IGridNode
     /**
      * @see IGridNode#isActive()
      */
-    @Override
     public boolean isActive() {
-        if (this.node != null) {
-            return this.node.isActive();
-        } else {
+        if (this.node == null) {
             return false;
         }
+
+        return this.node.isActive();
     }
 
-    @Override
     public boolean isPowered() {
         try {
             return this.getEnergy().isNetworkPowered();
@@ -249,19 +245,6 @@ public class ManagedGridNode implements IGridNode
         } else {
             if (node != null) {
                 node.setOwningPlayerId(ownerPlayerId);
-            }
-        }
-    }
-
-    /**
-     * Perform an action with the grid this node is connected to, but don't do anything if the node isn't ready yet
-     * or not connected to a grid.
-     */
-    public void withGrid(Consumer<IGrid> action) {
-        if (this.node != null) {
-            var grid = this.node.getGrid();
-            if (grid != null) {
-                action.accept(grid);
             }
         }
     }
@@ -287,6 +270,11 @@ public class ManagedGridNode implements IGridNode
     @Nonnull
     public IPathingGrid getPath() throws GridAccessException {
         return this.getGridService(IPathingGrid.class);
+    }
+
+    @Nonnull
+    public ITickManager getTick() throws GridAccessException {
+        return this.getGridService(ITickManager.class);
     }
 
     @Nonnull
@@ -367,13 +355,11 @@ public class ManagedGridNode implements IGridNode
         return this;
     }
 
-    @Override
     @Nonnegative
     public double getIdlePowerUsage() {
         return node != null ? node.getIdlePowerUsage() : getInitData().idlePowerUsage;
     }
 
-    @Override
     @Nonnull
     public ItemStack getVisualRepresentation() {
         return node != null ? node.getVisualRepresentation() : getInitData().visualRepresentation;
@@ -397,17 +383,6 @@ public class ManagedGridNode implements IGridNode
         return this;
     }
 
-    @org.jetbrains.annotations.Nullable
-    @Override
-    public <T extends IGridNodeService> T getService(Class<T> serviceClass) {
-        if (node != null) {
-            return node.getService(serviceClass);
-        } else {
-            return getInitData().services.getInstance(serviceClass);
-        }
-    }
-
-    @Override
     public AEColor getGridColor() {
         if (node == null) {
             return getInitData().gridColor;
@@ -416,90 +391,4 @@ public class ManagedGridNode implements IGridNode
         }
     }
 
-    @NotNull
-    @Override
-    public Object getNodeOwner() {
-        return node != null ? node.getNodeOwner() : getInitData().owner;
-    }
-
-    @Override
-    public void beginVisit(@NotNull IGridVisitor visitor) {
-        if (node != null) {
-            node.beginVisit(visitor);
-        }
-    }
-
-    @org.jetbrains.annotations.Nullable
-    @Override
-    public IGrid getGrid() {
-        return node != null ? node.getGrid() : null;
-    }
-
-    @NotNull
-    @Override
-    public ServerWorld getWorld() {
-        return node != null ? node.getWorld() : (ServerWorld) getInitData().world;
-    }
-
-    @NotNull
-    @Override
-    public Set<Direction> getConnectedSides() {
-        return node != null ? node.getConnectedSides() : Collections.emptySet();
-    }
-
-    @NotNull
-    @Override
-    public Map<Direction, IGridConnection> getInWorldConnections() {
-        return node != null ? node.getInWorldConnections() : Collections.emptyMap();
-    }
-
-    @NotNull
-    @Override
-    public List<IGridConnection> getConnections() {
-        return node != null ? node.getConnections() : Collections.emptyList();
-    }
-
-    @Override
-    public boolean hasGridBooted() {
-        return false;
-    }
-
-    @Override
-    public boolean meetsChannelRequirements() {
-        return false;
-    }
-
-    @Override
-    public boolean hasFlag(@NotNull GridFlags flag) {
-        return node != null ? node.hasFlag(flag) : getInitData().flags.contains(flag);
-    }
-
-    @Override
-    public int getOwningPlayerId() {
-        return node != null ? node.getOwningPlayerId() : getInitData().owner;
-    }
-
-    @Override
-    public boolean isExposedOnSide(@NotNull Direction side) {
-        return node != null ? node.isExposedOnSide(side) : getInitData().exposedOnSides.contains(side);
-    }
-
-    @Override
-    public int hashCode() {
-        if (node != null) {
-            return node.hashCode();
-        }
-        throw new IllegalStateException("Cannot call hashCode until the node has been created");
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (node == null) {
-            throw new IllegalStateException("Cannot call equals until the node has been created");
-        }
-        if (obj.getClass() == getClass()) {
-            return this == obj;
-        }
-        return node == obj;
-    }
 }

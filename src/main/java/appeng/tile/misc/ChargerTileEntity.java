@@ -138,7 +138,11 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        this.getMainNode().getTickService().wakeDevice(this.getMainNode());
+        try {
+            this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+        } catch (final GridAccessException e) {
+            // :P
+        }
 
         this.markForUpdate();
     }

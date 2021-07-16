@@ -27,32 +27,11 @@ import javax.annotation.Nonnull;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The network tick manager.
  */
 public interface ITickManager extends IGridService {
-
-    /**
-     * A {@link ITickManager} implementation that simply does nothing.
-     */
-    ITickManager NOOP = new ITickManager() {
-        @Override
-        public boolean alertDevice(@NotNull IGridNode node) {
-            return false;
-        }
-
-        @Override
-        public boolean sleepDevice(@NotNull IGridNode node) {
-            return false;
-        }
-
-        @Override
-        public boolean wakeDevice(@NotNull IGridNode node) {
-            return false;
-        }
-    };
 
     /**
      * immediately sets the node to tick, only valid if your node is marked as "Alertable" in its TickingRequest
@@ -81,5 +60,4 @@ public interface ITickManager extends IGridService {
      * @return if the call was successful.
      */
     boolean wakeDevice(@Nonnull IGridNode node);
-
 }

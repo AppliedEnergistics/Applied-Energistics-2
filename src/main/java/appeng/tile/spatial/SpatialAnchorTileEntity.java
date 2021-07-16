@@ -223,7 +223,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     private void wakeUp() {
         // Wake the anchor to allow for unloading chunks some time after power loss
-        this.getMainNode().getTickService().alertDevice(this.getMainNode());
+        try {
+            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
+        } catch (GridAccessException e) {
+            // Can be ignored
+        }
     }
 
     @Override
