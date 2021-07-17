@@ -16,7 +16,8 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
     * Asking for a smaller version, more compact version, or more efficient version of something will also be considered invalid.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
 3. If applicable, use on of the provided templates. It will also contain further details about required or useful information to add.
-4. Click `Submit New Issue`, and wait for feedback!
+4. Make sure you kept the GitHub Community Guidelines in mind. Aka: you were a polite and reasonable human being.
+5. Click `Submit New Issue`, and wait for feedback!
 
 Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
 
