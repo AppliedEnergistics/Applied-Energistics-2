@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.crafting.ICraftingService;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -80,7 +81,7 @@ public interface IConfigurableGridNode extends IGridNode {
 
     /**
      * Adds a service to this grid node that can be used by overlay grids such as
-     * {@link appeng.api.networking.crafting.ICraftingGrid}.
+     * {@link ICraftingService}.
      *
      * @param serviceClass The service interface that should be provided by this node.
      * @param service      The implementation of the service.

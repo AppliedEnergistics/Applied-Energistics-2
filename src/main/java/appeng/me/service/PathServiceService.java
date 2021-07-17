@@ -37,7 +37,7 @@ import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.stats.IAdvancementTrigger;
@@ -50,12 +50,12 @@ import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
 import appeng.tile.networking.ControllerTileEntity;
 
-public class PathGridService implements IPathingGrid, IGridServiceProvider {
+public class PathServiceService implements IPathingService, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingService.class,
                 (service, event) -> {
-                    ((PathGridService) service).updateNodReq(event);
+                    ((PathServiceService) service).updateNodReq(event);
                 });
     }
 
@@ -75,7 +75,7 @@ public class PathGridService implements IPathingGrid, IGridServiceProvider {
     private int lastChannels = 0;
     private HashSet<IPathItem> semiOpen = new HashSet<>();
 
-    public PathGridService(final IGrid g) {
+    public PathServiceService(final IGrid g) {
         this.myGrid = g;
     }
 

@@ -42,5 +42,5 @@ public interface ICraftingWatcherNode extends IGridNodeService {
      * @param craftingGrid current crafting grid
      * @param what         change
      */
-    void onRequestChange(ICraftingGrid craftingGrid, IAEItemStack what);
+    void onRequestChange(ICraftingService craftingGrid, IAEItemStack what);
 }

@@ -56,7 +56,7 @@ import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridPowerIdleChange;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
@@ -359,7 +359,7 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         if (myGrid == null) {
             return false;
         }
-        return !myGrid.getService(IPathingGrid.class).isNetworkBooting();
+        return !myGrid.getService(IPathingService.class).isNetworkBooting();
     }
 
     @Override

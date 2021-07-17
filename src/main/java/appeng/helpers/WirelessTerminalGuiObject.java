@@ -32,7 +32,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
@@ -53,7 +53,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private final String encryptionKey;
     private final PlayerEntity myPlayer;
     private IGrid targetGrid;
-    private IStorageGrid sg;
+    private IStorageService sg;
     private IMEMonitor<IAEItemStack> itemStorage;
     private IWirelessAccessPoint myWap;
     private double sqRange = Double.MAX_VALUE;
@@ -82,7 +82,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             if (n != null) {
                 this.targetGrid = n.getGrid();
                 if (this.targetGrid != null) {
-                    this.sg = this.targetGrid.getService(IStorageGrid.class);
+                    this.sg = this.targetGrid.getService(IStorageService.class);
                     if (this.sg != null) {
                         this.itemStorage = this.sg
                                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

@@ -25,18 +25,18 @@ import java.util.Set;
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.storage.data.IAEStack;
-import appeng.me.service.CraftingGridService;
+import appeng.me.service.CraftingService;
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class CraftingWatcher implements ICraftingWatcher {
 
-    private final CraftingGridService service;
+    private final CraftingService service;
     private final ICraftingWatcherNode host;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public CraftingWatcher(final CraftingGridService service, final ICraftingWatcherNode host) {
+    public CraftingWatcher(final CraftingService service, final ICraftingWatcherNode host) {
         this.service = service;
         this.host = host;
     }

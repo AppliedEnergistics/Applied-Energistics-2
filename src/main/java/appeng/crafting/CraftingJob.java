@@ -31,12 +31,12 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCallback;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -80,8 +80,8 @@ public class CraftingJob implements Runnable, ICraftingJob {
         this.actionSrc = actionSrc;
 
         this.callback = callback;
-        final ICraftingGrid cc = grid.getService(ICraftingGrid.class);
-        final IStorageGrid sg = grid.getService(IStorageGrid.class);
+        final ICraftingService cc = grid.getService(ICraftingService.class);
+        final IStorageService sg = grid.getService(IStorageService.class);
         this.original = new MECraftingInventory(
                 sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
                 false, false, false);
@@ -90,7 +90,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         this.availableCheck = null;
     }
 
-    private CraftingTreeNode getCraftingTree(final ICraftingGrid cc, final IAEItemStack what) {
+    private CraftingTreeNode getCraftingTree(final ICraftingService cc, final IAEItemStack what) {
         return new CraftingTreeNode(cc, this, what, null, -1, 0);
     }
 

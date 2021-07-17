@@ -50,7 +50,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -229,7 +229,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private IAEItemStack storeItemStack(final ItemStack item) {
         final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
         try {
-            final IStorageGrid storage = this.getMainNode().getStorage();
+            final IStorageService storage = this.getMainNode().getStorage();
             final IEnergyGrid energy = this.getMainNode().getEnergy();
             final IAEItemStack overflow = Platform.poweredInsert(energy,
                     storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
@@ -415,7 +415,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         boolean canStore = itemStacks.isEmpty();
 
         try {
-            final IStorageGrid storage = this.getMainNode().getStorage();
+            final IStorageService storage = this.getMainNode().getStorage();
 
             for (final ItemStack itemStack : itemStacks) {
                 final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);

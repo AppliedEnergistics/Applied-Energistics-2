@@ -53,14 +53,14 @@ import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.core.Api;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
-public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
+public class EnergyGridService implements IEnergyGrid, IEnergyGridProvider, IGridServiceProvider {
 
     static {
         Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyGrid.class,
@@ -140,14 +140,14 @@ public class EnergyGridService implements IEnergyGrid, IGridServiceProvider {
     private boolean hasPower = true;
     private long ticksSinceHasPowerChange = 900;
 
-    private final PathGridService pgc;
+    private final PathServiceService pgc;
     private double lastStoredPower = -1;
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
-    public EnergyGridService(final IGrid g, IPathingGrid pgc) {
+    public EnergyGridService(final IGrid g, IPathingService pgc) {
         this.myGrid = g;
-        this.pgc = (PathGridService) pgc;
+        this.pgc = (PathServiceService) pgc;
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }

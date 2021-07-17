@@ -51,7 +51,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingCallback;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
@@ -65,7 +65,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
@@ -85,8 +85,8 @@ import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
 
-public class CraftingGridService
-        implements ICraftingGrid, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
+public class CraftingService
+        implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
         IMEInventoryHandler<IAEItemStack> {
 
     private static final ExecutorService CRAFTING_POOL;
@@ -102,13 +102,13 @@ public class CraftingGridService
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
                 (service, event) -> {
-                    ((CraftingGridService) service).updatePatterns();
+                    ((CraftingService) service).updatePatterns();
                 });
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
                 (service, event) -> {
-                    ((CraftingGridService) service).updateList = true;
+                    ((CraftingService) service).updateList = true;
                 });
     }
 
@@ -123,11 +123,11 @@ public class CraftingGridService
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
     private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<>(
             this.interests);
-    private final IStorageGrid storageGrid;
+    private final IStorageService storageGrid;
     private final IEnergyGrid energyGrid;
     private boolean updateList = false;
 
-    public CraftingGridService(IGrid grid, IStorageGrid storageGrid, IEnergyGrid energyGrid) {
+    public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyGrid energyGrid) {
         this.grid = grid;
         this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;

@@ -47,7 +47,7 @@ import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -294,7 +294,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         }
 
         int activeJobs = 0;
-        ICraftingGrid craftingGrid = grid.getService(ICraftingGrid.class);
+        ICraftingService craftingGrid = grid.getService(ICraftingService.class);
         for (ICraftingCPU cpus : craftingGrid.getCpus()) {
             if (cpus.isBusy()) {
                 activeJobs++;

@@ -32,7 +32,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
@@ -85,7 +85,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Override
     public void destroy() {
         // a connection was destroyed RE-PATH!!
-        final IPathingGrid p = this.sideA.getInternalGrid().getService(IPathingGrid.class);
+        final IPathingService p = this.sideA.getInternalGrid().getService(IPathingService.class);
         p.repath();
 
         this.sideA.removeConnection(this);
@@ -230,7 +230,7 @@ public class GridConnection implements IGridConnection, IPathItem {
         }
 
         // a connection was destroyed RE-PATH!!
-        final IPathingGrid p = connection.sideA.getInternalGrid().getService(IPathingGrid.class);
+        final IPathingService p = connection.sideA.getInternalGrid().getService(IPathingService.class);
         p.repath();
 
         connection.sideA.addConnection(connection);

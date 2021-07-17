@@ -35,7 +35,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -119,7 +119,7 @@ public interface IStorageHelper {
             final IActionSource src, final Actionable mode);
 
     /**
-     * Posts alteration of stored items to the provided {@link IStorageGrid}. This can be used by cell containers to
+     * Posts alteration of stored items to the provided {@link IStorageService}. This can be used by cell containers to
      * notify the grid of storage cell changes.
      *
      * @param gs          the storage grid.
@@ -127,6 +127,6 @@ public interface IStorageHelper {
      * @param addedCell   the added cell itemstack
      * @param src         the action source
      */
-    void postChanges(@Nonnull final IStorageGrid gs, @Nonnull final ItemStack removedCell,
-            @Nonnull final ItemStack addedCell, @Nonnull final IActionSource src);
+    void postChanges(@Nonnull final IStorageService gs, @Nonnull final ItemStack removedCell,
+                     @Nonnull final ItemStack addedCell, @Nonnull final IActionSource src);
 }

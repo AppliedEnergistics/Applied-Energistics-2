@@ -29,7 +29,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 
 /**
  * Utility class for dialogs that can cycle through crafting CPUs
@@ -54,7 +54,7 @@ class CraftingCPUCycler {
     }
 
     public void detectAndSendChanges(IGrid network) {
-        final ICraftingGrid cc = network.getService(ICraftingGrid.class);
+        final ICraftingService cc = network.getService(ICraftingService.class);
         final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
         int matches = 0;

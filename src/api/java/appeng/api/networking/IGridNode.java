@@ -31,12 +31,13 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.crafting.ICraftingService;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.IAppEngApi;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
 
 /**
@@ -50,7 +51,7 @@ public interface IGridNode {
 
     /**
      * Tries to get a service that was attached to this grid node when it was created. Used by overlay grids such as the
-     * {@link appeng.api.networking.crafting.ICraftingGrid}.
+     * {@link ICraftingService}.
      */
     @Nullable
     <T extends IGridNodeService> T getService(Class<T> serviceClass);
@@ -122,7 +123,7 @@ public interface IGridNode {
 
     /**
      * @return True if the grid is connected to a network, and that network has fully booted.
-     * @see IPathingGrid#isNetworkBooting()
+     * @see IPathingService#isNetworkBooting()
      */
     boolean hasGridBooted();
 

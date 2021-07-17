@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -49,11 +50,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridService;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.pathing.IPathingService;
+import appeng.api.networking.security.ISecurityService;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.core.Api;
@@ -267,9 +268,26 @@ public class ManagedGridNode {
         return grid;
     }
 
+    /**
+     * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't
+     * initialized yet or has been destroyed.
+     * @return True if the action was called, false otherwise.
+     */
+    public boolean withGrid(Consumer<IGrid> action) {
+        if (this.node == null) {
+            return false;
+        }
+        var grid = this.node.getGrid();
+        if (grid == null) {
+            return false;
+        }
+        action.accept(grid);
+        return true;
+    }
+
     @Nonnull
-    public IPathingGrid getPath() throws GridAccessException {
-        return this.getGridService(IPathingGrid.class);
+    public IPathingService getPath() throws GridAccessException {
+        return this.getGridService(IPathingService.class);
     }
 
     @Nonnull
@@ -278,8 +296,8 @@ public class ManagedGridNode {
     }
 
     @Nonnull
-    public IStorageGrid getStorage() throws GridAccessException {
-        return this.getGridService(IStorageGrid.class);
+    public IStorageService getStorage() throws GridAccessException {
+        return this.getGridService(IStorageService.class);
     }
 
     @Nonnull
@@ -288,13 +306,13 @@ public class ManagedGridNode {
     }
 
     @Nonnull
-    public ISecurityGrid getSecurity() throws GridAccessException {
-        return this.getGridService(ISecurityGrid.class);
+    public ISecurityService getSecurity() throws GridAccessException {
+        return this.getGridService(ISecurityService.class);
     }
 
     @Nonnull
-    public ICraftingGrid getCrafting() throws GridAccessException {
-        return this.getGridService(ICraftingGrid.class);
+    public ICraftingService getCrafting() throws GridAccessException {
+        return this.getGridService(ICraftingService.class);
     }
 
     @Nonnull

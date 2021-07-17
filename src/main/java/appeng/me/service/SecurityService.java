@@ -33,16 +33,16 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridSecurityChange;
-import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
-public class SecurityService implements ISecurityGrid, IGridServiceProvider {
+public class SecurityService implements ISecurityService, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityService.class,
                 (service, event) -> {
                     ((SecurityService) service).updatePermissions();
                 });

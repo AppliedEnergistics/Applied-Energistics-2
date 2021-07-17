@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.security.IActionHost;
@@ -178,7 +178,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         }
 
         if (this.result != null && !this.result.isSimulation()) {
-            final ICraftingGrid cc = this.getGrid().getService(ICraftingGrid.class);
+            final ICraftingService cc = this.getGrid().getService(ICraftingService.class);
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
             if (g != null && originalGui != null && this.getLocator() != null) {

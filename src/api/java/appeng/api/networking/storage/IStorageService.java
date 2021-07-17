@@ -31,9 +31,9 @@ import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Common base class for item / fluid storage service.
+ * Grid-wide storage services for all {@link IStorageChannel}.
  */
-public interface IStorageGrid extends IGridService, IStorageMonitorable {
+public interface IStorageService extends IGridService, IStorageMonitorable {
 
     /**
      * Used to inform the network of alterations to the storage system that fall outside of the standard Network

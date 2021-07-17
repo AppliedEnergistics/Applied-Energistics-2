@@ -44,7 +44,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -186,7 +186,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private boolean storeFluid(IAEFluidStack stack, boolean modulate) {
         try {
-            final IStorageGrid storage = this.getMainNode().getStorage();
+            final IStorageService storage = this.getMainNode().getStorage();
             final IMEInventory<IAEFluidStack> inv = storage
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 

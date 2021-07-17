@@ -34,10 +34,10 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
@@ -51,9 +51,9 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
-public class GridStorageService implements IStorageGrid, IGridServiceProvider {
+public class GridStorageService implements IStorageService, IGridServiceProvider {
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageService.class,
                 (service, evt) -> {
                     ((GridStorageService) service).cellUpdate();
                 });
@@ -210,7 +210,7 @@ public class GridStorageService implements IStorageGrid, IGridServiceProvider {
 
     private <T extends IAEStack<T>, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
             final C chan) {
-        var security = (SecurityService) this.getGrid().getService(ISecurityGrid.class);
+        var security = (SecurityService) this.getGrid().getService(ISecurityService.class);
 
         final NetworkInventoryHandler<T> storageNetwork = new NetworkInventoryHandler<T>(chan, security);
 

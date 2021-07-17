@@ -48,7 +48,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
@@ -323,7 +323,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         try {
             this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
 
-            final IStorageGrid gs = this.getMainNode().getStorage();
+            final IStorageService gs = this.getMainNode().getStorage();
             Platform.postChanges(gs, removed, added, this.mySrc);
         } catch (final GridAccessException ignored) {
         }

@@ -41,7 +41,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -201,7 +201,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void onRequestChange(final ICraftingGrid craftingGrid, final IAEItemStack what) {
+    public void onRequestChange(final ICraftingService craftingGrid, final IAEItemStack what) {
         this.updateState();
     }
 
