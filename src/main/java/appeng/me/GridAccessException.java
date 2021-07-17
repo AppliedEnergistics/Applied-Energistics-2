@@ -18,7 +18,9 @@
 
 package appeng.me;
 
+/**
+ * This exception is thrown by {@link ManagedGridNode} when it's embedded grid node has not been initialized yet,
+ * but a method that requires the grid to be present is called.
+ */
 public class GridAccessException extends Exception {
-
-    private static final long serialVersionUID = 3914554394866375300L;
 }

@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -59,8 +59,8 @@ public class CraftingTreeNode {
 
     private boolean sim;
 
-    public CraftingTreeNode(final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat,
-            final CraftingTreeProcess par, final int slot, final int depth) {
+    public CraftingTreeNode(final ICraftingService cc, final CraftingJob job, final IAEItemStack wat,
+                            final CraftingTreeProcess par, final int slot, final int depth) {
         this.what = wat;
         this.parent = par;
         this.slot = slot;

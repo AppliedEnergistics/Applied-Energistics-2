@@ -23,50 +23,42 @@
 
 package appeng.api.networking.security;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGridService;
 import net.minecraft.entity.player.PlayerEntity;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridService;
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
-public interface ISecurityGrid extends IGridService {
-
-    @Nullable
-    static ISecurityGrid get(@Nullable IGridNode node) {
-        if (node != null && node.getGrid() != null) {
-            return node.getGrid().getService(ISecurityGrid.class);
-        }
-        return null;
-    }
+/**
+ * Provides facilities around controlling player access to a grid.
+ */
+public interface ISecurityService extends IGridService {
 
     /**
-     * @return true if a security provider is in the network ( and only 1 )
+     * @return true if exactly one node implementing the {@link ISecurityProvider} node service is connected to the grid.
      */
     boolean isAvailable();
 
     /**
-     * Check if a player has permissions.
+     * Check if a player has the specified permissions on this grid.
      *
-     * @param player to be checked player
-     * @param perm   checked permissions
-     *
-     * @return true if the player has permissions.
+     * @param player The connected player.
+     * @param perm   The permission to check.
+     * @return True if the player has permission.
      */
     boolean hasPermission(@Nonnull PlayerEntity player, @Nonnull SecurityPermissions perm);
 
     /**
-     * Check if a player has permissions.
+     * Check if a player has the specified permissions on this grid.
+     * <p/>
+     * This overload can be used to check permissions for a player who is not currently connected.
      *
-     * @param playerID id of player
-     * @param perm     checked permissions
-     *
-     * @return true if the player has permissions.
+     * @param playerId The ID of the player to check for. See {@link appeng.api.features.IPlayerRegistry}.
+     * @param perm     The permission to check.
+     * @return True if the player has permission.
      */
-    boolean hasPermission(@Nonnegative int playerID, @Nonnull SecurityPermissions perm);
+    boolean hasPermission(@Nonnegative int playerId, @Nonnull SecurityPermissions perm);
 
     /**
      * @return PlayerID of the admin, or owner, this is the person who placed the security block.

@@ -20,7 +20,7 @@ package appeng.crafting;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.me.service.CraftingGridService;
+import appeng.me.service.CraftingService;
 
 public class CraftingLinkNexus {
 
@@ -35,7 +35,7 @@ public class CraftingLinkNexus {
         this.craftID = craftID;
     }
 
-    public boolean isDead(final IGrid g, final CraftingGridService craftingService) {
+    public boolean isDead(final IGrid g, final CraftingService craftingService) {
         if (this.canceled || this.done) {
             return true;
         }

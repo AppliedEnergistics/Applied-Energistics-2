@@ -33,7 +33,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -129,7 +129,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             final IGrid gn = n.getGrid();
             if (gn != this.security.getGrid()) {
 
-                final ISecurityGrid sg = gn.getService(ISecurityGrid.class);
+                final ISecurityService sg = gn.getService(ISecurityService.class);
                 final int playerID = sg.getOwner();
 
                 if (!this.security.hasPermission(playerID, permission)) {

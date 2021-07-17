@@ -23,11 +23,17 @@
 
 package appeng.api.networking.pathing;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.IGridService;
 
-public interface IPathingGrid extends IGridService {
+import javax.annotation.Nonnull;
+
+/**
+ * Provides services related to channel-allocation and a grid's controller.
+ * <p/>
+ * Pathing / Path-finding refers to finding a path from a node to the grid's controller for the purposes of
+ * allocating channels.
+ */
+public interface IPathingService extends IGridService {
 
     /**
      * @return true if the network is in its booting stage

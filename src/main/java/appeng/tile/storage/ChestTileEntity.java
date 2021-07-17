@@ -66,9 +66,9 @@ import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -447,7 +447,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
             try {
                 this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-                final IStorageGrid gs = this.getMainNode().getStorage();
+                final IStorageService gs = this.getMainNode().getStorage();
                 Platform.postChanges(gs, removed, added, this.mySrc);
             } catch (final GridAccessException ignored) {
 
@@ -665,7 +665,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                         }
                     }
 
-                    final ISecurityGrid sg = g.getService(ISecurityGrid.class);
+                    final ISecurityService sg = g.getService(ISecurityService.class);
                     if (sg.hasPermission(player, requiredPermission)) {
                         return true;
                     }

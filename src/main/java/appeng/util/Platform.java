@@ -77,8 +77,8 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.security.ISecurityService;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -235,7 +235,7 @@ public class Platform {
                         }
                     }
 
-                    final ISecurityGrid sg = g.getService(ISecurityGrid.class);
+                    final ISecurityService sg = g.getService(ISecurityService.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
                                 .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
@@ -726,8 +726,8 @@ public class Platform {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void postChanges(final IStorageGrid gs, final ItemStack removed, final ItemStack added,
-            final IActionSource src) {
+    public static void postChanges(final IStorageService gs, final ItemStack removed, final ItemStack added,
+                                   final IActionSource src) {
         for (final IStorageChannel<?> chan : Api.instance().storage().storageChannels()) {
             final IItemList<?> myChanges = chan.createList();
 
@@ -820,7 +820,7 @@ public class Platform {
             return true;
         }
 
-        final ISecurityGrid gs = grid.getService(ISecurityGrid.class);
+        final ISecurityService gs = grid.getService(ISecurityService.class);
 
         if (gs == null) {
             return true;

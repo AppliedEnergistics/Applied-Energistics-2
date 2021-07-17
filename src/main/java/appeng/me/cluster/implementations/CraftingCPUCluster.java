@@ -47,7 +47,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
@@ -56,7 +56,7 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -73,7 +73,7 @@ import appeng.crafting.MECraftingInventory;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
-import appeng.me.service.CraftingGridService;
+import appeng.me.service.CraftingService;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.Platform;
@@ -374,7 +374,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        var sg = (CraftingGridService) this.getGrid().getService(ICraftingGrid.class);
+        var sg = (CraftingService) this.getGrid().getService(ICraftingService.class);
 
         if (sg.getInterestManager().containsKey(diff)) {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
@@ -558,7 +558,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.storeItems(); // marks dirty
     }
 
-    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingGridService cc) {
+    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingService cc) {
         if (!this.getCore().isActive()) {
             return;
         }
@@ -601,7 +601,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    private void executeCrafting(final IEnergyGrid eg, final CraftingGridService cc) {
+    private void executeCrafting(final IEnergyGrid eg, final CraftingService cc) {
         final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
         while (i.hasNext()) {
@@ -786,7 +786,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        final IStorageGrid sg = g.getService(IStorageGrid.class);
+        final IStorageService sg = g.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> ii = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
@@ -825,7 +825,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return null;
         }
 
-        final IStorageGrid sg = g.getService(IStorageGrid.class);
+        final IStorageService sg = g.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> storage = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         final MECraftingInventory ci = new MECraftingInventory(storage, true, false, false);
@@ -949,7 +949,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private void submitLink(final ICraftingLink myLastLink2) {
         if (this.getGrid() != null) {
-            var cc = (CraftingGridService) this.getGrid().getService(ICraftingGrid.class);
+            var cc = (CraftingService) this.getGrid().getService(ICraftingService.class);
             cc.addLink((CraftingLink) myLastLink2);
         }
     }

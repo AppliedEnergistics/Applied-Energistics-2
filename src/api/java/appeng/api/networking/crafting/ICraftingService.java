@@ -35,7 +35,7 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 
-public interface ICraftingGrid extends IGridService {
+public interface ICraftingService extends IGridService {
 
     /**
      * @param whatToCraft requested craft

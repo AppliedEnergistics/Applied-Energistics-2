@@ -39,7 +39,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.ControllerState;
-import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -107,14 +107,14 @@ public class DebugCardItem extends AEBaseItem {
                     this.outputMsg(player, "Grid Powered:",
                             String.valueOf(g.getService(IEnergyGrid.class).isNetworkPowered()));
                     this.outputMsg(player, "Grid Booted:",
-                            String.valueOf(!g.getService(IPathingGrid.class).isNetworkBooting()));
+                            String.valueOf(!g.getService(IPathingService.class).isNetworkBooting()));
                     this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
                     this.outputMsg(player, "Grid Pivot Node:", String.valueOf(center));
 
                     this.outputMsg(player, "This Node:", String.valueOf(node));
                     this.outputMsg(player, "This Node Active:", String.valueOf(node.isActive()));
 
-                    var pg = g.getService(IPathingGrid.class);
+                    var pg = g.getService(IPathingService.class);
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
 
                         Set<IGridNode> next = new HashSet<>();
