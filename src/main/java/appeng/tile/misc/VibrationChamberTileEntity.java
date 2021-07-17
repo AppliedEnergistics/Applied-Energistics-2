@@ -39,7 +39,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
@@ -141,11 +140,6 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             }
         }
         return false;
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     @Override

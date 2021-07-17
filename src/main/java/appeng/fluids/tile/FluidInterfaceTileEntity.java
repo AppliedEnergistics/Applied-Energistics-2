@@ -38,7 +38,6 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
@@ -102,11 +101,6 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return this.duality.getLocation();
     }
 
     @Override

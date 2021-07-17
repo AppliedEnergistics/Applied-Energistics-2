@@ -38,7 +38,6 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -127,7 +126,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
                 final double req = spc.requiredPower();
                 final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
                 if (Math.abs(pr - req) < req * 0.001) {
-                    var evt = gi.postEvent(new GridSpatialEvent(this, req));
+                    var evt = gi.postEvent(new GridSpatialEvent(getWorld(), getPos(), req));
                     if (!evt.isTransitionPrevented()) {
                         // Prefer player id from security system, but if unavailable, use the
                         // player who placed the grid node (if any)
@@ -154,11 +153,6 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     @Override

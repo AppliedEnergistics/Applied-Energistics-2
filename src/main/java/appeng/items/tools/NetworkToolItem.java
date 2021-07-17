@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,7 +36,6 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.items.IAEWrench;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
@@ -129,10 +127,12 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             return false;
         }
 
-        final BlockState bs = w.getBlockState(pos);
+        // The network tool has special behavior for machines hosting world-accessible nodes
+        var nodeHost = Api.instance().grid().getNodeHost(w, pos);
+
+        var bs = w.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            final TileEntity te = w.getTileEntity(pos);
-            if (!(te instanceof IGridNodeHost) && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
+            if (nodeHost == null && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                 bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
                 p.swingArm(hand);
                 return !w.isRemote;
@@ -144,9 +144,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
                 return true;
             }
 
-            final TileEntity te = w.getTileEntity(pos);
-
-            if (te instanceof IGridNodeHost) {
+            if (nodeHost != null) {
                 ContainerOpener.openContainer(NetworkStatusContainer.TYPE, p,
                         ContainerLocator.forItemUseContext(useContext));
             } else {

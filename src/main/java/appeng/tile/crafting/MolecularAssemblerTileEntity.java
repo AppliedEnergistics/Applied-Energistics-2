@@ -54,7 +54,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
@@ -267,11 +266,6 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     @Override

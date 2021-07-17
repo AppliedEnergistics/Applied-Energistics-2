@@ -945,7 +945,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // Dense cables however also respect the adjacent cable-type since their outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getTile().getPos().offset(facing);
-                var adjacentHost = Api.instance().grid().getNodeHost(getWorld(), adjacentPos);
+                var adjacentHost = Api.instance().grid().getNodeHost(getTile().getWorld(), adjacentPos);
 
                 if (adjacentHost != null) {
                     var adjacentType = adjacentHost.getCableConnectionType(facing.getOpposite());

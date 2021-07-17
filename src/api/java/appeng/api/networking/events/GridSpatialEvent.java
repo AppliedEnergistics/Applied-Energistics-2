@@ -23,13 +23,24 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.networking.IGridNodeHost;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * An event that is posted whenever a spatial IO is active.
  */
 public class GridSpatialEvent extends GridEvent {
-    public final IGridNodeHost host;
+    /**
+     * The world in which the Spatial I/O tile entity triggering this transition is located.
+     */
+    public final World spatialIoWorld;
+    /**
+     * The block position at which the Spatial I/O tile entity triggering this transition is located.
+     */
+    public final BlockPos spatialIoPos;
+    /**
+     * The energy in AE units needed to perform this transition.
+     */
     public final double spatialEnergyUsage;
     private boolean preventTransition;
 
@@ -37,8 +48,11 @@ public class GridSpatialEvent extends GridEvent {
      * @param SpatialIO   ( INSTANCE of the SpatialIO block )
      * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
      */
-    public GridSpatialEvent(final IGridNodeHost SpatialIO, final double EnergyUsage) {
-        this.host = SpatialIO;
+    public GridSpatialEvent(World spatialIoWorld,
+            BlockPos spatialIoPos,
+            double EnergyUsage) {
+        this.spatialIoWorld = spatialIoWorld;
+        this.spatialIoPos = spatialIoPos;
         this.spatialEnergyUsage = EnergyUsage;
     }
 

@@ -50,7 +50,6 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.core.definitions.AEBlocks;
@@ -181,11 +180,6 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return this.duality.getLocation();
     }
 
     @Override

@@ -32,7 +32,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -166,9 +165,9 @@ public class CablePart extends AEBasePart implements ICablePart {
         final IPartHost ph = this.getHost();
         if (ph != null) {
             for (final AEPartLocation dir : AEPartLocation.SIDE_LOCATIONS) {
-                final IPart p = ph.getPart(dir);
-                if (p instanceof IGridNodeHost) {
-                    final double dist = p.getCableConnectionLength(this.getCableConnectionType());
+                var p = ph.getPart(dir);
+                if (p != null) {
+                    var dist = p.getCableConnectionLength(this.getCableConnectionType());
 
                     if (dist > 8) {
                         continue;

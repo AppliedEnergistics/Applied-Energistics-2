@@ -152,11 +152,6 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
-    }
-
-    @Override
     public Set<ChunkPos> getOverlayChunks() {
         return this.chunks;
     }
@@ -168,7 +163,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     @Override
     public DimensionalBlockPos getOverlaySourceLocation() {
-        return this.getLocation();
+        return new DimensionalBlockPos(this);
     }
 
     @Override

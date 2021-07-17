@@ -50,7 +50,6 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
@@ -76,7 +75,7 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, IUpgradeableHost, ICustomNameObject {
+public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 
     private final ManagedGridNode mainNode;
     private final ItemStack is;
@@ -146,7 +145,6 @@ public abstract class AEBasePart implements IPart, IGridNodeHost, IActionHost, I
         return this.mainNode.getNode();
     }
 
-    @Override
     public World getWorld() {
         return this.tile.getWorld();
     }

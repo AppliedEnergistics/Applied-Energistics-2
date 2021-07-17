@@ -23,7 +23,6 @@
 
 package appeng.api.storage.cells;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.security.IActionHost;
 
 /**

@@ -41,7 +41,6 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.GridAccessException;
@@ -262,11 +261,6 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         if (world instanceof ServerWorld serverWorld) {
             this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, this.pos, fromPos);
         }
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     public boolean hasQES() {
