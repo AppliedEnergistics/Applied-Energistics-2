@@ -23,13 +23,12 @@
 
 package appeng.api.implementations.parts;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.parts.IPart;
 
 /**
  * Implemented by all screen like parts provided by AE.
  */
-public interface IMonitorPart extends IPart, IGridNodeHost {
+public interface IMonitorPart extends IPart {
 
     /**
      * @return if the device is online you should check this before providing any other information.

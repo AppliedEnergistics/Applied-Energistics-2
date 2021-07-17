@@ -27,12 +27,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.Item;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellContainer;
 import appeng.api.util.IOrientable;
 
-public interface IChestOrDrive extends ICellContainer, IGridNodeHost, IOrientable {
+public interface IChestOrDrive extends ICellContainer, IOrientable {
 
     /**
      * @return how many slots are available. Chest has 1, Drive has 10.

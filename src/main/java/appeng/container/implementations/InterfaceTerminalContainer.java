@@ -39,7 +39,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -133,7 +132,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         boolean forceFullUpdate;
     }
 
-    private <T extends IInterfaceHost & IGridNodeHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+    private <T extends IInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             final DualityInterface dual = ih.getInterfaceDuality();

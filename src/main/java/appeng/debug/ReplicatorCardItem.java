@@ -41,7 +41,6 @@ import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.Api;
 import appeng.items.AEBaseItem;
@@ -96,7 +95,9 @@ public class ReplicatorCardItem extends AEBaseItem {
         int z = pos.getZ();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (world.getTileEntity(pos) instanceof IGridNodeHost) {
+            var gridHost = Api.instance().grid().getNodeHost(world, pos);
+
+            if (gridHost != null) {
                 final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);

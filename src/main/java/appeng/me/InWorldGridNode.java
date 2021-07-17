@@ -38,8 +38,8 @@ import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
 /**
- * A grid node that is accessible from within the world will also look actively for connections to nodes
- * that are adjacent in the world.
+ * A grid node that is accessible from within the world will also look actively for connections to nodes that are
+ * adjacent in the world.
  */
 public class InWorldGridNode extends GridNode {
 

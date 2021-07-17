@@ -29,10 +29,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.ManagedGridNode;
+import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.powersink.AEBasePoweredTileEntity;
 
@@ -73,11 +72,6 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     @Nullable
     public IGridNode getGridNode() {
         return this.mainNode.getNode();
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     @Override

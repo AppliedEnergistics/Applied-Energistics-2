@@ -1,12 +1,12 @@
 package appeng.me.helpers;
 
-import appeng.me.ManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionHost;
 import appeng.block.IOwnerAwareTile;
+import appeng.me.ManagedGridNode;
 import appeng.tile.AEBaseTileEntity;
 
 /**

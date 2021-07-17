@@ -58,7 +58,6 @@ import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
@@ -306,11 +305,6 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     @Override

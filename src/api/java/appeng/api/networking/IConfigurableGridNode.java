@@ -31,7 +31,7 @@ public interface IConfigurableGridNode extends IGridNode {
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
      * your nods on a single compound using name.
      * <p>
-     * Important: You must call this before updateState.
+     * Important: You must call this before {@link #markReady()}.
      *
      * @param name     nbt name
      * @param nodeData to be loaded data

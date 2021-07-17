@@ -28,27 +28,15 @@ import javax.annotation.Nullable;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalBlockPos;
 
 /**
  * Implement to create a networked {@link TileEntity} or {@link IPart} must be implemented for a part, or tile entity to
  * become part of a grid.
  */
-public interface IInWorldGridNodeHost extends IGridNodeHost {
-
-    default World getWorld() {
-        return getLocation().getWorld();
-    }
-
-    /**
-     * @return Where this host is located.
-     */
-    @Nonnull
-    DimensionalBlockPos getLocation();
+public interface IInWorldGridNodeHost {
 
     /**
      * get the grid node for a particular side of a block, you can return null, by returning a valid node later and

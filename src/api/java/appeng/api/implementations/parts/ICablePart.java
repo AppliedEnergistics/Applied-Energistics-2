@@ -28,7 +28,6 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 
-import appeng.api.networking.IGridNodeHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -40,7 +39,7 @@ import appeng.api.util.AEPartLocation;
  * Implemented on the {@link IPart}s cable objects that can be placed at {@link AEPartLocation}.UNKNOWN in
  * {@link IPartHost}s
  */
-public interface ICablePart extends IPart, IGridNodeHost {
+public interface ICablePart extends IPart {
 
     /**
      * does this cable support buses?

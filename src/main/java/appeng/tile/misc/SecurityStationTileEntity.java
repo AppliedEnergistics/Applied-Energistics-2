@@ -61,7 +61,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.PlayerSecurityWrapper;
@@ -230,11 +229,6 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         super.remove();
         MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
         this.isActive = false;
-    }
-
-    @Override
-    public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this);
     }
 
     public boolean isActive() {
