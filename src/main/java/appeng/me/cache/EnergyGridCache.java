@@ -115,10 +115,10 @@ public class EnergyGridCache implements IEnergyGrid
 	private double lastStoredPower = -1;
 
 	private final GridPowerStorage localStorage = new GridPowerStorage();
-	private Set<IAEPowerStorage> providerToRemove = new HashSet<>();
-	private Set<IAEPowerStorage> requesterToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> providersToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> requestersToRemove = new HashSet<>();
 	private Set<IAEPowerStorage> providersToAdd = new HashSet<>();
-	private Set<IAEPowerStorage> requesterToAdd = new HashSet<>();
+	private Set<IAEPowerStorage> requestersToAdd = new HashSet<>();
 
 	public EnergyGridCache( final IGrid g )
 	{
@@ -176,7 +176,7 @@ public class EnergyGridCache implements IEnergyGrid
 						}
 						else
 						{
-							this.requesterToAdd.add( ev.storage );
+							this.requestersToAdd.add( ev.storage );
 						}
 					}
 					break;
@@ -220,7 +220,7 @@ public class EnergyGridCache implements IEnergyGrid
 		if( this.drainPerTick > 0.0001 )
 		{
 			final double drained = this.extractAEPower( this.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
-			currentlyHasPower = drained >= this.drainPerTick - 0.001 && this.getStoredPower() > 0;
+			currentlyHasPower = drained >= this.drainPerTick - 0.001;
 		}
 		else
 		{
@@ -334,7 +334,6 @@ public class EnergyGridCache implements IEnergyGrid
 				providers.put( 0, provider );
 			}
 		} );
-
 		providersToAdd.clear();
 
 		final Iterator<IAEPowerStorage> it = this.providers.values().iterator();
@@ -357,7 +356,7 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		} finally
 		{
-			providerToRemove.forEach( provider -> {
+			providersToRemove.forEach( provider -> {
 				if( provider instanceof GridPowerStorage )
 				{
 					providers.remove( 1, provider );
@@ -367,7 +366,7 @@ public class EnergyGridCache implements IEnergyGrid
 					providers.remove( 0, provider );
 				}
 			} );
-			this.providerToRemove.clear();
+			this.providersToRemove.clear();
 			ongoingExtractOperation = false;
 		}
 
@@ -392,7 +391,7 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		final double originalAmount = amt;
 
-		requesterToAdd.forEach( requester -> {
+		requestersToAdd.forEach( requester -> {
 			if( requester instanceof GridPowerStorage )
 			{
 				requesters.put( 0, requester );
@@ -402,6 +401,7 @@ public class EnergyGridCache implements IEnergyGrid
 				requesters.put( 1, requester );
 			}
 		} );
+		requestersToAdd.clear();
 
 		final Iterator<IAEPowerStorage> it = this.requesters.values().iterator();
 
@@ -421,7 +421,7 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		} finally
 		{
-			requesterToRemove.forEach( requester -> {
+			requestersToRemove.forEach( requester -> {
 				if( requester instanceof GridPowerStorage )
 				{
 					requesters.remove( 0, requester );
@@ -431,7 +431,7 @@ public class EnergyGridCache implements IEnergyGrid
 					requesters.remove( 1, requester );
 				}
 			} );
-			this.requesterToRemove.clear();
+			this.requestersToRemove.clear();
 			ongoingInjectOperation = false;
 		}
 
@@ -591,7 +591,7 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 				else
 				{
-					this.providerToRemove.add( ps );
+					this.providersToRemove.add( ps );
 				}
 				if( !ongoingInjectOperation )
 				{
@@ -599,7 +599,7 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 				else
 				{
-					this.requesterToRemove.add( ps );
+					this.requestersToRemove.add( ps );
 				}
 			}
 		}
@@ -717,7 +717,7 @@ public class EnergyGridCache implements IEnergyGrid
 					}
 					else
 					{
-						this.requesterToAdd.add( ps );
+						this.requestersToAdd.add( ps );
 					}
 				}
 			}
