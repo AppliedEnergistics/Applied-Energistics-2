@@ -325,25 +325,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 			{
 				this.watch.reset();
 				this.watch.start();
-				this.running = true;
-
-				AELog.craftingDebug( "main thread is now going to sleep" );
-
 				this.monitor.notify();
-
-				while ( this.running )
-				{
-					try
-					{
-						this.monitor.wait();
-					}
-					catch( final InterruptedException ignored )
-					{
-					}
-				}
-
-				AELog.craftingDebug( "main thread is now active" );
 			}
+			this.running = true;
 		}
 
 		return true;
