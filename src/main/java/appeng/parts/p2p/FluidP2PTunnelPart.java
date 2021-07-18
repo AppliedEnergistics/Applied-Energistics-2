@@ -87,7 +87,7 @@ public class FluidP2PTunnelPart extends CapabilityP2PTunnelPart<FluidP2PTunnelPa
                 return 0;
             }
 
-            final int amountPerOutput = Math.max(1, amount / outputTunnels);
+            final int amountPerOutput = amount / outputTunnels;
             int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
             for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {

@@ -78,7 +78,7 @@ public class ItemP2PTunnelPart extends CapabilityP2PTunnelPart<ItemP2PTunnelPart
                 return stack;
             }
 
-            final int amountPerOutput = Math.max(1, amount / outputTunnels);
+            final int amountPerOutput = amount / outputTunnels;
             int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
             for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
