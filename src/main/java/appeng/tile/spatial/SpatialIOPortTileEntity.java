@@ -34,7 +34,7 @@ import appeng.api.config.YesNo;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.util.AECableType;
@@ -117,7 +117,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
             final IGrid gi = this.getMainNode().getGridOrThrow();
-            final IEnergyGrid energy = this.getMainNode().getEnergy();
+            final IEnergyService energy = this.getMainNode().getEnergy();
 
             final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 

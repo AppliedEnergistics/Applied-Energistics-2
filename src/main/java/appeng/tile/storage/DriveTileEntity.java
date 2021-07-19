@@ -324,7 +324,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
 
             final IStorageService gs = this.getMainNode().getStorage();
-            Platform.postChanges(gs, removed, added, this.mySrc);
+            Platform.postWholeCellChanges(gs, removed, added, this.mySrc);
         } catch (final GridAccessException ignored) {
         }
 

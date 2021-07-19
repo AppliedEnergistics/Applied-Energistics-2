@@ -23,16 +23,16 @@
 
 package appeng.api.networking.energy;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridService;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridService;
 
 /**
  * AE's Power system.
  */
-public interface IEnergyGrid extends IGridService, IEnergySource {
+public interface IEnergyService extends IGridService, IEnergySource {
 
     /**
      * @return the current calculated idle energy drain each tick, is used internally to drain power for each tick.
@@ -42,7 +42,7 @@ public interface IEnergyGrid extends IGridService, IEnergySource {
 
     /**
      * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
-     * extractPower.
+     *         extractPower.
      */
     @Nonnegative
     double getAvgPowerUsage();
@@ -58,9 +58,8 @@ public interface IEnergyGrid extends IGridService, IEnergySource {
      * that determines the networks "powered state" if the network is considered off-line, your machines should not
      * function.
      * <p>
-     * Nodes are notified via {@link appeng.api.networking.IGridNodeListener#onActiveChanged} when this
-     * value changes. Most machines can simply test the value when they are about to perform work,
-     * without listening to this event.
+     * Nodes are notified via {@link appeng.api.networking.IGridNodeListener#onActiveChanged} when this value changes.
+     * Most machines can simply test the value when they are about to perform work, without listening to this event.
      *
      * @return if the network is powered or not.
      */

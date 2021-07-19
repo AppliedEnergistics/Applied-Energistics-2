@@ -45,8 +45,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyGridProvider;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.GridPowerIdleChange;
@@ -60,17 +60,17 @@ import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
-public class EnergyGridService implements IEnergyGrid, IEnergyGridProvider, IGridServiceProvider {
+public class EnergyService implements IEnergyService, IEnergyGridProvider, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
                 (service, event) -> {
-                    ((EnergyGridService) service).nodeIdlePowerChangeHandler(event);
+                    ((EnergyService) service).nodeIdlePowerChangeHandler(event);
                 });
 
-        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyGrid.class,
+        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyService.class,
                 (service, event) -> {
-                    ((EnergyGridService) service).storagePowerChangeHandler(event);
+                    ((EnergyService) service).storagePowerChangeHandler(event);
                 });
     }
 
@@ -145,7 +145,7 @@ public class EnergyGridService implements IEnergyGrid, IEnergyGridProvider, IGri
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
-    public EnergyGridService(final IGrid g, IPathingService pgc) {
+    public EnergyService(final IGrid g, IPathingService pgc) {
         this.myGrid = g;
         this.pgc = (PathServiceService) pgc;
         this.requesters.add(this.localStorage);
@@ -644,7 +644,7 @@ public class EnergyGridService implements IEnergyGrid, IEnergyGridProvider, IGri
             this.stored += amount;
 
             if (this.stored > 0.01) {
-                EnergyGridService.this.myGrid
+                EnergyService.this.myGrid
                         .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
             }
         }
@@ -653,7 +653,7 @@ public class EnergyGridService implements IEnergyGrid, IEnergyGridProvider, IGri
             this.stored -= amount;
 
             if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyGridService.this.myGrid
+                EnergyService.this.myGrid
                         .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             }
         }

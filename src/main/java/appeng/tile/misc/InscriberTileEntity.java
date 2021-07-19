@@ -43,7 +43,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -292,7 +292,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             }
         } else {
             try {
-                final IEnergyGrid eg = this.getMainNode().getEnergy();
+                final IEnergyService eg = this.getMainNode().getEnergy();
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card

@@ -29,7 +29,7 @@ import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.util.item.AEItemStack;
@@ -49,7 +49,7 @@ public class NetworkStatus {
     private List<MachineGroup> groupedMachines = Collections.emptyList();
 
     public static NetworkStatus fromGrid(IGrid grid) {
-        IEnergyGrid eg = grid.getService(IEnergyGrid.class);
+        IEnergyService eg = grid.getService(IEnergyService.class);
 
         NetworkStatus status = new NetworkStatus();
 

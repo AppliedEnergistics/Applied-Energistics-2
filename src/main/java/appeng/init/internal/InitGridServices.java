@@ -19,7 +19,7 @@
 package appeng.init.internal;
 
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.spatial.ISpatialService;
@@ -27,13 +27,13 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.Api;
 import appeng.me.service.CraftingService;
-import appeng.me.service.EnergyGridService;
-import appeng.me.service.GridStorageService;
+import appeng.me.service.EnergyService;
 import appeng.me.service.P2PService;
 import appeng.me.service.PathServiceService;
 import appeng.me.service.SecurityService;
 import appeng.me.service.SpatialPylonService;
 import appeng.me.service.StatisticsService;
+import appeng.me.service.StorageService;
 import appeng.me.service.TickManagerService;
 
 public final class InitGridServices {
@@ -45,8 +45,8 @@ public final class InitGridServices {
         var gcr = Api.INSTANCE.registries().gridService();
         gcr.register(ITickManager.class, TickManagerService.class);
         gcr.register(IPathingService.class, PathServiceService.class);
-        gcr.register(IEnergyGrid.class, EnergyGridService.class);
-        gcr.register(IStorageService.class, GridStorageService.class);
+        gcr.register(IEnergyService.class, EnergyService.class);
+        gcr.register(IStorageService.class, StorageService.class);
         gcr.register(P2PService.class, P2PService.class);
         gcr.register(ISpatialService.class, SpatialPylonService.class);
         gcr.register(ISecurityService.class, SecurityService.class);

@@ -40,7 +40,7 @@ public interface IEnergyGridProvider extends IGridNodeService {
      *
      * Can return a list of providers behind the current.
      *
-     * An example would be something acting as proxy between different {@link IEnergyGrid}s.
+     * An example would be something acting as proxy between different {@link IEnergyService}s.
      *
      * This can contain duplicate entries, AE will ensure that each provider is only visited once.
      *

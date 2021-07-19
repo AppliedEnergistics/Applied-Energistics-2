@@ -47,7 +47,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
@@ -171,7 +171,7 @@ public class JEIRecipePacket extends BasePacket {
         final ISecurityService security = grid.getService(ISecurityService.class);
         Preconditions.checkArgument(security != null);
 
-        final IEnergyGrid energy = grid.getService(IEnergyGrid.class);
+        final IEnergyService energy = grid.getService(IEnergyService.class);
         final ICraftingService crafting = grid.getService(ICraftingService.class);
         final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
         final IItemHandler playerInventory = cct.getInventoryByName("player");
@@ -320,7 +320,7 @@ public class JEIRecipePacket extends BasePacket {
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
-                                                 ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
+            ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
         Stream<IAEItemStack> stacks = Arrays.stream(ingredients.getMatchingStacks())//
                 .map(AEItemStack::fromItemStack)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//

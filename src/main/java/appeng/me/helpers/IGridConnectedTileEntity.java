@@ -1,7 +1,10 @@
 package appeng.me.helpers;
 
+import java.util.function.Consumer;
+
 import net.minecraft.entity.player.PlayerEntity;
 
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionHost;
@@ -19,6 +22,13 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
      * @return The main node that the tile entity uses to connect to the grid.
      */
     ManagedGridNode getMainNode();
+
+    /**
+     * @see ManagedGridNode#ifGridPresent(Consumer)
+     */
+    default boolean ifGridPresent(Consumer<IGrid> action) {
+        return getMainNode().ifGridPresent(action);
+    }
 
     /**
      * Used to break the tile when the grid detects a security violation. Implemented in

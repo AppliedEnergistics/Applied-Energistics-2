@@ -30,7 +30,7 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
@@ -137,7 +137,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected double getFunnelPowerDemand(final double maxReceived) {
         try {
-            final IEnergyGrid grid = this.getMainNode().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
 
             return grid.getEnergyDemand(maxReceived);
         } catch (final GridAccessException e) {
@@ -149,7 +149,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     @Override
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
         try {
-            final IEnergyGrid grid = this.getMainNode().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
             final double leftOver = grid.injectPower(power, mode);
 
             return leftOver;

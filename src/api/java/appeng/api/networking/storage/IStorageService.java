@@ -45,20 +45,23 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      *
      * @param input injected items
      */
-    void postAlterationOfStoredItems(IStorageChannel<?> chan, Iterable<? extends IAEStack<?>> input, IActionSource src);
+    <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+            Iterable<? extends IAEStack<T>> input,
+            IActionSource src);
 
     /**
-     * Used to add a cell provider to the storage system
+     * Used to add an additional cell provider to the storage system, i.e. for adding global providers from grid
+     * services.
      * <p/>
      * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link ICellProvider}
      * SERVICE. Those are automatically handled by the storage system.
      *
      * @param cc to be added cell provider
      */
-    void registerCellProvider(ICellProvider cc);
+    void registerAdditionalCellProvider(ICellProvider cc);
 
     /**
-     * remove a provider added with addCellContainer
+     * remove a provider added with {@link #registerAdditionalCellProvider(ICellProvider)}.
      */
-    void unregisterCellProvider(ICellProvider cc);
+    void unregisterAdditionalCellProvider(ICellProvider cc);
 }

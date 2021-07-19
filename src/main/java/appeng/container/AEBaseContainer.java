@@ -51,7 +51,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
@@ -149,7 +149,7 @@ public abstract class AEBaseContainer extends Container {
                 final IGrid g = gn.getGrid();
                 if (g != null) {
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
+                        final IEnergyService eg = g.getService(IEnergyService.class);
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }

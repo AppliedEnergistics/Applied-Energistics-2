@@ -48,7 +48,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -144,7 +144,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
                         this.networkNode = node;
                         final IGrid g = node.getGrid();
                         if (g != null) {
-                            powerSource = new ChannelPowerSrc(this.networkNode, g.getService(IEnergyGrid.class));
+                            powerSource = new ChannelPowerSrc(this.networkNode, g.getService(IEnergyService.class));
                         }
                     }
                 }
@@ -253,8 +253,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         try {
             if (this.networkNode != null) {
                 this.setPowered(this.networkNode.isActive());
-            } else if (this.powerSource instanceof IEnergyGrid) {
-                this.setPowered(((IEnergyGrid) this.powerSource).isNetworkPowered());
+            } else if (this.powerSource instanceof IEnergyService) {
+                this.setPowered(((IEnergyService) this.powerSource).isNetworkPowered());
             } else {
                 this.setPowered(
                         this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8);

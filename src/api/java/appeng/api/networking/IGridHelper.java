@@ -39,7 +39,7 @@ import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
 
 /**
- * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
+ * A helper responsible for creating new {@link IGridNode}, and connecting existing nodes.
  *
  * @author yueh
  * @version rv5

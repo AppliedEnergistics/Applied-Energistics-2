@@ -48,7 +48,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
@@ -230,7 +230,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
         try {
             final IStorageService storage = this.getMainNode().getStorage();
-            final IEnergyGrid energy = this.getMainNode().getEnergy();
+            final IEnergyService energy = this.getMainNode().getEnergy();
             final IAEItemStack overflow = Platform.poweredInsert(energy,
                     storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
                     itemToStore, this.mySrc);
@@ -281,7 +281,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
                 final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
-                final IEnergyGrid energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
 
                 final BlockState blockState = w.getBlockState(pos);
                 if (this.canHandleBlock(w, pos, blockState)) {
@@ -312,7 +312,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return TickRateModulation.IDLE;
     }
 
-    private void performBreakBlock(ServerWorld w, BlockPos pos, BlockState blockState, IEnergyGrid energy,
+    private void performBreakBlock(ServerWorld w, BlockPos pos, BlockState blockState, IEnergyService energy,
             float requiredPower, List<ItemStack> items) {
 
         if (!this.breakBlockAndStoreExtraItems(w, pos)) {
@@ -458,11 +458,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         getTile().requestModelDataUpdate();
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((g, n) -> g.getTickManager().alertDevice(n));
     }
 
     @Override

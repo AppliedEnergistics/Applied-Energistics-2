@@ -280,8 +280,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
             final ItemStack is = ais.createItemStack();
             final Item i = is.getItem();
-            if (i instanceof IBiometricCard) {
-                final IBiometricCard bc = (IBiometricCard) i;
+            if (i instanceof IBiometricCard bc) {
                 bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);
             }
         }

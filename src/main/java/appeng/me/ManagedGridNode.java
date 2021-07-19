@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
@@ -51,7 +52,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
@@ -269,11 +270,12 @@ public class ManagedGridNode {
     }
 
     /**
-     * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't
-     * initialized yet or has been destroyed.
+     * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't initialized
+     * yet or has been destroyed.
+     * 
      * @return True if the action was called, false otherwise.
      */
-    public boolean withGrid(Consumer<IGrid> action) {
+    public boolean ifPresent(Consumer<IGrid> action) {
         if (this.node == null) {
             return false;
         }
@@ -282,6 +284,18 @@ public class ManagedGridNode {
             return false;
         }
         action.accept(grid);
+        return true;
+    }
+
+    public boolean ifPresent(BiConsumer<IGrid, IGridNode> action) {
+        if (this.node == null) {
+            return false;
+        }
+        var grid = this.node.getGrid();
+        if (grid == null) {
+            return false;
+        }
+        action.accept(grid, this.node);
         return true;
     }
 
@@ -321,8 +335,8 @@ public class ManagedGridNode {
     }
 
     @Nonnull
-    public IEnergyGrid getEnergy() throws GridAccessException {
-        return this.getGridService(IEnergyGrid.class);
+    public IEnergyService getEnergy() throws GridAccessException {
+        return this.getGridService(IEnergyService.class);
     }
 
     @Nonnull

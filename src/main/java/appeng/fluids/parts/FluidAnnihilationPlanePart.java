@@ -42,7 +42,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
@@ -191,11 +191,11 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
             if (modulate) {
-                final IEnergyGrid energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
                 return Platform.poweredInsert(energy, inv, stack, this.mySrc) == null;
             } else {
                 final float requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
-                final IEnergyGrid energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
 
                 if (energy.extractAEPower(requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG) < requiredPower) {
                     return false;

@@ -24,23 +24,23 @@ import java.util.Set;
 
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
-import appeng.me.service.EnergyGridService;
+import appeng.me.service.EnergyService;
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class EnergyWatcher implements IEnergyWatcher {
 
-    private final EnergyGridService service;
+    private final EnergyService service;
     private final IEnergyWatcherHost watcherHost;
     private final Set<EnergyThreshold> myInterests = new HashSet<>();
 
-    public EnergyWatcher(final EnergyGridService service, final IEnergyWatcherHost host) {
+    public EnergyWatcher(final EnergyService service, final IEnergyWatcherHost host) {
         this.service = service;
         this.watcherHost = host;
     }
 
-    public void post(final EnergyGridService service) {
+    public void post(final EnergyService service) {
         this.watcherHost.onThresholdPass(service);
     }
 

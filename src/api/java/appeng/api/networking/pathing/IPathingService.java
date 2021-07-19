@@ -23,15 +23,15 @@
 
 package appeng.api.networking.pathing;
 
-import appeng.api.networking.IGridService;
-
 import javax.annotation.Nonnull;
+
+import appeng.api.networking.IGridService;
 
 /**
  * Provides services related to channel-allocation and a grid's controller.
  * <p/>
- * Pathing / Path-finding refers to finding a path from a node to the grid's controller for the purposes of
- * allocating channels.
+ * Pathing / Path-finding refers to finding a path from a node to the grid's controller for the purposes of allocating
+ * channels.
  */
 public interface IPathingService extends IGridService {
 

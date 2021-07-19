@@ -37,10 +37,10 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -126,7 +126,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
             final InventoryAdaptor destination = this.getHandler();
             final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IEnergyGrid energy = this.getMainNode().getEnergy();
+            final IEnergyService energy = this.getMainNode().getEnergy();
             final ICraftingService cg = this.getMainNode().getCrafting();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager()
@@ -229,7 +229,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
         try {
             if (d != null && this.getMainNode().isActive()) {
-                final IEnergyGrid energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
                 final double power = items.getStackSize();
 
                 if (energy.extractAEPower(power, mode, PowerMultiplier.CONFIG) > power - 0.01) {
@@ -264,7 +264,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
     }
 
-    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyGrid energy,
+    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
         final ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);

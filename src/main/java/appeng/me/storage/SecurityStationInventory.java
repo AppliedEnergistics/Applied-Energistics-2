@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-import appeng.me.GridAccessException;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.AccessRestriction;
@@ -26,7 +25,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -34,6 +32,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
+import appeng.me.GridAccessException;
 import appeng.tile.misc.SecurityStationTileEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
@@ -65,7 +64,8 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
             try {
-                this.securityTile.getMainNode().getSecurity().hasPermission(src.player().get(), SecurityPermissions.SECURITY);
+                this.securityTile.getMainNode().getSecurity().hasPermission(src.player().get(),
+                        SecurityPermissions.SECURITY);
             } catch (GridAccessException ignored) {
             }
         }

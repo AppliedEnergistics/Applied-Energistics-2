@@ -51,11 +51,11 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
-public class GridStorageService implements IStorageService, IGridServiceProvider {
+public class StorageService implements IStorageService, IGridServiceProvider {
     static {
         Api.instance().grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageService.class,
                 (service, evt) -> {
-                    ((GridStorageService) service).cellUpdate();
+                    ((StorageService) service).cellUpdate();
                 });
     }
 
@@ -68,7 +68,7 @@ public class GridStorageService implements IStorageService, IGridServiceProvider
     private Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
     private Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
 
-    public GridStorageService(final IGrid g) {
+    public StorageService(final IGrid g) {
         this.myGrid = g;
         this.storageNetworks = new IdentityHashMap<>();
         this.storageMonitors = new IdentityHashMap<>();
@@ -143,7 +143,7 @@ public class GridStorageService implements IStorageService, IGridServiceProvider
                     : new BaseActionSource();
 
             this.storageMonitors.forEach((channel, monitor) -> {
-                for (final IMEInventoryHandler<?> h : cc.getCellArray(channel)) {
+                for (var h : cc.getCellArray(channel)) {
                     tracker.postChanges(channel, 1, h, actionSrc);
                 }
             });
@@ -224,19 +224,20 @@ public class GridStorageService implements IStorageService, IGridServiceProvider
     }
 
     @Override
-    public void postAlterationOfStoredItems(final IStorageChannel<?> chan, final Iterable<? extends IAEStack<?>> input,
+    public <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+            Iterable<? extends IAEStack<T>> input,
             final IActionSource src) {
         this.storageMonitors.get(chan).postChange(true, (Iterable) input, src);
     }
 
     @Override
-    public void registerCellProvider(final ICellProvider provider) {
+    public void registerAdditionalCellProvider(final ICellProvider provider) {
         this.inactiveCellProviders.add(provider);
         this.addCellProvider(provider, new CellChangeTracker()).applyChanges();
     }
 
     @Override
-    public void unregisterCellProvider(final ICellProvider provider) {
+    public void unregisterAdditionalCellProvider(final ICellProvider provider) {
         this.removeCellProvider(provider, new CellChangeTracker()).applyChanges();
         this.inactiveCellProviders.remove(provider);
     }
@@ -266,7 +267,7 @@ public class GridStorageService implements IStorageService, IGridServiceProvider
         }
 
         public void applyChanges() {
-            GridStorageService.this.postChangesToNetwork(this.channel, this.up_or_down, this.list, this.src);
+            StorageService.this.postChangesToNetwork(this.channel, this.up_or_down, this.list, this.src);
         }
     }
 

@@ -36,7 +36,7 @@ public class PathSegment {
     private List<IPathItem> open;
 
     public PathSegment(final PathServiceService myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
-                       final Set<IPathItem> closed) {
+            final Set<IPathItem> closed) {
         this.open = open;
         this.semiOpen = semiOpen;
         this.closed = closed;
