@@ -60,7 +60,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
@@ -68,7 +68,6 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -316,7 +315,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         double stash = 0.0;
 
         try {
-            final IEnergyGrid eg = this.getMainNode().getEnergy();
+            final IEnergyService eg = this.getMainNode().getEnergy();
             stash = eg.extractAEPower(amt, mode, PowerMultiplier.ONE);
             if (stash >= amt) {
                 return stash;
@@ -445,13 +444,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
 
-            try {
-                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-                final IStorageService gs = this.getMainNode().getStorage();
-                Platform.postChanges(gs, removed, added, this.mySrc);
-            } catch (final GridAccessException ignored) {
-
-            }
+            ifGridPresent(g -> {
+                g.postEvent(new GridCellArrayUpdate());
+                Platform.postWholeCellChanges(g.getStorageService(), removed, added, this.mySrc);
+            });
 
             // update the neighbors
             if (this.world != null) {
@@ -659,7 +655,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                     final IGrid g = gn.getGrid();
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
+                        final IEnergyService eg = g.getService(IEnergyService.class);
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }

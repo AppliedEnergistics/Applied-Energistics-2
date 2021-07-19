@@ -28,6 +28,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.ticking.ITickManager;
 
 /**
  * Gives you access to Grid based information.
@@ -119,4 +121,23 @@ public interface IGrid {
      */
     int size();
 
+    /**
+     * Get this grids {@link ITickManager}.
+     * 
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default ITickManager getTickManager() {
+        return getService(ITickManager.class);
+    }
+
+    /**
+     * Get this grids {@link IStorageService}.
+     * 
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default IStorageService getStorageService() {
+        return getService(IStorageService.class);
+    }
 }

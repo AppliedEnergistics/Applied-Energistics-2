@@ -47,13 +47,13 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
@@ -558,7 +558,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.storeItems(); // marks dirty
     }
 
-    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingService cc) {
+    public void updateCraftingLogic(final IGrid grid, final IEnergyService eg, final CraftingService cc) {
         if (!this.getCore().isActive()) {
             return;
         }
@@ -601,7 +601,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    private void executeCrafting(final IEnergyGrid eg, final CraftingService cc) {
+    private void executeCrafting(final IEnergyService eg, final CraftingService cc) {
         final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
         while (i.hasNext()) {

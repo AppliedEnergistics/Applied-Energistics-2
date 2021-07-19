@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import appeng.me.service.EnergyGridService;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,6 +42,7 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.ManagedGridNode;
+import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
@@ -135,14 +135,14 @@ public class QuartzFiberPart extends AEBasePart {
             var providers = new ArrayList<IEnergyGridProvider>(2);
 
             try {
-                var eg = (EnergyGridService) getMainNode().getEnergy();
+                var eg = (EnergyService) getMainNode().getEnergy();
                 providers.add(eg);
             } catch (final GridAccessException e) {
                 // :P
             }
 
             try {
-                var eg = (EnergyGridService) outerNode.getEnergy();
+                var eg = (EnergyService) outerNode.getEnergy();
                 providers.add(eg);
             } catch (final GridAccessException e) {
                 // :P

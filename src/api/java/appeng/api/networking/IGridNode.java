@@ -31,12 +31,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.networking.crafting.ICraftingService;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.IAppEngApi;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
 

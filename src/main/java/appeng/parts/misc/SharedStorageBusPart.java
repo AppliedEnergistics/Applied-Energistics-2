@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;

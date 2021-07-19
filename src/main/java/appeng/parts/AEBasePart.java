@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import appeng.api.networking.IGrid;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;

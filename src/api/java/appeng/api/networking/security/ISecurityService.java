@@ -23,12 +23,13 @@
 
 package appeng.api.networking.security;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGridService;
-import net.minecraft.entity.player.PlayerEntity;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.PlayerEntity;
+
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGridService;
 
 /**
  * Provides facilities around controlling player access to a grid.
@@ -36,7 +37,8 @@ import javax.annotation.Nonnull;
 public interface ISecurityService extends IGridService {
 
     /**
-     * @return true if exactly one node implementing the {@link ISecurityProvider} node service is connected to the grid.
+     * @return true if exactly one node implementing the {@link ISecurityProvider} node service is connected to the
+     *         grid.
      */
     boolean isAvailable();
 

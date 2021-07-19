@@ -31,7 +31,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -151,7 +151,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
 
                 final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-                final IEnergyGrid energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
 
                 boolean Configured = false;
                 for (int x = 0; x < this.availableSlots(); x++) {

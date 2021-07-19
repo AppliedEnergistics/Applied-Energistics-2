@@ -34,7 +34,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -176,7 +176,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
 
         try {
-            final IEnergyGrid grid = this.getMainNode().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
             final double newPower = timePassed * POWER_PER_TICK;
             final double overFlow = grid.injectPower(newPower, Actionable.SIMULATE);
 

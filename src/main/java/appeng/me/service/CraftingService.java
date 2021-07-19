@@ -51,7 +51,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingCallback;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
@@ -59,9 +58,10 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
@@ -124,15 +124,15 @@ public class CraftingService
     private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<>(
             this.interests);
     private final IStorageService storageGrid;
-    private final IEnergyGrid energyGrid;
+    private final IEnergyService energyGrid;
     private boolean updateList = false;
 
-    public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyGrid energyGrid) {
+    public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
         this.grid = grid;
         this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;
 
-        this.storageGrid.registerCellProvider(this);
+        this.storageGrid.registerAdditionalCellProvider(this);
     }
 
     @Override

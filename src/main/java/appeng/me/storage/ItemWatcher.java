@@ -25,18 +25,18 @@ import java.util.Set;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.storage.data.IAEStack;
-import appeng.me.service.GridStorageService;
+import appeng.me.service.StorageService;
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
 public class ItemWatcher implements IStackWatcher {
 
-    private final GridStorageService service;
+    private final StorageService service;
     private final IStackWatcherHost myObject;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public ItemWatcher(final GridStorageService service, final IStackWatcherHost host) {
+    public ItemWatcher(final StorageService service, final IStackWatcherHost host) {
         this.service = service;
         this.myObject = host;
     }

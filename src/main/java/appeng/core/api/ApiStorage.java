@@ -118,7 +118,7 @@ public class ApiStorage implements IStorageHelper {
         Preconditions.checkNotNull(addedCell);
         Preconditions.checkNotNull(src);
 
-        Platform.postChanges(gs, removedCell, addedCell, src);
+        Platform.postWholeCellChanges(gs, removedCell, addedCell, src);
     }
 
     private static final class ItemStorageChannel implements IItemStorageChannel {

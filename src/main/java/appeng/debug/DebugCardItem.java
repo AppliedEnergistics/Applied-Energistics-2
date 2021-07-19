@@ -37,7 +37,7 @@ import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.ticking.ITickManager;
@@ -105,7 +105,7 @@ public class DebugCardItem extends AEBaseItem {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
                     this.outputMsg(player, "Grid Powered:",
-                            String.valueOf(g.getService(IEnergyGrid.class).isNetworkPowered()));
+                            String.valueOf(g.getService(IEnergyService.class).isNetworkPowered()));
                     this.outputMsg(player, "Grid Booted:",
                             String.valueOf(!g.getService(IPathingService.class).isNetworkBooting()));
                     this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
@@ -192,7 +192,7 @@ public class DebugCardItem extends AEBaseItem {
                 if (gh != null) {
                     final IGridNode node = gh.getGridNode(side);
                     if (node != null && node.getGrid() != null) {
-                        final IEnergyGrid eg = node.getGrid().getService(IEnergyGrid.class);
+                        final IEnergyService eg = node.getGrid().getService(IEnergyService.class);
                         this.outputMsg(player,
                                 "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                     }

@@ -73,7 +73,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -228,7 +228,7 @@ public class Platform {
                 if (g != null) {
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getService(IEnergyGrid.class);
+                        final IEnergyService eg = g.getService(IEnergyService.class);
                         if (!eg.isNetworkPowered()) {
                             // FIXME trace logging?
                             return false;
@@ -725,30 +725,42 @@ public class Platform {
         return input;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void postChanges(final IStorageService gs, final ItemStack removed, final ItemStack added,
-                                   final IActionSource src) {
-        for (final IStorageChannel<?> chan : Api.instance().storage().storageChannels()) {
-            final IItemList<?> myChanges = chan.createList();
-
-            if (!removed.isEmpty()) {
-                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(removed, null, chan);
-                if (myInv != null) {
-                    myInv.getAvailableItems(myChanges);
-                    for (final IAEStack is : myChanges) {
-                        is.setStackSize(-is.getStackSize());
-                    }
-                }
-            }
-            if (!added.isEmpty()) {
-                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(added, null, chan);
-                if (myInv != null) {
-                    myInv.getAvailableItems(myChanges);
-                }
-
-            }
-            gs.postAlterationOfStoredItems(chan, myChanges, src);
+    /**
+     * Post inventory changes from a whole cell being added or removed from the grid.
+     */
+    public static void postWholeCellChanges(IStorageService service,
+            ItemStack removedCell,
+            ItemStack addedCell,
+            IActionSource src) {
+        for (var channel : Api.instance().storage().storageChannels()) {
+            postWholeCellChanges(service, channel, removedCell, addedCell, src);
         }
+    }
+
+    private static <T extends IAEStack<T>> void postWholeCellChanges(IStorageService service,
+            IStorageChannel<T> channel,
+            ItemStack removedCell,
+            ItemStack addedCell,
+            IActionSource src) {
+        var myChanges = channel.createList();
+
+        if (!removedCell.isEmpty()) {
+            var myInv = Api.instance().registries().cell().getCellInventory(removedCell, null, channel);
+            if (myInv != null) {
+                myInv.getAvailableItems(myChanges);
+                for (var is : myChanges) {
+                    is.setStackSize(-is.getStackSize());
+                }
+            }
+        }
+        if (!addedCell.isEmpty()) {
+            var myInv = Api.instance().registries().cell().getCellInventory(addedCell, null, channel);
+            if (myInv != null) {
+                myInv.getAvailableItems(myChanges);
+            }
+
+        }
+        service.postAlterationOfStoredItems(channel, myChanges, src);
     }
 
     public static <T extends IAEStack<T>> void postListChanges(final IItemList<T> before, final IItemList<T> after,
@@ -811,7 +823,7 @@ public class Platform {
             return false;
         }
 
-        final IEnergyGrid eg = grid.getService(IEnergyGrid.class);
+        final IEnergyService eg = grid.getService(IEnergyService.class);
         return eg.isNetworkPowered();
     }
 

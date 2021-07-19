@@ -49,7 +49,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
 
     @Nonnull
-    private final GridStorageService service;
+    private final StorageService service;
     @Nonnull
     private final IStorageChannel<T> myChannel;
     @Nonnull
@@ -62,7 +62,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     @Nonnegative
     private int localDepthSemaphore = 0;
 
-    public NetworkMonitor(final GridStorageService service, final IStorageChannel<T> chan) {
+    public NetworkMonitor(final StorageService service, final IStorageChannel<T> chan) {
         this.service = service;
         this.myChannel = chan;
         this.cachedList = chan.createList();

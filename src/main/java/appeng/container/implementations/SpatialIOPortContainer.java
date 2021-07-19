@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -82,7 +82,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
             if (this.delay > 15 && grid != null) {
                 this.delay = 0;
 
-                var eg = grid.getService(IEnergyGrid.class);
+                var eg = grid.getService(IEnergyService.class);
                 var sc = grid.getService(ISpatialService.class);
                 this.setCurrentPower((long) (100.0 * eg.getStoredPower()));
                 this.setMaxPower((long) (100.0 * eg.getMaxStoredPower()));

@@ -27,10 +27,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
@@ -72,7 +72,7 @@ public class MultiCraftingTracker {
     }
 
     public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, final InventoryAdaptor d,
-                                  final World w, final IGrid g, final ICraftingService cg, final IActionSource mySrc) {
+            final World w, final IGrid g, final ICraftingService cg, final IActionSource mySrc) {
         if (ais != null && d.simulateAdd(ais.createItemStack()).isEmpty()) {
             final Future<ICraftingJob> craftingJob = this.getJob(x);
 

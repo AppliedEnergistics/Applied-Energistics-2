@@ -112,7 +112,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
         this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
 
-        getMainNode().withGrid(g -> g.postEvent(new GridCellArrayUpdate()));
+        getMainNode().ifGridPresent(g -> g.postEvent(new GridCellArrayUpdate()));
 
         try {
             this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
