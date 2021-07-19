@@ -23,10 +23,13 @@
 
 package appeng.api.networking;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.events.MENetworkEvent;
-import appeng.api.util.IReadOnlyCollection;
+import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.ticking.ITickManager;
 
 /**
  * Gives you access to Grid based information.
@@ -41,12 +44,9 @@ public interface IGrid {
      * @param iface face
      *
      * @return the IGridCache you requested.
-     *
-     *         TODO: 1.17 breaking change: throw if iface is not a registered grid cache to fulfil contract TODO: 1.17
-     *         breaking chance: make the parameter Class<C>
      */
     @Nonnull
-    <C extends IGridCache> C getCache(@Nonnull Class<? extends IGridCache> iface);
+    <C extends IGridService> C getService(@Nonnull Class<C> iface);
 
     /**
      * Post an event into the network event bus.
@@ -54,21 +54,9 @@ public interface IGrid {
      * @param ev - event to post
      *
      * @return returns ev back to original poster
-     *
-     *         TODO: Breaking change in 1.17: T extends MENetworkEvent and return T
      */
     @Nonnull
-    MENetworkEvent postEvent(@Nonnull MENetworkEvent ev);
-
-    /**
-     * Post an event into the network event bus, but direct it at a single node.
-     *
-     * @param ev event to post
-     *
-     * @return returns ev back to original poster TODO: Breaking change in 1.17: T extends MENetworkEvent and return T
-     */
-    @Nonnull
-    MENetworkEvent postEventTo(@Nonnull IGridNode node, @Nonnull MENetworkEvent ev);
+    <T extends GridEvent> T postEvent(@Nonnull T ev);
 
     /**
      * get a list of the diversity of classes, you can use this to better detect which machines your interested in,
@@ -77,23 +65,45 @@ public interface IGrid {
      * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
      */
     @Nonnull
-    IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses();
+    Iterable<Class<?>> getMachineClasses();
 
     /**
-     * Get machines on the network.
+     * Get machine nodes on the network.
      *
-     * @param gridHostClass class of the grid host
+     * @param machineClass class of the machine associated with a grid node
      *
-     * @return IMachineSet of all nodes belonging to hosts of specified class.
+     * @return all nodes belonging to machines of specified class. keep in mind that machines can have multiple nodes.
      */
     @Nonnull
-    IMachineSet getMachines(@Nonnull Class<? extends IGridHost> gridHostClass);
+    Iterable<IGridNode> getMachineNodes(@Nonnull Class<?> machineClass);
+
+    /**
+     * Get machines connected to the network via grid nodes.
+     *
+     * @param machineClass class of the machine associated with a grid node
+     *
+     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
+     *         will only return the machine once.
+     */
+    @Nonnull
+    <T> Set<T> getMachines(@Nonnull Class<T> machineClass);
+
+    /**
+     * Get machines connected to the network via grid nodes that are powered and have their needed channels.
+     *
+     * @param machineClass class of the machine associated with a grid node
+     *
+     * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
+     *         will only return the machine once.
+     */
+    @Nonnull
+    <T> Set<T> getActiveMachines(@Nonnull Class<T> machineClass);
 
     /**
      * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.
      */
     @Nonnull
-    IReadOnlyCollection<IGridNode> getNodes();
+    Iterable<IGridNode> getNodes();
 
     /**
      * @return true if the last node has been removed from the grid.
@@ -105,4 +115,29 @@ public interface IGrid {
      */
     @Nonnull
     IGridNode getPivot();
+
+    /**
+     * @return The number of nodes in this grid.
+     */
+    int size();
+
+    /**
+     * Get this grids {@link ITickManager}.
+     * 
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default ITickManager getTickManager() {
+        return getService(ITickManager.class);
+    }
+
+    /**
+     * Get this grids {@link IStorageService}.
+     * 
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default IStorageService getStorageService() {
+        return getService(IStorageService.class);
+    }
 }

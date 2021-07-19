@@ -64,10 +64,9 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
             try {
-                return this.securityTile.getProxy().getSecurity().hasPermission(src.player().get(),
+                this.securityTile.getMainNode().getSecurity().hasPermission(src.player().get(),
                         SecurityPermissions.SECURITY);
-            } catch (final GridAccessException e) {
-                // :P
+            } catch (GridAccessException ignored) {
             }
         }
         return false;

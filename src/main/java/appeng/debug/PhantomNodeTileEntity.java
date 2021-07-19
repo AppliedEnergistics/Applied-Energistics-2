@@ -24,13 +24,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.ManagedGridNode;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class PhantomNodeTileEntity extends AENetworkTileEntity {
 
-    private AENetworkProxy proxy = null;
+    private ManagedGridNode proxy = null;
     private boolean crashMode = false;
 
     public PhantomNodeTileEntity(TileEntityType<?> tileEntityTypeIn) {
@@ -38,7 +38,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
+    public IGridNode getGridNode(final Direction dir) {
         if (!this.crashMode) {
             return super.getGridNode(dir);
         }
@@ -49,15 +49,17 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     @Override
     public void onReady() {
         super.onReady();
-        this.proxy = this.createProxy();
-        this.proxy.onReady();
+        this.proxy = new ManagedGridNode(this, TileEntityNodeListener.INSTANCE)
+                .setInWorldNode(true)
+                .setVisualRepresentation(getItemFromTile());
+        this.proxy.create(world, pos);
         this.crashMode = true;
     }
 
     void triggerCrashMode() {
         if (this.proxy != null) {
             this.crashMode = true;
-            this.proxy.setValidSides(EnumSet.allOf(Direction.class));
+            this.proxy.setExposedOnSides(EnumSet.allOf(Direction.class));
         }
     }
 }

@@ -84,4 +84,5 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      */
     @Nullable
     T createFromNBT(@Nonnull CompoundNBT nbt);
+
 }

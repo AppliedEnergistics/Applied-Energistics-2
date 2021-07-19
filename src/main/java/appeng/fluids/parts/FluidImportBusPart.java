@@ -105,12 +105,13 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         final TileEntity te = this.getConnectedTE();
         if (te != null) {
             LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
+                    this.getSide().getDirection().getOpposite());
 
             if (fhOpt.isPresent()) {
                 try {
                     final IFluidHandler fh = fhOpt.orElseThrow(IllegalStateException::new);
-                    final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
+                    final IMEMonitor<IAEFluidStack> inv = this.getMainNode().getStorage()
+                            .getInventory(this.getChannel());
 
                     final FluidStack fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);
 
@@ -144,7 +145,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
     @Override
     protected boolean canDoBusWork() {
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     private boolean isInFilter(FluidStack fluid) {

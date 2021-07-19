@@ -39,7 +39,6 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTileEntity;
 
 public class AEBaseBlockItem extends BlockItem {
@@ -146,8 +145,8 @@ public class AEBaseBlockItem extends BlockItem {
                 ori.setOrientation(forward, up);
             }
 
-            if (tile instanceof IGridProxyable) {
-                ((IGridProxyable) tile).getProxy().setOwner(player);
+            if (tile instanceof IOwnerAwareTile ownerAwareTile) {
+                ownerAwareTile.setOwner(player);
             }
 
             tile.onPlacement(context);

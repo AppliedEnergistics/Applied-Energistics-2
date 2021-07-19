@@ -37,10 +37,10 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -115,7 +115,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     @Override
     protected TickRateModulation doBusWork() {
-        if (!this.getProxy().isActive() || !this.canDoBusWork()) {
+        if (!this.getMainNode().isActive() || !this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
@@ -124,10 +124,10 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
         try {
             final InventoryAdaptor destination = this.getHandler();
-            final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
+            final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IEnergyGrid energy = this.getProxy().getEnergy();
-            final ICraftingGrid cg = this.getProxy().getCrafting();
+            final IEnergyService energy = this.getMainNode().getEnergy();
+            final ICraftingService cg = this.getMainNode().getCrafting();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager()
                     .getSetting(Settings.SCHEDULING_MODE);
@@ -143,7 +143,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
                         if (this.isCraftingEnabled()) {
                             this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                    destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc)
+                                    destination, this.getTile().getWorld(), this.getMainNode().getGridOrThrow(), cg,
+                                    this.mySrc)
                                     || this.didSomething;
                         }
                         continue;
@@ -164,7 +165,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
                         this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc)
+                                destination, this.getTile().getWorld(), this.getMainNode().getGridOrThrow(), cg,
+                                this.mySrc)
                                 || this.didSomething;
                     }
                 }
@@ -226,8 +228,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         final InventoryAdaptor d = this.getHandler();
 
         try {
-            if (d != null && this.getProxy().isActive()) {
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+            if (d != null && this.getMainNode().isActive()) {
+                final IEnergyService energy = this.getMainNode().getEnergy();
                 final double power = items.getStackSize();
 
                 if (energy.extractAEPower(power, mode, PowerMultiplier.CONFIG) > power - 0.01) {
@@ -262,7 +264,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
     }
 
-    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyGrid energy,
+    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
         final ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);

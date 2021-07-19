@@ -28,7 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.block.AEBaseBlock;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -47,7 +47,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
         BlockPos pos = context.getPos();
 
         if (!InteractionUtil.isInAlternateUseMode(p) && Platform
-                .hasPermissions(new DimensionalCoord(w, pos), p)) {
+                .hasPermissions(new DimensionalBlockPos(w, pos), p)) {
 
             Block block = w.getBlockState(pos).getBlock();
             if (block instanceof AEBaseBlock) {

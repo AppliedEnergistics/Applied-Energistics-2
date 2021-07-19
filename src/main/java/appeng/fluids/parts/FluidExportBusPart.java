@@ -97,7 +97,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
 
     @Override
     protected boolean canDoBusWork() {
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
@@ -110,12 +110,12 @@ public class FluidExportBusPart extends SharedFluidBusPart {
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
             fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
+                    this.getSide().getDirection().getOpposite());
         }
         if (fhOpt.isPresent()) {
             try {
                 final IFluidHandler fh = fhOpt.orElse(null);
-                final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
+                final IMEMonitor<IAEFluidStack> inv = this.getMainNode().getStorage().getInventory(this.getChannel());
 
                 if (fh != null) {
                     for (int i = 0; i < this.getConfig().getSlots(); i++) {

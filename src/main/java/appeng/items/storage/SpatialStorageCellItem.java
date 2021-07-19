@@ -35,7 +35,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -110,11 +109,11 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
-            final WorldCoord max, int playerId) {
-        final int targetX = max.x - min.x - 1;
-        final int targetY = max.y - min.y - 1;
-        final int targetZ = max.z - min.z - 1;
+    public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final BlockPos min,
+            final BlockPos max, int playerId) {
+        final int targetX = max.getX() - min.getX() - 1;
+        final int targetY = max.getY() - min.getY() - 1;
+        final int targetZ = max.getZ() - min.getZ() - 1;
         final int maxSize = this.getMaxStoredDim(is);
         if (targetX > maxSize && targetY > maxSize && targetZ > maxSize) {
             AELog.info(
@@ -142,8 +141,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min.getBlockPos(),
-                max.getBlockPos(), Instant.now());
+        TransitionInfo info = new TransitionInfo(w.getDimensionKey().getLocation(), min, max, Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {
@@ -152,8 +150,9 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             BlockPos offset = plot.getOrigin();
 
             this.setStoredDimension(is, plot.getId(), plot.getSize());
-            SpatialStorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(),
-                    offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
+            SpatialStorageHelper.getInstance().swapRegions(w, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
+                    cellWorld,
+                    offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
             return true;
         } finally {

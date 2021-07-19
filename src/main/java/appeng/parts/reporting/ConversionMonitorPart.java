@@ -79,11 +79,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -91,7 +91,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (InteractionUtil.isWrench(player, eq, this.getLocation().getPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getTile().getPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
@@ -113,11 +113,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -134,11 +134,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -151,8 +151,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     private void insertItem(final PlayerEntity player, final Hand hand, final boolean allItems) {
         try {
-            final IEnergySource energy = this.getProxy().getEnergy();
-            final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
+            final IEnergySource energy = this.getMainNode().getEnergy();
+            final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             if (allItems) {
@@ -189,12 +189,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         final IAEItemStack input = this.getDisplayed();
         if (input != null) {
             try {
-                if (!this.getProxy().isActive()) {
+                if (!this.getMainNode().isActive()) {
                     return;
                 }
 
-                final IEnergySource energy = this.getProxy().getEnergy();
-                final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
+                final IEnergySource energy = this.getMainNode().getEnergy();
+                final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
                 input.setStackSize(count);
@@ -208,7 +208,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     if (!newItems.isEmpty()) {
                         final TileEntity te = this.getTile();
                         final List<ItemStack> list = Collections.singletonList(newItems);
-                        Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getFacing()), list);
+                        Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getDirection()), list);
                     }
 
                     if (player.openContainer != null) {

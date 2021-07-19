@@ -53,6 +53,11 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
+    public void saveChanges() {
+        getHost().markForSave();
+    }
+
+    @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgrades) {

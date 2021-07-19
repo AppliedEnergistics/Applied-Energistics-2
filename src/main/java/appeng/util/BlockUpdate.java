@@ -22,7 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockUpdate implements IWorldCallable<Boolean> {
+public class BlockUpdate implements IWorldRunnable {
     private final BlockPos pos;
 
     BlockUpdate(final BlockPos pos) {
@@ -30,11 +30,9 @@ public class BlockUpdate implements IWorldCallable<Boolean> {
     }
 
     @Override
-    public Boolean call(final World world) throws Exception {
+    public void call(World world) throws Exception {
         if (world.isBlockLoaded(this.pos)) {
             world.notifyNeighborsOfStateChange(this.pos, Blocks.AIR);
         }
-
-        return true;
     }
 }

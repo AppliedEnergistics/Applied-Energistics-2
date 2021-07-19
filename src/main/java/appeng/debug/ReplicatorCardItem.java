@@ -40,11 +40,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.networking.spatial.ISpatialService;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
@@ -97,7 +95,9 @@ public class ReplicatorCardItem extends AEBaseItem {
         int z = pos.getZ();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (world.getTileEntity(pos) instanceof IGridHost) {
+            var gridHost = Api.instance().grid().getNodeHost(world, pos);
+
+            if (gridHost != null) {
                 final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
@@ -122,36 +122,35 @@ public class ReplicatorCardItem extends AEBaseItem {
                         .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
-                final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
+                var gh = Api.instance().grid().getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
 
-                if (te instanceof IGridHost) {
-                    final IGridHost gh = (IGridHost) te;
+                if (gh != null) {
                     final Direction sideOff = Direction.values()[src_side];
                     final Direction currentSideOff = side;
-                    final IGridNode n = gh.getGridNode(AEPartLocation.fromFacing(sideOff));
+                    final IGridNode n = gh.getGridNode(sideOff);
 
                     if (n != null) {
                         final IGrid g = n.getGrid();
 
                         if (g != null) {
-                            final ISpatialCache sc = g.getCache(ISpatialCache.class);
+                            final ISpatialService sc = g.getService(ISpatialService.class);
 
                             if (sc.isValidRegion()) {
-                                final DimensionalCoord min = sc.getMin();
-                                final DimensionalCoord max = sc.getMax();
+                                var min = sc.getMin();
+                                var max = sc.getMax();
 
                                 // TODO: Why??? Places it one block up each time...
                                 // x += currentSideOff.getXOffset();
                                 // y += currentSideOff.getYOffset();
                                 // z += currentSideOff.getZOffset();
 
-                                final int sc_size_x = max.x - min.x;
-                                final int sc_size_y = max.y - min.y;
-                                final int sc_size_z = max.z - min.z;
+                                final int sc_size_x = max.getX() - min.getX();
+                                final int sc_size_y = max.getY() - min.getY();
+                                final int sc_size_z = max.getZ() - min.getZ();
 
-                                final int min_x = min.x;
-                                final int min_y = min.y;
-                                final int min_z = min.z;
+                                final int min_x = min.getX();
+                                final int min_y = min.getY();
+                                final int min_z = min.getZ();
 
                                 // Invert to maintain correct sign for west/east
                                 final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.rotationYaw));
@@ -165,9 +164,9 @@ public class ReplicatorCardItem extends AEBaseItem {
 
                                             // Offset x/z by the rotation index.
                                             // For sake of simplicity always grow upwards.
-                                            final int rel_x = min.x - src_x + x + r_x * sc_size_x * x_rot;
-                                            final int rel_y = min.y - src_y + y + r_y * sc_size_y;
-                                            final int rel_z = min.z - src_z + z + r_z * sc_size_z * z_rot;
+                                            final int rel_x = min.getX() - src_x + x + r_x * sc_size_x * x_rot;
+                                            final int rel_y = min.getY() - src_y + y + r_y * sc_size_y;
+                                            final int rel_z = min.getZ() - src_z + z + r_z * sc_size_z * z_rot;
 
                                             // Copy a single SC instance completely
                                             for (int i = 1; i < sc_size_x; i++) {

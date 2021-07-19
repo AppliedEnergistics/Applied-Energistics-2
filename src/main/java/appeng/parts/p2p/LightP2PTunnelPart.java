@@ -30,8 +30,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -54,6 +53,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     public LightP2PTunnelPart(final ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -62,15 +62,9 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void chanRender(final MENetworkChannelsChanged c) {
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        super.onMainNodeStateChanged(reason);
         this.onTunnelNetworkChange();
-        super.chanRender(c);
-    }
-
-    @Override
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.onTunnelNetworkChange();
-        super.powerRender(c);
     }
 
     @Override
@@ -101,9 +95,9 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         final TileEntity te = this.getTile();
         final World w = te.getWorld();
 
-        final int newLevel = w.getLight(te.getPos().offset(this.getSide().getFacing()));
+        final int newLevel = w.getLight(te.getPos().offset(this.getSide().getDirection()));
 
-        if (this.lastValue != newLevel && this.getProxy().isActive()) {
+        if (this.lastValue != newLevel && this.getMainNode().isActive()) {
             this.lastValue = newLevel;
             try {
                 for (final LightP2PTunnelPart out : this.getOutputs()) {
@@ -119,7 +113,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (this.isOutput() && pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (this.isOutput() && pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         } else {
@@ -144,7 +138,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
-            this.opacity = 255 - te.getWorld().getLight(te.getPos().offset(this.getSide().getFacing()));
+            this.opacity = 255 - te.getWorld().getLight(te.getPos().offset(this.getSide().getDirection()));
         }
 
         return (int) (emit * (this.opacity / 255.0f));
@@ -171,7 +165,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     public void onTunnelNetworkChange() {
         if (this.isOutput()) {
             final LightP2PTunnelPart src = this.getInput();
-            if (src != null && src.getProxy().isActive()) {
+            if (src != null && src.getMainNode().isActive()) {
                 this.setLightLevel(src.lastValue);
             } else {
                 this.getHost().markForUpdate();

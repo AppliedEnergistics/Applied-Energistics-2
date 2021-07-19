@@ -29,8 +29,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -55,7 +55,7 @@ public class CraftingTreeProcess {
     private boolean fullSimulation;
     private long bytes = 0;
 
-    public CraftingTreeProcess(final ICraftingGrid cc, final CraftingJob job, final ICraftingPatternDetails details,
+    public CraftingTreeProcess(final ICraftingService cc, final CraftingJob job, final ICraftingPatternDetails details,
             final CraftingTreeNode craftingTreeNode, final int depth) {
         this.parent = craftingTreeNode;
         this.details = details;

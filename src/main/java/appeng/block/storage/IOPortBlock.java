@@ -44,6 +44,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
         super(defaultProps(Material.IRON));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {

@@ -34,7 +34,7 @@ import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 
 /**
  * Implemented on AE's TileEntity.
@@ -108,7 +108,7 @@ public interface IPartHost extends ICustomCableConnection {
     /**
      * @return the physical location of the part host in the universe.
      */
-    DimensionalCoord getLocation();
+    DimensionalBlockPos getLocation();
 
     /**
      * @return the tile entity for the host, this can either be an FMP tile, or a AE tile

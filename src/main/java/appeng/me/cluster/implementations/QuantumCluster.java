@@ -32,12 +32,11 @@ import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
+import appeng.me.service.helpers.ConnectionWrapper;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.iterators.ChainedIterator;
 
@@ -101,9 +100,8 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
         boolean shutdown = false;
 
-        if (myOtherSide instanceof QuantumCluster) {
-            final QuantumCluster sideA = this;
-            final QuantumCluster sideB = (QuantumCluster) myOtherSide;
+        if (myOtherSide instanceof QuantumCluster sideB) {
+            var sideA = this;
 
             if (sideA.isActive() && sideB.isActive()) {
                 if (this.connection != null && this.connection.getConnection() != null) {
@@ -177,7 +175,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     private IGridNode getNode() {
-        return this.center.getGridNode(AEPartLocation.INTERNAL);
+        return this.center.getGridNode();
     }
 
     private boolean hasQES() {

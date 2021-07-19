@@ -46,16 +46,14 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
@@ -105,7 +103,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     public MolecularAssemblerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
-        this.getProxy().setIdlePowerUsage(0.0);
+        this.getMainNode()
+                .setIdlePowerUsage(0.0)
+                .addService(IGridTickable.class, this);
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
@@ -144,9 +144,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         if (wasEnabled != this.isAwake) {
             try {
                 if (this.isAwake) {
-                    this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                    this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
                 } else {
-                    this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                    this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
                 }
             } catch (final GridAccessException e) {
                 // :P
@@ -264,13 +264,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
     }
 
     @Override
@@ -442,7 +437,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     private int userPower(final int ticksPassed, final int bonusValue, final double acceleratorTax) {
         try {
-            return (int) (this.getProxy().getEnergy().extractAEPower(ticksPassed * bonusValue * acceleratorTax,
+            return (int) (this.getMainNode().getEnergy().extractAEPower(ticksPassed * bonusValue * acceleratorTax,
                     Actionable.MODULATE, PowerMultiplier.CONFIG) / acceleratorTax);
         } catch (final GridAccessException e) {
             return 0;
@@ -455,7 +450,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 output = this.pushTo(output, d);
             }
         } else {
-            output = this.pushTo(output, this.pushDirection.getFacing());
+            output = this.pushTo(output, this.pushDirection.getDirection());
         }
 
         if (output.isEmpty() && this.forcePlan) {
@@ -494,17 +489,14 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         return output;
     }
 
-    @MENetworkEventSubscribe
-    public void onPowerEvent(final MENetworkPowerStatusChange p) {
-        this.updatePowerState();
-    }
-
-    private void updatePowerState() {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
         boolean newState = false;
 
         try {
-            newState = this.getProxy().isActive() && this.getProxy().getEnergy().extractAEPower(1, Actionable.SIMULATE,
-                    PowerMultiplier.CONFIG) > 0.0001;
+            newState = this.getMainNode().isActive()
+                    && this.getMainNode().getEnergy().extractAEPower(1, Actionable.SIMULATE,
+                            PowerMultiplier.CONFIG) > 0.0001;
         } catch (final GridAccessException ignored) {
 
         }

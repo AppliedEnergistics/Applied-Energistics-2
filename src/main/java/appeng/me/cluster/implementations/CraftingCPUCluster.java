@@ -47,16 +47,16 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -70,10 +70,10 @@ import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
-import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
+import appeng.me.service.CraftingService;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.Platform;
@@ -162,7 +162,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     @Override
     public void updateStatus(final boolean updateGrid) {
         for (final CraftingTileEntity r : this.tiles) {
-            r.updateMeta(true);
+            r.updateSubType(true);
         }
     }
 
@@ -185,7 +185,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 if (n != null && !posted) {
                     final IGrid g = n.getGrid();
                     if (g != null) {
-                        g.postEvent(new MENetworkCraftingCpuChange(n));
+                        g.postEvent(new GridCraftingCpuChange(n));
                         posted = true;
                     }
                 }
@@ -374,7 +374,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        final CraftingGridCache sg = this.getGrid().getCache(ICraftingGrid.class);
+        var sg = (CraftingService) this.getGrid().getService(ICraftingService.class);
 
         if (sg.getInterestManager().containsKey(diff)) {
             final Collection<CraftingWatcher> list = sg.getInterestManager().get(diff);
@@ -437,10 +437,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         for (final CraftingTileEntity r : this.tiles) {
             final IGridNode gn = r.getActionableNode();
             if (gn != null) {
-                final IGrid g = gn.getGrid();
-                if (g != null) {
-                    return r.getActionableNode().getGrid();
-                }
+                return gn.getGrid();
             }
         }
 
@@ -561,7 +558,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.storeItems(); // marks dirty
     }
 
-    public void updateCraftingLogic(final IGrid grid, final IEnergyGrid eg, final CraftingGridCache cc) {
+    public void updateCraftingLogic(final IGrid grid, final IEnergyService eg, final CraftingService cc) {
         if (!this.getCore().isActive()) {
             return;
         }
@@ -604,7 +601,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    private void executeCrafting(final IEnergyGrid eg, final CraftingGridCache cc) {
+    private void executeCrafting(final IEnergyService eg, final CraftingService cc) {
         final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
         while (i.hasNext()) {
@@ -789,7 +786,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return;
         }
 
-        final IStorageGrid sg = g.getCache(IStorageGrid.class);
+        final IStorageService sg = g.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> ii = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
@@ -828,7 +825,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             return null;
         }
 
-        final IStorageGrid sg = g.getCache(IStorageGrid.class);
+        final IStorageService sg = g.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> storage = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         final MECraftingInventory ci = new MECraftingInventory(storage, true, false, false);
@@ -952,7 +949,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private void submitLink(final ICraftingLink myLastLink2) {
         if (this.getGrid() != null) {
-            final CraftingGridCache cc = this.getGrid().getCache(ICraftingGrid.class);
+            var cc = (CraftingService) this.getGrid().getService(ICraftingService.class);
             cc.addLink((CraftingLink) myLastLink2);
         }
     }

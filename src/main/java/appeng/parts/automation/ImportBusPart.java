@@ -31,7 +31,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -89,7 +89,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         }
 
         try {
-            final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
+            final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             final IAEItemStack out = inv.injectItems(
@@ -136,7 +136,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
 
     @Override
     protected TickRateModulation doBusWork() {
-        if (!this.getProxy().isActive() || !this.canDoBusWork()) {
+        if (!this.getMainNode().isActive() || !this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
@@ -149,9 +149,9 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
             try {
                 this.itemsToSend = this.calculateItemsToSend();
 
-                final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
+                final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+                final IEnergyService energy = this.getMainNode().getEnergy();
 
                 boolean Configured = false;
                 for (int x = 0; x < this.availableSlots(); x++) {

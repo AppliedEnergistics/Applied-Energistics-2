@@ -37,10 +37,10 @@ public class InvertedToggleBusPart extends ToggleBusPart {
 
     public InvertedToggleBusPart(final ItemStack is) {
         super(is);
-        this.getProxy().setIdlePowerUsage(0.0);
-        this.getOuterProxy().setIdlePowerUsage(0.0);
-        this.getProxy().setFlags();
-        this.getOuterProxy().setFlags();
+        this.getMainNode().setIdlePowerUsage(0.0);
+        this.getOuterNode().setIdlePowerUsage(0.0);
+        this.getMainNode().setFlags();
+        this.getOuterNode().setFlags();
     }
 
     @Override

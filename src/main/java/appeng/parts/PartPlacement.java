@@ -54,7 +54,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -88,7 +88,7 @@ public class PartPlacement {
 
         if (!held.isEmpty() && InteractionUtil.isWrench(player, held, pos)
                 && InteractionUtil.isInAlternateUseMode(player)) {
-            if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
+            if (!Platform.hasPermissions(new DimensionalBlockPos(world, pos), player)) {
                 return ActionResultType.FAIL;
             }
 
@@ -286,7 +286,7 @@ public class PartPlacement {
                 }
             }
 
-            final DimensionalCoord dc = host.getLocation();
+            final DimensionalBlockPos dc = host.getLocation();
             if (!Platform.hasPermissions(dc, player)) {
                 return ActionResultType.FAIL;
             }

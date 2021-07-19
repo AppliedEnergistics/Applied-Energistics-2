@@ -82,7 +82,7 @@ import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitCellHandlers;
 import appeng.init.internal.InitChargerRates;
-import appeng.init.internal.InitGridCaches;
+import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitSpatialMovableRegistry;
@@ -140,6 +140,9 @@ public abstract class AppEngBase implements AppEng {
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
+        // Init other thread-safe registries
+        InitGridServices.init();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerDimension);
         modEventBus.addGenericListener(Biome.class, this::registerBiomes);
@@ -174,7 +177,11 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(this::postRegistrationInitialization);
+        event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
+            if (err != null) {
+                AELog.warn(err);
+            }
+        });
     }
 
     /**
@@ -189,7 +196,6 @@ public abstract class AppEngBase implements AppEng {
 
         Capabilities.register();
         InitDispenserBehavior.init();
-        InitGridCaches.init();
         InitMatterCannonAmmo.init();
         InitCellHandlers.init();
 
@@ -208,14 +214,6 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public AdvancementTriggers getAdvancementTriggers() {
         return Objects.requireNonNull(this.advancementTriggers);
-    }
-
-    private void startService(final String serviceName, final Thread thread) {
-        thread.setName(serviceName);
-        thread.setPriority(Thread.MIN_PRIORITY);
-
-        AELog.info("Starting " + serviceName);
-        thread.start();
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> event) {

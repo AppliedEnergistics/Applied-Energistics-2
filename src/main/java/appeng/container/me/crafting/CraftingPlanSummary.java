@@ -28,7 +28,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -108,7 +108,7 @@ public class CraftingPlanSummary {
 
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
-        final IStorageGrid sg = grid.getCache(IStorageGrid.class);
+        final IStorageService sg = grid.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> items = sg
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 

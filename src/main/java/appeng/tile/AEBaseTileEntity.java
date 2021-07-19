@@ -101,7 +101,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return this;
     }
 
-    @Nullable
+    @Nonnull
     protected ItemStack getItemFromTile() {
         final Item item = REPRESENTATIVE_ITEMS.get(getType());
         if (item == null) {
@@ -158,6 +158,10 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         }
     }
 
+    /**
+     * Deferred tile-initialization when tiles actually start first ticking in a chunk. The tile needs to override
+     * {@link #validate()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
+     */
     public void onReady() {
     }
 
@@ -197,7 +201,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
             }
             this.renderFragment = 0;
         } catch (final Throwable t) {
-            AELog.debug(t);
+            AELog.warn(t);
         }
 
         return output;

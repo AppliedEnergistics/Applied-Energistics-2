@@ -59,6 +59,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     public SharedFluidBusPart(ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -80,9 +81,9 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     private void updateState() {
         try {
             if (!this.isSleeping()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
             }
         } catch (final GridAccessException e) {
             // :P
@@ -109,7 +110,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected TileEntity getConnectedTE() {
         TileEntity self = this.getHost().getTile();
-        return this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        return this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {

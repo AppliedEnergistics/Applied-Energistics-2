@@ -18,22 +18,32 @@
 
 package appeng.tile.grid;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
+import appeng.hooks.ticking.TickHandler;
+import appeng.me.ManagedGridNode;
+import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.AEBaseTileEntity;
 
-public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost, IGridProxyable {
+public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
-    private final AENetworkProxy gridProxy = this.createProxy();
+    private final ManagedGridNode mainNode = createMainNode()
+            .setVisualRepresentation(getItemFromTile())
+            .setInWorldNode(true)
+            .setTagName("proxy");
+
+    protected ManagedGridNode createMainNode() {
+        return new ManagedGridNode(this, TileEntityNodeListener.INSTANCE);
+    }
 
     public AENetworkTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -42,71 +52,64 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     @Override
     public void read(BlockState blockState, final CompoundNBT data) {
         super.read(blockState, data);
-        this.getProxy().readFromNBT(data);
+        this.getMainNode().readFromNBT(data);
     }
 
     @Override
     public CompoundNBT write(final CompoundNBT data) {
         super.write(data);
-        this.getProxy().writeToNBT(data);
+        this.getMainNode().writeToNBT(data);
         return data;
     }
 
-    protected AENetworkProxy createProxy() {
-        return new AENetworkProxy(this, "proxy", this.getItemFromTile(), true);
+    public final ManagedGridNode getMainNode() {
+        return this.mainNode;
+    }
+
+    @Nullable
+    public IGridNode getGridNode() {
+        return getMainNode().getNode();
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
-        return this.getProxy().getNode();
+    public IGridNode getGridNode(final Direction dir) {
+        var node = this.getMainNode().getNode();
+
+        // Check if the proxy exposes the node on this side
+        if (node != null && node.isExposedOnSide(dir)) {
+            return node;
+        }
+
+        return null;
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        this.getProxy().onChunkUnloaded();
+        this.getMainNode().onChunkUnloaded();
     }
 
     @Override
     public void onReady() {
         super.onReady();
-        this.getProxy().onReady();
+        this.getMainNode().create(getWorld(), getTile().getPos());
     }
 
     @Override
     public void remove() {
         super.remove();
-        this.getProxy().remove();
+        this.getMainNode().remove();
     }
 
     @Override
     public void validate() {
         super.validate();
-        this.getProxy().validate();
+        TickHandler.instance().addInit(this); // Required for onReady to be called
     }
 
-    @Override
-    public AENetworkProxy getProxy() {
-        return this.gridProxy;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
-    }
-
-    @Override
-    public void gridChanged() {
-
-    }
-
-    @Override
-    public IGridNode getActionableNode() {
-        return this.getProxy().getNode();
-    }
 }

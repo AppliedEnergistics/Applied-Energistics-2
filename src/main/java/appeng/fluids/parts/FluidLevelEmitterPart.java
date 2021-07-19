@@ -34,9 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
@@ -106,6 +104,8 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     public FluidLevelEmitterPart(ItemStack is) {
         super(is);
 
+        getMainNode().addService(IStackWatcherHost.class, this);
+
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
@@ -144,14 +144,9 @@ public class FluidLevelEmitterPart extends UpgradeablePart
         this.configureWatchers();
     }
 
-    @MENetworkEventSubscribe
-    public void channelChanged(final MENetworkChannelsChanged c) {
-        this.updateState();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerChanged(final MENetworkPowerStatusChange c) {
-        this.updateState();
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+        updateState();
     }
 
     @Override
@@ -165,14 +160,14 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    protected int populateFlags(final int cf) {
-        return cf | (this.prevState ? FLAG_ON : 0);
+    protected int calculateClientFlags() {
+        return super.calculateClientFlags() | (this.prevState ? FLAG_ON : 0);
     }
 
     @Override
     public boolean isValid(final Object effectiveGrid) {
         try {
-            return this.getProxy().getGrid() == effectiveGrid;
+            return this.getMainNode().getGridOrThrow() == effectiveGrid;
         } catch (final GridAccessException e) {
             return false;
         }
@@ -189,7 +184,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
         try {
             final IStorageChannel<IAEFluidStack> channel = Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class);
-            final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory(channel);
+            final IMEMonitor<IAEFluidStack> inventory = this.getMainNode().getStorage().getInventory(channel);
 
             this.updateReportingValue(inventory);
         } catch (final GridAccessException e) {
@@ -204,7 +199,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
             final TileEntity te = this.getHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
+            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getDirection()));
         }
     }
 
@@ -218,13 +213,14 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
             try {
                 if (myStack != null) {
-                    this.getProxy().getStorage().getInventory(channel).removeListener(this);
+                    this.getMainNode().getStorage().getInventory(channel).removeListener(this);
                     this.stackWatcher.add(myStack);
                 } else {
-                    this.getProxy().getStorage().getInventory(channel).addListener(this, this.getProxy().getGrid());
+                    this.getMainNode().getStorage().getInventory(channel).addListener(this,
+                            this.getMainNode().getGridOrThrow());
                 }
 
-                final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory(channel);
+                final IMEMonitor<IAEFluidStack> inventory = this.getMainNode().getStorage().getInventory(channel);
 
                 this.updateReportingValue(inventory);
             } catch (GridAccessException e) {
@@ -257,7 +253,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
@@ -267,7 +263,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getExternalCableConnectionType() {
         return AECableType.SMART;
     }
 

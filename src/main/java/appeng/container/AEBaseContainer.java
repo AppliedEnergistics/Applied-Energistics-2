@@ -51,10 +51,10 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.parts.IPart;
 import appeng.container.guisync.DataSynchronization;
 import appeng.container.slot.AppEngSlot;
@@ -149,13 +149,13 @@ public abstract class AEBaseContainer extends Container {
                 final IGrid g = gn.getGrid();
                 if (g != null) {
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        final IEnergyService eg = g.getService(IEnergyService.class);
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }
                     }
 
-                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    final ISecurityService sg = g.getService(ISecurityService.class);
                     if (sg.hasPermission(this.getPlayerInventory().player, perm)) {
                         return true;
                     }

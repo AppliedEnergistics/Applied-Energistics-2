@@ -18,10 +18,7 @@
 
 package appeng.me.pathfinding;
 
-import java.util.EnumSet;
-
 import appeng.api.networking.GridFlags;
-import appeng.api.util.IReadOnlyCollection;
 
 public interface IPathItem {
 
@@ -37,7 +34,7 @@ public interface IPathItem {
     /**
      * find possible choices for other pathing.
      */
-    IReadOnlyCollection<IPathItem> getPossibleOptions();
+    Iterable<IPathItem> getPossibleOptions();
 
     /**
      * add one to the channel count, this is mostly for cables.
@@ -45,11 +42,9 @@ public interface IPathItem {
     void incrementChannelCount(int usedChannels);
 
     /**
-     * get the grid flags for this IPathItem.
-     *
-     * @return the flag set.
+     * Tests if this path item has the specific grid flag set.
      */
-    EnumSet<GridFlags> getFlags();
+    boolean hasFlag(GridFlags flag);
 
     /**
      * channels are done, wrap it up.

@@ -21,8 +21,6 @@ package appeng.container.me.networktool;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.api.networking.IGridBlock;
-
 /**
  * Represents the status of machines grouped by their {@link IGridBlock#getMachineRepresentation() item representation}.
  */

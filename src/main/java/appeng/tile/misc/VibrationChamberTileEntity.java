@@ -34,13 +34,11 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
@@ -67,12 +65,14 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
     public VibrationChamberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
-        this.getProxy().setFlags();
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .setFlags()
+                .addService(IGridTickable.class, this);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -124,7 +124,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
             try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } catch (final GridAccessException e) {
                 // wake up!
             }
@@ -140,11 +140,6 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             }
         }
         return false;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
     }
 
     @Override
@@ -181,7 +176,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
 
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
             final double newPower = timePassed * POWER_PER_TICK;
             final double overFlow = grid.injectPower(newPower, Actionable.SIMULATE);
 
@@ -225,7 +220,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
         if (this.getBurnTime() > 0) {
             try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } catch (final GridAccessException e) {
                 // gah!
             }

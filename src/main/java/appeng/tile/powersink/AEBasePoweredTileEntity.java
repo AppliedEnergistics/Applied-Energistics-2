@@ -38,7 +38,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.capabilities.Capabilities;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.tile.AEBaseInvTileEntity;

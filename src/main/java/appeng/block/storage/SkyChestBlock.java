@@ -91,6 +91,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
         builder.add(WATERLOGGED);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;

@@ -76,6 +76,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     public AbstractMonitorPart(final ItemStack is) {
         super(is);
+
+        getMainNode().addService(IStackWatcherHost.class, this);
     }
 
     @Override
@@ -138,11 +140,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -165,11 +167,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -196,7 +198,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                     this.myWatcher.add(this.configuredItem);
                 }
 
-                this.updateReportingValue(this.getProxy().getStorage()
+                this.updateReportingValue(this.getMainNode().getStorage()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
             }
         } catch (final GridAccessException e) {
@@ -234,7 +236,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         matrixStack.push();
         matrixStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
 
-        Direction facing = this.getSide().getFacing();
+        Direction facing = this.getSide().getDirection();
 
         TesrRenderHelper.rotateToFace(matrixStack, facing, this.getSpin());
 

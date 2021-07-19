@@ -50,7 +50,6 @@ import net.minecraftforge.common.util.Constants;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -64,7 +63,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
 import appeng.client.render.cablebus.FacadeRenderState;
@@ -73,6 +72,7 @@ import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
+import appeng.me.GridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -215,7 +215,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                             final IGridNode sn = sbp.getGridNode();
                             if (sn != null) {
                                 try {
-                                    GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
+                                    GridConnection.create(cn, sn, null);
                                 } catch (final FailedConnectionException e) {
                                     AELog.debug(e);
 
@@ -257,7 +257,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
                     if (cn != null && sn != null) {
                         try {
-                            GridConnection.create(cn, sn, AEPartLocation.INTERNAL);
+                            GridConnection.create(cn, sn, null);
                         } catch (final FailedConnectionException e) {
                             AELog.debug(e);
 
@@ -329,7 +329,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public DimensionalCoord getLocation() {
+    public DimensionalBlockPos getLocation() {
         return this.tcb.getLocation();
     }
 
@@ -422,6 +422,17 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
         }
 
+        // Update the exposed sides of exposed nodes
+        for (var direction : Direction.values()) {
+            var part = getPart(direction);
+            if (part != null) {
+                var node = part.getExternalFacingNode();
+                if (node != null) {
+                    ((GridNode) node).setExposedOnSides(EnumSet.of(direction));
+                }
+            }
+        }
+
         this.tcb.partChanged();
     }
 
@@ -488,12 +499,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
     }
 
-    /**
-     * use for FMP
-     */
     public void updateConnections() {
         if (this.getCenter() != null) {
-            final EnumSet<Direction> sides = EnumSet.allOf(Direction.class);
+            var sides = EnumSet.allOf(Direction.class);
 
             for (final Direction s : Direction.values()) {
                 if (this.getPart(s) != null || this.isBlocked(s)) {
@@ -501,11 +509,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 }
             }
 
-            this.getCenter().setValidSides(sides);
-            final IGridNode n = this.getCenter().getGridNode();
-            if (n != null) {
-                n.updateState();
-            }
+            this.getCenter().setExposedOnSides(sides);
         }
     }
 
@@ -576,7 +580,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation side) {
+    public IGridNode getGridNode(final Direction side) {
         final IPart part = this.getPart(side);
         if (part != null) {
             final IGridNode n = part.getExternalFacingNode();
@@ -593,13 +597,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         final IPart part = this.getPart(dir);
-        if (part instanceof IGridHost) {
-            final AECableType t = ((IGridHost) part).getCableConnectionType(dir);
-            if (t != null && t != AECableType.NONE) {
-                return t;
-            }
+
+        if (part != null && part.getExternalFacingNode() != null) {
+            return part.getExternalCableConnectionType();
         }
 
         if (this.getCenter() != null) {
@@ -614,16 +616,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return this.getPart(AEPartLocation.INTERNAL) instanceof ICablePart
                 ? this.getPart(AEPartLocation.INTERNAL).getCableConnectionLength(cable)
                 : -1;
-    }
-
-    @Override
-    public void securityBreak() {
-        for (final AEPartLocation d : AEPartLocation.values()) {
-            final IPart p = this.getPart(d);
-            if (p instanceof IGridHost) {
-                ((IGridHost) p).securityBreak();
-            }
-        }
     }
 
     @Override
@@ -949,24 +941,19 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // type
                 AECableType connectionType = cable.getCableConnectionType();
 
-                // Only use the incoming cable-type of the adjacent block, if it's not a cable
-                // bus itself
-                // Dense cables however also respect the adjacent cable-type since their
-                // outgoing connection
+                // Only use the incoming cable-type of the adjacent block, if it's not a cable bus itself
+                // Dense cables however also respect the adjacent cable-type since their outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getTile().getPos().offset(facing);
-                final TileEntity adjacentTe = this.getTile().getWorld().getTileEntity(adjacentPos);
+                var adjacentHost = Api.instance().grid().getNodeHost(getTile().getWorld(), adjacentPos);
 
-                if (adjacentTe instanceof IGridHost) {
-                    final IGridHost gridHost = (IGridHost) adjacentTe;
-                    final AECableType adjacentType = gridHost
-                            .getCableConnectionType(AEPartLocation.fromFacing(facing.getOpposite()));
-
+                if (adjacentHost != null) {
+                    var adjacentType = adjacentHost.getCableConnectionType(facing.getOpposite());
                     connectionType = AECableType.min(connectionType, adjacentType);
                 }
 
                 // Check if the adjacent TE is a cable bus or not
-                if (adjacentTe instanceof IPartHost) {
+                if (adjacentHost instanceof CableBusContainer) {
                     renderState.getCableBusAdjacent().add(facing);
                 }
 
@@ -1005,20 +992,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final IPartCollisionHelper bch = new BusCollisionHelper(renderState.getBoundingBoxes(), loc, true);
             part.getBoxes(bch);
 
-            if (part instanceof IGridHost) {
-                // Some attachments want a thicker cable than glass, account for that
-                final IGridHost gridHost = (IGridHost) part;
-                final AECableType desiredType = gridHost.getCableConnectionType(AEPartLocation.INTERNAL);
+            // Some attachments want a thicker cable than glass, account for that
+            var desiredType = part.getDesiredConnectionType();
+            if (renderState.getCoreType() == CableCoreType.GLASS
+                    && (desiredType == AECableType.SMART || desiredType == AECableType.COVERED)) {
+                renderState.setCoreType(CableCoreType.COVERED);
+            }
 
-                if (renderState.getCoreType() == CableCoreType.GLASS
-                        && (desiredType == AECableType.SMART || desiredType == AECableType.COVERED)) {
-                    renderState.setCoreType(CableCoreType.COVERED);
-                }
-
-                int length = (int) part.getCableConnectionLength(null);
-                if (length > 0 && length <= 8) {
-                    renderState.getAttachmentConnections().put(facing, length);
-                }
+            int length = (int) part.getCableConnectionLength(null);
+            if (length > 0 && length <= 8) {
+                renderState.getAttachmentConnections().put(facing, length);
             }
 
             renderState.getAttachments().put(facing, part.getStaticModels());

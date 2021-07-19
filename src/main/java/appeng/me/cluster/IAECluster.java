@@ -20,9 +20,8 @@ package appeng.me.cluster;
 
 import java.util.Iterator;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-
-import appeng.api.networking.IGridHost;
 
 public interface IAECluster {
 
@@ -46,5 +45,5 @@ public interface IAECluster {
      */
     boolean isDestroyed();
 
-    Iterator<? extends IGridHost> getTiles();
+    Iterator<? extends TileEntity> getTiles();
 }

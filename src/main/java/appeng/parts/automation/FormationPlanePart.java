@@ -54,10 +54,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventoryHandler;
@@ -130,7 +127,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
         } catch (final GridAccessException e) {
             // :P
         }
@@ -169,17 +166,6 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.stateChanged();
-    }
-
-    @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
-        this.stateChanged();
-    }
-
-    @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
@@ -189,7 +175,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (this.getProxy().isActive()
+        if (this.getMainNode().isActive()
                 && channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
             final List<IMEInventoryHandler> handler = new ArrayList<>(1);
             handler.add(this.myHandler);
@@ -216,7 +202,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
 
-        final BlockPos placePos = te.getPos().offset(side.getFacing());
+        final BlockPos placePos = te.getPos().offset(side.getDirection());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
@@ -231,7 +217,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (type == Actionable.MODULATE) {
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
-                    Direction lookDirection = side.getFacing();
+                    Direction lookDirection = side.getDirection();
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
@@ -443,4 +429,5 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             return this.lookDirection.getHorizontalIndex() * 90;
         }
     }
+
 }

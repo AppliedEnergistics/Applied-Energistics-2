@@ -56,7 +56,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.config.Actionable;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.block.misc.TinyTNTBlock;
 import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
@@ -98,7 +98,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         } else {
             BlockPos pos = target.getPos();
             final BlockState state = w.getBlockState(pos);
-            if (!state.getFluidState().isEmpty() && Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+            if (!state.getFluidState().isEmpty() && Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
                 ItemUseContext context = new ItemUseContext(p, hand, target);
                 this.onItemUse(context);
             }

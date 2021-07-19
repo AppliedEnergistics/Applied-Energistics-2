@@ -22,13 +22,10 @@ import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.CraftingTileEntity;
@@ -57,12 +54,12 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public CraftingCPUCluster createCluster(final World w, final BlockPos min, final BlockPos max) {
+    public CraftingCPUCluster createCluster(final ServerWorld w, final BlockPos min, final BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerWorld w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
         for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
@@ -81,7 +78,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public void updateTiles(final CraftingCPUCluster c, final World w, final BlockPos min, final BlockPos max) {
+    public void updateTiles(final CraftingCPUCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
         for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
             final CraftingTileEntity te = (CraftingTileEntity) w.getTileEntity(blockPos);
             te.updateStatus(c);
@@ -92,12 +89,12 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
         final Iterator<CraftingTileEntity> i = c.getTiles();
         while (i.hasNext()) {
-            final IGridHost gh = i.next();
-            final IGridNode n = gh.getGridNode(AEPartLocation.INTERNAL);
+            var gh = i.next();
+            var n = gh.getGridNode();
             if (n != null) {
                 final IGrid g = n.getGrid();
                 if (g != null) {
-                    g.postEvent(new MENetworkCraftingCpuChange(n));
+                    g.postEvent(new GridCraftingCpuChange(n));
                     return;
                 }
             }

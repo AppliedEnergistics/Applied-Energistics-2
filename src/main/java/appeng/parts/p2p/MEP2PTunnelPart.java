@@ -45,9 +45,10 @@ import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.me.cache.helpers.Connections;
-import appeng.me.cache.helpers.TunnelConnection;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.ManagedGridNode;
+import appeng.me.service.helpers.Connections;
+import appeng.me.service.helpers.TunnelConnection;
+import appeng.parts.AEBasePart;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -59,12 +60,16 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     private final Connections connection = new Connections(this);
-    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer", ItemStack.EMPTY, true);
+
+    private final ManagedGridNode outerNode = new ManagedGridNode(this, AEBasePart.NodeListener.INSTANCE)
+            .setTagName("outer")
+            .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
     public MEP2PTunnelPart(final ItemStack is) {
         super(is);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL);
-        this.outerProxy.setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
+                .addService(IGridTickable.class, this);
     }
 
     @Override
@@ -75,13 +80,13 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.outerProxy.readFromNBT(extra);
+        this.outerNode.readFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.outerProxy.writeToNBT(extra);
+        this.outerNode.writeToNBT(extra);
     }
 
     @Override
@@ -89,7 +94,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
         super.onTunnelNetworkChange();
         if (!this.isOutput()) {
             try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } catch (final GridAccessException e) {
                 // :P
             }
@@ -97,38 +102,38 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getExternalCableConnectionType() {
         return AECableType.DENSE_SMART;
     }
 
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.outerProxy.remove();
+        this.outerNode.remove();
     }
 
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerProxy.onReady();
+        this.outerNode.create(getWorld(), getTile().getPos());
     }
 
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
         super.setPartHostInfo(side, host, tile);
-        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+        this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
     @Override
     public IGridNode getExternalFacingNode() {
-        return this.outerProxy.getNode();
+        return this.outerNode.getNode();
     }
 
     @Override
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.outerProxy.setOwner(player);
+        this.outerNode.setOwner(player);
     }
 
     @Override
@@ -140,8 +145,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
         // just move on...
         try {
-            if (!this.getProxy().getPath().isNetworkBooting()) {
-                if (!this.getProxy().getEnergy().isNetworkPowered() || !this.getProxy().isActive()) {
+            if (!this.getMainNode().getPath().isNetworkBooting()) {
+                if (!this.getMainNode().getEnergy().isNetworkPowered() || !this.getMainNode().isActive()) {
                     this.connection.markDestroy();
                 } else {
                     this.connection.markCreate();
@@ -170,8 +175,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
                 try {
-                    if (cw.getTunnel().getProxy().getGrid() != this.getProxy().getGrid()
-                            || !cw.getTunnel().getProxy().isActive()) {
+                    if (cw.getTunnel().getMainNode().getGridOrThrow() != this.getMainNode().getGridOrThrow()
+                            || !cw.getTunnel().getMainNode().isActive()) {
                         cw.getConnection().destroy();
                         i.remove();
                     }
@@ -183,7 +188,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             final List<MEP2PTunnelPart> newSides = new ArrayList<>();
             try {
                 for (final MEP2PTunnelPart me : this.getOutputs()) {
-                    if (me.getProxy().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
+                    if (me.getMainNode().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
                         newSides.add(me);
                     }
                 }
@@ -191,7 +196,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                 for (final MEP2PTunnelPart me : newSides) {
                     try {
                         connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
-                                .grid().createGridConnection(this.outerProxy.getNode(), me.outerProxy.getNode())));
+                                .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
                     } catch (final FailedConnectionException e) {
                         final TileEntity start = this.getTile();
                         final TileEntity end = me.getTile();

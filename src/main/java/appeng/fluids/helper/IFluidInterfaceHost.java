@@ -25,15 +25,13 @@ import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;
-import appeng.me.helpers.IGridProxyable;
 
-public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgradeableHost {
+public interface IFluidInterfaceHost extends IActionHost, IUpgradeableHost {
     DualityFluidInterface getDualityFluidInterface();
 
     EnumSet<Direction> getTargets();
 
     TileEntity getTileEntity();
 
-    @Override
     void saveChanges();
 }

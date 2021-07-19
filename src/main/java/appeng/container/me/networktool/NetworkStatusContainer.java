@@ -20,12 +20,12 @@ package appeng.container.me.networktool;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.Direction;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerTypeBuilder;
@@ -45,11 +45,10 @@ public class NetworkStatusContainer extends AEBaseContainer {
 
     public NetworkStatusContainer(int id, PlayerInventory ip, final INetworkTool te) {
         super(TYPE, id, ip, null);
-        final IGridHost host = te.getGridHost();
+        var host = te.getGridHost();
 
         if (host != null) {
-            this.findNode(host, AEPartLocation.INTERNAL);
-            for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+            for (var d : Direction.values()) {
                 this.findNode(host, d);
             }
         }
@@ -59,7 +58,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
         }
     }
 
-    private void findNode(final IGridHost host, final AEPartLocation d) {
+    private void findNode(final IInWorldGridNodeHost host, final Direction d) {
         if (this.grid == null) {
             final IGridNode node = host.getGridNode(d);
             if (node != null) {

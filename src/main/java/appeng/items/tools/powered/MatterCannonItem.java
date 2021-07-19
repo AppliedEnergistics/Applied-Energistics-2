@@ -62,7 +62,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -260,7 +260,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 final Direction side = blockResult.getFace();
                 final BlockPos hitPos = blockResult.getPos().offset(side);
 
-                if (!Platform.hasPermissions(new DimensionalCoord(w, hitPos), p)) {
+                if (!Platform.hasPermissions(new DimensionalBlockPos(w, hitPos), p)) {
                     return;
                 }
 
@@ -371,7 +371,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                         final float hardness = bs.getBlockHardness(w, blockPos) * 9.0f;
                         if (hardness >= 0.0 && penetration > hardness
-                                && Platform.hasPermissions(new DimensionalCoord(w, blockPos), p)) {
+                                && Platform.hasPermissions(new DimensionalBlockPos(w, blockPos), p)) {
                             hasDestroyed = true;
                             penetration -= hardness;
                             penetration *= 0.60;

@@ -19,23 +19,18 @@
 package appeng.parts.networking;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 
 public abstract class DenseCablePart extends CablePart {
     public DenseCablePart(final ItemStack is) {
         super(is);
 
-        this.getProxy().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
+        this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
     }
 
     @Override
@@ -53,7 +48,7 @@ public abstract class DenseCablePart extends CablePart {
 
         bch.addBox(min, min, min, max, max, max);
 
-        for (final AEPartLocation of : this.getConnections()) {
+        for (var of : this.getConnections()) {
             if (this.isDense(of)) {
                 switch (of) {
                     case DOWN:
@@ -102,24 +97,15 @@ public abstract class DenseCablePart extends CablePart {
         }
     }
 
-    private boolean isDense(final AEPartLocation of) {
-        final TileEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(of.getFacing()));
+    private boolean isDense(final Direction of) {
+        var adjacentHost = Api.instance().grid().getNodeHost(getTile().getWorld(), getTile().getPos().offset(of));
 
-        if (te instanceof IGridHost) {
-            final AECableType t = ((IGridHost) te).getCableConnectionType(of.getOpposite());
+        if (adjacentHost != null) {
+            var t = adjacentHost.getCableConnectionType(of.getOpposite());
             return t.isDense();
         }
 
         return false;
     }
 
-    @MENetworkEventSubscribe
-    public void channelUpdated(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
-    }
 }

@@ -29,11 +29,10 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
@@ -52,7 +51,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
 
     public EnergyAcceptorPart(final ItemStack is) {
         super(is);
-        this.getProxy().setIdlePowerUsage(0);
+        this.getMainNode().setIdlePowerUsage(0);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
@@ -65,11 +64,6 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
         }
 
         return super.getCapability(capability);
-    }
-
-    @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
-        return AECableType.GLASS;
     }
 
     @Override
@@ -96,7 +90,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
 
     protected double getFunnelPowerDemand(final double maxRequired) {
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
 
             return grid.getEnergyDemand(maxRequired);
         } catch (final GridAccessException e) {
@@ -111,7 +105,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
 
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
         try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+            final IEnergyService grid = this.getMainNode().getEnergy();
             final double leftOver = grid.injectPower(power, mode);
 
             return leftOver;

@@ -63,7 +63,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.core.AEConfig;
@@ -136,7 +136,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 paintBall = ItemStack.EMPTY;
             }
 
-            if (p != null && !Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+            if (p != null && !Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
                 return ActionResultType.FAIL;
             }
 
@@ -428,6 +428,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public FuzzyMode getFuzzyMode(final ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        if (fz.isEmpty()) {
+            return FuzzyMode.IGNORE_ALL;
+        }
         try {
             return FuzzyMode.valueOf(fz);
         } catch (final Throwable t) {

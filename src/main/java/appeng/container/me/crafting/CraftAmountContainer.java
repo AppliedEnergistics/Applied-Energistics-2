@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
@@ -151,7 +151,7 @@ public class CraftAmountContainer extends AEBaseContainer {
 
             Future<ICraftingJob> futureJob = null;
             try {
-                final ICraftingGrid cg = g.getCache(ICraftingGrid.class);
+                final ICraftingService cg = g.getService(ICraftingService.class);
                 futureJob = cg.beginCraftingJob(getWorld(), getGrid(), getActionSrc(),
                         this.itemToCreate, null);
 

@@ -1,0 +1,68 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 AlgorithmX2
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package appeng.api.networking.spatial;
+
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import appeng.api.networking.IGridService;
+
+public interface ISpatialService extends IGridService {
+
+    /**
+     * @return true if a region is defined at all, it doesn't have to be valid, but all points must be in the same
+     *         world.
+     */
+    boolean hasRegion();
+
+    /**
+     * @return true if the region defined is valid according to all rules.
+     */
+    boolean isValidRegion();
+
+    /**
+     * @return The world that the spatial region is in.
+     */
+    World getWorld();
+
+    /**
+     * @return the minimum anchor point for the spatial region.
+     */
+    BlockPos getMin();
+
+    /**
+     * @return the maximum anchor point for the spatial region.
+     */
+    BlockPos getMax();
+
+    /**
+     * @return how many AE units are required to preform the activation
+     */
+    long requiredPower();
+
+    /**
+     * @return current 100% - 0% efficiency.
+     */
+    float currentEfficiency();
+}

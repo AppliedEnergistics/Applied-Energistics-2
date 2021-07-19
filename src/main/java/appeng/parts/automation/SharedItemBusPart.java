@@ -40,6 +40,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     public SharedItemBusPart(final ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -81,9 +82,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected InventoryAdaptor getHandler() {
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
 
-        return InventoryAdaptor.getAdaptor(target, this.getSide().getFacing().getOpposite());
+        return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
@@ -125,7 +126,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      */
     protected boolean canDoBusWork() {
         final TileEntity self = this.getHost().getTile();
-        final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
+        final BlockPos selfPos = self.getPos().offset(this.getSide().getDirection());
         final World world = self.getWorld();
 
         return world != null && world.getChunkProvider().canTick(selfPos);
@@ -134,9 +135,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     private void updateState() {
         try {
             if (!this.isSleeping()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
             }
         } catch (final GridAccessException e) {
             // :P

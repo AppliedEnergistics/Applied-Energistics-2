@@ -32,7 +32,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -41,7 +41,7 @@ public class OverlayManager {
 
     private final static OverlayManager INSTANCE = new OverlayManager();
 
-    private final Map<DimensionalCoord, OverlayRenderer> overlayHandlers = new HashMap<>();
+    private final Map<DimensionalBlockPos, OverlayRenderer> overlayHandlers = new HashMap<>();
 
     public static OverlayManager getInstance() {
         return INSTANCE;
