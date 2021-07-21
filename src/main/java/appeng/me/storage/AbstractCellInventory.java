@@ -176,6 +176,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
     /**
      * Load a single item.
+     * 
      * @return true when successfully loaded
      */
     protected abstract boolean loadCellItem(CompoundNBT compoundTag, int stackSize);

@@ -113,19 +113,19 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.getOuterNode().readFromNBT(extra);
+        this.getOuterNode().loadFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.getOuterNode().writeToNBT(extra);
+        this.getOuterNode().saveToNBT(extra);
     }
 
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.getOuterNode().remove();
+        this.getOuterNode().destroy();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class ToggleBusPart extends BasicStatePart {
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.getOuterNode().setOwner(player);
+        this.getOuterNode().setOwningPlayer(player);
     }
 
     private void updateInternalState() {

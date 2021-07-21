@@ -37,7 +37,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
 
@@ -99,12 +98,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
         if (this.lastValue != newLevel && this.getMainNode().isActive()) {
             this.lastValue = newLevel;
-            try {
-                for (final LightP2PTunnelPart out : this.getOutputs()) {
-                    out.setLightLevel(this.lastValue);
-                }
-            } catch (final GridAccessException e) {
-                // :P
+            for (final LightP2PTunnelPart out : this.getOutputs()) {
+                out.setLightLevel(this.lastValue);
             }
             return true;
         }

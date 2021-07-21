@@ -37,6 +37,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
@@ -91,7 +92,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
+    protected IManagedGridNode createMainNode() {
         return new ManagedGridNode(this, NODE_LISTENER);
     }
 

@@ -46,7 +46,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridConnectionVisitor;
@@ -61,7 +60,7 @@ import appeng.api.util.AEColor;
 import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
 
-public class GridNode implements IConfigurableGridNode, IPathItem {
+public class GridNode implements IGridNode, IPathItem {
     private final ServerWorld world;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a tile-entity or
@@ -227,7 +226,13 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         updateState();
     }
 
-    @Override
+    /**
+     * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
+     * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is
+     * saved with the Node NBT.
+     *
+     * @param ownerPlayerId ME player id of the owner. See {@link appeng.api.features.IPlayerRegistry}.
+     */
     public void setOwningPlayerId(int ownerPlayerId) {
         if (ownerPlayerId >= 0 && this.owningPlayerId != ownerPlayerId) {
             this.owningPlayerId = ownerPlayerId;
@@ -240,7 +245,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
      */
-    @Override
     public void setIdlePowerUsage(@Nonnegative double usagePerTick) {
         this.idlePowerUsage = usagePerTick;
         if (myGrid != null && ready) {
@@ -252,7 +256,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
      * {@link ItemStack#EMPTY} to hide the node from UIs.
      */
-    @Override
     public void setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
         this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
     }
@@ -261,7 +264,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
      * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
      * node will connect to nodes of any color.
      */
-    @Override
     public void setGridColor(@Nonnull AEColor color) {
         this.gridColor = Objects.requireNonNull(color);
         this.updateState();
@@ -294,7 +296,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         callListener(IGridNodeListener::onGridChanged);
     }
 
-    @Override
     public void destroy() {
         while (!this.connections.isEmpty()) {
             // not part of this network for real anymore.
@@ -313,7 +314,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         }
     }
 
-    @Override
     public void markReady() {
         Preconditions.checkState(!ready);
         ready = true;
@@ -370,7 +370,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         return myGrid.getService(IEnergyService.class).isNetworkPowered();
     }
 
-    @Override
     public void loadFromNBT(final String name, final CompoundNBT nodeData) {
         Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
         if (this.myGrid == null) {
@@ -386,7 +385,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         }
     }
 
-    @Override
     public void saveToNBT(final String name, final CompoundNBT nodeData) {
         if (this.myStorage != null) {
             final CompoundNBT node = new CompoundNBT();
@@ -600,7 +598,6 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
         return services != null ? services.getInstance(serviceClass) : null;
     }
 
-    @Override
     public <T extends IGridNodeService> void addService(Class<T> serviceClass, T service) {
         if (services == null) {
             services = MutableClassToInstanceMap.create();

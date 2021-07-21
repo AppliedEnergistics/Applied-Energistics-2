@@ -27,13 +27,16 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
 
 /**
  * Gives you access to Grid based information.
- *
+ * <p>
  * Don't Implement.
  */
 public interface IGrid {
@@ -42,7 +45,6 @@ public interface IGrid {
      * Get Access to various grid modules
      *
      * @param iface face
-     *
      * @return the IGridCache you requested.
      */
     @Nonnull
@@ -52,7 +54,6 @@ public interface IGrid {
      * Post an event into the network event bus.
      *
      * @param ev - event to post
-     *
      * @return returns ev back to original poster
      */
     @Nonnull
@@ -71,7 +72,6 @@ public interface IGrid {
      * Get machine nodes on the network.
      *
      * @param machineClass class of the machine associated with a grid node
-     *
      * @return all nodes belonging to machines of specified class. keep in mind that machines can have multiple nodes.
      */
     @Nonnull
@@ -81,7 +81,6 @@ public interface IGrid {
      * Get machines connected to the network via grid nodes.
      *
      * @param machineClass class of the machine associated with a grid node
-     *
      * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
      *         will only return the machine once.
      */
@@ -92,7 +91,6 @@ public interface IGrid {
      * Get machines connected to the network via grid nodes that are powered and have their needed channels.
      *
      * @param machineClass class of the machine associated with a grid node
-     *
      * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
      *         will only return the machine once.
      */
@@ -123,7 +121,7 @@ public interface IGrid {
 
     /**
      * Get this grids {@link ITickManager}.
-     * 
+     *
      * @see #getService(Class)
      */
     @Nonnull
@@ -133,11 +131,41 @@ public interface IGrid {
 
     /**
      * Get this grids {@link IStorageService}.
-     * 
+     *
      * @see #getService(Class)
      */
     @Nonnull
     default IStorageService getStorageService() {
         return getService(IStorageService.class);
+    }
+
+    /**
+     * Get this grids {@link IEnergyService}.
+     *
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default IEnergyService getEnergyService() {
+        return getService(IEnergyService.class);
+    }
+
+    /**
+     * Get this grids {@link ICraftingService}.
+     *
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default ICraftingService getCraftingService() {
+        return getService(ICraftingService.class);
+    }
+
+    /**
+     * Get this grids {@link ISecurityService}.
+     *
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default ISecurityService getSecurityService() {
+        return getService(ISecurityService.class);
     }
 }

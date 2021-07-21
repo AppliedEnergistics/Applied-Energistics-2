@@ -40,7 +40,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.ManagedGridNode;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
@@ -76,19 +75,19 @@ public class QuartzFiberPart extends AEBasePart {
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.outerNode.readFromNBT(extra);
+        this.outerNode.loadFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.outerNode.writeToNBT(extra);
+        this.outerNode.saveToNBT(extra);
     }
 
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.outerNode.remove();
+        this.outerNode.destroy();
     }
 
     @Override
@@ -117,7 +116,7 @@ public class QuartzFiberPart extends AEBasePart {
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.outerNode.setOwner(player);
+        this.outerNode.setOwningPlayer(player);
     }
 
     @Override
@@ -134,19 +133,15 @@ public class QuartzFiberPart extends AEBasePart {
         public Collection<IEnergyGridProvider> providers() {
             var providers = new ArrayList<IEnergyGridProvider>(2);
 
-            try {
-                var eg = (EnergyService) getMainNode().getEnergy();
+            getMainNode().ifPresent(grid -> {
+                var eg = (EnergyService) grid.getEnergyService();
                 providers.add(eg);
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
 
-            try {
-                var eg = (EnergyService) outerNode.getEnergy();
+            outerNode.ifPresent(grid -> {
+                var eg = (EnergyService) grid.getEnergyService();
                 providers.add(eg);
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
 
             return providers;
         }

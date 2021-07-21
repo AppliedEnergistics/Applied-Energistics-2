@@ -49,7 +49,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
-import appeng.me.GridAccessException;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
@@ -192,17 +191,15 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             this.myWatcher.reset();
         }
 
-        try {
-            if (this.configuredItem != null) {
-                if (this.myWatcher != null) {
-                    this.myWatcher.add(this.configuredItem);
-                }
-
-                this.updateReportingValue(this.getMainNode().getStorage()
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+        if (this.configuredItem != null) {
+            if (this.myWatcher != null) {
+                this.myWatcher.add(this.configuredItem);
             }
-        } catch (final GridAccessException e) {
-            // >.>
+
+            getMainNode().ifPresent(grid -> {
+                this.updateReportingValue(grid.getStorageService()
+                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+            });
         }
     }
 

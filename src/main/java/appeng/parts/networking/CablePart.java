@@ -42,7 +42,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
-import appeng.me.GridAccessException;
 import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 
@@ -85,7 +84,10 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        return this.getMainNode().getGridColor();
+        if (getItemStack().getItem() instanceof ColoredPartItem<?>coloredPartItem) {
+            return coloredPartItem.getColor();
+        }
+        return AEColor.TRANSPARENT;
     }
 
     @Override
@@ -123,10 +125,9 @@ public class CablePart extends AEBasePart implements ICablePart {
 
             boolean hasPermission = true;
 
-            try {
-                hasPermission = this.getMainNode().getSecurity().hasPermission(who, SecurityPermissions.BUILD);
-            } catch (final GridAccessException e) {
-                // :P
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                hasPermission = grid.getSecurityService().hasPermission(who, SecurityPermissions.BUILD);
             }
 
             if (newPart != null && hasPermission) {
@@ -254,7 +255,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
         }
 
-        IGridNode n = this.getGridNode();
+        var n = getGridNode();
         if (n != null) {
             for (var entry : n.getInWorldConnections().entrySet()) {
                 var side = entry.getKey().ordinal();
@@ -262,14 +263,10 @@ public class CablePart extends AEBasePart implements ICablePart {
                 channelsPerSide[side] = entry.getValue().getUsedChannels();
                 flags |= 1 << side;
             }
-        }
 
-        try {
-            if (this.getMainNode().getEnergy().isNetworkPowered()) {
+            if (n.isPowered()) {
                 flags |= 1 << AEPartLocation.INTERNAL.ordinal();
             }
-        } catch (final GridAccessException e) {
-            // aww...
         }
 
         data.writeByte((byte) flags);

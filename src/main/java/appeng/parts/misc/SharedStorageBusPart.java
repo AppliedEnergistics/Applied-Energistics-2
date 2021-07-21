@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Settings;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
@@ -40,7 +41,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
 
 /**

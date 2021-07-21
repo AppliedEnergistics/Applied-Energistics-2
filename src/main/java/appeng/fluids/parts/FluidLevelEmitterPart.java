@@ -34,6 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -61,7 +62,6 @@ import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.IConfigManagerHost;
@@ -181,15 +181,10 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
     @Override
     public void onListUpdate() {
-        try {
-            final IStorageChannel<IAEFluidStack> channel = Api.instance().storage()
-                    .getStorageChannel(IFluidStorageChannel.class);
-            final IMEMonitor<IAEFluidStack> inventory = this.getMainNode().getStorage().getInventory(channel);
-
-            this.updateReportingValue(inventory);
-        } catch (final GridAccessException e) {
-            // ;P
-        }
+        getMainNode().ifPresent(grid -> {
+            var channel = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+            this.updateReportingValue(grid.getStorageService().getInventory(channel));
+        });
     }
 
     private void updateState() {
@@ -211,21 +206,16 @@ public class FluidLevelEmitterPart extends UpgradeablePart
 
             final IAEFluidStack myStack = this.config.getFluidInSlot(0);
 
-            try {
+            getMainNode().ifPresent(grid -> {
                 if (myStack != null) {
-                    this.getMainNode().getStorage().getInventory(channel).removeListener(this);
+                    grid.getStorageService().getInventory(channel).removeListener(this);
                     this.stackWatcher.add(myStack);
                 } else {
-                    this.getMainNode().getStorage().getInventory(channel).addListener(this,
-                            this.getMainNode().getGridOrThrow());
+                    grid.getStorageService().getInventory(channel).addListener(this, grid);
                 }
 
-                final IMEMonitor<IAEFluidStack> inventory = this.getMainNode().getStorage().getInventory(channel);
-
-                this.updateReportingValue(inventory);
-            } catch (GridAccessException e) {
-                // NOP
-            }
+                this.updateReportingValue(grid.getStorageService().getInventory(channel));
+            });
         }
     }
 

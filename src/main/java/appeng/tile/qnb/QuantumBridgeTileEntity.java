@@ -43,7 +43,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.definitions.AEBlocks;
-import appeng.me.GridAccessException;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
@@ -239,13 +238,8 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
             return (this.constructed & this.powered) == this.powered && this.constructed != -1;
         }
 
-        try {
-            return this.getMainNode().getEnergy().isNetworkPowered();
-        } catch (final GridAccessException e) {
-            // :P
-        }
-
-        return false;
+        var node = getMainNode().getNode();
+        return node != null && node.isPowered();
     }
 
     public boolean isFormed() {

@@ -40,6 +40,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -73,7 +74,6 @@ import appeng.container.implementations.LevelEmitterContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
@@ -174,10 +174,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         }
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
-            try {
-                return this.getMainNode().getCrafting().isRequesting(this.config.getAEStackInSlot(0));
-            } catch (final GridAccessException e) {
-                // :P
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                return grid.getCraftingService().isRequesting(this.config.getAEStackInSlot(0));
             }
 
             return this.prevState;
@@ -241,29 +240,27 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
                 this.myEnergyWatcher.add(this.reportingValue);
             }
 
-            try {
+            getMainNode().ifPresent(grid -> {
                 // update to power...
-                this.lastReportedValue = (long) this.getMainNode().getEnergy().getStoredPower();
+                this.lastReportedValue = (long) grid.getEnergyService().getStoredPower();
                 this.updateState();
 
                 // no more item stuff..
-                this.getMainNode().getStorage()
+                grid.getStorageService()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
                         .removeListener(this);
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
 
             return;
         }
 
-        try {
+        getMainNode().ifPresent(grid -> {
             if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
-                this.getMainNode().getStorage()
+                grid.getStorageService()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
-                        .addListener(this, this.getMainNode().getGridOrThrow());
+                        .addListener(this, grid);
             } else {
-                this.getMainNode().getStorage()
+                grid.getStorageService()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
                         .removeListener(this);
 
@@ -272,11 +269,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
                 }
             }
 
-            this.updateReportingValue(this.getMainNode().getStorage()
+            this.updateReportingValue(grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
-        } catch (final GridAccessException e) {
-            // >.>
-        }
+        });
     }
 
     private void updateReportingValue(final IMEMonitor<IAEItemStack> monitor) {
@@ -352,12 +347,10 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public void onListUpdate() {
-        try {
-            this.updateReportingValue(this.getMainNode().getStorage()
+        getMainNode().ifPresent(grid -> {
+            this.updateReportingValue(grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
-        } catch (final GridAccessException e) {
-            // ;P
-        }
+        });
     }
 
     @Override

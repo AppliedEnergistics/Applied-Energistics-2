@@ -40,6 +40,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyService;
@@ -60,7 +61,6 @@ import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
 import appeng.parts.automation.PlaneConnectionHelper;
@@ -115,11 +115,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private void refresh() {
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((g, n) -> g.getTickManager().alertDevice(n));
     }
 
     @Override
@@ -128,7 +124,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         this.refresh();
     }
 
-    private TickRateModulation pickupFluid() {
+    private TickRateModulation pickupFluid(IGrid grid) {
         if (!this.getMainNode().isActive()) {
             return TickRateModulation.SLEEP;
         }
@@ -150,13 +146,14 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
                         .fromFluidStack(new FluidStack(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
-                if (this.storeFluid(blockFluid, false)) {
+                if (this.storeFluid(grid, blockFluid, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
-                    this.storeFluid(AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
+                    this.storeFluid(grid,
+                            AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
 
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
@@ -181,32 +178,27 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.pickupFluid();
+        return this.pickupFluid(node.getGrid());
     }
 
-    private boolean storeFluid(IAEFluidStack stack, boolean modulate) {
-        try {
-            final IStorageService storage = this.getMainNode().getStorage();
-            final IMEInventory<IAEFluidStack> inv = storage
-                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+    private boolean storeFluid(IGrid grid, IAEFluidStack stack, boolean modulate) {
+        final IStorageService storage = grid.getStorageService();
+        final IMEInventory<IAEFluidStack> inv = storage
+                .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
-            if (modulate) {
-                final IEnergyService energy = this.getMainNode().getEnergy();
-                return Platform.poweredInsert(energy, inv, stack, this.mySrc) == null;
-            } else {
-                final float requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
-                final IEnergyService energy = this.getMainNode().getEnergy();
+        if (modulate) {
+            var energy = grid.getEnergyService();
+            return Platform.poweredInsert(energy, inv, stack, this.mySrc) == null;
+        } else {
+            var requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
+            final IEnergyService energy = grid.getEnergyService();
 
-                if (energy.extractAEPower(requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG) < requiredPower) {
-                    return false;
-                }
-                final IAEFluidStack leftOver = inv.injectItems(stack, Actionable.SIMULATE, this.mySrc);
-                return leftOver == null || leftOver.getStackSize() == 0;
+            if (energy.extractAEPower(requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG) < requiredPower) {
+                return false;
             }
-        } catch (final GridAccessException e) {
-            // :P
+            final IAEFluidStack leftOver = inv.injectItems(stack, Actionable.SIMULATE, this.mySrc);
+            return leftOver == null || leftOver.getStackSize() == 0;
         }
-        return false;
     }
 
     @Override

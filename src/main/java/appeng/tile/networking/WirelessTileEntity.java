@@ -29,6 +29,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
@@ -36,7 +37,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
@@ -83,17 +83,15 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
         super.writeToStream(data);
         this.setClientFlags(0);
 
-        try {
-            if (this.getMainNode().getEnergy().isNetworkPowered()) {
+        getMainNode().ifPresent((grid, node) -> {
+            if (grid.getEnergyService().isNetworkPowered()) {
                 this.setClientFlags(this.getClientFlags() | POWERED_FLAG);
             }
 
-            if (this.getMainNode().getNode().meetsChannelRequirements()) {
+            if (node.meetsChannelRequirements()) {
                 this.setClientFlags(this.getClientFlags() | CHANNEL_FLAG);
             }
-        } catch (final GridAccessException e) {
-            // meh
-        }
+        });
 
         data.writeByte((byte) this.getClientFlags());
     }

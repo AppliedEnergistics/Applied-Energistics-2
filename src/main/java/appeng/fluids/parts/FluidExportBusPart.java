@@ -47,7 +47,6 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.fluids.container.FluidIOBusContainer;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 
@@ -113,9 +112,10 @@ public class FluidExportBusPart extends SharedFluidBusPart {
                     this.getSide().getDirection().getOpposite());
         }
         if (fhOpt.isPresent()) {
-            try {
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
                 final IFluidHandler fh = fhOpt.orElse(null);
-                final IMEMonitor<IAEFluidStack> inv = this.getMainNode().getStorage().getInventory(this.getChannel());
+                final IMEMonitor<IAEFluidStack> inv = grid.getStorageService().getInventory(this.getChannel());
 
                 if (fh != null) {
                     for (int i = 0; i < this.getConfig().getSlots(); i++) {
@@ -142,8 +142,6 @@ public class FluidExportBusPart extends SharedFluidBusPart {
 
                     return TickRateModulation.SLOWER;
                 }
-            } catch (GridAccessException e) {
-                // Ignore
             }
         }
 

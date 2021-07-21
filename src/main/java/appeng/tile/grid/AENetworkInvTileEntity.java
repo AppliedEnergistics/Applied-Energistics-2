@@ -27,6 +27,7 @@ import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IManagedGridNode;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.ManagedGridNode;
 import appeng.me.helpers.IGridConnectedTileEntity;
@@ -36,7 +37,7 @@ import appeng.tile.AEBaseInvTileEntity;
 public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
         implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
-    private final ManagedGridNode mainNode = createMainNode()
+    private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(this.getItemFromTile())
             .setInWorldNode(true)
             .setTagName("proxy");
@@ -52,17 +53,17 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     @Override
     public void read(BlockState blockState, final CompoundNBT data) {
         super.read(blockState, data);
-        this.getMainNode().readFromNBT(data);
+        this.getMainNode().loadFromNBT(data);
     }
 
     @Override
     public CompoundNBT write(final CompoundNBT data) {
         super.write(data);
-        this.getMainNode().writeToNBT(data);
+        this.getMainNode().saveToNBT(data);
         return data;
     }
 
-    public final ManagedGridNode getMainNode() {
+    public final IManagedGridNode getMainNode() {
         return this.mainNode;
     }
 
@@ -102,7 +103,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
         // markForUpdate
         // and cause the block state to be changed back to non-air
         updateContainingBlockInfo();
-        this.getMainNode().remove();
+        this.getMainNode().destroy();
     }
 
     @Override

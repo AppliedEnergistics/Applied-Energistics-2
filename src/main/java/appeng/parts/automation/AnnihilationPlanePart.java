@@ -66,7 +66,6 @@ import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
 import appeng.util.Platform;
@@ -227,22 +226,21 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * @return the leftover items, which could not be stored inside the network
      */
     private IAEItemStack storeItemStack(final ItemStack item) {
-        final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
-        try {
-            final IStorageService storage = this.getMainNode().getStorage();
-            final IEnergyService energy = this.getMainNode().getEnergy();
-            final IAEItemStack overflow = Platform.poweredInsert(energy,
-                    storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
-                    itemToStore, this.mySrc);
-
-            this.isAccepting = overflow == null;
-
-            return overflow;
-        } catch (final GridAccessException e1) {
-            // :P
+        var grid = getMainNode().getGrid();
+        if (grid == null) {
+            return null;
         }
 
-        return null;
+        final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
+        var storage = grid.getStorageService();
+        var energy = grid.getEnergyService();
+        final IAEItemStack overflow = Platform.poweredInsert(energy,
+                storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
+                itemToStore, this.mySrc);
+
+        this.isAccepting = overflow == null;
+
+        return overflow;
     }
 
     /**
@@ -276,12 +274,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private TickRateModulation breakBlock(final boolean modulate) {
         if (this.isAccepting && this.getMainNode().isActive()) {
-            try {
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
                 final TileEntity te = this.getTile();
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
                 final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
-                final IEnergyService energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = grid.getEnergyService();
 
                 final BlockState blockState = w.getBlockState(pos);
                 if (this.canHandleBlock(w, pos, blockState)) {
@@ -303,8 +302,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                         return TickRateModulation.URGENT;
                     }
                 }
-            } catch (final GridAccessException e1) {
-                // :P
             }
         }
 
@@ -414,8 +411,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
         boolean canStore = itemStacks.isEmpty();
 
-        try {
-            final IStorageService storage = this.getMainNode().getStorage();
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            final IStorageService storage = grid.getStorageService();
 
             for (final ItemStack itemStack : itemStacks) {
                 final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);
@@ -426,8 +424,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                     canStore = true;
                 }
             }
-        } catch (final GridAccessException e) {
-            // :P
         }
 
         this.isAccepting = canStore;

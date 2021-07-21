@@ -50,6 +50,10 @@ public class P2PService implements IGridService, IGridServiceProvider {
                 });
     }
 
+    public static P2PService get(IGrid grid) {
+        return grid.getService(P2PService.class);
+    }
+
     private static final TunnelCollection<P2PTunnelPart> NULL_COLLECTION = new TunnelCollection<P2PTunnelPart>(null,
             null);
 

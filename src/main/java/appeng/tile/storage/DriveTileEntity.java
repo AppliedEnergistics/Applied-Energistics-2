@@ -44,11 +44,11 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
@@ -65,7 +65,6 @@ import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.tile.grid.AENetworkInvTileEntity;
@@ -320,13 +319,11 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             this.updateState();
         }
 
-        try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
+        getMainNode().ifPresent(grid -> {
+            grid.postEvent(new GridCellArrayUpdate());
 
-            final IStorageService gs = this.getMainNode().getStorage();
-            Platform.postWholeCellChanges(gs, removed, added, this.mySrc);
-        } catch (final GridAccessException ignored) {
-        }
+            Platform.postWholeCellChanges(grid.getStorageService(), removed, added, this.mySrc);
+        });
 
         this.markForUpdate();
     }

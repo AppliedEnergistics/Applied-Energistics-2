@@ -24,13 +24,14 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class PhantomNodeTileEntity extends AENetworkTileEntity {
 
-    private ManagedGridNode proxy = null;
+    private IManagedGridNode proxy = null;
     private boolean crashMode = false;
 
     public PhantomNodeTileEntity(TileEntityType<?> tileEntityTypeIn) {

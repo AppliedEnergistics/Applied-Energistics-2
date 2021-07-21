@@ -44,7 +44,6 @@ import appeng.core.Api;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
 
 /**
@@ -79,15 +78,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     private void updateState() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
-                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     @Override

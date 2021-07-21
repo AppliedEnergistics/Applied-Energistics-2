@@ -27,12 +27,12 @@ import net.minecraft.util.math.MathHelper;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.SettingsFrom;
 

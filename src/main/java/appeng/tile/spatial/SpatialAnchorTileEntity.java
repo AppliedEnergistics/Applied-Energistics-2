@@ -42,6 +42,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.movable.IMovableTile;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -58,7 +59,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.Api;
-import appeng.me.GridAccessException;
 import appeng.services.ChunkLoadingService;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.ConfigManager;
@@ -218,11 +218,9 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     private void wakeUp() {
         // Wake the anchor to allow for unloading chunks some time after power loss
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (GridAccessException e) {
-            // Can be ignored
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     @Override

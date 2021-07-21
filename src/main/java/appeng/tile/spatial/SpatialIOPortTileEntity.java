@@ -33,8 +33,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.util.AECableType;
@@ -115,39 +113,43 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
         }
 
         final ItemStack cell = this.inv.getStackInSlot(0);
-        if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
-            final IGrid gi = this.getMainNode().getGridOrThrow();
-            final IEnergyService energy = this.getMainNode().getEnergy();
+        if (!this.isSpatialCell(cell) || !this.inv.getStackInSlot(1).isEmpty()) {
+            return;
+        }
 
-            final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
+        final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
-            var spc = gi.getService(ISpatialService.class);
-            if (spc.hasRegion() && spc.isValidRegion()) {
-                final double req = spc.requiredPower();
-                final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-                if (Math.abs(pr - req) < req * 0.001) {
-                    var evt = gi.postEvent(new GridSpatialEvent(getWorld(), getPos(), req));
-                    if (!evt.isTransitionPrevented()) {
-                        // Prefer player id from security system, but if unavailable, use the
-                        // player who placed the grid node (if any)
-                        int playerId;
-                        if (this.getMainNode().getSecurity().isAvailable()) {
-                            playerId = this.getMainNode().getSecurity().getOwner();
-                        } else {
-                            playerId = this.getMainNode().getNode().getOwningPlayerId();
-                        }
+        getMainNode().ifPresent((grid, node) -> {
+            var spc = grid.getService(ISpatialService.class);
+            if (!spc.hasRegion() || !spc.isValidRegion()) {
+                return;
+            }
 
-                        boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
-                                playerId);
-                        if (success) {
-                            energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                            this.inv.setStackInSlot(0, ItemStack.EMPTY);
-                            this.inv.setStackInSlot(1, cell);
-                        }
+            var energy = grid.getEnergyService();
+            final double req = spc.requiredPower();
+            final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            if (Math.abs(pr - req) < req * 0.001) {
+                var evt = grid.postEvent(new GridSpatialEvent(getWorld(), getPos(), req));
+                if (!evt.isTransitionPrevented()) {
+                    // Prefer player id from security system, but if unavailable, use the
+                    // player who placed the grid node (if any)
+                    int playerId;
+                    if (grid.getSecurityService().isAvailable()) {
+                        playerId = grid.getSecurityService().getOwner();
+                    } else {
+                        playerId = node.getOwningPlayerId();
+                    }
+
+                    boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
+                            playerId);
+                    if (success) {
+                        energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                        this.inv.setStackInSlot(0, ItemStack.EMPTY);
+                        this.inv.setStackInSlot(1, cell);
                     }
                 }
             }
-        }
+        });
     }
 
     @Override

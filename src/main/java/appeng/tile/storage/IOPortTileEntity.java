@@ -57,7 +57,6 @@ import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
@@ -137,15 +136,13 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     private void updateTask() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (this.hasWork()) {
-                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     public void updateRedstoneState() {
@@ -255,47 +252,48 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
                 break;
         }
 
-        try {
-            final IEnergySource energy = this.getMainNode().getEnergy();
-            for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
-                final ItemStack is = this.inputCells.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    boolean shouldMove = true;
+        var grid = getMainNode().getGrid();
+        if (grid == null) {
+            return TickRateModulation.IDLE;
+        }
 
-                    for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+        var energy = grid.getEnergyService();
+        for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
+            final ItemStack is = this.inputCells.getStackInSlot(x);
+            if (!is.isEmpty()) {
+                boolean shouldMove = true;
+
+                for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+                    if (itemsToMove > 0) {
+                        final IMEMonitor<? extends IAEStack<?>> network = grid.getStorageService()
+                                .getInventory(c);
+                        final IMEInventory<?> inv = this.getInv(is, c);
+
+                        if (inv == null) {
+                            continue;
+                        }
+
+                        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
+                            itemsToMove = this.transferContents(energy, inv, network, itemsToMove, c);
+                        } else {
+                            itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
+                        }
+
+                        shouldMove &= this.shouldMove(inv);
+
                         if (itemsToMove > 0) {
-                            final IMEMonitor<? extends IAEStack<?>> network = this.getMainNode().getStorage()
-                                    .getInventory(c);
-                            final IMEInventory<?> inv = this.getInv(is, c);
-
-                            if (inv == null) {
-                                continue;
-                            }
-
-                            if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
-                                itemsToMove = this.transferContents(energy, inv, network, itemsToMove, c);
-                            } else {
-                                itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
-                            }
-
-                            shouldMove &= this.shouldMove(inv);
-
-                            if (itemsToMove > 0) {
-                                ret = TickRateModulation.IDLE;
-                            } else {
-                                ret = TickRateModulation.URGENT;
-                            }
+                            ret = TickRateModulation.IDLE;
+                        } else {
+                            ret = TickRateModulation.URGENT;
                         }
                     }
-
-                    if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
-                    }
-                    ret = TickRateModulation.URGENT;
-
                 }
+
+                if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
+                }
+                ret = TickRateModulation.URGENT;
+
             }
-        } catch (final GridAccessException e) {
-            ret = TickRateModulation.IDLE;
         }
 
         return ret;

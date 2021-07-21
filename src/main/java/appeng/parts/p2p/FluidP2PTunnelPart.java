@@ -35,7 +35,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 
 public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
@@ -132,33 +131,30 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         public int fill(FluidStack resource, FluidAction action) {
             int total = 0;
 
-            try {
-                final int outputTunnels = FluidP2PTunnelPart.this.getOutputs().size();
-                final int amount = resource.getAmount();
+            final int outputTunnels = FluidP2PTunnelPart.this.getOutputs().size();
+            final int amount = resource.getAmount();
 
-                if (outputTunnels == 0 || amount == 0) {
-                    return 0;
-                }
+            if (outputTunnels == 0 || amount == 0) {
+                return 0;
+            }
 
-                final int amountPerOutput = Math.max(1, amount / outputTunnels);
-                int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+            final int amountPerOutput = Math.max(1, amount / outputTunnels);
+            int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
-                for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
-                    final IFluidHandler output = target.getAttachedFluidHandler();
-                    final int toSend = amountPerOutput + overflow;
-                    final FluidStack fillWithFluidStack = resource.copy();
-                    fillWithFluidStack.setAmount(toSend);
+            for (FluidP2PTunnelPart target : FluidP2PTunnelPart.this.getOutputs()) {
+                final IFluidHandler output = target.getAttachedFluidHandler();
+                final int toSend = amountPerOutput + overflow;
+                final FluidStack fillWithFluidStack = resource.copy();
+                fillWithFluidStack.setAmount(toSend);
 
-                    final int received = output.fill(fillWithFluidStack, action);
+                final int received = output.fill(fillWithFluidStack, action);
 
-                    overflow = toSend - received;
-                    total += received;
-                }
+                overflow = toSend - received;
+                total += received;
+            }
 
-                if (action == FluidAction.EXECUTE) {
-                    FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
-                }
-            } catch (GridAccessException ignored) {
+            if (action == FluidAction.EXECUTE) {
+                FluidP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
             }
 
             return total;

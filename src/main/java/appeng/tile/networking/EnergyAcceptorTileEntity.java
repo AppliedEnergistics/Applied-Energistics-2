@@ -25,9 +25,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.util.AECableType;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.util.inv.InvOperation;
 

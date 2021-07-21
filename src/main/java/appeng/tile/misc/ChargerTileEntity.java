@@ -35,6 +35,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -45,7 +46,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -138,11 +138,9 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        try {
-            this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().wakeDevice(node);
+        });
 
         this.markForUpdate();
     }

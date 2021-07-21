@@ -27,9 +27,9 @@ import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity

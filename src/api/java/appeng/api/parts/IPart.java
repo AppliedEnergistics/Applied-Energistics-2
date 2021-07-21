@@ -56,6 +56,7 @@ import net.minecraftforge.common.capabilities.CapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -197,8 +198,8 @@ public interface IPart extends ICustomCableConnection {
      * used for tunnels.
      *
      * @return a grid node that represents the external facing side and allows external connections. this nodes
-     *         {@link appeng.api.networking.IConfigurableGridNode#setExposedOnSides(Set)} will be automatically updated
-     *         with the side the part is placed on.
+     *         {@link IManagedGridNode#setExposedOnSides(Set)} will be automatically updated with the side the part is
+     *         placed on.
      *
      */
     IGridNode getExternalFacingNode();

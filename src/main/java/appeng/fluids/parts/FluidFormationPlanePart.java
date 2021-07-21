@@ -48,6 +48,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
@@ -67,7 +68,6 @@ import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.automation.AbstractFormationPlanePart;
 import appeng.parts.automation.PlaneModelData;
@@ -112,7 +112,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
         this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
 
-        getMainNode().ifGridPresent(g -> g.postEvent(new GridCellArrayUpdate()));
+        getMainNode().ifPresent(g -> g.postEvent(new GridCellArrayUpdate()));
 
         try {
             this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());

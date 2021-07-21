@@ -32,7 +32,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 
 public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     private static final float POWER_DRAIN = 2.0f;
@@ -106,45 +105,42 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             final ItemStack remainder = stack.copy();
 
-            try {
-                final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
-                final int amount = stack.getCount();
+            final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
+            final int amount = stack.getCount();
 
-                if (outputTunnels == 0 || amount == 0) {
-                    return stack;
-                }
+            if (outputTunnels == 0 || amount == 0) {
+                return stack;
+            }
 
-                final int amountPerOutput = Math.max(1, amount / outputTunnels);
-                int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+            final int amountPerOutput = Math.max(1, amount / outputTunnels);
+            int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
-                for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
-                    final IItemHandler output = target.getAttachedItemHandler();
-                    final int toSend = amountPerOutput + overflow;
-                    final ItemStack fillWithItemStack = stack.copy();
-                    fillWithItemStack.setCount(toSend);
+            for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
+                final IItemHandler output = target.getAttachedItemHandler();
+                final int toSend = amountPerOutput + overflow;
+                final ItemStack fillWithItemStack = stack.copy();
+                fillWithItemStack.setCount(toSend);
 
-                    ItemStack received = ItemStack.EMPTY;
+                ItemStack received = ItemStack.EMPTY;
 
-                    for (int i = 0; i < output.getSlots(); i++) {
-                        received = output.insertItem(i, fillWithItemStack, simulate);
+                for (int i = 0; i < output.getSlots(); i++) {
+                    received = output.insertItem(i, fillWithItemStack, simulate);
 
-                        if (received.isEmpty()) {
-                            break;
-                        }
-                    }
-
-                    overflow = received.getCount();
-                    remainder.setCount(remainder.getCount() - toSend - received.getCount());
-
-                    if (remainder.isEmpty()) {
+                    if (received.isEmpty()) {
                         break;
                     }
                 }
 
-                if (!simulate) {
-                    ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, stack.getCount() - remainder.getCount());
+                overflow = received.getCount();
+                remainder.setCount(remainder.getCount() - toSend - received.getCount());
+
+                if (remainder.isEmpty()) {
+                    break;
                 }
-            } catch (GridAccessException ignored) {
+            }
+
+            if (!simulate) {
+                ItemP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, stack.getCount() - remainder.getCount());
             }
 
             return remainder;

@@ -33,7 +33,6 @@ import net.minecraft.world.World;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.util.Platform;
 
 public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> {
@@ -154,12 +153,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void sendToOutput(final int power) {
-        try {
-            for (final RedstoneP2PTunnelPart rs : this.getOutputs()) {
-                rs.putInput(power);
-            }
-        } catch (final GridAccessException e) {
-            // :P
+        for (final RedstoneP2PTunnelPart rs : this.getOutputs()) {
+            rs.putInput(power);
         }
     }
 

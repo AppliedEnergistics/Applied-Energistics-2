@@ -33,7 +33,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.capabilities.Capabilities;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 
 public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fe");
@@ -102,29 +101,26 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
         public int receiveEnergy(int maxReceive, boolean simulate) {
             int total = 0;
 
-            try {
-                final int outputTunnels = FEP2PTunnelPart.this.getOutputs().size();
+            final int outputTunnels = FEP2PTunnelPart.this.getOutputs().size();
 
-                if (outputTunnels == 0 | maxReceive == 0) {
-                    return 0;
-                }
+            if (outputTunnels == 0 | maxReceive == 0) {
+                return 0;
+            }
 
-                final int amountPerOutput = maxReceive / outputTunnels;
-                int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
+            final int amountPerOutput = maxReceive / outputTunnels;
+            int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
 
-                for (FEP2PTunnelPart target : FEP2PTunnelPart.this.getOutputs()) {
-                    final IEnergyStorage output = target.getAttachedEnergyStorage();
-                    final int toSend = amountPerOutput + overflow;
-                    final int received = output.receiveEnergy(toSend, simulate);
+            for (FEP2PTunnelPart target : FEP2PTunnelPart.this.getOutputs()) {
+                final IEnergyStorage output = target.getAttachedEnergyStorage();
+                final int toSend = amountPerOutput + overflow;
+                final int received = output.receiveEnergy(toSend, simulate);
 
-                    overflow = toSend - received;
-                    total += received;
-                }
+                overflow = toSend - received;
+                total += received;
+            }
 
-                if (!simulate) {
-                    FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
-                }
-            } catch (GridAccessException ignored) {
+            if (!simulate) {
+                FEP2PTunnelPart.this.queueTunnelDrain(PowerUnits.RF, total);
             }
 
             return total;
@@ -144,12 +140,8 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
         public int getMaxEnergyStored() {
             int total = 0;
 
-            try {
-                for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                    total += t.getAttachedEnergyStorage().getMaxEnergyStored();
-                }
-            } catch (GridAccessException e) {
-                return 0;
+            for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
+                total += t.getAttachedEnergyStorage().getMaxEnergyStored();
             }
 
             return total;
@@ -159,12 +151,8 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
         public int getEnergyStored() {
             int total = 0;
 
-            try {
-                for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                    total += t.getAttachedEnergyStorage().getEnergyStored();
-                }
-            } catch (GridAccessException e) {
-                return 0;
+            for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
+                total += t.getAttachedEnergyStorage().getEnergyStored();
             }
 
             return total;

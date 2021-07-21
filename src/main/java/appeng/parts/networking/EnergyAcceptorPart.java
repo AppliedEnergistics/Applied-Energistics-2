@@ -29,7 +29,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -37,7 +36,6 @@ import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 import appeng.tile.powersink.IExternalPowerSink;
@@ -89,11 +87,10 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     protected double getFunnelPowerDemand(final double maxRequired) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-
-            return grid.getEnergyDemand(maxRequired);
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().getEnergyDemand(maxRequired);
+        } else {
             return 0;
         }
     }
@@ -104,12 +101,10 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-            final double leftOver = grid.injectPower(power, mode);
-
-            return leftOver;
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().injectPower(power, mode);
+        } else {
             return power;
         }
     }

@@ -29,7 +29,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 
@@ -133,15 +132,13 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     private void updateState() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
-                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getMainNode().getTick().sleepDevice(this.getMainNode().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     protected abstract TickRateModulation doBusWork();

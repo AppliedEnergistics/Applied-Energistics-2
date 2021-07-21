@@ -51,6 +51,7 @@ import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -77,7 +78,7 @@ import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 
-    private final ManagedGridNode mainNode;
+    private final IManagedGridNode mainNode;
     private final ItemStack is;
     private TileEntity tile = null;
     private IPartHost host = null;
@@ -92,7 +93,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
-    protected ManagedGridNode createMainNode() {
+    protected IManagedGridNode createMainNode() {
         return new ManagedGridNode(this, NodeListener.INSTANCE);
     }
 
@@ -136,7 +137,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.tile;
     }
 
-    public ManagedGridNode getMainNode() {
+    public IManagedGridNode getMainNode() {
         return this.mainNode;
     }
 
@@ -191,12 +192,12 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void readFromNBT(final CompoundNBT data) {
-        this.mainNode.readFromNBT(data);
+        this.mainNode.loadFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT data) {
-        this.mainNode.writeToNBT(data);
+        this.mainNode.saveToNBT(data);
     }
 
     @Override
@@ -231,7 +232,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void removeFromWorld() {
-        this.mainNode.remove();
+        this.mainNode.destroy();
     }
 
     @Override
@@ -443,7 +444,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     @Override
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
-        this.mainNode.setOwner(player);
+        this.mainNode.setOwningPlayer(player);
     }
 
     @Override

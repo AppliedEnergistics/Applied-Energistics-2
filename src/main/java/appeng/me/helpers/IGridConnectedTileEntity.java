@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.block.IOwnerAwareTile;
 import appeng.me.ManagedGridNode;
@@ -21,13 +22,13 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
     /**
      * @return The main node that the tile entity uses to connect to the grid.
      */
-    ManagedGridNode getMainNode();
+    IManagedGridNode getMainNode();
 
     /**
-     * @see ManagedGridNode#ifGridPresent(Consumer)
+     * @see ManagedGridNode#ifPresent(Consumer)
      */
     default boolean ifGridPresent(Consumer<IGrid> action) {
-        return getMainNode().ifGridPresent(action);
+        return getMainNode().ifPresent(action);
     }
 
     /**
@@ -56,7 +57,7 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
 
     @Override
     default void setOwner(PlayerEntity owner) {
-        getMainNode().setOwner(owner);
+        getMainNode().setOwningPlayer(owner);
     }
 
 }

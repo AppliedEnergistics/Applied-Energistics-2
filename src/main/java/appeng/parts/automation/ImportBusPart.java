@@ -31,7 +31,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -49,7 +48,6 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
@@ -88,8 +86,9 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
             return false;
         }
 
-        try {
-            final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            var inv = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             final IAEItemStack out = inv.injectItems(
@@ -99,7 +98,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
                 return true;
             }
             return out.getStackSize() != stack.getCount();
-        } catch (GridAccessException ex) {
+        } else {
             return false;
         }
     }
@@ -146,12 +145,12 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
 
         if (myAdaptor != null) {
-            try {
+            getMainNode().ifPresent(grid -> {
                 this.itemsToSend = this.calculateItemsToSend();
 
-                final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
+                var inv = grid.getStorageService()
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-                final IEnergyService energy = this.getMainNode().getEnergy();
+                var energy = grid.getEnergyService();
 
                 boolean Configured = false;
                 for (int x = 0; x < this.availableSlots(); x++) {
@@ -173,9 +172,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
                         }
                     }
                 }
-            } catch (final GridAccessException e) {
-                // :3
-            }
+            });
         } else {
             return TickRateModulation.SLEEP;
         }

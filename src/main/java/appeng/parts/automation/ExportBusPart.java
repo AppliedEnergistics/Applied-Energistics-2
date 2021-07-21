@@ -54,13 +54,11 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOBusContainer;
-import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
@@ -122,12 +120,13 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         this.itemToSend = this.calculateItemsToSend();
         this.didSomething = false;
 
-        try {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             final InventoryAdaptor destination = this.getHandler();
-            final IMEMonitor<IAEItemStack> inv = this.getMainNode().getStorage()
+            final IMEMonitor<IAEItemStack> inv = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IEnergyService energy = this.getMainNode().getEnergy();
-            final ICraftingService cg = this.getMainNode().getCrafting();
+            final IEnergyService energy = grid.getEnergyService();
+            final ICraftingService cg = grid.getCraftingService();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager()
                     .getSetting(Settings.SCHEDULING_MODE);
@@ -143,7 +142,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
                         if (this.isCraftingEnabled()) {
                             this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                    destination, this.getTile().getWorld(), this.getMainNode().getGridOrThrow(), cg,
+                                    destination, this.getTile().getWorld(), grid, cg,
                                     this.mySrc)
                                     || this.didSomething;
                         }
@@ -165,7 +164,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
                         this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                destination, this.getTile().getWorld(), this.getMainNode().getGridOrThrow(), cg,
+                                destination, this.getTile().getWorld(), grid, cg,
                                 this.mySrc)
                                 || this.didSomething;
                     }
@@ -175,8 +174,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
             } else {
                 return TickRateModulation.SLEEP;
             }
-        } catch (final GridAccessException e) {
-            // :P
         }
 
         return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
@@ -227,9 +224,10 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
         final InventoryAdaptor d = this.getHandler();
 
-        try {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             if (d != null && this.getMainNode().isActive()) {
-                final IEnergyService energy = this.getMainNode().getEnergy();
+                final IEnergyService energy = grid.getEnergyService();
                 final double power = items.getStackSize();
 
                 if (energy.extractAEPower(power, mode, PowerMultiplier.CONFIG) > power - 0.01) {
@@ -239,8 +237,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     return AEItemStack.fromItemStack(d.simulateAdd(items.createItemStack()));
                 }
             }
-        } catch (final GridAccessException e) {
-            AELog.debug(e);
         }
 
         return items;

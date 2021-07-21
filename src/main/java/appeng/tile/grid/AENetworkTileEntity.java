@@ -52,13 +52,13 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
     @Override
     public void read(BlockState blockState, final CompoundNBT data) {
         super.read(blockState, data);
-        this.getMainNode().readFromNBT(data);
+        this.getMainNode().loadFromNBT(data);
     }
 
     @Override
     public CompoundNBT write(final CompoundNBT data) {
         super.write(data);
-        this.getMainNode().writeToNBT(data);
+        this.getMainNode().saveToNBT(data);
         return data;
     }
 
@@ -103,7 +103,7 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
     @Override
     public void remove() {
         super.remove();
-        this.getMainNode().remove();
+        this.getMainNode().destroy();
     }
 
     @Override

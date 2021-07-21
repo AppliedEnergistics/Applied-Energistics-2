@@ -29,6 +29,7 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.me.ManagedGridNode;
 
 /**
@@ -49,7 +50,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
+    protected IManagedGridNode createMainNode() {
         return new ManagedGridNode(this, NodeListener.INSTANCE);
     }
 

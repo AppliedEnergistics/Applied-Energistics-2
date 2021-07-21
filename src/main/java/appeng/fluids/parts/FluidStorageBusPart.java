@@ -43,11 +43,11 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
@@ -76,7 +76,6 @@ import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
@@ -147,11 +146,9 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 .orElse(null);
         if (handlerExt != null) {
             return new FluidHandlerAdapter(handlerExt, () -> {
-                try {
-                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-                } catch (GridAccessException ignore) {
-                    // meh
-                }
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
             });
         }
 
@@ -212,11 +209,9 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     @Override
@@ -254,13 +249,11 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change,
             final IActionSource source) {
-        try {
-            if (this.getMainNode().isActive()) {
-                this.getMainNode().getStorage().postAlterationOfStoredItems(
+        if (this.getMainNode().isActive()) {
+            getMainNode().ifPresent(grid -> {
+                grid.getStorageService().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
-            }
-        } catch (final GridAccessException e) {
-            // :(
+            });
         }
     }
 
@@ -327,16 +320,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getMainNode().getTick();
+            getMainNode().ifPresent((grid, node) -> {
+                var tm = grid.getTickManager();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getMainNode().getNode());
+                    tm.sleepDevice(node);
                 } else {
-                    tm.wakeDevice(this.getMainNode().getNode());
+                    tm.wakeDevice(node);
                 }
-            } catch (final GridAccessException ignore) {
-                // :(
-            }
+            });
         }
 
         try {

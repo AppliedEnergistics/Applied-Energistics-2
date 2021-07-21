@@ -16,10 +16,10 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me;
+package appeng.api.networking;
 
 /**
- * This exception is thrown by {@link ManagedGridNode} when it's embedded grid node has not been initialized yet, but a
+ * This exception is thrown by {@link IManagedGridNode} when it's embedded grid node has not been initialized yet, but a
  * method that requires the grid to be present is called.
  */
 public class GridAccessException extends Exception {

@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -44,13 +42,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridService;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.IPathingService;
@@ -58,7 +56,6 @@ import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
-import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.me.service.P2PService;
 import appeng.me.service.StatisticsService;
@@ -67,7 +64,7 @@ import appeng.me.service.StatisticsService;
  * Manages the lifecycle of a {@link IGridNode}.
  */
 @SuppressWarnings("UnusedReturnValue")
-public class ManagedGridNode {
+public class ManagedGridNode implements IManagedGridNode {
     private static class InitData<T> {
         private final T logicalHost;
         private final IGridNodeListener<T> listener;
@@ -90,15 +87,14 @@ public class ManagedGridNode {
             this.listener = Objects.requireNonNull(listener);
         }
 
-        public IConfigurableGridNode createNode() {
-            IConfigurableGridNode node;
+        public GridNode createNode() {
+            GridNode node;
             if (inWorldNode) {
                 Preconditions.checkState(pos != null, "No position was set for an in-world node");
-                node = Api.instance().grid().createInWorldGridNode(logicalHost, listener, (ServerWorld) world, pos,
-                        flags);
+                node = new InWorldGridNode((ServerWorld) world, pos, logicalHost, listener, flags);
                 node.setExposedOnSides(exposedOnSides);
             } else {
-                node = Api.instance().grid().createInternalGridNode(logicalHost, listener, (ServerWorld) world, flags);
+                node = new GridNode((ServerWorld) world, logicalHost, listener, flags);
             }
             node.setGridColor(gridColor);
             node.setOwningPlayerId(owner);
@@ -112,7 +108,7 @@ public class ManagedGridNode {
             return node;
         }
 
-        private <SC extends IGridNodeService> void addService(IConfigurableGridNode node, Class<SC> serviceClass) {
+        private <SC extends IGridNodeService> void addService(GridNode node, Class<SC> serviceClass) {
             node.addService(serviceClass, services.getInstance(serviceClass));
         }
     }
@@ -130,12 +126,13 @@ public class ManagedGridNode {
     private String tagName = "gn";
 
     @Nullable
-    private IConfigurableGridNode node = null;
+    private GridNode node = null;
 
     public <T> ManagedGridNode(T nodeOwner, IGridNodeListener<? super T> listener) {
         this.initData = new InitData<>(nodeOwner, listener);
     }
 
+    @Override
     public ManagedGridNode setInWorldNode(boolean accessible) {
         getInitData().inWorldNode = accessible;
         return this;
@@ -144,6 +141,7 @@ public class ManagedGridNode {
     /**
      * Changes the name of the NBT subtag in the host's NBT data that this node's data will be stored as.
      */
+    @Override
     public ManagedGridNode setTagName(String tagName) {
         if (getInitData().data != null) {
             throw new IllegalStateException("Cannot change tag name after NBT has already been read.");
@@ -152,39 +150,25 @@ public class ManagedGridNode {
         return this;
     }
 
-    public void writeToNBT(final CompoundNBT tag) {
-        if (this.node != null) {
-            this.node.saveToNBT(this.tagName, tag);
-        }
-    }
-
+    @Override
     public void onChunkUnloaded() {
-        this.remove();
+        this.destroy();
     }
 
-    public void remove() {
+    @Override
+    public void destroy() {
         if (this.node != null) {
             this.node.destroy();
             this.node = null;
         }
     }
 
-    public void create(World world, BlockPos blockPos) {
+    @Override
+    public void create(World world, @Nullable BlockPos blockPos) {
         // We can only ready up if the init-data still exists
         var initData = getInitData();
         initData.world = world;
         initData.pos = blockPos;
-        this.initData = null;
-
-        if (this.node == null && !initData.world.isRemote()) {
-            createNode(initData);
-        }
-    }
-
-    public void create(World world) {
-        // We can only ready up if the init-data still exists
-        var initData = getInitData();
-        initData.world = world;
         this.initData = null;
 
         if (this.node == null && !initData.world.isRemote()) {
@@ -209,7 +193,7 @@ public class ManagedGridNode {
         return this.node;
     }
 
-    public void readFromNBT(final CompoundNBT tag) {
+    public void loadFromNBT(CompoundNBT tag) {
         if (node == null) {
             getInitData().data = tag;
         } else {
@@ -217,6 +201,14 @@ public class ManagedGridNode {
         }
     }
 
+    @Override
+    public void saveToNBT(CompoundNBT tag) {
+        if (this.node != null) {
+            this.node.saveToNBT(this.tagName, tag);
+        }
+    }
+
+    @Override
     public boolean isReady() {
         return initData == null && node != null;
     }
@@ -224,6 +216,7 @@ public class ManagedGridNode {
     /**
      * @see IGridNode#isActive()
      */
+    @Override
     public boolean isActive() {
         if (this.node == null) {
             return false;
@@ -232,6 +225,7 @@ public class ManagedGridNode {
         return this.node.isActive();
     }
 
+    @Override
     public boolean isPowered() {
         try {
             return this.getEnergy().isNetworkPowered();
@@ -240,8 +234,8 @@ public class ManagedGridNode {
         }
     }
 
-    public void setOwner(@Nonnull PlayerEntity player) {
-        var ownerPlayerId = WorldData.instance().playerData().getMePlayerId(player.getGameProfile());
+    @Override
+    public void setOwningPlayerId(int ownerPlayerId) {
         if (this.initData != null) {
             getInitData().owner = ownerPlayerId;
         } else {
@@ -251,52 +245,10 @@ public class ManagedGridNode {
         }
     }
 
-    /**
-     * short cut!
-     *
-     * @return grid of node
-     * @throws GridAccessException of node or grid is null
-     */
-    @Nonnull
-    public IGrid getGridOrThrow() throws GridAccessException {
-        if (this.node == null) {
-            throw new GridAccessException();
-        }
-        final IGrid grid = this.node.getGrid();
-        if (grid == null) {
-            throw new GridAccessException();
-        }
-        return grid;
-    }
-
-    /**
-     * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't initialized
-     * yet or has been destroyed.
-     * 
-     * @return True if the action was called, false otherwise.
-     */
-    public boolean ifPresent(Consumer<IGrid> action) {
-        if (this.node == null) {
-            return false;
-        }
-        var grid = this.node.getGrid();
-        if (grid == null) {
-            return false;
-        }
-        action.accept(grid);
-        return true;
-    }
-
-    public boolean ifPresent(BiConsumer<IGrid, IGridNode> action) {
-        if (this.node == null) {
-            return false;
-        }
-        var grid = this.node.getGrid();
-        if (grid == null) {
-            return false;
-        }
-        action.accept(grid, this.node);
-        return true;
+    @Override
+    public void setOwningPlayer(@Nonnull PlayerEntity player) {
+        var playerId = WorldData.instance().playerData().getMePlayerId(player.getGameProfile());
+        setOwningPlayerId(playerId);
     }
 
     @Nonnull
@@ -344,6 +296,7 @@ public class ManagedGridNode {
         return this.getGridOrThrow().getService(clazz);
     }
 
+    @Override
     public ManagedGridNode setFlags(final GridFlags... requireChannel) {
         var flags = EnumSet.noneOf(GridFlags.class);
         Collections.addAll(flags, requireChannel);
@@ -406,6 +359,7 @@ public class ManagedGridNode {
         return initData;
     }
 
+    @Override
     public <T extends IGridNodeService> ManagedGridNode addService(Class<T> serviceClass, T service) {
         var initData = getInitData();
         if (initData.services == null) {

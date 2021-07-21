@@ -30,6 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 
 import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -44,7 +45,6 @@ import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.ManagedGridNode;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
@@ -80,24 +80,22 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void readFromNBT(final CompoundNBT extra) {
         super.readFromNBT(extra);
-        this.outerNode.readFromNBT(extra);
+        this.outerNode.loadFromNBT(extra);
     }
 
     @Override
     public void writeToNBT(final CompoundNBT extra) {
         super.writeToNBT(extra);
-        this.outerNode.writeToNBT(extra);
+        this.outerNode.saveToNBT(extra);
     }
 
     @Override
     public void onTunnelNetworkChange() {
         super.onTunnelNetworkChange();
         if (!this.isOutput()) {
-            try {
-                this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().wakeDevice(node);
+            });
         }
     }
 
@@ -109,7 +107,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void removeFromWorld() {
         super.removeFromWorld();
-        this.outerNode.remove();
+        this.outerNode.destroy();
     }
 
     @Override
@@ -133,7 +131,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
-        this.outerNode.setOwner(player);
+        this.outerNode.setOwningPlayer(player);
     }
 
     @Override
@@ -144,19 +142,15 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
         // just move on...
-        try {
-            if (!this.getMainNode().getPath().isNetworkBooting()) {
-                if (!this.getMainNode().getEnergy().isNetworkPowered() || !this.getMainNode().isActive()) {
-                    this.connection.markDestroy();
-                } else {
-                    this.connection.markCreate();
-                }
-                TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
-
-                return TickRateModulation.SLEEP;
+        if (node.hasGridBooted()) {
+            if (!node.isPowered() || !node.isActive()) {
+                this.connection.markDestroy();
+            } else {
+                this.connection.markCreate();
             }
-        } catch (final GridAccessException e) {
-            // meh?
+            TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
+
+            return TickRateModulation.SLEEP;
         }
 
         return TickRateModulation.IDLE;
@@ -186,32 +180,29 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             }
 
             final List<MEP2PTunnelPart> newSides = new ArrayList<>();
-            try {
-                for (final MEP2PTunnelPart me : this.getOutputs()) {
-                    if (me.getMainNode().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
-                        newSides.add(me);
-                    }
+
+            for (final MEP2PTunnelPart me : this.getOutputs()) {
+                if (me.getMainNode().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
+                    newSides.add(me);
                 }
+            }
 
-                for (final MEP2PTunnelPart me : newSides) {
-                    try {
-                        connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
-                                .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
-                    } catch (final FailedConnectionException e) {
-                        final TileEntity start = this.getTile();
-                        final TileEntity end = me.getTile();
+            for (final MEP2PTunnelPart me : newSides) {
+                try {
+                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
+                            .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
+                } catch (final FailedConnectionException e) {
+                    final TileEntity start = this.getTile();
+                    final TileEntity end = me.getTile();
 
-                        AELog.debug(e);
+                    AELog.debug(e);
 
-                        AELog.warn(
-                                "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",
-                                start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(),
-                                end.getPos().getX(), end.getPos().getY(), end.getPos().getZ());
-                        // :(
-                    }
+                    AELog.warn(
+                            "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",
+                            start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(),
+                            end.getPos().getX(), end.getPos().getY(), end.getPos().getZ());
+                    // :(
                 }
-            } catch (final GridAccessException e) {
-                AELog.debug(e);
             }
         }
     }

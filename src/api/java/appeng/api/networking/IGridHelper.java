@@ -23,7 +23,6 @@
 
 package appeng.api.networking;
 
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -33,7 +32,6 @@ import javax.annotation.Nullable;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
@@ -93,7 +91,7 @@ public interface IGridHelper {
     }
 
     /**
-     * Finds a {@link IGridNodeHost} at the given world location, or returns null if there isn't one.
+     * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
      */
     @Nullable
     IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos);
@@ -120,24 +118,18 @@ public interface IGridHelper {
     }
 
     /**
-     * Create an in-world grid node for your {@link IGridNodeHost}
+     * Creates a managed grid node that makes managing the lifecycle of an {@link IGridNode} easier.
+     * <p/>
+     * This method can be called on both server and client.
+     *
+     * @param owner    The game object that owns the node, such as a tile entity or {@link appeng.api.parts.IPart}.
+     * @param listener A listener that will adapt events sent by the grid node to the owner.
+     * @param <T>      The type of the owner.
+     * @return The managed grid node.
      */
     @Nonnull
-    <T> IConfigurableGridNode createInWorldGridNode(@Nonnull T logicalHost,
-            @Nonnull IGridNodeListener<T> listener,
-            @Nonnull ServerWorld world,
-            @Nonnull BlockPos pos,
-            @Nonnull Set<GridFlags> flags);
-
-    /**
-     * Create an internal grid node that isn't accessible to the world, and won't automatically connect to other
-     * in-world nodes.
-     */
-    @Nonnull
-    <T> IConfigurableGridNode createInternalGridNode(@Nonnull T logicalHost,
-            @Nonnull IGridNodeListener<T> listener,
-            @Nonnull ServerWorld world,
-            @Nonnull Set<GridFlags> flags);
+    <T> IManagedGridNode createManagedNode(@Nonnull T owner,
+            @Nonnull IGridNodeListener<T> listener);
 
     /**
      * Create a direct connection between two {@link IGridNode}.

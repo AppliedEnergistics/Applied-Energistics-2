@@ -43,13 +43,13 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -80,7 +80,6 @@ import appeng.core.settings.TickRates;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
@@ -208,11 +207,9 @@ public class StorageBusPart extends UpgradeablePart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     @Override
@@ -223,13 +220,11 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
             final IActionSource source) {
-        try {
-            if (this.getMainNode().isActive()) {
-                this.getMainNode().getStorage().postAlterationOfStoredItems(
+        if (this.getMainNode().isActive()) {
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getStorageService().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IItemStorageChannel.class), change, this.mySrc);
-            }
-        } catch (final GridAccessException e) {
-            // :(
+            });
         }
     }
 
@@ -350,11 +345,9 @@ public class StorageBusPart extends UpgradeablePart
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
             return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
-                try {
-                    this.getMainNode().getTick().alertDevice(this.getMainNode().getNode());
-                } catch (GridAccessException ex) {
-                    // meh
-                }
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
             });
         }
 
@@ -457,16 +450,14 @@ public class StorageBusPart extends UpgradeablePart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getMainNode().getTick();
+            getMainNode().ifPresent((grid, node) -> {
+                var tm = grid.getTickManager();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getMainNode().getNode());
+                    tm.sleepDevice(node);
                 } else {
-                    tm.wakeDevice(this.getMainNode().getNode());
+                    tm.wakeDevice(node);
                 }
-            } catch (final GridAccessException e) {
-                // :(
-            }
+            });
         }
 
         try {

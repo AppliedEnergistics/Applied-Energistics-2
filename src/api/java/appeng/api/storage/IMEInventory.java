@@ -23,11 +23,12 @@
 
 package appeng.api.storage;
 
+import net.minecraft.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import net.minecraft.item.ItemStack;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
@@ -36,8 +37,8 @@ import net.minecraft.item.ItemStack;
  * Integer.MAX_VALUE items and it should work as defined, or be able to extract Integer.MAX_VALUE and have it work as
  * defined, Translations to MC's max stack size are external to the AE API.
  * <p/>
- * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before extracting
- * from this inventory.
+ * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before
+ * extracting from this inventory.
  */
 public interface IMEInventory<T extends IAEStack<T>> {
 
@@ -77,8 +78,8 @@ public interface IMEInventory<T extends IAEStack<T>> {
     IStorageChannel<T> getChannel();
 
     /**
-     * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by
-     * the given storage channel, but only if the given storage channel is equal to {@link #getChannel()}.
+     * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by the given
+     * storage channel, but only if the given storage channel is equal to {@link #getChannel()}.
      *
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */

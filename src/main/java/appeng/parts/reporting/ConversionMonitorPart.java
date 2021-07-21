@@ -38,7 +38,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
@@ -150,9 +149,9 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     private void insertItem(final PlayerEntity player, final Hand hand, final boolean allItems) {
-        try {
-            final IEnergySource energy = this.getMainNode().getEnergy();
-            final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
+        getMainNode().ifPresent(grid -> {
+            final IEnergySource energy = grid.getEnergyService();
+            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             if (allItems) {
@@ -180,45 +179,43 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                         new PlayerSource(player, this));
                 player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     private void extractItem(final PlayerEntity player, int count) {
         final IAEItemStack input = this.getDisplayed();
-        if (input != null) {
-            try {
-                if (!this.getMainNode().isActive()) {
-                    return;
-                }
-
-                final IEnergySource energy = this.getMainNode().getEnergy();
-                final IMEMonitor<IAEItemStack> cell = this.getMainNode().getStorage()
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-
-                input.setStackSize(count);
-
-                final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
-                        new PlayerSource(player, this));
-                if (retrieved != null) {
-                    ItemStack newItems = retrieved.createItemStack();
-                    final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
-                    newItems = adaptor.addItems(newItems);
-                    if (!newItems.isEmpty()) {
-                        final TileEntity te = this.getTile();
-                        final List<ItemStack> list = Collections.singletonList(newItems);
-                        Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getDirection()), list);
-                    }
-
-                    if (player.openContainer != null) {
-                        player.openContainer.detectAndSendChanges();
-                    }
-                }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+        if (input == null) {
+            return;
         }
+
+        if (!this.getMainNode().isActive()) {
+            return;
+        }
+
+        getMainNode().ifPresent(grid -> {
+            final IEnergySource energy = grid.getEnergyService();
+            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+
+            input.setStackSize(count);
+
+            final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
+                    new PlayerSource(player, this));
+            if (retrieved != null) {
+                ItemStack newItems = retrieved.createItemStack();
+                final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
+                newItems = adaptor.addItems(newItems);
+                if (!newItems.isEmpty()) {
+                    final TileEntity te = this.getTile();
+                    final List<ItemStack> list = Collections.singletonList(newItems);
+                    Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getDirection()), list);
+                }
+
+                if (player.openContainer != null) {
+                    player.openContainer.detectAndSendChanges();
+                }
+            }
+        });
     }
 
     @Override

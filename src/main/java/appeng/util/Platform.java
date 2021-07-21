@@ -73,6 +73,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -97,9 +98,7 @@ import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.tools.quartz.QuartzToolType;
-import appeng.me.GridAccessException;
 import appeng.me.GridNode;
-import appeng.me.ManagedGridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
@@ -878,23 +877,24 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static boolean canAccess(final ManagedGridNode gridProxy, final IActionSource src) {
-        try {
-            if (src.player().isPresent()) {
-                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-            } else if (src.machine().isPresent()) {
-                final IActionHost te = src.machine().get();
-                final IGridNode n = te.getActionableNode();
-                if (n == null) {
-                    return false;
-                }
+    public static boolean canAccess(final IManagedGridNode gridProxy, final IActionSource src) {
+        var grid = gridProxy.getGrid();
+        if (grid == null) {
+            return false;
+        }
 
-                final int playerID = n.getOwningPlayerId();
-                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
-            } else {
+        if (src.player().isPresent()) {
+            return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.BUILD);
+        } else if (src.machine().isPresent()) {
+            final IActionHost te = src.machine().get();
+            final IGridNode n = te.getActionableNode();
+            if (n == null) {
                 return false;
             }
-        } catch (final GridAccessException gae) {
+
+            final int playerID = n.getOwningPlayerId();
+            return grid.getSecurityService().hasPermission(playerID, SecurityPermissions.BUILD);
+        } else {
             return false;
         }
     }

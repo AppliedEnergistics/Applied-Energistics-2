@@ -41,6 +41,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -108,7 +109,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
+    protected IManagedGridNode createMainNode() {
         return new ManagedGridNode(this, NODE_LISTENER);
     }
 

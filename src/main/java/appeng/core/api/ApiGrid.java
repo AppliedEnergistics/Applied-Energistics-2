@@ -18,7 +18,6 @@
 
 package appeng.core.api;
 
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
@@ -30,22 +29,19 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IConfigurableGridNode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.events.GridEvent;
 import appeng.me.GridConnection;
 import appeng.me.GridEventBus;
-import appeng.me.GridNode;
-import appeng.me.InWorldGridNode;
+import appeng.me.ManagedGridNode;
 
 /**
  * @author yueh
@@ -73,28 +69,8 @@ public class ApiGrid implements IGridHelper {
 
     @NotNull
     @Override
-    public <T> IConfigurableGridNode createInWorldGridNode(@NotNull T logicalHost,
-            @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull BlockPos pos,
-            @NotNull Set<GridFlags> flags) {
-        Preconditions.checkNotNull(logicalHost);
-        Preconditions.checkNotNull(listener);
-        Preconditions.checkNotNull(world);
-        Preconditions.checkNotNull(pos);
-        Preconditions.checkNotNull(flags);
-
-        return new InWorldGridNode(world, pos, logicalHost, listener, flags);
-    }
-
-    @NotNull
-    @Override
-    public <T> IConfigurableGridNode createInternalGridNode(@NotNull T logicalHost,
-            @NotNull IGridNodeListener<T> listener, @NotNull ServerWorld world, @NotNull Set<GridFlags> flags) {
-        Preconditions.checkNotNull(logicalHost);
-        Preconditions.checkNotNull(listener);
-        Preconditions.checkNotNull(world);
-        Preconditions.checkNotNull(flags);
-
-        return new GridNode(world, logicalHost, listener, flags);
+    public <T> IManagedGridNode createManagedNode(@NotNull T owner, @NotNull IGridNodeListener<T> listener) {
+        return new ManagedGridNode(owner, listener);
     }
 
     @Override

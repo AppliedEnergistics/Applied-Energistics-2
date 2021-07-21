@@ -42,7 +42,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
-import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -123,20 +122,19 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
-        try {
-            if (this.getMainNode().getEnergy().isNetworkPowered()) {
+        var node = getMainNode().getNode();
+        if (node != null) {
+            if (node.isPowered()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.POWERED_FLAG;
             }
 
-            if (this.getMainNode().getPath().isNetworkBooting()) {
+            if (!node.hasGridBooted()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.BOOTING_FLAG;
             }
 
-            if (this.getMainNode().getNode().meetsChannelRequirements()) {
+            if (node.meetsChannelRequirements()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.CHANNEL_FLAG;
             }
-        } catch (final GridAccessException e) {
-            // um.. nothing.
         }
 
         data.writeByte((byte) this.getClientFlags());
@@ -204,14 +202,11 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public final boolean isPowered() {
-        try {
-            if (!isRemote()) {
-                return this.getMainNode().getEnergy().isNetworkPowered();
-            } else {
-                return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
-            }
-        } catch (final GridAccessException e) {
-            return false;
+        if (!isRemote()) {
+            var node = getMainNode().getNode();
+            return node != null && node.isPowered();
+        } else {
+            return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
         }
     }
 
