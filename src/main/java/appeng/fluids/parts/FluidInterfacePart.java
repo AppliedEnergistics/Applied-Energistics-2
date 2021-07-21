@@ -101,7 +101,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.duality.notifyNeighbors();
     }
 

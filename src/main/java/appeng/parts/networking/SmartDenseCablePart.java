@@ -40,7 +40,7 @@ public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelP
      * @param reason
      */
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.getHost().markForUpdate();
     }
 

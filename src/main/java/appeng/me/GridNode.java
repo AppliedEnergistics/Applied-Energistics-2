@@ -132,8 +132,8 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
     /**
      * Notifies the grid node's listener about a potential change in the grid node's status.
      */
-    public void notifyStatusChange(IGridNodeListener.ActiveChangeReason reason) {
-        callListener((listener, owner, node) -> listener.onActiveChanged(owner, node, reason));
+    public void notifyStatusChange(IGridNodeListener.State reason) {
+        callListener((listener, owner, node) -> listener.onStateChanged(owner, node, reason));
     }
 
     void addConnection(final IGridConnection gridConnection) {
@@ -553,7 +553,7 @@ public class GridNode implements IConfigurableGridNode, IPathItem {
             this.lastUsedChannels = this.usedChannels;
 
             if (this.getInternalGrid() != null) {
-                notifyStatusChange(IGridNodeListener.ActiveChangeReason.CHANNEL);
+                notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
         }
     }

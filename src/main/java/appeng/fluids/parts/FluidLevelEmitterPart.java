@@ -145,7 +145,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         updateState();
     }
 

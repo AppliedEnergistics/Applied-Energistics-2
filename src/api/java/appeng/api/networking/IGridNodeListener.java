@@ -38,18 +38,18 @@ public interface IGridNodeListener<T> {
     }
 
     /**
-     * Called when {@link IGridNode#isActive()} of the node has potentially changed. Since the active-state depends on
-     * several factors, this might be called for different reasons, and even if the active status has remained the same.
+     * Called when one of the node's state properties has changed. Any of those changes might have potentially
+     * changed the {@link IGridNode#isActive() active-state} as well.
      *
-     * @param reason Indicates why the active state might have changed.
+     * @param state Indicates the node property that might have changed.
      */
-    default void onActiveChanged(T nodeOwner, IGridNode node, ActiveChangeReason reason) {
+    default void onStateChanged(T nodeOwner, IGridNode node, State state) {
     }
 
     /**
      * Gives a reason for why the active state of the node might have changed.
      */
-    enum ActiveChangeReason {
+    enum State {
         /**
          * The node's power status has changed (it either became powered or unpowered).
          */

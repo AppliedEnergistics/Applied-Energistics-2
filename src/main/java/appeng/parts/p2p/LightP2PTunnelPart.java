@@ -62,7 +62,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
         this.onTunnelNetworkChange();
     }

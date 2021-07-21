@@ -65,7 +65,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.markForUpdate();
     }
 

@@ -148,7 +148,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         updateState();
     }
 

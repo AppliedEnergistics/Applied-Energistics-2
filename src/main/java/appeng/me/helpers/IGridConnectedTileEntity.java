@@ -46,7 +46,7 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
      * Called when the tile entities main grid nodes power or channel assignment state changes. Primarily used to send
      * rendering updates to the client.
      */
-    default void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    default void onMainNodeStateChanged(IGridNodeListener.State reason) {
     }
 
     @Override

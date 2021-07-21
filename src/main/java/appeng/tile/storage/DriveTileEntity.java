@@ -298,7 +298,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         recalculateDisplay();
     }
 

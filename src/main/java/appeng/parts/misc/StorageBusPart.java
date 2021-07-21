@@ -130,7 +130,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         updateStatus();
     }
 

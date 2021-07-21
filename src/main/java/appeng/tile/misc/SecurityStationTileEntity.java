@@ -199,7 +199,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.markForUpdate();
     }
 

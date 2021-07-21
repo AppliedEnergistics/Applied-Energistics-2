@@ -113,7 +113,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
         this.duality.notifyNeighbors();
     }

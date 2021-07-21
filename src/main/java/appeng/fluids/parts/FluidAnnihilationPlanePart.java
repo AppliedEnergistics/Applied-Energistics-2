@@ -123,7 +123,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
         this.refresh();
     }

@@ -21,7 +21,6 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -73,7 +72,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         updateStatus();
     }
 

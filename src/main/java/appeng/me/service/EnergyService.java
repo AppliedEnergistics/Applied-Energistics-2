@@ -279,7 +279,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         grid.postEvent(new GridPowerStatusChange());
 
         for (IGridNode node : grid.getNodes()) {
-            ((GridNode) node).notifyStatusChange(IGridNodeListener.ActiveChangeReason.POWER);
+            ((GridNode) node).notifyStatusChange(IGridNodeListener.State.POWER);
         }
     }
 

@@ -217,7 +217,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.updateSubType(false);
     }
 

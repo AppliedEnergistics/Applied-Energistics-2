@@ -88,7 +88,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.duality.notifyNeighbors();
     }
 

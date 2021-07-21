@@ -20,8 +20,8 @@ public class TileEntityNodeListener<T extends IGridConnectedTileEntity> implemen
     }
 
     @Override
-    public void onActiveChanged(T nodeOwner, IGridNode node, ActiveChangeReason reason) {
-        nodeOwner.onMainNodeStateChanged(reason);
+    public void onStateChanged(T nodeOwner, IGridNode node, State state) {
+        nodeOwner.onMainNodeStateChanged(state);
     }
 
 }

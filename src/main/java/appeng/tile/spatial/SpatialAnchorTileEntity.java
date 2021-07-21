@@ -186,8 +186,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
-        if (reason != IGridNodeListener.ActiveChangeReason.GRID_BOOT) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
             this.markForUpdate();
             this.wakeUp();
         }

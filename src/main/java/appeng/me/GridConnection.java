@@ -164,11 +164,11 @@ public class GridConnection implements IGridConnection, IPathItem {
             this.channelData |= this.channelData << 8;
 
             if (this.sideA.getInternalGrid() != null) {
-                this.sideA.notifyStatusChange(IGridNodeListener.ActiveChangeReason.CHANNEL);
+                this.sideA.notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
 
             if (this.sideB.getInternalGrid() != null) {
-                this.sideB.notifyStatusChange(IGridNodeListener.ActiveChangeReason.CHANNEL);
+                this.sideB.notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
         }
     }

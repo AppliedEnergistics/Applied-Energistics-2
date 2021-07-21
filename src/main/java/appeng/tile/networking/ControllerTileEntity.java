@@ -74,7 +74,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.updateState();
     }
 

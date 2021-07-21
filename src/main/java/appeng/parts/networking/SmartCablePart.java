@@ -35,7 +35,7 @@ public class SmartCablePart extends CablePart implements IUsedChannelProvider {
      * @param reason
      */
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.getHost().markForUpdate();
     }
 

@@ -45,8 +45,8 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
-        if (reason == IGridNodeListener.ActiveChangeReason.POWER) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason == IGridNodeListener.State.POWER) {
             this.markForUpdate();
         }
     }

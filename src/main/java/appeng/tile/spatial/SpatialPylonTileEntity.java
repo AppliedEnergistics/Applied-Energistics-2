@@ -210,7 +210,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.recalculateDisplay();
     }
 

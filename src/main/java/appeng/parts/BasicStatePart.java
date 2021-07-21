@@ -54,7 +54,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         if (calculateClientFlags() != getClientFlags()) {
             getHost().markForUpdate();
         }

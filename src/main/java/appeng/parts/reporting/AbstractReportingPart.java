@@ -86,8 +86,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
-        if (reason != IGridNodeListener.ActiveChangeReason.GRID_BOOT || !this.isLightSource()) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT || !this.isLightSource()) {
             this.getHost().markForUpdate();
         }
     }

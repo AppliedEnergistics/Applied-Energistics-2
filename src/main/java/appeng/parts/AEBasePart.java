@@ -22,10 +22,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-import appeng.api.networking.IGrid;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -104,7 +101,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
      *
      * @param reason Indicates which of the properties has changed.
      */
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
     }
 
     public final boolean isRemote() {
@@ -496,8 +493,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         }
 
         @Override
-        public void onActiveChanged(T nodeOwner, IGridNode node, ActiveChangeReason reason) {
-            nodeOwner.onMainNodeStateChanged(reason);
+        public void onStateChanged(T nodeOwner, IGridNode node, State state) {
+            nodeOwner.onMainNodeStateChanged(state);
         }
     }
 }

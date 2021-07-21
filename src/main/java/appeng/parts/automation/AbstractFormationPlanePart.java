@@ -79,7 +79,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     }
 
     @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.ActiveChangeReason reason) {
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         stateChanged();
     }
 
