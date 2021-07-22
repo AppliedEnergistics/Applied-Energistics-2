@@ -96,7 +96,7 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      */
     @SuppressWarnings("unchecked")
     default <SC extends IAEStack<SC>> IMEInventoryHandler<SC> cast(IStorageChannel<SC> channel) {
-        if (getChannel() == this.getChannel()) {
+        if (getChannel() == channel) {
             return (IMEInventoryHandler<SC>) this;
         }
         throw new IllegalArgumentException("The inventories storage channel " + getChannel()
