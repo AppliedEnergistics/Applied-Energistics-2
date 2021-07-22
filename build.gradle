@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.17', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -85,8 +85,13 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
+    //
+    // Remove this once there has been a proper release, and Forge updated to it.
+    //
+    implementation 'org.spongepowered:mixin:0.8.3'
+
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8.3-SNAPSHOT:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
@@ -127,16 +132,9 @@ ext.isBeta = project.version.contains("beta")
 
 sourceSets {
     api
-    accessors
-    mixins {
-        compileClasspath += sourceSets.main.output
-    }
     main {
-        runtimeClasspath += sourceSets.mixins.output
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
-        compileClasspath += sourceSets.accessors.output
-        runtimeClasspath += sourceSets.accessors.output
         resources {
             srcDir 'src/generated/resources'
         }
@@ -149,17 +147,30 @@ sourceSets {
 
 configurations {
     apiImplementation.extendsFrom(implementation)
-    mixinsImplementation.extendsFrom(implementation)
-    accessorsImplementation.extendsFrom(implementation)
 }
 
 test {
     useJUnitPlatform()
 }
 
-def addOpens(net.minecraftforge.gradle.common.util.RunConfig config) {
-    config.jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
-    config.jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+/**
+ * Configures properties common to all run configurations
+ */
+def commonRunProperties = {
+    workingDirectory project.file('run')
+    property 'forge.logging.console.level', 'debug'
+    jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
+    jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+    // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
+    property 'mixin.env.remapRefMap', 'true'
+    property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    // property "mixin.debug.export", "true"
+    mods {
+        appliedenergistics2 {
+            source sourceSets.main
+            source sourceSets.api
+        }
+    }
 }
 
 ////////////////////
@@ -171,45 +182,17 @@ minecraft {
 
     runs {
         client {
-            property 'forge.logging.console.level', 'debug'
-            // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
-            property 'mixin.env.disableRefMap', 'true'
-            workingDirectory project.file('run')
-            property "mixin.debug.export", "true"
-            addOpens(it)
-
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
+            with commonRunProperties
         }
         server {
-            property 'forge.logging.console.level', 'debug'
-            workingDirectory project.file('run')
-            addOpens(it)
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
+            with commonRunProperties
         }
         data {
-            property 'forge.logging.console.level', 'debug'
-            workingDirectory project.file('run')
-            addOpens(it)
+            with commonRunProperties
             // ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
             // a daemon is used for any reason.
             forceExit false
             args '--mod', 'appliedenergistics2', '--all', '--output', file('src/generated/resources/'), "--existing", file("src/main/resources")
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
         }
     }
 }
@@ -418,26 +401,7 @@ tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
-compileMixinsJava {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+// Temporary compile fix, breaks reobfJar. Remove once Sponge Mixin Gradle Plugin gets fixed
+// https://github.com/SpongePowered/MixinGradle/issues/29
+net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace.metaClass.extraMapping = {
 }
-compileAccessorsJava {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-//    tasks.getByName("runData") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
-//    tasks.getByName("runClient") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
-//    tasks.getByName("runServer") {
-//        javaLauncher = javaToolchains.launcherFor {
-//            languageVersion = JavaLanguageVersion.of(16)
-//        }
-//    }
