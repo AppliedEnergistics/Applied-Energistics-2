@@ -28,10 +28,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
@@ -114,15 +112,16 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
         ControllerBlockState metaState = ControllerBlockState.offline;
 
-        try {
-            if (this.getMainNode().getEnergy().isNetworkPowered()) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            if (grid.getEnergyService().isNetworkPowered()) {
                 metaState = ControllerBlockState.online;
 
-                if (this.getMainNode().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
+                if (grid.getPathingService().getControllerState() == ControllerState.CONTROLLER_CONFLICT) {
                     metaState = ControllerBlockState.conflicted;
                 }
             }
-        } catch (final GridAccessException e) {
+        } else {
             metaState = ControllerBlockState.offline;
         }
 
@@ -136,11 +135,10 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
     @Override
     protected double getFunnelPowerDemand(final double maxReceived) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-
-            return grid.getEnergyDemand(maxReceived);
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().getEnergyDemand(maxReceived);
+        } else {
             // no grid? use local...
             return super.getFunnelPowerDemand(maxReceived);
         }
@@ -148,12 +146,10 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
     @Override
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-            final double leftOver = grid.injectPower(power, mode);
-
-            return leftOver;
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().injectPower(power, mode);
+        } else {
             // no grid? use local...
             return super.funnelPowerIntoStorage(power, mode);
         }
@@ -161,11 +157,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
     @Override
     protected void PowerEvent(final PowerEventType x) {
-        try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridPowerStorageStateChanged(this, x));
-        } catch (final GridAccessException e) {
-            // not ready!
-        }
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, x)));
     }
 
     @Override

@@ -24,7 +24,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -63,10 +62,9 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
-            try {
-                this.securityTile.getMainNode().getSecurity().hasPermission(src.player().get(),
-                        SecurityPermissions.SECURITY);
-            } catch (GridAccessException ignored) {
+            var grid = this.securityTile.getMainNode().getGrid();
+            if (grid != null) {
+                return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.SECURITY);
             }
         }
         return false;

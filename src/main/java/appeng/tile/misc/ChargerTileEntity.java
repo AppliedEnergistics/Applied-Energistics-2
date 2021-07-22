@@ -35,7 +35,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -196,11 +195,10 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                     final double missingAEPower = ps.getAEMaxPower(myItem) - ps.getAECurrentPower(myItem);
                     final double toExtract = Math.min(missingChargeRate, missingAEPower);
 
-                    try {
-                        extractedAmount += this.getMainNode().getEnergy().extractAEPower(toExtract, Actionable.MODULATE,
+                    var grid = getMainNode().getGrid();
+                    if (grid != null) {
+                        extractedAmount += grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                                 PowerMultiplier.ONE);
-                    } catch (GridAccessException e1) {
-                        // Ignore.
                     }
 
                     if (extractedAmount > 0) {
@@ -226,15 +224,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
         // charge from the network!
         if (this.getInternalCurrentPower() < POWER_THRESHOLD) {
-            try {
+            getMainNode().ifPresent(grid -> {
                 final double toExtract = Math.min(800.0, this.getInternalMaxPower() - this.getInternalCurrentPower());
-                final double extracted = this.getMainNode().getEnergy().extractAEPower(toExtract, Actionable.MODULATE,
+                final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
                 this.injectExternalPower(PowerUnits.AE, extracted, Actionable.MODULATE);
-            } catch (final GridAccessException e) {
-                // continue!
-            }
+            });
 
             changed = true;
         }

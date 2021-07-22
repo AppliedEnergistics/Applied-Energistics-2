@@ -27,7 +27,6 @@ import net.minecraft.util.math.MathHelper;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
@@ -195,12 +194,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
         final boolean wasFull = this.internalCurrentPower >= this.getInternalMaxPower() - 0.001;
 
         if (wasFull && amt > 0.001) {
-            try {
-                this.getMainNode().getGridOrThrow()
-                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
-            } catch (final GridAccessException ignored) {
-
-            }
+            getMainNode().ifPresent(
+                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
         }
 
         if (this.internalCurrentPower > amt) {

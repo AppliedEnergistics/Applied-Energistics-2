@@ -23,6 +23,8 @@
 
 package appeng.api.implementations.tiles;
 
+import javax.annotation.Nullable;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.DimensionalBlockPos;
@@ -47,5 +49,6 @@ public interface IWirelessAccessPoint extends IActionHost {
     /**
      * @return grid of linked WAP
      */
+    @Nullable
     IGrid getGrid();
 }

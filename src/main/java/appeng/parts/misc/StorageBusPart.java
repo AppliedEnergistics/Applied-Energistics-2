@@ -43,7 +43,6 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
@@ -137,12 +136,8 @@ public class StorageBusPart extends UpgradeablePart
         final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getHost().markForUpdate();
-                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            this.getHost().markForUpdate();
+            this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
     }
 
@@ -460,12 +455,8 @@ public class StorageBusPart extends UpgradeablePart
             });
         }
 
-        try {
-            // force grid to update handlers...
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :3
-        }
+        // force grid to update handlers...
+        this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
 
         return this.handler;
     }

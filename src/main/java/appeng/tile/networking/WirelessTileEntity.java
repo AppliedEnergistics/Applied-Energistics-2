@@ -29,7 +29,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
@@ -155,11 +154,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     @Override
     public IGrid getGrid() {
-        try {
-            return this.getMainNode().getGridOrThrow();
-        } catch (final GridAccessException e) {
-            return null;
-        }
+        return getMainNode().getGrid();
     }
 
     @Override

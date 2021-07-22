@@ -42,7 +42,6 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.movable.IMovableTile;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -59,6 +58,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.Api;
+import appeng.me.service.StatisticsService;
 import appeng.services.ChunkLoadingService;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.ConfigManager;
@@ -299,27 +299,29 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      * network.
      */
     private void cleanUp() {
-        try {
-            Multiset<ChunkPos> requiredChunks = this.getMainNode().getStatistics().getChunks()
-                    .get(this.getServerWorld());
+        var grid = getMainNode().getGrid();
+        if (grid == null) {
+            return;
+        }
 
-            // Release all chunks, which are no longer part of the network.s
-            for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
-                ChunkPos chunkPos = iterator.next();
+        Multiset<ChunkPos> requiredChunks = grid.getService(StatisticsService.class).getChunks()
+                .get(this.getServerWorld());
 
-                if (!requiredChunks.contains(chunkPos)) {
-                    this.release(chunkPos, false);
-                    iterator.remove();
-                }
+        // Release all chunks, which are no longer part of the network.s
+        for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
+            ChunkPos chunkPos = iterator.next();
+
+            if (!requiredChunks.contains(chunkPos)) {
+                this.release(chunkPos, false);
+                iterator.remove();
             }
+        }
 
-            // Force missing chunks
-            for (ChunkPos chunkPos : requiredChunks) {
-                if (!this.chunks.contains(chunkPos)) {
-                    this.force(chunkPos);
-                }
+        // Force missing chunks
+        for (ChunkPos chunkPos : requiredChunks) {
+            if (!this.chunks.contains(chunkPos)) {
+                this.force(chunkPos);
             }
-        } catch (GridAccessException e) {
         }
 
     }
@@ -361,13 +363,13 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private void forceAll() {
-        try {
-            for (ChunkPos chunkPos : this.getMainNode().getStatistics().getChunks().get(this.getServerWorld())
+        getMainNode().ifPresent(grid -> {
+            var statistics = grid.getService(StatisticsService.class);
+            for (ChunkPos chunkPos : statistics.getChunks().get(this.getServerWorld())
                     .elementSet()) {
                 this.force(chunkPos);
             }
-        } catch (GridAccessException e) {
-        }
+        });
     }
 
     private void releaseAll() {

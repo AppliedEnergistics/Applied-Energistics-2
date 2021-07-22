@@ -35,7 +35,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
@@ -155,16 +154,12 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
                     break;
             }
 
-            try {
-                if (this.getMainNode().getEnergy().isNetworkPowered()) {
-                    this.displayBits |= DISPLAY_POWERED_ENABLED;
-                }
+            if (this.getMainNode().isPowered()) {
+                this.displayBits |= DISPLAY_POWERED_ENABLED;
+            }
 
-                if (this.cluster.isValid() && this.getMainNode().isActive()) {
-                    this.displayBits |= DISPLAY_ENABLED;
-                }
-            } catch (final GridAccessException e) {
-                // nothing?
+            if (this.cluster.isValid() && this.getMainNode().isActive()) {
+                this.displayBits |= DISPLAY_ENABLED;
             }
         }
 

@@ -43,7 +43,6 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
@@ -330,12 +329,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             });
         }
 
-        try {
-            // force grid to update handlers...
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-        } catch (final GridAccessException ignore) {
-            // :3
-        }
+        // force grid to update handlers...
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
 
         return this.handler;
     }

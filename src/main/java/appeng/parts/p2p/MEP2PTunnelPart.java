@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -165,17 +164,16 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             this.connection.getConnections().clear();
         } else if (connections.isCreate()) {
 
+            var grid = this.getMainNode().getGrid();
+
             final Iterator<TunnelConnection> i = this.connection.getConnections().values().iterator();
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
-                try {
-                    if (cw.getTunnel().getMainNode().getGridOrThrow() != this.getMainNode().getGridOrThrow()
-                            || !cw.getTunnel().getMainNode().isActive()) {
-                        cw.getConnection().destroy();
-                        i.remove();
-                    }
-                } catch (final GridAccessException e) {
-                    // :P
+                if (grid == null
+                        || cw.getTunnel().getMainNode().getGrid() != grid
+                        || !cw.getTunnel().getMainNode().isActive()) {
+                    cw.getConnection().destroy();
+                    i.remove();
                 }
             }
 

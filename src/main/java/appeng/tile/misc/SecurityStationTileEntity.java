@@ -48,7 +48,6 @@ import appeng.api.features.ILocatable;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
@@ -190,12 +189,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     public void inventoryChanged() {
-        try {
-            this.saveChanges();
-            this.getMainNode().getGridOrThrow().postEvent(new GridSecurityChange());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.saveChanges();
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridSecurityChange()));
     }
 
     @Override

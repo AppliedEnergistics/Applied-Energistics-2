@@ -34,7 +34,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -165,12 +164,9 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public boolean isValid(final Object effectiveGrid) {
-        try {
-            return this.getMainNode().getGridOrThrow() == effectiveGrid;
-        } catch (final GridAccessException e) {
-            return false;
-        }
+    public boolean isValid(Object effectiveGrid) {
+        var grid = this.getMainNode().getGrid();
+        return grid != null && grid == effectiveGrid;
     }
 
     @Override

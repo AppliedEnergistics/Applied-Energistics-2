@@ -42,7 +42,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
@@ -214,20 +213,16 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        try {
-            if (slot == 0) {
-                this.setProcessingTime(0);
-            }
-
-            if (!this.isSmash()) {
-                this.markForUpdate();
-            }
-
-            this.cachedTask = null;
-            this.getMainNode().getTick().wakeDevice(this.getMainNode().getNode());
-        } catch (final GridAccessException e) {
-            // :P
+        if (slot == 0) {
+            this.setProcessingTime(0);
         }
+
+        if (!this.isSmash()) {
+            this.markForUpdate();
+        }
+
+        this.cachedTask = null;
+        getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
     }
 
     //
@@ -291,8 +286,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                 this.markForUpdate();
             }
         } else {
-            try {
-                final IEnergyService eg = this.getMainNode().getEnergy();
+            getMainNode().ifPresent(grid -> {
+                final IEnergyService eg = grid.getEnergyService();
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card
@@ -315,9 +310,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                         this.setProcessingTime(this.getProcessingTime() + ticksSinceLastCall * speedFactor);
                     }
                 }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
 
             if (this.getProcessingTime() > this.getMaxProcessingTime()) {
                 this.setProcessingTime(this.getMaxProcessingTime());

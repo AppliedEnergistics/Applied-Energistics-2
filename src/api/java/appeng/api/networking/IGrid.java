@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridEvent;
+import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
@@ -167,5 +168,15 @@ public interface IGrid {
     @Nonnull
     default ISecurityService getSecurityService() {
         return getService(ISecurityService.class);
+    }
+
+    /**
+     * Get this grids {@link appeng.api.networking.pathing.IPathingService}.
+     *
+     * @see #getService(Class)
+     */
+    @Nonnull
+    default IPathingService getPathingService() {
+        return getService(IPathingService.class);
     }
 }

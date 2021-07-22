@@ -40,7 +40,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -220,12 +219,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             this.myCraftingWatcher.reset();
         }
 
-        try {
-            this.getMainNode().getGridOrThrow()
-                    .postEvent(new GridCraftingPatternChange(this, this.getMainNode().getNode()));
-        } catch (final GridAccessException e1) {
-            // :/
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.postEvent(new GridCraftingPatternChange(this, node));
+        });
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
             if (this.myCraftingWatcher != null && myStack != null) {
@@ -332,11 +328,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public boolean isValid(final Object effectiveGrid) {
-        try {
-            return this.getMainNode().getGridOrThrow() == effectiveGrid;
-        } catch (final GridAccessException e) {
-            return false;
-        }
+        return effectiveGrid != null && this.getMainNode().getGrid() == effectiveGrid;
     }
 
     @Override

@@ -42,23 +42,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
-import appeng.api.networking.IGridService;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.pathing.IPathingService;
-import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.WorldData;
-import appeng.me.service.P2PService;
-import appeng.me.service.StatisticsService;
 
 /**
  * Manages the lifecycle of a {@link IGridNode}.
@@ -227,11 +217,8 @@ public class ManagedGridNode implements IManagedGridNode {
 
     @Override
     public boolean isPowered() {
-        try {
-            return this.getEnergy().isNetworkPowered();
-        } catch (final GridAccessException e) {
-            return false;
-        }
+        var grid = getGrid();
+        return grid != null && grid.getEnergyService().isNetworkPowered();
     }
 
     @Override
@@ -249,51 +236,6 @@ public class ManagedGridNode implements IManagedGridNode {
     public void setOwningPlayer(@Nonnull PlayerEntity player) {
         var playerId = WorldData.instance().playerData().getMePlayerId(player.getGameProfile());
         setOwningPlayerId(playerId);
-    }
-
-    @Nonnull
-    public IPathingService getPath() throws GridAccessException {
-        return this.getGridService(IPathingService.class);
-    }
-
-    @Nonnull
-    public ITickManager getTick() throws GridAccessException {
-        return this.getGridService(ITickManager.class);
-    }
-
-    @Nonnull
-    public IStorageService getStorage() throws GridAccessException {
-        return this.getGridService(IStorageService.class);
-    }
-
-    @Nonnull
-    public P2PService getP2P() throws GridAccessException {
-        return this.getGridService(P2PService.class);
-    }
-
-    @Nonnull
-    public ISecurityService getSecurity() throws GridAccessException {
-        return this.getGridService(ISecurityService.class);
-    }
-
-    @Nonnull
-    public ICraftingService getCrafting() throws GridAccessException {
-        return this.getGridService(ICraftingService.class);
-    }
-
-    @Nonnull
-    public StatisticsService getStatistics() throws GridAccessException {
-        return this.getGridService(StatisticsService.class);
-    }
-
-    @Nonnull
-    public IEnergyService getEnergy() throws GridAccessException {
-        return this.getGridService(IEnergyService.class);
-    }
-
-    @Nonnull
-    private <T extends IGridService> T getGridService(Class<T> clazz) throws GridAccessException {
-        return this.getGridOrThrow().getService(clazz);
     }
 
     @Override

@@ -42,7 +42,6 @@ public interface IManagedGridNode {
      * <p>
      * Important: You must call this before {@link #create(World, BlockPos)}.
      *
-     * @param name     nbt name
      * @param nodeData to be loaded data
      */
     void loadFromNBT(@Nonnull CompoundNBT nodeData);
@@ -51,7 +50,6 @@ public interface IManagedGridNode {
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
      * names, if you fail to complete the load / save procedure, network state may be lost between game load/saves.
      *
-     * @param name     nbt name
      * @param nodeData to be saved data
      */
     void saveToNBT(@Nonnull CompoundNBT nodeData);
@@ -86,21 +84,6 @@ public interface IManagedGridNode {
         }
         action.accept(grid, node);
         return true;
-    }
-
-    /**
-     * short cut!
-     *
-     * @return grid of node
-     * @throws GridAccessException When {@link #isReady()} is false.
-     */
-    @Nonnull
-    default IGrid getGridOrThrow() throws GridAccessException {
-        var grid = getGrid();
-        if (grid == null) {
-            throw new GridAccessException();
-        }
-        return grid;
     }
 
     /**

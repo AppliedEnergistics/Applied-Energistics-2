@@ -27,7 +27,6 @@ import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTileEntity;
@@ -67,11 +66,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     @Override
     public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
-        try {
-            data.writeBoolean(this.getMainNode().getEnergy().isNetworkPowered());
-        } catch (final GridAccessException e) {
-            data.writeBoolean(false);
-        }
+        data.writeBoolean(this.getMainNode().isPowered());
     }
 
     @Override
@@ -89,11 +84,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     @Override
     public boolean isPowered() {
         if (!isRemote()) {
-            try {
-                return this.getMainNode().getEnergy().isNetworkPowered();
-            } catch (final GridAccessException e) {
-                return false;
-            }
+            return this.getMainNode().isPowered();
         }
 
         return this.hasPower;

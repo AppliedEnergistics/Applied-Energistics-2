@@ -54,7 +54,6 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
@@ -120,17 +119,13 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            this.myHandler.setPartitionList(new FuzzyPriorityList<IAEItemStack>(priorityList,
+            this.myHandler.setPartitionList(new FuzzyPriorityList<>(priorityList,
                     (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
         } else {
-            this.myHandler.setPartitionList(new PrecisePriorityList<IAEItemStack>(priorityList));
+            this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
         }
 
-        try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
     @Override

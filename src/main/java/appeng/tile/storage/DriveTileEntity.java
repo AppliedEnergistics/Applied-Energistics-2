@@ -44,7 +44,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
@@ -279,11 +278,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
@@ -401,11 +396,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         this.isCached = false; // recalculate the storage cell.
         this.updateState();
 
-        try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
     @Override

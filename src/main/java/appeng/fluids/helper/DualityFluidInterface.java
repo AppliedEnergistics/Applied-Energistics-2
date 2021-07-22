@@ -36,7 +36,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -308,8 +307,8 @@ public class DualityFluidInterface
         this.isWorking = slot;
 
         boolean changed = false;
-        try {
-            var grid = this.gridProxy.getGridOrThrow();
+        var grid = this.gridProxy.getGrid();
+        if (grid != null) {
             final IMEInventory<IAEFluidStack> dest = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
             final IEnergySource src = grid.getEnergyService();
@@ -351,8 +350,6 @@ public class DualityFluidInterface
                     }
                 }
             }
-        } catch (final GridAccessException e) {
-            // :P
         }
 
         if (changed) {

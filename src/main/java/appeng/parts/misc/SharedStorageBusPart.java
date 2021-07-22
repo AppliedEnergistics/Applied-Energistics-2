@@ -27,7 +27,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Settings;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
@@ -62,12 +61,9 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
         final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getHost().markForUpdate();
-                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-            } catch (final GridAccessException ignore) {
-                // :P
-            }
+            this.getHost().markForUpdate();
+
+            this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
     }
 

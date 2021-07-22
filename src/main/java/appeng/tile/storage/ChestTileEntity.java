@@ -56,7 +56,6 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
-import appeng.api.networking.GridAccessException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -161,12 +160,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     @Override
     protected void PowerEvent(final PowerEventType x) {
         if (x == PowerEventType.REQUEST_POWER) {
-            try {
-                this.getMainNode().getGridOrThrow()
-                        .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
-            } catch (final GridAccessException e) {
-                // :(
-            }
+            this.getMainNode().ifPresent(
+                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
         } else {
             this.recalculateDisplay();
         }
@@ -188,11 +183,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
 
         if (oldState != this.state) {
@@ -296,10 +287,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         boolean gridPowered = this.getAECurrentPower() > 64;
 
         if (!gridPowered) {
-            try {
-                gridPowered = this.getMainNode().getEnergy().isNetworkPowered();
-            } catch (final GridAccessException ignored) {
-            }
+            gridPowered = this.getMainNode().isPowered();
         }
 
         return super.getAECurrentPower() > 1 || gridPowered;
@@ -314,14 +302,13 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     protected double extractAEPower(final double amt, final Actionable mode) {
         double stash = 0.0;
 
-        try {
-            final IEnergyService eg = this.getMainNode().getEnergy();
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            var eg = grid.getEnergyService();
             stash = eg.extractAEPower(amt, mode, PowerMultiplier.ONE);
             if (stash >= amt) {
                 return stash;
             }
-        } catch (final GridAccessException e) {
-            // no grid :(
         }
 
         // local battery!
@@ -336,14 +323,15 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         final double idleUsage = this.getMainNode().getIdlePowerUsage();
 
-        try {
-            if (!this.getMainNode().getEnergy().isNetworkPowered()) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            if (!grid.getEnergyService().isNetworkPowered()) {
                 final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
                 if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                     this.recalculateDisplay();
                 }
             }
-        } catch (final GridAccessException e) {
+        } else {
             final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
             if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                 this.recalculateDisplay();
@@ -510,11 +498,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.cellHandler = null;
         this.isCached = false; // recalculate the storage cell.
 
-        try {
-            this.getMainNode().getGridOrThrow().postEvent(new GridCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
     @Override
@@ -606,13 +590,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
             if (source == ChestTileEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestTileEntity.this).orElse(false)) {
-                try {
-                    if (ChestTileEntity.this.getMainNode().isActive()) {
-                        ChestTileEntity.this.getMainNode().getStorage().postAlterationOfStoredItems(this.chan, change,
-                                ChestTileEntity.this.mySrc);
-                    }
-                } catch (final GridAccessException e) {
-                    // :(
+                if (getMainNode().isActive()) {
+                    getMainNode()
+                            .ifPresent(grid -> grid.getStorageService().postAlterationOfStoredItems(this.chan, change,
+                                    ChestTileEntity.this.mySrc));
                 }
             }
 

@@ -25,8 +25,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.GridAccessException;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.util.inv.InvOperation;
@@ -46,23 +44,20 @@ public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {
 
     @Override
     protected double getFunnelPowerDemand(final double maxRequired) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-
-            return grid.getEnergyDemand(maxRequired);
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().getEnergyDemand(maxRequired);
+        } else {
             return this.getInternalMaxPower();
         }
     }
 
     @Override
     protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
-        try {
-            final IEnergyService grid = this.getMainNode().getEnergy();
-            final double leftOver = grid.injectPower(power, mode);
-
-            return leftOver;
-        } catch (final GridAccessException e) {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getEnergyService().injectPower(power, mode);
+        } else {
             return super.funnelPowerIntoStorage(power, mode);
         }
     }
