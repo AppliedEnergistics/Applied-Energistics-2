@@ -88,10 +88,10 @@ dependencies {
     //
     // Remove this once there has been a proper release, and Forge updated to it.
     //
-    implementation 'org.spongepowered:mixin:0.8.3-SNAPSHOT'
+    implementation 'org.spongepowered:mixin:0.8.3'
 
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8.3-SNAPSHOT:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
