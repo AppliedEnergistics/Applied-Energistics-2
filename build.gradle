@@ -400,3 +400,8 @@ if (System.getProperty("idea.sync.active") == "true") {
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
+
+// Temporary compile fix, breaks reobfJar. Remove once Sponge Mixin Gradle Plugin gets fixed
+// https://github.com/SpongePowered/MixinGradle/issues/29
+net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace.metaClass.extraMapping = {
+}
