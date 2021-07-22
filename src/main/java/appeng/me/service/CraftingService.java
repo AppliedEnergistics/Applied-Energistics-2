@@ -172,7 +172,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getNodeOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingTileEntity) {
             this.updateList = true;
         }
     }
@@ -202,7 +202,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getNodeOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingTileEntity) {
             this.updateList = true;
         }
     }

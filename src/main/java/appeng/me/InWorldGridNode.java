@@ -21,7 +21,7 @@ package appeng.me;
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -47,10 +47,10 @@ public class InWorldGridNode extends GridNode {
 
     public <T> InWorldGridNode(ServerWorld world,
             BlockPos location,
-            T logicalHost,
-            @NotNull IGridNodeListener<T> listener,
+            T owner,
+            @Nonnull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
-        super(world, logicalHost, listener, flags);
+        super(world, owner, listener, flags);
         this.location = location;
     }
 

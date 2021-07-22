@@ -63,7 +63,7 @@ public interface IGridNode {
      * entirely different.
      */
     @Nonnull
-    Object getNodeOwner();
+    Object getOwner();
 
     /**
      * lets you walk the grid stating at the current node using a IGridVisitor, generally not needed, please use only if

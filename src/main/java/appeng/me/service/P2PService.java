@@ -78,7 +78,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void removeNode(final IGridNode node) {
-        if (node.getNodeOwner() instanceof P2PTunnelPart<?>tunnel) {
+        if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }
@@ -97,7 +97,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
 
     @Override
     public void addNode(final IGridNode node) {
-        if (node.getNodeOwner() instanceof P2PTunnelPart<?>tunnel) {
+        if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
             }

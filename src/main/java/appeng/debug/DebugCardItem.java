@@ -128,7 +128,7 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getNodeOwner() instanceof ControllerTileEntity) {
+                                if (n.getOwner() instanceof ControllerTileEntity) {
                                     break outer;
                                 }
 
@@ -147,7 +147,7 @@ public class DebugCardItem extends AEBaseItem {
                         this.outputMsg(player, "Cable Distance: " + length);
                     }
 
-                    if (center.getNodeOwner() instanceof P2PTunnelPart<?>tunnelPart) {
+                    if (center.getOwner() instanceof P2PTunnelPart<?>tunnelPart) {
                         this.outputMsg(player, "Freq: " + tunnelPart.getFrequency());
                     }
 

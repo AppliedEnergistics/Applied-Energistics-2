@@ -88,7 +88,7 @@ public class Grid implements IGrid {
             c.removeNode(gridNode);
         }
 
-        var machineClass = gridNode.getNodeOwner().getClass();
+        var machineClass = gridNode.getOwner().getClass();
         this.machines.remove(machineClass, gridNode);
 
         gridNode.setGridStorage(null);
@@ -147,7 +147,7 @@ public class Grid implements IGrid {
         gridNode.setGridStorage(this.myStorage);
 
         // track node.
-        this.machines.put(gridNode.getNodeOwner().getClass(), gridNode);
+        this.machines.put(gridNode.getOwner().getClass(), gridNode);
 
         for (var service : this.services.values()) {
             service.addNode(gridNode);
@@ -184,7 +184,7 @@ public class Grid implements IGrid {
         Set<IGridNode> nodes = this.machines.get(machineClass);
         var resultBuilder = ImmutableSet.<T>builder();
         for (IGridNode node : nodes) {
-            var logicalHost = node.getNodeOwner();
+            var logicalHost = node.getOwner();
             if (machineClass.isInstance(logicalHost)) {
                 resultBuilder.add(machineClass.cast(logicalHost));
             }
@@ -197,7 +197,7 @@ public class Grid implements IGrid {
         Set<IGridNode> nodes = this.machines.get(machineClass);
         var resultBuilder = ImmutableSet.<T>builder();
         for (IGridNode node : nodes) {
-            var logicalHost = node.getNodeOwner();
+            var logicalHost = node.getOwner();
             if (machineClass.isInstance(logicalHost) && node.isActive()) {
                 resultBuilder.add(machineClass.cast(logicalHost));
             }

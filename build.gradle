@@ -59,8 +59,6 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation "org.jetbrains:annotations:16.0.2"
-
     // compile against provided APIs
     compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"

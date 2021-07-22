@@ -122,7 +122,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
                     closedList.add((IPathItem) node);
                     for (final IGridConnection gcc : node.getConnections()) {
                         var gc = (GridConnection) gcc;
-                        if (!(gc.getOtherSide(node).getNodeOwner() instanceof ControllerTileEntity)) {
+                        if (!(gc.getOtherSide(node).getOwner() instanceof ControllerTileEntity)) {
                             final List<IPathItem> open = new ArrayList<>();
                             closedList.add(gc);
                             open.add(gc);
@@ -167,7 +167,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
     @Override
     public void removeNode(final IGridNode gridNode) {
-        if (gridNode.getNodeOwner() instanceof ControllerTileEntity controller) {
+        if (gridNode.getOwner() instanceof ControllerTileEntity controller) {
             this.controllers.remove(controller);
             this.recalculateControllerNextTick = true;
         }
@@ -185,7 +185,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
     @Override
     public void addNode(final IGridNode gridNode) {
-        if (gridNode.getNodeOwner() instanceof ControllerTileEntity controller) {
+        if (gridNode.getOwner() instanceof ControllerTileEntity controller) {
             this.controllers.add(controller);
             this.recalculateControllerNextTick = true;
         }

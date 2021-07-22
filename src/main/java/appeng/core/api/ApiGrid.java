@@ -20,11 +20,10 @@ package appeng.core.api;
 
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -67,9 +66,9 @@ public class ApiGrid implements IGridHelper {
         return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public <T> IManagedGridNode createManagedNode(@NotNull T owner, @NotNull IGridNodeListener<T> listener) {
+    public <T> IManagedGridNode createManagedNode(@Nonnull T owner, @Nonnull IGridNodeListener<T> listener) {
         return new ManagedGridNode(owner, listener);
     }
 

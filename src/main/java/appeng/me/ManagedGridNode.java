@@ -32,8 +32,6 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -246,7 +244,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    public ManagedGridNode setExposedOnSides(@NotNull Set<Direction> directions) {
+    public ManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
         } else {
@@ -264,7 +262,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    public ManagedGridNode setVisualRepresentation(@NotNull ItemStack visualRepresentation) {
+    public ManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
         if (node == null) {
             getInitData().visualRepresentation = Objects.requireNonNull(visualRepresentation);
         } else {
@@ -273,7 +271,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    public ManagedGridNode setGridColor(@NotNull AEColor gridColor) {
+    public ManagedGridNode setGridColor(@Nonnull AEColor gridColor) {
         if (this.node == null) {
             getInitData().gridColor = gridColor;
         } else {

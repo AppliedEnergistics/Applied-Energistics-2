@@ -68,12 +68,12 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         this.ioPorts = new ArrayList<>();
 
         for (var gm : grid.getMachineNodes(SpatialIOPortTileEntity.class)) {
-            this.ioPorts.add((SpatialIOPortTileEntity) gm.getNodeOwner());
+            this.ioPorts.add((SpatialIOPortTileEntity) gm.getOwner());
         }
 
         for (var gm : grid.getMachineNodes(SpatialPylonTileEntity.class)) {
             if (gm.meetsChannelRequirements()) {
-                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getNodeOwner()).getCluster();
+                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getOwner()).getCluster();
                 if (c != null) {
                     this.clusters.put(c, c);
                 }

@@ -46,7 +46,7 @@ public class ControllerValidator implements IGridVisitor {
 
     @Override
     public boolean visitNode(final IGridNode n) {
-        if (this.isValid() && n.getNodeOwner() instanceof ControllerTileEntity c) {
+        if (this.isValid() && n.getOwner() instanceof ControllerTileEntity c) {
 
             final BlockPos pos = c.getPos();
 

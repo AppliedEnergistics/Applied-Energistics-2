@@ -31,14 +31,12 @@ import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -67,7 +65,7 @@ public class GridNode implements IGridNode, IPathItem {
      * part.
      */
     @Nonnull
-    private final Object nodeOwner;
+    private final Object owner;
     @Nonnull
     protected final IGridNodeListener<?> listener;
 
@@ -97,11 +95,11 @@ public class GridNode implements IGridNode, IPathItem {
     private ClassToInstanceMap<IGridNodeService> services;
 
     public <T> GridNode(@Nonnull ServerWorld world,
-            @Nonnull T nodeOwner,
+            @Nonnull T owner,
             @Nonnull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
         this.world = world;
-        this.nodeOwner = nodeOwner;
+        this.owner = owner;
         this.listener = listener;
         this.flags = EnumSet.copyOf(flags);
         this.services = null;
@@ -123,7 +121,7 @@ public class GridNode implements IGridNode, IPathItem {
     // The unchecked cast is safe because the constructor is correctly typed and ties logicalHost and listener together
     @SuppressWarnings("unchecked")
     public <T> void callListener(ListenerCallback<T> callback) {
-        var typedOwner = (T) this.nodeOwner;
+        var typedOwner = (T) this.owner;
         var typedListener = (IGridNodeListener<T>) listener;
         callback.call(typedListener, typedOwner, this);
     }
@@ -414,20 +412,20 @@ public class GridNode implements IGridNode, IPathItem {
         return idlePowerUsage;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public ItemStack getVisualRepresentation() {
         return visualRepresentation;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public AEColor getGridColor() {
         return gridColor;
     }
 
     @Override
-    public boolean isExposedOnSide(@NotNull Direction side) {
+    public boolean isExposedOnSide(@Nonnull Direction side) {
         return exposedOnSides.contains(side);
     }
 
@@ -605,13 +603,13 @@ public class GridNode implements IGridNode, IPathItem {
         services.putInstance(serviceClass, service);
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Object getNodeOwner() {
-        return nodeOwner;
+    public Object getOwner() {
+        return owner;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public ServerWorld getWorld() {
         return world;
@@ -619,7 +617,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public String toString() {
-        return "node hosted by " + getNodeOwner().getClass().getName();
+        return "node hosted by " + getOwner().getClass().getName();
     }
 
 }

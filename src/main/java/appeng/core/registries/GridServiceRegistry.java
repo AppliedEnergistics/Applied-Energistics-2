@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
@@ -105,7 +105,7 @@ public final class GridServiceRegistry implements IGridServiceRegistry {
                     .collect(Collectors.toSet());
         }
 
-        @NotNull
+        @Nonnull
         public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {
             // Fill the constructor arguments
             var ctorArgs = new Object[constructorParameterTypes.length];
