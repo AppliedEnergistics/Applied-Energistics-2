@@ -20,6 +20,7 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,13 +47,13 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
         return Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE);
     }
 
-    public AENetworkTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AENetworkTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.getMainNode().loadFromNBT(data);
     }
 

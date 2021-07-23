@@ -18,14 +18,16 @@
 
 package appeng.tile.misc;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SkyCompassTileEntity extends AEBaseTileEntity {
 
-    public SkyCompassTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SkyCompassTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
 }

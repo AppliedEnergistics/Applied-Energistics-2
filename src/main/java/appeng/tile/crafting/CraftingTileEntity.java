@@ -65,8 +65,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
@@ -184,8 +184,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
             if (this.cluster != null) {

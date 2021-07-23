@@ -30,6 +30,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,6 +42,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -58,35 +62,33 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBaseBlock {
+public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBaseBlock implements EntityBlock {
 
     @Nonnull
     private Class<T> tileEntityClass;
     @Nonnull
-    private Supplier<T> tileEntityFactory;
+    private BlockEntityType.BlockEntitySupplier<T> tileEntityFactory;
+
+    @Nullable
+    private BlockEntityTicker<T> serverTicker;
+
+    @Nullable
+    private BlockEntityTicker<T> clientTicker;
 
     public AEBaseTileBlock(final BlockBehaviour.Properties props) {
         super(props);
     }
 
     // TODO : Was this change needed?
-    public void setTileEntity(final Class<T> tileEntityClass, Supplier<T> factory) {
+    public void setTileEntity(final Class<T> tileEntityClass,
+                              BlockEntityType.BlockEntitySupplier<T> factory,
+                              BlockEntityTicker<T> clientTicker,
+                              BlockEntityTicker<T> serverTicker) {
         this.tileEntityClass = tileEntityClass;
         this.tileEntityFactory = factory;
+        this.serverTicker = serverTicker;
+        this.clientTicker = clientTicker;
         this.setInventory(AEBaseInvTileEntity.class.isAssignableFrom(tileEntityClass));
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return this.hasBlockTileEntity();
-    }
-
-    private boolean hasBlockTileEntity() {
-        return true;
-    }
-
-    public Class<T> getTileEntityClass() {
-        return this.tileEntityClass;
     }
 
     @Nullable
@@ -96,10 +98,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Nullable
     public T getTileEntity(final BlockGetter w, final BlockPos pos) {
-        if (!this.hasBlockTileEntity()) {
-            return null;
-        }
-
         final BlockEntity te = w.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.tileEntityClass != null && this.tileEntityClass.isInstance(te)) {
@@ -109,9 +107,19 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         return null;
     }
 
+    @Nullable
     @Override
-    public final BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return this.tileEntityFactory.get();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return tileEntityFactory.create(pos, state);
+    }
+
+    // TODO-1.17 Ticker
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> type) {
+        return (BlockEntityTicker<T>) (level.isClientSide() ? clientTicker : serverTicker);
     }
 
     @Override

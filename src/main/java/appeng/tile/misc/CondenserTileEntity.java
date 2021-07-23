@@ -21,6 +21,7 @@ package appeng.tile.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -81,8 +82,8 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     private double storedPower = 0;
 
-    public CondenserTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CondenserTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
 
@@ -95,8 +96,8 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

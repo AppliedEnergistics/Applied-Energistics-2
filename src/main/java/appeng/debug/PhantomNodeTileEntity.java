@@ -20,6 +20,7 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 
@@ -28,14 +29,15 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.core.Api;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PhantomNodeTileEntity extends AENetworkTileEntity {
 
     private IManagedGridNode proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public PhantomNodeTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override

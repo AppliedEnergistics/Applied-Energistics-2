@@ -20,17 +20,20 @@ package appeng.tile.storage;
 
 import java.io.IOException;
 
+import appeng.tile.ClientTickingBlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -41,7 +44,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
-public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableBlockEntity, LidBlockEntity {
+public class SkyChestTileEntity extends AEBaseInvTileEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
@@ -49,8 +52,8 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableB
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestTileEntity(BlockEntityType<? extends SkyChestTileEntity> type) {
-        super(type);
+    public SkyChestTileEntity(BlockEntityType<? extends SkyChestTileEntity> type, BlockPos pos, BlockState blockState) {
+        super(type, pos, blockState);
     }
 
     @Override
@@ -101,7 +104,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableB
     }
 
     @Override
-    public void tick() {
+    public void clientTick() {
         this.prevLidAngle = this.lidAngle;
         // Play a sound on initial opening.
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {

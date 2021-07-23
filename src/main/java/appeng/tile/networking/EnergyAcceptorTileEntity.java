@@ -18,9 +18,11 @@
 
 package appeng.tile.networking;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -31,8 +33,8 @@ import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {
 
-    public EnergyAcceptorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public EnergyAcceptorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode().setIdlePowerUsage(0.0);
         this.setInternalMaxPower(0);
     }

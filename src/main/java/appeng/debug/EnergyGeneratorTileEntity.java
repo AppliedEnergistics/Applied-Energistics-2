@@ -22,11 +22,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -34,22 +36,19 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.tile.AEBaseTileEntity;
 
-public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements TickableBlockEntity, IEnergyStorage {
+public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity, IEnergyStorage {
     /**
      * The base energy injected each tick. Adjacent TileEnergyGenerators will increase it to pow(base, #generators).
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public EnergyGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         Level world = this.getLevel();
-        if (world == null || world.isClientSide) {
-            return;
-        }
 
         int tier = 1;
         for (Direction facing : Direction.values()) {

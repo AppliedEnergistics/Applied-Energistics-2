@@ -24,6 +24,7 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,8 +51,8 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
     private Item filter = Items.AIR;
     private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
 
-    public ItemGenTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ItemGenTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             for (final Item item : ForgeRegistries.ITEMS) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
@@ -66,12 +67,12 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void load(BlockState blockState, CompoundTag data) {
+    public void load(CompoundTag data) {
         if (data.contains("filter")) {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
-        super.load(blockState, data);
+        super.load(data);
     }
 
     @SuppressWarnings("unchecked")

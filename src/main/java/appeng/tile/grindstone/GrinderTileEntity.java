@@ -21,6 +21,7 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -48,8 +49,8 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
     private int points;
 
-    public GrinderTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public GrinderTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override

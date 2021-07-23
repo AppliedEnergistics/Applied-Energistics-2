@@ -64,13 +64,13 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
 
     private int oldLV = -1; // on re-calculate light when it changes
 
-    public CableBusTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CableBusTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.getCableBus().readFromNBT(data);
     }
 

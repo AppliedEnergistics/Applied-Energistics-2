@@ -18,19 +18,21 @@
 
 package appeng.debug;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.ChunkPos;
 
 import appeng.core.AELog;
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
+public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity {
 
-    public ChunkLoaderTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChunkLoaderTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
@@ -56,17 +58,14 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableB
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         // Validate the force-status
-        Level world = getLevel();
-        if (world instanceof ServerLevel) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ServerLevel serverWorld = (ServerLevel) world;
+        var serverWorld = (ServerLevel) getLevel();
+        ChunkPos chunkPos = new ChunkPos(getBlockPos());
 
-            if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension());
-                serverWorld.setChunkForced(chunkPos.x, chunkPos.z, false);
-            }
+        if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
+            AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension());
+            serverWorld.setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 }

@@ -18,19 +18,22 @@
 
 package appeng.tile.misc;
 
+import appeng.tile.CommonTickingBlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class LightDetectorTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
+public class LightDetectorTileEntity extends AEBaseTileEntity implements CommonTickingBlockEntity {
 
     private int lastCheck = 30;
     private int lastLight = 0;
 
-    public LightDetectorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public LightDetectorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     public boolean isReady() {
@@ -38,7 +41,7 @@ public class LightDetectorTileEntity extends AEBaseTileEntity implements Tickabl
     }
 
     @Override
-    public void tick() {
+    public void commonTick() {
         this.lastCheck++;
         if (this.lastCheck > 30) {
             this.lastCheck = 0;

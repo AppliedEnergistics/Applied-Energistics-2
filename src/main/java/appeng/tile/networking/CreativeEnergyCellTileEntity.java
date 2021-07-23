@@ -18,6 +18,7 @@
 
 package appeng.tile.networking;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 
@@ -27,11 +28,12 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 
-    public CreativeEnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CreativeEnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .addService(IAEPowerStorage.class, this);

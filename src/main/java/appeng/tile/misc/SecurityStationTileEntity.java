@@ -87,8 +87,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
 
-    public SecurityStationTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SecurityStationTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(2.0)
@@ -169,8 +169,8 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];

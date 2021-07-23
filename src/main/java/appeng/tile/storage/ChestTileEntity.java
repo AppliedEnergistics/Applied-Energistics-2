@@ -25,7 +25,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.core.BlockPos;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -109,7 +110,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestTileEntity extends AENetworkPowerTileEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, TickableBlockEntity {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -139,8 +140,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     private Item cellItem = Items.AIR;
     private double idlePowerUsage;
 
-    public ChestTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChestTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -317,11 +318,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void tick() {
-        if (this.level.isClientSide) {
-            return;
-        }
-
+    public void serverTick() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             if (!grid.getEnergyService().isNetworkPowered()) {
@@ -386,8 +383,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {

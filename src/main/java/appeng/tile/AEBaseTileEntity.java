@@ -79,8 +79,8 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBaseTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     public static void registerTileItem(BlockEntityType<?> type, final Item wat) {
@@ -111,8 +111,8 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -154,13 +154,13 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
         // / pkt.actionType
         if (pkt.getType() == 64) {
-            this.handleUpdateTag(null, pkt.getTag());
+            this.handleUpdateTag(pkt.getTag());
         }
     }
 
     /**
      * Deferred tile-initialization when tiles actually start first ticking in a chunk. The tile needs to override
-     * {@link #validate()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
+     * {@link #clearRemoved()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
      */
     public void onReady() {
     }
@@ -228,7 +228,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
      * Handles tile entites that are being received by the client as part of a full chunk.
      */
     @Override
-    public void handleUpdateTag(BlockState state, CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag) {
         final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
@@ -464,7 +464,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
         if (this.level.isClientSide) {
             this.setChanged();
         } else {
-            this.level.blockEntityChanged(this.worldPosition, this);
+            this.level.blockEntityChanged(this.worldPosition);
             if (!this.markDirtyQueued) {
                 TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;

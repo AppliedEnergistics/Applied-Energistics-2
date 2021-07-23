@@ -20,6 +20,7 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -42,8 +43,8 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkInvTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AENetworkInvTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     protected IManagedGridNode createMainNode() {
@@ -51,8 +52,8 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.getMainNode().loadFromNBT(data);
     }
 

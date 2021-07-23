@@ -20,6 +20,7 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -52,8 +53,8 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
 
     private final IWorldRunnable transitionCallback = world -> transition();
 
-    public SpatialIOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SpatialIOPortTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
@@ -65,8 +66,8 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }

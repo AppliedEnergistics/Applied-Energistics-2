@@ -22,6 +22,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -62,8 +63,8 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
-    public FluidInterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public FluidInterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
@@ -94,8 +95,8 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void load(BlockState state, final CompoundTag data) {
-        super.load(state, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.duality.readFromNBT(data);
     }
 

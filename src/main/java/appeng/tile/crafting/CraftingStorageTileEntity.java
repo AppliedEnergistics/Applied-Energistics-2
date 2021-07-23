@@ -18,17 +18,19 @@
 
 package appeng.tile.crafting;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.definitions.AEBlocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
 
-    public CraftingStorageTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingStorageTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
