@@ -95,8 +95,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public IOPortTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
@@ -121,8 +121,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
         if (data.contains("lastRedstoneState")) {

@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -59,8 +61,8 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
-    public ChargerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ChargerTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setFlags()

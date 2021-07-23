@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  *
  * 1. IMovableTile.prepareToMove() or TileEntity.invalidate() depending on your opt-in method. 2. The tile will be
  * removed from the world. 3. Its world, coordinates will be changed. *** this can be overridden with a IMovableHandler
- * *** 4. It will then be re-added to the world, or a new world. 5. TileEntity.validate() 6. IMovableTile.doneMoving (
+ * *** 4. It will then be re-added to the world, or a new world. 5. TileEntity.clearRemoved() 6. IMovableTile.doneMoving (
  * if you implemented IMovableTile )
  *
  * Please note, this is a 100% white list only feature, I will never opt in any non-vanilla, non-AE blocks. If you do

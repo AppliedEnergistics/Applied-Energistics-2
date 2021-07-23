@@ -26,12 +26,13 @@ import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -51,7 +52,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
-        implements IAEMultiBlock<QuantumCluster>, TickableBlockEntity {
+        implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 
@@ -65,15 +66,15 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public QuantumBridgeTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
         this.getMainNode().setIdlePowerUsage(22);
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (this.updateStatus) {
             this.updateStatus = false;
             if (this.cluster != null) {

@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Multiset;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
@@ -90,8 +91,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     private boolean displayOverlay = false;
     private boolean isActive = false;
 
-    public SpatialAnchorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SpatialAnchorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
         this.manager.registerSetting(Settings.OVERLAY_MODE, YesNo.NO);
@@ -105,8 +106,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, CompoundTag data) {
-        super.load(blockState, data);
+    public void load(CompoundTag data) {
+        super.load(data);
         this.manager.readFromNBT(data);
     }
 

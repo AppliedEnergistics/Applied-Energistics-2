@@ -97,8 +97,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     private final IItemHandlerModifiable inv = new WrapperChainedItemHandler(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
-    public InscriberTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public InscriberTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
 
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
@@ -135,8 +135,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }

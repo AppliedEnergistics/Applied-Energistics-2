@@ -18,19 +18,6 @@
 
 package appeng.core.definitions;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AppEng;
 import appeng.debug.ChunkLoaderTileEntity;
@@ -40,6 +27,8 @@ import appeng.debug.ItemGenTileEntity;
 import appeng.debug.PhantomNodeTileEntity;
 import appeng.fluids.tile.FluidInterfaceTileEntity;
 import appeng.tile.AEBaseTileEntity;
+import appeng.tile.ClientTickingBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
@@ -72,8 +61,19 @@ import appeng.tile.storage.ChestTileEntity;
 import appeng.tile.storage.DriveTileEntity;
 import appeng.tile.storage.IOPortTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
-import net.minecraft.world.level.block.Block;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
@@ -171,33 +171,54 @@ public final class AEBlockEntities {
     }
 
     @SuppressWarnings("unchecked")
+    @SafeVarargs
     private static <T extends AEBaseTileEntity> BlockEntityType<T> create(String shortId,
-                                                                                                                 Class<T> entityClass,
-                                                                                                                 Function<BlockEntityType<T>, T> factory,
-                                                                                                                 BlockDefinition... blockDefinitions) {
+                                                                          Class<T> entityClass,
+                                                                          BlockEntityFactory<T> factory,
+                                                                          BlockDefinition<? extends AEBaseTileBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
         ResourceLocation id = AppEng.makeId(shortId);
 
-        Block[] blocks = Arrays.stream(blockDefinitions).map(BlockDefinition::block).toArray(Block[]::new);
+        var blocks = Arrays.stream(blockDefinitions)
+                .map(BlockDefinition::block)
+                .toArray(AEBaseTileBlock[]::new);
 
         AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
-        Supplier<T> supplier = () -> factory.apply(typeHolder.get());
-        BlockEntityType<T> type = Builder.of(supplier, blocks).build(null);
+        BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(), blockPos, blockState);
+        var type = Builder.of(supplier, blocks).build(null);
         type.setRegistryName(id);
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
         AEBaseTileEntity.registerTileItem(type, blockDefinitions[0].asItem());
 
-        for (Block block : blocks) {
-            if (block instanceof AEBaseTileBlock) {
-                AEBaseTileBlock<T> baseTileBlock = (AEBaseTileBlock<T>) block;
-                baseTileBlock.setTileEntity(entityClass, supplier);
-            }
+        // If the block entity classes implement specific interfaces, automatically register them
+        // as tickers with the blocks that create that entity.
+        BlockEntityTicker<T> serverTicker = null;
+        if (ServerTickingBlockEntity.class.isAssignableFrom(entityClass)) {
+            serverTicker = (level, pos, state, entity) -> {
+                ((ServerTickingBlockEntity) entity).serverTick();
+            };
+        }
+        BlockEntityTicker<T> clientTicker = null;
+        if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass)) {
+            serverTicker = (level, pos, state, entity) -> {
+                ((ClientTickingBlockEntity) entity).clientTick();
+            };
+        }
+
+        for (var block : blocks) {
+            AEBaseTileBlock<T> baseTileBlock = (AEBaseTileBlock<T>) block;
+            baseTileBlock.setTileEntity(entityClass, supplier, clientTicker, serverTicker);
         }
 
         return type;
+    }
+
+    @FunctionalInterface
+    interface BlockEntityFactory<T extends AEBaseTileEntity> {
+        T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
 
 }

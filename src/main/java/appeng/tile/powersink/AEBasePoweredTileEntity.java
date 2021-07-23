@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -59,8 +60,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     // Cache the optional to not continuously re-allocate it or the supplier
     private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-    public AEBasePoweredTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBasePoweredTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
@@ -81,8 +82,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 

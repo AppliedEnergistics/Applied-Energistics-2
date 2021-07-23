@@ -21,7 +21,7 @@ package appeng.debug;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.Util;
@@ -33,21 +33,22 @@ import appeng.tile.AEBaseTileEntity;
 import appeng.util.InteractionUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class CubeGeneratorTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
+public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity {
 
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
     private Player who = null;
 
-    public CubeGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CubeGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void tick() {
-        if (!this.is.isEmpty() && !isRemote()) {
+    public void serverTick() {
+        if (!this.is.isEmpty()) {
             this.countdown--;
 
             if (this.countdown % 20 == 0) {

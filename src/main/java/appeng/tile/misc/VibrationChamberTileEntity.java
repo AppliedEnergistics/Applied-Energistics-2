@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,8 +62,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     // client side..
     public boolean isOn;
 
-    public VibrationChamberTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public VibrationChamberTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .setFlags()
@@ -100,8 +101,8 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));
         this.setBurnSpeed(data.getInt("burnSpeed"));

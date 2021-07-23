@@ -174,10 +174,6 @@ public abstract class AEBaseBlock extends Block {
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
 
-    protected String getUnlocalizedName(final ItemStack is) {
-        return this.getDescriptionId();
-    }
-
     protected boolean hasCustomRotation() {
         return false;
     }

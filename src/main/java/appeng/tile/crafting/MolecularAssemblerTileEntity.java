@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -99,8 +98,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     @OnlyIn(Dist.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public MolecularAssemblerTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
 
         this.getMainNode()
                 .setIdlePowerUsage(0.0)
@@ -209,8 +208,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.of(data.getCompound("myPlan"));
 

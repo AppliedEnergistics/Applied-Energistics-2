@@ -54,8 +54,8 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     private IItemHandler cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CellWorkbenchTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
     }
@@ -104,8 +104,8 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
         this.manager.readFromNBT(data);

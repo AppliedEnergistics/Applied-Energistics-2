@@ -57,8 +57,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public PaintSplotchesTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
@@ -91,8 +91,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         if (data.contains("dots")) {
             this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }

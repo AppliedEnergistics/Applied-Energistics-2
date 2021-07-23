@@ -41,13 +41,13 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IAEAppEngInventory {
 
-    public AEBaseInvTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public AEBaseInvTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundTag opt = data.getCompound("inv");

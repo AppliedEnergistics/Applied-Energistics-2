@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -50,8 +51,8 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CraftingMonitorTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
@@ -86,8 +87,8 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundTag data) {
-        super.load(blockState, data);
+    public void load(final CompoundTag data) {
+        super.load(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
         }

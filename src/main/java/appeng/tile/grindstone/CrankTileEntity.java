@@ -20,9 +20,10 @@ package appeng.tile.grindstone;
 
 import java.io.IOException;
 
+import appeng.tile.CommonTickingBlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 
@@ -30,7 +31,7 @@ import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseTileEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
+public class CrankTileEntity extends AEBaseTileEntity implements CommonTickingBlockEntity {
 
     private final int ticksPerRotation = 18;
 
@@ -41,12 +42,12 @@ public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEn
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CrankTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
+        super(tileEntityTypeIn, pos, blockState);
     }
 
     @Override
-    public void tick() {
+    public void commonTick() {
         if (this.rotation > 0) {
             this.setVisibleRotation(this.getVisibleRotation() - 360.0f / this.ticksPerRotation);
             this.charge++;
@@ -61,6 +62,8 @@ public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEn
             this.rotation--;
         }
     }
+
+
 
     private ICrankable getGrinder() {
         if (isRemote()) {
