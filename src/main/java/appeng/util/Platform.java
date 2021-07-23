@@ -73,12 +73,13 @@ import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.security.ISecurityService;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -88,7 +89,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -97,9 +98,7 @@ import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.tools.quartz.QuartzToolType;
-import appeng.me.GridAccessException;
 import appeng.me.GridNode;
-import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
@@ -211,7 +210,7 @@ public class Platform {
         return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
-    public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player) {
+    public static boolean hasPermissions(final DimensionalBlockPos dc, final PlayerEntity player) {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
@@ -228,14 +227,14 @@ public class Platform {
                 if (g != null) {
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+                        final IEnergyService eg = g.getService(IEnergyService.class);
                         if (!eg.isNetworkPowered()) {
                             // FIXME trace logging?
                             return false;
                         }
                     }
 
-                    final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+                    final ISecurityService sg = g.getService(ISecurityService.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
                                 .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
@@ -725,30 +724,42 @@ public class Platform {
         return input;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void postChanges(final IStorageGrid gs, final ItemStack removed, final ItemStack added,
-            final IActionSource src) {
-        for (final IStorageChannel<?> chan : Api.instance().storage().storageChannels()) {
-            final IItemList<?> myChanges = chan.createList();
-
-            if (!removed.isEmpty()) {
-                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(removed, null, chan);
-                if (myInv != null) {
-                    myInv.getAvailableItems(myChanges);
-                    for (final IAEStack is : myChanges) {
-                        is.setStackSize(-is.getStackSize());
-                    }
-                }
-            }
-            if (!added.isEmpty()) {
-                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(added, null, chan);
-                if (myInv != null) {
-                    myInv.getAvailableItems(myChanges);
-                }
-
-            }
-            gs.postAlterationOfStoredItems(chan, myChanges, src);
+    /**
+     * Post inventory changes from a whole cell being added or removed from the grid.
+     */
+    public static void postWholeCellChanges(IStorageService service,
+            ItemStack removedCell,
+            ItemStack addedCell,
+            IActionSource src) {
+        for (var channel : Api.instance().storage().storageChannels()) {
+            postWholeCellChanges(service, channel, removedCell, addedCell, src);
         }
+    }
+
+    private static <T extends IAEStack<T>> void postWholeCellChanges(IStorageService service,
+            IStorageChannel<T> channel,
+            ItemStack removedCell,
+            ItemStack addedCell,
+            IActionSource src) {
+        var myChanges = channel.createList();
+
+        if (!removedCell.isEmpty()) {
+            var myInv = Api.instance().registries().cell().getCellInventory(removedCell, null, channel);
+            if (myInv != null) {
+                myInv.getAvailableItems(myChanges);
+                for (var is : myChanges) {
+                    is.setStackSize(-is.getStackSize());
+                }
+            }
+        }
+        if (!addedCell.isEmpty()) {
+            var myInv = Api.instance().registries().cell().getCellInventory(addedCell, null, channel);
+            if (myInv != null) {
+                myInv.getAvailableItems(myChanges);
+            }
+
+        }
+        service.postAlterationOfStoredItems(channel, myChanges, src);
     }
 
     public static <T extends IAEStack<T>> void postListChanges(final IItemList<T> before, final IItemList<T> after,
@@ -784,15 +795,10 @@ public class Platform {
         final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
 
         if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-            final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-            final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-
             AELog.info(
-                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
-                    a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(),
-                    b.getPlayerID(), locationB);
+                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, %s] vs Node B[isSecure=%b, key=%d, playerID=%d, %s]",
+                    a_isSecure, a.getLastSecurityKey(), a.getOwningPlayerId(), a, b_isSecure, b.getLastSecurityKey(),
+                    b.getOwningPlayerId(), b);
         }
 
         // can't do that son...
@@ -801,11 +807,11 @@ public class Platform {
         }
 
         if (!a_isSecure && b_isSecure) {
-            return checkPlayerPermissions(b.getGrid(), a.getPlayerID());
+            return checkPlayerPermissions(b.getGrid(), a.getOwningPlayerId());
         }
 
         if (a_isSecure && !b_isSecure) {
-            return checkPlayerPermissions(a.getGrid(), b.getPlayerID());
+            return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
         }
 
         return true;
@@ -816,7 +822,7 @@ public class Platform {
             return false;
         }
 
-        final IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
+        final IEnergyService eg = grid.getService(IEnergyService.class);
         return eg.isNetworkPowered();
     }
 
@@ -825,7 +831,7 @@ public class Platform {
             return true;
         }
 
-        final ISecurityGrid gs = grid.getCache(ISecurityGrid.class);
+        final ISecurityService gs = grid.getService(ISecurityService.class);
 
         if (gs == null) {
             return true;
@@ -871,23 +877,24 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
-        try {
-            if (src.player().isPresent()) {
-                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-            } else if (src.machine().isPresent()) {
-                final IActionHost te = src.machine().get();
-                final IGridNode n = te.getActionableNode();
-                if (n == null) {
-                    return false;
-                }
+    public static boolean canAccess(final IManagedGridNode gridProxy, final IActionSource src) {
+        var grid = gridProxy.getGrid();
+        if (grid == null) {
+            return false;
+        }
 
-                final int playerID = n.getPlayerID();
-                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
-            } else {
+        if (src.player().isPresent()) {
+            return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.BUILD);
+        } else if (src.machine().isPresent()) {
+            final IActionHost te = src.machine().get();
+            final IGridNode n = te.getActionableNode();
+            if (n == null) {
                 return false;
             }
-        } catch (final GridAccessException gae) {
+
+            final int playerID = n.getOwningPlayerId();
+            return grid.getSecurityService().hasPermission(playerID, SecurityPermissions.BUILD);
+        } else {
             return false;
         }
     }

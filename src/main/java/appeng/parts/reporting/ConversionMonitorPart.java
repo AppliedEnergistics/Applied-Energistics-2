@@ -38,7 +38,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
@@ -79,11 +78,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -91,7 +90,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (InteractionUtil.isWrench(player, eq, this.getLocation().getPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getTile().getPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
@@ -113,11 +112,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -134,11 +133,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return true;
         }
 
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(this.getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
@@ -150,9 +149,9 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     private void insertItem(final PlayerEntity player, final Hand hand, final boolean allItems) {
-        try {
-            final IEnergySource energy = this.getProxy().getEnergy();
-            final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
+        getMainNode().ifPresent(grid -> {
+            final IEnergySource energy = grid.getEnergyService();
+            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             if (allItems) {
@@ -180,45 +179,43 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                         new PlayerSource(player, this));
                 player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     private void extractItem(final PlayerEntity player, int count) {
         final IAEItemStack input = this.getDisplayed();
-        if (input != null) {
-            try {
-                if (!this.getProxy().isActive()) {
-                    return;
-                }
-
-                final IEnergySource energy = this.getProxy().getEnergy();
-                final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-
-                input.setStackSize(count);
-
-                final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
-                        new PlayerSource(player, this));
-                if (retrieved != null) {
-                    ItemStack newItems = retrieved.createItemStack();
-                    final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
-                    newItems = adaptor.addItems(newItems);
-                    if (!newItems.isEmpty()) {
-                        final TileEntity te = this.getTile();
-                        final List<ItemStack> list = Collections.singletonList(newItems);
-                        Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getFacing()), list);
-                    }
-
-                    if (player.openContainer != null) {
-                        player.openContainer.detectAndSendChanges();
-                    }
-                }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+        if (input == null) {
+            return;
         }
+
+        if (!this.getMainNode().isActive()) {
+            return;
+        }
+
+        getMainNode().ifPresent(grid -> {
+            final IEnergySource energy = grid.getEnergyService();
+            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+
+            input.setStackSize(count);
+
+            final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
+                    new PlayerSource(player, this));
+            if (retrieved != null) {
+                ItemStack newItems = retrieved.createItemStack();
+                final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
+                newItems = adaptor.addItems(newItems);
+                if (!newItems.isEmpty()) {
+                    final TileEntity te = this.getTile();
+                    final List<ItemStack> list = Collections.singletonList(newItems);
+                    Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getDirection()), list);
+                }
+
+                if (player.openContainer != null) {
+                    player.openContainer.detectAndSendChanges();
+                }
+            }
+        });
     }
 
     @Override

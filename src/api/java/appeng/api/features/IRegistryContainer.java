@@ -24,7 +24,7 @@
 package appeng.api.features;
 
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.IGridServiceRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 
@@ -43,9 +43,10 @@ public interface IRegistryContainer {
     IMovableRegistry movable();
 
     /**
-     * Add new Grid Caches for use during run time, only use during loading phase.
+     * Add new grid-wide services for use during run time. The registry may only be used before the first grid is
+     * created.
      */
-    IGridCacheRegistry gridCache();
+    IGridServiceRegistry gridService();
 
     /**
      * Lets you register your items as wireless terminals

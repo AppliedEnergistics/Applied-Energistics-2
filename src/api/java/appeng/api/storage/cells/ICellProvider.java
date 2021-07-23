@@ -25,23 +25,32 @@ package appeng.api.storage.cells;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
+import appeng.api.networking.IGridNodeService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 
 /**
- * Allows you to provide cells via non IGridHosts directly to the storage system, drives, and similar features should go
- * though {@link ICellContainer} and be automatically handled by the storage system.
+ * Allows you to provide cells to the grid's storage system. Implementations that are attached as grid node services
+ * will be automatically picked up by the {@link appeng.api.networking.storage.IStorageService} when the node joins or
+ * leaves the grid.
+ * <p/>
+ * {@link appeng.api.networking.storage.IStorageService#registerAdditionalCellProvider(ICellProvider)} can be used to
+ * add additional cell providers to a grid. This is useful for storage provided grid-wide by a grid service, rather than
+ * an individual machine.
  */
-public interface ICellProvider {
+public interface ICellProvider extends IGridNodeService {
 
     /**
-     * Inventory of the tile for use with ME, should always return an valid list, never NULL.
-     *
+     * List of inventories (i.e. one per cell) available for the given storage channel.
+     * <p/>
      * You must return the correct Handler for the correct channel, if your handler returns a IAEItemStack handler, for
      * a Fluid Channel stuffs going to explode, same with the reverse.
      *
-     * @return a valid list of handlers, NEVER NULL
+     * @return a valid list of handlers
      */
+    @Nonnull
     List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel);
 
     /**

@@ -53,13 +53,10 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
@@ -100,7 +97,9 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     public IOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
         this.manager = new ConfigManager(this);
         this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
@@ -132,25 +131,18 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
-    }
-
     private void updateTask() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (this.hasWork()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     public void updateRedstoneState() {
@@ -241,7 +233,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        if (!this.getProxy().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return TickRateModulation.IDLE;
         }
 
@@ -260,47 +252,48 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
                 break;
         }
 
-        try {
-            final IEnergySource energy = this.getProxy().getEnergy();
-            for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
-                final ItemStack is = this.inputCells.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    boolean shouldMove = true;
+        var grid = getMainNode().getGrid();
+        if (grid == null) {
+            return TickRateModulation.IDLE;
+        }
 
-                    for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+        var energy = grid.getEnergyService();
+        for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
+            final ItemStack is = this.inputCells.getStackInSlot(x);
+            if (!is.isEmpty()) {
+                boolean shouldMove = true;
+
+                for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+                    if (itemsToMove > 0) {
+                        final IMEMonitor<? extends IAEStack<?>> network = grid.getStorageService()
+                                .getInventory(c);
+                        final IMEInventory<?> inv = this.getInv(is, c);
+
+                        if (inv == null) {
+                            continue;
+                        }
+
+                        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
+                            itemsToMove = this.transferContents(energy, inv, network, itemsToMove, c);
+                        } else {
+                            itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
+                        }
+
+                        shouldMove &= this.shouldMove(inv);
+
                         if (itemsToMove > 0) {
-                            final IMEMonitor<? extends IAEStack<?>> network = this.getProxy().getStorage()
-                                    .getInventory(c);
-                            final IMEInventory<?> inv = this.getInv(is, c);
-
-                            if (inv == null) {
-                                continue;
-                            }
-
-                            if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
-                                itemsToMove = this.transferContents(energy, inv, network, itemsToMove, c);
-                            } else {
-                                itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
-                            }
-
-                            shouldMove &= this.shouldMove(inv);
-
-                            if (itemsToMove > 0) {
-                                ret = TickRateModulation.IDLE;
-                            } else {
-                                ret = TickRateModulation.URGENT;
-                            }
+                            ret = TickRateModulation.IDLE;
+                        } else {
+                            ret = TickRateModulation.URGENT;
                         }
                     }
-
-                    if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
-                    }
-                    ret = TickRateModulation.URGENT;
-
                 }
+
+                if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
+                }
+                ret = TickRateModulation.URGENT;
+
             }
-        } catch (final GridAccessException e) {
-            ret = TickRateModulation.IDLE;
         }
 
         return ret;

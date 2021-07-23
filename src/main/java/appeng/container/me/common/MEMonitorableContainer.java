@@ -45,11 +45,10 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -60,7 +59,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -140,21 +138,13 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
                 if (host instanceof IPortableCell || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
-                } else if (host instanceof IGridHost || host instanceof IActionHost) {
-                    final IGridNode node;
-                    if (host instanceof IGridHost) {
-                        node = ((IGridHost) host).getGridNode(AEPartLocation.INTERNAL);
-                    } else if (host instanceof IActionHost) {
-                        node = ((IActionHost) host).getActionableNode();
-                    } else {
-                        node = null;
-                    }
-
+                } else if (host instanceof IActionHost actionHost) {
+                    var node = actionHost.getActionableNode();
                     if (node != null) {
                         this.networkNode = node;
                         final IGrid g = node.getGrid();
                         if (g != null) {
-                            powerSource = new ChannelPowerSrc(this.networkNode, g.getCache(IEnergyGrid.class));
+                            powerSource = new ChannelPowerSrc(this.networkNode, g.getService(IEnergyService.class));
                         }
                     }
                 }
@@ -263,8 +253,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         try {
             if (this.networkNode != null) {
                 this.setPowered(this.networkNode.isActive());
-            } else if (this.powerSource instanceof IEnergyGrid) {
-                this.setPowered(((IEnergyGrid) this.powerSource).isNetworkPowered());
+            } else if (this.powerSource instanceof IEnergyService) {
+                this.setPowered(((IEnergyService) this.powerSource).isNetworkPowered());
             } else {
                 this.setPowered(
                         this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8);
@@ -304,7 +294,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         }
 
         int activeJobs = 0;
-        ICraftingGrid craftingGrid = grid.getCache(ICraftingGrid.class);
+        ICraftingService craftingGrid = grid.getService(ICraftingService.class);
         for (ICraftingCPU cpus : craftingGrid.getCpus()) {
             if (cpus.isBusy()) {
                 activeJobs++;

@@ -39,8 +39,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.me.GridAccessException;
-import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -52,12 +50,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
     private final IItemHandler itemHandler;
-    private final IGridProxyable proxyable;
+    private final Runnable alertDevice;
     private final InventoryCache cache;
 
-    ItemHandlerAdapter(IItemHandler itemHandler, IGridProxyable proxy) {
+    ItemHandlerAdapter(IItemHandler itemHandler, Runnable alertDevice) {
         this.itemHandler = itemHandler;
-        this.proxyable = proxy;
+        this.alertDevice = alertDevice;
         this.cache = new InventoryCache(this.itemHandler);
     }
 
@@ -81,11 +79,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         }
 
         if (type == Actionable.MODULATE) {
-            try {
-                this.proxyable.getProxy().getTick().alertDevice(this.proxyable.getProxy().getNode());
-            } catch (GridAccessException ex) {
-                // meh
-            }
+            this.alertDevice.run();
         }
 
         return AEItemStack.fromItemStack(remaining);
@@ -163,11 +157,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
         if (!gathered.isEmpty()) {
             if (mode == Actionable.MODULATE) {
-                try {
-                    this.proxyable.getProxy().getTick().alertDevice(this.proxyable.getProxy().getNode());
-                } catch (GridAccessException ex) {
-                    // meh
-                }
+                this.alertDevice.run();
             }
 
             return AEItemStack.fromItemStack(gathered);

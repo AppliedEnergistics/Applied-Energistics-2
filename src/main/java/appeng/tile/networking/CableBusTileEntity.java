@@ -50,7 +50,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMultiTile;
 import appeng.hooks.ticking.TickHandler;
@@ -128,12 +128,12 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public IGridNode getGridNode(final AEPartLocation dir) {
+    public IGridNode getGridNode(final Direction dir) {
         return this.getCableBus().getGridNode(dir);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation side) {
+    public AECableType getCableConnectionType(Direction side) {
         return this.getCableBus().getCableConnectionType(side);
     }
 
@@ -222,8 +222,8 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override

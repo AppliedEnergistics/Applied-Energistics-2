@@ -44,7 +44,6 @@ import appeng.core.Api;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
 
 /**
@@ -59,6 +58,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     public SharedFluidBusPart(ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -78,15 +78,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     private void updateState() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     @Override
@@ -109,7 +107,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected TileEntity getConnectedTE() {
         TileEntity self = this.getHost().getTile();
-        return this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        return this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {

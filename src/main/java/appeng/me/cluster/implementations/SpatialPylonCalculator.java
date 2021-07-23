@@ -20,7 +20,7 @@ package appeng.me.cluster.implementations;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
@@ -40,12 +40,12 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public SpatialPylonCluster createCluster(final World w, final BlockPos min, final BlockPos max) {
+    public SpatialPylonCluster createCluster(ServerWorld w, final BlockPos min, final BlockPos max) {
         return new SpatialPylonCluster(w, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerWorld w, final BlockPos min, final BlockPos max) {
 
         for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
@@ -59,7 +59,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public void updateTiles(final SpatialPylonCluster c, final World w, final BlockPos min, final BlockPos max) {
+    public void updateTiles(final SpatialPylonCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
         for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
             final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getTileEntity(p);
             te.updateStatus(c);

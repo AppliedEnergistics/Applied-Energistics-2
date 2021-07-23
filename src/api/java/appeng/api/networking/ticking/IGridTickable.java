@@ -26,20 +26,18 @@ package appeng.api.networking.ticking;
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeService;
 
 /**
  * Implement on IGridHosts which want to use AE's Network Ticking Feature.
+ * <p/>
+ * <strong>Important note regarding IGridTickables with more then one one node:</strong>
+ * <p/>
+ * If your IGridHost hosts multiple nodes, it may be on multiple grids, or its node may be present on the same grid
+ * multiple times, this is as designed, however if you choose to use the grid to tick these Hosts you must be aware that
+ * they they should probably pick a single node to tick for, and not tick for each node.
  */
-public interface IGridTickable {
-
-    /**
-     * Important note regarding IGridTickables with more then one one node,
-     *
-     * If your IGridHost hosts multiple nodes, it may be on multiple grids, or its node may be present on the same grid
-     * multiple times, this is as designed, however if you choose to use the grid to tick these Hosts you must be aware
-     * that they they should probably pick a single node to tick for, and not tick for each node.
-     *
-     */
+public interface IGridTickable extends IGridNodeService {
 
     /**
      * Return a valid TickingRequest to tell AE a guide for which type of responsiveness your device wants.

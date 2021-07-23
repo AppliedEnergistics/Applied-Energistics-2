@@ -27,11 +27,8 @@ import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
@@ -41,18 +38,20 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     public QuartzGrowthAcceleratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
-        this.getProxy().setFlags();
-        this.getProxy().setIdlePowerUsage(8);
-    }
-
-    @MENetworkEventSubscribe
-    public void onPower(final MENetworkPowerStatusChange ch) {
-        this.markForUpdate();
+        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode().setFlags();
+        this.getMainNode().setIdlePowerUsage(8);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason == IGridNodeListener.State.POWER) {
+            this.markForUpdate();
+        }
+    }
+
+    @Override
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -67,27 +66,25 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     @Override
     public void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
-        try {
-            data.writeBoolean(this.getProxy().getEnergy().isNetworkPowered());
-        } catch (final GridAccessException e) {
-            data.writeBoolean(false);
-        }
+        data.writeBoolean(this.getMainNode().isPowered());
     }
 
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+    }
+
+    @Override
+    public void onReady() {
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        super.onReady();
     }
 
     @Override
     public boolean isPowered() {
         if (!isRemote()) {
-            try {
-                return this.getProxy().getEnergy().isNetworkPowered();
-            } catch (final GridAccessException e) {
-                return false;
-            }
+            return this.getMainNode().isPowered();
         }
 
         return this.hasPower;

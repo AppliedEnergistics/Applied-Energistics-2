@@ -19,24 +19,26 @@
 package appeng.tile.networking;
 
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 
     public CreativeEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .addService(IAEPowerStorage.class, this);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 

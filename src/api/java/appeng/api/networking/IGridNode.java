@@ -23,25 +23,47 @@
 
 package appeng.api.networking;
 
-import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.IWorld;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.IAppEngApi;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.IReadOnlyCollection;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.pathing.IPathingService;
+import appeng.api.util.AEColor;
 
 /**
- * Gives you a view into your Nodes connections and information.
- *
+ * Gives you a view into a Nodes connections and information.
+ * <p>
  * updateState, getGrid, destroy are required to implement a proper IGridHost.
- *
+ * <p>
  * Don't Implement; Acquire from {@link IAppEngApi}.createGridNode
  */
 public interface IGridNode {
+
+    /**
+     * Tries to get a service that was attached to this grid node when it was created. Used by overlay grids such as the
+     * {@link ICraftingService}.
+     */
+    @Nullable
+    <T extends IGridNodeService> T getService(Class<T> serviceClass);
+
+    /**
+     * Gets the host of the grid node, which does not necessarily have a representation in the game world. In most
+     * cases, this will be the game object that has created the node, for example a
+     * {@link net.minecraft.tileentity.TileEntity} or {@link appeng.api.parts.IPart}, but may also represent something
+     * entirely different.
+     */
+    @Nonnull
+    Object getOwner();
 
     /**
      * lets you walk the grid stating at the current node using a IGridVisitor, generally not needed, please use only if
@@ -52,91 +74,60 @@ public interface IGridNode {
     void beginVisit(@Nonnull IGridVisitor visitor);
 
     /**
-     * inform the node that your IGridBlock has changed its internal state, and force the node to update.
-     *
-     * ALWAYS make sure that your tile entity is in the world, and has its node properly saved to be returned from the
-     * host before updating state,
-     *
-     * If your entity is not in the world, or if you IGridHost returns a different node for the same side you will
-     * likely crash the game.
-     */
-    void updateState();
-
-    /**
-     * get the machine represented by the node.
-     *
-     * @return grid host
-     */
-    @Nonnull
-    IGridHost getMachine();
-
-    /**
      * get the grid for the node, this can change at a moments notice.
      *
-     * @return grid
+     * @return The grid this node is a part of.
+     * @throws IllegalStateException If the node is being used after being destroyed.
      */
-    @Nonnull
     IGrid getGrid();
-
-    /**
-     * By destroying your node, you destroy any connections, and its existence in the grid, use in invalidate, or
-     * onChunkUnload
-     */
-    void destroy();
 
     /**
      * @return the world the node is located in
      */
     @Nonnull
-    IWorld getWorld();
+    ServerWorld getWorld();
 
     /**
-     * @return a set of the connected sides, INTERNAL represents an invisible connection
+     * @return The externally accessible sides of the host that this grid node has formed a connection through.
      */
     @Nonnull
-    EnumSet<AEPartLocation> getConnectedSides();
+    Set<Direction> getConnectedSides();
 
     /**
-     * lets you iterate a nodes connections
-     *
-     * @return grid connections
+     * lets you iterate a nodes connections that have been made via the grid host's exposed sides to other adjacent grid
+     * nodes.
      */
     @Nonnull
-    IReadOnlyCollection<IGridConnection> getConnections();
+    Map<Direction, IGridConnection> getInWorldConnections();
 
     /**
-     * @return the IGridBlock for this node
+     * lets you iterate all of a nodes connections that have been made either internally within the grid host, or to
+     * other grid hosts, including connections made through the hosts sides and indirectly (QNB, tunnels). Includes
+     * connections from {@link #getInWorldConnections()}.
      */
     @Nonnull
-    IGridBlock getGridBlock();
+    List<IGridConnection> getConnections();
 
     /**
-     * Reflects the networks status, returns true only if the network is powered, and the network is not booting, this
-     * also takes into account channels.
-     *
-     * @return true if is Network node active, and participating.
+     * Reflects the networks status, returns true only if the network is powered, and the network has fully booted, and
+     * this node has the channels it needs (if any).
      */
-    boolean isActive();
+    default boolean isActive() {
+        return isPowered() && hasGridBooted() && meetsChannelRequirements();
+    }
 
     /**
-     * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
-     * your nods on a single compound using name.
-     *
-     * Important: You must call this before updateState.
-     *
-     * @param name     nbt name
-     * @param nodeData to be loaded data
+     * @return True if the grid is connected to a network, and that network has fully booted.
+     * @see IPathingService#isNetworkBooting()
      */
-    void loadFromNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
+    boolean hasGridBooted();
 
     /**
-     * this should be called for each node you maintain, you can save all your nodes to the same tag with different
-     * names, if you fail to complete the load / save procedure, network state may be lost between game load/saves.
-     *
-     * @param name     nbt name
-     * @param nodeData to be saved data
+     * @return True if the node has power from it's connected grid. Can be used to show a machine being powered, even if
+     *         the machine doesn't have it's required channel or the network is still booting.
+     * @see #isActive()
      */
-    void saveToNBT(@Nonnull String name, @Nonnull CompoundNBT nodeData);
+    boolean isPowered();
 
     /**
      * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
@@ -148,22 +139,39 @@ public interface IGridNode {
      * see if this node has a certain flag
      *
      * @param flag flags
-     *
      * @return true if has flag
      */
     boolean hasFlag(@Nonnull GridFlags flag);
 
     /**
      * @return the ownerID this represents the person who placed the node.
+     * @see appeng.api.features.IPlayerRegistry
      */
-    int getPlayerID();
+    int getOwningPlayerId();
 
     /**
-     * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
-     * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is
-     * saved with the Node NBT.
-     *
-     * @param playerID new player id
+     * @return The power in AE/t that will be drained by this node.
      */
-    void setPlayerID(int playerID);
+    @Nonnegative
+    double getIdlePowerUsage();
+
+    /**
+     * @return True if the grid node is accessible on the given side of the host.
+     */
+    boolean isExposedOnSide(@Nonnull Direction side);
+
+    /**
+     * @return An itemstack that will only be used to represent this grid node in user interfaces. Can return an
+     *         {@link ItemStack#isEmpty() empty stack} to indicate the node should not be shown in the UI.
+     */
+    @Nonnull
+    ItemStack getVisualRepresentation();
+
+    /**
+     * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
+     * node will connect to nodes of any color.
+     */
+    @Nonnull
+    AEColor getGridColor();
+
 }

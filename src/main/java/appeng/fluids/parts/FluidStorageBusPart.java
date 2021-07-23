@@ -44,10 +44,9 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
@@ -76,7 +75,6 @@ import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
@@ -122,7 +120,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     private IMEInventory<IAEFluidStack> getInventoryWrapper(TileEntity target) {
-        Direction targetSide = this.getSide().getFacing().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
         // Prioritize a handler to directly link to another ME network
         IStorageMonitorableAccessor accessor = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
@@ -146,7 +144,11 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         IFluidHandler handlerExt = target.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide)
                 .orElse(null);
         if (handlerExt != null) {
-            return new FluidHandlerAdapter(handlerExt, this);
+            return new FluidHandlerAdapter(handlerExt, () -> {
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
+            });
         }
 
         return null;
@@ -206,11 +208,9 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     @Override
@@ -248,13 +248,11 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change,
             final IActionSource source) {
-        try {
-            if (this.getProxy().isActive()) {
-                this.getProxy().getStorage().postAlterationOfStoredItems(
+        if (this.getMainNode().isActive()) {
+            getMainNode().ifPresent(grid -> {
+                grid.getStorageService().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
-            }
-        } catch (final GridAccessException e) {
-            // :(
+            });
         }
     }
 
@@ -267,7 +265,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -321,24 +319,18 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getProxy().getTick();
+            getMainNode().ifPresent((grid, node) -> {
+                var tm = grid.getTickManager();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getProxy().getNode());
+                    tm.sleepDevice(node);
                 } else {
-                    tm.wakeDevice(this.getProxy().getNode());
+                    tm.wakeDevice(node);
                 }
-            } catch (final GridAccessException ignore) {
-                // :(
-            }
+            });
         }
 
-        try {
-            // force grid to update handlers...
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-        } catch (final GridAccessException ignore) {
-            // :3
-        }
+        // force grid to update handlers...
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
 
         return this.handler;
     }
@@ -369,7 +361,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (channel == this.getStorageChannel()) {
-            final IMEInventoryHandler<IAEFluidStack> out = this.getProxy().isActive() ? this.getInternalHandler()
+            final IMEInventoryHandler<IAEFluidStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
                     : null;
             if (out != null) {
                 return Collections.singletonList(out);
@@ -383,7 +375,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             return 0;
         }
 
-        final Direction targetSide = this.getSide().getFacing().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);

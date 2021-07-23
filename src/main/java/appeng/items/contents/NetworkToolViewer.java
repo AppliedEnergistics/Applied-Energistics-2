@@ -23,7 +23,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
@@ -33,12 +33,12 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
 
     private final AppEngInternalInventory inv;
     private final ItemStack is;
-    private final IGridHost gh;
+    private final IInWorldGridNodeHost host;
     private final boolean remote;
 
-    public NetworkToolViewer(final ItemStack is, final IGridHost gHost, boolean remote) {
+    public NetworkToolViewer(final ItemStack is, final IInWorldGridNodeHost host, boolean remote) {
         this.is = is;
-        this.gh = gHost;
+        this.host = host;
         this.remote = remote;
         this.inv = new AppEngInternalInventory(this, 9);
         this.inv.setFilter(new NetworkToolInventoryFilter());
@@ -69,8 +69,8 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
     }
 
     @Override
-    public IGridHost getGridHost() {
-        return this.gh;
+    public IInWorldGridNodeHost getGridHost() {
+        return this.host;
     }
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {

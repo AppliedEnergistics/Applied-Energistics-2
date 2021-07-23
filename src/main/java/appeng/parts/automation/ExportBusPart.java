@@ -37,10 +37,10 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -54,13 +54,11 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOBusContainer;
-import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
@@ -115,19 +113,20 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     @Override
     protected TickRateModulation doBusWork() {
-        if (!this.getProxy().isActive() || !this.canDoBusWork()) {
+        if (!this.getMainNode().isActive() || !this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
         this.itemToSend = this.calculateItemsToSend();
         this.didSomething = false;
 
-        try {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             final InventoryAdaptor destination = this.getHandler();
-            final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
+            final IMEMonitor<IAEItemStack> inv = grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IEnergyGrid energy = this.getProxy().getEnergy();
-            final ICraftingGrid cg = this.getProxy().getCrafting();
+            final IEnergyService energy = grid.getEnergyService();
+            final ICraftingService cg = grid.getCraftingService();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager()
                     .getSetting(Settings.SCHEDULING_MODE);
@@ -143,7 +142,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
                         if (this.isCraftingEnabled()) {
                             this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                    destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc)
+                                    destination, this.getTile().getWorld(), grid, cg,
+                                    this.mySrc)
                                     || this.didSomething;
                         }
                         continue;
@@ -164,7 +164,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
                         this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc)
+                                destination, this.getTile().getWorld(), grid, cg,
+                                this.mySrc)
                                 || this.didSomething;
                     }
                 }
@@ -173,8 +174,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
             } else {
                 return TickRateModulation.SLEEP;
             }
-        } catch (final GridAccessException e) {
-            // :P
         }
 
         return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
@@ -225,9 +224,10 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
         final InventoryAdaptor d = this.getHandler();
 
-        try {
-            if (d != null && this.getProxy().isActive()) {
-                final IEnergyGrid energy = this.getProxy().getEnergy();
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            if (d != null && this.getMainNode().isActive()) {
+                final IEnergyService energy = grid.getEnergyService();
                 final double power = items.getStackSize();
 
                 if (energy.extractAEPower(power, mode, PowerMultiplier.CONFIG) > power - 0.01) {
@@ -237,8 +237,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     return AEItemStack.fromItemStack(d.simulateAdd(items.createItemStack()));
                 }
             }
-        } catch (final GridAccessException e) {
-            AELog.debug(e);
         }
 
         return items;
@@ -262,7 +260,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
     }
 
-    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyGrid energy,
+    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
         final ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);

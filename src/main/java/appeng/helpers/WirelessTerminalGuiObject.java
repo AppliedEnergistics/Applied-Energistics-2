@@ -30,10 +30,9 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
@@ -41,7 +40,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
@@ -54,7 +53,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private final String encryptionKey;
     private final PlayerEntity myPlayer;
     private IGrid targetGrid;
-    private IStorageGrid sg;
+    private IStorageService sg;
     private IMEMonitor<IAEItemStack> itemStorage;
     private IWirelessAccessPoint myWap;
     private double sqRange = Double.MAX_VALUE;
@@ -83,7 +82,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             if (n != null) {
                 this.targetGrid = n.getGrid();
                 if (this.targetGrid != null) {
-                    this.sg = this.targetGrid.getCache(IStorageGrid.class);
+                    this.sg = this.targetGrid.getService(IStorageService.class);
                     if (this.sg != null) {
                         this.itemStorage = this.sg
                                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -242,12 +241,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(WirelessTileEntity.class);
-
             this.myWap = null;
 
-            for (final IGridNode n : tw) {
-                final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
+            for (var wap : this.targetGrid.getMachines(WirelessTileEntity.class)) {
                 if (this.testWap(wap)) {
                     this.myWap = wap;
                 }
@@ -262,12 +258,12 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 
-        final DimensionalCoord dc = wap.getLocation();
+        final DimensionalBlockPos dc = wap.getLocation();
 
         if (dc.getWorld() == this.myPlayer.world) {
-            final double offX = dc.x - this.myPlayer.getPosX();
-            final double offY = dc.y - this.myPlayer.getPosY();
-            final double offZ = dc.z - this.myPlayer.getPosZ();
+            var offX = dc.getPos().getX() - this.myPlayer.getPosX();
+            var offY = dc.getPos().getY() - this.myPlayer.getPosY();
+            var offZ = dc.getPos().getZ() - this.myPlayer.getPosZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r && wap.isActive()) {

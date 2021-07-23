@@ -36,50 +36,44 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
 public class FluidInterfaceTileEntity extends AENetworkTileEntity
-        implements IGridTickable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
-    private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
+        implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+
+    private static final IGridNodeListener<FluidInterfaceTileEntity> NODE_LISTENER = new TileEntityNodeListener<>() {
+        @Override
+        public void onGridChanged(FluidInterfaceTileEntity nodeOwner, IGridNode node) {
+            nodeOwner.duality.gridChanged();
+        }
+    };
+
+    private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
     public FluidInterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkChannelsChanged c) {
-        this.duality.notifyNeighbors();
-    }
-
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkPowerStatusChange c) {
-        this.duality.notifyNeighbors();
+    @Override
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        return this.duality.getTickingRequest(node);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        return this.duality.tickingRequest(node, ticksSinceLastCall);
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        this.duality.notifyNeighbors();
     }
 
     @Override
@@ -90,11 +84,6 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     @Override
     public TileEntity getTileEntity() {
         return this;
-    }
-
-    @Override
-    public void gridChanged() {
-        this.duality.gridChanged();
     }
 
     @Override
@@ -111,13 +100,8 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return this.duality.getLocation();
     }
 
     @Override

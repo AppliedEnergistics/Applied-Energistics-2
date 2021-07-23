@@ -18,17 +18,29 @@
 
 package appeng.core.api;
 
+import java.util.function.BiConsumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
+
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.networking.IGridBlock;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.events.GridEvent;
 import appeng.me.GridConnection;
-import appeng.me.GridNode;
-import appeng.util.Platform;
+import appeng.me.GridEventBus;
+import appeng.me.ManagedGridNode;
 
 /**
  * @author yueh
@@ -38,14 +50,26 @@ import appeng.util.Platform;
 public class ApiGrid implements IGridHelper {
 
     @Override
-    public IGridNode createGridNode(final IGridBlock blk) {
-        Preconditions.checkNotNull(blk);
+    public <T extends GridEvent> void addEventHandler(Class<T> eventClass, BiConsumer<IGrid, T> handler) {
+        GridEventBus.subscribe(eventClass, handler);
+    }
 
-        if (Platform.isClient()) {
-            throw new IllegalStateException("Grid features for " + blk + " are server side only.");
+    @Nullable
+    @Override
+    public IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos) {
+        if (world.isBlockLoaded(pos)) {
+            final TileEntity te = world.getTileEntity(pos);
+            if (te instanceof IInWorldGridNodeHost host) {
+                return host;
+            }
         }
+        return null;
+    }
 
-        return new GridNode(blk);
+    @Nonnull
+    @Override
+    public <T> IManagedGridNode createManagedNode(@Nonnull T owner, @Nonnull IGridNodeListener<T> listener) {
+        return new ManagedGridNode(owner, listener);
     }
 
     @Override
@@ -53,7 +77,7 @@ public class ApiGrid implements IGridHelper {
         Preconditions.checkNotNull(a);
         Preconditions.checkNotNull(b);
 
-        return GridConnection.create(a, b, AEPartLocation.INTERNAL);
+        return GridConnection.create(a, b, null);
     }
 
 }

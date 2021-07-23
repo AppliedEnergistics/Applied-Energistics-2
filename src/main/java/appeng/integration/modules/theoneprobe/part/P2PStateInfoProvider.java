@@ -32,7 +32,6 @@ import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import appeng.me.GridAccessException;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
 
@@ -89,12 +88,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
     }
 
     private static int getOutputCount(P2PTunnelPart tunnel) {
-        try {
-            return Iterators.size(tunnel.getOutputs().iterator());
-        } catch (GridAccessException e) {
-            // Well... unknown size it is!
-            return 0;
-        }
+        return Iterators.size(tunnel.getOutputs().iterator());
     }
 
     private static ITextComponent getOutputText(int outputs) {

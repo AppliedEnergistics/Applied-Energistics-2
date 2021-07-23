@@ -36,7 +36,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageHelper;
@@ -112,13 +112,13 @@ public class ApiStorage implements IStorageHelper {
     }
 
     @Override
-    public void postChanges(IStorageGrid gs, ItemStack removedCell, ItemStack addedCell, IActionSource src) {
+    public void postChanges(IStorageService gs, ItemStack removedCell, ItemStack addedCell, IActionSource src) {
         Preconditions.checkNotNull(gs);
         Preconditions.checkNotNull(removedCell);
         Preconditions.checkNotNull(addedCell);
         Preconditions.checkNotNull(src);
 
-        Platform.postChanges(gs, removedCell, addedCell, src);
+        Platform.postWholeCellChanges(gs, removedCell, addedCell, src);
     }
 
     private static final class ItemStorageChannel implements IItemStorageChannel {

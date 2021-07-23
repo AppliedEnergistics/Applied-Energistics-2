@@ -38,13 +38,10 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
-import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -80,23 +77,18 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         super(is);
 
         if (requireChannel) {
-            this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-            this.getProxy().setIdlePowerUsage(1.0 / 2.0);
+            this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+            this.getMainNode().setIdlePowerUsage(1.0 / 2.0);
         } else {
-            this.getProxy().setIdlePowerUsage(1.0 / 16.0); // lights drain a little bit.
+            this.getMainNode().setIdlePowerUsage(1.0 / 16.0); // lights drain a little bit.
         }
     }
 
-    @MENetworkEventSubscribe
-    public final void bootingRender(final MENetworkBootingStatusChange c) {
-        if (!this.isLightSource()) {
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT || !this.isLightSource()) {
             this.getHost().markForUpdate();
         }
-    }
-
-    @MENetworkEventSubscribe
-    public final void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
     }
 
     @Override
@@ -107,7 +99,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -130,20 +122,19 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
-        try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+        var node = getMainNode().getNode();
+        if (node != null) {
+            if (node.isPowered()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.POWERED_FLAG;
             }
 
-            if (this.getProxy().getPath().isNetworkBooting()) {
+            if (!node.hasGridBooted()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.BOOTING_FLAG;
             }
 
-            if (this.getProxy().getNode().meetsChannelRequirements()) {
+            if (node.meetsChannelRequirements()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.CHANNEL_FLAG;
             }
-        } catch (final GridAccessException e) {
-            // um.. nothing.
         }
 
         data.writeByte((byte) this.getClientFlags());
@@ -179,7 +170,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
-                this.saveChanges();
+                this.getHost().markForSave();
             }
             return true;
         } else {
@@ -202,7 +193,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         if (this.opacity < 0) {
             final TileEntity te = this.getTile();
             World world = te.getWorld();
-            BlockPos pos = te.getPos().offset(this.getSide().getFacing());
+            BlockPos pos = te.getPos().offset(this.getSide().getDirection());
             this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);
         }
 
@@ -211,14 +202,11 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public final boolean isPowered() {
-        try {
-            if (!isRemote()) {
-                return this.getProxy().getEnergy().isNetworkPowered();
-            } else {
-                return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
-            }
-        } catch (final GridAccessException e) {
-            return false;
+        if (!isRemote()) {
+            var node = getMainNode().getNode();
+            return node != null && node.isPowered();
+        } else {
+            return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
         }
     }
 

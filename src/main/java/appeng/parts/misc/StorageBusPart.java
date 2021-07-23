@@ -44,14 +44,11 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -82,7 +79,6 @@ import appeng.core.settings.TickRates;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
@@ -128,30 +124,21 @@ public class StorageBusPart extends UpgradeablePart
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         this.mySrc = new MachineSource(this);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.updateStatus();
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        updateStatus();
     }
 
     private void updateStatus() {
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-                this.getHost().markForUpdate();
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            this.getHost().markForUpdate();
+            this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
-    }
-
-    @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
-        this.updateStatus();
     }
 
     @Override
@@ -215,11 +202,9 @@ public class StorageBusPart extends UpgradeablePart
             this.resetCacheLogic = 1;
         }
 
-        try {
-            this.getProxy().getTick().alertDevice(this.getProxy().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     @Override
@@ -230,13 +215,11 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
             final IActionSource source) {
-        try {
-            if (this.getProxy().isActive()) {
-                this.getProxy().getStorage().postAlterationOfStoredItems(
+        if (this.getMainNode().isActive()) {
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getStorageService().postAlterationOfStoredItems(
                         Api.instance().storage().getStorageChannel(IItemStorageChannel.class), change, this.mySrc);
-            }
-        } catch (final GridAccessException e) {
-            // :(
+            });
         }
     }
 
@@ -254,7 +237,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
+        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
             final TileEntity te = w.getTileEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
@@ -329,7 +312,7 @@ public class StorageBusPart extends UpgradeablePart
 
     private IMEInventory<IAEItemStack> getInventoryWrapper(TileEntity target) {
 
-        Direction targetSide = this.getSide().getFacing().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
 
         // Prioritize a handler to directly link to another ME network
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
@@ -356,7 +339,11 @@ public class StorageBusPart extends UpgradeablePart
         final LazyOptional<IItemHandler> handlerExtOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
-            return new ItemHandlerAdapter(handlerExtOpt.orElse(null), this);
+            return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
+            });
         }
 
         return null;
@@ -369,7 +356,7 @@ public class StorageBusPart extends UpgradeablePart
             return 0;
         }
 
-        final Direction targetSide = this.getSide().getFacing().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
@@ -398,7 +385,7 @@ public class StorageBusPart extends UpgradeablePart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -458,24 +445,18 @@ public class StorageBusPart extends UpgradeablePart
 
         // update sleep state...
         if (wasSleeping != (this.monitor == null)) {
-            try {
-                final ITickManager tm = this.getProxy().getTick();
+            getMainNode().ifPresent((grid, node) -> {
+                var tm = grid.getTickManager();
                 if (this.monitor == null) {
-                    tm.sleepDevice(this.getProxy().getNode());
+                    tm.sleepDevice(node);
                 } else {
-                    tm.wakeDevice(this.getProxy().getNode());
+                    tm.wakeDevice(node);
                 }
-            } catch (final GridAccessException e) {
-                // :(
-            }
+            });
         }
 
-        try {
-            // force grid to update handlers...
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :3
-        }
+        // force grid to update handlers...
+        this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
 
         return this.handler;
     }
@@ -506,7 +487,8 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
-            final IMEInventoryHandler<IAEItemStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
+            final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
+                    : null;
             if (out != null) {
                 return Collections.singletonList(out);
             }

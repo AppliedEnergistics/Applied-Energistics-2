@@ -46,16 +46,14 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.container.ContainerNull;
@@ -65,7 +63,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.grid.AENetworkInvTileEntity;
@@ -105,7 +102,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     public MolecularAssemblerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
-        this.getProxy().setIdlePowerUsage(0.0);
+        this.getMainNode()
+                .setIdlePowerUsage(0.0)
+                .addService(IGridTickable.class, this);
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
         this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
 
@@ -142,15 +141,13 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         final boolean wasEnabled = this.isAwake;
         this.isAwake = this.myPlan != null && this.hasMats() || this.canPush();
         if (wasEnabled != this.isAwake) {
-            try {
+            getMainNode().ifPresent((grid, node) -> {
                 if (this.isAwake) {
-                    this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                    grid.getTickManager().wakeDevice(node);
                 } else {
-                    this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                    grid.getTickManager().sleepDevice(node);
                 }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
         }
     }
 
@@ -264,13 +261,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
     }
 
     @Override
@@ -441,10 +433,11 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     private int userPower(final int ticksPassed, final int bonusValue, final double acceleratorTax) {
-        try {
-            return (int) (this.getProxy().getEnergy().extractAEPower(ticksPassed * bonusValue * acceleratorTax,
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return (int) (grid.getEnergyService().extractAEPower(ticksPassed * bonusValue * acceleratorTax,
                     Actionable.MODULATE, PowerMultiplier.CONFIG) / acceleratorTax);
-        } catch (final GridAccessException e) {
+        } else {
             return 0;
         }
     }
@@ -455,7 +448,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 output = this.pushTo(output, d);
             }
         } else {
-            output = this.pushTo(output, this.pushDirection.getFacing());
+            output = this.pushTo(output, this.pushDirection.getDirection());
         }
 
         if (output.isEmpty() && this.forcePlan) {
@@ -494,19 +487,15 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         return output;
     }
 
-    @MENetworkEventSubscribe
-    public void onPowerEvent(final MENetworkPowerStatusChange p) {
-        this.updatePowerState();
-    }
-
-    private void updatePowerState() {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         boolean newState = false;
 
-        try {
-            newState = this.getProxy().isActive() && this.getProxy().getEnergy().extractAEPower(1, Actionable.SIMULATE,
-                    PowerMultiplier.CONFIG) > 0.0001;
-        } catch (final GridAccessException ignored) {
-
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            newState = this.getMainNode().isActive()
+                    && grid.getEnergyService().extractAEPower(1, Actionable.SIMULATE,
+                            PowerMultiplier.CONFIG) > 0.0001;
         }
 
         if (newState != this.isPowered) {

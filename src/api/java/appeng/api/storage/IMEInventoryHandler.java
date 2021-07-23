@@ -87,4 +87,20 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      * @return true, if this inventory is valid for this pass.
      */
     boolean validForPass(int i);
+
+    /**
+     * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by the given
+     * storage channel, but only if the given storage channel is equal to {@link #getChannel()}.
+     *
+     * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
+     */
+    @SuppressWarnings("unchecked")
+    default <SC extends IAEStack<SC>> IMEInventoryHandler<SC> cast(IStorageChannel<SC> channel) {
+        if (getChannel() == channel) {
+            return (IMEInventoryHandler<SC>) this;
+        }
+        throw new IllegalArgumentException("The inventories storage channel " + getChannel()
+                + " is not compatible with " + channel);
+    }
+
 }

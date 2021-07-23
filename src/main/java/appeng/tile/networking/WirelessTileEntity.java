@@ -31,15 +31,11 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
@@ -57,23 +53,18 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     public WirelessTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getForward().getOpposite()));
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
     }
 
-    @MENetworkEventSubscribe
-    public void chanRender(final MENetworkChannelsChanged c) {
-        this.markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.markForUpdate();
     }
 
@@ -91,29 +82,27 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
         super.writeToStream(data);
         this.setClientFlags(0);
 
-        try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+        getMainNode().ifPresent((grid, node) -> {
+            if (grid.getEnergyService().isNetworkPowered()) {
                 this.setClientFlags(this.getClientFlags() | POWERED_FLAG);
             }
 
-            if (this.getProxy().getNode().meetsChannelRequirements()) {
+            if (node.meetsChannelRequirements()) {
                 this.setClientFlags(this.getClientFlags() | CHANNEL_FLAG);
             }
-        } catch (final GridAccessException e) {
-            // meh
-        }
+        });
 
         data.writeByte((byte) this.getClientFlags());
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this);
     }
 
     @Override
@@ -129,12 +118,13 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     @Override
     public void onReady() {
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
         this.updatePower();
         super.onReady();
     }
 
     private void updatePower() {
-        this.getProxy().setIdlePowerUsage(AEConfig.instance().wireless_getPowerDrain(this.getBoosters()));
+        this.getMainNode().setIdlePowerUsage(AEConfig.instance().wireless_getPowerDrain(this.getBoosters()));
     }
 
     private int getBoosters() {
@@ -159,16 +149,12 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
             return this.isPowered() && CHANNEL_FLAG == (this.getClientFlags() & CHANNEL_FLAG);
         }
 
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
     public IGrid getGrid() {
-        try {
-            return this.getProxy().getGrid();
-        } catch (final GridAccessException e) {
-            return null;
-        }
+        return getMainNode().getGrid();
     }
 
     @Override

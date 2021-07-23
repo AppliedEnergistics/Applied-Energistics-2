@@ -30,13 +30,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.util.Platform;
 
 public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> {
@@ -60,11 +56,6 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         return 0.5f;
     }
 
-    @MENetworkEventSubscribe
-    public void changeStateA(final MENetworkBootingStatusChange bs) {
-        this.setNetworkReady();
-    }
-
     private void setNetworkReady() {
         if (this.isOutput()) {
             final RedstoneP2PTunnelPart in = this.getInput();
@@ -80,7 +71,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
 
         this.recursive = true;
-        if (this.isOutput() && this.getProxy().isActive()) {
+        if (this.isOutput() && this.getMainNode().isActive()) {
             final int newPower = (Integer) o;
             if (this.power != newPower) {
                 this.power = newPower;
@@ -101,13 +92,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
     }
 
-    @MENetworkEventSubscribe
-    public void changeStateB(final MENetworkChannelsChanged bs) {
-        this.setNetworkReady();
-    }
-
-    @MENetworkEventSubscribe
-    public void changeStateC(final MENetworkPowerStatusChange bs) {
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
         this.setNetworkReady();
     }
 
@@ -131,12 +118,12 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
-            final BlockPos target = this.getTile().getPos().offset(this.getSide().getFacing());
+            final BlockPos target = this.getTile().getPos().offset(this.getSide().getDirection());
 
             final BlockState state = this.getTile().getWorld().getBlockState(target);
             final Block b = state.getBlock();
             if (b != null && !this.isOutput()) {
-                Direction srcSide = this.getSide().getFacing();
+                Direction srcSide = this.getSide().getDirection();
                 if (b instanceof RedstoneWireBlock) {
                     srcSide = Direction.UP;
                 }
@@ -166,12 +153,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void sendToOutput(final int power) {
-        try {
-            for (final RedstoneP2PTunnelPart rs : this.getOutputs()) {
-                rs.putInput(power);
-            }
-        } catch (final GridAccessException e) {
-            // :P
+        for (final RedstoneP2PTunnelPart rs : this.getOutputs()) {
+            rs.putInput(power);
         }
     }
 

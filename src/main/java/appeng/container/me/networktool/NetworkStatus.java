@@ -25,14 +25,11 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.util.item.AEItemStack;
@@ -52,7 +49,7 @@ public class NetworkStatus {
     private List<MachineGroup> groupedMachines = Collections.emptyList();
 
     public static NetworkStatus fromGrid(IGrid grid) {
-        IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
+        IEnergyService eg = grid.getService(IEnergyService.class);
 
         NetworkStatus status = new NetworkStatus();
 
@@ -63,10 +60,9 @@ public class NetworkStatus {
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
         Map<IAEItemStack, MachineGroup> groupedMachines = new HashMap<>();
-        for (final Class<? extends IGridHost> machineClass : grid.getMachinesClasses()) {
-            for (IGridNode machine : grid.getMachines(machineClass)) {
-                IGridBlock blk = machine.getGridBlock();
-                ItemStack is = blk.getMachineRepresentation();
+        for (var machineClass : grid.getMachineClasses()) {
+            for (IGridNode machine : grid.getMachineNodes(machineClass)) {
+                var is = machine.getVisualRepresentation();
                 IAEItemStack ais = AEItemStack.fromItemStack(is);
                 if (ais != null) {
                     ais.setStackSize(1);
@@ -77,7 +73,7 @@ public class NetworkStatus {
                     }
 
                     group.setCount(group.getCount() + 1);
-                    group.setIdlePowerUsage(group.getIdlePowerUsage() + blk.getIdlePowerUsage());
+                    group.setIdlePowerUsage(group.getIdlePowerUsage() + machine.getIdlePowerUsage());
                 }
             }
         }

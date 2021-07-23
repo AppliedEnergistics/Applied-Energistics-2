@@ -21,4 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@ParametersAreNonnullByDefault
 package appeng.api;
+
+import javax.annotation.ParametersAreNonnullByDefault;

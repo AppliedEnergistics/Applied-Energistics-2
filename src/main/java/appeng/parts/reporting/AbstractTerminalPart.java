@@ -41,7 +41,6 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.items.ItemTerminalContainer;
-import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -90,6 +89,11 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
+    public void saveChanges() {
+        this.getHost().markForSave();
+    }
+
+    @Override
     public void readFromNBT(final CompoundNBT data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
@@ -117,10 +121,9 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        try {
-            return this.getProxy().getStorage().getInventory(channel);
-        } catch (final GridAccessException e) {
-            // err nope?
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            return grid.getStorageService().getInventory(channel);
         }
         return null;
     }

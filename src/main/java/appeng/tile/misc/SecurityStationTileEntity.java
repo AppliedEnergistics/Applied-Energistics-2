@@ -49,10 +49,8 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkSecurityChange;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -63,12 +61,9 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.PlayerSecurityWrapper;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.tile.grid.AENetworkTileEntity;
@@ -94,8 +89,10 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     public SecurityStationTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.getProxy().setIdlePowerUsage(2.0);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setIdlePowerUsage(2.0)
+                .addService(ISecurityProvider.class, this);
         difference++;
 
         this.securityKey = System.currentTimeMillis() * 10 + difference;
@@ -144,7 +141,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     @Override
     protected void writeToStream(final PacketBuffer data) throws IOException {
         super.writeToStream(data);
-        data.writeBoolean(this.getProxy().isActive());
+        data.writeBoolean(this.getMainNode().isActive());
         data.writeByte(this.paintedColor.ordinal());
     }
 
@@ -192,26 +189,17 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     public void inventoryChanged() {
-        try {
-            this.saveChanges();
-            this.getProxy().getGrid().postEvent(new MENetworkSecurityChange());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.saveChanges();
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridSecurityChange()));
     }
 
-    @MENetworkEventSubscribe
-    public void bootUpdate(final MENetworkChannelsChanged changed) {
-        this.markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerUpdate(final MENetworkPowerStatusChange changed) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.markForUpdate();
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
@@ -238,11 +226,6 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         this.isActive = false;
     }
 
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
-    }
-
     public boolean isActive() {
         if (world != null && !world.isRemote) {
             return isPowered();
@@ -266,7 +249,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     public boolean isPowered() {
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
@@ -292,24 +275,23 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
             final ItemStack is = ais.createItemStack();
             final Item i = is.getItem();
-            if (i instanceof IBiometricCard) {
-                final IBiometricCard bc = (IBiometricCard) i;
+            if (i instanceof IBiometricCard bc) {
                 bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);
             }
         }
 
         // make sure thea admin is Boss.
-        playerPerms.put(this.getProxy().getNode().getPlayerID(), EnumSet.allOf(SecurityPermissions.class));
+        playerPerms.put(this.getMainNode().getNode().getOwningPlayerId(), EnumSet.allOf(SecurityPermissions.class));
     }
 
     @Override
     public boolean isSecurityEnabled() {
-        return this.isActive && this.getProxy().isActive();
+        return this.isActive && this.getMainNode().isActive();
     }
 
     @Override
     public int getOwner() {
-        return this.getProxy().getNode().getPlayerID();
+        return this.getMainNode().getNode().getOwningPlayerId();
     }
 
     @Override

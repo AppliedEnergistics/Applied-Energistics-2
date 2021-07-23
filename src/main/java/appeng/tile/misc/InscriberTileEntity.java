@@ -43,18 +43,16 @@ import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -102,9 +100,11 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     public InscriberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+        this.getMainNode()
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .setIdlePowerUsage(0)
+                .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
-        this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
 
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, this.getUpgradeSlots());
@@ -122,7 +122,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -189,7 +189,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
     }
 
@@ -213,20 +213,16 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        try {
-            if (slot == 0) {
-                this.setProcessingTime(0);
-            }
-
-            if (!this.isSmash()) {
-                this.markForUpdate();
-            }
-
-            this.cachedTask = null;
-            this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
-        } catch (final GridAccessException e) {
-            // :P
+        if (slot == 0) {
+            this.setProcessingTime(0);
         }
+
+        if (!this.isSmash()) {
+            this.markForUpdate();
+        }
+
+        this.cachedTask = null;
+        getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
     }
 
     //
@@ -290,8 +286,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                 this.markForUpdate();
             }
         } else {
-            try {
-                final IEnergyGrid eg = this.getProxy().getEnergy();
+            getMainNode().ifPresent(grid -> {
+                final IEnergyService eg = grid.getEnergyService();
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card
@@ -314,9 +310,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
                         this.setProcessingTime(this.getProcessingTime() + ticksSinceLastCall * speedFactor);
                     }
                 }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
 
             if (this.getProcessingTime() > this.getMaxProcessingTime()) {
                 this.setProcessingTime(this.getMaxProcessingTime());

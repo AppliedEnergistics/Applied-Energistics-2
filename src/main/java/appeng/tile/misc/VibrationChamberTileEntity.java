@@ -34,15 +34,11 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -67,12 +63,14 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
     public VibrationChamberTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
-        this.getProxy().setFlags();
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .setFlags()
+                .addService(IGridTickable.class, this);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -123,11 +121,9 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
-            try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
-            } catch (final GridAccessException e) {
-                // wake up!
-            }
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().wakeDevice(node);
+            });
         }
     }
 
@@ -140,11 +136,6 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             }
         }
         return false;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
     }
 
     @Override
@@ -180,13 +171,14 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
             this.setBurnTime(0);
         }
 
-        try {
-            final IEnergyGrid grid = this.getProxy().getEnergy();
+        var grid = node.getGrid();
+        if (grid != null) {
+            var energy = grid.getEnergyService();
             final double newPower = timePassed * POWER_PER_TICK;
-            final double overFlow = grid.injectPower(newPower, Actionable.SIMULATE);
+            final double overFlow = energy.injectPower(newPower, Actionable.SIMULATE);
 
             // burn the over flow.
-            grid.injectPower(Math.max(0.0, newPower - overFlow), Actionable.MODULATE);
+            energy.injectPower(Math.max(0.0, newPower - overFlow), Actionable.MODULATE);
 
             if (overFlow > 0) {
                 this.setBurnSpeed(this.getBurnSpeed() - ticksSinceLastCall);
@@ -196,7 +188,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
             this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
             return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
-        } catch (final GridAccessException e) {
+        } else {
             this.setBurnSpeed(this.getBurnSpeed() - ticksSinceLastCall);
             this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
             return TickRateModulation.SLOWER;
@@ -224,11 +216,9 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
 
         if (this.getBurnTime() > 0) {
-            try {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
-            } catch (final GridAccessException e) {
-                // gah!
-            }
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().wakeDevice(node);
+            });
         }
 
         // state change

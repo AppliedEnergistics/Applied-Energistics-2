@@ -19,7 +19,9 @@
 package appeng.parts.networking;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Set;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -29,9 +31,9 @@ import net.minecraft.util.Direction;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
@@ -39,27 +41,41 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IReadOnlyCollection;
+import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
-import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 
 public class CablePart extends AEBasePart implements ICablePart {
 
+    private static final IGridNodeListener<CablePart> NODE_LISTENER = new NodeListener<>() {
+        @Override
+        public void onInWorldConnectionChanged(CablePart nodeOwner, IGridNode node) {
+            super.onInWorldConnectionChanged(nodeOwner, node);
+            nodeOwner.markForUpdate();
+        }
+    };
+
     private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
-    private EnumSet<AEPartLocation> connections = EnumSet.noneOf(AEPartLocation.class);
+    private Set<Direction> connections = Collections.emptySet();
     private boolean powered = false;
 
     public CablePart(final ItemStack is) {
         super(is);
-        this.getProxy().setFlags(GridFlags.PREFERRED);
-        this.getProxy().setIdlePowerUsage(0.0);
-        if (is.getItem() instanceof ColoredPartItem) {
-            ColoredPartItem<?> coloredPartItem = (ColoredPartItem<?>) is.getItem();
-            this.getProxy().setColor(coloredPartItem.getColor());
+        this.getMainNode()
+                .setFlags(GridFlags.PREFERRED)
+                .setIdlePowerUsage(0.0)
+                .setInWorldNode(true)
+                .setExposedOnSides(EnumSet.allOf(Direction.class));
+        if (is.getItem() instanceof ColoredPartItem<?>coloredPartItem) {
+            this.getMainNode().setGridColor(coloredPartItem.getColor());
         }
+    }
+
+    @Override
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override
@@ -69,7 +85,10 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        return this.getProxy().getColor();
+        if (getItemStack().getItem() instanceof ColoredPartItem<?>coloredPartItem) {
+            return coloredPartItem.getColor();
+        }
+        return AEColor.TRANSPARENT;
     }
 
     @Override
@@ -107,10 +126,9 @@ public class CablePart extends AEBasePart implements ICablePart {
 
             boolean hasPermission = true;
 
-            try {
-                hasPermission = this.getProxy().getSecurity().hasPermission(who, SecurityPermissions.BUILD);
-            } catch (final GridAccessException e) {
-                // :P
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                hasPermission = grid.getSecurityService().hasPermission(who, SecurityPermissions.BUILD);
             }
 
             if (newPart != null && hasPermission) {
@@ -127,13 +145,13 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void setValidSides(final EnumSet<Direction> sides) {
-        this.getProxy().setValidSides(sides);
+    public void setExposedOnSides(final EnumSet<Direction> sides) {
+        this.getMainNode().setExposedOnSides(sides);
     }
 
     @Override
     public boolean isConnected(final Direction side) {
-        return this.getConnections().contains(AEPartLocation.fromFacing(side));
+        return this.getConnections().contains(side);
     }
 
     public void markForUpdate() {
@@ -149,9 +167,9 @@ public class CablePart extends AEBasePart implements ICablePart {
         final IPartHost ph = this.getHost();
         if (ph != null) {
             for (final AEPartLocation dir : AEPartLocation.SIDE_LOCATIONS) {
-                final IPart p = ph.getPart(dir);
-                if (p instanceof IGridHost) {
-                    final double dist = p.getCableConnectionLength(this.getCableConnectionType());
+                var p = ph.getPart(dir);
+                if (p != null) {
+                    var dist = p.getCableConnectionLength(this.getCableConnectionType());
 
                     if (dist > 8) {
                         continue;
@@ -182,7 +200,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
         }
 
-        for (final AEPartLocation of : this.getConnections()) {
+        for (final Direction of : this.getConnections()) {
             switch (of) {
                 case DOWN:
                     bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
@@ -213,7 +231,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             if (n != null) {
                 this.setConnections(n.getConnectedSides());
             } else {
-                this.getConnections().clear();
+                this.setConnections(Collections.emptySet());
             }
         }
     }
@@ -230,8 +248,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                 writeSide[thisSide.ordinal()] = true;
                 int channels = 0;
                 if (part.getGridNode() != null) {
-                    final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
-                    for (final IGridConnection gc : set) {
+                    for (var gc : part.getGridNode().getConnections()) {
                         channels = Math.max(channels, gc.getUsedChannels());
                     }
                 }
@@ -239,24 +256,18 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
         }
 
-        IGridNode n = this.getGridNode();
+        var n = getGridNode();
         if (n != null) {
-            for (final IGridConnection gc : n.getConnections()) {
-                final AEPartLocation side = gc.getDirection(n);
-                if (side != AEPartLocation.INTERNAL) {
-                    writeSide[side.ordinal()] = true;
-                    channelsPerSide[side.ordinal()] = gc.getUsedChannels();
-                    flags |= 1 << side.ordinal();
-                }
+            for (var entry : n.getInWorldConnections().entrySet()) {
+                var side = entry.getKey().ordinal();
+                writeSide[side] = true;
+                channelsPerSide[side] = entry.getValue().getUsedChannels();
+                flags |= 1 << side;
             }
-        }
 
-        try {
-            if (this.getProxy().getEnergy().isNetworkPowered()) {
+            if (n.isPowered()) {
                 flags |= 1 << AEPartLocation.INTERNAL.ordinal();
             }
-        } catch (final GridAccessException e) {
-            // aww...
         }
 
         data.writeByte((byte) flags);
@@ -271,43 +282,39 @@ public class CablePart extends AEBasePart implements ICablePart {
     @Override
     public boolean readFromStream(final PacketBuffer data) throws IOException {
         int cs = data.readByte();
-        final EnumSet<AEPartLocation> myC = this.getConnections().clone();
-        final boolean wasPowered = this.powered;
-        this.powered = false;
+        // Save previous state for change-detection
+        var previousConnections = this.getConnections();
+        var wasPowered = this.powered;
+
         boolean channelsChanged = false;
 
-        for (final AEPartLocation d : AEPartLocation.values()) {
-            if (d == AEPartLocation.INTERNAL) {
-                final int id = 1 << d.ordinal();
-                if (id == (cs & id)) {
-                    this.powered = true;
-                }
-            } else {
-                boolean conOnSide = (cs & 1 << d.ordinal()) != 0;
-                if (conOnSide) {
-                    this.getConnections().add(d);
-                } else {
-                    this.getConnections().remove(d);
-                }
+        this.powered = (cs & (1 << AEPartLocation.INTERNAL.ordinal())) != 0;
 
-                int ch = 0;
+        var connections = EnumSet.noneOf(Direction.class);
+        for (var d : Direction.values()) {
+            boolean conOnSide = (cs & 1 << d.ordinal()) != 0;
+            if (conOnSide) {
+                connections.add(d);
+            }
 
-                // Only read channels if there's a part on this side or a cable connection
-                // This works only because cables are always read *last* from the packet update
-                // for
-                // a cable bus
-                if (conOnSide || this.getHost().getPart(d) != null) {
-                    ch = data.readByte() & 0xFF;
-                }
+            int ch = 0;
 
-                if (ch != this.getChannelsOnSide(d.ordinal())) {
-                    channelsChanged = true;
-                    this.setChannelsOnSide(d.ordinal(), ch);
-                }
+            // Only read channels if there's a part on this side or a cable connection
+            // This works only because cables are always read *last* from the packet update
+            // for
+            // a cable bus
+            if (conOnSide || this.getHost().getPart(d) != null) {
+                ch = data.readByte() & 0xFF;
+            }
+
+            if (ch != this.getChannelsOnSide(d.ordinal())) {
+                channelsChanged = true;
+                this.setChannelsOnSide(d.ordinal(), ch);
             }
         }
+        this.setConnections(connections);
 
-        return !myC.equals(this.getConnections()) || wasPowered != this.powered || channelsChanged;
+        return !previousConnections.equals(this.getConnections()) || wasPowered != this.powered || channelsChanged;
     }
 
     int getChannelsOnSide(final int i) {
@@ -325,11 +332,11 @@ public class CablePart extends AEBasePart implements ICablePart {
         this.channelsOnSide[i] = channels;
     }
 
-    EnumSet<AEPartLocation> getConnections() {
+    Set<Direction> getConnections() {
         return this.connections;
     }
 
-    void setConnections(final EnumSet<AEPartLocation> connections) {
+    void setConnections(final Set<Direction> connections) {
         this.connections = connections;
     }
 

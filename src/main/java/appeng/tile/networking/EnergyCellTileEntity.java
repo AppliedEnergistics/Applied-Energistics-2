@@ -21,18 +21,17 @@ package appeng.tile.networking;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage;
-import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.SettingsFrom;
 
@@ -47,11 +46,13 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
     public EnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setIdlePowerUsage(0);
+        this.getMainNode()
+                .setIdlePowerUsage(0)
+                .addService(IAEPowerStorage.class, this);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -135,8 +136,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
         }
 
         if (this.internalCurrentPower < 0.01 && amt > 0.01) {
-            this.getProxy().getNode().getGrid()
-                    .postEvent(new MENetworkPowerStorage(this, PowerEventType.PROVIDE_POWER));
+            this.getMainNode().getNode().getGrid()
+                    .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
         }
 
         this.internalCurrentPower += amt;
@@ -193,11 +194,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
         final boolean wasFull = this.internalCurrentPower >= this.getInternalMaxPower() - 0.001;
 
         if (wasFull && amt > 0.001) {
-            try {
-                this.getProxy().getGrid().postEvent(new MENetworkPowerStorage(this, PowerEventType.REQUEST_POWER));
-            } catch (final GridAccessException ignored) {
-
-            }
+            getMainNode().ifPresent(
+                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
         }
 
         if (this.internalCurrentPower > amt) {

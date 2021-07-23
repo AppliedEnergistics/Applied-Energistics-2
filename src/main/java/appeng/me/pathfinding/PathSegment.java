@@ -19,25 +19,23 @@
 package appeng.me.pathfinding;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
-import appeng.me.cache.PathGridCache;
+import appeng.me.service.PathServiceService;
 
 public class PathSegment {
 
-    private final PathGridCache pgc;
+    private final PathServiceService pgc;
     private final Set<IPathItem> semiOpen;
     private final Set<IPathItem> closed;
     private boolean isDead;
     private List<IPathItem> open;
 
-    public PathSegment(final PathGridCache myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
+    public PathSegment(final PathServiceService myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
             final Set<IPathItem> closed) {
         this.open = open;
         this.semiOpen = semiOpen;
@@ -52,29 +50,29 @@ public class PathSegment {
 
         for (final IPathItem i : oldOpen) {
             for (final IPathItem pi : i.getPossibleOptions()) {
-                final EnumSet<GridFlags> flags = pi.getFlags();
-
                 if (!this.closed.contains(pi)) {
                     pi.setControllerRoute(i, true);
 
-                    if (flags.contains(GridFlags.REQUIRE_CHANNEL)) {
+                    if (pi.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                         // close the semi open.
                         if (!this.semiOpen.contains(pi)) {
                             final boolean worked;
 
-                            if (flags.contains(GridFlags.COMPRESSED_CHANNEL)) {
+                            if (pi.hasFlag(GridFlags.COMPRESSED_CHANNEL)) {
                                 worked = this.useDenseChannel(pi);
                             } else {
                                 worked = this.useChannel(pi);
                             }
 
-                            if (worked && flags.contains(GridFlags.MULTIBLOCK)) {
-                                final Iterator<IGridNode> oni = ((IGridMultiblock) ((IGridNode) pi).getGridBlock())
-                                        .getMultiblockNodes();
-                                while (oni.hasNext()) {
-                                    final IGridNode otherNodes = oni.next();
-                                    if (otherNodes != pi) {
-                                        this.semiOpen.add((IPathItem) otherNodes);
+                            if (worked && pi.hasFlag(GridFlags.MULTIBLOCK)) {
+                                var multiblock = ((IGridNode) pi).getService(IGridMultiblock.class);
+                                if (multiblock != null) {
+                                    var oni = multiblock.getMultiblockNodes();
+                                    while (oni.hasNext()) {
+                                        final IGridNode otherNodes = oni.next();
+                                        if (otherNodes != pi) {
+                                            this.semiOpen.add((IPathItem) otherNodes);
+                                        }
                                     }
                                 }
                             }
@@ -96,7 +94,7 @@ public class PathSegment {
     private boolean useDenseChannel(final IPathItem start) {
         IPathItem pi = start;
         while (pi != null) {
-            if (!pi.canSupportMoreChannels() || pi.getFlags().contains(GridFlags.CANNOT_CARRY_COMPRESSED)) {
+            if (!pi.canSupportMoreChannels() || pi.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
                 return false;
             }
 

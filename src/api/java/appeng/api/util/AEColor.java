@@ -168,13 +168,6 @@ public enum AEColor {
         }
     }
 
-    /**
-     * Logic to see which colors match each other.. special handle for Transparent
-     */
-    public boolean matches(final AEColor color) {
-        return this == TRANSPARENT || color == TRANSPARENT || this == color;
-    }
-
     @Override
     public String toString() {
         return this.translationKey;

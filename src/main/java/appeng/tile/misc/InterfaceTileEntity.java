@@ -44,34 +44,37 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
+import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 
 public class InterfaceTileEntity extends AENetworkInvTileEntity
-        implements IGridTickable, IInventoryDestination, IInterfaceHost, IPriorityHost {
+        implements IInventoryDestination, IInterfaceHost, IPriorityHost {
 
-    private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
+    private static final IGridNodeListener<InterfaceTileEntity> NODE_LISTENER = new TileEntityNodeListener<>() {
+        @Override
+        public void onGridChanged(InterfaceTileEntity nodeOwner, IGridNode node) {
+            nodeOwner.duality.gridChanged();
+        }
+    };
+
+    private final DualityInterface duality = new DualityInterface(this.getMainNode(), this, getItemFromTile());
 
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
@@ -80,13 +83,13 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         super(tileEntityTypeIn);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkChannelsChanged c) {
-        this.duality.notifyNeighbors();
+    @Override
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkPowerStatusChange c) {
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.duality.notifyNeighbors();
     }
 
@@ -126,20 +129,15 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     private void configureNodeSides() {
         if (this.omniDirectional) {
-            this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
         } else {
-            this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+            this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         }
     }
 
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         this.duality.addDrops(drops);
-    }
-
-    @Override
-    public void gridChanged() {
-        this.duality.gridChanged();
     }
 
     @Override
@@ -181,13 +179,8 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return this.duality.getLocation();
     }
 
     @Override
@@ -198,16 +191,6 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     @Override
     public IItemHandler getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return this.duality.getTickingRequest(node);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.duality.tickingRequest(node, ticksSinceLastCall);
     }
 
     @Override

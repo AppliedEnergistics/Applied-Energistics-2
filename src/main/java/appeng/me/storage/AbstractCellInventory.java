@@ -41,17 +41,13 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     private static final String ITEM_COUNT_TAG = "ic";
     private static final String ITEM_SLOT = "#";
     private static final String ITEM_SLOT_COUNT = "@";
-    protected static final String ITEM_PRE_FORMATTED_COUNT = "PF";
-    protected static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
-    protected static final String ITEM_PRE_FORMATTED_NAME = "PN";
-    protected static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
     private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
     private static final String[] ITEM_SLOT_COUNT_KEYS = new String[MAX_ITEM_TYPES];
     private final CompoundNBT tagCompound;
     protected final ISaveProvider container;
-    private int maxItemTypes = MAX_ITEM_TYPES;
-    private short storedItems = 0;
-    private int storedItemCount = 0;
+    private int maxItemTypes;
+    private short storedItems;
+    private int storedItemCount;
     protected IItemList<T> cellItems;
     private final ItemStack i;
     protected final IStorageCell<T> cellType;
@@ -180,9 +176,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
     /**
      * Load a single item.
-     *
-     * @param compoundTag
-     * @param stackSize
+     * 
      * @return true when successfully loaded
      */
     protected abstract boolean loadCellItem(CompoundNBT compoundTag, int stackSize);

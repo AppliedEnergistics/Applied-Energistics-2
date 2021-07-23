@@ -24,7 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
@@ -72,7 +72,8 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         this.talkBackTo = player;
 
-        final DimensionalCoord loc = new DimensionalCoord(player.world, this.cx << 4, this.cdy << 5, this.cz << 4);
+        final DimensionalBlockPos loc = new DimensionalBlockPos(player.world, this.cx << 4, this.cdy << 5,
+                this.cz << 4);
         WorldData.instance().compassData().service().getCompassDirection(loc, 174, this);
     }
 }

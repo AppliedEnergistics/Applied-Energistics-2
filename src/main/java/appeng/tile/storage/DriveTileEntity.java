@@ -45,12 +45,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
@@ -60,8 +57,6 @@ import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
@@ -69,7 +64,6 @@ import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
-import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.tile.grid.AENetworkInvTileEntity;
@@ -115,7 +109,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     public DriveTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.mySrc = new MachineSource(this);
-        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
         this.inventoryHandlers = new IdentityHashMap<>();
     }
@@ -123,7 +117,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     @Override
     public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(inForward)));
+        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
 
     @Override
@@ -131,7 +125,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         super.writeToStream(data);
         int newState = 0;
 
-        if (this.getProxy().isActive()) {
+        if (this.getMainNode().isActive()) {
             newState |= BIT_POWER_MASK;
         }
         for (int x = 0; x < this.getCellCount(); x++) {
@@ -252,7 +246,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 
-        return this.getProxy().isActive();
+        return this.getMainNode().isActive();
     }
 
     @Override
@@ -274,13 +268,8 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         return data;
     }
 
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.recalculateDisplay();
-    }
-
     private void recalculateDisplay() {
-        final boolean currentActive = this.getProxy().isActive();
+        final boolean currentActive = this.getMainNode().isActive();
         int newState = 0;
 
         if (currentActive) {
@@ -289,11 +278,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            try {
-                this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
@@ -306,19 +291,14 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         }
     }
 
-    @MENetworkEventSubscribe
-    public void channelRender(final MENetworkChannelsChanged c) {
-        this.recalculateDisplay();
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        recalculateDisplay();
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
-    }
-
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
     }
 
     @Override
@@ -334,13 +314,11 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             this.updateState();
         }
 
-        try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+        getMainNode().ifPresent(grid -> {
+            grid.postEvent(new GridCellArrayUpdate());
 
-            final IStorageGrid gs = this.getProxy().getStorage();
-            Platform.postChanges(gs, removed, added, this.mySrc);
-        } catch (final GridAccessException ignored) {
-        }
+            Platform.postWholeCellChanges(grid.getStorageService(), removed, added, this.mySrc);
+        });
 
         this.markForUpdate();
     }
@@ -383,7 +361,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
                 }
             }
 
-            this.getProxy().setIdlePowerUsage(power);
+            this.getMainNode().setIdlePowerUsage(power);
 
             this.isCached = true;
         }
@@ -397,7 +375,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (this.getProxy().isActive()) {
+        if (this.getMainNode().isActive()) {
             this.updateState();
 
             return this.inventoryHandlers.get(channel);
@@ -418,11 +396,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         this.isCached = false; // recalculate the storage cell.
         this.updateState();
 
-        try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
     @Override

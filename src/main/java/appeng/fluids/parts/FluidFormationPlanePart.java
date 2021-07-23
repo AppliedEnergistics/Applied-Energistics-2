@@ -48,10 +48,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventoryHandler;
@@ -70,7 +67,6 @@ import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.automation.AbstractFormationPlanePart;
 import appeng.parts.automation.PlaneModelData;
@@ -113,13 +109,9 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                 priorityList.add(is);
             }
         }
-        this.myHandler.setPartitionList(new PrecisePriorityList<IAEFluidStack>(priorityList));
+        this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
 
-        try {
-            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent(g -> g.postEvent(new GridCellArrayUpdate()));
     }
 
     @Override
@@ -132,7 +124,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         final TileEntity te = this.getHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
-        final BlockPos pos = te.getPos().offset(side.getFacing());
+        final BlockPos pos = te.getPos().offset(side.getDirection());
         final BlockState state = w.getBlockState(pos);
 
         if (this.canReplace(w, state, pos)) {
@@ -189,17 +181,6 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.stateChanged();
-    }
-
-    @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
-        this.stateChanged();
-    }
-
-    @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
@@ -215,7 +196,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (this.getProxy().isActive()
+        if (this.getMainNode().isActive()
                 && channel == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)) {
             final List<IMEInventoryHandler> handler = new ArrayList<>(1);
             handler.add(this.myHandler);

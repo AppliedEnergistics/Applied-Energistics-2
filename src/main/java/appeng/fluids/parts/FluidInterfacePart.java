@@ -36,12 +36,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
@@ -52,6 +48,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.fluids.container.FluidInterfaceContainer;
@@ -60,12 +57,21 @@ import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
+import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
 public class FluidInterfacePart extends BasicStatePart
-        implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+        implements IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
+
+    private static final IGridNodeListener<FluidInterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
+        @Override
+        public void onGridChanged(FluidInterfacePart nodeOwner, IGridNode node) {
+            super.onGridChanged(nodeOwner, node);
+            nodeOwner.duality.gridChanged();
+        }
+    };
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -79,10 +85,15 @@ public class FluidInterfacePart extends BasicStatePart
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_has_channel"));
 
-    private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
+    private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
     public FluidInterfacePart(final ItemStack is) {
         super(is);
+    }
+
+    @Override
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override
@@ -90,13 +101,8 @@ public class FluidInterfacePart extends BasicStatePart
         return this.duality;
     }
 
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkChannelsChanged c) {
-        this.duality.notifyNeighbors();
-    }
-
-    @MENetworkEventSubscribe
-    public void stateChange(final MENetworkPowerStatusChange c) {
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.duality.notifyNeighbors();
     }
 
@@ -104,11 +110,6 @@ public class FluidInterfacePart extends BasicStatePart
     public void getBoxes(final IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(5, 5, 12, 11, 11, 14);
-    }
-
-    @Override
-    public void gridChanged() {
-        this.duality.gridChanged();
     }
 
     @Override
@@ -143,18 +144,8 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return this.duality.getTickingRequest(node);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.duality.tickingRequest(node, ticksSinceLastCall);
-    }
-
-    @Override
     public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide().getFacing());
+        return EnumSet.of(this.getSide().getDirection());
     }
 
     @Override
@@ -185,7 +176,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.duality.getCapability(capabilityClass, this.getSide().getFacing());
+        return this.duality.getCapability(capabilityClass, this.getSide().getDirection());
     }
 
     @Override
@@ -216,5 +207,10 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public ContainerType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
+    }
+
+    @Override
+    public void saveChanges() {
+        getHost().markForSave();
     }
 }

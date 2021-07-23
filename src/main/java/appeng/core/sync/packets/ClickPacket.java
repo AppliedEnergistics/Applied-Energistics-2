@@ -132,9 +132,7 @@ public class ClickPacket extends BasePacket {
                         new Vector3d(this.hitX, this.hitY, this.hitZ));
             }
         } else if (!is.isEmpty()) {
-            if (is.getItem() instanceof NetworkToolItem) {
-                final NetworkToolItem tnt = (NetworkToolItem) is.getItem();
-
+            if (is.getItem() instanceof NetworkToolItem tnt) {
                 if (hasBlockContext()) {
                     // Reconstruct an item use context
                     ItemUseContext useContext = new ItemUseContext(player, hand,

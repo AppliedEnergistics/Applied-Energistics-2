@@ -29,7 +29,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 
@@ -40,6 +39,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     public SharedItemBusPart(final ItemStack is) {
         super(is);
+        getMainNode().addService(IGridTickable.class, this);
     }
 
     @Override
@@ -81,9 +81,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected InventoryAdaptor getHandler() {
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
 
-        return InventoryAdaptor.getAdaptor(target, this.getSide().getFacing().getOpposite());
+        return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
@@ -125,22 +125,20 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      */
     protected boolean canDoBusWork() {
         final TileEntity self = this.getHost().getTile();
-        final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
+        final BlockPos selfPos = self.getPos().offset(this.getSide().getDirection());
         final World world = self.getWorld();
 
         return world != null && world.getChunkProvider().canTick(selfPos);
     }
 
     private void updateState() {
-        try {
+        getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
-                this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
+                grid.getTickManager().wakeDevice(node);
             } else {
-                this.getProxy().getTick().sleepDevice(this.getProxy().getNode());
+                grid.getTickManager().sleepDevice(node);
             }
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        });
     }
 
     protected abstract TickRateModulation doBusWork();

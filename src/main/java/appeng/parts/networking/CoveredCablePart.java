@@ -20,26 +20,12 @@ package appeng.parts.networking;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 
 public class CoveredCablePart extends CablePart {
     public CoveredCablePart(final ItemStack is) {
         super(is);
-    }
-
-    @MENetworkEventSubscribe
-    public void channelUpdated(final MENetworkChannelsChanged c) {
-        this.getHost().markForUpdate();
-    }
-
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        this.getHost().markForUpdate();
     }
 
     @Override
@@ -53,7 +39,7 @@ public class CoveredCablePart extends CablePart {
 
         bch.addBox(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
 
-        for (final AEPartLocation of : this.getConnections()) {
+        for (var of : this.getConnections()) {
             switch (of) {
                 case DOWN:
                     bch.addBox(5.0, 0.0, 5.0, 11.0, 5.0, 11.0);

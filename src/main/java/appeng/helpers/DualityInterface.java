@@ -62,12 +62,12 @@ import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -85,14 +85,11 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
@@ -121,7 +118,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
     private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
     private final MultiCraftingTracker craftingTracker;
-    private final AENetworkProxy gridProxy;
+    private final IManagedGridNode gridProxy;
     private final IInterfaceHost iHost;
     private final IActionSource mySource;
     private final IActionSource interfaceRequestSource;
@@ -142,11 +139,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private int isWorking = -1;
     private final Accessor accessor = new Accessor();
 
-    public DualityInterface(final AENetworkProxy networkProxy, final IInterfaceHost ih) {
-        this.gridProxy = networkProxy;
-        this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+    public DualityInterface(final IManagedGridNode gridNode, final IInterfaceHost ih, ItemStack is) {
+        this.gridProxy = gridNode
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .addService(IGridTickable.class, this);
 
-        this.upgrades = new StackUpgradeInventory(this.gridProxy.getMachineRepresentation(), this, 1);
+        this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.cm.registerSetting(Settings.BLOCK, YesNo.NO);
         this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
@@ -185,15 +183,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             final boolean now = this.hasWorkToDo();
 
             if (had != now) {
-                try {
+                gridProxy.ifPresent((grid, node) -> {
                     if (now) {
-                        this.gridProxy.getTick().alertDevice(this.gridProxy.getNode());
+                        grid.getTickManager().alertDevice(node);
                     } else {
-                        this.gridProxy.getTick().sleepDevice(this.gridProxy.getNode());
+                        grid.getTickManager().sleepDevice(node);
                     }
-                } catch (final GridAccessException e) {
-                    // :P
-                }
+                });
             }
         }
     }
@@ -259,11 +255,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         this.waitingToSend.add(is);
 
-        try {
-            this.gridProxy.getTick().wakeDevice(this.gridProxy.getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        gridProxy.ifPresent((grid, node) -> {
+            grid.getTickManager().wakeDevice(node);
+        });
     }
 
     private void readConfig() {
@@ -285,15 +279,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         final boolean has = this.hasWorkToDo();
 
         if (had != has) {
-            try {
+            gridProxy.ifPresent((grid, node) -> {
                 if (has) {
-                    this.gridProxy.getTick().alertDevice(this.gridProxy.getNode());
+                    grid.getTickManager().alertDevice(node);
                 } else {
-                    this.gridProxy.getTick().sleepDevice(this.gridProxy.getNode());
+                    grid.getTickManager().sleepDevice(node);
                 }
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            });
         }
 
         this.notifyNeighbors();
@@ -333,11 +325,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             }
         }
 
-        try {
-            this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.gridProxy.ifPresent((grid, node) -> grid.postEvent(new GridCraftingPatternChange(this, node)));
     }
 
     private boolean hasWorkToDo() {
@@ -397,12 +385,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     public void notifyNeighbors() {
         if (this.gridProxy.isActive()) {
-            try {
-                this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
-                this.gridProxy.getTick().wakeDevice(this.gridProxy.getNode());
-            } catch (final GridAccessException e) {
-                // :P
-            }
+            this.gridProxy.ifPresent((grid, node) -> {
+                grid.postEvent(new GridCraftingPatternChange(this, node));
+                grid.getTickManager().wakeDevice(node);
+            });
         }
 
         final TileEntity te = this.iHost.getTileEntity();
@@ -452,25 +438,26 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     public void gridChanged() {
-        try {
-            this.items.setInternal(this.gridProxy.getStorage()
+        var grid = gridProxy.getGrid();
+        if (grid != null) {
+            this.items.setInternal(grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
-            this.fluids.setInternal(this.gridProxy.getStorage()
+            this.fluids.setInternal(grid.getStorageService()
                     .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)));
-        } catch (final GridAccessException gae) {
-            this.items.setInternal(new NullInventory<IAEItemStack>());
-            this.fluids.setInternal(new NullInventory<IAEFluidStack>());
+        } else {
+            this.items.setInternal(new NullInventory<>());
+            this.fluids.setInternal(new NullInventory<>());
         }
 
         this.notifyNeighbors();
     }
 
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getTileEntity());
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this.iHost.getTileEntity());
     }
 
     public IItemHandler getInternalInventory() {
@@ -558,65 +545,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         final InventoryAdaptor adaptor = this.getAdaptor(x);
         this.isWorking = x;
 
-        boolean changed = false;
-        try {
-            this.destination = this.gridProxy.getStorage()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IEnergySource src = this.gridProxy.getEnergy();
-
-            if (this.craftingTracker.isBusy(x)) {
-                changed = this.handleCrafting(x, adaptor, itemStack) || changed;
-            } else if (itemStack.getStackSize() > 0) {
-                // make sure strange things didn't happen...
-                if (!adaptor.simulateAdd(itemStack.createItemStack()).isEmpty()) {
-                    changed = true;
-                    throw new GridAccessException();
-                }
-
-                final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
-                        this.interfaceRequestSource);
-                if (acquired != null) {
-                    changed = true;
-                    final ItemStack issue = adaptor.addItems(acquired.createItemStack());
-                    if (!issue.isEmpty()) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
-                    }
-                } else {
-                    changed = this.handleCrafting(x, adaptor, itemStack) || changed;
-                }
-            } else if (itemStack.getStackSize() < 0) {
-                IAEItemStack toStore = itemStack.copy();
-                toStore.setStackSize(-toStore.getStackSize());
-
-                long diff = toStore.getStackSize();
-
-                // make sure strange things didn't happen...
-                // TODO: check if OK
-                final ItemStack canExtract = adaptor.simulateRemove((int) diff, toStore.getDefinition(), null);
-                if (canExtract.isEmpty() || canExtract.getCount() != diff) {
-                    changed = true;
-                    throw new GridAccessException();
-                }
-
-                toStore = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
-
-                if (toStore != null) {
-                    diff -= toStore.getStackSize();
-                }
-
-                if (diff != 0) {
-                    // extract items!
-                    changed = true;
-                    final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
-                    if (removed.isEmpty() || removed.getCount() != diff) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
-                    }
-                }
-            }
-            // else wtf?
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        boolean changed = tryUsePlan(x, itemStack, adaptor);
 
         if (changed) {
             this.updatePlan(x);
@@ -626,19 +555,79 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return changed;
     }
 
+    private boolean tryUsePlan(int slot, IAEItemStack itemStack, InventoryAdaptor adaptor) {
+        var grid = gridProxy.getGrid();
+        if (grid == null) {
+            return false;
+        }
+
+        this.destination = grid.getStorageService()
+                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        var src = grid.getEnergyService();
+
+        if (this.craftingTracker.isBusy(slot)) {
+            return this.handleCrafting(slot, adaptor, itemStack);
+        } else if (itemStack.getStackSize() > 0) {
+            // make sure strange things didn't happen...
+            if (!adaptor.simulateAdd(itemStack.createItemStack()).isEmpty()) {
+                return true;
+            }
+
+            final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
+                    this.interfaceRequestSource);
+            if (acquired != null) {
+                final ItemStack issue = adaptor.addItems(acquired.createItemStack());
+                if (!issue.isEmpty()) {
+                    throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
+                }
+                return true;
+            } else {
+                return this.handleCrafting(slot, adaptor, itemStack);
+            }
+        } else if (itemStack.getStackSize() < 0) {
+            IAEItemStack toStore = itemStack.copy();
+            toStore.setStackSize(-toStore.getStackSize());
+
+            long diff = toStore.getStackSize();
+
+            // make sure strange things didn't happen...
+            // TODO: check if OK
+            final ItemStack canExtract = adaptor.simulateRemove((int) diff, toStore.getDefinition(), null);
+            if (canExtract.isEmpty() || canExtract.getCount() != diff) {
+                return true;
+            }
+
+            toStore = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
+
+            if (toStore != null) {
+                diff -= toStore.getStackSize();
+            }
+
+            if (diff != 0) {
+                // extract items!
+                final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
+                if (removed.isEmpty() || removed.getCount() != diff) {
+                    throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
+                }
+                return true;
+            }
+        }
+
+        // else wtf?
+        return false;
+    }
+
     private InventoryAdaptor getAdaptor(final int slot) {
         return new AdaptorItemHandler(new RangedWrapper(this.storage, slot, slot + 1));
     }
 
     private boolean handleCrafting(final int x, final InventoryAdaptor d, final IAEItemStack itemStack) {
-        try {
-            if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
-                return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                        this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(),
-                        this.mySource);
-            }
-        } catch (final GridAccessException e) {
-            // :P
+        var grid = gridProxy.getGrid();
+        if (grid != null && this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
+            return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
+                    this.iHost.getTileEntity().getWorld(), grid,
+                    grid.getCraftingService(),
+                    this.mySource);
         }
 
         return false;
@@ -752,13 +741,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction s : possibleDirections) {
-            final TileEntity te = w.getTileEntity(tile.getPos().offset(s));
-            if (te instanceof IInterfaceHost) {
-                try {
-                    if (((IInterfaceHost) te).getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
-                        continue;
-                    }
-                } catch (final GridAccessException e) {
+            var te = w.getTileEntity(tile.getPos().offset(s));
+            if (te instanceof IInterfaceHost interfaceHost) {
+                if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
                 }
             }
@@ -827,8 +812,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return busy;
     }
 
-    private boolean sameGrid(final IGrid grid) throws GridAccessException {
-        return grid == this.gridProxy.getGrid();
+    private boolean sameGrid(@Nullable IGrid grid) {
+        return grid != null && grid == this.gridProxy.getGrid();
     }
 
     private boolean isBlocking() {
@@ -946,12 +931,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 continue;
             }
 
-            if (directedTile instanceof IInterfaceHost) {
-                try {
-                    if (((IInterfaceHost) directedTile).getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
-                        continue;
-                    }
-                } catch (final GridAccessException e) {
+            if (directedTile instanceof IInterfaceHost interfaceHost) {
+                if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
                 }
             }
@@ -1017,11 +998,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.priority = newValue;
         this.iHost.saveChanges();
 
-        try {
-            this.gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, this.gridProxy.getNode()));
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        this.gridProxy.ifPresent((grid, node) -> new GridCraftingPatternChange(this, node));
     }
 
     @SuppressWarnings("unchecked")

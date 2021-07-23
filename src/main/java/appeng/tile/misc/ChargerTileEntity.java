@@ -41,12 +41,10 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -63,14 +61,16 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     public ChargerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
-        this.getProxy().setFlags();
+        this.getMainNode()
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .setFlags()
+                .setIdlePowerUsage(0)
+                .addService(IGridTickable.class, this);
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
-        this.getProxy().setIdlePowerUsage(0);
     }
 
     @Override
-    public AECableType getCableConnectionType(final AEPartLocation dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -99,7 +99,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getProxy().setValidSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
         this.setPowerSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
     }
 
@@ -137,17 +137,15 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
-        try {
-            this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
-        } catch (final GridAccessException e) {
-            // :P
-        }
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().wakeDevice(node);
+        });
 
         this.markForUpdate();
     }
 
     public void activate(final PlayerEntity player) {
-        if (!Platform.hasPermissions(new DimensionalCoord(this), player)) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
             return;
         }
 
@@ -197,11 +195,10 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                     final double missingAEPower = ps.getAEMaxPower(myItem) - ps.getAECurrentPower(myItem);
                     final double toExtract = Math.min(missingChargeRate, missingAEPower);
 
-                    try {
-                        extractedAmount += this.getProxy().getEnergy().extractAEPower(toExtract, Actionable.MODULATE,
+                    var grid = getMainNode().getGrid();
+                    if (grid != null) {
+                        extractedAmount += grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                                 PowerMultiplier.ONE);
-                    } catch (GridAccessException e1) {
-                        // Ignore.
                     }
 
                     if (extractedAmount > 0) {
@@ -227,15 +224,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
         // charge from the network!
         if (this.getInternalCurrentPower() < POWER_THRESHOLD) {
-            try {
+            getMainNode().ifPresent(grid -> {
                 final double toExtract = Math.min(800.0, this.getInternalMaxPower() - this.getInternalCurrentPower());
-                final double extracted = this.getProxy().getEnergy().extractAEPower(toExtract, Actionable.MODULATE,
+                final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
                 this.injectExternalPower(PowerUnits.AE, extracted, Actionable.MODULATE);
-            } catch (final GridAccessException e) {
-                // continue!
-            }
+            });
 
             changed = true;
         }
