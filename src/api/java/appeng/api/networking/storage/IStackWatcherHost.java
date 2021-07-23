@@ -47,5 +47,5 @@ public interface IStackWatcherHost
 	 * @param diffStack new stack
 	 * @param chan storage channel
 	 */
-	void onStackChange( IAEStack<?> diffStack, IStorageChannel<?> chan );
+	void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan );
 }

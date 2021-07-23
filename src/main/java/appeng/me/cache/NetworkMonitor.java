@@ -219,7 +219,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-		if ( GLOBAL_DEPTH.contains( this ))
+		if( GLOBAL_DEPTH.contains( this ) )
 		{
 			return;
 		}
@@ -228,7 +228,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 		this.sendEvent = true;
 
-		for ( final T changedItem : changes )
+		for( final T changedItem : changes )
 		{
 			if( !add && changedItem != null )
 			{
@@ -244,11 +244,19 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 				if( !list.isEmpty() )
 				{
+					IAEStack<T> fullStack = this.getStorageList().findPrecise( changedItem );
+
+					if( fullStack == null )
+					{
+						fullStack = changedItem.copy();
+						fullStack.setStackSize( 0 );
+					}
+
 					this.myGridCache.getInterestManager().enableTransactions();
 
 					for( final ItemWatcher iw : list )
 					{
-						iw.getHost().onStackChange( changedItem, this.getChannel() );
+						iw.getHost().onStackChange( this.getStorageList(), fullStack, changedItem, src, this.getChannel() );
 					}
 
 					this.myGridCache.getInterestManager().disableTransactions();

@@ -24,8 +24,10 @@ import java.io.IOException;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
 
@@ -460,7 +462,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public void onStackChange( final IAEStack diffStack, final IStorageChannel chan )
+	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
 	{
 		if( this.configuredItem != null )
 		{

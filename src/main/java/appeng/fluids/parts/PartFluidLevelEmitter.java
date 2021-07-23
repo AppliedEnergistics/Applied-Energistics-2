@@ -5,6 +5,7 @@ package appeng.fluids.parts;
 import java.util.Random;
 
 import appeng.api.networking.events.MENetworkChannelChanged;
+import appeng.api.storage.data.IItemList;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.me.cache.NetworkMonitor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,7 +114,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void onStackChange( IAEStack<?> diffStack, IStorageChannel<?> chan )
+	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
 	{
 		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && diffStack.equals( this.config.getFluidInSlot( 0 ) ) )
 		{
