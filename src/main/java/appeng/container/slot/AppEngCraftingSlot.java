@@ -18,13 +18,13 @@
 
 package appeng.container.slot;
 
+import appeng.crafting.CraftingEvent;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -81,7 +81,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     @Override
     public net.minecraft.world.item.ItemStack onTake(final Player playerIn, final net.minecraft.world.item.ItemStack stack) {
-        BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
+        CraftingEvent.fireCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
         this.checkTakeAchievements(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingContainer ic = new CraftingContainer(this.getContainer(), 3, 3);

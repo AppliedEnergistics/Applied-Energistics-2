@@ -36,7 +36,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.Block;
 
@@ -150,8 +149,8 @@ public enum Upgrades {
 
         public Supported(net.minecraft.world.item.Item item, int maxCount, @Nullable String tooltipGroup) {
             this.item = item;
-            if (item.getItem() instanceof BlockItem) {
-                this.block = ((BlockItem) item.getItem()).getBlock();
+            if (item instanceof BlockItem blockItem) {
+                this.block = blockItem.getBlock();
             } else {
                 this.block = null;
             }
