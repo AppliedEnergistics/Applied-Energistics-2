@@ -79,10 +79,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public boolean hurtEnemy(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
-            target.setFire(8);
+            target.setSecondsOnFire(8);
         }
 
         return false;
@@ -90,34 +90,34 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
+        final BlockRayTraceResult target = getPlayerPOVHitResult(w, p, RayTraceContext.FluidMode.ANY);
 
         if (target.getType() != RayTraceResult.Type.BLOCK) {
-            return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
+            return new ActionResult<>(ActionResultType.FAIL, p.getItemInHand(hand));
         } else {
-            BlockPos pos = target.getPos();
+            BlockPos pos = target.getBlockPos();
             final BlockState state = w.getBlockState(pos);
             if (!state.getFluidState().isEmpty() && Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
                 ItemUseContext context = new ItemUseContext(p, hand, target);
-                this.onItemUse(context);
+                this.useOn(context);
             }
         }
 
-        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World w = context.getWorld();
-        ItemStack item = context.getItem();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        World w = context.getLevel();
+        ItemStack item = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
         PlayerEntity p = context.getPlayer();
 
         boolean tryBoth = false;
         if (p == null) {
-            if (w.isRemote) {
+            if (w.isClientSide) {
                 return ActionResultType.FAIL;
             }
             p = Platform.getPlayer((ServerWorld) w);
@@ -126,22 +126,22 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         // Correct pos for fluids as these are normally not taken into account.
-        final BlockRayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        final BlockRayTraceResult target = getPlayerPOVHitResult(w, p, RayTraceContext.FluidMode.ANY);
         if (target.getType() == RayTraceResult.Type.BLOCK) {
-            pos = target.getPos();
+            pos = target.getBlockPos();
         }
 
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
-            if (!p.canPlayerEdit(pos, side, item)) {
+            if (!p.mayUseItemAt(pos, side, item)) {
                 return ActionResultType.FAIL;
             }
 
             // Delegate to the server from here on
-            if (!w.isRemote() && !tryApplyEffect(w, item, pos, side, p, tryBoth)) {
+            if (!w.isClientSide() && !tryApplyEffect(w, item, pos, side, p, tryBoth)) {
                 return ActionResultType.FAIL;
             }
 
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
         return ActionResultType.PASS;
@@ -195,17 +195,17 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     private boolean applyFlintAndSteelEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p) {
-        final BlockPos offsetPos = pos.offset(side);
-        if (!p.canPlayerEdit(offsetPos, side, item)) {
+        final BlockPos offsetPos = pos.relative(side);
+        if (!p.mayUseItemAt(offsetPos, side, item)) {
             return false;
         }
 
-        if (w.isAirBlock(offsetPos)) {
+        if (w.isEmptyBlock(offsetPos)) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
-                    SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                    SoundEvents.FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
                     random.nextFloat() * 0.4F + 0.8F);
-            w.setBlockState(offsetPos, Blocks.FIRE.getDefaultState());
+            w.setBlockAndUpdate(offsetPos, Blocks.FIRE.defaultBlockState());
         }
         return true;
     }
@@ -223,16 +223,16 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
         for (final ItemStack i : stack) {
-            tempInv.setInventorySlotContents(0, i);
-            Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(IRecipeType.SMELTING, tempInv, w);
+            tempInv.setItem(0, i);
+            Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, tempInv, w);
 
             if (!recipe.isPresent()) {
                 return false;
             }
 
-            ItemStack result = recipe.get().getCraftingResult(tempInv);
+            ItemStack result = recipe.get().assemble(tempInv);
             if (result.getItem() instanceof BlockItem) {
-                Block smeltedBlock = Block.getBlockFromItem(result.getItem());
+                Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
                     // Prevent auto-smelting if we wouldn't actually change the blockstate of the block at all,
                     // but still could drop additional items
@@ -242,8 +242,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 // rather replace the current block.
                 if (smeltedBlockState == null
                         && smeltedBlock != Blocks.AIR
-                        && smeltedBlock.getDefaultState().getMaterial() != Material.AIR) {
-                    smeltedBlockState = smeltedBlock.getDefaultState();
+                        && smeltedBlock.defaultBlockState().getMaterial() != Material.AIR) {
+                    smeltedBlockState = smeltedBlock.defaultBlockState();
                     continue;
                 }
             }
@@ -258,13 +258,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
 
         w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-                SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                SoundEvents.FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
                 random.nextFloat() * 0.4F + 0.8F);
 
         if (smeltedBlockState == null) {
-            w.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+            w.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         } else {
-            w.setBlockState(pos, smeltedBlockState, 3);
+            w.setBlock(pos, smeltedBlockState, 3);
         }
 
         Platform.spawnDrops(w, pos, smeltedDrops);
@@ -274,7 +274,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Nullable
     private static EntropyRecipe findRecipe(World world, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(EntropyRecipe.TYPE).values()) {
+        for (IRecipe<IInventory> recipe : world.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
             EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
 
             if (entropyRecipe.matches(mode, blockState, fluidState)) {
@@ -288,13 +288,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             FluidState fluidState) {
         BlockState outputBlockState = recipe.getOutputBlockState(blockState);
         if (outputBlockState != null) {
-            w.setBlockState(pos, outputBlockState, 3);
+            w.setBlock(pos, outputBlockState, 3);
         } else {
             FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
             if (outputFluidState != null) {
-                w.setBlockState(pos, outputFluidState.getBlockState(), 3);
+                w.setBlock(pos, outputFluidState.createLegacyBlock(), 3);
             } else {
-                w.setBlockState(pos, Blocks.AIR.getDefaultState());
+                w.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             }
         }
 
@@ -302,10 +302,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             Platform.spawnDrops(w, pos, recipe.getDrops());
         }
 
-        if (recipe.getMode() == EntropyMode.HEAT && !w.isRemote()) {
+        if (recipe.getMode() == EntropyMode.HEAT && !w.isClientSide()) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
-            w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
-                    2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
+            w.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+                    2.6F + (w.random.nextFloat() - w.random.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; ++l) {
                 w.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),
                         pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);

@@ -92,7 +92,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.standardDetectAndSendChanges();
 
         if (isServer()) {
@@ -112,13 +112,13 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
                 return !press.isSameAs(is);
             }
 
-            return InscriberRecipes.findRecipe(ti.getWorld(), is, top, bot, false) != null;
+            return InscriberRecipes.findRecipe(ti.getLevel(), is, top, bot, false) != null;
         } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
             ItemStack otherSlot;
             if (s == this.top) {
-                otherSlot = this.bottom.getStack();
+                otherSlot = this.bottom.getItem();
             } else {
-                otherSlot = this.top.getStack();
+                otherSlot = this.top.getItem();
             }
 
             // name presses
@@ -129,7 +129,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
             // everything else
             // test for a partial recipe match (ignoring the middle slot)
-            return InscriberRecipes.isValidOptionalIngredientCombination(ti.getWorld(), is, otherSlot);
+            return InscriberRecipes.isValidOptionalIngredientCombination(ti.getLevel(), is, otherSlot);
         }
         return true;
     }

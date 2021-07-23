@@ -33,6 +33,8 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+import appeng.client.gui.me.common.Repo.SearchMode;
+
 public class ItemRepo extends Repo<IAEItemStack> {
 
     public ItemRepo(IScrollSource src, ISortSource sortSrc) {

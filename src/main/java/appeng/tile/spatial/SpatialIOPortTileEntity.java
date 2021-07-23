@@ -58,15 +58,15 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
@@ -81,7 +81,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     public void updateRedstoneState() {
-        final YesNo currentState = this.world.getRedstonePowerFromNeighbors(this.pos) != 0 ? YesNo.YES : YesNo.NO;
+        final YesNo currentState = this.level.getBestNeighborSignal(this.worldPosition) != 0 ? YesNo.YES : YesNo.NO;
         if (this.lastRedstoneState != currentState) {
             this.lastRedstoneState = currentState;
             if (this.lastRedstoneState == YesNo.YES) {
@@ -108,7 +108,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     private void transition() throws Exception {
-        if (!(this.world instanceof ServerWorld serverWorld)) {
+        if (!(this.level instanceof ServerWorld serverWorld)) {
             return;
         }
 
@@ -129,7 +129,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
             final double req = spc.requiredPower();
             final double pr = energy.extractAEPower(req, Actionable.SIMULATE, PowerMultiplier.CONFIG);
             if (Math.abs(pr - req) < req * 0.001) {
-                var evt = grid.postEvent(new GridSpatialEvent(getWorld(), getPos(), req));
+                var evt = grid.postEvent(new GridSpatialEvent(getLevel(), getBlockPos(), req));
                 if (!evt.isTransitionPrevented()) {
                     // Prefer player id from security system, but if unavailable, use the
                     // player who placed the grid node (if any)

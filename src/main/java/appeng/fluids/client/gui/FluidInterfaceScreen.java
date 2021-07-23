@@ -36,12 +36,12 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
+        final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             addSlot(new FluidSlotWidget(configFluids, i), SlotSemantic.CONFIG);
         }
 
-        final IAEFluidTank fluidTank = this.container.getTanks();
+        final IAEFluidTank fluidTank = this.menu.getTanks();
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             widgets.add("tank" + (i + 1), new FluidTankWidget(fluidTank, i));
         }

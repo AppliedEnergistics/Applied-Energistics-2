@@ -67,13 +67,13 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
         this.upgradeable = te;
 
         final IInventory pi = this.getPlayerInventory();
-        for (int x = 0; x < pi.getSizeInventory(); x++) {
-            final ItemStack pii = pi.getStackInSlot(x);
+        for (int x = 0; x < pi.getContainerSize(); x++) {
+            final ItemStack pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;
                 this.tbInventory = ((NetworkToolItem) pii.getItem()).getGuiObject(pii, x,
-                        getPlayerInventory().player.world, null);
+                        getPlayerInventory().player.level, null);
                 break;
             }
         }
@@ -98,7 +98,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
     @Nonnull
     public ITextComponent getToolboxName() {
-        return this.tbInventory != null ? this.tbInventory.getItemStack().getDisplayName()
+        return this.tbInventory != null ? this.tbInventory.getItemStack().getHoverName()
                 : StringTextComponent.EMPTY;
     }
 
@@ -127,7 +127,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -137,7 +137,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
         this.checkToolbox();
 
-        for (final Object o : this.inventorySlots) {
+        for (final Object o : this.slots) {
             if (o instanceof OptionalFakeSlot) {
                 final OptionalFakeSlot fs = (OptionalFakeSlot) o;
                 if (!fs.isSlotEnabled() && !fs.getDisplayStack().isEmpty()) {
@@ -160,12 +160,12 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
     protected void checkToolbox() {
         if (this.hasToolbox()) {
-            final ItemStack currentItem = this.getPlayerInventory().getStackInSlot(this.tbSlot);
+            final ItemStack currentItem = this.getPlayerInventory().getItem(this.tbSlot);
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (ItemStack.areItemsEqual(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInventory().setInventorySlotContents(this.tbSlot,
+                    if (ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
+                        this.getPlayerInventory().setItem(this.tbSlot,
                                 this.tbInventory.getItemStack());
                     } else {
                         this.setValidContainer(false);
@@ -178,7 +178,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     }
 
     protected void standardDetectAndSendChanges() {
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

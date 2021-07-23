@@ -42,14 +42,14 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @Override
     public boolean matches(StateHolder<?, ?> state) {
-        return value.equals(state.get(property));
+        return value.equals(state.getValue(property));
     }
 
     @Override
     public void writeToPacket(PacketBuffer buffer) {
-        buffer.writeEnumValue(MatcherType.SINGLE);
-        buffer.writeString(property.getName());
-        buffer.writeString(property.getName(value));
+        buffer.writeEnum(MatcherType.SINGLE);
+        buffer.writeUtf(property.getName());
+        buffer.writeUtf(property.getName(value));
     }
 
     public static SingleValueMatcher<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
@@ -59,8 +59,8 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @OnlyIn(Dist.CLIENT)
     public static SingleValueMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
-        String propertyName = buffer.readString();
-        String value = buffer.readString();
+        String propertyName = buffer.readUtf();
+        String value = buffer.readUtf();
         return create(stateContainer, propertyName, value);
     }
 }

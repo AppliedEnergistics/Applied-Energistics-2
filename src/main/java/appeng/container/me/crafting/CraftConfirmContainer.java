@@ -111,14 +111,14 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isClient()) {
             return;
         }
 
         this.cpuCycler.detectAndSendChanges(this.getGrid());
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
 
         if (this.job != null && this.job.isDone()) {
             try {
@@ -134,7 +134,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (final Throwable e) {
                 this.getPlayerInventory().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
-                        Util.DUMMY_UUID);
+                        Util.NIL_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;
@@ -192,8 +192,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
         if (this.job != null) {
             this.job.cancel(true);
             this.setJob(null);
@@ -201,8 +201,8 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        super.onContainerClosed(par1PlayerEntity);
+    public void removed(final PlayerEntity par1PlayerEntity) {
+        super.removed(par1PlayerEntity);
         if (this.job != null) {
             this.job.cancel(true);
             this.setJob(null);
@@ -226,7 +226,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public World getWorld() {
-        return this.getPlayerInventory().player.world;
+        return this.getPlayerInventory().player.level;
     }
 
     public boolean isAutoStart() {

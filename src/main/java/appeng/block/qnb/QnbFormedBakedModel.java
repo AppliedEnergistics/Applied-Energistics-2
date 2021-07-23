@@ -49,18 +49,18 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
-    private static final RenderMaterial TEXTURE_LINK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_LINK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
-    private static final RenderMaterial TEXTURE_RING = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_RING = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
     private static final RenderMaterial TEXTURE_RING_LIGHT_CORNER = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+            AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
-    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
@@ -138,9 +138,9 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                     // Offset the face by a slight amount so that it is drawn over the already drawn
                     // ring texture
                     // (avoids z-fighting)
-                    float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                    float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                    float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+                    float xOffset = Math.abs(facing.getStepX() * 0.01f);
+                    float yOffset = Math.abs(facing.getStepY() * 0.01f);
+                    float zOffset = Math.abs(facing.getStepZ() * 0.01f);
 
                     builder.setDrawFaces(EnumSet.of(facing));
                     builder.addCube(DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset,
@@ -165,9 +165,9 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                     // Offset the face by a slight amount so that it is drawn over the already drawn
                     // ring texture
                     // (avoids z-fighting)
-                    float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                    float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                    float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+                    float xOffset = Math.abs(facing.getStepX() * 0.01f);
+                    float yOffset = Math.abs(facing.getStepY() * 0.01f);
+                    float zOffset = Math.abs(facing.getStepZ() * 0.01f);
 
                     builder.setDrawFaces(EnumSet.of(facing));
                     builder.addCube(-xOffset, -yOffset, -zOffset, 16 + xOffset, 16 + yOffset, 16 + zOffset);
@@ -208,8 +208,8 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
@@ -218,18 +218,18 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return this.baseModel.getParticleIcon();
     }
 
     @Override

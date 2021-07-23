@@ -81,10 +81,10 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
         final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
         return ActionResultType.PASS;

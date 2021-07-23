@@ -121,7 +121,7 @@ public class TickHandler {
      * @param c the callback
      */
     public void addCallable(final IWorld w, IWorldRunnable c) {
-        Preconditions.checkArgument(w == null || !w.isRemote(), "Can only register serverside callbacks");
+        Preconditions.checkArgument(w == null || !w.isClientSide(), "Can only register serverside callbacks");
 
         if (w == null) {
             this.serverQueue.add(c);
@@ -146,7 +146,7 @@ public class TickHandler {
      */
     public void addInit(final AEBaseTileEntity tile) {
         // for no there is no reason to care about this on the client...
-        if (!tile.getWorld().isRemote()) {
+        if (!tile.getLevel().isClientSide()) {
             Objects.requireNonNull(tile);
             this.tiles.addTile(tile);
         }
@@ -195,8 +195,8 @@ public class TickHandler {
      * Removes any pending initialization callbacks for tile-entities in that chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
-        if (!ev.getWorld().isRemote()) {
-            this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().asLong());
+        if (!ev.getWorld().isClientSide()) {
+            this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
         }
     }
 
@@ -204,7 +204,7 @@ public class TickHandler {
      * Handle a newly loaded world and setup defaults when necessary.
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
-        if (!ev.getWorld().isRemote()) {
+        if (!ev.getWorld().isClientSide()) {
             this.tiles.addWorld(ev.getWorld());
         }
     }
@@ -214,7 +214,7 @@ public class TickHandler {
      */
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
-        if (!ev.getWorld().isRemote()) {
+        if (!ev.getWorld().isClientSide()) {
             var toDestroy = new ArrayList<GridNode>();
 
             this.grids.updateNetworks();
@@ -260,7 +260,7 @@ public class TickHandler {
     public void onWorldTick(final WorldTickEvent ev) {
         final World world = ev.world;
 
-        if (world.isRemote || ev.side != LogicalSide.SERVER) {
+        if (world.isClientSide || ev.side != LogicalSide.SERVER) {
             // While forge doesn't generate this event for client worlds,
             // the event is generic enough that some other mod might be insane enough to do so.
             return;
@@ -307,7 +307,7 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
-        Preconditions.checkArgument(!world.isRemote, "Trying to register a crafting job for a client-world");
+        Preconditions.checkArgument(!world.isClientSide, "Trying to register a crafting job for a client-world");
 
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(world, craftingJob);
@@ -342,7 +342,7 @@ public class TickHandler {
      * Ready the tiles in this world
      */
     private void readyTiles(IWorld world) {
-        AbstractChunkProvider chunkProvider = world.getChunkProvider();
+        AbstractChunkProvider chunkProvider = world.getChunkSource();
 
         final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
@@ -355,12 +355,12 @@ public class TickHandler {
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(chunkPos.getXStart(), 0, chunkPos.getZStart());
+            BlockPos testBlockPos = new BlockPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ());
 
             // Readies this chunk, if it can tick and does exist.
             // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
             // will be readied.
-            if (world.chunkExists(chunkPos.x, chunkPos.z) && chunkProvider.canTick(testBlockPos)) {
+            if (world.hasChunk(chunkPos.x, chunkPos.z) && chunkProvider.isTickingChunk(testBlockPos)) {
                 // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to
                 // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.

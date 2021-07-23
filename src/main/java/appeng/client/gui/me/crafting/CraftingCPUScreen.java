@@ -87,7 +87,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
                 final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(eta, TimeUnit.NANOSECONDS);
                 final String etaTimeText = DurationFormatUtils.formatDuration(etaInMilliseconds,
                         GuiText.ETAFormat.getLocal());
-                title = title.deepCopy().appendString(" - " + etaTimeText);
+                title = title.copy().append(" - " + etaTimeText);
             }
         }
         setTextContent(TEXT_ID_DIALOG_TITLE, title);

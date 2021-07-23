@@ -50,7 +50,7 @@ public class MachineGroup {
      * Reads back a machine group previously {@link #write(PacketBuffer) written}.
      */
     static MachineGroup read(PacketBuffer data) {
-        ItemStack stack = data.readItemStack();
+        ItemStack stack = data.readItem();
         MachineGroup entry = new MachineGroup(stack);
         entry.idlePowerUsage = data.readDouble();
         entry.count = data.readVarInt();

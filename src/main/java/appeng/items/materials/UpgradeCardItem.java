@@ -43,6 +43,8 @@ import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorItemHandler;
 
+import net.minecraft.item.Item.Properties;
+
 public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     private final Upgrades cardType;
 
@@ -58,9 +60,9 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> lines,
+    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> lines,
             ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final Upgrades u = this.getType(stack);
         if (u != null) {
@@ -73,11 +75,11 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
         if (player != null && InteractionUtil.isInAlternateUseMode(player)) {
-            final TileEntity te = context.getWorld().getTileEntity(context.getPos());
+            final TileEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
             IItemHandler upgrades = null;
 
             if (te instanceof IPartHost) {
-                final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitVec());
+                final SelectedPart sp = ((IPartHost) te).selectPart(context.getClickLocation());
                 if (sp.part instanceof IUpgradeableHost) {
                     upgrades = ((IUpgradeableHost) sp.part).getUpgradeInventory();
                 }
@@ -85,19 +87,19 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
                 upgrades = ((IUpgradeableHost) te).getUpgradeInventory();
             }
 
-            ItemStack heldStack = player.getHeldItem(hand);
+            ItemStack heldStack = player.getItemInHand(hand);
             if (upgrades != null && !heldStack.isEmpty() && heldStack.getItem() instanceof IUpgradeModule) {
                 final IUpgradeModule um = (IUpgradeModule) heldStack.getItem();
                 final Upgrades u = um.getType(heldStack);
 
                 if (u != null) {
-                    if (player.getEntityWorld().isRemote()) {
+                    if (player.getCommandSenderWorld().isClientSide()) {
                         return ActionResultType.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
-                    player.setHeldItem(hand, ad.addItems(heldStack));
-                    return ActionResultType.func_233537_a_(player.getEntityWorld().isRemote());
+                    player.setItemInHand(hand, ad.addItems(heldStack));
+                    return ActionResultType.sidedSuccess(player.getCommandSenderWorld().isClientSide());
                 }
             }
         }

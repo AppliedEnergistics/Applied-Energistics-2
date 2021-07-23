@@ -42,8 +42,8 @@ public class SpatialPylonCluster implements IAECluster {
 
     public SpatialPylonCluster(ServerWorld world, BlockPos boundsMin, BlockPos boundsMax) {
         this.world = world;
-        this.boundsMin = boundsMin.toImmutable();
-        this.boundsMax = boundsMax.toImmutable();
+        this.boundsMin = boundsMin.immutable();
+        this.boundsMax = boundsMax.immutable();
 
         if (this.getBoundsMin().getX() != this.getBoundsMax().getX()) {
             this.setCurrentAxis(Axis.X);

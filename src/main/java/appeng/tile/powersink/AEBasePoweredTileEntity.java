@@ -74,15 +74,15 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 

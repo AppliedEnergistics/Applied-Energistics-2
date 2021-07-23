@@ -65,7 +65,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getItemStack();
+        final ItemStack mouseStack = player.inventory.getCarried();
         return mouseStack.isEmpty()
                 || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
     }

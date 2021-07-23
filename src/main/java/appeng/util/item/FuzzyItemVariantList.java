@@ -145,14 +145,14 @@ class FuzzyItemVariantList extends ItemVariantList {
      * higher number than the upper bound.
      */
     static ItemDamageBound makeLowerBound(final ItemStack stack, final FuzzyMode fuzzy) {
-        Preconditions.checkState(stack.getItem().isDamageable(), "Item#isDamageable() has to be true");
+        Preconditions.checkState(stack.getItem().canBeDepleted(), "Item#isDamageable() has to be true");
 
         int damage;
         if (fuzzy == FuzzyMode.IGNORE_ALL) {
             damage = stack.getMaxDamage();
         } else {
             final int breakpoint = fuzzy.calculateBreakPoint(stack.getMaxDamage());
-            damage = stack.getDamage() <= breakpoint ? breakpoint : stack.getMaxDamage();
+            damage = stack.getDamageValue() <= breakpoint ? breakpoint : stack.getMaxDamage();
         }
 
         return new ItemDamageBound(damage);
@@ -163,14 +163,14 @@ class FuzzyItemVariantList extends ItemVariantList {
      * lower number than the lower bound. It also is exclusive.
      */
     static ItemDamageBound makeUpperBound(final ItemStack stack, final FuzzyMode fuzzy) {
-        Preconditions.checkState(stack.getItem().isDamageable(), "Item#isDamageable() has to be true");
+        Preconditions.checkState(stack.getItem().canBeDepleted(), "Item#isDamageable() has to be true");
 
         int damage;
         if (fuzzy == FuzzyMode.IGNORE_ALL) {
             damage = MIN_DAMAGE_VALUE;
         } else {
             final int breakpoint = fuzzy.calculateBreakPoint(stack.getMaxDamage());
-            damage = stack.getDamage() <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
+            damage = stack.getDamageValue() <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
         }
 
         return new ItemDamageBound(damage);

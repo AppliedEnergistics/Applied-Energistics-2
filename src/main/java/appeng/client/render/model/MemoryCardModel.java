@@ -44,7 +44,7 @@ import appeng.core.AppEng;
 public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
-    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
     @Override

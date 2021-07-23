@@ -52,9 +52,9 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
-        final BlockPos test = pos.offset(dir);
+        final BlockPos test = pos.relative(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSolidSide(w, test, dir.getOpposite());
+        return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
@@ -70,11 +70,11 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
         w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, IWorldReader w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -152,7 +152,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 

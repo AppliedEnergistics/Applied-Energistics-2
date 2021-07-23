@@ -31,6 +31,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 public class NamePressItem extends AEBaseItem {
     /**
      * NBT property used by the name press to store the name to be inscribed.
@@ -43,9 +45,9 @@ public class NamePressItem extends AEBaseItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final CompoundNBT c = stack.getOrCreateTag();
         if (c.contains(TAG_INSCRIBE_NAME)) {

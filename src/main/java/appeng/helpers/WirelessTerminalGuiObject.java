@@ -260,10 +260,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
         final DimensionalBlockPos dc = wap.getLocation();
 
-        if (dc.getWorld() == this.myPlayer.world) {
-            var offX = dc.getPos().getX() - this.myPlayer.getPosX();
-            var offY = dc.getPos().getY() - this.myPlayer.getPosY();
-            var offZ = dc.getPos().getZ() - this.myPlayer.getPosZ();
+        if (dc.getWorld() == this.myPlayer.level) {
+            var offX = dc.getPos().getX() - this.myPlayer.getX();
+            var offY = dc.getPos().getY() - this.myPlayer.getY();
+            var offZ = dc.getPos().getZ() - this.myPlayer.getZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r && wap.isActive()) {

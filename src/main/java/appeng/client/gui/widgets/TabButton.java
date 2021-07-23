@@ -30,6 +30,8 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.client.gui.Icon;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
     private boolean hideEdge;
@@ -59,7 +61,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderWidget(MatrixStack matrixStack, final int x, final int y, float partial) {
+    public void renderButton(MatrixStack matrixStack, final int x, final int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -79,9 +81,9 @@ public class TabButton extends Button implements ITooltip {
             }
 
             if (this.item != null) {
-                this.itemRenderer.zLevel = 100.0F;
-                this.itemRenderer.renderItemAndEffectIntoGUI(this.item, offsetX + this.x + 3, this.y + 3);
-                this.itemRenderer.zLevel = 0.0F;
+                this.itemRenderer.blitOffset = 100.0F;
+                this.itemRenderer.renderAndDecorateItem(this.item, offsetX + this.x + 3, this.y + 3);
+                this.itemRenderer.blitOffset = 0.0F;
             }
         }
     }

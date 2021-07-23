@@ -83,7 +83,7 @@ public class DriveBakedModel extends DelegateBakedModel {
                     Matrix4f transform = new Matrix4f();
 
                     getSlotOrigin(row, col, slotTranslation);
-                    transform.setTranslation(slotTranslation.getX(), slotTranslation.getY(), slotTranslation.getZ());
+                    transform.setTranslation(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
 
                     int slot = row * 2 + col;
 
@@ -99,7 +99,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         // We have faces inside the chassis that are facing east, but should not receive
         // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
         // a face-by-face basis.

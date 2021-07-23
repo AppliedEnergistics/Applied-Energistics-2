@@ -43,9 +43,9 @@ enum BlitterDeserializer implements JsonDeserializer<Blitter> {
 
         JsonObject root = json.getAsJsonObject();
 
-        String texture = JSONUtils.getString(root, "texture");
-        int textureWidth = JSONUtils.getInt(root, "textureWidth", Blitter.DEFAULT_TEXTURE_WIDTH);
-        int textureHeight = JSONUtils.getInt(root, "textureHeight", Blitter.DEFAULT_TEXTURE_HEIGHT);
+        String texture = JSONUtils.getAsString(root, "texture");
+        int textureWidth = JSONUtils.getAsInt(root, "textureWidth", Blitter.DEFAULT_TEXTURE_WIDTH);
+        int textureHeight = JSONUtils.getAsInt(root, "textureHeight", Blitter.DEFAULT_TEXTURE_HEIGHT);
 
         Blitter blitter;
         if (texture.contains(":")) {

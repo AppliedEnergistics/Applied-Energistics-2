@@ -125,21 +125,21 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         final ItemStack is = getWorkbenchItem();
         if (isServer()) {
-            for (final IContainerListener listener : this.listeners) {
+            for (final IContainerListener listener : this.containerListeners) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!
-                    for (final Slot s : this.inventorySlots) {
+                    for (final Slot s : this.slots) {
                         if (s instanceof OptionalRestrictedInputSlot) {
                             final OptionalRestrictedInputSlot sri = (OptionalRestrictedInputSlot) s;
-                            listener.sendSlotContents(this, sri.slotNumber, sri.getStack());
+                            listener.slotChanged(this, sri.index, sri.getItem());
                         }
                     }
 
                     if (listener instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) listener).isChangingQuantityOnly = false;
+                        ((ServerPlayerEntity) listener).ignoreSlotUpdateHack = false;
                     }
                 }
             }
@@ -172,7 +172,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public void clear() {
         ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     private FuzzyMode getWorkBenchFuzzyMode() {
@@ -203,7 +203,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
             }
         }
 
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,

@@ -20,6 +20,8 @@ package appeng.decorative;
 
 import appeng.block.AEBaseBlock;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AEDecorativeBlock extends AEBaseBlock {
     public AEDecorativeBlock(Properties props) {
         super(props);

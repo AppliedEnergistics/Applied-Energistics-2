@@ -73,9 +73,9 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
         this.selectCPU.setMessage(getNextCpuButtonLabel());
 
-        CraftingPlanSummary plan = container.getPlan();
+        CraftingPlanSummary plan = menu.getPlan();
         boolean planIsStartable = plan != null && !plan.isSimulation();
-        this.start.active = !this.container.hasNoCPU() && planIsStartable;
+        this.start.active = !this.menu.hasNoCPU() && planIsStartable;
         this.selectCPU.active = planIsStartable;
 
         // Show additional status about the selected CPU and plan when the planning is done
@@ -87,10 +87,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
             if (plan.isSimulation()) {
                 cpuDetails = GuiText.Simulation.text();
-            } else if (this.container.getCpuAvailableBytes() > 0) {
+            } else if (this.menu.getCpuAvailableBytes() > 0) {
                 cpuDetails = GuiText.ConfirmCraftCpuStatus.text(
-                        this.container.getCpuAvailableBytes(),
-                        this.container.getCpuCoProcessors());
+                        this.menu.getCpuAvailableBytes(),
+                        this.menu.getCpuCoProcessors());
             } else {
                 cpuDetails = GuiText.ConfirmCraftNoCpu.text();
             }
@@ -104,15 +104,15 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private ITextComponent getNextCpuButtonLabel() {
-        if (this.container.hasNoCPU()) {
+        if (this.menu.hasNoCPU()) {
             return GuiText.NoCraftingCPUs.text();
         }
 
         ITextComponent cpuName;
-        if (this.container.cpuName == null) {
+        if (this.menu.cpuName == null) {
             cpuName = GuiText.Automatic.text();
         } else {
-            cpuName = this.container.cpuName;
+            cpuName = this.menu.cpuName;
         }
 
         return GuiText.SelectedCraftingCPU.text(cpuName);
@@ -122,7 +122,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
 
-        CraftingPlanSummary plan = container.getPlan();
+        CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {
             this.table.render(matrixStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
@@ -132,7 +132,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))
+        if (!this.checkHotbarKeys(InputMappings.getKey(keyCode, scanCode))
                 && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
             this.start();
             return true;

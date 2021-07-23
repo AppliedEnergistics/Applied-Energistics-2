@@ -107,14 +107,14 @@ public final class Blitter {
         // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
         // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
         final int refSize = Integer.MAX_VALUE;
-        AtlasTexture atlas = sprite.getAtlasTexture();
+        AtlasTexture atlas = sprite.atlas();
 
-        return new Blitter(atlas.getTextureLocation(), refSize, refSize)
+        return new Blitter(atlas.location(), refSize, refSize)
                 .src(
-                        (int) (sprite.getMinU() * refSize),
-                        (int) (sprite.getMinV() * refSize),
-                        (int) ((sprite.getMaxU() - sprite.getMinU()) * refSize),
-                        (int) ((sprite.getMaxV() - sprite.getMinV()) * refSize));
+                        (int) (sprite.getU0() * refSize),
+                        (int) (sprite.getV0() * refSize),
+                        (int) ((sprite.getU1() - sprite.getU0()) * refSize),
+                        (int) ((sprite.getV1() - sprite.getV0()) * refSize));
     }
 
     public Blitter copy() {
@@ -233,7 +233,7 @@ public final class Blitter {
 
     public void blit(MatrixStack matrices, int zIndex) {
         TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-        textureManager.bindTexture(this.texture);
+        textureManager.bind(this.texture);
 
         // With no source rectangle, we'll use the entirety of the texture. This happens rarely though.
         float minU, minV, maxU, maxV;
@@ -260,23 +260,23 @@ public final class Blitter {
             y2 += srcRect.getHeight();
         }
 
-        Matrix4f matrix = matrices.getLast().getMatrix();
+        Matrix4f matrix = matrices.last().pose();
 
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
-        bufferbuilder.pos(matrix, x1, y2, zIndex)
+        bufferbuilder.vertex(matrix, x1, y2, zIndex)
                 .color(r, g, b, a)
-                .tex(minU, maxV).endVertex();
-        bufferbuilder.pos(matrix, x2, y2, zIndex)
+                .uv(minU, maxV).endVertex();
+        bufferbuilder.vertex(matrix, x2, y2, zIndex)
                 .color(r, g, b, a)
-                .tex(maxU, maxV).endVertex();
-        bufferbuilder.pos(matrix, x2, y1, zIndex)
+                .uv(maxU, maxV).endVertex();
+        bufferbuilder.vertex(matrix, x2, y1, zIndex)
                 .color(r, g, b, a)
-                .tex(maxU, minV).endVertex();
-        bufferbuilder.pos(matrix, x1, y1, zIndex)
+                .uv(maxU, minV).endVertex();
+        bufferbuilder.vertex(matrix, x1, y1, zIndex)
                 .color(r, g, b, a)
-                .tex(minU, minV).endVertex();
-        bufferbuilder.finishDrawing();
+                .uv(minU, minV).endVertex();
+        bufferbuilder.end();
 
         if (blending) {
             RenderSystem.enableBlend();
@@ -285,7 +285,7 @@ public final class Blitter {
             RenderSystem.disableBlend();
         }
         RenderSystem.enableTexture();
-        WorldVertexBufferUploader.draw(bufferbuilder);
+        WorldVertexBufferUploader.end(bufferbuilder);
     }
 
 }

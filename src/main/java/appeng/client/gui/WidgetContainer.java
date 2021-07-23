@@ -105,7 +105,7 @@ public class WidgetContainer {
     }
 
     public Button addButton(String id, ITextComponent text, Button.IPressable action) {
-        return addButton(id, text, action, Button.EMPTY_TOOLTIP);
+        return addButton(id, text, action, Button.NO_TOOLTIP);
     }
 
     public Button addButton(String id, ITextComponent text, Runnable action, Button.ITooltip tooltip) {
@@ -113,7 +113,7 @@ public class WidgetContainer {
     }
 
     public Button addButton(String id, ITextComponent text, Runnable action) {
-        return addButton(id, text, action, Button.EMPTY_TOOLTIP);
+        return addButton(id, text, action, Button.NO_TOOLTIP);
     }
 
     /**

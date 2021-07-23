@@ -33,6 +33,6 @@ public class Supporters implements ISubCommand {
     public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
         final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov",
                 "BevoLJ" };
-        sender.sendFeedback(new StringTextComponent("Special thanks to " + Joiner.on(", ").join(who)), true);
+        sender.sendSuccess(new StringTextComponent("Special thanks to " + Joiner.on(", ").join(who)), true);
     }
 }

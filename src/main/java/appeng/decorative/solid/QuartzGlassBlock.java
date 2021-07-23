@@ -22,6 +22,8 @@ import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class QuartzGlassBlock extends AbstractGlassBlock {
 
     public QuartzGlassBlock(Properties props) {
@@ -29,13 +31,13 @@ public class QuartzGlassBlock extends AbstractGlassBlock {
     }
 
     @Override
-    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
         if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock
-                && adjacentBlockState.getRenderType() == state.getRenderType()) {
+                && adjacentBlockState.getRenderShape() == state.getRenderShape()) {
             return true;
         }
 
-        return super.isSideInvisible(state, adjacentBlockState, side);
+        return super.skipRendering(state, adjacentBlockState, side);
     }
 
 }

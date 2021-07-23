@@ -98,25 +98,25 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         maxY /= 16.0;
         maxZ /= 16.0;
 
-        double aX = minX * this.x.getXOffset() + minY * this.y.getXOffset() + minZ * this.z.getXOffset();
-        double aY = minX * this.x.getYOffset() + minY * this.y.getYOffset() + minZ * this.z.getYOffset();
-        double aZ = minX * this.x.getZOffset() + minY * this.y.getZOffset() + minZ * this.z.getZOffset();
+        double aX = minX * this.x.getStepX() + minY * this.y.getStepX() + minZ * this.z.getStepX();
+        double aY = minX * this.x.getStepY() + minY * this.y.getStepY() + minZ * this.z.getStepY();
+        double aZ = minX * this.x.getStepZ() + minY * this.y.getStepZ() + minZ * this.z.getStepZ();
 
-        double bX = maxX * this.x.getXOffset() + maxY * this.y.getXOffset() + maxZ * this.z.getXOffset();
-        double bY = maxX * this.x.getYOffset() + maxY * this.y.getYOffset() + maxZ * this.z.getYOffset();
-        double bZ = maxX * this.x.getZOffset() + maxY * this.y.getZOffset() + maxZ * this.z.getZOffset();
+        double bX = maxX * this.x.getStepX() + maxY * this.y.getStepX() + maxZ * this.z.getStepX();
+        double bY = maxX * this.x.getStepY() + maxY * this.y.getStepY() + maxZ * this.z.getStepY();
+        double bZ = maxX * this.x.getStepZ() + maxY * this.y.getStepZ() + maxZ * this.z.getStepZ();
 
-        if (this.x.getXOffset() + this.y.getXOffset() + this.z.getXOffset() < 0) {
+        if (this.x.getStepX() + this.y.getStepX() + this.z.getStepX() < 0) {
             aX += 1;
             bX += 1;
         }
 
-        if (this.x.getYOffset() + this.y.getYOffset() + this.z.getYOffset() < 0) {
+        if (this.x.getStepY() + this.y.getStepY() + this.z.getStepY() < 0) {
             aY += 1;
             bY += 1;
         }
 
-        if (this.x.getZOffset() + this.y.getZOffset() + this.z.getZOffset() < 0) {
+        if (this.x.getStepZ() + this.y.getStepZ() + this.z.getStepZ() < 0) {
             aZ += 1;
             bZ += 1;
         }

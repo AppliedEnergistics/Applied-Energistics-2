@@ -76,7 +76,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
     }
 
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         GridInventoryEntry<T> entry = getEntry();
         if (entry != null) {
             return entry.getStack().asItemStackRepresentation();
@@ -85,7 +85,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
     }
 
     @Override
-    public boolean getHasStack() {
+    public boolean hasItem() {
         return getEntry() != null;
     }
 

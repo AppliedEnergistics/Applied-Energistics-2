@@ -40,12 +40,12 @@ class StateApplier<T extends Comparable<T>> {
     }
 
     <SH extends StateHolder<O, SH>, O> SH apply(SH state) {
-        return state.with(property, value);
+        return state.setValue(property, value);
     }
 
     void writeToPacket(PacketBuffer buffer) {
-        buffer.writeString(property.getName());
-        buffer.writeString(property.getName(value));
+        buffer.writeUtf(property.getName());
+        buffer.writeUtf(property.getName(value));
     }
 
     static StateApplier<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
@@ -55,8 +55,8 @@ class StateApplier<T extends Comparable<T>> {
 
     @OnlyIn(Dist.CLIENT)
     static StateApplier<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
-        String propertyName = buffer.readString();
-        String value = buffer.readString();
+        String propertyName = buffer.readUtf();
+        String value = buffer.readUtf();
         return create(stateContainer, propertyName, value);
     }
 

@@ -92,12 +92,12 @@ final class CompassRegion {
         String name = this.lowX + "_" + this.lowZ;
 
         if (create) {
-            this.data = world.getSavedData().getOrCreate(() -> new SaveData(name), name);
+            this.data = world.getDataStorage().computeIfAbsent(() -> new SaveData(name), name);
             if (this.data.bitmap == null) {
                 this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
             }
         } else {
-            this.data = world.getSavedData().get(() -> new SaveData(name), name);
+            this.data = world.getDataStorage().get(() -> new SaveData(name), name);
         }
     }
 
@@ -111,7 +111,7 @@ final class CompassRegion {
 
     private void write(final int cx, final int cz, final int val) {
         this.data.bitmap[cx + cz * 0x400] = (byte) val;
-        this.data.markDirty();
+        this.data.setDirty();
     }
 
     private static class SaveData extends WorldSavedData {
@@ -125,7 +125,7 @@ final class CompassRegion {
         }
 
         @Override
-        public void read(CompoundNBT nbt) {
+        public void load(CompoundNBT nbt) {
             this.bitmap = nbt.getByteArray("b");
             if (this.bitmap.length != BITMAP_LENGTH) {
                 throw new IllegalStateException("Invalid bitmap length: " + bitmap.length);
@@ -133,7 +133,7 @@ final class CompassRegion {
         }
 
         @Override
-        public CompoundNBT write(CompoundNBT compound) {
+        public CompoundNBT save(CompoundNBT compound) {
             compound.putByteArray("b", bitmap);
             return compound;
         }

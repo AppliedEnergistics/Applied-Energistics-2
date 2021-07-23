@@ -41,30 +41,30 @@ public class Fallout {
     public void getRandomFall(final IWorld w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
         } else if (a > 0.8) {
-            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+            this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.7) {
-            this.putter.put(w, pos, Blocks.DIRT.getDefaultState());
+            this.putter.put(w, pos, Blocks.DIRT.defaultBlockState());
         } else {
-            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
+            this.putter.put(w, pos, Blocks.GRAVEL.defaultBlockState());
         }
     }
 
     public void getRandomInset(final IWorld w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+            this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.8) {
-            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
         } else if (a > 0.7) {
-            this.putter.put(w, pos, Blocks.GRASS_BLOCK.getDefaultState());
+            this.putter.put(w, pos, Blocks.GRASS_BLOCK.defaultBlockState());
         } else if (a > 0.6) {
             this.putter.put(w, pos, this.skyStone);
         } else if (a > 0.5) {
-            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
+            this.putter.put(w, pos, Blocks.GRAVEL.defaultBlockState());
         } else {
-            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
+            this.putter.put(w, pos, Blocks.AIR.defaultBlockState());
         }
     }
 }

@@ -64,7 +64,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::closeScreen);
+        this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);
     }
 
@@ -72,21 +72,21 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.fuzzyMode.set(container.getFuzzyMode());
-        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
+        this.fuzzyMode.set(menu.getFuzzyMode());
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
 
         // configure enabled status...
-        final boolean notCraftingMode = !container.hasUpgrade(Upgrades.CRAFTING);
+        final boolean notCraftingMode = !menu.hasUpgrade(Upgrades.CRAFTING);
         this.level.setActive(notCraftingMode);
 
         this.redstoneMode.active = notCraftingMode;
-        this.redstoneMode.set(container.getRedStoneMode());
+        this.redstoneMode.set(menu.getRedStoneMode());
 
-        LevelType currentLevelMode = this.container.getLevelMode();
+        LevelType currentLevelMode = this.menu.getLevelMode();
         this.levelMode.active = notCraftingMode;
         this.levelMode.set(currentLevelMode);
 
-        this.craftingMode.set(this.container.getCraftingMode());
+        this.craftingMode.set(this.menu.getCraftingMode());
         this.craftingMode.setVisibility(!notCraftingMode);
 
         setTextHidden("energy_unit", !notCraftingMode || currentLevelMode != LevelType.ENERGY_LEVEL);
@@ -100,7 +100,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        this.level.getLongValue().ifPresent(menu::setReportingValue);
     }
 
 }

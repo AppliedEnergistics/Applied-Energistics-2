@@ -35,6 +35,8 @@ import appeng.container.implementations.GrinderContainer;
 import appeng.tile.grindstone.GrinderTileEntity;
 import appeng.util.InteractionUtil;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 
     public GrinderBlock(Properties props) {
@@ -46,11 +48,11 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final GrinderTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
         return ActionResultType.PASS;
     }

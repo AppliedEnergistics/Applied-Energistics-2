@@ -55,12 +55,12 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     private ITextComponent getNextCpuButtonLabel() {
-        if (this.container.noCPU) {
+        if (this.menu.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
         // it's possible that the cpu name has not synchronized from server->client yet, since fields are synced
         // individually.
-        ITextComponent name = container.cpuName;
+        ITextComponent name = menu.cpuName;
         if (name == null) {
             name = StringTextComponent.EMPTY;
         }

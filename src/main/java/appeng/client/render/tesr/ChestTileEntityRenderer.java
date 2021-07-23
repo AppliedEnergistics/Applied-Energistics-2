@@ -67,14 +67,14 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         super(rendererDispatcherIn);
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
-        blockRenderer = client.getBlockRendererDispatcher().getBlockModelRenderer();
+        blockRenderer = client.getBlockRenderer().getModelRenderer();
     }
 
     @Override
     public void render(ChestTileEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
             int combinedLight, int combinedOverlay) {
 
-        World world = chest.getWorld();
+        World world = chest.getLevel();
         if (world == null) {
             return;
         }
@@ -94,7 +94,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         }
         IBakedModel cellModel = driveModel.getCellChassisModel(cellItem);
 
-        matrices.push();
+        matrices.pushPose();
         matrices.translate(0.5, 0.5, 0.5);
         FacingToRotation rotation = FacingToRotation.get(chest.getForward(), chest.getUp());
         rotation.push(matrices);
@@ -105,22 +105,22 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         matrices.translate(5 / 16.0, 4 / 16.0, 0);
 
         // Render the cell model as-if it was a block model
-        IVertexBuilder buffer = buffers.getBuffer(RenderType.getCutout());
+        IVertexBuilder buffer = buffers.getBuffer(RenderType.cutout());
         // We "fake" the position here to make it use the light-value in front of the
         // drive
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
-        blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getPos(), matrices, buffer, false,
+        blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer, false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
         IVertexBuilder ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
         CellLedRenderer.renderLed(chest, 0, ledBuffer, matrices, partialTicks);
 
-        matrices.pop();
+        matrices.popPose();
     }
 
     private DriveBakedModel getDriveModel() {
-        IBakedModel driveModel = modelManager.getBlockModelShapes()
-                .getModel(AEBlocks.DRIVE.block().getDefaultState());
+        IBakedModel driveModel = modelManager.getBlockModelShaper()
+                .getBlockModel(AEBlocks.DRIVE.block().defaultBlockState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
 
@@ -147,8 +147,8 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
 
             for (int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
-                quads.set(i, new BakedQuad(quad.getVertexData(), quad.getTintIndex(), r.rotate(quad.getFace()),
-                        quad.getSprite(), quad.applyDiffuseLighting()));
+                quads.set(i, new BakedQuad(quad.getVertices(), quad.getTintIndex(), r.rotate(quad.getDirection()),
+                        quad.getSprite(), quad.isShade()));
             }
 
             return quads;

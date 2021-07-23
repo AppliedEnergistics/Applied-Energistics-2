@@ -49,7 +49,7 @@ public class UnlitQuadHooks {
 
     // Lightmap texture coordinate with full intensity light leading to no drop in
     // brightness
-    private static final int UNLIT_LIGHT_UV = LightTexture.packLight(15, 15);
+    private static final int UNLIT_LIGHT_UV = LightTexture.pack(15, 15);
 
     /**
      * Thread-Local flag to indicate that an enhanced Applied Energistics model is currently being deserialized.
@@ -81,9 +81,9 @@ public class UnlitQuadHooks {
 
     public static BlockPartFace enhanceModelElementFace(BlockPartFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        if (JSONUtils.getBoolean(jsonObject, "unlit", false)) {
-            return new UnlitBlockPartFace(modelElement.cullFace, modelElement.tintIndex, modelElement.texture,
-                    modelElement.blockFaceUV);
+        if (JSONUtils.getAsBoolean(jsonObject, "unlit", false)) {
+            return new UnlitBlockPartFace(modelElement.cullForDirection, modelElement.tintIndex, modelElement.texture,
+                    modelElement.uv);
         }
         return modelElement;
     }
@@ -94,7 +94,7 @@ public class UnlitQuadHooks {
      * it's not zero.
      */
     public static BakedQuad makeUnlit(BakedQuad quad) {
-        int[] vertexData = quad.getVertexData().clone();
+        int[] vertexData = quad.getVertices().clone();
         int stride = DefaultVertexFormats.BLOCK.getIntegerSize();
         // Set the pre-baked texture coords for the lightmap.
         // Vanilla will not overwrite them if they are non-zero
@@ -103,7 +103,7 @@ public class UnlitQuadHooks {
         }
         TextureAtlasSprite sprite = ((BakedQuadAccessor) quad).getSprite();
         // Copy the quad to disable diffuse lighting
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getFace(), sprite, false /* diffuse lighting */);
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, false /* diffuse lighting */);
     }
 
     /**
@@ -125,7 +125,7 @@ public class UnlitQuadHooks {
         int offset = 0;
         for (VertexFormatElement element : format.getElements()) {
             // TEX_2SB is the lightmap vertex element
-            if (element == DefaultVertexFormats.TEX_2SB) {
+            if (element == DefaultVertexFormats.ELEMENT_UV2) {
                 if (element.getType() != VertexFormatElement.Type.SHORT) {
                     throw new UnsupportedOperationException("Expected light map format to be of type SHORT");
                 }
@@ -134,7 +134,7 @@ public class UnlitQuadHooks {
                 }
                 return offset / 4;
             }
-            offset += element.getSize();
+            offset += element.getByteSize();
         }
         throw new UnsupportedOperationException("Failed to find the lightmap index in the block vertex format");
     }

@@ -48,6 +48,8 @@ import appeng.core.stats.AeStats;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.grindstone.CrankTileEntity;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
     public CrankBlock(Properties props) {
@@ -59,7 +61,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(w, pos);
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
         final CrankTileEntity tile = this.getTileEntity(w, pos);
@@ -67,7 +69,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
         return ActionResultType.PASS;
@@ -75,11 +77,11 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
     private void dropCrank(final World world, final BlockPos pos) {
         world.destroyBlock(pos, true);
-        world.notifyBlockUpdate(pos, this.getDefaultState(), world.getBlockState(pos), 3);
+        world.sendBlockUpdated(pos, this.defaultBlockState(), world.getBlockState(pos), 3);
     }
 
     @Override
-    public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state,
+    public void setPlacedBy(final World world, final BlockPos pos, final BlockState state,
             final LivingEntity placer, final ItemStack stack) {
         final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {
@@ -96,7 +98,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
     @Override
     public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
-        final TileEntity te = w.getTileEntity(pos);
+        final TileEntity te = w.getBlockEntity(pos);
         return !(te instanceof CrankTileEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
 
@@ -110,14 +112,14 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     private boolean isCrankable(final IBlockReader world, final BlockPos pos, final Direction offset) {
-        final BlockPos o = pos.offset(offset);
-        final TileEntity te = world.getTileEntity(o);
+        final BlockPos o = pos.relative(offset);
+        final TileEntity te = world.getBlockEntity(o);
 
         return te instanceof ICrankable && ((ICrankable) te).canCrankAttach(offset.getOpposite());
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
@@ -135,7 +137,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, IWorldReader w, BlockPos pos) {
         return this.findCrankable(w, pos) != null;
     }
 
@@ -152,9 +154,9 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             return VoxelShapes.empty();
         } else {
             // FIXME: Cache per direction, and build it 'precise', not just from AABB
-            final double xOff = -0.15 * up.getXOffset();
-            final double yOff = -0.15 * up.getYOffset();
-            final double zOff = -0.15 * up.getZOffset();
+            final double xOff = -0.15 * up.getStepX();
+            final double yOff = -0.15 * up.getStepY();
+            final double zOff = -0.15 * up.getStepZ();
             return VoxelShapes.create(
                     new AxisAlignedBB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
         }

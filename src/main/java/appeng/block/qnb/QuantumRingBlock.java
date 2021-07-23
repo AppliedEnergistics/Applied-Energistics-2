@@ -36,7 +36,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     private static final VoxelShape SHAPE_FORMED = createShape(1.0 / 16.0);
 
     public QuantumRingBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override

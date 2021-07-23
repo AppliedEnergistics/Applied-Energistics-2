@@ -95,8 +95,8 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToNBT(data, "config");
         this.manager.writeToNBT(data);
@@ -104,8 +104,8 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
         this.manager.readFromNBT(data);

@@ -31,7 +31,7 @@ public final class InitBiomes {
 
     public static void init(IForgeRegistry<Biome> registry) {
         Biome biome = SpatialStorageBiome.INSTANCE;
-        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.getLocation());
+        biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.location());
         registry.register(biome);
     }
 

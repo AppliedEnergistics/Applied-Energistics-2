@@ -205,7 +205,7 @@ public final class InitScreens {
             StyledScreenFactory<M, U> factory,
             String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
-        ScreenManager.<M, U>registerFactory(type, (container, playerInv, title) -> {
+        ScreenManager.<M, U>register(type, (container, playerInv, title) -> {
             ScreenStyle style;
             try {
                 style = StyleManager.loadStyleDoc(stylePath);

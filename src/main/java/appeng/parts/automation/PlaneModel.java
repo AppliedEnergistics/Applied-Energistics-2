@@ -43,9 +43,9 @@ public class PlaneModel implements BasicUnbakedModel<PlaneModel> {
     private final RenderMaterial backTexture;
 
     public PlaneModel(ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture) {
-        this.frontTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture);
-        this.sidesTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture);
-        this.backTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture);
+        this.frontTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, frontTexture);
+        this.sidesTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, sidesTexture);
+        this.backTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, backTexture);
     }
 
     @Override

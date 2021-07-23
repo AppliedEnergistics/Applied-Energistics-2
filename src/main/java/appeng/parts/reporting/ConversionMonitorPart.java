@@ -86,11 +86,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        final ItemStack eq = player.getHeldItem(hand);
+        final ItemStack eq = player.getItemInHand(hand);
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (InteractionUtil.isWrench(player, eq, this.getTile().getPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getTile().getBlockPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
@@ -174,10 +174,10 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     }
                 }
             } else {
-                final IAEItemStack input = AEItemStack.fromItemStack(player.getHeldItem(hand));
+                final IAEItemStack input = AEItemStack.fromItemStack(player.getItemInHand(hand));
                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
-                player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
+                player.setItemInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
         });
     }
@@ -208,11 +208,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 if (!newItems.isEmpty()) {
                     final TileEntity te = this.getTile();
                     final List<ItemStack> list = Collections.singletonList(newItems);
-                    Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getDirection()), list);
+                    Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide().getDirection()), list);
                 }
 
-                if (player.openContainer != null) {
-                    player.openContainer.detectAndSendChanges();
+                if (player.containerMenu != null) {
+                    player.containerMenu.broadcastChanges();
                 }
             }
         });

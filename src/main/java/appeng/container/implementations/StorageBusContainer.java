@@ -95,7 +95,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -118,7 +118,7 @@ public class StorageBusContainer extends UpgradeableContainer {
 
     public void clear() {
         ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     public void partition() {
@@ -143,7 +143,7 @@ public class StorageBusContainer extends UpgradeableContainer {
             }
         }
 
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     public AccessRestriction getReadWriteMode() {

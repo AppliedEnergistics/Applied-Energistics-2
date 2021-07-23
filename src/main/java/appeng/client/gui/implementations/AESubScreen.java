@@ -94,7 +94,7 @@ public final class AESubScreen {
     public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable ITextComponent label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getDisplayName();
+                label = previousContainerIcon.getHoverName();
             }
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
             TabButton button = new TabButton(previousContainerIcon, label,

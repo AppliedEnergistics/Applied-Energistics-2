@@ -59,9 +59,9 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.redstoneMode.set(this.container.getRedStoneMode());
-        this.operationMode.set(this.container.getOperationMode());
-        this.fullMode.set(this.container.getFullMode());
+        this.redstoneMode.set(this.menu.getRedStoneMode());
+        this.operationMode.set(this.menu.getOperationMode());
+        this.fullMode.set(this.menu.getFullMode());
     }
 
     @Override

@@ -132,7 +132,7 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.getOuterNode().create(getWorld(), getTile().getPos());
+        this.getOuterNode().create(getWorld(), getTile().getBlockPos());
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
         this.updateInternalState();
     }

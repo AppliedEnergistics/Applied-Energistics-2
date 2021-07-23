@@ -90,41 +90,41 @@ public final class AEItems {
     /// CERTUS QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item(AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item(AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item(AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), ItemGroup.COMBAT);
-    public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item(AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.maxStackSize(1)), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxDamage(50).setNoRepair(), QuartzToolType.CERTUS), ItemGroup.TOOLS);
+    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item(AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item(AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item(AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), ItemGroup.TAB_COMBAT);
+    public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item(AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50).setNoRepair(), QuartzToolType.CERTUS), ItemGroup.TAB_TOOLS);
 
     ///
     /// NETHER QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item(AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item(AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item(AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), ItemGroup.COMBAT);
-    public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item(AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.maxStackSize(1)), ItemGroup.TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.maxStackSize(1).maxDamage(50).setNoRepair(), QuartzToolType.NETHER), ItemGroup.TOOLS);
+    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item(AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item(AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item(AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), ItemGroup.TAB_COMBAT);
+    public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item(AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), ItemGroup.TAB_TOOLS);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50).setNoRepair(), QuartzToolType.NETHER), ItemGroup.TAB_TOOLS);
 
     ///
     /// VARIOUS POWERED TOOLS
     ///
 
-    public static final ItemDefinition<EntropyManipulatorItem> ENTROPY_MANIPULATOR = item(AEItemIds.ENTROPY_MANIPULATOR, p -> new EntropyManipulatorItem(p.maxStackSize(1)));
-    public static final ItemDefinition<WirelessTerminalItem> WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, p -> new WirelessTerminalItem(p.maxStackSize(1)));
-    public static final ItemDefinition<ChargedStaffItem> CHARGED_STAFF = item(AEItemIds.CHARGED_STAFF, p -> new ChargedStaffItem(p.maxStackSize(1)));
-    public static final ItemDefinition<ColorApplicatorItem> COLOR_APPLICATOR = item(AEItemIds.COLOR_APPLICATOR, p -> new ColorApplicatorItem(p.maxStackSize(1)));
-    public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item(AEItemIds.MASS_CANNON, p -> new MatterCannonItem(p.maxStackSize(1)));
+    public static final ItemDefinition<EntropyManipulatorItem> ENTROPY_MANIPULATOR = item(AEItemIds.ENTROPY_MANIPULATOR, p -> new EntropyManipulatorItem(p.stacksTo(1)));
+    public static final ItemDefinition<WirelessTerminalItem> WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, p -> new WirelessTerminalItem(p.stacksTo(1)));
+    public static final ItemDefinition<ChargedStaffItem> CHARGED_STAFF = item(AEItemIds.CHARGED_STAFF, p -> new ChargedStaffItem(p.stacksTo(1)));
+    public static final ItemDefinition<ColorApplicatorItem> COLOR_APPLICATOR = item(AEItemIds.COLOR_APPLICATOR, p -> new ColorApplicatorItem(p.stacksTo(1)));
+    public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item(AEItemIds.MASS_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));
 
     ///
     /// PORTABLE CELLS
     ///
     private static ItemDefinition<PortableCellItem> makePortableCell(ResourceLocation id, StorageTier tier) {
-        return item(id, p -> new PortableCellItem(tier, p.maxStackSize(1)));
+        return item(id, p -> new PortableCellItem(tier, p.stacksTo(1)));
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_CELL1K = makePortableCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);
@@ -136,12 +136,12 @@ public final class AEItems {
     /// NETWORK RELATED TOOLS
     ///
 
-    public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item(AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.maxStackSize(1)));
-    public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item(AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.maxStackSize(1)));
-    public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.maxStackSize(1).addToolType(ToolType.get("wrench"), 0)));
+    public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item(AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
+    public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item(AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
+    public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1).addToolType(ToolType.get("wrench"), 0)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item(AEItemIds.FACADE, FacadeItem::new);
-    public static final ItemDefinition<EncodedPatternItem> ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, p -> new EncodedPatternItem(p.maxStackSize(1)));
+    public static final ItemDefinition<EncodedPatternItem> ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
 
     public static final ColoredItemDefinition COLORED_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_PAINT_BALL, false);
     public static final ColoredItemDefinition COLORED_LUMEN_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_LUMEN_PAINT_BALL, true);
@@ -226,22 +226,22 @@ public final class AEItems {
     /// CELLS
     ///
 
-    public static final ItemDefinition<CreativeStorageCellItem> CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeStorageCellItem(p.maxStackSize(1).rarity(Rarity.EPIC)));
-    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.maxStackSize(1)));
+    public static final ItemDefinition<CreativeStorageCellItem> CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeStorageCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
-    public static final ItemDefinition<BasicStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCellItem(p.maxStackSize(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
-    public static final ItemDefinition<BasicStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCellItem(p.maxStackSize(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
-    public static final ItemDefinition<BasicStorageCellItem> CELL16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCellItem(p.maxStackSize(1), ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128));
-    public static final ItemDefinition<BasicStorageCellItem> CELL64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCellItem(p.maxStackSize(1), ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512));
+    public static final ItemDefinition<BasicStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
+    public static final ItemDefinition<BasicStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
+    public static final ItemDefinition<BasicStorageCellItem> CELL16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128));
+    public static final ItemDefinition<BasicStorageCellItem> CELL64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512));
 
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicFluidStorageCell(p.maxStackSize(1), FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicFluidStorageCell(p.maxStackSize(1), FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicFluidStorageCell(p.maxStackSize(1), FLUID_16K_CELL_COMPONENT, 16, 1.5f, 128));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicFluidStorageCell(p.maxStackSize(1), FLUID_64K_CELL_COMPONENT, 64, 2.0f, 512));
+    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8));
+    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32));
+    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_16K_CELL_COMPONENT, 16, 1.5f, 128));
+    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_64K_CELL_COMPONENT, 64, 2.0f, 512));
 
-    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.maxStackSize(1), 2));
-    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.maxStackSize(1), 16));
-    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL128 = item(AEItemIds.SPATIAL_CELL_128, p -> new SpatialStorageCellItem(p.maxStackSize(1), 128));
+    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
+    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));
+    public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL128 = item(AEItemIds.SPATIAL_CELL_128, p -> new SpatialStorageCellItem(p.stacksTo(1), 128));
 
     ///
     /// UNSUPPORTED DEV TOOLS
@@ -280,7 +280,7 @@ public final class AEItems {
     static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Item.Properties, T> factory,
             ItemGroup group) {
 
-        Item.Properties p = new Item.Properties().group(group);
+        Item.Properties p = new Item.Properties().tab(group);
 
         T item = factory.apply(p);
         item.setRegistryName(id);

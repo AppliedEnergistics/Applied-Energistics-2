@@ -32,7 +32,7 @@ public final class InitUpgrades {
     public static void init() {
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = AEParts.INTERFACE.asItem().getTranslationKey();
+        String interfaceGroup = AEParts.INTERFACE.asItem().getDescriptionId();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();

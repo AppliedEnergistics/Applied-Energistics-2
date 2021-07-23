@@ -83,11 +83,11 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
         List<BakedQuad> rotated = new ArrayList<>(original.size());
         for (BakedQuad quad : original) {
             BakedQuadBuilder builder = new BakedQuadBuilder();
-            VertexRotator rot = new VertexRotator(f2r, quad.getFace());
+            VertexRotator rot = new VertexRotator(f2r, quad.getDirection());
             rot.setParent(builder);
             quad.pipe(rot);
-            if (quad.getFace() != null) {
-                builder.setQuadOrientation(f2r.rotate(quad.getFace()));
+            if (quad.getDirection() != null) {
+                builder.setQuadOrientation(f2r.rotate(quad.getDirection()));
             } else {
                 builder.setQuadOrientation(null);
 
@@ -101,8 +101,8 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
             // Packing it back to the vanilla vertex format will fix this inconsistency because it converts the normal
             // back to a byte-based format, which then re-applies Forge's own bug when piping it to the AO lighter, thus
             // fixing our problem.
-            BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertexData(), quad.getTintIndex(),
-                    unpackedQuad.getFace(), quad.getSprite(), quad.applyDiffuseLighting());
+            BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertices(), quad.getTintIndex(),
+                    unpackedQuad.getDirection(), quad.getSprite(), quad.isShade());
             rotated.add(packedQuad);
         }
         return rotated;
@@ -178,24 +178,24 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
             switch (fs.length) {
                 case 3:
                     Vector4f vec = new Vector4f(fs[0], fs[1], fs[2], 1);
-                    vec.setX(vec.getX() - 0.5f);
-                    vec.setY(vec.getY() - 0.5f);
-                    vec.setZ(vec.getZ() - 0.5f);
+                    vec.setX(vec.x() - 0.5f);
+                    vec.setY(vec.y() - 0.5f);
+                    vec.setZ(vec.z() - 0.5f);
                     vec.transform(this.f2r.getMat());
-                    vec.setX(vec.getX() + 0.5f);
-                    vec.setY(vec.getY() + 0.5f);
-                    vec.setZ(vec.getZ() + 0.5f);
-                    return new float[] { snap(vec.getX()), snap(vec.getY()), snap(vec.getZ()) };
+                    vec.setX(vec.x() + 0.5f);
+                    vec.setY(vec.y() + 0.5f);
+                    vec.setZ(vec.z() + 0.5f);
+                    return new float[] { snap(vec.x()), snap(vec.y()), snap(vec.z()) };
                 case 4:
                     Vector4f vecc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
-                    vecc.setX(vecc.getX() - 0.5f);
-                    vecc.setY(vecc.getY() - 0.5f);
-                    vecc.setZ(vecc.getZ() - 0.5f);
+                    vecc.setX(vecc.x() - 0.5f);
+                    vecc.setY(vecc.y() - 0.5f);
+                    vecc.setZ(vecc.z() - 0.5f);
                     vecc.transform(this.f2r.getMat());
-                    vecc.setX(vecc.getX() + 0.5f);
-                    vecc.setY(vecc.getY() + 0.5f);
-                    vecc.setZ(vecc.getZ() + 0.5f);
-                    return new float[] { snap(vecc.getX()), snap(vecc.getY()), snap(vecc.getZ()), snap(vecc.getW()) };
+                    vecc.setX(vecc.x() + 0.5f);
+                    vecc.setY(vecc.y() + 0.5f);
+                    vecc.setZ(vecc.z() + 0.5f);
+                    return new float[] { snap(vecc.x()), snap(vecc.y()), snap(vecc.z()), snap(vecc.w()) };
 
                 default:
                     return fs;
@@ -227,11 +227,11 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                     case 3:
                         Vector4f vec = new Vector4f(fs[0], fs[1], fs[2], 0);
                         vec.transform(this.f2r.getMat());
-                        return new float[] { vec.getX(), vec.getY(), vec.getZ() };
+                        return new float[] { vec.x(), vec.y(), vec.z() };
                     case 4:
                         Vector4f vec4 = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
                         vec4.transform(this.f2r.getMat());
-                        return new float[] { snap(vec4.getX()), snap(vec4.getY()), snap(vec4.getZ()), 0 };
+                        return new float[] { snap(vec4.x()), snap(vec4.y()), snap(vec4.z()), 0 };
 
                     default:
                         return fs;
@@ -239,12 +239,12 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
             } else {
                 switch (fs.length) {
                     case 3:
-                        Vector3i vec = this.f2r.rotate(this.face).getDirectionVec();
+                        Vector3i vec = this.f2r.rotate(this.face).getNormal();
                         return new float[] { vec.getX(), vec.getY(), vec.getZ() };
                     case 4:
                         Vector4f veccc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
-                        Vector3i vecc = this.f2r.rotate(this.face).getDirectionVec();
-                        return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.getW() };
+                        Vector3i vecc = this.f2r.rotate(this.face).getNormal();
+                        return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.w() };
 
                     default:
                         return fs;

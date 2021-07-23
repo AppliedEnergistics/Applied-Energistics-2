@@ -42,6 +42,8 @@ import appeng.items.AEBaseItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * This tool will try to place anything that is registered as a {@link PartItem} (and not a colored one) onto an
  * existing cable to quickly test parts and their rendering.
@@ -54,38 +56,38 @@ public class DebugPartPlacerItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World world = context.getWorld();
-        if (world.isRemote()) {
+        World world = context.getLevel();
+        if (world.isClientSide()) {
             return ActionResultType.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return ActionResultType.PASS;
         }
 
-        if (!player.abilities.isCreativeMode) {
-            player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.DUMMY_UUID);
+        if (!player.abilities.instabuild) {
+            player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.NIL_UUID);
             return ActionResultType.FAIL;
         }
 
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new StringTextComponent("Right-click something that will accept parts"),
-                    Util.DUMMY_UUID);
+                    Util.NIL_UUID);
             return ActionResultType.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
             return ActionResultType.FAIL;
         }
 
-        Direction face = context.getFace();
-        Vector3i offset = face.getDirectionVec();
+        Direction face = context.getClickedFace();
+        Vector3i offset = face.getNormal();
         Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
                 .toArray(Direction[]::new);
 
@@ -99,12 +101,12 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue; // Cables and such
             }
 
-            nextPos = nextPos.add(offset);
-            if (!world.setBlockState(nextPos, te.getBlockState())) {
+            nextPos = nextPos.offset(offset);
+            if (!world.setBlockAndUpdate(nextPos, te.getBlockState())) {
                 continue;
             }
 
-            TileEntity t = world.getTileEntity(nextPos);
+            TileEntity t = world.getBlockEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }
@@ -120,7 +122,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             }
         }
 
-        return ActionResultType.func_233537_a_(world.isRemote());
+        return ActionResultType.sidedSuccess(world.isClientSide());
     }
 
 }

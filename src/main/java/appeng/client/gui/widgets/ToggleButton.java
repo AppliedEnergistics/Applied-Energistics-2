@@ -30,6 +30,8 @@ import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.Icon;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public class ToggleButton extends Button implements ITooltip {
     private final Icon icon;
     private final Icon iconDisabled;
@@ -53,7 +55,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderWidget(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             getIcon().getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());

@@ -35,7 +35,7 @@ public final class GrinderRecipes {
      */
     @Nullable
     public static GrinderRecipe findForInput(World world, ItemStack input) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
+        for (IRecipe<IInventory> recipe : world.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(input) && input.getCount() >= grinderRecipe.getIngredientCount()) {
                 return grinderRecipe;
@@ -48,7 +48,7 @@ public final class GrinderRecipes {
      * Checks if the given item stack is an ingredient in any grinder recipe, disregarding its current size.
      */
     public static boolean isValidIngredient(World world, ItemStack stack) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
+        for (IRecipe<IInventory> recipe : world.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(stack)) {
                 return true;

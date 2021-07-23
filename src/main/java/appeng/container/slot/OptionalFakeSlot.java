@@ -39,12 +39,12 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
     @Override
     @Nonnull
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
             this.clearStack();
         }
 
-        return super.getStack();
+        return super.getItem();
     }
 
     @Override
@@ -67,6 +67,6 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
     @Override
     public Point getBackgroundPos() {
-        return new Point(xPos - 1, yPos - 1);
+        return new Point(x - 1, y - 1);
     }
 }

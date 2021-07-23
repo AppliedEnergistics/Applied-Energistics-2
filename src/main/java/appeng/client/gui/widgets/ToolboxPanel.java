@@ -80,7 +80,7 @@ public class ToolboxPanel implements ICompositeWidget {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         return new Tooltip(
                 this.toolbeltName,
-                GuiText.UpgradeToolbelt.text().copyRaw().mergeStyle(TextFormatting.GRAY));
+                GuiText.UpgradeToolbelt.text().plainCopy().withStyle(TextFormatting.GRAY));
     }
 
 }

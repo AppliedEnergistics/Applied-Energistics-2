@@ -56,25 +56,25 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public LightDetectorBlock() {
-        super(defaultProps(AEMaterials.FIXTURE).doesNotBlockMovement().notSolid());
+        super(defaultProps(AEMaterials.FIXTURE).noCollission().noOcclusion());
 
-        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP).with(ODD, false)
-                .with(WATERLOGGED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)
+                .setValue(WATERLOGGED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.FACING);
         builder.add(ODD);
         builder.add(WATERLOGGED);
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getSignal(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
         if (w instanceof World && this.getTileEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
-            return ((World) w).getLight(pos) - 6;
+            return ((World) w).getMaxLocalRawBrightness(pos) - 6;
         }
 
         return 0;
@@ -101,9 +101,9 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
-        final BlockPos test = pos.offset(dir);
+        final BlockPos test = pos.relative(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSolidSide(w, test, dir.getOpposite());
+        return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
@@ -113,9 +113,9 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         // called without a world
 
         final Direction up = this.getOrientable(w, pos).getUp();
-        final double xOff = -0.3 * up.getXOffset();
-        final double yOff = -0.3 * up.getYOffset();
-        final double zOff = -0.3 * up.getZOffset();
+        final double xOff = -0.3 * up.getStepX();
+        final double yOff = -0.3 * up.getStepY();
+        final double zOff = -0.3 * up.getStepZ();
         return VoxelShapes
                 .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
@@ -138,11 +138,11 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
         w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, IWorldReader w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -159,29 +159,29 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos pos = context.getPos();
-        FluidState fluidState = context.getWorld().getFluidState(pos);
-        BlockState blockState = this.getDefaultState()
-                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        BlockPos pos = context.getClickedPos();
+        FluidState fluidState = context.getLevel().getFluidState(pos);
+        BlockState blockState = this.defaultBlockState()
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
         return blockState;
     }
 
     @Override
     public FluidState getFluidState(BlockState blockState) {
-        return blockState.get(WATERLOGGED).booleanValue()
-                ? Fluids.WATER.getStillFluidState(false)
+        return blockState.getValue(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getSource(false)
                 : super.getFluidState(blockState);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
             BlockPos currentPos, BlockPos facingPos) {
-        if (blockState.get(WATERLOGGED).booleanValue()) {
-            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickRate(world));
+        if (blockState.getValue(WATERLOGGED).booleanValue()) {
+            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(world));
         }
 
-        return super.updatePostPlacement(blockState, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
     }
 }

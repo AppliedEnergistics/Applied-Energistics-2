@@ -55,13 +55,13 @@ public class WirelessContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        final int boosters = this.boosterSlot.getStack().isEmpty() ? 0 : this.boosterSlot.getStack().getCount();
+    public void broadcastChanges() {
+        final int boosters = this.boosterSlot.getItem().isEmpty() ? 0 : this.boosterSlot.getItem().getCount();
 
         this.setRange((long) (10 * AEConfig.instance().wireless_getMaxRange(boosters)));
         this.setDrain((long) (100 * AEConfig.instance().wireless_getPowerDrain(boosters)));
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     public long getRange() {

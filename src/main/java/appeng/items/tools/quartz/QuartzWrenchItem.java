@@ -43,24 +43,24 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity p = context.getPlayer();
-        World w = context.getWorld();
-        BlockPos pos = context.getPos();
+        World w = context.getLevel();
+        BlockPos pos = context.getClickedPos();
 
         if (!InteractionUtil.isInAlternateUseMode(p) && Platform
                 .hasPermissions(new DimensionalBlockPos(w, pos), p)) {
 
             Block block = w.getBlockState(pos).getBlock();
             if (block instanceof AEBaseBlock) {
-                if (w.isRemote()) {
+                if (w.isClientSide()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !w.isRemote() ? ActionResultType.func_233537_a_(w.isRemote()) : ActionResultType.PASS;
+                    return !w.isClientSide() ? ActionResultType.sidedSuccess(w.isClientSide()) : ActionResultType.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(w, pos, context.getFace())) {
-                    p.swingArm(context.getHand());
-                    return !w.isRemote() ? ActionResultType.func_233537_a_(w.isRemote()) : ActionResultType.FAIL;
+                if (aeBlock.rotateAroundFaceAxis(w, pos, context.getClickedFace())) {
+                    p.swing(context.getHand());
+                    return !w.isClientSide() ? ActionResultType.sidedSuccess(w.isClientSide()) : ActionResultType.FAIL;
                 }
             }
         }

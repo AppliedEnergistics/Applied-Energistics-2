@@ -48,15 +48,15 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.overlayToggle.set(this.container.getOverlayMode());
+        this.overlayToggle.set(this.menu.getOverlayMode());
 
         setTextContent("used_power", GuiText.SpatialAnchorUsedPower
-                .text(Platform.formatPowerLong(this.container.powerConsumption * 100, true)));
-        setTextContent("loaded_chunks", GuiText.SpatialAnchorLoadedChunks.text(this.container.loadedChunks));
+                .text(Platform.formatPowerLong(this.menu.powerConsumption * 100, true)));
+        setTextContent("loaded_chunks", GuiText.SpatialAnchorLoadedChunks.text(this.menu.loadedChunks));
         setTextContent("statistics_loaded",
-                GuiText.SpatialAnchorAllLoaded.text(this.container.allLoadedChunks, this.container.allLoadedWorlds));
+                GuiText.SpatialAnchorAllLoaded.text(this.menu.allLoadedChunks, this.menu.allLoadedWorlds));
         setTextContent("statistics_total",
-                GuiText.SpatialAnchorAll.text(this.container.allChunks, this.container.allWorlds));
+                GuiText.SpatialAnchorAll.text(this.menu.allChunks, this.menu.allWorlds));
     }
 
 }

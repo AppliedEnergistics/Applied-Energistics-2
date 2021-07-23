@@ -29,6 +29,8 @@ import net.minecraft.particles.ParticleType;
 
 import appeng.api.util.AEPartLocation;
 
+import net.minecraft.particles.IParticleData.IDeserializer;
+
 public class EnergyParticleData implements IParticleData {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
@@ -44,7 +46,7 @@ public class EnergyParticleData implements IParticleData {
 
     public static final IDeserializer<EnergyParticleData> DESERIALIZER = new IDeserializer<EnergyParticleData>() {
         @Override
-        public EnergyParticleData deserialize(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
+        public EnergyParticleData fromCommand(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
                 throws CommandSyntaxException {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
@@ -54,7 +56,7 @@ public class EnergyParticleData implements IParticleData {
         }
 
         @Override
-        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, PacketBuffer buffer) {
+        public EnergyParticleData fromNetwork(ParticleType<EnergyParticleData> particleTypeIn, PacketBuffer buffer) {
             boolean forItem = buffer.readBoolean();
             AEPartLocation direction = AEPartLocation.values()[buffer.readByte()];
             return new EnergyParticleData(forItem, direction);
@@ -67,13 +69,13 @@ public class EnergyParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(PacketBuffer buffer) {
         buffer.writeBoolean(forItem);
         buffer.writeByte((byte) direction.ordinal());
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false",
                 direction.name().toLowerCase(Locale.ROOT));
     }

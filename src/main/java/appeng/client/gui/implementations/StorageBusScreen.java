@@ -65,10 +65,10 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.storageFilter.set(this.container.getStorageFilter());
-        this.rwMode.set(this.container.getReadWriteMode());
-        this.fuzzyMode.set(this.container.getFuzzyMode());
-        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
+        this.storageFilter.set(this.menu.getStorageFilter());
+        this.rwMode.set(this.menu.getReadWriteMode());
+        this.fuzzyMode.set(this.menu.getFuzzyMode());
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
     }
 
     private void partition() {

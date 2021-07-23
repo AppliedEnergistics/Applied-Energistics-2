@@ -68,7 +68,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.delay++;
         if (isServer() && this.delay > 15 && this.grid != null) {
             this.delay = 0;
@@ -77,7 +77,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
 
             sendPacketToClient(new NetworkStatusPacket(status));
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
 }

@@ -28,6 +28,8 @@ import net.minecraftforge.fluids.FluidStack;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public class AEFluidInventory implements IAEFluidTank {
 
     /**

@@ -57,7 +57,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      * internally.
      */
     public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec
-            .getLookUpCodec(Registry.BIOME_KEY)
+            .create(Registry.BIOME_REGISTRY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
     private final Registry<Biome> biomeRegistry;
@@ -68,7 +68,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     public SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
         super(createBiomeSource(biomeRegistry), createSettings());
-        this.defaultBlockState = AEBlocks.MATRIX_FRAME.block().getDefaultState();
+        this.defaultBlockState = AEBlocks.MATRIX_FRAME.block().defaultBlockState();
         this.biomeRegistry = biomeRegistry;
 
         // Vertical sample is mostly used for Feature generation, for those purposes
@@ -79,7 +79,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    protected Codec<? extends ChunkGenerator> func_230347_a_() {
+    protected Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 
@@ -96,9 +96,9 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void generateSurface(WorldGenRegion region, IChunk chunk) {
+    public void buildSurfaceAndBedrock(WorldGenRegion region, IChunk chunk) {
         this.fillChunk(chunk);
-        chunk.setModified(false);
+        chunk.setUnsaved(false);
     }
 
     private void fillChunk(IChunk chunk) {
@@ -123,30 +123,30 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public ChunkGenerator func_230349_a_(long p_230349_1_) {
+    public ChunkGenerator withSeed(long p_230349_1_) {
         return this;
     }
 
     @Override
-    public void func_230352_b_(IWorld world, StructureManager accessor, IChunk chunk) {
+    public void fillFromNoise(IWorld world, StructureManager accessor, IChunk chunk) {
     }
 
     @Override
-    public IBlockReader func_230348_a_(int x, int z) {
+    public IBlockReader getBaseColumn(int x, int z) {
         return columnSample;
     }
 
     @Override
-    public int getHeight(int x, int z, Heightmap.Type heightmapType) {
+    public int getBaseHeight(int x, int z, Heightmap.Type heightmapType) {
         return 0;
     }
 
     @Override
-    public void func_230351_a_(WorldGenRegion region, StructureManager accessor) {
+    public void applyBiomeDecoration(WorldGenRegion region, StructureManager accessor) {
     }
 
     @Override
-    public void func_230350_a_(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
+    public void applyCarvers(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
     }
 
 }

@@ -89,7 +89,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
             // in that case
             if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
                 ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> transforms = PerspectiveMapWrapper
-                        .getTransforms(outputModel.getItemCameraTransforms());
+                        .getTransforms(outputModel.getTransforms());
                 return PerspectiveMapWrapper.handlePerspective(this.outputModel, transforms, cameraTransformType, mat);
             } else {
                 return getBaseModel().handlePerspective(cameraTransformType, mat);
@@ -99,8 +99,8 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         // This determines diffuse lighting in the UI, and since we want to render
         // the outputModel in the UI, we need to use it's setting here
         @Override
-        public boolean isSideLit() {
-            return outputModel.isSideLit();
+        public boolean usesBlockLight() {
+            return outputModel.usesBlockLight();
         }
 
     }
@@ -124,22 +124,22 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
         @Nullable
         @Override
-        public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
+        public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                 @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
-                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()
+                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
-                    realModel = realModel.getOverrides().getOverrideModel(realModel, output, world, entity);
+                    realModel = realModel.getOverrides().resolve(realModel, output, world, entity);
                     return new ShiftHoldingModelWrapper(getBaseModel(), realModel);
                 }
             }
 
-            return getBaseModel().getOverrides().getOverrideModel(originalModel, stack, world, entity);
+            return getBaseModel().getOverrides().resolve(originalModel, stack, world, entity);
         }
     }
 

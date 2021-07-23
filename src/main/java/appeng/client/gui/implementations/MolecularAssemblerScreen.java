@@ -35,7 +35,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.pb = new ProgressBar(this.container, style.getImage("progressBar"), Direction.VERTICAL);
+        this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);
     }
 
@@ -43,7 +43,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
+        this.pb.setFullMsg(new StringTextComponent(this.menu.getCurrentProgress() + "%"));
     }
 
 }

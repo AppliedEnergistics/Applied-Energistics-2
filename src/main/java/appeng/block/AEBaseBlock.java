@@ -56,16 +56,16 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
     public static AbstractBlock.Properties defaultProps(Material material, MaterialColor color) {
-        return AbstractBlock.Properties.create(material, color)
+        return AbstractBlock.Properties.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .hardnessAndResistance(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
+                .strength(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
                 .sound(getDefaultSoundByMaterial(material));
     }
 
     private static SoundType getDefaultSoundByMaterial(Material mat) {
         if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
             return SoundType.GLASS;
-        } else if (mat == Material.ROCK) {
+        } else if (mat == Material.STONE) {
             return SoundType.STONE;
         } else if (mat == Material.WOOD) {
             return SoundType.WOOD;
@@ -75,12 +75,12 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return this.isInventory();
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState state, final World worldIn, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, final World worldIn, final BlockPos pos) {
         return 0;
     }
 
@@ -128,13 +128,13 @@ public abstract class AEBaseBlock extends Block {
             return dir;
         }
 
-        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+        final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
+        final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
+        final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         Direction west = null;
         for (final Direction dx : Direction.values()) {
-            if (dx.getXOffset() == west_x && dx.getYOffset() == west_y && dx.getZOffset() == west_z) {
+            if (dx.getStepX() == west_x && dx.getStepY() == west_y && dx.getStepZ() == west_z) {
                 west = dx;
             }
         }
@@ -174,7 +174,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     protected String getUnlocalizedName(final ItemStack is) {
-        return this.getTranslationKey();
+        return this.getDescriptionId();
     }
 
     protected boolean hasCustomRotation() {

@@ -38,19 +38,19 @@ public class CraftingMatrixSlot extends AppEngSlot {
     @Override
     public void clearStack() {
         super.clearStack();
-        this.c.onCraftMatrixChanged(this.wrappedInventory);
+        this.c.slotsChanged(this.wrappedInventory);
     }
 
     @Override
-    public void putStack(final ItemStack par1ItemStack) {
-        super.putStack(par1ItemStack);
-        this.c.onCraftMatrixChanged(this.wrappedInventory);
+    public void set(final ItemStack par1ItemStack) {
+        super.set(par1ItemStack);
+        this.c.slotsChanged(this.wrappedInventory);
     }
 
     @Override
-    public ItemStack decrStackSize(final int par1) {
-        final ItemStack is = super.decrStackSize(par1);
-        this.c.onCraftMatrixChanged(this.wrappedInventory);
+    public ItemStack remove(final int par1) {
+        final ItemStack is = super.remove(par1);
+        this.c.slotsChanged(this.wrappedInventory);
         return is;
     }
 }

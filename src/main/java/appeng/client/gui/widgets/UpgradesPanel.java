@@ -109,12 +109,12 @@ public final class UpgradesPanel implements ICompositeWidget {
         int slotOriginY = this.y + PADDING;
 
         for (Slot slot : slots) {
-            if (!slot.isEnabled()) {
+            if (!slot.isActive()) {
                 continue;
             }
 
-            slot.xPos = slotOriginX + 1;
-            slot.yPos = slotOriginY + 1;
+            slot.x = slotOriginX + 1;
+            slot.y = slotOriginY + 1;
             slotOriginY += SLOT_SIZE;
         }
     }

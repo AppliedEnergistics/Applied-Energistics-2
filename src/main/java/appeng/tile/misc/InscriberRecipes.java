@@ -54,7 +54,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(World world) {
-        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().getRecipes(InscriberRecipe.TYPE)
+        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().byType(InscriberRecipe.TYPE)
                 .values();
         return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
     }
@@ -99,20 +99,20 @@ public final class InscriberRecipes {
             name += " " + tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
-        final Ingredient startingItem = Ingredient.fromStacks(input.copy());
+        final Ingredient startingItem = Ingredient.of(input.copy());
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
-            renamedItem.setDisplayName(new StringTextComponent(name));
+            renamedItem.setHoverName(new StringTextComponent(name));
         } else {
-            renamedItem.setDisplayName(null);
+            renamedItem.setHoverName(null);
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
         return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
-                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(plateA),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(plateB), type);
+                plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
+                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
     }
 
     /**

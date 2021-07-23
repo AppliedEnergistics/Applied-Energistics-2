@@ -52,8 +52,8 @@ public final class InitStructures {
             String name,
             F structure,
             GenerationStage.Decoration stage) {
-        Structure.NAME_STRUCTURE_BIMAP.put(name.toLowerCase(Locale.ROOT), structure);
-        Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
+        Structure.STRUCTURES_REGISTRY.put(name.toLowerCase(Locale.ROOT), structure);
+        Structure.STEP.put(structure, stage);
         structure.setRegistryName(name.toLowerCase(Locale.ROOT));
         registry.register(structure);
     }

@@ -63,7 +63,7 @@ public class LightningPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {
-                player.getEntityWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
+                player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
                         0.0f);
             }
         } catch (final Exception ignored) {

@@ -40,6 +40,8 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
     private final DoubleSupplier powerCapacity;
@@ -53,7 +55,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final CompoundNBT tag = stack.getTag();
         double internalCurrentPower = 0;
@@ -65,17 +67,17 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         final double percent = internalCurrentPower / internalMaxPower;
 
-        lines.add(GuiText.StoredEnergy.text().deepCopy()
-                .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .appendSibling(PowerUnits.AE.textComponent())
-                .appendString(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
+        lines.add(GuiText.StoredEnergy.text().copy()
+                .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                .append(PowerUnits.AE.textComponent())
+                .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
 
-        if (this.isInGroup(group)) {
+        if (this.allowdedIn(group)) {
             final ItemStack charged = new ItemStack(this, 1);
             injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
             items.add(charged);

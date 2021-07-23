@@ -45,7 +45,7 @@ import appeng.core.AppEng;
 public class BiometricCardModel implements BasicUnbakedModel<BiometricCardModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
-    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_hash"));
 
     @Override

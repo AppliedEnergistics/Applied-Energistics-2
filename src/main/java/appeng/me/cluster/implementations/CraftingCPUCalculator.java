@@ -62,8 +62,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     public boolean verifyInternalStructure(final ServerWorld w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
-        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -79,8 +79,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
     @Override
     public void updateTiles(final CraftingCPUCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
-        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
-            final CraftingTileEntity te = (CraftingTileEntity) w.getTileEntity(blockPos);
+        for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
+            final CraftingTileEntity te = (CraftingTileEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
         }

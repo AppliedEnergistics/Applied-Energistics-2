@@ -102,7 +102,7 @@ public class FacadePart implements IFacadePart {
             return facade.getTextureBlockState(this.facade);
         }
 
-        return Blocks.GLASS.getDefaultState();
+        return Blocks.GLASS.defaultBlockState();
     }
 
 }

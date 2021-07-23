@@ -28,7 +28,7 @@ public interface StateMatcher {
     void writeToPacket(PacketBuffer buffer);
 
     static StateMatcher read(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
-        MatcherType type = buffer.readEnumValue(MatcherType.class);
+        MatcherType type = buffer.readEnum(MatcherType.class);
 
         switch (type) {
             case SINGLE:

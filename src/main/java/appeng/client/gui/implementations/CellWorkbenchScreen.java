@@ -65,7 +65,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
      */
     @Override
     protected List<ITextComponent> getCompatibleUpgrades() {
-        ItemStack workbenchItem = container.getWorkbenchItem();
+        ItemStack workbenchItem = menu.getWorkbenchItem();
         if (workbenchItem.isEmpty()) {
             return Collections.emptyList();
         }
@@ -77,10 +77,10 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.copyMode.setState(this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
+        this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.container.getCellUpgradeInventory();
+        final IItemHandler inv = this.menu.getCellUpgradeInventory();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule

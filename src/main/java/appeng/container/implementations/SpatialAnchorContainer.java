@@ -73,7 +73,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
@@ -94,7 +94,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                 HashMap<IWorld, Integer> stats = new HashMap<>();
 
                 for (var machine : grid.getMachines(SpatialAnchorTileEntity.class)) {
-                    IWorld world = machine.getWorld();
+                    IWorld world = machine.getLevel();
                     stats.merge(world, machine.countLoadedChunks(), Math::max);
                 }
 
@@ -111,7 +111,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
             }
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     public YesNo getOverlayMode() {

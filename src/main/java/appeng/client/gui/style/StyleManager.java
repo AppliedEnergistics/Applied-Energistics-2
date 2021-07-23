@@ -90,7 +90,7 @@ public final class StyleManager {
 
         JsonObject document;
         try (IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
-            resourcePacks.add(resource.getPackName());
+            resourcePacks.add(resource.getSourceName());
             document = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), JsonObject.class);
         }
 
@@ -186,7 +186,7 @@ public final class StyleManager {
 
     public static void initialize(IResourceManager resourceManager) {
         if (resourceManager instanceof IReloadableResourceManager) {
-            ((IReloadableResourceManager) resourceManager).addReloadListener(new ReloadListener());
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(new ReloadListener());
         }
         setResourceManager(resourceManager);
     }

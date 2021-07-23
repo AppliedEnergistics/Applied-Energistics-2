@@ -237,8 +237,8 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
-            final TileEntity te = w.getTileEntity(neighbor);
+        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+            final TileEntity te = w.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
@@ -385,7 +385,7 @@ public class StorageBusPart extends UpgradeablePart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
+        final TileEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {

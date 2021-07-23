@@ -96,8 +96,8 @@ public class PatternSlotPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.openContainer instanceof PatternTermContainer) {
-            final PatternTermContainer patternTerminal = (PatternTermContainer) sender.openContainer;
+        if (sender.containerMenu instanceof PatternTermContainer) {
+            final PatternTermContainer patternTerminal = (PatternTermContainer) sender.containerMenu;
             patternTerminal.craftOrGetItem(this);
         }
     }

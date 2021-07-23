@@ -43,7 +43,7 @@ public class InterfaceTerminalPacket extends BasePacket {
 
     public InterfaceTerminalPacket(final PacketBuffer stream) {
         this.fullUpdate = stream.readBoolean();
-        this.in = stream.readCompoundTag();
+        this.in = stream.readNbt();
     }
 
     // api
@@ -53,14 +53,14 @@ public class InterfaceTerminalPacket extends BasePacket {
         PacketBuffer data = new PacketBuffer(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
         data.writeBoolean(fullUpdate);
-        data.writeCompoundTag(din);
+        data.writeNbt(din);
         this.configureWrite(data);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof InterfaceTerminalScreen) {
             ((InterfaceTerminalScreen) gs).postUpdate(fullUpdate, this.in);

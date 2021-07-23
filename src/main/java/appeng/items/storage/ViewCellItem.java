@@ -40,6 +40,8 @@ import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
+import net.minecraft.item.Item.Properties;
+
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     public ViewCellItem(Properties properties) {

@@ -46,34 +46,34 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World w = context.getWorld();
-        if (!w.isRemote() && player != null) {
+        World w = context.getLevel();
+        if (!w.isClientSide() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (!w.isRemote()) {
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
+        if (!w.isClientSide()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
-        p.swingArm(hand);
-        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), p.getHeldItem(hand));
+        p.swing(hand);
+        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override
-    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
         ItemStack damagedStack = itemStack.copy();
-        if (damagedStack.attemptDamageItem(1, random, null)) {
+        if (damagedStack.hurt(1, random, null)) {
             return ItemStack.EMPTY;
         } else {
             return damagedStack;

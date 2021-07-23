@@ -73,7 +73,7 @@ public class CraftingStatusEntry {
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();
-        ItemStack item = buffer.readItemStack();
+        ItemStack item = buffer.readItem();
         return new CraftingStatusEntry(serial, item, storedAmount, missingAmount, craftAmount);
     }
 

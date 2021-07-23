@@ -58,6 +58,8 @@ import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
+import net.minecraft.item.Item.Properties;
+
 public class EncodedPatternItem extends AEBaseItem {
 
     public static final String NBT_INGREDIENTS = "in";
@@ -73,22 +75,22 @@ public class EncodedPatternItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
-        this.clearPattern(player.getHeldItem(hand), player);
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+        this.clearPattern(player.getItemInHand(hand), player);
 
-        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         return this.clearPattern(stack, context.getPlayer())
-                ? ActionResultType.func_233537_a_(context.getWorld().isRemote())
+                ? ActionResultType.sidedSuccess(context.getLevel().isClientSide())
                 : ActionResultType.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (player.getEntityWorld().isRemote()) {
+            if (player.getCommandSenderWorld().isClientSide()) {
                 return false;
             }
 
@@ -96,9 +98,9 @@ public class EncodedPatternItem extends AEBaseItem {
 
             ItemStack is = AEItems.BLANK_PATTERN.stack(stack.getCount());
             if (!is.isEmpty()) {
-                for (int s = 0; s < player.inventory.getSizeInventory(); s++) {
-                    if (inv.getStackInSlot(s) == stack) {
-                        inv.setInventorySlotContents(s, is);
+                for (int s = 0; s < player.inventory.getContainerSize(); s++) {
+                    if (inv.getItem(s) == stack) {
+                        inv.setItem(s, is);
                         return true;
                     }
                 }
@@ -110,7 +112,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
 
@@ -119,41 +121,41 @@ public class EncodedPatternItem extends AEBaseItem {
                 return;
             }
 
-            stack.setDisplayName(GuiText.InvalidPattern.text().deepCopy().mergeStyle(TextFormatting.RED));
+            stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(TextFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
             final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
-                    .deepCopy().appendString(": ");
-            final ITextComponent and = new StringTextComponent(" ").deepCopy().appendSibling(GuiText.And.text())
-                    .deepCopy()
-                    .appendString(" ");
-            final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
+                    .copy().append(": ");
+            final ITextComponent and = new StringTextComponent(" ").copy().append(GuiText.And.text())
+                    .copy()
+                    .append(" ");
+            final ITextComponent with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
-                lines.add((first ? label : and).deepCopy().appendSibling(output.getFormattedToolTip()));
+                lines.add((first ? label : and).copy().append(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).deepCopy().appendSibling(input.getFormattedToolTip()));
+                lines.add((first ? with : and).copy().append(input.getFormattedToolTip()));
                 first = false;
             }
 
             if (invalid.isCraftable()) {
-                final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy().appendString(" ");
+                final ITextComponent substitutionLabel = GuiText.Substitute.text().copy().append(" ");
                 final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
-                lines.add(substitutionLabel.deepCopy().appendSibling(canSubstitute));
+                lines.add(substitutionLabel.copy().append(canSubstitute));
             }
 
             return;
         }
 
-        if (stack.hasDisplayName()) {
-            stack.removeChildTag("display");
+        if (stack.hasCustomHoverName()) {
+            stack.removeTagKey("display");
         }
 
         final boolean isCrafting = details.isCraftable();
@@ -162,11 +164,11 @@ public class EncodedPatternItem extends AEBaseItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).deepCopy()
-                .appendString(": ");
-        final ITextComponent and = new StringTextComponent(" ").deepCopy().appendSibling(GuiText.And.text())
-                .appendString(" ");
-        final ITextComponent with = GuiText.With.text().deepCopy().appendString(": ");
+        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+                .append(": ");
+        final ITextComponent and = new StringTextComponent(" ").copy().append(GuiText.And.text())
+                .append(" ");
+        final ITextComponent with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -174,8 +176,8 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? label : and).deepCopy().appendString(anOut.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anOut)));
+            lines.add((first ? label : and).copy().append(anOut.getStackSize() + "x ")
+                    .append(Platform.getItemDisplayName(anOut)));
             first = false;
         }
 
@@ -185,16 +187,16 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? with : and).deepCopy().appendString(anIn.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anIn)));
+            lines.add((first ? with : and).copy().append(anIn.getStackSize() + "x ")
+                    .append(Platform.getItemDisplayName(anIn)));
             first = false;
         }
 
         if (isCrafting) {
-            final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy().appendString(" ");
+            final ITextComponent substitutionLabel = GuiText.Substitute.text().copy().append(" ");
             final ITextComponent canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
-            lines.add(substitutionLabel.deepCopy().appendSibling(canSubstitute));
+            lines.add(substitutionLabel.copy().append(canSubstitute));
         }
     }
 
@@ -247,7 +249,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final List<IAEItemStack> in = new ArrayList<>(inTag.size());
         for (int x = 0; x < inTag.size(); x++) {
             CompoundNBT ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.read(ingredient);
+            final ItemStack gs = ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -269,7 +271,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final List<IAEItemStack> out = new ArrayList<>(outTag.size());
         for (int x = 0; x < outTag.size(); x++) {
             CompoundNBT ingredient = outTag.getCompound(x);
-            final ItemStack gs = ItemStack.read(ingredient);
+            final ItemStack gs = ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -342,7 +344,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final CompoundNBT c = new CompoundNBT();
 
         if (!i.isEmpty()) {
-            i.write(c);
+            i.save(c);
         }
 
         return c;

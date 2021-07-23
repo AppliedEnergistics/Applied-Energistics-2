@@ -66,12 +66,12 @@ public class StackSizeRenderer {
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
         RenderSystem.disableBlend();
-        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.getStringWidth(text) * scaleFactor)
+        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor)
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        fontRenderer.renderString(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
-        buffer.finish();
+        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        buffer.endBatch();
         RenderSystem.enableBlend();
     }
 

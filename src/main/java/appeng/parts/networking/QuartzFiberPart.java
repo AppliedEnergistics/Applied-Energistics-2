@@ -46,6 +46,8 @@ import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
+import appeng.parts.AEBasePart.NodeListener;
+
 public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
@@ -94,7 +96,7 @@ public class QuartzFiberPart extends AEBasePart {
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getTile().getPos());
+        this.outerNode.create(getWorld(), getTile().getBlockPos());
     }
 
     @Override

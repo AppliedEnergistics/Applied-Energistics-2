@@ -49,24 +49,24 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     public AbstractCraftingUnitBlock(AbstractBlock.Properties props, final CraftingUnitType type) {
         super(props);
         this.type = type;
-        this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));
+        this.registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(POWERED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWERED);
         builder.add(FORMED);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
             BlockPos currentPos, BlockPos facingPos) {
-        TileEntity te = worldIn.getTileEntity(currentPos);
+        TileEntity te = worldIn.getBlockEntity(currentPos);
         if (te != null) {
             te.requestModelDataUpdate();
         }
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     @Override
@@ -79,7 +79,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -89,24 +89,24 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             cp.breakCluster();
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onRemove(state, w, pos, newState, isMoving);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+    public ActionResultType use(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
             BlockRayTraceResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
 
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
-        return super.onBlockActivated(state, w, pos, p, hand, hit);
+        return super.use(state, w, pos, p, hand, hit);
     }
 
     public enum CraftingUnitType {

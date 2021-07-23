@@ -34,7 +34,7 @@ import appeng.block.AEBaseTileBlock;
 public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity> {
 
     public CubeGeneratorBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
             tcg.click(player);
         }
 
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 
 }

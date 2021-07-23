@@ -30,6 +30,8 @@ import appeng.api.parts.IPartItem;
 import appeng.core.Api;
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
 
     private final Function<ItemStack, T> factory;
@@ -40,15 +42,15 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        ItemStack held = player.getHeldItem(context.getHand());
+        ItemStack held = player.getItemInHand(context.getHand());
         if (held.getItem() != this) {
             return ActionResultType.PASS;
         }
 
-        return Api.instance().partHelper().placeBus(held, context.getPos(), context.getFace(), player,
-                context.getHand(), context.getWorld());
+        return Api.instance().partHelper().placeBus(held, context.getClickedPos(), context.getClickedFace(), player,
+                context.getHand(), context.getLevel());
     }
 
     @Override

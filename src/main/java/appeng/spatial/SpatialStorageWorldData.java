@@ -75,13 +75,13 @@ public class SpatialStorageWorldData extends WorldSavedData {
 
         SpatialStoragePlot plot = new SpatialStoragePlot(nextId, size, owner);
         plots.put(nextId, plot);
-        markDirty();
+        setDirty();
         return plot;
     }
 
     public void removePlot(int plotId) {
         plots.remove(plotId);
-        markDirty();
+        setDirty();
     }
 
     public void setLastTransition(int plotId, TransitionInfo info) {
@@ -89,11 +89,11 @@ public class SpatialStorageWorldData extends WorldSavedData {
         if (plot != null) {
             plot.setLastTransition(info);
         }
-        markDirty();
+        setDirty();
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void load(CompoundNBT tag) {
         int version = tag.getInt(TAG_FORMAT);
         if (version != CURRENT_FORMAT) {
             // Currently no new format has been defined, as such anything but the current
@@ -113,7 +113,7 @@ public class SpatialStorageWorldData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
 
         ListNBT plotTags = new ListNBT();

@@ -30,15 +30,15 @@ import appeng.entity.TinyTNTPrimedEntity;
 public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack dispenseStack(final IBlockSource dispenser, final ItemStack dispensedItem) {
-        final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
-        final World world = dispenser.getWorld();
-        final int i = dispenser.getBlockPos().getX() + Direction.getXOffset();
-        final int j = dispenser.getBlockPos().getY() + Direction.getYOffset();
-        final int k = dispenser.getBlockPos().getZ() + Direction.getZOffset();
+    protected ItemStack execute(final IBlockSource dispenser, final ItemStack dispensedItem) {
+        final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
+        final World world = dispenser.getLevel();
+        final int i = dispenser.getPos().getX() + Direction.getStepX();
+        final int j = dispenser.getPos().getY() + Direction.getStepY();
+        final int k = dispenser.getPos().getZ() + Direction.getStepZ();
         final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(world, i + 0.5F, j + 0.5F, k + 0.5F,
                 null);
-        world.addEntity(primedTinyTNTEntity);
+        world.addFreshEntity(primedTinyTNTEntity);
         dispensedItem.setCount(dispensedItem.getCount() - 1);
         return dispensedItem;
     }

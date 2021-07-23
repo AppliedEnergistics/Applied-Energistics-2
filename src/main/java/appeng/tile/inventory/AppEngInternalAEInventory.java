@@ -188,7 +188,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
             ItemStack newStack = newItemStack.copy();
             InvOperation op = InvOperation.SET;
 
-            if (ItemStack.areItemsEqual(oldStack, newStack)) {
+            if (ItemStack.isSame(oldStack, newStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;

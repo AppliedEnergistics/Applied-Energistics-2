@@ -64,13 +64,13 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final RenderMaterial TEXTURE_A = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_A = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final RenderMaterial TEXTURE_B = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_B = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final RenderMaterial TEXTURE_C = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_C = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final RenderMaterial TEXTURE_D = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_D = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
@@ -80,7 +80,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static RenderMaterial[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(RenderMaterial[]::new);
+                .map(rl -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, rl)).toArray(RenderMaterial[]::new);
     }
 
     private final TextureAtlasSprite[] glassTextures;
@@ -155,7 +155,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         // TODO: Forge: Auto-generated method stub
         return false;
     }
@@ -209,8 +209,8 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     private BakedQuad createQuad(Direction side, Vector3d c1, Vector3d c2, Vector3d c3, Vector3d c4,
             TextureAtlasSprite sprite, float uOffset, float vOffset) {
-        Vector3d normal = new Vector3d(side.getDirectionVec().getX(), side.getDirectionVec().getY(),
-                side.getDirectionVec().getZ());
+        Vector3d normal = new Vector3d(side.getNormal().getX(), side.getNormal().getY(),
+                side.getNormal().getZ());
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
@@ -249,8 +249,8 @@ class GlassBakedModel implements IDynamicBakedModel {
                     break;
                 case UV:
                     if (el.getIndex() == 0) {
-                        u = sprite.getInterpolatedU(u);
-                        v = sprite.getInterpolatedV(v);
+                        u = sprite.getU(u);
+                        v = sprite.getV(v);
                         builder.put(e, u, v, 0f, 1f);
                         break;
                     }
@@ -268,7 +268,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -278,12 +278,12 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return this.frameTextures[this.frameTextures.length - 1];
     }
 
@@ -319,7 +319,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing) {
-        return world.getBlockState(pos.offset(facing)).getBlock() instanceof QuartzGlassBlock;
+        return world.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 
 }

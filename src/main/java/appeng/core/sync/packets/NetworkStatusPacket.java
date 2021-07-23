@@ -49,7 +49,7 @@ public class NetworkStatusPacket extends BasePacket {
 
     @Override
     public void clientPacketData(INetworkInfo network, PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof NetworkStatusScreen) {
             ((NetworkStatusScreen) gs).processServerUpdate(status);

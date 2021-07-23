@@ -49,25 +49,25 @@ public final class InitFeatures {
 
     private static void registerQuartzOreFeature() {
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().getDefaultState();
+        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.QUARTZ_ORE.toString(), Feature.ORE
-                .withConfiguration(
-                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, quartzOreState,
+                .configured(
+                        new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                .withPlacement(Placement.RANGE/* RANGE */.configure(new TopSolidRangeConfig(12, 12, 72)))
-                .square/* spreadHorizontally */()
+                .decorated(Placement.RANGE/* RANGE */.configured(new TopSolidRangeConfig(12, 12, 72)))
+                .squared/* spreadHorizontally */()
                 .count/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static void registerChargedQuartzOreFeature() {
-        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().getDefaultState();
+        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
         BlockState chargedQuartzOreState = AEBlocks.QUARTZ_ORE_CHARGED.block()
-                .getDefaultState();
+                .defaultBlockState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.CHARGED_QUARTZ_ORE.toString(),
                 ChargedQuartzOreFeature.INSTANCE
-                        .withConfiguration(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
+                        .configured(new ChargedQuartzOreConfig(quartzOreState, chargedQuartzOreState,
                                 AEConfig.instance().getSpawnChargedChance()))
-                        .withPlacement(Placement.NOPE.configure(NoPlacementConfig.INSTANCE)));
+                        .decorated(Placement.NOPE.configured(NoPlacementConfig.INSTANCE)));
     }
 
 }

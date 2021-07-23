@@ -125,8 +125,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 this.myPlan = patternDetails;
                 this.pushDirection = AEPartLocation.fromFacing(where);
 
-                for (int x = 0; x < table.getSizeInventory(); x++) {
-                    this.gridInv.setStackInSlot(x, table.getStackInSlot(x));
+                for (int x = 0; x < table.getContainerSize(); x++) {
+                    this.gridInv.setStackInSlot(x, table.getItem(x));
                 }
 
                 this.updateSleepiness();
@@ -160,11 +160,11 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             return false;
         }
 
-        for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-            this.craftingInv.setInventorySlotContents(x, this.gridInv.getStackInSlot(x));
+        for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
+            this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
 
-        return !this.myPlan.getOutput(this.craftingInv, this.getWorld()).isEmpty();
+        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
     }
 
     @Override
@@ -192,13 +192,13 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         if (this.forcePlan && this.myPlan != null) {
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
                 final CompoundNBT compound = new CompoundNBT();
-                pattern.write(compound);
+                pattern.save(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
@@ -209,13 +209,13 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         if (data.contains("myPlan")) {
-            final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));
+            final ItemStack myPat = ItemStack.of(data.getCompound("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
-                final World w = this.getWorld();
+                final World w = this.getLevel();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(myPat, w);
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
@@ -239,8 +239,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         final ItemStack is = this.patternInv.getStackInSlot(0);
 
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
-            if (!ItemStack.areItemsEqual(is, this.myPattern)) {
-                final World w = this.getWorld();
+            if (!ItemStack.isSame(is, this.myPattern)) {
+                final World w = this.getLevel();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 
                 if (ph != null && ph.isCraftable()) {
@@ -377,20 +377,20 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
 
         if (this.progress >= 100) {
-            for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-                this.craftingInv.setInventorySlotContents(x, this.gridInv.getStackInSlot(x));
+            for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
+                this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
             }
 
             this.progress = 0;
-            final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getWorld());
+            final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getLevel());
             if (!output.isEmpty()) {
-                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.getWorld()), output,
+                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.getLevel()), output,
                         this.craftingInv);
 
                 this.pushOut(output.copy());
 
-                for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-                    this.gridInv.setStackInSlot(x, Platform.getContainerItem(this.craftingInv.getStackInSlot(x)));
+                for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
+                    this.gridInv.setStackInSlot(x, Platform.getContainerItem(this.craftingInv.getItem(x)));
                 }
 
                 if (ItemHandlerUtil.isEmpty(this.patternInv)) {
@@ -403,10 +403,10 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
                 final IAEItemStack item = AEItemStack.fromItemStack(output);
                 if (item != null) {
-                    final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
-                            this.world);
+                    final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), 32,
+                            this.level);
                     NetworkHandler.instance()
-                            .sendToAllAround(new AssemblerAnimationPacket(this.pos, (byte) speed, item), where);
+                            .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item), where);
                 }
 
                 this.saveChanges();
@@ -422,7 +422,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         if (this.gridInv.getStackInSlot(9).isEmpty()) {
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
-                if (!is.isEmpty() && (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.world))) {
+                if (!is.isEmpty() && (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.level))) {
                     this.gridInv.setStackInSlot(9, is);
                     this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
                     this.saveChanges();
@@ -464,7 +464,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             return output;
         }
 
-        final TileEntity te = this.getWorld().getTileEntity(this.pos.offset(d));
+        final TileEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(d));
 
         if (te == null) {
             return output;
@@ -544,7 +544,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
             if (this.hasPattern()) {
                 return MolecularAssemblerTileEntity.this.myPlan.isValidItemForSlot(slot, stack,
-                        MolecularAssemblerTileEntity.this.getWorld());
+                        MolecularAssemblerTileEntity.this.getLevel());
             }
             return false;
         }

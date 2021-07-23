@@ -128,7 +128,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
             connectionHelper.updateConnections();
@@ -145,7 +145,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 return;
             }
 
-            final BlockPos pos = this.getTile().getPos();
+            final BlockPos pos = this.getTile().getBlockPos();
             final int planePosX = pos.getX();
             final int planePosY = pos.getY();
             final int planePosZ = pos.getZ();
@@ -153,9 +153,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             // This is the middle point of the entities BB, which is better suited for comparisons
             // that don't rely on it "touching" the plane
             final double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
-            final double entityPosX = entity.getPosX();
-            final double entityPosY = entity.getPosY();
-            final double entityPosZ = entity.getPosZ();
+            final double entityPosX = entity.getX();
+            final double entityPosY = entity.getY();
+            final double entityPosZ = entity.getZ();
 
             final boolean captureX = entityPosX > planePosX && entityPosX < planePosX + 1;
             final boolean captureY = posYMiddle > planePosY && posYMiddle < planePosY + 1;
@@ -192,8 +192,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getPosX(),
-                                    entity.getPosY(), entity.getPosZ(), this.getSide().getOpposite()));
+                            this.getTile().getLevel(), new ItemTransitionEffectPacket(entity.getX(),
+                                    entity.getY(), entity.getZ(), this.getSide().getOpposite()));
                 }
             }
         }
@@ -277,9 +277,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             var grid = getMainNode().getGrid();
             if (grid != null) {
                 final TileEntity te = this.getTile();
-                final ServerWorld w = (ServerWorld) te.getWorld();
+                final ServerWorld w = (ServerWorld) te.getLevel();
 
-                final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
+                final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
                 final IEnergyService energy = grid.getEnergyService();
 
                 final BlockState blockState = w.getBlockState(pos);
@@ -297,7 +297,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                             performBreakBlock(w, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
-                            TickHandler.instance().addCallable(this.getTile().getWorld(), this::finishBreakBlock);
+                            TickHandler.instance().addCallable(this.getTile().getLevel(), this::finishBreakBlock);
                         }
                         return TickRateModulation.URGENT;
                     }
@@ -363,21 +363,21 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final Material material = state.getMaterial();
         // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
-        final float hardness = state.getBlockHardness(w, pos);
+        final float hardness = state.getDestroySpeed(w, pos);
         final boolean ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
-        return !ignoreAirAndFluids && hardness >= 0f && w.isBlockLoaded(pos)
-                && w.isBlockModifiable(Platform.getPlayer(w), pos);
+        return !ignoreAirAndFluids && hardness >= 0f && w.hasChunkAt(pos)
+                && w.mayInteract(Platform.getPlayer(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
         final Entity fakePlayer = FakePlayerFactory.getMinecraft(w);
         final BlockState state = w.getBlockState(pos);
-        final TileEntity te = w.getTileEntity(pos);
+        final TileEntity te = w.getBlockEntity(pos);
 
         ItemStack harvestTool = createHarvestTool(state);
 
-        if (!state.getRequiresTool() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
+        if (!state.requiresCorrectToolForDrops() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
             // Do not use a tool when not required, no hints about it and not enchanted in cases like silk touch.
             harvestTool = ItemStack.EMPTY;
         }
@@ -390,7 +390,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items) {
         final BlockState state = w.getBlockState(pos);
-        final float hardness = state.getBlockHardness(w, pos);
+        final float hardness = state.getDestroySpeed(w, pos);
 
         float requiredEnergy = 1 + hardness;
         for (final ItemStack is : items) {
@@ -439,8 +439,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
         // this (bad practice, really)
-        final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
-        for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box)) {
+        final AxisAlignedBB box = new AxisAlignedBB(pos).inflate(0.2);
+        for (final Object ei : w.getEntitiesOfClass(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);

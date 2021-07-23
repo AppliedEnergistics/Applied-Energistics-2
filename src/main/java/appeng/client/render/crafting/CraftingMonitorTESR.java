@@ -50,7 +50,7 @@ public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorTileE
         IAEItemStack jobProgress = te.getJobProgress();
 
         if (jobProgress != null) {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
 
             TesrRenderHelper.rotateToFace(matrixStack, facing, (byte) 0);
@@ -58,7 +58,7 @@ public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorTileE
             TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, jobProgress, 0.3f, -0.18f, 15728880,
                     combinedOverlay);
 
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 }

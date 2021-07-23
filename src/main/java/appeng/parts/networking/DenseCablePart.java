@@ -98,7 +98,7 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     private boolean isDense(final Direction of) {
-        var adjacentHost = Api.instance().grid().getNodeHost(getTile().getWorld(), getTile().getPos().offset(of));
+        var adjacentHost = Api.instance().grid().getNodeHost(getTile().getLevel(), getTile().getBlockPos().relative(of));
 
         if (adjacentHost != null) {
             var t = adjacentHost.getCableConnectionType(of.getOpposite());

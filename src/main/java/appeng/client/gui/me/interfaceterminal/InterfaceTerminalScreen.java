@@ -138,7 +138,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
-        this.xSize = GUI_WIDTH;
+        this.imageWidth = GUI_WIDTH;
 
         // Add a terminalstyle button
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
@@ -154,17 +154,17 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.numLines = (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT) / ROW_HEIGHT;
         this.numLines = MathHelper.clamp(this.numLines, MIN_ROW_COUNT, maxLines);
         // Render inventory in correct place.
-        this.ySize = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
+        this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
 
         super.init();
-        this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
-        this.searchField.setEnableBackgroundDrawing(false);
-        this.searchField.setMaxStringLength(25);
+        this.searchField = new AETextField(this.font, this.leftPos + 104, this.topPos + 4, 65, 12);
+        this.searchField.setBordered(false);
+        this.searchField.setMaxLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setVisible(true);
         this.searchField.setResponder(str -> this.refreshList());
-        this.addListener(this.searchField);
-        this.setListenerDefault(this.searchField);
+        this.addWidget(this.searchField);
+        this.magicalSpecialHackyFocus(this.searchField);
         this.changeFocus(true);
 
         // numLines may have changed, recalculate scroll bar.
@@ -175,7 +175,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
 
-        this.container.inventorySlots.removeIf(slot -> slot instanceof InterfaceSlot);
+        this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
 
@@ -188,7 +188,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
                     final InterfaceRecord inv = (InterfaceRecord) lineObj;
                     for (int z = 0; z < inv.getInventory().getSlots(); z++) {
-                        this.container.inventorySlots
+                        this.menu.slots
                                 .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
                 } else if (lineObj instanceof String) {
@@ -198,9 +198,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                         name = name + " (" + rows + ')';
                     }
 
-                    name = this.font.getLineScrollOffset(name, TEXT_MAX_WIDTH, true);
+                    name = this.font.plainSubstrByWidth(name, TEXT_MAX_WIDTH, true);
 
-                    this.font.drawString(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
+                    this.font.draw(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
                 }
             }
@@ -214,7 +214,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         }
 
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
-            this.searchField.setText("");
+            this.searchField.setValue("");
             return true;
         }
 
@@ -222,7 +222,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
-    protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         if (slot instanceof InterfaceSlot) {
             InventoryAction action = null;
 
@@ -236,7 +236,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     break;
 
                 case CLONE: // creative dupe:
-                    if (getPlayer().abilities.isCreativeMode) {
+                    if (getPlayer().abilities.instabuild) {
                         action = InventoryAction.CREATIVE_DUPLICATE;
                     }
 
@@ -256,7 +256,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             return;
         }
 
-        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
     @Override
@@ -321,7 +321,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public boolean charTyped(char character, int key) {
-        if (character == ' ' && this.searchField.getText().isEmpty()) {
+        if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
         return super.charTyped(character, key);
@@ -330,18 +330,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocused2(!this.searchField.isFocused());
+                this.searchField.setFocus(!this.searchField.isFocused());
                 return true;
             }
 
             // Forward keypresses to the search field
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused2(false);
+                    this.searchField.setFocus(false);
                     return true;
                 }
 
@@ -362,18 +362,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             this.refreshList = true;
         }
 
-        for (final String key : in.keySet()) {
+        for (final String key : in.getAllKeys()) {
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundNBT invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
+                    ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
                     final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
+                            current.getInventory().setStackInSlot(x, ItemStack.of(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -397,7 +397,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private void refreshList() {
         this.byName.clear();
 
-        final String searchFilterLowerCase = this.searchField.getText().toLowerCase();
+        final String searchFilterLowerCase = this.searchField.getValue().toLowerCase();
 
         final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
@@ -477,7 +477,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.read(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()

@@ -47,25 +47,25 @@ public class TesrRenderHelper {
     public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
         switch (face) {
             case UP:
-                mStack.rotate(Vector3f.XP.rotationDegrees(270));
-                mStack.rotate(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
+                mStack.mulPose(Vector3f.XP.rotationDegrees(270));
+                mStack.mulPose(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
                 break;
 
             case DOWN:
-                mStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
-                mStack.rotate(Vector3f.ZP.rotationDegrees(spin * -90.0F));
+                mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                mStack.mulPose(Vector3f.ZP.rotationDegrees(spin * -90.0F));
                 break;
 
             case EAST:
-                mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+                mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
                 break;
 
             case WEST:
-                mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+                mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
                 break;
 
             case NORTH:
-                mStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+                mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 break;
 
             case SOUTH:
@@ -85,7 +85,7 @@ public class TesrRenderHelper {
     public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack,
             float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
-            matrixStack.push();
+            matrixStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
             matrixStack.translate(0, 0, 0.01f);
             // The Z-scaling by 0.0002 causes the model to be visually "flattened"
@@ -93,10 +93,10 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI,
+            Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemCameraTransforms.TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
-            matrixStack.pop();
+            matrixStack.popPose();
 
         }
     }
@@ -120,16 +120,16 @@ public class TesrRenderHelper {
         final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
 
         // Render the item count
-        final FontRenderer fr = Minecraft.getInstance().fontRenderer;
-        final int width = fr.getStringWidth(renderedStackSize);
-        matrixStack.push();
+        final FontRenderer fr = Minecraft.getInstance().font;
+        final int width = fr.width(renderedStackSize);
+        matrixStack.pushPose();
         matrixStack.translate(0.0f, spacing, 0.02f);
         matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         matrixStack.scale(0.5f, 0.5f, 0);
         matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0,
+        fr.drawInBatch(renderedStackSize, 0, 0, -1, false, matrixStack.last().pose(), buffers, false, 0,
                 15728880);
-        matrixStack.pop();
+        matrixStack.popPose();
 
     }
 }

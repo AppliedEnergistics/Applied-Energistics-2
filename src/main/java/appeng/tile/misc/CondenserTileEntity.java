@@ -62,6 +62,8 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigManagerHost, IConfigurableObject {
 
     public static final int BYTE_MULTIPLIER = 8;
@@ -87,16 +89,16 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
     }

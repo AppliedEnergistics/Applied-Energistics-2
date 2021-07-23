@@ -34,7 +34,7 @@ public class QuartzSwordItem extends SwordItem {
     }
 
     @Override
-    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 }

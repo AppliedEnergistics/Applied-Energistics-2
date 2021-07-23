@@ -29,6 +29,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
+import net.minecraft.client.renderer.RenderState.LineState;
+import net.minecraft.client.renderer.RenderState.TransparencyState;
+
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
  */
@@ -41,37 +44,37 @@ public class OverlayRenderType extends RenderType {
     }
 
     public static RenderType getBlockHilightFace() {
-        return makeType("block_hilight",
+        return create("block_hilight",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 65536,
-                RenderType.State.getBuilder()
-                        .transparency(TransparencyState.CRUMBLING_TRANSPARENCY)
-                        .texture(NO_TEXTURE)
-                        .lightmap(LIGHTMAP_DISABLED)
-                        .depthTest(DEPTH_ALWAYS)
-                        .writeMask(COLOR_WRITE)
-                        .cull(CULL_DISABLED)
-                        .build(false));
+                RenderType.State.builder()
+                        .setTransparencyState(TransparencyState.CRUMBLING_TRANSPARENCY)
+                        .setTextureState(NO_TEXTURE)
+                        .setLightmapState(NO_LIGHTMAP)
+                        .setDepthTestState(NO_DEPTH_TEST)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(NO_CULL)
+                        .createCompositeState(false));
     }
 
     private static final LineState LINE_3 = new LineState(OptionalDouble.of(3.0));
 
     public static RenderType getBlockHilightLine() {
-        return makeType("block_hilight_line",
+        return create("block_hilight_line",
                 DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 65536,
-                RenderType.State.getBuilder().line(LINE_3)
-                        .transparency(TransparencyState.GLINT_TRANSPARENCY)
-                        .texture(NO_TEXTURE)
-                        .depthTest(DEPTH_ALWAYS)
-                        .cull(CULL_DISABLED)
-                        .lightmap(LIGHTMAP_DISABLED)
-                        .writeMask(COLOR_DEPTH_WRITE)
-                        .build(false));
+                RenderType.State.builder().setLineState(LINE_3)
+                        .setTransparencyState(TransparencyState.GLINT_TRANSPARENCY)
+                        .setTextureState(NO_TEXTURE)
+                        .setDepthTestState(NO_DEPTH_TEST)
+                        .setCullState(NO_CULL)
+                        .setLightmapState(NO_LIGHTMAP)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
+                        .createCompositeState(false));
     }
 
     public static void finishBuffer(IRenderTypeBuffer buffer, RenderType type) {
         if (buffer instanceof IRenderTypeBuffer.Impl) {
             RenderSystem.disableDepthTest();
-            ((IRenderTypeBuffer.Impl) buffer).finish(type);
+            ((IRenderTypeBuffer.Impl) buffer).endBatch(type);
         }
     }
 

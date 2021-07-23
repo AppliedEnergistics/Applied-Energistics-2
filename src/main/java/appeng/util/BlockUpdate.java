@@ -31,8 +31,8 @@ public class BlockUpdate implements IWorldRunnable {
 
     @Override
     public void call(World world) throws Exception {
-        if (world.isBlockLoaded(this.pos)) {
-            world.notifyNeighborsOfStateChange(this.pos, Blocks.AIR);
+        if (world.hasChunkAt(this.pos)) {
+            world.updateNeighborsAt(this.pos, Blocks.AIR);
         }
     }
 }

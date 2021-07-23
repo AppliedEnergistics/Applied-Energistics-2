@@ -39,7 +39,7 @@ public final class FluidBlitter {
         Fluid fluid = stack.getFluid();
         FluidAttributes attributes = fluid.getAttributes();
         TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+                .getTextureAtlas(PlayerContainer.BLOCK_ATLAS)
                 .apply(attributes.getStillTexture(stack));
 
         return Blitter.sprite(sprite)

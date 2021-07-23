@@ -154,7 +154,7 @@ public class ManagedGridNode implements IManagedGridNode {
         initData.pos = blockPos;
         this.initData = null;
 
-        if (this.node == null && !initData.world.isRemote()) {
+        if (this.node == null && !initData.world.isClientSide()) {
             createNode(initData);
         }
     }

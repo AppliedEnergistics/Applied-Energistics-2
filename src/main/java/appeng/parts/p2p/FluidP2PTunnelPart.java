@@ -36,6 +36,8 @@ import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fluids");
@@ -94,7 +96,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
         if (this.isActive()) {
             final TileEntity self = this.getTile();
-            final TileEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
+            final TileEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

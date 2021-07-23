@@ -112,12 +112,12 @@ public abstract class SynchronizedField<T> {
 
         @Override
         protected void writeValue(PacketBuffer data, String value) {
-            data.writeString(value);
+            data.writeUtf(value);
         }
 
         @Override
         protected String readValue(PacketBuffer data) {
-            return data.readString();
+            return data.readUtf();
         }
     }
 
@@ -200,14 +200,14 @@ public abstract class SynchronizedField<T> {
                 data.writeBoolean(false);
             } else {
                 data.writeBoolean(true);
-                data.writeTextComponent(value);
+                data.writeComponent(value);
             }
         }
 
         @Override
         protected ITextComponent readValue(PacketBuffer data) {
             if (data.readBoolean()) {
-                return data.readTextComponent();
+                return data.readComponent();
             } else {
                 return null;
             }

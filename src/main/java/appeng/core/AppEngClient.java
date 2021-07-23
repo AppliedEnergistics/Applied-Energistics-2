@@ -105,7 +105,7 @@ public class AppEngClient extends AppEngBase {
 
     @Override
     public World getClientWorld() {
-        return Minecraft.getInstance().world;
+        return Minecraft.getInstance().level;
     }
 
     @Nonnull
@@ -187,8 +187,8 @@ public class AppEngClient extends AppEngBase {
         final Minecraft mc = Minecraft.getInstance();
         final PlayerEntity player = mc.player;
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            final boolean mainHand = player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean mainHand = player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()
@@ -203,7 +203,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     public boolean shouldAddParticles(final Random r) {
-        switch (Minecraft.getInstance().gameSettings.particles) {
+        switch (Minecraft.getInstance().options.particles) {
             default:
             case ALL:
                 return true;
@@ -216,7 +216,7 @@ public class AppEngClient extends AppEngBase {
 
     @Override
     public RayTraceResult getCurrentMouseOver() {
-        return Minecraft.getInstance().objectMouseOver;
+        return Minecraft.getInstance().hitResult;
     }
 
     // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
@@ -246,7 +246,7 @@ public class AppEngClient extends AppEngBase {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
                     0.0D);
         }
     }
@@ -256,30 +256,30 @@ public class AppEngClient extends AppEngBase {
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
 
-        Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
+        Minecraft.getInstance().particleEngine.createParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
-        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
+        Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
                 0.0f);
     }
 
     public void triggerUpdates() {
         final Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.world == null) {
+        if (mc.player == null || mc.level == null) {
             return;
         }
 
         final PlayerEntity player = mc.player;
 
-        final int x = (int) player.getPosX();
-        final int y = (int) player.getPosY();
-        final int z = (int) player.getPosZ();
+        final int x = (int) player.getX();
+        final int y = (int) player.getY();
+        final int z = (int) player.getZ();
 
         final int range = 16 * 16;
 
-        mc.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range,
+        mc.levelRenderer.setBlocksDirty(x - range, y - range, z - range, x + range, y + range,
                 z + range);
     }
 

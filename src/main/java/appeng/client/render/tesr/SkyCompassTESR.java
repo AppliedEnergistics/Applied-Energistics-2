@@ -52,13 +52,13 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
             int combinedLightIn, int combinedOverlayIn) {
 
         if (blockRenderer == null) {
-            blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
+            blockRenderer = Minecraft.getInstance().getBlockRenderer();
         }
 
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.getCutoutBlockType());
+        IVertexBuilder buffer = buffers.getBuffer(Atlases.cutoutBlockSheet());
 
         BlockState blockState = te.getBlockState();
-        IBakedModel model = blockRenderer.getBlockModelShapes().getModel(blockState);
+        IBakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(blockState);
 
         // FIXME: Rotation was previously handled by an auto rotating model I think, but
         // FIXME: Should be handled using matrices instead
@@ -72,7 +72,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         }
         // Flip forward/up for rendering, the base model is facing up without any
         // rotation
-        ms.push();
+        ms.pushPose();
         ms.translate(0.5D, 0.5D, 0.5D);
         FacingToRotation.get(up, forward).push(ms);
         ms.translate(-0.5D, -0.5D, -0.5D);
@@ -80,9 +80,9 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         ModelDataMap modelData = new ModelDataMap.Builder().withInitial(SkyCompassBakedModel.ROTATION, getRotation(te))
                 .build();
 
-        blockRenderer.getBlockModelRenderer().renderModel(ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn,
+        blockRenderer.getModelRenderer().renderModel(ms.last(), buffer, null, model, 1, 1, 1, combinedLightIn,
                 combinedOverlayIn, modelData);
-        ms.pop();
+        ms.popPose();
 
     }
 
@@ -90,7 +90,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         float rotation;
 
         if (skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN) {
-            rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getPos(), false);
+            rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getBlockPos(), false);
         } else {
             rotation = SkyCompassBakedModel.getAnimatedRotation(null, false);
         }

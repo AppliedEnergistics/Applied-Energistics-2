@@ -47,18 +47,18 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public InterfaceBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
-        return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
+        return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
     @Override
@@ -70,11 +70,11 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
         final InterfaceTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
         return ActionResultType.PASS;
     }

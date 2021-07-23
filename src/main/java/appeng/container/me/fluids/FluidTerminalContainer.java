@@ -78,7 +78,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
             return;
         }
 
-        final ItemStack held = player.inventory.getItemStack();
+        final ItemStack held = player.inventory.getCarried();
         if (held.getCount() != 1) {
             // only support stacksize 1 for now, since filled items are _usually_ not stackable
             return;
@@ -125,10 +125,10 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
             if (used != canFill) {
                 AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted.",
-                        held.getDisplayName());
+                        held.getHoverName());
             }
 
-            player.inventory.setItemStack(fh.getContainer());
+            player.inventory.setCarried(fh.getContainer());
             this.updateHeld(player);
             FluidSoundHelper.playFillSound(player, pulled.getFluidStack());
         } else if (action == InventoryAction.EMPTY_ITEM) {
@@ -162,10 +162,10 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        held.getDisplayName());
+                        held.getHoverName());
             }
 
-            player.inventory.setItemStack(fh.getContainer());
+            player.inventory.setCarried(fh.getContainer());
             this.updateHeld(player);
             FluidSoundHelper.playEmptySound(player, extract);
         }

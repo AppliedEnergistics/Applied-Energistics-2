@@ -40,6 +40,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.util.item.AEItemStack;
 
+import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
+
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
 
     CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
@@ -69,7 +71,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
             boolean found = false;
             // Player inventory is cheaper to check
             for (ItemStack itemStack : ingredients) {
-                if (itemStack != null && player.inventory.getSlotFor(itemStack) != -1) {
+                if (itemStack != null && player.inventory.findSlotMatchingItem(itemStack) != -1) {
                     found = true;
                     break;
                 }

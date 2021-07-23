@@ -82,7 +82,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return false;
     }
 
@@ -92,7 +92,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     public void doClick(final InventoryAction action, final PlayerEntity who) {
-        if (this.getStack().isEmpty()) {
+        if (this.getItem().isEmpty()) {
             return;
         }
         if (isRemote()) {
@@ -101,18 +101,18 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         final IMEMonitor<IAEItemStack> inv = this.storage
                 .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
-        final int howManyPerCraft = this.getStack().getCount();
+        final int howManyPerCraft = this.getItem().getCount();
         int maxTimesToCraft = 0;
 
         InventoryAdaptor ia = null;
         if (action == InventoryAction.CRAFT_SHIFT) // craft into player inventory...
         {
             ia = InventoryAdaptor.getAdaptor(who);
-            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxStackSize() / (double) howManyPerCraft);
+            maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
             ia = new AdaptorItemHandler(new WrapperCursorItemHandler(who.inventory));
-            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxStackSize() / (double) howManyPerCraft);
+            maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else
         // pick up what was crafted...
         {
@@ -126,7 +126,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             return;
         }
 
-        final ItemStack rs = this.getStack().copy();
+        final ItemStack rs = this.getItem().copy();
         if (rs.isEmpty()) {
             return;
         }
@@ -138,8 +138,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
-                    Platform.spawnDrops(who.world,
-                            new BlockPos((int) who.getPosX(), (int) who.getPosY(), (int) who.getPosZ()), drops);
+                    Platform.spawnDrops(who.level,
+                            new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
                     return;
                 }
             }
@@ -158,7 +158,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             }
         }
 
-        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
@@ -184,29 +184,29 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private ItemStack craftItem(final PlayerEntity p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
             final IItemList all) {
         // update crafting matrix...
-        ItemStack is = this.getStack();
+        ItemStack is = this.getItem();
 
-        if (!is.isEmpty() && ItemStack.areItemsEqual(request, is)) {
+        if (!is.isEmpty() && ItemStack.isSame(request, is)) {
             final ItemStack[] set = new ItemStack[this.getPattern().getSlots()];
             // Safeguard for empty slots in the inventory for now
             Arrays.fill(set, ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            World world = p.world;
-            if (!world.isRemote()) {
+            World world = p.level;
+            if (!world.isClientSide()) {
                 final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
                 for (int x = 0; x < 9; x++) {
-                    ic.setInventorySlotContents(x, this.getPattern().getStackInSlot(x));
+                    ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
 
                 final IRecipe<CraftingInventory> r = this.findRecipe(ic, world);
 
                 if (r == null) {
                     final Item target = request.getItem();
-                    if (target.isDamageable() && target.isRepairable(request)) {
+                    if (target.canBeDepleted() && target.isRepairable(request)) {
                         boolean isBad = false;
-                        for (int x = 0; x < ic.getSizeInventory(); x++) {
-                            final ItemStack pis = ic.getStackInSlot(x);
+                        for (int x = 0; x < ic.getContainerSize(); x++) {
+                            final ItemStack pis = ic.getItem(x);
                             if (pis.isEmpty()) {
                                 continue;
                             }
@@ -217,14 +217,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                         if (!isBad) {
                             super.onTake(p, is);
                             // actually necessary to cleanup this case...
-                            p.openContainer.onCraftMatrixChanged(new WrapperInvItemHandler(this.craftInv));
+                            p.containerMenu.slotsChanged(new WrapperInvItemHandler(this.craftInv));
                             return request;
                         }
                     }
                     return ItemStack.EMPTY;
                 }
 
-                is = r.getCraftingResult(ic);
+                is = r.assemble(ic);
 
                 if (inv != null) {
                     for (int x = 0; x < this.getPattern().getSlots(); x++) {
@@ -232,7 +232,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                             set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, world, r, is, ic,
                                     this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
                                     ViewCellItem.createFilter(this.container.getViewCells()));
-                            ic.setInventorySlotContents(x, set[x]);
+                            ic.setItem(x, set[x]);
                         }
                     }
                 }
@@ -244,7 +244,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 this.postCraft(p, inv, set, is);
             }
 
-            p.openContainer.onCraftMatrixChanged(new WrapperInvItemHandler(this.craftInv));
+            p.containerMenu.slotsChanged(new WrapperInvItemHandler(this.craftInv));
 
             return is;
         }
@@ -266,7 +266,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
-        if (!p.getEntityWorld().isRemote()) {
+        if (!p.getCommandSenderWorld().isClientSide()) {
             // set new items onto the crafting table...
             for (int x = 0; x < this.craftInv.getSlots(); x++) {
                 if (this.craftInv.getStackInSlot(x).isEmpty()) {
@@ -283,7 +283,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         if (drops.size() > 0) {
-            Platform.spawnDrops(p.world, new BlockPos((int) p.getPosX(), (int) p.getPosY(), (int) p.getPosZ()), drops);
+            Platform.spawnDrops(p.level, new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
         }
     }
 

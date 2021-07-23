@@ -663,7 +663,7 @@ public final class AEConfig {
             this.generateMeteorites = builder.define("generateMeteorites", true);
             this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
                     Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
             this.spawnPressesInMeteorites = builder.define("spawnPressesInMeteorites", true);
 
             this.generateQuartzOre = builder.define("generateQuartzOre", true);
@@ -671,7 +671,7 @@ public final class AEConfig {
             this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
                     Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isResouceNameValid((String) obj));
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
 
             builder.pop();
 

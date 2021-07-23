@@ -118,17 +118,17 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack assemble(IInventory inv) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 
@@ -182,7 +182,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             return null;
         }
 
-        BlockState state = getOutputBlock().getDefaultState();
+        BlockState state = getOutputBlock().defaultBlockState();
 
         if (this.outputBlockKeep) {
             for (Property<?> property : originalBlockState.getProperties()) {
@@ -212,7 +212,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             return null;
         }
 
-        FluidState state = getOutputFluid().getDefaultState();
+        FluidState state = getOutputFluid().defaultFluidState();
 
         if (this.outputFluidKeep) {
             for (Property<?> property : originalFluidState.getProperties()) {
@@ -241,13 +241,13 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             return false;
         }
 
-        if (fluidState.getFluid() != this.getInputFluid() && this.getInputFluid() != null) {
+        if (fluidState.getType() != this.getInputFluid() && this.getInputFluid() != null) {
             return false;
         }
 
         boolean isValid = true;
 
-        if (fluidState.getFluid() == this.getInputFluid()) {
+        if (fluidState.getType() == this.getInputFluid()) {
             isValid = this.inputFluidMatchers.stream().allMatch(m -> m.matches(fluidState));
         }
 
@@ -280,7 +280,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     private static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH copyProperty(SH from, SH to,
             Property<T> property) {
         if (to.hasProperty(property)) {
-            return to.with(property, from.get(property));
+            return to.setValue(property, from.getValue(property));
         } else {
             return to;
         }

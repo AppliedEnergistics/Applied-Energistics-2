@@ -51,8 +51,8 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
 
     @Nullable
     @Override
-    public TileEntity getTileEntity(BlockPos pos) {
-        return this.world.getTileEntity(pos);
+    public TileEntity getBlockEntity(BlockPos pos) {
+        return this.world.getBlockEntity(pos);
     }
 
     @Override
@@ -70,17 +70,17 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
 
     // This is for diffuse lighting
     @Override
-    public float func_230487_a_(Direction p_230487_1_, boolean p_230487_2_) {
-        return world.func_230487_a_(p_230487_1_, p_230487_2_);
+    public float getShade(Direction p_230487_1_, boolean p_230487_2_) {
+        return world.getShade(p_230487_1_, p_230487_2_);
     }
 
     @Override
-    public WorldLightManager getLightManager() {
-        return world.getLightManager();
+    public WorldLightManager getLightEngine() {
+        return world.getLightEngine();
     }
 
     @Override
-    public int getBlockColor(BlockPos blockPosIn, ColorResolver colorResolverIn) {
-        return world.getBlockColor(blockPosIn, colorResolverIn);
+    public int getBlockTint(BlockPos blockPosIn, ColorResolver colorResolverIn) {
+        return world.getBlockTint(blockPosIn, colorResolverIn);
     }
 }

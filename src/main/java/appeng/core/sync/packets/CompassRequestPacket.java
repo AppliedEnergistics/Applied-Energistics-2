@@ -72,7 +72,7 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         this.talkBackTo = player;
 
-        final DimensionalBlockPos loc = new DimensionalBlockPos(player.world, this.cx << 4, this.cdy << 5,
+        final DimensionalBlockPos loc = new DimensionalBlockPos(player.level, this.cx << 4, this.cdy << 5,
                 this.cz << 4);
         WorldData.instance().compassData().service().getCompassDirection(loc, 174, this);
     }

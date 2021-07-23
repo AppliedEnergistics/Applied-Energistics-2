@@ -45,20 +45,20 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SecurityStationBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
 
-        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
-        return currentState.with(POWERED, te.isActive());
+        return currentState.setValue(POWERED, te.isActive());
     }
 
     @Override
@@ -70,12 +70,12 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
 
         final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
 
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
         return ActionResultType.PASS;
     }

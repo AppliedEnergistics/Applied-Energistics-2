@@ -44,7 +44,7 @@ public class LocationRotation implements IOrientable {
 
     @Override
     public Direction getForward() {
-        if (this.getUp().getYOffset() == 0) {
+        if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }
         return Direction.SOUTH;

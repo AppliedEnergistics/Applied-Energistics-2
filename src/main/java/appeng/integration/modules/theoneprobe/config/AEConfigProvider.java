@@ -41,7 +41,7 @@ public class AEConfigProvider implements IProbeConfigProvider {
     @Override
     public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, BlockState blockState,
             IProbeHitData data) {
-        if (world.getTileEntity(data.getPos()) instanceof AEBaseTileEntity) {
+        if (world.getBlockEntity(data.getPos()) instanceof AEBaseTileEntity) {
             config.setRFMode(0);
         }
     }

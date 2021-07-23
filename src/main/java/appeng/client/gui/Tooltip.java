@@ -48,7 +48,7 @@ public final class Tooltip {
 
     private static void splitLine(ITextComponent unprocessedLine, List<ITextComponent> lines) {
         LineSplittingVisitor visitor = new LineSplittingVisitor(lines);
-        unprocessedLine.getComponentWithStyle(visitor, Style.EMPTY);
+        unprocessedLine.visit(visitor, Style.EMPTY);
         visitor.flush();
     }
 
@@ -85,7 +85,7 @@ public final class Tooltip {
                 String line = parts[i];
                 IFormattableTextComponent part = new StringTextComponent(line).setStyle(style);
                 if (currentPart != null) {
-                    currentPart = currentPart.appendSibling(part);
+                    currentPart = currentPart.append(part);
                 } else {
                     currentPart = part;
                 }
@@ -99,9 +99,9 @@ public final class Tooltip {
                 if (currentPart.getStyle() == Style.EMPTY) {
                     // First line should be white, other lines gray
                     if (lines.isEmpty()) {
-                        currentPart.setStyle(Style.EMPTY.applyFormatting(TextFormatting.WHITE));
+                        currentPart.setStyle(Style.EMPTY.applyFormat(TextFormatting.WHITE));
                     } else {
-                        currentPart.setStyle(Style.EMPTY.applyFormatting(TextFormatting.GRAY));
+                        currentPart.setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY));
                     }
                 }
 

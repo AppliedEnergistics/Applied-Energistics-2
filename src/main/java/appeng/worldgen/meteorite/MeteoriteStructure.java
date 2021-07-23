@@ -32,6 +32,8 @@ import net.minecraft.world.gen.feature.structure.Structure;
 
 import appeng.core.AppEng;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
@@ -39,14 +41,14 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
     public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.CODEC);
 
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_INSTANCE = INSTANCE
-            .withConfiguration(NoFeatureConfig.INSTANCE);
+            .configured(NoFeatureConfig.INSTANCE);
 
     public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
         super(configCodec);
     }
 
     @Override
-    protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider biomeSource, long seed,
+    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider biomeSource, long seed,
             SharedSeedRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
             NoFeatureConfig featureConfig) {
         return randIn.nextBoolean();

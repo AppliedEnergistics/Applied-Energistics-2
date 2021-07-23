@@ -50,8 +50,8 @@ public class SwapSlotsPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        if (player != null && player.openContainer instanceof AEBaseContainer) {
-            ((AEBaseContainer) player.openContainer).swapSlotContents(this.slotA, this.slotB);
+        if (player != null && player.containerMenu instanceof AEBaseContainer) {
+            ((AEBaseContainer) player.containerMenu).swapSlotContents(this.slotA, this.slotB);
         }
     }
 }

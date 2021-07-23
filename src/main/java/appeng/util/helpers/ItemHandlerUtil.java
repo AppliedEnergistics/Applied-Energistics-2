@@ -58,8 +58,8 @@ public class ItemHandlerUtil {
     }
 
     public static void copy(final CraftingInventory from, final IItemHandler to, boolean deepCopy) {
-        for (int i = 0; i < Math.min(from.getSizeInventory(), to.getSlots()); ++i) {
-            setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
+        for (int i = 0; i < Math.min(from.getContainerSize(), to.getSlots()); ++i) {
+            setStackInSlot(to, i, deepCopy ? from.getItem(i).copy() : from.getItem(i));
         }
     }
 }

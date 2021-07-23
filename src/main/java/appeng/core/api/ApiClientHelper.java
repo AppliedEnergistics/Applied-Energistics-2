@@ -47,11 +47,11 @@ public class ApiClientHelper implements IClientHelper {
         final ICellInventory<?> cellInventory = handler.getCellInv();
 
         if (cellInventory != null) {
-            lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ").appendSibling(GuiText.Of.text())
-                    .appendString(" " + cellInventory.getTotalBytes() + " ").appendSibling(GuiText.BytesUsed.text()));
+            lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ").append(GuiText.Of.text())
+                    .append(" " + cellInventory.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
 
-            lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ").appendSibling(GuiText.Of.text())
-                    .appendString(" " + cellInventory.getTotalItemTypes() + " ").appendSibling(GuiText.Types.text()));
+            lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ").append(GuiText.Of.text())
+                    .append(" " + cellInventory.getTotalItemTypes() + " ").append(GuiText.Types.text()));
         }
 
         if (handler.isPreformatted()) {
@@ -59,9 +59,9 @@ public class ApiClientHelper implements IClientHelper {
                     : GuiText.Excluded).getLocal();
 
             if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").appendSibling(GuiText.Fuzzy.text()));
+                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").append(GuiText.Fuzzy.text()));
             } else {
-                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").appendSibling(GuiText.Precise.text()));
+                lines.add(GuiText.Partitioned.withSuffix(" - " + list + " ").append(GuiText.Precise.text()));
             }
         }
 

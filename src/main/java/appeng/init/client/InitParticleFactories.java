@@ -36,14 +36,14 @@ public final class InitParticleFactories {
     }
 
     public static void init() {
-        ParticleManager particles = Minecraft.getInstance().particles;
-        particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
-        particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
-        particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
-        particles.registerFactory(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
-        particles.registerFactory(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
+        ParticleManager particles = Minecraft.getInstance().particleEngine;
+        particles.register(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
+        particles.register(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        particles.register(ParticleTypes.ENERGY, EnergyFx.Factory::new);
+        particles.register(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
+        particles.register(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
+        particles.register(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
+        particles.register(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
 
 }

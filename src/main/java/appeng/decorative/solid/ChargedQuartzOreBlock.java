@@ -31,6 +31,8 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class ChargedQuartzOreBlock extends QuartzOreBlock {
     public ChargedQuartzOreBlock(Properties props) {
         super(props);
@@ -72,7 +74,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
         }
 
         if (AppEngClient.instance().shouldAddParticles(r)) {
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }
     }

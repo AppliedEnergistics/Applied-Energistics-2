@@ -47,8 +47,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     @Override
     public boolean verifyInternalStructure(ServerWorld w, final BlockPos min, final BlockPos max) {
 
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -60,8 +60,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
 
     @Override
     public void updateTiles(final SpatialPylonCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getTileEntity(p);
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
+            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getBlockEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);
         }

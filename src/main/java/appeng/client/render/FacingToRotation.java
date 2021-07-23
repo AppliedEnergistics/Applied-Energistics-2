@@ -68,13 +68,13 @@ public enum FacingToRotation implements IStringSerializable {
         this.rot = rot;
         this.mat = new Matrix4f();
         this.mat.setIdentity();
-        this.mat.mul(xRot = Vector3f.XP.rotationDegrees(rot.getX()));
-        this.mat.mul(yRot = Vector3f.YP.rotationDegrees(rot.getY()));
-        this.mat.mul(zRot = Vector3f.ZP.rotationDegrees(rot.getZ()));
+        this.mat.multiply(xRot = Vector3f.XP.rotationDegrees(rot.x()));
+        this.mat.multiply(yRot = Vector3f.YP.rotationDegrees(rot.y()));
+        this.mat.multiply(zRot = Vector3f.ZP.rotationDegrees(rot.z()));
     }
 
     public boolean isRedundant() {
-        return rot.getX() == 0 && rot.getY() == 0 && rot.getZ() == 0;
+        return rot.x() == 0 && rot.y() == 0 && rot.z() == 0;
     }
 
     public Vector3f getRot() {
@@ -86,16 +86,16 @@ public enum FacingToRotation implements IStringSerializable {
     }
 
     public void push(MatrixStack mStack) {
-        mStack.rotate(xRot);
-        mStack.rotate(yRot);
-        mStack.rotate(zRot);
+        mStack.mulPose(xRot);
+        mStack.mulPose(yRot);
+        mStack.mulPose(zRot);
     }
 
     public Direction rotate(Direction facing) {
-        Vector3i dir = facing.getDirectionVec();
+        Vector3i dir = facing.getNormal();
         Vector4f vec = new Vector4f(dir.getX(), dir.getY(), dir.getZ(), 1);
         vec.transform(mat);
-        return Direction.getFacingFromVector(vec.getX(), vec.getY(), vec.getZ());
+        return Direction.getNearest(vec.x(), vec.y(), vec.z());
     }
 
     public Direction resultingRotate(Direction facing) {
@@ -112,7 +112,7 @@ public enum FacingToRotation implements IStringSerializable {
     }
 
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
 }

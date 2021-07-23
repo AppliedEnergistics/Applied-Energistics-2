@@ -47,18 +47,18 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public QuartzGrowthAcceleratorBlock() {
-        super(defaultProps(Material.ROCK).sound(SoundType.METAL));
-        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+        super(defaultProps(Material.STONE).sound(SoundType.METAL));
+        this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorTileEntity te) {
-        return currentState.with(POWERED, te.isPowered());
+        return currentState.setValue(POWERED, te.isPowered());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
@@ -83,9 +83,9 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             double ry = 0.5 + pos.getY();
             double rz = 0.5 + pos.getZ();
 
-            rx += up.getXOffset() * d0;
-            ry += up.getYOffset() * d0;
-            rz += up.getZOffset() * d0;
+            rx += up.getStepX() * d0;
+            ry += up.getStepY() * d0;
+            rz += up.getStepZ() * d0;
 
             final int x = pos.getX();
             final int y = pos.getY();
@@ -99,25 +99,25 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                 case 0:
                     dx = 0.6;
                     dz = d1;
-                    pt = new BlockPos(x + west.getXOffset(), y + west.getYOffset(), z + west.getZOffset());
+                    pt = new BlockPos(x + west.getStepX(), y + west.getStepY(), z + west.getStepZ());
 
                     break;
                 case 1:
                     dx = d1;
                     dz += 0.6;
-                    pt = new BlockPos(x + forward.getXOffset(), y + forward.getYOffset(), z + forward.getZOffset());
+                    pt = new BlockPos(x + forward.getStepX(), y + forward.getStepY(), z + forward.getStepZ());
 
                     break;
                 case 2:
                     dx = d1;
                     dz = -0.6;
-                    pt = new BlockPos(x - forward.getXOffset(), y - forward.getYOffset(), z - forward.getZOffset());
+                    pt = new BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
 
                     break;
                 case 3:
                     dx = -0.6;
                     dz = d1;
-                    pt = new BlockPos(x - west.getXOffset(), y - west.getYOffset(), z - west.getZOffset());
+                    pt = new BlockPos(x - west.getStepX(), y - west.getStepY(), z - west.getStepZ());
 
                     break;
             }
@@ -126,15 +126,15 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                 return;
             }
 
-            rx += dx * west.getXOffset();
-            ry += dx * west.getYOffset();
-            rz += dx * west.getZOffset();
+            rx += dx * west.getStepX();
+            ry += dx * west.getStepY();
+            rz += dx * west.getStepZ();
 
-            rx += dz * forward.getXOffset();
-            ry += dz * forward.getYOffset();
-            rz += dz * forward.getZOffset();
+            rx += dz * forward.getStepX();
+            ry += dz * forward.getStepY();
+            rz += dz * forward.getStepZ();
 
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
         }
     }
 

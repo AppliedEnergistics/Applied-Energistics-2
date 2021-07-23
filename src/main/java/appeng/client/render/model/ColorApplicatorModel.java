@@ -45,11 +45,11 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "item/color_applicator_colored");
 
-    private static final RenderMaterial TEXTURE_DARK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_DARK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
-    private static final RenderMaterial TEXTURE_MEDIUM = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_MEDIUM = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
-    private static final RenderMaterial TEXTURE_BRIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE_BRIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override

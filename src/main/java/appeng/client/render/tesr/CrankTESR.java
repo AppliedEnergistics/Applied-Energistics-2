@@ -53,19 +53,19 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation
-        ms.push();
+        ms.pushPose();
         ms.translate(0.5, 0.5, 0.5);
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);
-        ms.rotate(new Quaternion(0, te.getVisibleRotation(), 0, true));
+        ms.mulPose(new Quaternion(0, te.getVisibleRotation(), 0, true));
         ms.translate(-0.5, -0.5, -0.5);
 
         BlockState blockState = te.getBlockState();
-        BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-        IBakedModel model = dispatcher.getModelForState(blockState);
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.getCutoutBlockType());
-        dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1,
+        BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+        IBakedModel model = dispatcher.getBlockModel(blockState);
+        IVertexBuilder buffer = buffers.getBuffer(Atlases.cutoutBlockSheet());
+        dispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
-        ms.pop();
+        ms.popPose();
 
     }
 

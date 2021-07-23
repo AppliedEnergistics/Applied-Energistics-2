@@ -87,15 +87,15 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.duality.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void read(BlockState state, final CompoundNBT data) {
-        super.read(state, data);
+    public void load(BlockState state, final CompoundNBT data) {
+        super.load(state, data);
         this.duality.readFromNBT(data);
     }
 

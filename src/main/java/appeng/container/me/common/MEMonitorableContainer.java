@@ -185,7 +185,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
             if (this.monitor != this.host.getInventory(storageChannel)) {
@@ -208,7 +208,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
             if (this.updateHelper.hasChanges()) {
                 try {
                     MEInventoryUpdatePacket.Builder<T> builder = MEInventoryUpdatePacket
-                            .builder(windowId, updateHelper.isFullUpdate());
+                            .builder(containerId, updateHelper.isFullUpdate());
 
                     IItemList<T> storageList = monitor.getStorageList();
                     if (this.updateHelper.isFullUpdate()) {
@@ -230,7 +230,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
             updateViewCellPermission();
 
-            super.detectAndSendChanges();
+            super.broadcastChanges();
         }
 
     }
@@ -304,17 +304,17 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
 
-        if (this.listeners.isEmpty() && this.monitor != null) {
+        if (this.containerListeners.isEmpty() && this.monitor != null) {
             this.monitor.removeListener(this);
         }
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
         }
@@ -359,7 +359,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
 
     public List<ItemStack> getViewCells() {
         return this.viewCellSlots.stream()
-                .map(AppEngSlot::getStack)
+                .map(AppEngSlot::getItem)
                 .collect(Collectors.toList());
     }
 
@@ -373,7 +373,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     @Override
     public final void handleInteraction(long serial, InventoryAction action) {
         if (isClient()) {
-            NetworkHandler.instance().sendToServer(new MEInteractionPacket(windowId, serial, action));
+            NetworkHandler.instance().sendToServer(new MEInteractionPacket(containerId, serial, action));
             return;
         }
 

@@ -60,7 +60,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
     }
 
     @Override
-    public void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+    public void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         for (BlockDefinition[] block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
@@ -72,26 +72,26 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("shaped/slabs/", block.id()));
+        ShapedRecipeBuilder.shaped(slabs.block(), 6).pattern("###").define('#', inputBlock)
+                .unlockedBy(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("shaped/slabs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("block_cutter/slabs/", slabs.id()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock, 2)
+                .unlocks(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
     private void stairRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
-                .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("shaped/stairs/", block.id()));
+        ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+                .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("shaped/stairs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("block_cutter/stairs/", stairs.id()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+                .unlocks(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
@@ -99,13 +99,13 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
-        ShapedRecipeBuilder.shapedRecipe(outputBlock, 6).patternLine("###").patternLine("###")
-                .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("shaped/walls/", block.id()));
+        ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").pattern("###")
+                .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("shaped/walls/", block.id()));
 
-        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
-                .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, prefix("block_cutter/walls/", wall.id()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+                .unlocks(criterionName(block), has(inputBlock))
+                .save(consumer, prefix("block_cutter/walls/", wall.id()));
 
     }
 

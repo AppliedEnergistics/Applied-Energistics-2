@@ -29,6 +29,8 @@ import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.util.Platform;
 
+import appeng.client.gui.me.common.Repo.SearchMode;
+
 class FluidRepo extends Repo<IAEFluidStack> {
 
     public FluidRepo(IScrollSource src, ISortSource sortSrc) {

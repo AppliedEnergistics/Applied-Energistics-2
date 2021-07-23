@@ -72,7 +72,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
-            if (!Minecraft.getInstance().isGamePaused()) {
+            if (!Minecraft.getInstance().isPaused()) {
                 if (status.isExpired()) {
                     molecularAssembler.setAnimationStatus(null);
                 }
@@ -101,15 +101,15 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
+        minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
     private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
             IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
-        double centerX = molecularAssembler.getPos().getX() + 0.5f;
-        double centerY = molecularAssembler.getPos().getY() + 0.5f;
-        double centerZ = molecularAssembler.getPos().getZ() + 0.5f;
+        double centerX = molecularAssembler.getBlockPos().getX() + 0.5f;
+        double centerY = molecularAssembler.getBlockPos().getY() + 0.5f;
+        double centerZ = molecularAssembler.getBlockPos().getZ() + 0.5f;
 
         // Spawn crafting FX that fly towards the block's center
         Minecraft minecraft = Minecraft.getInstance();
@@ -118,7 +118,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
             if (AppEngClient.instance().shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particles.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
+                    minecraft.particleEngine.createParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }
             }
         }
@@ -126,7 +126,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         ItemStack is = status.getIs();
 
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
-        ms.push();
+        ms.pushPose();
         ms.translate(0.5, 0.5, 0.5); // Translate to center of block
 
         if (!(is.getItem().getItem() instanceof BlockItem)) {
@@ -135,9 +135,9 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+        itemRenderer.renderStatic(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
                 OverlayTexture.NO_OVERLAY, ms, bufferIn);
-        ms.pop();
+        ms.popPose();
     }
 
     /**
@@ -161,13 +161,13 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
          */
         private static RenderType createRenderType() {
             RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
-                    AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
+                    AtlasTexture.LOCATION_BLOCKS, false, true);
             RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
-            RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture)
-                    .transparency(RenderState.TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
-                    .lightmap(disableLightmap).build(true);
+            RenderType.State glState = RenderType.State.builder().setTextureState(mipmapBlockAtlasTexture)
+                    .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY).setAlphaState(new RenderState.AlphaState(0.05F))
+                    .setLightmapState(disableLightmap).createCompositeState(true);
 
-            return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+            return RenderType.create("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
                     GL11.GL_QUADS, 256, glState);
         }
     }

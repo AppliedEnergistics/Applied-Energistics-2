@@ -71,7 +71,7 @@ public final class PlacedMeteoriteSettings {
     }
 
     public CompoundNBT write(CompoundNBT tag) {
-        tag.putLong(Constants.TAG_POS, pos.toLong());
+        tag.putLong(Constants.TAG_POS, pos.asLong());
 
         tag.putFloat(Constants.TAG_RADIUS, meteoriteRadius);
         tag.putByte(Constants.TAG_CRATER, (byte) craterType.ordinal());
@@ -82,7 +82,7 @@ public final class PlacedMeteoriteSettings {
     }
 
     public static PlacedMeteoriteSettings read(CompoundNBT tag) {
-        BlockPos pos = BlockPos.fromLong(tag.getLong(Constants.TAG_POS));
+        BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
         float meteoriteRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];

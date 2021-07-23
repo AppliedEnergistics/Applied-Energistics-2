@@ -39,7 +39,7 @@ import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
     public FluidInterfaceBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -51,11 +51,11 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
 
         final TileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
         return ActionResultType.PASS;
     }

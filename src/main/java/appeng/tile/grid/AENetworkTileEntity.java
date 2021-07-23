@@ -51,14 +51,14 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.getMainNode().loadFromNBT(data);
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         this.getMainNode().saveToNBT(data);
         return data;
     }
@@ -98,18 +98,18 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
     @Override
     public void onReady() {
         super.onReady();
-        this.getMainNode().create(getWorld(), getTile().getPos());
+        this.getMainNode().create(getLevel(), getTile().getBlockPos());
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         this.getMainNode().destroy();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void clearRemoved() {
+        super.clearRemoved();
         TickHandler.instance().addInit(this); // Required for onReady to be called
     }
 

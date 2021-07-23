@@ -38,6 +38,8 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
 
+import net.minecraft.item.Item.Properties;
+
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
     public AEBaseBlockItemChargeable(Block id, Properties props) {
@@ -59,10 +61,10 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             final double percent = internalCurrentPower / internalMaxPower;
 
-            lines.add(GuiText.StoredEnergy.text().deepCopy()
-                    .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .appendSibling(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
-                    .appendString(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+            lines.add(GuiText.StoredEnergy.text().copy()
+                    .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                    .append(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
 
@@ -113,7 +115,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getMaxEnergyCapacity() {
-        if (Block.getBlockFromItem(this) == AEBlocks.ENERGY_CELL.block()) {
+        if (Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
             return 200000;
         } else {
             return 8 * 200000;

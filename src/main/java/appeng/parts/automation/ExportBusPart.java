@@ -142,7 +142,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
                         if (this.isCraftingEnabled()) {
                             this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                    destination, this.getTile().getWorld(), grid, cg,
+                                    destination, this.getTile().getLevel(), grid, cg,
                                     this.mySrc)
                                     || this.didSomething;
                         }
@@ -164,7 +164,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
                         this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                destination, this.getTile().getWorld(), grid, cg,
+                                destination, this.getTile().getLevel(), grid, cg,
                                 this.mySrc)
                                 || this.didSomething;
                     }

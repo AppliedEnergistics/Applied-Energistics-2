@@ -37,6 +37,8 @@ import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
+import net.minecraft.item.Item.Properties;
+
 public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     public CreativeStorageCellItem(Properties props) {
@@ -70,7 +72,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -80,7 +82,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
             for (final ItemStack is : cc) {
                 if (!is.isEmpty()) {
-                    lines.add(is.getDisplayName());
+                    lines.add(is.getHoverName());
                 }
             }
         }

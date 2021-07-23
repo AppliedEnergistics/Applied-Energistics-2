@@ -71,8 +71,8 @@ public class PartPlacementPacket extends BasePacket {
         AppEng.instance().setPartInteractionPlayer(sender);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);
-            PartPlacement.place(sender.getHeldItem(this.hand), new BlockPos(this.x, this.y, this.z),
-                    Direction.values()[this.face], sender, this.hand, sender.world,
+            PartPlacement.place(sender.getItemInHand(this.hand), new BlockPos(this.x, this.y, this.z),
+                    Direction.values()[this.face], sender, this.hand, sender.level,
                     PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0);
         } finally {
             AppEng.instance().setPartInteractionPlayer(null);

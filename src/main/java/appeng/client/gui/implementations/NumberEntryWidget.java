@@ -79,15 +79,15 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     public NumberEntryWidget(NumberEntryType type) {
         this.type = type;
 
-        FontRenderer font = Minecraft.getInstance().fontRenderer;
+        FontRenderer font = Minecraft.getInstance().font;
 
-        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.FONT_HEIGHT,
+        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.lineHeight,
                 StringTextComponent.EMPTY);
-        this.textField.setEnableBackgroundDrawing(false);
-        this.textField.setMaxStringLength(16);
+        this.textField.setBordered(false);
+        this.textField.setMaxLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
         this.textField.setVisible(true);
-        this.textField.setFocused2(true);
+        this.textField.setFocus(true);
         this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
@@ -112,7 +112,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     }
 
     public void setActive(boolean active) {
-        this.textField.setEnabled(active);
+        this.textField.setEditable(active);
         this.buttons.forEach(b -> b.active = active);
     }
 
@@ -169,7 +169,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
         // Placing this here will give a sensible tab order
         this.textField.x = bounds.getX() + textFieldOrigin.getX();
         this.textField.y = bounds.getY() + textFieldOrigin.getY();
-        screen.setFocusedDefault(this.textField);
+        screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
         buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
@@ -202,7 +202,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
      * value.
      */
     public OptionalInt getIntValue() {
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             int value = Integer.parseInt(text, 10);
             if (value < minValue) {
@@ -219,7 +219,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
      * value.
      */
     public OptionalLong getLongValue() {
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
@@ -232,9 +232,9 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     }
 
     public void setValue(long value) {
-        this.textField.setText(String.valueOf(Math.max(minValue, value)));
-        this.textField.setCursorPositionEnd();
-        this.textField.setSelectionPos(0);
+        this.textField.setValue(String.valueOf(Math.max(minValue, value)));
+        this.textField.moveCursorToEnd();
+        this.textField.setHighlightPos(0);
         validate();
     }
 
@@ -249,7 +249,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     private void validate() {
         List<ITextComponent> validationErrors = new ArrayList<>();
 
-        String text = textField.getText().trim();
+        String text = textField.getValue().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
@@ -268,7 +268,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
     }
 
     private ITextComponent makeLabel(ITextComponent prefix, int amount) {
-        return prefix.copyRaw().appendString(String.valueOf(amount));
+        return prefix.plainCopy().append(String.valueOf(amount));
     }
 
     public void setHideValidationIcon(boolean hideValidationIcon) {
