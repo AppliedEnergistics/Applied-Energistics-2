@@ -23,6 +23,6 @@ import net.minecraft.util.ActionResultType;
 
 public interface IBlockTool {
     // Workaround for dispenser logic.
-    ActionResultType onItemUse(ItemUseContext itemUseContext);
+    ActionResultType useOn(ItemUseContext itemUseContext);
 
 }

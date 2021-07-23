@@ -56,7 +56,7 @@ public class DimensionTypeMixin {
         throw new AssertionError();
     }
 
-    @Inject(method = "registerTypes", at = @At("TAIL"))
+    @Inject(method = "registerBuiltin", at = @At("TAIL"))
     private static void addRegistryDefaults(DynamicRegistries.Impl registryTracker, CallbackInfoReturnable<?> cir) {
         DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
                 false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
@@ -70,7 +70,7 @@ public class DimensionTypeMixin {
      * Insert our custom dimension into the initial registry. <em>This is what will ultimately lead to the creation of a
      * new World.</em>
      */
-    @Inject(method = "getDefaultSimpleRegistry", at = @At("RETURN"))
+    @Inject(method = "defaultDimensions", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
             Registry<DimensionSettings> dimensionSettings, long seed,
             CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
