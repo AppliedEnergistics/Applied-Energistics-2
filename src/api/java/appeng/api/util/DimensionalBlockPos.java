@@ -48,7 +48,7 @@ public final class DimensionalBlockPos {
     }
 
     public DimensionalBlockPos(TileEntity tileEntity) {
-        this(tileEntity.getWorld(), tileEntity.getPos());
+        this(tileEntity.getLevel(), tileEntity.getBlockPos());
     }
 
     public DimensionalBlockPos(World world, BlockPos pos) {
@@ -77,7 +77,7 @@ public final class DimensionalBlockPos {
 
     @Override
     public String toString() {
-        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getWorld().getDimensionKey().getLocation();
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getWorld().dimension().location();
     }
 
     public boolean isInWorld(final IWorld world) {

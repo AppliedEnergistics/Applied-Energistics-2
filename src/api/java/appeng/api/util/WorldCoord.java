@@ -38,7 +38,7 @@ public class WorldCoord {
     public int z;
 
     public WorldCoord(final TileEntity s) {
-        this(s.getPos());
+        this(s.getBlockPos());
     }
 
     public WorldCoord(final int _x, final int _y, final int _z) {

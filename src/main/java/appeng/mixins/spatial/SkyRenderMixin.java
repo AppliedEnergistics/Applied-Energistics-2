@@ -36,12 +36,12 @@ import appeng.spatial.SpatialStorageDimensionIds;
 public class SkyRenderMixin {
 
     @Shadow
-    private Minecraft mc;
+    private Minecraft minecraft;
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        if (mc.level.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
+        if (minecraft.level.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
             SpatialSkyRender.getInstance().render(matrices);
             ci.cancel();
         }
