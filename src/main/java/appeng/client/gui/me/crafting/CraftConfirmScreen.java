@@ -20,15 +20,15 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -51,8 +51,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private final Button selectCPU;
     private final Scrollbar scrollbar;
 
-    public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public CraftConfirmScreen(CraftConfirmContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                              ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
@@ -79,8 +79,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU.active = planIsStartable;
 
         // Show additional status about the selected CPU and plan when the planning is done
-        ITextComponent planDetails = GuiText.CalculatingWait.text();
-        ITextComponent cpuDetails = StringTextComponent.EMPTY;
+        net.minecraft.network.chat.Component planDetails = GuiText.CalculatingWait.text();
+        net.minecraft.network.chat.Component cpuDetails = TextComponent.EMPTY;
         if (plan != null) {
             String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
             planDetails = GuiText.BytesUsed.text(byteUsed);
@@ -103,12 +103,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         scrollbar.setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
     }
 
-    private ITextComponent getNextCpuButtonLabel() {
+    private net.minecraft.network.chat.Component getNextCpuButtonLabel() {
         if (this.menu.hasNoCPU()) {
             return GuiText.NoCraftingCPUs.text();
         }
 
-        ITextComponent cpuName;
+        net.minecraft.network.chat.Component cpuName;
         if (this.menu.cpuName == null) {
             cpuName = GuiText.Automatic.text();
         } else {
@@ -119,8 +119,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {
@@ -132,7 +132,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getKey(keyCode, scanCode))
+        if (!this.checkHotbarKeys(InputConstants.getKey(keyCode, scanCode))
                 && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
             this.start();
             return true;

@@ -18,7 +18,7 @@
 
 package appeng.datagen.providers;
 
-import net.minecraft.data.IDataProvider;
+import net.minecraft.data.DataProvider;
 
-public interface IAE2DataProvider extends IDataProvider {
+public interface IAE2DataProvider extends DataProvider {
 }

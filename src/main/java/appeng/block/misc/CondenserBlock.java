@@ -20,14 +20,13 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -35,6 +34,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
 import appeng.tile.misc.CondenserTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.level.material.Material;
 
 public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
@@ -43,10 +43,10 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player player, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (!w.isClientSide()) {
@@ -57,6 +57,6 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
             }
         }
 
-        return ActionResultType.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(w.isClientSide());
     }
 }

@@ -20,27 +20,31 @@ package appeng.client.render.crafting;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderStateShard.AlphaStateShard;
+import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
+import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.BlockItem;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -54,7 +58,7 @@ import appeng.tile.crafting.MolecularAssemblerTileEntity;
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
-public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerTileEntity> {
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
@@ -62,13 +66,13 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     private final Random particleRandom = new Random();
 
-    public MolecularAssemblerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public MolecularAssemblerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, PoseStack ms,
+                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -89,8 +93,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         }
     }
 
-    private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
-            int combinedOverlayIn) {
+    private void renderPowerLight(PoseStack ms, MultiBufferSource bufferIn, int combinedLightIn,
+                                  int combinedOverlayIn) {
         // Render the translucent light overlay here instead of in the block, because thanks to the following MC
         // bug, our particles would otherwise not be visible (because the glass pane would also render as translucent,
         // even the fully transparent part)
@@ -98,15 +102,15 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         // April 2021 update: the overlay is invisible in fabulous mode with the regular TRANSLUCENT render type,
         // probably due to alpha ordering issues, so we have to stick with this fix.
         Minecraft minecraft = Minecraft.getInstance();
-        IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
-        IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
+        BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
+        VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
         minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, PoseStack ms,
+                              MultiBufferSource bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getBlockPos().getX() + 0.5f;
         double centerY = molecularAssembler.getBlockPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getBlockPos().getZ() + 0.5f;
@@ -135,7 +139,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderStatic(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+        itemRenderer.renderStatic(is, TransformType.GROUND, combinedLightIn,
                 OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.popPose();
     }
@@ -160,14 +164,14 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
          * the rendered block model from occluding our particles.
          */
         private static RenderType createRenderType() {
-            RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
-                    AtlasTexture.LOCATION_BLOCKS, false, true);
-            RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
-            RenderType.State glState = RenderType.State.builder().setTextureState(mipmapBlockAtlasTexture)
-                    .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY).setAlphaState(new RenderState.AlphaState(0.05F))
+            TextureStateShard mipmapBlockAtlasTexture = new TextureStateShard(
+                    TextureAtlas.LOCATION_BLOCKS, false, true);
+            LightmapStateShard disableLightmap = new LightmapStateShard(false);
+            CompositeState glState = CompositeState.builder().setTextureState(mipmapBlockAtlasTexture)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setAlphaState(new AlphaStateShard(0.05F))
                     .setLightmapState(disableLightmap).createCompositeState(true);
 
-            return RenderType.create("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+            return RenderType.create("ae2_translucent_alphatest", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
                     GL11.GL_QUADS, 256, glState);
         }
     }

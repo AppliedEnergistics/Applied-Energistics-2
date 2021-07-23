@@ -20,13 +20,13 @@ package appeng.client.render.overlay;
 
 import java.util.Set;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.world.level.ChunkPos;
+import com.mojang.math.Matrix4f;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -39,7 +39,7 @@ public class OverlayRenderer {
         this.source = source;
     }
 
-    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    public void render(PoseStack matrixStack, MultiBufferSource buffer) {
         RenderType typeFaces = OverlayRenderType.getBlockHilightFace();
         render(matrixStack, buffer.getBuffer(typeFaces), false);
         OverlayRenderType.finishBuffer(buffer, typeFaces);
@@ -49,18 +49,18 @@ public class OverlayRenderer {
         OverlayRenderType.finishBuffer(buffer, typeLines);
     }
 
-    private void render(MatrixStack matrixStack, IVertexBuilder builder, boolean renderLines) {
+    private void render(PoseStack matrixStack, VertexConsumer builder, boolean renderLines) {
         int[] cols = OverlayRenderType.decomposeColor(this.source.getOverlayColor());
         for (ChunkPos pos : this.source.getOverlayChunks()) {
             matrixStack.pushPose();
             matrixStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
-            Matrix4f posMat = matrixStack.last().pose();
+            com.mojang.math.Matrix4f posMat = matrixStack.last().pose();
             addVertices(builder, posMat, pos, cols, renderLines);
             matrixStack.popPose();
         }
     }
 
-    private void addVertices(IVertexBuilder wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
+    private void addVertices(VertexConsumer wr, Matrix4f posMat, ChunkPos pos, int[] cols, boolean renderLines) {
         Set<ChunkPos> chunks = this.source.getOverlayChunks();
 
         // Render around a whole chunk
@@ -72,7 +72,7 @@ public class OverlayRenderer {
         float z2 = 16f;
 
         boolean noNorth = !chunks.contains(new ChunkPos(pos.x, pos.z - 1));
-        boolean noSouth = !chunks.contains(new ChunkPos(pos.x, pos.z + 1));
+        boolean noSouth = !chunks.contains(new net.minecraft.world.level.ChunkPos(pos.x, pos.z + 1));
         boolean noWest = !chunks.contains(new ChunkPos(pos.x - 1, pos.z));
         boolean noEast = !chunks.contains(new ChunkPos(pos.x + 1, pos.z));
 

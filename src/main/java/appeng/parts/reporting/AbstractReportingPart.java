@@ -22,17 +22,17 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -69,7 +69,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
-    public AbstractReportingPart(final ItemStack is) {
+    public AbstractReportingPart(final net.minecraft.world.item.ItemStack is) {
         this(is, false);
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, net.minecraft.core.BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -106,19 +106,19 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.spin = data.getByte("spin");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putByte("spin", this.getSpin());
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
@@ -142,7 +142,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         super.readFromStream(data);
         final int oldFlags = this.getClientFlags();
         final int oldOpacity = this.opacity;
@@ -163,8 +163,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        final TileEntity te = this.getTile();
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+        final BlockEntity te = this.getTile();
 
         if (InteractionUtil.isWrench(player, player.inventory.getSelected(), te.getBlockPos())) {
             if (!isRemote()) {
@@ -179,11 +179,11 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public final void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public final void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
+                                  final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
-        final byte rotation = (byte) (MathHelper.floor(player.yRot * 4F / 360F + 2.5D) & 3);
+        final byte rotation = (byte) (Mth.floor(player.yRot * 4F / 360F + 2.5D) & 3);
         if (side == AEPartLocation.UP || side == AEPartLocation.DOWN) {
             this.spin = rotation;
         }
@@ -191,8 +191,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final TileEntity te = this.getTile();
-            World world = te.getLevel();
+            final BlockEntity te = this.getTile();
+            Level world = te.getLevel();
             BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
             this.opacity = 255 - world.getBlockState(pos).getLightBlock(world, pos);
         }

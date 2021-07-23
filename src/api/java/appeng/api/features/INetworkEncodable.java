@@ -23,7 +23,7 @@
 
 package appeng.api.features;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface INetworkEncodable {
 
@@ -34,7 +34,7 @@ public interface INetworkEncodable {
      *
      * @return the encoded encryption key or an empty string if none is encoded
      */
-    String getEncryptionKey(ItemStack item);
+    String getEncryptionKey(net.minecraft.world.item.ItemStack item);
 
     /**
      * Encode the wireless frequency via the Controller.

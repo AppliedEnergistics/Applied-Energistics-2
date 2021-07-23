@@ -23,30 +23,31 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -54,9 +55,9 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.tile.storage.SkyChestTileEntity;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
-public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements IWaterLoggable {
+public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements SimpleWaterloggedBlock {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -64,14 +65,14 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
     // Precomputed bounding boxes of the chest, sorted into the map by the UP
     // direction
-    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+    private static final Map<net.minecraft.core.Direction, VoxelShape> SHAPES = new EnumMap<>(net.minecraft.core.Direction.class);
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     static {
-        for (Direction up : Direction.values()) {
-            AxisAlignedBB aabb = computeAABB(up);
-            SHAPES.put(up, VoxelShapes.create(aabb));
+        for (net.minecraft.core.Direction up : net.minecraft.core.Direction.values()) {
+            AABB aabb = computeAABB(up);
+            SHAPES.put(up, Shapes.create(aabb));
         }
     }
 
@@ -81,32 +82,32 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
     public final SkyChestType type;
 
-    public SkyChestBlock(final SkyChestType type, Properties props) {
+    public SkyChestBlock(final SkyChestType type, net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
         this.type = type;
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(net.minecraft.world.level.block.state.BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(net.minecraft.world.level.block.state.BlockState state, BlockGetter reader, net.minecraft.core.BlockPos pos) {
         return true;
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player player, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!w.isClientSide()) {
             SkyChestTileEntity tile = getTileEntity(w, pos);
             if (tile != null) {
@@ -114,17 +115,17 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
             }
         }
 
-        return ActionResultType.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(w.isClientSide());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
         final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
-        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        Direction up = sk != null ? sk.getUp() : net.minecraft.core.Direction.UP;
         return SHAPES.get(up);
     }
 
-    private static AxisAlignedBB computeAABB(Direction up) {
+    private static AABB computeAABB(net.minecraft.core.Direction up) {
         final double offsetX = up.getStepX() == 0 ? AABB_OFFSET_SIDES : 0.0;
         final double offsetY = up.getStepY() == 0 ? AABB_OFFSET_SIDES : 0.0;
         final double offsetZ = up.getStepZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
@@ -144,33 +145,33 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
         final double maxZ = Math.min(1.0,
                 1.0 - offsetZ - (up.getStepZ() < 0 ? AABB_OFFSET_TOP : up.getStepZ() * AABB_OFFSET_BOTTOM));
 
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        net.minecraft.core.BlockPos pos = context.getClickedPos();
+        net.minecraft.world.level.material.FluidState fluidState = context.getLevel().getFluidState(pos);
+        net.minecraft.world.level.block.state.BlockState blockState = this.defaultBlockState()
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
         return blockState;
     }
 
     @Override
-    public FluidState getFluidState(BlockState blockState) {
+    public FluidState getFluidState(net.minecraft.world.level.block.state.BlockState blockState) {
         return blockState.getValue(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getSource(false)
                 : super.getFluidState(blockState);
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
-            BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(net.minecraft.world.level.block.state.BlockState blockState, net.minecraft.core.Direction facing, net.minecraft.world.level.block.state.BlockState facingState, LevelAccessor world,
+                                  BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickDelay(world));
+            world.getLiquidTicks().scheduleTick(currentPos, net.minecraft.world.level.material.Fluids.WATER,
+                    net.minecraft.world.level.material.Fluids.WATER.getTickDelay(world));
         }
 
         return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);

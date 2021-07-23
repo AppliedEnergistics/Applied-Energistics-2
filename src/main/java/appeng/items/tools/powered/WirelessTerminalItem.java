@@ -20,16 +20,17 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -51,20 +52,20 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     private static final String TAG_ENCRYPTION_KEY = "encryptionKey";
 
-    public WirelessTerminalItem(Item.Properties props) {
+    public WirelessTerminalItem(net.minecraft.world.item.Item.Properties props) {
         super(AEConfig.instance().getWirelessTerminalBattery(), props);
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
         Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), w, player, hand);
-        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         if (getEncryptionKey(stack).isEmpty()) {
@@ -75,24 +76,24 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public boolean canHandle(final ItemStack is) {
+    public boolean canHandle(final net.minecraft.world.item.ItemStack is) {
         return AEItems.WIRELESS_TERMINAL.isSameAs(is);
     }
 
     @Override
-    public boolean usePower(final PlayerEntity player, final double amount, final ItemStack is) {
+    public boolean usePower(final Player player, final double amount, final net.minecraft.world.item.ItemStack is) {
         return this.extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
     }
 
     @Override
-    public boolean hasPower(final PlayerEntity player, final double amt, final ItemStack is) {
+    public boolean hasPower(final Player player, final double amt, final net.minecraft.world.item.ItemStack is) {
         return this.getAECurrentPower(is) >= amt;
     }
 
     @Override
-    public IConfigManager getConfigManager(final ItemStack target) {
+    public IConfigManager getConfigManager(final net.minecraft.world.item.ItemStack target) {
         final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-            final CompoundNBT data = target.getOrCreateTag();
+            final CompoundTag data = target.getOrCreateTag();
             manager.writeToNBT(data);
         });
 
@@ -105,8 +106,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public String getEncryptionKey(final ItemStack item) {
-        final CompoundNBT tag = item.getTag();
+    public String getEncryptionKey(final net.minecraft.world.item.ItemStack item) {
+        final CompoundTag tag = item.getTag();
         if (tag != null) {
             return tag.getString(TAG_ENCRYPTION_KEY);
         } else {
@@ -116,7 +117,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public void setEncryptionKey(final ItemStack item, final String encKey, final String name) {
-        final CompoundNBT tag = item.getOrCreateTag();
+        final CompoundTag tag = item.getOrCreateTag();
         tag.putString(TAG_ENCRYPTION_KEY, encKey);
     }
 

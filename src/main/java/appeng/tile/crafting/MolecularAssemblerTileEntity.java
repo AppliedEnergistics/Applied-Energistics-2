@@ -23,17 +23,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
@@ -81,7 +81,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     public static final String INVENTORY_MAIN = "molecular_assembler";
 
-    private final CraftingInventory craftingInv;
+    private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
     private final IItemHandler gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
@@ -99,14 +99,14 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     @OnlyIn(Dist.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public MolecularAssemblerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         this.getMainNode()
                 .setIdlePowerUsage(0.0)
                 .addService(IGridTickable.class, this);
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
-        this.craftingInv = new CraftingInventory(new ContainerNull(), 3, 3);
+        this.craftingInv = new CraftingContainer(new ContainerNull(), 3, 3);
 
     }
 
@@ -115,8 +115,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingInventory table,
-            final Direction where) {
+    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table,
+            final net.minecraft.core.Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
 
@@ -178,7 +178,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -186,18 +186,18 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         if (this.forcePlan && this.myPlan != null) {
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
-                final CompoundNBT compound = new CompoundNBT();
+                final CompoundTag compound = new CompoundTag();
                 pattern.save(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
@@ -209,13 +209,13 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.of(data.getCompound("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
-                final World w = this.getLevel();
+                final Level w = this.getLevel();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(myPat, w);
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
@@ -240,7 +240,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.isSame(is, this.myPattern)) {
-                final World w = this.getLevel();
+                final Level w = this.getLevel();
                 final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 
                 if (ph != null && ph.isCraftable()) {
@@ -253,7 +253,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             this.progress = 0;
             this.forcePlan = false;
             this.myPlan = null;
-            this.myPattern = ItemStack.EMPTY;
+            this.myPattern = net.minecraft.world.item.ItemStack.EMPTY;
             this.pushDirection = AEPartLocation.INTERNAL;
         }
 
@@ -261,7 +261,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -295,7 +295,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -306,11 +306,11 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final ItemStack is = this.upgrades.getStackInSlot(h);
+            final net.minecraft.world.item.ItemStack is = this.upgrades.getStackInSlot(h);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -384,7 +384,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             this.progress = 0;
             final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getLevel());
             if (!output.isEmpty()) {
-                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.getLevel()), output,
+                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) this.getLevel()), output,
                         this.craftingInv);
 
                 this.pushOut(output.copy());
@@ -442,9 +442,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
     }
 
-    private void pushOut(ItemStack output) {
+    private void pushOut(net.minecraft.world.item.ItemStack output) {
         if (this.pushDirection == AEPartLocation.INTERNAL) {
-            for (final Direction d : Direction.values()) {
+            for (final Direction d : net.minecraft.core.Direction.values()) {
                 output = this.pushTo(output, d);
             }
         } else {
@@ -459,12 +459,12 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         this.gridInv.setStackInSlot(9, output);
     }
 
-    private ItemStack pushTo(ItemStack output, final Direction d) {
+    private net.minecraft.world.item.ItemStack pushTo(ItemStack output, final Direction d) {
         if (output.isEmpty()) {
             return output;
         }
 
-        final TileEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(d));
+        final BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(d));
 
         if (te == null) {
             return output;

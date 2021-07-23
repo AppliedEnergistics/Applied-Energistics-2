@@ -20,11 +20,11 @@ package appeng.client.gui.widgets;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
@@ -41,33 +41,33 @@ public class ToolboxPanel implements ICompositeWidget {
     // Backdrop for the 3x3 toolbox offered by the network-tool
     private final Blitter background;
 
-    private final ITextComponent toolbeltName;
+    private final net.minecraft.network.chat.Component toolbeltName;
 
     // Relative to the origin of the current screen (not window)
-    private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
+    private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
-    public ToolboxPanel(ScreenStyle style, ITextComponent toolbeltName) {
+    public ToolboxPanel(ScreenStyle style, net.minecraft.network.chat.Component toolbeltName) {
         this.background = style.getImage("toolbox");
         this.toolbeltName = toolbeltName;
     }
 
     @Override
     public void setPosition(Point position) {
-        this.bounds = new Rectangle2d(position.getX(), position.getY(), bounds.getWidth(), bounds.getHeight());
+        this.bounds = new Rect2i(position.getX(), position.getY(), bounds.getWidth(), bounds.getHeight());
     }
 
     @Override
     public void setSize(int width, int height) {
-        this.bounds = new Rectangle2d(bounds.getX(), bounds.getY(), width, height);
+        this.bounds = new Rect2i(bounds.getX(), bounds.getY(), width, height);
     }
 
     @Override
-    public Rectangle2d getBounds() {
+    public Rect2i getBounds() {
         return bounds;
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
         background.dest(
                 bounds.getX() + this.bounds.getX(),
                 bounds.getY() + this.bounds.getY(),
@@ -80,7 +80,7 @@ public class ToolboxPanel implements ICompositeWidget {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         return new Tooltip(
                 this.toolbeltName,
-                GuiText.UpgradeToolbelt.text().plainCopy().withStyle(TextFormatting.GRAY));
+                GuiText.UpgradeToolbelt.text().plainCopy().withStyle(ChatFormatting.GRAY));
     }
 
 }

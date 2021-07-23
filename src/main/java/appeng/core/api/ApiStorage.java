@@ -25,9 +25,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -92,7 +92,7 @@ public class ApiStorage implements IStorageHelper {
     }
 
     @Override
-    public ICraftingLink loadCraftingLink(final CompoundNBT data, final ICraftingRequester req) {
+    public ICraftingLink loadCraftingLink(final CompoundTag data, final ICraftingRequester req) {
         Preconditions.checkNotNull(data);
         Preconditions.checkNotNull(req);
 
@@ -140,13 +140,13 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEItemStack createFromNBT(CompoundNBT nbt) {
+        public IAEItemStack createFromNBT(CompoundTag nbt) {
             Preconditions.checkNotNull(nbt);
             return AEItemStack.fromNBT(nbt);
         }
 
         @Override
-        public IAEItemStack readFromPacket(PacketBuffer input) {
+        public IAEItemStack readFromPacket(FriendlyByteBuf input) {
             Preconditions.checkNotNull(input);
 
             return AEItemStack.fromPacket(input);
@@ -178,7 +178,7 @@ public class ApiStorage implements IStorageHelper {
                 return AEFluidStack.fromFluidStack((FluidStack) input);
             }
             if (input instanceof ItemStack) {
-                final ItemStack is = (ItemStack) input;
+                final net.minecraft.world.item.ItemStack is = (net.minecraft.world.item.ItemStack) input;
                 if (is.getItem() instanceof FluidDummyItem) {
                     return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
                 } else {
@@ -190,14 +190,14 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEFluidStack readFromPacket(PacketBuffer input) {
+        public IAEFluidStack readFromPacket(FriendlyByteBuf input) {
             Preconditions.checkNotNull(input);
 
             return AEFluidStack.fromPacket(input);
         }
 
         @Override
-        public IAEFluidStack createFromNBT(CompoundNBT nbt) {
+        public IAEFluidStack createFromNBT(CompoundTag nbt) {
             Preconditions.checkNotNull(nbt);
             return AEFluidStack.fromNBT(nbt);
         }

@@ -18,15 +18,15 @@
 
 package appeng.client.render;
 
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.color.item.ItemColor;
 
 import appeng.api.util.AEColor;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Returns the shades of a single AE color for tint indices 0, 1, and 2.
  */
-public class StaticItemColor implements IItemColor {
+public class StaticItemColor implements ItemColor {
 
     private final AEColor color;
 

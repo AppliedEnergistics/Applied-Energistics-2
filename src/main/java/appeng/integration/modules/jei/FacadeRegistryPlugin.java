@@ -21,11 +21,11 @@ package appeng.integration.modules.jei;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.IFocus;
@@ -50,7 +50,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
     }
 
     @Override
-    public <V> List<ResourceLocation> getRecipeCategoryUids(IFocus<V> focus) {
+    public <V> List<net.minecraft.resources.ResourceLocation> getRecipeCategoryUids(IFocus<V> focus) {
         if (focus.getMode() == IFocus.Mode.OUTPUT && focus.getValue() instanceof ItemStack) {
             // Looking up how a certain facade is crafted
             ItemStack itemStack = (ItemStack) focus.getValue();
@@ -88,7 +88,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
             // Looking up if a certain block can be used to make a facade
 
             ItemStack itemStack = (ItemStack) focus.getValue();
-            ItemStack facade = this.itemFacade.createFacadeForItem(itemStack, false);
+            net.minecraft.world.item.ItemStack facade = this.itemFacade.createFacadeForItem(itemStack, false);
 
             if (!facade.isEmpty()) {
                 return Collections.singletonList((T) make(itemStack, this.cableAnchor, facade));
@@ -98,16 +98,16 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         return Collections.emptyList();
     }
 
-    private ShapedRecipe make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
+    private ShapedRecipe make(net.minecraft.world.item.ItemStack textureItem, ItemStack cableAnchor, net.minecraft.world.item.ItemStack result) {
         // This id should only be used within JEI and not really matter
         ResourceLocation id = new ResourceLocation(AppEng.MOD_ID,
                 "facade/" + textureItem.getItem().getRegistryName().toString().replace(':', '/'));
 
-        NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        NonNullList<net.minecraft.world.item.crafting.Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         ingredients.set(1, Ingredient.of(cableAnchor));
-        ingredients.set(3, Ingredient.of(cableAnchor));
+        ingredients.set(3, net.minecraft.world.item.crafting.Ingredient.of(cableAnchor));
         ingredients.set(5, Ingredient.of(cableAnchor));
-        ingredients.set(7, Ingredient.of(cableAnchor));
+        ingredients.set(7, net.minecraft.world.item.crafting.Ingredient.of(cableAnchor));
         ingredients.set(4, Ingredient.of(textureItem));
 
         result.setCount(4);

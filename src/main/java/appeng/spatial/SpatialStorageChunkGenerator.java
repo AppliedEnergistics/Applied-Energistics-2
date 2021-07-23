@@ -24,30 +24,33 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryLookupCodec;
-import net.minecraft.world.Blockreader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.biome.provider.SingleBiomeProvider;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.WorldGenRegion;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.RegistryLookupCodec;
+import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.StructureSettings;
 
 import appeng.core.definitions.AEBlocks;
+import net.minecraft.world.level.biome.FixedBiomeSource;
+import net.minecraft.world.level.levelgen.GenerationStep.Carving;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 
 /**
  * Chunk generator the spatial storage world.
  */
-public class SpatialStorageChunkGenerator extends ChunkGenerator {
+public class SpatialStorageChunkGenerator extends net.minecraft.world.level.chunk.ChunkGenerator {
 
     /**
      * This codec is necessary to restore the actual instance of the Biome we use, since it is sources from the dynamic
@@ -60,9 +63,9 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
             .create(Registry.BIOME_REGISTRY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
-    private final Registry<Biome> biomeRegistry;
+    private final net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> biomeRegistry;
 
-    private final Blockreader columnSample;
+    private final NoiseColumn columnSample;
 
     private final BlockState defaultBlockState;
 
@@ -75,34 +78,34 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
         // we're all filled with matrix blocks
         BlockState[] columnSample = new BlockState[256];
         Arrays.fill(columnSample, this.defaultBlockState);
-        this.columnSample = new Blockreader(columnSample);
+        this.columnSample = new NoiseColumn(columnSample);
     }
 
     @Override
-    protected Codec<? extends ChunkGenerator> codec() {
+    protected Codec<? extends net.minecraft.world.level.chunk.ChunkGenerator> codec() {
         return CODEC;
     }
 
-    private static SingleBiomeProvider createBiomeSource(Registry<Biome> biomeRegistry) {
-        return new SingleBiomeProvider(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
+    private static FixedBiomeSource createBiomeSource(net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> biomeRegistry) {
+        return new FixedBiomeSource(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
-    public Registry<Biome> getBiomeRegistry() {
+    public Registry<net.minecraft.world.level.biome.Biome> getBiomeRegistry() {
         return biomeRegistry;
     }
 
-    private static DimensionStructuresSettings createSettings() {
-        return new DimensionStructuresSettings(Optional.empty(), Collections.emptyMap());
+    private static StructureSettings createSettings() {
+        return new StructureSettings(Optional.empty(), Collections.emptyMap());
     }
 
     @Override
-    public void buildSurfaceAndBedrock(WorldGenRegion region, IChunk chunk) {
+    public void buildSurfaceAndBedrock(net.minecraft.server.level.WorldGenRegion region, ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }
 
-    private void fillChunk(IChunk chunk) {
-        BlockPos.Mutable mutPos = new BlockPos.Mutable();
+    private void fillChunk(ChunkAccess chunk) {
+        MutableBlockPos mutPos = new MutableBlockPos();
         for (int cx = 0; cx < 16; cx++) {
             mutPos.setX(cx);
             for (int cz = 0; cz < 16; cz++) {
@@ -128,25 +131,25 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void fillFromNoise(IWorld world, StructureManager accessor, IChunk chunk) {
+    public void fillFromNoise(LevelAccessor world, StructureFeatureManager accessor, ChunkAccess chunk) {
     }
 
     @Override
-    public IBlockReader getBaseColumn(int x, int z) {
+    public BlockGetter getBaseColumn(int x, int z) {
         return columnSample;
     }
 
     @Override
-    public int getBaseHeight(int x, int z, Heightmap.Type heightmapType) {
+    public int getBaseHeight(int x, int z, Types heightmapType) {
         return 0;
     }
 
     @Override
-    public void applyBiomeDecoration(WorldGenRegion region, StructureManager accessor) {
+    public void applyBiomeDecoration(WorldGenRegion region, StructureFeatureManager accessor) {
     }
 
     @Override
-    public void applyCarvers(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
+    public void applyCarvers(long seed, BiomeManager access, ChunkAccess chunk, Carving carver) {
     }
 
 }

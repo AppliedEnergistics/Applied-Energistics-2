@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -32,7 +32,7 @@ import appeng.helpers.IPriorityHost;
  */
 public class PriorityContainer extends AEBaseContainer {
 
-    public static final ContainerType<PriorityContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<PriorityContainer> TYPE = ContainerTypeBuilder
             .create(PriorityContainer::new, IPriorityHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
@@ -46,7 +46,7 @@ public class PriorityContainer extends AEBaseContainer {
 
     private int priorityValue;
 
-    public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
+    public PriorityContainer(int id, final Inventory ip, final IPriorityHost te) {
         super(TYPE, id, ip, te);
         this.priHost = te;
         this.priorityValue = te.getPriority();

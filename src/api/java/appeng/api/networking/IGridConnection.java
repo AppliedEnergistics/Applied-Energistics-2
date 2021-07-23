@@ -26,7 +26,7 @@ package appeng.api.networking;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Access to AE's internal grid connections.

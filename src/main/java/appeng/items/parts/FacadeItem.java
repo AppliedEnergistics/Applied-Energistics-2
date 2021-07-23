@@ -18,28 +18,28 @@
 
 package appeng.items.parts;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.EmptyBlockReader;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.parts.IAlphaPassItem;
@@ -52,32 +52,30 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 
-import net.minecraft.item.Item.Properties;
-
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
 
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTags
+    private static final Named<net.minecraft.world.level.block.Block> BLOCK_WHITELIST = BlockTags
             .createOptional(AppEng.makeId("whitelisted/facades"));
 
     private static final String NBT_ITEM_ID = "item";
 
-    public FacadeItem(Properties properties) {
+    public FacadeItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
         return Api.instance().partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(), context.getPlayer(),
                 context.getHand(), context.getLevel());
     }
 
     @Override
-    public ITextComponent getName(ItemStack is) {
+    public net.minecraft.network.chat.Component getName(ItemStack is) {
         try {
-            final ItemStack in = this.getTextureItem(is);
+            final net.minecraft.world.item.ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
                 return super.getName(is).copy().append(" - ").append(in.getHoverName());
             }
@@ -89,18 +87,18 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<net.minecraft.world.item.ItemStack> items) {
     }
 
-    public ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
+    public net.minecraft.world.item.ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
         if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem)) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
-        BlockItem blockItem = (BlockItem) itemStack.getItem();
-        Block block = blockItem.getBlock();
+        net.minecraft.world.item.BlockItem blockItem = (net.minecraft.world.item.BlockItem) itemStack.getItem();
+        net.minecraft.world.level.block.Block block = blockItem.getBlock();
         if (block == Blocks.AIR) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         // We only support the default state for facades. Sorry.
@@ -108,11 +106,11 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
-        final boolean isModel = blockState.getRenderShape() == BlockRenderType.MODEL;
+        final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
-        final BlockState defaultState = block.defaultBlockState();
+        final net.minecraft.world.level.block.state.BlockState defaultState = block.defaultBlockState();
         final boolean isTileEntity = block.hasTileEntity(defaultState);
-        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
         final boolean isTileEntityAllowed = !isTileEntity || areTileEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
@@ -122,18 +120,18 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
                 return itemStack;
             }
 
-            final ItemStack is = new ItemStack(this);
-            final CompoundNBT data = new CompoundNBT();
+            final net.minecraft.world.item.ItemStack is = new net.minecraft.world.item.ItemStack(this);
+            final CompoundTag data = new CompoundTag();
             data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
             is.setTag(data);
             return is;
         }
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public FacadePart createPartFromItemStack(final ItemStack is, final AEPartLocation side) {
-        final ItemStack in = this.getTextureItem(is);
+    public FacadePart createPartFromItemStack(final net.minecraft.world.item.ItemStack is, final AEPartLocation side) {
+        final net.minecraft.world.item.ItemStack in = this.getTextureItem(is);
         if (!in.isEmpty()) {
             return new FacadePart(is, side);
         }
@@ -141,51 +139,51 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public ItemStack getTextureItem(ItemStack is) {
-        CompoundNBT nbt = is.getTag();
+    public net.minecraft.world.item.ItemStack getTextureItem(net.minecraft.world.item.ItemStack is) {
+        CompoundTag nbt = is.getTag();
 
         if (nbt == null) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
+        net.minecraft.world.item.Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
 
         if (baseItem == null) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
-        return new ItemStack(baseItem, 1);
+        return new net.minecraft.world.item.ItemStack(baseItem, 1);
     }
 
     @Override
-    public BlockState getTextureBlockState(ItemStack is) {
+    public BlockState getTextureBlockState(net.minecraft.world.item.ItemStack is) {
 
-        ItemStack baseItemStack = this.getTextureItem(is);
+        net.minecraft.world.item.ItemStack baseItemStack = this.getTextureItem(is);
 
         if (baseItemStack.isEmpty()) {
             return Blocks.GLASS.defaultBlockState();
         }
 
-        Block block = Block.byItem(baseItemStack.getItem());
+        net.minecraft.world.level.block.Block block = Block.byItem(baseItemStack.getItem());
 
         if (block == Blocks.AIR) {
-            return Blocks.GLASS.defaultBlockState();
+            return net.minecraft.world.level.block.Blocks.GLASS.defaultBlockState();
         }
 
         return block.defaultBlockState();
     }
 
     public ItemStack createFromID(final int id) {
-        ItemStack facadeStack = AEItems.FACADE.stack();
+        net.minecraft.world.item.ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...
         Item item = Registry.ITEM.byId(id);
         if (item == Items.AIR) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
-        final CompoundNBT facadeTag = new CompoundNBT();
+        final CompoundTag facadeTag = new CompoundTag();
         facadeTag.putString(NBT_ITEM_ID, item.getRegistryName().toString());
         facadeStack.setTag(facadeTag);
 
@@ -193,14 +191,14 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public boolean useAlphaPass(final ItemStack is) {
-        BlockState blockState = this.getTextureBlockState(is);
+    public boolean useAlphaPass(final net.minecraft.world.item.ItemStack is) {
+        net.minecraft.world.level.block.state.BlockState blockState = this.getTextureBlockState(is);
 
         if (blockState == null) {
             return false;
         }
 
-        return RenderTypeLookup.canRenderInLayer(blockState, RenderType.translucent())
-                || RenderTypeLookup.canRenderInLayer(blockState, RenderType.translucentNoCrumbling());
+        return ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucent())
+                || ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucentNoCrumbling());
     }
 }

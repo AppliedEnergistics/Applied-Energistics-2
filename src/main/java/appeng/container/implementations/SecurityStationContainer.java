@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -46,7 +46,7 @@ import appeng.util.inv.InvOperation;
  */
 public class SecurityStationContainer extends ItemTerminalContainer implements IAEAppEngInventory {
 
-    public static final ContainerType<SecurityStationContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<SecurityStationContainer> TYPE = ContainerTypeBuilder
             .create(SecurityStationContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.SECURITY)
             .build("securitystation");
@@ -60,7 +60,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
     @GuiSync(0)
     public int permissionMode = 0;
 
-    public SecurityStationContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
+    public SecurityStationContainer(int id, final Inventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
 
         this.securityBox = (SecurityStationTileEntity) monitorable;
@@ -76,11 +76,11 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         this.createPlayerInventorySlots(ip);
     }
 
-    public void toggleSetting(final String value, final PlayerEntity player) {
+    public void toggleSetting(final String value, final Player player) {
         try {
             final SecurityPermissions permission = SecurityPermissions.valueOf(value);
 
-            final ItemStack a = this.configSlot.getItem();
+            final net.minecraft.world.item.ItemStack a = this.configSlot.getItem();
             if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
                 final IBiometricCard bc = (IBiometricCard) a.getItem();
                 if (bc.hasPermission(a, permission)) {
@@ -115,7 +115,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
     }
 
     @Override
-    public void removed(final PlayerEntity player) {
+    public void removed(final Player player) {
         super.removed(player);
 
         if (this.wirelessIn.hasItem()) {
@@ -156,7 +156,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
                 this.wirelessOut.set(term);
 
                 // update the two slots in question...
-                for (final IContainerListener listener : this.containerListeners) {
+                for (final ContainerListener listener : this.containerListeners) {
                     listener.slotChanged(this, this.wirelessIn.index, this.wirelessIn.getItem());
                     listener.slotChanged(this, this.wirelessOut.index, this.wirelessOut.getItem());
                 }

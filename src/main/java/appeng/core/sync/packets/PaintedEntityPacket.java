@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.util.AEColor;
 import appeng.core.sync.BasePacket;
@@ -35,7 +35,7 @@ public class PaintedEntityPacket extends BasePacket {
     private final int entityId;
     private int ticks;
 
-    public PaintedEntityPacket(final PacketBuffer stream) {
+    public PaintedEntityPacket(final FriendlyByteBuf stream) {
         this.entityId = stream.readInt();
         this.myColor = AEColor.values()[stream.readByte()];
         this.ticks = stream.readInt();
@@ -44,7 +44,7 @@ public class PaintedEntityPacket extends BasePacket {
     // api
     public PaintedEntityPacket(final int myEntity, final AEColor myColor, final int ticksLeft) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.entityId = myEntity);
@@ -55,7 +55,7 @@ public class PaintedEntityPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         final PlayerColor pc = new PlayerColor(this.entityId, this.myColor, this.ticks);
         TickHandler.instance().getPlayerColors().put(this.entityId, pc);
     }

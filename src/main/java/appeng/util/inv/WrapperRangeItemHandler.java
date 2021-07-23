@@ -20,7 +20,7 @@ package appeng.util.inv;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -44,12 +44,12 @@ public class WrapperRangeItemHandler implements IItemHandlerModifiable {
 
     @Override
     @Nonnull
-    public ItemStack getStackInSlot(int slot) {
+    public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
         if (this.checkSlot(slot)) {
             return this.compose.getStackInSlot(slot + this.minSlot);
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class WrapperRangeItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
+    public boolean isItemValid(int slot, net.minecraft.world.item.ItemStack stack) {
         if (this.checkSlot(slot)) {
             return this.compose.isItemValid(slot + this.minSlot, stack);
         }

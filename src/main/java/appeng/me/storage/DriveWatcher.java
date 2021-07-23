@@ -18,8 +18,6 @@
 
 package appeng.me.storage;
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
@@ -27,16 +25,17 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
+import net.minecraft.world.item.ItemStack;
 
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
-    private final ItemStack is;
+    private final net.minecraft.world.item.ItemStack is;
     private final ICellHandler handler;
     private final IChestOrDrive cord;
 
     public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
-            final IChestOrDrive cod) {
+                        final IChestOrDrive cod) {
         super(i, i.getChannel());
         this.is = is;
         this.handler = han;

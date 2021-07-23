@@ -24,11 +24,12 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -50,12 +51,12 @@ public class OverlayManager {
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        IRenderTypeBuffer.Impl buffer = minecraft.renderBuffers().bufferSource();
-        MatrixStack matrixStack = event.getMatrixStack();
+        BufferSource buffer = minecraft.renderBuffers().bufferSource();
+        PoseStack matrixStack = event.getMatrixStack();
 
         matrixStack.pushPose();
 
-        Vector3d projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
+        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
         matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (OverlayRenderer handler : overlayHandlers.entrySet().stream()

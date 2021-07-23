@@ -18,21 +18,21 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.MolecularAssemblerContainer;
+import net.minecraft.world.entity.player.Inventory;
 
 public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
 
     private final ProgressBar pb;
 
-    public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public MolecularAssemblerScreen(MolecularAssemblerContainer container, Inventory playerInventory,
+                                    net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
@@ -43,7 +43,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.pb.setFullMsg(new StringTextComponent(this.menu.getCurrentProgress() + "%"));
+        this.pb.setFullMsg(new TextComponent(this.menu.getCurrentProgress() + "%"));
     }
 
 }

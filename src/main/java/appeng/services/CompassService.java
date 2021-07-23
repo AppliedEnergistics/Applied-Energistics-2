@@ -27,13 +27,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -46,7 +47,7 @@ public final class CompassService {
     private static final int CHUNK_SIZE = 16;
 
     private final MinecraftServer server;
-    private final WeakHashMap<ServerWorld, CompassReader> worldSet = new WeakHashMap<>(10);
+    private final WeakHashMap<ServerLevel, CompassReader> worldSet = new WeakHashMap<>(10);
     private final ExecutorService executor;
 
     private int jobSize;
@@ -71,11 +72,11 @@ public final class CompassService {
     // FIXME this is never registered
     @SubscribeEvent
     public void unloadWorld(final WorldEvent.Unload event) {
-        if (!(event.getWorld() instanceof ServerWorld)) {
+        if (!(event.getWorld() instanceof ServerLevel)) {
             return;
         }
 
-        ServerWorld world = (ServerWorld) event.getWorld();
+        ServerLevel world = (ServerLevel) event.getWorld();
         if (this.worldSet.containsKey(world)) {
             final CompassReader compassReader = this.worldSet.remove(world);
             compassReader.close();
@@ -92,17 +93,17 @@ public final class CompassService {
         }
     }
 
-    public void tryUpdateArea(final IServerWorld w, ChunkPos chunkPos) {
+    public void tryUpdateArea(final ServerLevelAccessor w, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but
         // getWorld is
         // still the server world. We do need to use the world access to get the chunk
         // in question
         // though, since during worldgen, it's not comitted to the actual world yet.
-        IChunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
+        ChunkAccess chunk = w.getChunk(chunkPos.x, chunkPos.z);
         updateArea(w.getLevel(), chunk);
     }
 
-    public void updateArea(final ServerWorld w, IChunk chunk) {
+    public void updateArea(final ServerLevel w, ChunkAccess chunk) {
         this.updateArea(w, chunk, CHUNK_SIZE);
         this.updateArea(w, chunk, CHUNK_SIZE + 32);
         this.updateArea(w, chunk, CHUNK_SIZE + 64);
@@ -117,12 +118,12 @@ public final class CompassService {
     /**
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
-    public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
-        IChunk chunk = w.getChunk(pos);
+    public void notifyBlockChange(final ServerLevel w, net.minecraft.core.BlockPos pos) {
+        ChunkAccess chunk = w.getChunk(pos);
         updateArea(w, chunk, pos.getY());
     }
 
-    private Future<?> updateArea(final ServerWorld w, IChunk c, int y) {
+    private Future<?> updateArea(final ServerLevel w, ChunkAccess c, int y) {
         this.jobSize++;
 
         final int cdy = y >> 5;
@@ -134,14 +135,14 @@ public final class CompassService {
         int cz = c.getPos().z;
 
         Block skyStoneBlock = AEBlocks.SKY_STONE_BLOCK.block();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        MutableBlockPos pos = new MutableBlockPos();
         for (int i = 0; i < CHUNK_SIZE; i++) {
             pos.setX(i);
             for (int j = 0; j < CHUNK_SIZE; j++) {
                 pos.setZ(j);
                 for (int k = low_y; k < hi_y; k++) {
                     pos.setY(k);
-                    final Block blk = c.getBlockState(pos).getBlock();
+                    final net.minecraft.world.level.block.Block blk = c.getBlockState(pos).getBlock();
                     if (blk == skyStoneBlock) {
                         return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, true));
                     }
@@ -169,7 +170,7 @@ public final class CompassService {
         }
     }
 
-    private CompassReader getReader(final ServerWorld world) {
+    private CompassReader getReader(final ServerLevel world) {
         CompassReader cr = this.worldSet.get(world);
 
         if (cr == null) {
@@ -196,14 +197,14 @@ public final class CompassService {
 
     private class CMUpdatePost implements Runnable {
 
-        public final ServerWorld world;
+        public final ServerLevel world;
 
         public final int chunkX;
         public final int chunkZ;
         public final int doubleChunkY; // 32 blocks instead of 16.
         public final boolean value;
 
-        public CMUpdatePost(final ServerWorld world, final int cx, final int cz, final int dcy, final boolean val) {
+        public CMUpdatePost(final ServerLevel world, final int cx, final int cz, final int dcy, final boolean val) {
             this.world = world;
             this.chunkX = cx;
             this.doubleChunkY = dcy;
@@ -239,7 +240,7 @@ public final class CompassService {
         @Override
         public void run() {
 
-            ServerWorld world = (ServerWorld) this.coord.getWorld();
+            ServerLevel world = (ServerLevel) this.coord.getWorld();
 
             CompassService.this.jobSize--;
 

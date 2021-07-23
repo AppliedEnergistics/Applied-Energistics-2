@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
@@ -31,16 +31,16 @@ import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
-    private final ServerWorld world;
-    private final BlockPos boundsMin;
-    private final BlockPos boundsMax;
+    private final ServerLevel world;
+    private final net.minecraft.core.BlockPos boundsMin;
+    private final net.minecraft.core.BlockPos boundsMax;
     private final List<SpatialPylonTileEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
     private Axis currentAxis = Axis.UNFORMED;
     private boolean isValid;
 
-    public SpatialPylonCluster(ServerWorld world, BlockPos boundsMin, BlockPos boundsMax) {
+    public SpatialPylonCluster(ServerLevel world, BlockPos boundsMin, BlockPos boundsMax) {
         this.world = world;
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
@@ -111,7 +111,7 @@ public class SpatialPylonCluster implements IAECluster {
         this.isValid = isValid;
     }
 
-    public ServerWorld getWorld() {
+    public ServerLevel getWorld() {
         return world;
     }
 
@@ -121,7 +121,7 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public BlockPos getBoundsMin() {
+    public net.minecraft.core.BlockPos getBoundsMin() {
         return this.boundsMin;
     }
 

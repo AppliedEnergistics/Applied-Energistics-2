@@ -20,12 +20,12 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -52,20 +52,20 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
 
     private final IWorldRunnable transitionCallback = world -> transition();
 
-    public SpatialIOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SpatialIOPortTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
         return data;
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
@@ -108,7 +108,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     private void transition() throws Exception {
-        if (!(this.level instanceof ServerWorld serverWorld)) {
+        if (!(this.level instanceof ServerLevel serverWorld)) {
             return;
         }
 
@@ -153,12 +153,12 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull net.minecraft.core.Direction side) {
         return this.invExt;
     }
 

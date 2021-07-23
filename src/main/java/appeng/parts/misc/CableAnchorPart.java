@@ -22,19 +22,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
@@ -53,7 +53,7 @@ public class CableAnchorPart implements IPart {
 
     @PartModels
     public static final PartModel DEFAULT_MODELS = new PartModel(false,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
 
     @PartModels
     public static final PartModel FACADE_MODELS = new PartModel(false,
@@ -77,7 +77,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public ItemStack getItemStack(final PartItemStack wrenched) {
+    public net.minecraft.world.item.ItemStack getItemStack(final PartItemStack wrenched) {
         return this.is;
     }
 
@@ -97,12 +97,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
 
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
 
     }
 
@@ -117,7 +117,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -132,12 +132,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         return false;
     }
 
@@ -167,18 +167,18 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         this.host = host;
         this.mySide = side;
     }
 
     @Override
-    public boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         return false;
     }
 
     @Override
-    public boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         return false;
     }
 
@@ -193,13 +193,13 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final net.minecraft.core.BlockPos pos, final Random r) {
 
     }
 
     @Override
-    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public void onPlacement(final Player player, final InteractionHand hand, final net.minecraft.world.item.ItemStack held,
+                            final AEPartLocation side) {
 
     }
 

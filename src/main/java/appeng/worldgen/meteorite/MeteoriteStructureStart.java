@@ -22,51 +22,52 @@ import java.util.Set;
 
 import com.google.common.math.StatsAccumulator;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.Heightmap.Type;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
-public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
+public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfiguration> {
 
-    private final ITag<Block> sandTag = BlockTags.getAllTags().getTagOrEmpty(new ResourceLocation("minecraft:sand"));
-    private final ITag<Block> terracottaTag = BlockTags.getAllTags()
-            .getTagOrEmpty(new ResourceLocation("forge:terracotta"));
+    private final Tag<Block> sandTag = BlockTags.getAllTags().getTagOrEmpty(new ResourceLocation("minecraft:sand"));
+    private final Tag<Block> terracottaTag = BlockTags.getAllTags()
+            .getTagOrEmpty(new net.minecraft.resources.ResourceLocation("forge:terracotta"));
 
-    public MeteoriteStructureStart(Structure<NoFeatureConfig> feature, int chunkX, int chunkZ, MutableBoundingBox box,
-            int references, long seed) {
+    public MeteoriteStructureStart(net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> feature, int chunkX, int chunkZ, BoundingBox box,
+                                   int references, long seed) {
         super(feature, chunkX, chunkZ, box, references, seed);
     }
 
     @Override
-    public void generatePieces(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator,
-            TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
+    public void generatePieces(net.minecraft.core.RegistryAccess dynamicRegistryManager, ChunkGenerator generator,
+                               StructureManager templateManager, int chunkX, int chunkZ, net.minecraft.world.level.biome.Biome biome, NoneFeatureConfiguration config) {
         final int centerX = chunkX * 16 + this.random.nextInt(16);
         final int centerZ = chunkZ * 16 + this.random.nextInt(16);
         final float meteoriteRadius = this.random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        final Set<Biome> t2 = generator.getBiomeSource().getBiomesWithin(centerX, 0, centerZ, 0);
-        final Biome spawnBiome = t2.stream().findFirst().orElse(biome);
+        final Set<net.minecraft.world.level.biome.Biome> t2 = generator.getBiomeSource().getBiomesWithin(centerX, 0, centerZ, 0);
+        final net.minecraft.world.level.biome.Biome spawnBiome = t2.stream().findFirst().orElse(biome);
 
-        final boolean isOcean = spawnBiome.getBiomeCategory() == Category.OCEAN;
-        final Type heightmapType = isOcean ? Heightmap.Type.OCEAN_FLOOR_WG : Heightmap.Type.WORLD_SURFACE_WG;
+        final boolean isOcean = spawnBiome.getBiomeCategory() == BiomeCategory.OCEAN;
+        final Types heightmapType = isOcean ? Types.OCEAN_FLOOR_WG : Types.WORLD_SURFACE_WG;
 
         // Accumulate stats about the surrounding heightmap
         StatsAccumulator stats = new StatsAccumulator();
@@ -89,7 +90,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         // Limit to not spawn below y32
         centerY = Math.max(32, centerY);
 
-        BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
+        net.minecraft.core.BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
 
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
@@ -108,10 +109,10 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
      *
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, net.minecraft.core.BlockPos pos, float radius) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
-        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        MutableBlockPos blockPos = new MutableBlockPos();
 
         blockPos.setY(maxY);
         for (int i = pos.getX() - 32; i <= pos.getX() + 32; i++) {
@@ -126,7 +127,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
+                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Types.OCEAN_FLOOR);
                     if (heigth < seaLevel) {
                         return true;
                     }
@@ -137,14 +138,14 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         return false;
     }
 
-    private CraterType determineCraterType(Biome biome) {
+    private CraterType determineCraterType(net.minecraft.world.level.biome.Biome biome) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         final float temp = biome.getBaseTemperature();
-        final Category category = biome.getBiomeCategory();
+        final BiomeCategory category = biome.getBiomeCategory();
 
         // No craters in oceans
-        if (category == Category.OCEAN) {
+        if (category == BiomeCategory.OCEAN) {
             return CraterType.NONE;
         }
 
@@ -239,7 +240,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
             return FalloutMode.SAND;
         } else if (block.is(terracottaTag)) {
             return FalloutMode.TERRACOTTA;
-        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
+        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == net.minecraft.world.level.block.Blocks.SNOW_BLOCK || block == Blocks.ICE
                 || block == Blocks.PACKED_ICE) {
             return FalloutMode.ICE_SNOW;
         } else {

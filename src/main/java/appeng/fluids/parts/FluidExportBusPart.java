@@ -20,10 +20,10 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -62,10 +62,10 @@ public class FluidExportBusPart extends SharedFluidBusPart {
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_on"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
 
     private final IActionSource source;
 
@@ -79,7 +79,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    protected ContainerType<?> getContainerType() {
+    protected MenuType<?> getContainerType() {
         return FluidIOBusContainer.EXPORT_TYPE;
     }
 
@@ -105,7 +105,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        final TileEntity te = this.getConnectedTE();
+        final BlockEntity te = this.getConnectedTE();
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
             fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

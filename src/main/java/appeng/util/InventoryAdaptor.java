@@ -18,10 +18,10 @@
 
 package appeng.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -38,7 +38,7 @@ import appeng.util.inv.ItemSlot;
  * import/export buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
-    public static InventoryAdaptor getAdaptor(final TileEntity te, final Direction d) {
+    public static InventoryAdaptor getAdaptor(final BlockEntity te, final net.minecraft.core.Direction d) {
         if (te != null) {
             LazyOptional<IItemHandler> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
 
@@ -50,7 +50,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
         return null;
     }
 
-    public static InventoryAdaptor getAdaptor(final PlayerEntity te) {
+    public static InventoryAdaptor getAdaptor(final Player te) {
         if (te != null) {
             return new AdaptorItemHandlerPlayerInv(te);
         }
@@ -60,17 +60,17 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
     // return what was extracted.
     public abstract ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination);
 
-    public abstract ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
+    public abstract net.minecraft.world.item.ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
 
     // return what was extracted.
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
             IInventoryDestination destination);
 
-    public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            IInventoryDestination destination);
+    public abstract net.minecraft.world.item.ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
+                                                                             IInventoryDestination destination);
 
     // return what isn't used...
-    public abstract ItemStack addItems(ItemStack toBeAdded);
+    public abstract net.minecraft.world.item.ItemStack addItems(ItemStack toBeAdded);
 
     public abstract ItemStack simulateAdd(ItemStack toBeSimulated);
 

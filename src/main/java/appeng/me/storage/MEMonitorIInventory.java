@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -71,7 +71,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
     @Override
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        ItemStack out = ItemStack.EMPTY;
+        net.minecraft.world.item.ItemStack out = ItemStack.EMPTY;
 
         if (type == Actionable.SIMULATE) {
             out = this.adaptor.simulateAdd(input.createItemStack());
@@ -135,10 +135,10 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
             final CachedItemStack old = this.memory.get(is.getSlot());
             high = Math.max(high, is.getSlot());
 
-            final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY
-                    ? ItemStack.EMPTY
+            final net.minecraft.world.item.ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY
+                    ? net.minecraft.world.item.ItemStack.EMPTY
                     : is.getItemStack();
-            final ItemStack oldIS = old == null ? ItemStack.EMPTY : old.itemStack;
+            final net.minecraft.world.item.ItemStack oldIS = old == null ? net.minecraft.world.item.ItemStack.EMPTY : old.itemStack;
 
             if (this.isDifferent(newIS, oldIS)) {
                 final CachedItemStack cis = new CachedItemStack(is.getItemStack());
@@ -200,7 +200,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
         return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
     }
 
-    private boolean isDifferent(final ItemStack a, final ItemStack b) {
+    private boolean isDifferent(final ItemStack a, final net.minecraft.world.item.ItemStack b) {
         if (a == b && b.isEmpty()) {
             return false;
         }

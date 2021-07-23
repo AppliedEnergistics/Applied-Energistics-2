@@ -20,10 +20,9 @@ package appeng.container.me.items;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
@@ -43,29 +42,30 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
 public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> {
 
-    public static final ContainerType<ItemTerminalContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemTerminalContainer> TYPE = ContainerTypeBuilder
             .create(ItemTerminalContainer::new, ITerminalHost.class)
             .build("item_terminal");
 
-    public ItemTerminalContainer(int id, PlayerInventory ip, ITerminalHost monitorable) {
+    public ItemTerminalContainer(int id, Inventory ip, ITerminalHost monitorable) {
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public ItemTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
-            boolean bindInventory) {
+    public ItemTerminalContainer(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
+                                 boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEItemStack stack,
-            InventoryAction action) {
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable IAEItemStack stack,
+                                            InventoryAction action) {
 
         // Handle interactions where the player wants to put something into the network
         if (stack == null) {
@@ -184,7 +184,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     if (ais != null) {
                         player.inventory.setCarried(ais.createItemStack());
                     } else {
-                        player.inventory.setCarried(ItemStack.EMPTY);
+                        player.inventory.setCarried(net.minecraft.world.item.ItemStack.EMPTY);
                     }
                     this.updateHeld(player);
                 }
@@ -212,7 +212,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
         }
     }
 
-    protected void putHeldItemIntoNetwork(ServerPlayerEntity player, boolean singleItem) {
+    protected void putHeldItemIntoNetwork(ServerPlayer player, boolean singleItem) {
         ItemStack heldStack = player.inventory.getCarried();
 
         IAEItemStack stackToInsert = AEItemStack.fromItemStack(heldStack);
@@ -238,7 +238,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
         this.updateHeld(player);
     }
 
-    private boolean moveOneStackToPlayer(IAEItemStack stack, ServerPlayerEntity player) {
+    private boolean moveOneStackToPlayer(IAEItemStack stack, ServerPlayer player) {
         IAEItemStack ais = stack.copy();
         ItemStack myItem = ais.createItemStack();
 

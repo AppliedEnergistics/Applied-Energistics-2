@@ -22,13 +22,13 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
@@ -50,12 +50,12 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CraftingMonitorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
@@ -73,7 +73,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeByte(this.paintedColor.ordinal());
 
@@ -86,7 +86,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -94,7 +94,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
         return data;
@@ -130,7 +130,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final PlayerEntity who) {
+    public boolean recolourBlock(final net.minecraft.core.Direction side, final AEColor newPaintedColor, final Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }

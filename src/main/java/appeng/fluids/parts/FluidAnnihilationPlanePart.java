@@ -22,18 +22,17 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -71,7 +70,7 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final ITag.INamedTag<Fluid> TAG_BLACKLIST = FluidTags
+    public static final Named<Fluid> TAG_BLACKLIST = FluidTags
             .createOptional(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
@@ -101,7 +100,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -129,12 +128,12 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final TileEntity te = this.getTile();
-        final World w = te.getLevel();
-        final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
+        final BlockEntity te = this.getTile();
+        final Level w = te.getLevel();
+        final net.minecraft.core.BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
 
         BlockState blockstate = w.getBlockState(pos);
-        if (blockstate.getBlock() instanceof IBucketPickupHandler) {
+        if (blockstate.getBlock() instanceof BucketPickup) {
             FluidState fluidState = blockstate.getFluidState();
 
             Fluid fluid = fluidState.getType();
@@ -151,7 +150,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    fluid = ((IBucketPickupHandler) blockstate.getBlock()).takeLiquid(w, pos, blockstate);
+                    fluid = ((BucketPickup) blockstate.getBlock()).takeLiquid(w, pos, blockstate);
                     this.storeFluid(grid,
                             AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
@@ -212,7 +211,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         return new PlaneModelData(getConnections());
     }
 
-    private boolean isFluidBlacklisted(Fluid fluid) {
+    private boolean isFluidBlacklisted(net.minecraft.world.level.material.Fluid fluid) {
         return TAG_BLACKLIST.contains(fluid);
     }
 

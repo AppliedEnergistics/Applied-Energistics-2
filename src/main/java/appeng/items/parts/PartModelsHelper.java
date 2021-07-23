@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
@@ -119,7 +119,7 @@ public class PartModelsHelper {
         }
 
         if (value instanceof ResourceLocation) {
-            locations.add((ResourceLocation) value);
+            locations.add((net.minecraft.resources.ResourceLocation) value);
         } else if (value instanceof IPartModel) {
             locations.addAll(((IPartModel) value).getModels());
         } else if (value instanceof Collection) {

@@ -18,23 +18,24 @@
 
 package appeng.block.networking;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.ControllerTileEntity;
 
 public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
 
-    public enum ControllerBlockState implements IStringSerializable {
+    public enum ControllerBlockState implements StringRepresentable {
         offline, online, conflicted;
 
         @Override
@@ -49,7 +50,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * patterns for a controller that is enclosed by other controllers, and since they are always offline, they do not
      * have the usual sub-states.
      */
-    public enum ControllerRenderType implements IStringSerializable {
+    public enum ControllerRenderType implements StringRepresentable {
         block, column_x, column_y, column_z, inside_a, inside_b;
 
         @Override
@@ -59,10 +60,10 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
 
     }
 
-    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.create("state",
+    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = net.minecraft.world.level.block.state.properties.EnumProperty.create("state",
             ControllerBlockState.class);
 
-    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
             ControllerRenderType.class);
 
     public ControllerBlock() {
@@ -72,7 +73,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(CONTROLLER_STATE);
         builder.add(CONTROLLER_TYPE);
@@ -84,8 +85,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world,
-            BlockPos pos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, net.minecraft.core.Direction facing, BlockState facingState, LevelAccessor world,
+                                  BlockPos pos, net.minecraft.core.BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 
@@ -128,8 +129,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+                                boolean isMoving) {
         final ControllerTileEntity tc = this.getTileEntity(world, pos);
         if (tc != null) {
             tc.onNeighborChange(false);

@@ -18,20 +18,20 @@
 
 package appeng.container.me.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ResultSlot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -72,7 +72,7 @@ import appeng.util.item.AEItemStack;
 public class PatternTermContainer extends ItemTerminalContainer
         implements IOptionalSlotHost, IContainerCraftingPacket {
 
-    public static ContainerType<PatternTermContainer> TYPE = ContainerTypeBuilder
+    public static MenuType<PatternTermContainer> TYPE = ContainerTypeBuilder
             .create(PatternTermContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
@@ -86,7 +86,7 @@ public class PatternTermContainer extends ItemTerminalContainer
     private final RestrictedInputSlot encodedPatternSlot;
     private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
-    private ICraftingRecipe currentRecipe;
+    private CraftingRecipe currentRecipe;
     private boolean currentRecipeCraftingMode;
 
     @GuiSync(97)
@@ -94,7 +94,7 @@ public class PatternTermContainer extends ItemTerminalContainer
     @GuiSync(96)
     public boolean substitute = false;
 
-    public PatternTermContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
+    public PatternTermContainer(int id, final Inventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
         this.patternTerminal = (PatternTerminalPart) monitorable;
 
@@ -140,15 +140,15 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     private ItemStack getAndUpdateOutput() {
-        final World world = this.getPlayerInventory().player.level;
-        final CraftingInventory ic = new CraftingInventory(this, 3, 3);
+        final Level world = this.getPlayerInventory().player.level;
+        final CraftingContainer ic = new CraftingContainer(this, 3, 3);
 
         for (int x = 0; x < ic.getContainerSize(); x++) {
             ic.setItem(x, this.craftingGridInv.getStackInSlot(x));
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
             this.currentRecipeCraftingMode = this.craftingMode;
         }
 
@@ -234,7 +234,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             final ItemStack[] list = new ItemStack[3];
 
             for (int i = 0; i < this.processingOutputSlots.length; i++) {
-                final ItemStack out = this.processingOutputSlots[i].getItem();
+                final net.minecraft.world.item.ItemStack out = this.processingOutputSlots[i].getItem();
                 list[i] = out;
                 if (!out.isEmpty()) {
                     hasValue = true;
@@ -286,26 +286,26 @@ public class PatternTermContainer extends ItemTerminalContainer
 
             final IAEItemStack extracted = Platform.poweredExtraction(this.powerSource, this.monitor,
                     out, this.getActionSource());
-            final PlayerEntity p = this.getPlayerInventory().player;
+            final Player p = this.getPlayerInventory().player;
 
             if (extracted != null) {
                 inv.addItems(extracted.createItemStack());
-                if (p instanceof ServerPlayerEntity) {
-                    this.updateHeld((ServerPlayerEntity) p);
+                if (p instanceof ServerPlayer) {
+                    this.updateHeld((ServerPlayer) p);
                 }
                 this.broadcastChanges();
                 return;
             }
 
-            final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
-            final CraftingInventory real = new CraftingInventory(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
+            final CraftingContainer real = new CraftingContainer(new ContainerNull(), 3, 3);
 
             for (int x = 0; x < 9; x++) {
                 ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final IRecipe<CraftingInventory> r = p.level.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, p.level)
+            final Recipe<CraftingContainer> r = p.level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, p.level)
                     .orElse(null);
 
             if (r == null) {
@@ -327,14 +327,14 @@ public class PatternTermContainer extends ItemTerminalContainer
                 }
             }
 
-            final IRecipe<CraftingInventory> rr = p.level.getRecipeManager()
-                    .getRecipeFor(IRecipeType.CRAFTING, real, p.level).orElse(null);
+            final Recipe<CraftingContainer> rr = p.level.getRecipeManager()
+                    .getRecipeFor(RecipeType.CRAFTING, real, p.level).orElse(null);
 
             if (rr == r && Platform.itemComparisons().isSameItem(rr.assemble(real), is)) {
-                final CraftResultInventory craftingResult = new CraftResultInventory();
+                final ResultContainer craftingResult = new ResultContainer();
                 craftingResult.setRecipeUsed(rr);
 
-                final CraftingResultSlot sc = new CraftingResultSlot(p, real, craftingResult, 0, 0, 0);
+                final ResultSlot sc = new ResultSlot(p, real, craftingResult, 0, 0, 0);
                 sc.onTake(p, is);
 
                 for (int x = 0; x < real.getContainerSize(); x++) {
@@ -346,8 +346,8 @@ public class PatternTermContainer extends ItemTerminalContainer
                 }
 
                 inv.addItems(is);
-                if (p instanceof ServerPlayerEntity) {
-                    this.updateHeld((ServerPlayerEntity) p);
+                if (p instanceof ServerPlayer) {
+                    this.updateHeld((ServerPlayer) p);
                 }
                 this.broadcastChanges();
             } else {
@@ -384,16 +384,16 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     @Override
-    public void onSlotChange(final Slot s) {
+    public void onSlotChange(final net.minecraft.world.inventory.Slot s) {
         if (s == this.encodedPatternSlot && isServer()) {
-            for (final IContainerListener listener : this.containerListeners) {
-                for (final Slot slot : this.slots) {
+            for (final ContainerListener listener : this.containerListeners) {
+                for (final net.minecraft.world.inventory.Slot slot : this.slots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
                         listener.slotChanged(this, slot.index, slot.getItem());
                     }
                 }
-                if (listener instanceof ServerPlayerEntity) {
-                    ((ServerPlayerEntity) listener).ignoreSlotUpdateHack = false;
+                if (listener instanceof ServerPlayer) {
+                    ((ServerPlayer) listener).ignoreSlotUpdateHack = false;
                 }
             }
             this.broadcastChanges();
@@ -406,10 +406,10 @@ public class PatternTermContainer extends ItemTerminalContainer
 
     public void clear() {
         for (final Slot s : this.craftingGridSlots) {
-            s.set(ItemStack.EMPTY);
+            s.set(net.minecraft.world.item.ItemStack.EMPTY);
         }
 
-        for (final Slot s : this.processingOutputSlots) {
+        for (final net.minecraft.world.inventory.Slot s : this.processingOutputSlots) {
             s.set(ItemStack.EMPTY);
         }
 

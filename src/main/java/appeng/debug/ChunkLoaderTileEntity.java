@@ -18,18 +18,18 @@
 
 package appeng.debug;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.ChunkPos;
 
 import appeng.core.AELog;
 import appeng.tile.AEBaseTileEntity;
 
-public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
+public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
 
-    public ChunkLoaderTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ChunkLoaderTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -37,10 +37,10 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
     public void onLoad() {
         super.onLoad();
 
-        World world = getLevel();
-        if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, true);
+        Level world = getLevel();
+        if (world instanceof ServerLevel) {
+            net.minecraft.world.level.ChunkPos chunkPos = new net.minecraft.world.level.ChunkPos(getBlockPos());
+            ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, true);
         }
     }
 
@@ -48,20 +48,20 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
     public void setRemoved() {
         super.setRemoved();
 
-        World world = getLevel();
-        if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, false);
+        Level world = getLevel();
+        if (world instanceof ServerLevel) {
+            net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 
     @Override
     public void tick() {
         // Validate the force-status
-        World world = getLevel();
-        if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ServerWorld serverWorld = (ServerWorld) world;
+        Level world = getLevel();
+        if (world instanceof ServerLevel) {
+            net.minecraft.world.level.ChunkPos chunkPos = new net.minecraft.world.level.ChunkPos(getBlockPos());
+            ServerLevel serverWorld = (ServerLevel) world;
 
             if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
                 AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension());

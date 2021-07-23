@@ -26,14 +26,16 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.gui.components.Button.OnTooltip;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
@@ -46,7 +48,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
 /**
- * This utility class helps with positioning commonly used Minecraft {@link Widget} instances on a screen without having
+ * This utility class helps with positioning commonly used Minecraft {@link AbstractWidget} instances on a screen without having
  * to recreate them everytime the screen resizes in the <code>init</code> method.
  * <p/>
  * This class sources the positioning and sizing for widgets from the {@link ScreenStyle}, and correlates between the
@@ -54,14 +56,14 @@ import appeng.core.sync.packets.SwitchGuisPacket;
  */
 public class WidgetContainer {
     private final ScreenStyle style;
-    private final Map<String, Widget> widgets = new HashMap<>();
+    private final Map<String, AbstractWidget> widgets = new HashMap<>();
     private final Map<String, ICompositeWidget> compositeWidgets = new HashMap<>();
 
     public WidgetContainer(ScreenStyle style) {
         this.style = style;
     }
 
-    public void add(String id, Widget widget) {
+    public void add(String id, AbstractWidget widget) {
         Preconditions.checkState(!compositeWidgets.containsKey(id), "%s already used for composite widget", id);
 
         // Size the widget, as this doesn't change when the parent is resized
@@ -98,22 +100,22 @@ public class WidgetContainer {
      * Convenient way to add Vanilla buttons without having to specify x,y,width and height. The actual
      * position/rectangle is instead sourced from the screen style.
      */
-    public Button addButton(String id, ITextComponent text, Button.IPressable action, Button.ITooltip tooltip) {
-        Button button = new Button(0, 0, 0, 0, text, action, tooltip);
+    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, OnPress action, OnTooltip tooltip) {
+        Button button = new net.minecraft.client.gui.components.Button(0, 0, 0, 0, text, action, tooltip);
         add(id, button);
         return button;
     }
 
-    public Button addButton(String id, ITextComponent text, Button.IPressable action) {
-        return addButton(id, text, action, Button.NO_TOOLTIP);
+    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, OnPress action) {
+        return addButton(id, text, action, net.minecraft.client.gui.components.Button.NO_TOOLTIP);
     }
 
-    public Button addButton(String id, ITextComponent text, Runnable action, Button.ITooltip tooltip) {
+    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, Runnable action, OnTooltip tooltip) {
         return addButton(id, text, btn -> action.run(), tooltip);
     }
 
-    public Button addButton(String id, ITextComponent text, Runnable action) {
-        return addButton(id, text, action, Button.NO_TOOLTIP);
+    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, Runnable action) {
+        return addButton(id, text, action, net.minecraft.client.gui.components.Button.NO_TOOLTIP);
     }
 
     /**
@@ -125,9 +127,9 @@ public class WidgetContainer {
         return scrollbar;
     }
 
-    void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
-        for (Map.Entry<String, Widget> entry : widgets.entrySet()) {
-            Widget widget = entry.getValue();
+    void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
+        for (Map.Entry<String, AbstractWidget> entry : widgets.entrySet()) {
+            AbstractWidget widget = entry.getValue();
 
             // Position the widget
             WidgetStyle widgetStyle = style.getWidget(entry.getKey());
@@ -139,7 +141,7 @@ public class WidgetContainer {
         }
 
         // For composite widgets, just position them. Positions for these widgets are generally relative to the dialog
-        Rectangle2d relativeBounds = new Rectangle2d(0, 0, bounds.getWidth(), bounds.getHeight());
+        Rect2i relativeBounds = new Rect2i(0, 0, bounds.getWidth(), bounds.getHeight());
         for (Map.Entry<String, ICompositeWidget> entry : compositeWidgets.entrySet()) {
             ICompositeWidget widget = entry.getValue();
             WidgetStyle widgetStyle = style.getWidget(entry.getKey());
@@ -168,18 +170,18 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawBackgroundLayer(MatrixStack, int, Rectangle2d, Point)
+     * @see ICompositeWidget#drawBackgroundLayer(PoseStack, int, Rect2i, Point)
      */
-    public void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
             widget.drawBackgroundLayer(matrices, zIndex, bounds, mouse);
         }
     }
 
     /**
-     * @see ICompositeWidget#drawForegroundLayer(MatrixStack, int, Rectangle2d, Point)
+     * @see ICompositeWidget#drawForegroundLayer(PoseStack, int, Rect2i, Point)
      */
-    public void drawForegroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
             widget.drawForegroundLayer(matrices, zIndex, bounds, mouse);
         }
@@ -241,9 +243,9 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#addExclusionZones(List, Rectangle2d)
+     * @see ICompositeWidget#addExclusionZones(List, Rect2i)
      */
-    public void addExclusionZones(List<Rectangle2d> exclusionZones, Rectangle2d bounds) {
+    public void addExclusionZones(List<Rect2i> exclusionZones, Rect2i bounds) {
         for (ICompositeWidget widget : compositeWidgets.values()) {
             widget.addExclusionZones(exclusionZones, bounds);
         }
@@ -265,7 +267,7 @@ public class WidgetContainer {
     @Nullable
     public Tooltip getTooltip(int mouseX, int mouseY) {
         for (ICompositeWidget c : this.compositeWidgets.values()) {
-            Rectangle2d bounds = c.getBounds();
+            Rect2i bounds = c.getBounds();
             if (mouseX >= bounds.getX() && mouseX < bounds.getX() + bounds.getWidth()
                     && mouseY >= bounds.getY() && mouseY < bounds.getY() + bounds.getHeight()) {
                 Tooltip tooltip = c.getTooltip(mouseX, mouseY);

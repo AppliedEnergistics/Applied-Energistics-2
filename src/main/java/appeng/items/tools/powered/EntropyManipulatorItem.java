@@ -24,36 +24,39 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
 
 import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalBlockPos;
@@ -74,12 +77,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      */
     private static final int ENERGY_PER_USE = 1600;
 
-    public EntropyManipulatorItem(Item.Properties props) {
+    public EntropyManipulatorItem(net.minecraft.world.item.Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
     @Override
-    public boolean hurtEnemy(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public boolean hurtEnemy(final net.minecraft.world.item.ItemStack item, final LivingEntity target, final net.minecraft.world.entity.LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             target.setSecondsOnFire(8);
@@ -90,68 +93,68 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
-        final BlockRayTraceResult target = getPlayerPOVHitResult(w, p, RayTraceContext.FluidMode.ANY);
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
+        final BlockHitResult target = getPlayerPOVHitResult(w, p, Fluid.ANY);
 
-        if (target.getType() != RayTraceResult.Type.BLOCK) {
-            return new ActionResult<>(ActionResultType.FAIL, p.getItemInHand(hand));
+        if (target.getType() != Type.BLOCK) {
+            return new InteractionResultHolder<>(InteractionResult.FAIL, p.getItemInHand(hand));
         } else {
             BlockPos pos = target.getBlockPos();
             final BlockState state = w.getBlockState(pos);
             if (!state.getFluidState().isEmpty() && Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
-                ItemUseContext context = new ItemUseContext(p, hand, target);
+                UseOnContext context = new UseOnContext(p, hand, target);
                 this.useOn(context);
             }
         }
 
-        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World w = context.getLevel();
-        ItemStack item = context.getItemInHand();
+    public InteractionResult useOn(UseOnContext context) {
+        Level w = context.getLevel();
+        net.minecraft.world.item.ItemStack item = context.getItemInHand();
         BlockPos pos = context.getClickedPos();
-        Direction side = context.getClickedFace();
-        PlayerEntity p = context.getPlayer();
+        net.minecraft.core.Direction side = context.getClickedFace();
+        Player p = context.getPlayer();
 
         boolean tryBoth = false;
         if (p == null) {
             if (w.isClientSide) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
-            p = Platform.getPlayer((ServerWorld) w);
+            p = Platform.getPlayer((ServerLevel) w);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
 
         // Correct pos for fluids as these are normally not taken into account.
-        final BlockRayTraceResult target = getPlayerPOVHitResult(w, p, RayTraceContext.FluidMode.ANY);
-        if (target.getType() == RayTraceResult.Type.BLOCK) {
+        final BlockHitResult target = getPlayerPOVHitResult(w, p, Fluid.ANY);
+        if (target.getType() == Type.BLOCK) {
             pos = target.getBlockPos();
         }
 
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             if (!p.mayUseItemAt(pos, side, item)) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
 
             // Delegate to the server from here on
             if (!w.isClientSide() && !tryApplyEffect(w, item, pos, side, p, tryBoth)) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
 
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private boolean tryApplyEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p,
-            boolean tryBoth) {
+    private boolean tryApplyEffect(Level w, net.minecraft.world.item.ItemStack item, BlockPos pos, net.minecraft.core.Direction side, Player p,
+                                   boolean tryBoth) {
         final BlockState blockState = w.getBlockState(pos);
-        final Block block = blockState.getBlock();
-        final FluidState fluidState = w.getFluidState(pos);
+        final net.minecraft.world.level.block.Block block = blockState.getBlock();
+        final net.minecraft.world.level.material.FluidState fluidState = w.getFluidState(pos);
 
         if (tryBoth || InteractionUtil.isInAlternateUseMode(p)) {
             EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
@@ -163,7 +166,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         if (tryBoth || !InteractionUtil.isInAlternateUseMode(p)) {
-            if (block instanceof TNTBlock) {
+            if (block instanceof TntBlock) {
                 w.removeBlock(pos, false);
                 block.catchFire(w.getBlockState(pos), w, pos, side, p);
                 return true;
@@ -194,7 +197,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return false;
     }
 
-    private boolean applyFlintAndSteelEffect(World w, ItemStack item, BlockPos pos, Direction side, PlayerEntity p) {
+    private boolean applyFlintAndSteelEffect(Level w, net.minecraft.world.item.ItemStack item, BlockPos pos, net.minecraft.core.Direction side, Player p) {
         final BlockPos offsetPos = pos.relative(side);
         if (!p.mayUseItemAt(offsetPos, side, item)) {
             return false;
@@ -203,9 +206,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         if (w.isEmptyBlock(offsetPos)) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
-                    SoundEvents.FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                    SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                     random.nextFloat() * 0.4F + 0.8F);
-            w.setBlockAndUpdate(offsetPos, Blocks.FIRE.defaultBlockState());
+            w.setBlockAndUpdate(offsetPos, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState());
         }
         return true;
     }
@@ -214,17 +217,17 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      * The entropy manipulator in heat-mode can directly smelt in-world blocks and drop the smelted results, but only if
      * all drops of the block have smelting recipes.
      */
-    private boolean performInWorldSmelting(ItemStack item, World w, PlayerEntity p, BlockPos pos, Block block) {
-        ItemStack[] stack = Platform.getBlockDrops(w, pos);
+    private boolean performInWorldSmelting(net.minecraft.world.item.ItemStack item, Level w, Player p, net.minecraft.core.BlockPos pos, net.minecraft.world.level.block.Block block) {
+        net.minecraft.world.item.ItemStack[] stack = Platform.getBlockDrops(w, pos);
 
         // Results of the operation
         BlockState smeltedBlockState = null;
-        List<ItemStack> smeltedDrops = new ArrayList<>();
+        List<net.minecraft.world.item.ItemStack> smeltedDrops = new ArrayList<>();
 
-        CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
-        for (final ItemStack i : stack) {
+        CraftingContainer tempInv = new CraftingContainer(new ContainerNull(), 1, 1);
+        for (final net.minecraft.world.item.ItemStack i : stack) {
             tempInv.setItem(0, i);
-            Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, tempInv, w);
+            Optional<SmeltingRecipe> recipe = w.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv, w);
 
             if (!recipe.isPresent()) {
                 return false;
@@ -232,7 +235,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
             ItemStack result = recipe.get().assemble(tempInv);
             if (result.getItem() instanceof BlockItem) {
-                Block smeltedBlock = Block.byItem(result.getItem());
+                Block smeltedBlock = net.minecraft.world.level.block.Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
                     // Prevent auto-smelting if we wouldn't actually change the blockstate of the block at all,
                     // but still could drop additional items
@@ -241,7 +244,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 // The first smelted drop that could be placed as a block itself will not be dropped, but
                 // rather replace the current block.
                 if (smeltedBlockState == null
-                        && smeltedBlock != Blocks.AIR
+                        && smeltedBlock != net.minecraft.world.level.block.Blocks.AIR
                         && smeltedBlock.defaultBlockState().getMaterial() != Material.AIR) {
                     smeltedBlockState = smeltedBlock.defaultBlockState();
                     continue;
@@ -258,11 +261,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
 
         w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-                SoundEvents.FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+                net.minecraft.sounds.SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                 random.nextFloat() * 0.4F + 0.8F);
 
         if (smeltedBlockState == null) {
-            w.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            w.setBlock(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
         } else {
             w.setBlock(pos, smeltedBlockState, 3);
         }
@@ -272,9 +275,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Nullable
-    private static EntropyRecipe findRecipe(World world, EntropyMode mode, BlockState blockState,
-            FluidState fluidState) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
+    private static EntropyRecipe findRecipe(Level world, EntropyMode mode, BlockState blockState,
+                                            FluidState fluidState) {
+        for (Recipe<Container> recipe : world.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
             EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
 
             if (entropyRecipe.matches(mode, blockState, fluidState)) {
@@ -284,13 +287,13 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return null;
     }
 
-    private static void applyRecipe(EntropyRecipe recipe, World w, BlockPos pos, BlockState blockState,
-            FluidState fluidState) {
+    private static void applyRecipe(EntropyRecipe recipe, Level w, BlockPos pos, BlockState blockState,
+                                    FluidState fluidState) {
         BlockState outputBlockState = recipe.getOutputBlockState(blockState);
         if (outputBlockState != null) {
             w.setBlock(pos, outputBlockState, 3);
         } else {
-            FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
+            net.minecraft.world.level.material.FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
             if (outputFluidState != null) {
                 w.setBlock(pos, outputFluidState.createLegacyBlock(), 3);
             } else {
@@ -304,7 +307,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (recipe.getMode() == EntropyMode.HEAT && !w.isClientSide()) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
-            w.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+            w.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
                     2.6F + (w.random.nextFloat() - w.random.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; ++l) {
                 w.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),

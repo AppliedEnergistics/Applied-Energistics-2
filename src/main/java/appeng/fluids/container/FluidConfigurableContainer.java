@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -40,7 +40,7 @@ import appeng.fluids.util.IAEFluidTank;
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableContainer(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+    public FluidConfigurableContainer(MenuType<?> containerType, int id, Inventory ip, IUpgradeableHost te) {
         super(containerType, id, ip, te);
     }
 
@@ -54,7 +54,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     }
 
     @Override
-    protected ItemStack transferStackToContainer(ItemStack input) {
+    protected net.minecraft.world.item.ItemStack transferStackToContainer(ItemStack input) {
         Optional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
         if (fsOpt.isPresent()) {
             final IAEFluidTank t = this.getFluidConfigInventory();
@@ -102,7 +102,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     }
 
     @Override
-    public void addSlotListener(IContainerListener listener) {
+    public void addSlotListener(ContainerListener listener) {
         super.addSlotListener(listener);
         this.getSyncHelper().sendFull(Collections.singleton(listener));
     }

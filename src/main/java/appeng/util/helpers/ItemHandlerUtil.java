@@ -18,8 +18,8 @@
 
 package appeng.util.helpers;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -38,7 +38,7 @@ public class ItemHandlerUtil {
 
     public static void clear(final IItemHandler inv) {
         for (int x = 0; x < inv.getSlots(); x++) {
-            setStackInSlot(inv, x, ItemStack.EMPTY);
+            setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.EMPTY);
         }
     }
 
@@ -57,7 +57,7 @@ public class ItemHandlerUtil {
         }
     }
 
-    public static void copy(final CraftingInventory from, final IItemHandler to, boolean deepCopy) {
+    public static void copy(final CraftingContainer from, final IItemHandler to, boolean deepCopy) {
         for (int i = 0; i < Math.min(from.getContainerSize(), to.getSlots()); ++i) {
             setStackInSlot(to, i, deepCopy ? from.getItem(i).copy() : from.getItem(i));
         }

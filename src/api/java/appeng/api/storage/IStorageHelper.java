@@ -27,8 +27,8 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -90,7 +90,7 @@ public interface IStorageHelper {
      *
      * @return crafting link
      */
-    ICraftingLink loadCraftingLink(CompoundNBT data, ICraftingRequester req);
+    ICraftingLink loadCraftingLink(CompoundTag data, ICraftingRequester req);
 
     /**
      * Extracts items from a {@link IMEInventory} respecting power requirements.
@@ -123,10 +123,10 @@ public interface IStorageHelper {
      * being removed or added to the grid.
      *
      * @param gs          the storage service to notify
-     * @param removedCell the removed cell. May be {@link ItemStack#EMPTY} if no cell was removed.
+     * @param removedCell the removed cell. May be {@link net.minecraft.world.item.ItemStack#EMPTY} if no cell was removed.
      * @param addedCell   the added cell. May be {@link ItemStack#EMPTY} if no cell was added.
      * @param src         the action source
      */
-    void postChanges(@Nonnull final IStorageService gs, @Nonnull final ItemStack removedCell,
+    void postChanges(@Nonnull final IStorageService gs, @Nonnull final net.minecraft.world.item.ItemStack removedCell,
             @Nonnull final ItemStack addedCell, @Nonnull final IActionSource src);
 }

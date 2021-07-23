@@ -20,15 +20,15 @@ package appeng.parts;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -57,12 +57,12 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public boolean activate(final PlayerEntity player, final Hand hand, final Vector3d vecFromPool) {
+    public boolean activate(final Player player, final InteractionHand hand, final Vec3 vecFromPool) {
         return false;
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
 
     }
 
@@ -72,12 +72,12 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public SelectedPart selectPart(final Vector3d v3) {
+    public SelectedPart selectPart(final Vec3 v3) {
         return new SelectedPart();
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor colour, final PlayerEntity who) {
+    public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
         return false;
     }
 
@@ -87,7 +87,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final net.minecraft.core.BlockPos pos, final Random r) {
 
     }
 
@@ -102,7 +102,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec) {
+    public boolean clicked(Player player, InteractionHand hand, Vec3 hitVec) {
         return false;
     }
 

@@ -24,13 +24,11 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.CellWorkbenchScreen;
@@ -114,15 +112,17 @@ import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 /**
  * The server sends the client a container identifier, which the client then maps onto a screen using
- * {@link net.minecraft.client.gui.ScreenManager}. This class registers our screens.
+ * {@link MenuScreens}. This class registers our screens.
  */
 public final class InitScreens {
 
     @VisibleForTesting
-    static final Map<ContainerType<?>, String> CONTAINER_STYLES = new IdentityHashMap<>();
+    static final Map<MenuType<?>, String> CONTAINER_STYLES = new IdentityHashMap<>();
 
     private InitScreens() {
     }
@@ -201,11 +201,11 @@ public final class InitScreens {
     /**
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
-    private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(ContainerType<M> type,
-            StyledScreenFactory<M, U> factory,
-            String stylePath) {
+    private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(MenuType<M> type,
+                                                                                        StyledScreenFactory<M, U> factory,
+                                                                                        String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
-        ScreenManager.<M, U>register(type, (container, playerInv, title) -> {
+        MenuScreens.<M, U>register(type, (container, playerInv, title) -> {
             ScreenStyle style;
             try {
                 style = StyleManager.loadStyleDoc(stylePath);
@@ -224,8 +224,8 @@ public final class InitScreens {
      * argument.
      */
     @FunctionalInterface
-    public interface StyledScreenFactory<T extends Container, U extends Screen & IHasContainer<T>> {
-        U create(T t, PlayerInventory pi, ITextComponent title, ScreenStyle style);
+    public interface StyledScreenFactory<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> {
+        U create(T t, Inventory pi, net.minecraft.network.chat.Component title, ScreenStyle style);
     }
 
 }

@@ -18,19 +18,19 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -42,34 +42,34 @@ import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
+public class SkyChestTESR extends BlockEntityRenderer<SkyChestTileEntity> {
 
-    public static final RenderMaterial TEXTURE_STONE = new RenderMaterial(Atlases.CHEST_SHEET,
+    public static final Material TEXTURE_STONE = new Material(Sheets.CHEST_SHEET,
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
-    public static final RenderMaterial TEXTURE_BLOCK = new RenderMaterial(Atlases.CHEST_SHEET,
+    public static final Material TEXTURE_BLOCK = new Material(Sheets.CHEST_SHEET,
             new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
 
-    private final ModelRenderer singleLid;
-    private final ModelRenderer singleBottom;
-    private final ModelRenderer singleLatch;
+    private final ModelPart singleLid;
+    private final ModelPart singleBottom;
+    private final ModelPart singleLatch;
 
-    public SkyChestTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public SkyChestTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
 
-        this.singleBottom = new ModelRenderer(64, 64, 0, 19);
+        this.singleBottom = new ModelPart(64, 64, 0, 19);
         this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
-        this.singleLid = new ModelRenderer(64, 64, 0, 0);
+        this.singleLid = new ModelPart(64, 64, 0, 0);
         this.singleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
         this.singleLid.y = 10.0F;
         this.singleLid.z = 1.0F;
-        this.singleLatch = new ModelRenderer(64, 64, 0, 0);
+        this.singleLatch = new ModelPart(64, 64, 0, 0);
         this.singleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
         this.singleLatch.y = 9.0F;
     }
 
     @Override
-    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn,
+                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = tileEntityIn.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -79,17 +79,17 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         float f1 = tileEntityIn.getOpenNess(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
-        RenderMaterial material = this.getRenderMaterial(tileEntityIn);
-        IVertexBuilder ivertexbuilder = material.buffer(bufferIn, RenderType::entityCutout);
+        Material material = this.getRenderMaterial(tileEntityIn);
+        VertexConsumer ivertexbuilder = material.buffer(bufferIn, RenderType::entityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1,
                 combinedLightIn, combinedOverlayIn);
 
         matrixStackIn.popPose();
     }
 
-    private void renderModels(MatrixStack matrixStackIn, IVertexBuilder bufferIn, ModelRenderer chestLid,
-            ModelRenderer chestLatch, ModelRenderer chestBottom, float lidAngle, int combinedLightIn,
-            int combinedOverlayIn) {
+    private void renderModels(PoseStack matrixStackIn, VertexConsumer bufferIn, ModelPart chestLid,
+                              ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn,
+                              int combinedOverlayIn) {
         chestLid.xRot = -(lidAngle * 1.5707964F);
         chestLatch.xRot = chestLid.xRot;
         chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
@@ -97,7 +97,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected RenderMaterial getRenderMaterial(SkyChestTileEntity tileEntity) {
+    protected Material getRenderMaterial(SkyChestTileEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getLevel() != null) {
             Block blockType = tileEntity.getBlockState().getBlock();
@@ -117,7 +117,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
     }
 
     public static void registerTextures(TextureStitchEvent.Pre evt) {
-        if (evt.getMap().location().equals(Atlases.CHEST_SHEET)) {
+        if (evt.getMap().location().equals(Sheets.CHEST_SHEET)) {
             evt.addSprite(TEXTURE_STONE.texture());
             evt.addSprite(TEXTURE_BLOCK.texture());
         }

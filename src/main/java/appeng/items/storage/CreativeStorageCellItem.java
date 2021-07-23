@@ -20,10 +20,10 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -37,11 +37,11 @@ import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public CreativeStorageCellItem(Properties props) {
+    public CreativeStorageCellItem(net.minecraft.world.item.Item.Properties props) {
         super(props);
     }
 
@@ -72,8 +72,8 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 

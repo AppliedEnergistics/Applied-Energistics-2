@@ -21,9 +21,9 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
@@ -37,8 +37,6 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
-
-import mezz.jei.api.gui.handlers.IGhostIngredientHandler.Target;
 
 /**
  * JEI allows ingredients to be dragged from a JEI panel onto compatible slots to set filters and the like without
@@ -103,15 +101,15 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
 
     private static class ItemSlotTarget implements Target<ItemStack> {
         private final AppEngSlot slot;
-        private final Rectangle2d area;
+        private final Rect2i area;
 
         public ItemSlotTarget(AEBaseScreen<?> screen, AppEngSlot slot) {
             this.slot = slot;
-            this.area = new Rectangle2d(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
+            this.area = new Rect2i(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
         }
 
         @Override
-        public Rectangle2d getArea() {
+        public Rect2i getArea() {
             return area;
         }
 
@@ -124,18 +122,18 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
 
     private static class FluidSlotTarget implements Target<FluidStack> {
         private final FluidSlotWidget slot;
-        private final Rectangle2d area;
+        private final Rect2i area;
 
         public FluidSlotTarget(AEBaseScreen<?> screen, FluidSlotWidget slot) {
             this.slot = slot;
-            this.area = new Rectangle2d(screen.getGuiLeft() + slot.getTooltipAreaX(),
+            this.area = new Rect2i(screen.getGuiLeft() + slot.getTooltipAreaX(),
                     screen.getGuiTop() + slot.getTooltipAreaY(),
                     slot.getTooltipAreaWidth(),
                     slot.getTooltipAreaWidth());
         }
 
         @Override
-        public Rectangle2d getArea() {
+        public Rect2i getArea() {
             return area;
         }
 

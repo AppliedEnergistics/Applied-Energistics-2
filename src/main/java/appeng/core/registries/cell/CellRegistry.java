@@ -24,7 +24,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IStorageChannel;
@@ -83,7 +83,7 @@ public class CellRegistry implements ICellRegistry {
     }
 
     @Override
-    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(final ItemStack is,
+    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(final net.minecraft.world.item.ItemStack is,
             final ISaveProvider container, final IStorageChannel<T> chan) {
         if (is.isEmpty()) {
             return null;
@@ -102,7 +102,7 @@ public class CellRegistry implements ICellRegistry {
     }
 
     @Override
-    public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(final IStorageChannel<T> channel, final ItemStack is) {
+    public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(final IStorageChannel<T> channel, final net.minecraft.world.item.ItemStack is) {
         ICellGuiHandler fallBack = null;
 
         for (final ICellGuiHandler ch : this.guiHandlers) {

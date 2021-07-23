@@ -21,22 +21,22 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 
-public final class FacadeItemGroup extends ItemGroup {
+public final class FacadeItemGroup extends CreativeModeTab {
 
     private final FacadeItem itemFacade;
 
-    private List<ItemStack> subTypes = null;
+    private List<net.minecraft.world.item.ItemStack> subTypes = null;
 
     public FacadeItemGroup() {
         super("appliedenergistics2.facades");
@@ -45,16 +45,16 @@ public final class FacadeItemGroup extends ItemGroup {
     }
 
     @Override
-    public ItemStack makeIcon() {
+    public net.minecraft.world.item.ItemStack makeIcon() {
         this.calculateSubTypes();
         if (this.subTypes.isEmpty()) {
-            return new ItemStack(Items.CAKE);
+            return new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CAKE);
         }
         return this.subTypes.get(0);
     }
 
     @Override
-    public void fillItemList(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<net.minecraft.world.item.ItemStack> items) {
         this.calculateSubTypes();
         items.addAll(subTypes);
     }
@@ -68,7 +68,7 @@ public final class FacadeItemGroup extends ItemGroup {
         for (final Block b : ForgeRegistries.BLOCKS) {
             try {
                 final Item item = Item.byBlock(b);
-                if (item == Items.AIR) {
+                if (item == net.minecraft.world.item.Items.AIR) {
                     continue;
                 }
 
@@ -76,8 +76,8 @@ public final class FacadeItemGroup extends ItemGroup {
                 if (blockItem != Items.AIR && blockItem.getItemCategory() != null) {
                     final NonNullList<ItemStack> tmpList = NonNullList.create();
                     b.fillItemCategory(blockItem.getItemCategory(), tmpList);
-                    for (final ItemStack l : tmpList) {
-                        final ItemStack facade = itemFacade.createFacadeForItem(l, false);
+                    for (final net.minecraft.world.item.ItemStack l : tmpList) {
+                        final net.minecraft.world.item.ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {
                             this.subTypes.add(facade);
                         }

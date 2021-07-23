@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -40,10 +40,10 @@ public class AEModelData implements IModelData {
     public static final ModelProperty<Boolean> CACHEABLE = new ModelProperty<>();
     public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
 
-    private final Direction up;
+    private final net.minecraft.core.Direction up;
     private final Direction forward;
 
-    public AEModelData(Direction up, Direction forward) {
+    public AEModelData(net.minecraft.core.Direction up, Direction forward) {
         this.up = Preconditions.checkNotNull(up);
         this.forward = Preconditions.checkNotNull(forward);
     }

@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -50,10 +49,11 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.tile.misc.CondenserTileEntity;
+import net.minecraft.world.item.ItemStack;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
+    public static final net.minecraft.resources.ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
     private final String localizedName;
 
@@ -100,7 +100,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
             case SINGULARITY:
                 return AEItems.SINGULARITY.stack();
             default:
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
         }
     }
 
@@ -135,7 +135,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CondenserOutput recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         this.progress.draw(matrixStack);
         this.iconTrash.draw(matrixStack);
         this.iconButton.draw(matrixStack);
@@ -159,8 +159,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         itemStacks.set(ingredients);
     }
 
-    private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        List<ItemStack> viableComponents = new ArrayList<>();
+    private List<net.minecraft.world.item.ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
+        List<net.minecraft.world.item.ItemStack> viableComponents = new ArrayList<>();
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_1K_CELL_COMPONENT.stack());
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_4K_CELL_COMPONENT.stack());
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_16K_CELL_COMPONENT.stack());
@@ -168,8 +168,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         return viableComponents;
     }
 
-    private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents,
-            ItemStack itemStack) {
+    private void addViableComponent(CondenserOutput condenserOutput, List<net.minecraft.world.item.ItemStack> viableComponents,
+            net.minecraft.world.item.ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
         int storage = comp.getBytes(itemStack) * CondenserTileEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {
@@ -178,7 +178,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public List<ITextComponent> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
+    public List<net.minecraft.network.chat.Component> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
 
         if (mouseX >= 28 && mouseX < 28 + 16 && mouseY >= 78 && mouseY < 78 + 16) {
             String key;
@@ -194,7 +194,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
                     return Collections.emptyList();
             }
 
-            return Lists.newArrayList(new TranslationTextComponent(key));
+            return Lists.newArrayList(new TranslatableComponent(key));
         }
         return Collections.emptyList();
     }

@@ -18,13 +18,13 @@
 
 package appeng.tile.misc;
 
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseTileEntity;
 
 public class SkyCompassTileEntity extends AEBaseTileEntity {
 
-    public SkyCompassTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SkyCompassTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

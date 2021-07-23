@@ -23,14 +23,14 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.level.Level;
 
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -42,20 +42,20 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 
-public final class DisassembleRecipe extends SpecialRecipe {
-    public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
+public final class DisassembleRecipe extends CustomRecipe {
+    public static final RecipeSerializer<DisassembleRecipe> SERIALIZER = new SimpleRecipeSerializer<>(
             DisassembleRecipe::new);
 
     static {
         SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "disassemble"));
     }
 
-    private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
+    private static final net.minecraft.world.item.ItemStack MISMATCHED_STACK = net.minecraft.world.item.ItemStack.EMPTY;
 
     private final Map<ItemDefinition<?>, ItemDefinition<?>> cellMappings;
     private final Map<ItemDefinition<?>, ItemDefinition<?>> nonCellMappings;
 
-    public DisassembleRecipe(ResourceLocation id) {
+    public DisassembleRecipe(net.minecraft.resources.ResourceLocation id) {
         super(id);
 
         this.cellMappings = new HashMap<>(4);
@@ -74,17 +74,17 @@ public final class DisassembleRecipe extends SpecialRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull final CraftingInventory inv, @Nonnull final World w) {
+    public boolean matches(@Nonnull final CraftingContainer inv, @Nonnull final Level w) {
         return !this.getOutput(inv).isEmpty();
     }
 
     @Nonnull
-    private ItemStack getOutput(final IInventory inventory) {
+    private ItemStack getOutput(final Container inventory) {
         int itemCount = 0;
-        ItemStack output = MISMATCHED_STACK;
+        net.minecraft.world.item.ItemStack output = MISMATCHED_STACK;
 
         for (int slotIndex = 0; slotIndex < inventory.getContainerSize(); slotIndex++) {
-            final ItemStack stackInSlot = inventory.getItem(slotIndex);
+            final net.minecraft.world.item.ItemStack stackInSlot = inventory.getItem(slotIndex);
             if (!stackInSlot.isEmpty()) {
                 // needs a single input in the recipe
                 itemCount++;
@@ -102,7 +102,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
                         final IItemList<IAEItemStack> list = cellInv.getAvailableItems(
                                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
                         if (!list.isEmpty()) {
-                            return ItemStack.EMPTY;
+                            return net.minecraft.world.item.ItemStack.EMPTY;
                         }
                     }
                 }
@@ -116,7 +116,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
     }
 
     @Nonnull
-    private ItemStack getCellOutput(final ItemStack compared) {
+    private ItemStack getCellOutput(final net.minecraft.world.item.ItemStack compared) {
         for (final Map.Entry<ItemDefinition<?>, ItemDefinition<?>> entry : this.cellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
                 return entry.getValue().stack();
@@ -127,19 +127,19 @@ public final class DisassembleRecipe extends SpecialRecipe {
     }
 
     @Nonnull
-    private ItemStack getNonCellOutput(final ItemStack compared) {
+    private net.minecraft.world.item.ItemStack getNonCellOutput(final net.minecraft.world.item.ItemStack compared) {
         for (final Map.Entry<ItemDefinition<?>, ItemDefinition<?>> entry : this.nonCellMappings.entrySet()) {
             if (entry.getKey().isSameAs(compared)) {
                 return entry.getValue().stack();
             }
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull final CraftingInventory inv) {
+    public net.minecraft.world.item.ItemStack assemble(@Nonnull final CraftingContainer inv) {
         return this.getOutput(inv);
     }
 
@@ -150,7 +150,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<DisassembleRecipe> getSerializer() {
+    public RecipeSerializer<DisassembleRecipe> getSerializer() {
         return SERIALIZER;
     }
 

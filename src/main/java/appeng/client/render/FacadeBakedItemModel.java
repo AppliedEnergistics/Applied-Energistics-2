@@ -25,12 +25,12 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -43,24 +43,24 @@ import appeng.client.render.cablebus.FacadeBuilder;
  */
 public class FacadeBakedItemModel extends DelegateBakedModel {
 
-    private final ItemStack textureStack;
+    private final net.minecraft.world.item.ItemStack textureStack;
     private final FacadeBuilder facadeBuilder;
     private List<BakedQuad> quads = null;
 
-    protected FacadeBakedItemModel(IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
+    protected FacadeBakedItemModel(BakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
         super(base);
         this.textureStack = textureStack;
         this.facadeBuilder = facadeBuilder;
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
         return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData data) {
+    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
+                                                                              IModelData data) {
         if (side != null) {
             return Collections.emptyList();
         }
@@ -89,7 +89,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 }

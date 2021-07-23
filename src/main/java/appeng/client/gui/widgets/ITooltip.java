@@ -24,7 +24,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.Tooltip;
 
@@ -39,7 +39,7 @@ public interface ITooltip {
      * @return tooltip message or an empty list to not show a tooltip
      */
     @Nonnull
-    default List<ITextComponent> getTooltipMessage() {
+    default List<net.minecraft.network.chat.Component> getTooltipMessage() {
         return Collections.emptyList();
     }
 
@@ -88,7 +88,7 @@ public interface ITooltip {
         if (x < mouseX && x + getTooltipAreaWidth() > mouseX
                 && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
 
-            List<ITextComponent> lines = getTooltipMessage();
+            List<net.minecraft.network.chat.Component> lines = getTooltipMessage();
 
             // Don't show empty tooltips
             if (lines.isEmpty()) {

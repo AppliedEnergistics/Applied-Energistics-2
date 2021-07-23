@@ -18,11 +18,11 @@
 
 package appeng.items.tools.powered;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
@@ -30,10 +30,11 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
+import net.minecraft.world.item.Item.Properties;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
-    public ChargedStaffItem(Item.Properties props) {
+    public ChargedStaffItem(net.minecraft.world.item.Item.Properties props) {
         super(AEConfig.instance().getChargedStaffBattery(), props);
     }
 
@@ -43,7 +44,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
             this.extractAEPower(item, 300, Actionable.MODULATE);
             if (!target.level.isClientSide()) {
                 for (int x = 0; x < 2; x++) {
-                    final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
+                    final AABB entityBoundingBox = target.getBoundingBox();
                     final float dx = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minX);
                     final float dy = (float) (Platform.getRandomFloat() * target.getBbHeight() + entityBoundingBox.minY);
                     final float dz = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minZ);

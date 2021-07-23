@@ -20,12 +20,12 @@ package appeng.client.render.tesr;
 
 import java.util.EnumMap;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.Vector3f;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
@@ -38,15 +38,15 @@ class CellLedRenderer {
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
     // Color used for the cell indicator for blinking during recent activity
-    private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
+    private static final com.mojang.math.Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
 
     static {
         STATE_COLORS = new EnumMap<>(DriveSlotState.class);
         STATE_COLORS.put(DriveSlotState.OFFLINE, new Vector3f(0, 0, 0));
-        STATE_COLORS.put(DriveSlotState.ONLINE, new Vector3f(0, 1, 0));
+        STATE_COLORS.put(DriveSlotState.ONLINE, new com.mojang.math.Vector3f(0, 1, 0));
         STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vector3f(0f, 0.667f, 1));
         STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(1, 0.667f, 0));
-        STATE_COLORS.put(DriveSlotState.FULL, new Vector3f(1, 0, 0));
+        STATE_COLORS.put(DriveSlotState.FULL, new com.mojang.math.Vector3f(1, 0, 0));
     }
 
     // The positions are based on the upper left slot in a drive
@@ -72,12 +72,12 @@ class CellLedRenderer {
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
     public static final RenderType RENDER_LAYER = RenderType.create("ae_drive_leds",
-            DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true, RenderType.State.builder().createCompositeState(false));
+            DefaultVertexFormat.POSITION_COLOR, 7, 32565, false, true, CompositeState.builder().createCompositeState(false));
 
-    public static void renderLed(IChestOrDrive drive, int slot, IVertexBuilder buffer, MatrixStack ms,
-            float partialTicks) {
+    public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,
+                                 float partialTicks) {
 
-        Vector3f color = getColorForSlot(drive, slot, partialTicks);
+        com.mojang.math.Vector3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {
             return;
         }
@@ -101,7 +101,7 @@ class CellLedRenderer {
             return STATE_COLORS.get(DriveSlotState.OFFLINE);
         }
 
-        Vector3f col = STATE_COLORS.get(state);
+        com.mojang.math.Vector3f col = STATE_COLORS.get(state);
         if (drive.isCellBlinking(slot)) {
             // 200 ms interval (100ms to get to red, then 100ms back)
             long t = System.currentTimeMillis() % 200;

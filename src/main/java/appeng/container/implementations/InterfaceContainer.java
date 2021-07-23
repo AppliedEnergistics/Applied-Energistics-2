@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -38,7 +38,7 @@ import appeng.helpers.IInterfaceHost;
  */
 public class InterfaceContainer extends UpgradeableContainer {
 
-    public static final ContainerType<InterfaceContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<InterfaceContainer> TYPE = ContainerTypeBuilder
             .create(InterfaceContainer::new, IInterfaceHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interface");
@@ -49,7 +49,7 @@ public class InterfaceContainer extends UpgradeableContainer {
     @GuiSync(4)
     public YesNo iTermMode = YesNo.YES;
 
-    public InterfaceContainer(int id, final PlayerInventory ip, final IInterfaceHost te) {
+    public InterfaceContainer(int id, final Inventory ip, final IInterfaceHost te) {
         super(TYPE, id, ip, te.getInterfaceDuality().getHost());
 
         DualityInterface duality = te.getInterfaceDuality();

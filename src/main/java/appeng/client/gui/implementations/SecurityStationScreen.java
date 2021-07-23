@@ -20,11 +20,11 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -48,7 +48,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationContainer container,
-            PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+                                 Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");
@@ -93,7 +93,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         // Draw the encoding-box on the right
@@ -106,9 +106,9 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     }
 
     @Override
-    public List<Rectangle2d> getExclusionZones() {
-        List<Rectangle2d> result = super.getExclusionZones();
-        result.add(new Rectangle2d(
+    public List<Rect2i> getExclusionZones() {
+        List<Rect2i> result = super.getExclusionZones();
+        result.add(new Rect2i(
                 leftPos + imageWidth + 3,
                 topPos,
                 encodingBg.getSrcWidth(),

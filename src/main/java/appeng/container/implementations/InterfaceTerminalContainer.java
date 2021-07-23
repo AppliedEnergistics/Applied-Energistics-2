@@ -24,12 +24,13 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component.Serializer;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -65,7 +66,7 @@ import appeng.util.inv.filter.IAEItemFilter;
  */
 public final class InterfaceTerminalContainer extends AEBaseContainer {
 
-    public static final ContainerType<InterfaceTerminalContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<InterfaceTerminalContainer> TYPE = ContainerTypeBuilder
             .create(InterfaceTerminalContainer::new, InterfaceTerminalPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interfaceterminal");
@@ -80,7 +81,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private final Map<IInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
-    public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
+    public InterfaceTerminalContainer(int id, final Inventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
         this.createPlayerInventorySlots(ip);
     }
@@ -109,7 +110,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         if (packet != null) {
-            NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) this.getPlayerInventory().player);
+            NetworkHandler.instance().sendTo(packet, (ServerPlayer) this.getPlayerInventory().player);
         }
     }
 
@@ -150,7 +151,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     @Override
-    public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
+    public void doAction(final ServerPlayer player, final InventoryAction action, final int slot, final long id) {
         final InvTracker inv = this.byId.get(id);
         if (inv == null) {
             // Can occur if the client sent an interaction packet right before an inventory got removed
@@ -162,7 +163,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return;
         }
 
-        final ItemStack is = inv.server.getStackInSlot(slot);
+        final net.minecraft.world.item.ItemStack is = inv.server.getStackInSlot(slot);
         final boolean hasItemInHand = !player.inventory.getCarried().isEmpty();
 
         final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
@@ -210,7 +211,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                         playerHand.addItems(extra);
                     }
                 } else if (!is.isEmpty()) {
-                    ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
+                    net.minecraft.world.item.ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, net.minecraft.world.item.ItemStack.EMPTY, null);
                     if (!extra.isEmpty()) {
                         extra = playerHand.addItems(extra);
                     }
@@ -255,7 +256,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         this.diList.clear();
 
         if (grid == null) {
-            return new InterfaceTerminalPacket(true, new CompoundNBT());
+            return new InterfaceTerminalPacket(true, new CompoundTag());
         }
 
         for (var ih : grid.getActiveMachines(InterfaceTileEntity.class)) {
@@ -272,7 +273,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             }
         }
 
-        CompoundNBT data = new CompoundNBT();
+        CompoundTag data = new CompoundTag();
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             this.byId.put(inv.serverId, inv);
@@ -282,13 +283,13 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     private InterfaceTerminalPacket createIncrementalUpdate() {
-        CompoundNBT data = null;
+        CompoundTag data = null;
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             for (int x = 0; x < inv.server.getSlots(); x++) {
                 if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
                     if (data == null) {
-                        data = new CompoundNBT();
+                        data = new CompoundTag();
                     }
                     this.addItems(data, inv, x, 1);
                 }
@@ -312,22 +313,22 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         return !ItemStack.matches(a, b);
     }
 
-    private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
+    private void addItems(final CompoundTag data, final InvTracker inv, final int offset, final int length) {
         final String name = '=' + Long.toString(inv.serverId, Character.MAX_RADIX);
-        final CompoundNBT tag = data.getCompound(name);
+        final CompoundTag tag = data.getCompound(name);
 
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
-            tag.putString("un", ITextComponent.Serializer.toJson(inv.name));
+            tag.putString("un", Serializer.toJson(inv.name));
         }
 
         for (int x = 0; x < length; x++) {
-            final CompoundNBT itemNBT = new CompoundNBT();
+            final CompoundTag itemNBT = new CompoundTag();
 
             final ItemStack is = inv.server.getStackInSlot(x + offset);
 
             // "update" client side.
-            ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
+            ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
                 is.save(itemNBT);
@@ -343,13 +344,13 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         private final long sortBy;
         private final long serverId = inventorySerial++;
-        private final ITextComponent name;
+        private final net.minecraft.network.chat.Component name;
         // This is used to track the inventory contents we sent to the client for change detection
         private final IItemHandler client;
         // This is a reference to the real inventory used by this machine
         private final IItemHandler server;
 
-        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final ITextComponent name) {
+        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final net.minecraft.network.chat.Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlots());
             this.name = name;
@@ -364,7 +365,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(IItemHandler inv, int slot, net.minecraft.world.item.ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
     }

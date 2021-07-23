@@ -26,11 +26,11 @@ import java.util.concurrent.ExecutionException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -41,7 +41,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite texture;
 
-    private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
+    private final static Cache<Long, List<net.minecraft.client.renderer.block.model.BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
@@ -58,7 +58,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         return this.getPartQuads(modelData.getData(P2PTunnelFrequencyModelData.FREQUENCY));
     }
 
-    private List<BakedQuad> getQuadsForFrequency(final short frequency, final boolean active) {
+    private List<net.minecraft.client.renderer.block.model.BakedQuad> getQuadsForFrequency(final short frequency, final boolean active) {
         final AEColor[] colors = Platform.p2p().toColors(frequency);
         final CubeBuilder cb = new CubeBuilder();
 
@@ -92,7 +92,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         return cb.getOutput();
     }
 
-    private List<BakedQuad> getPartQuads(long partFlags) {
+    private List<net.minecraft.client.renderer.block.model.BakedQuad> getPartQuads(long partFlags) {
         try {
             return modelCache.get(partFlags, () -> {
                 short frequency = (short) (partFlags & 0xffffL);
@@ -130,7 +130,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 }

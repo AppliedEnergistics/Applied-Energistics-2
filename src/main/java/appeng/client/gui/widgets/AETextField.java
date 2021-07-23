@@ -18,16 +18,16 @@
 
 package appeng.client.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.EditBox;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.network.chat.TextComponent;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
@@ -35,7 +35,7 @@ import net.minecraft.util.text.StringTextComponent;
  * <p>
  * The rendering does pay attention to the size of the '_' caret.
  */
-public class AETextField extends TextFieldWidget {
+public class AETextField extends EditBox {
     private static final int PADDING = 2;
 
     private final int _fontPad;
@@ -50,11 +50,11 @@ public class AETextField extends TextFieldWidget {
      * @param width        absolute width
      * @param height       absolute height
      */
-    public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
-            final int height) {
+    public AETextField(final Font fontRenderer, final int xPos, final int yPos, final int width,
+                       final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
-                StringTextComponent.EMPTY);
+                TextComponent.EMPTY);
 
         this._fontPad = fontRenderer.width("_");
     }
@@ -69,7 +69,7 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
             if (this.isFocused()) {
                 fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
@@ -115,7 +115,7 @@ public class AETextField extends TextFieldWidget {
             startX = this.x + this.width;
         }
 
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
 
         float red = (this.selectionColor >> 16 & 255) / 255.0F;
@@ -127,7 +127,7 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.begin(7, DefaultVertexFormat.POSITION);
         bufferbuilder.vertex(startX, endY, 0.0D).endVertex();
         bufferbuilder.vertex(endX, endY, 0.0D).endVertex();
         bufferbuilder.vertex(endX, startY, 0.0D).endVertex();

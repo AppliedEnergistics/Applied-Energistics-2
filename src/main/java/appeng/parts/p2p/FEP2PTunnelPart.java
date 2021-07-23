@@ -23,8 +23,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -67,8 +67,8 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     private IEnergyStorage getAttachedEnergyStorage() {
         LazyOptional<IEnergyStorage> energyStorageOpt = LazyOptional.empty();
         if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+            final BlockEntity self = this.getTile();
+            final BlockEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 energyStorageOpt = te.getCapability(Capabilities.FORGE_ENERGY,

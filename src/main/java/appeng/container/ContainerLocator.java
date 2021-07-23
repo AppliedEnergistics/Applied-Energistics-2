@@ -22,21 +22,21 @@ import com.google.common.base.Preconditions;
 
 import io.netty.handler.codec.DecoderException;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.parts.AEBasePart;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Describes how a container the player has opened was originally located. This can be one of three ways:
@@ -67,11 +67,11 @@ public final class ContainerLocator {
     private final BlockPos blockPos;
     private final AEPartLocation side;
 
-    private ContainerLocator(Type type, int itemIndex, World world, BlockPos blockPos, AEPartLocation side) {
+    private ContainerLocator(Type type, int itemIndex, Level world, BlockPos blockPos, AEPartLocation side) {
         this(type, itemIndex, world.dimension().location(), blockPos, side);
     }
 
-    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
+    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, net.minecraft.core.BlockPos blockPos,
             AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
@@ -80,14 +80,14 @@ public final class ContainerLocator {
         this.side = side;
     }
 
-    public static ContainerLocator forTileEntity(TileEntity te) {
+    public static ContainerLocator forTileEntity(BlockEntity te) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
         return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
-    public static ContainerLocator forTileEntitySide(TileEntity te, Direction side) {
+    public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
@@ -98,8 +98,8 @@ public final class ContainerLocator {
      * Construct a container locator for an item being used on a block. The item could still open a container for
      * itself, but it might also open a special container for the block being right-clicked.
      */
-    public static ContainerLocator forItemUseContext(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public static ContainerLocator forItemUseContext(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player == null) {
             throw new IllegalArgumentException("Cannot open a container without a player");
         }
@@ -109,12 +109,12 @@ public final class ContainerLocator {
                 side);
     }
 
-    public static ContainerLocator forHand(PlayerEntity player, Hand hand) {
+    public static ContainerLocator forHand(Player player, InteractionHand hand) {
         int slot = getPlayerInventorySlotFromHand(player, hand);
         return new ContainerLocator(Type.PLAYER_INVENTORY, slot, (ResourceLocation) null, null, null);
     }
 
-    private static int getPlayerInventorySlotFromHand(PlayerEntity player, Hand hand) {
+    private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {
         ItemStack is = player.getItemInHand(hand);
         if (is.isEmpty()) {
             throw new IllegalArgumentException("Cannot open an item-inventory with empty hands");
@@ -165,7 +165,7 @@ public final class ContainerLocator {
         return side;
     }
 
-    public void write(PacketBuffer buf) {
+    public void write(FriendlyByteBuf buf) {
         switch (type) {
             case PLAYER_INVENTORY:
                 buf.writeByte(0);
@@ -194,7 +194,7 @@ public final class ContainerLocator {
         }
     }
 
-    public static ContainerLocator read(PacketBuffer buf) {
+    public static ContainerLocator read(FriendlyByteBuf buf) {
         byte type = buf.readByte();
         switch (type) {
             case 0:

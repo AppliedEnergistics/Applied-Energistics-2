@@ -18,8 +18,8 @@
 
 package appeng.container.slot;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -27,7 +27,7 @@ import appeng.util.inv.WrapperInvItemHandler;
 
 public class CraftingMatrixSlot extends AppEngSlot {
     private final AEBaseContainer c;
-    private final IInventory wrappedInventory;
+    private final Container wrappedInventory;
 
     public CraftingMatrixSlot(final AEBaseContainer c, final IItemHandler inv, final int invSlot) {
         super(inv, invSlot);
@@ -48,8 +48,8 @@ public class CraftingMatrixSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack remove(final int par1) {
-        final ItemStack is = super.remove(par1);
+    public net.minecraft.world.item.ItemStack remove(final int par1) {
+        final net.minecraft.world.item.ItemStack is = super.remove(par1);
         this.c.slotsChanged(this.wrappedInventory);
         return is;
     }

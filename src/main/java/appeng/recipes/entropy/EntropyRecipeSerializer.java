@@ -29,22 +29,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<EntropyRecipe> {
+public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<EntropyRecipe> {
 
     public static final EntropyRecipeSerializer INSTANCE = new EntropyRecipeSerializer();
 
@@ -56,58 +56,58 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public EntropyRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+    public EntropyRecipe fromJson(net.minecraft.resources.ResourceLocation recipeId, JsonObject json) {
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
         // Set id and mode
         builder.setId(recipeId);
-        builder.setMode(EntropyMode.valueOf(JSONUtils.getAsString(json, "mode").toUpperCase(Locale.ROOT)));
+        builder.setMode(EntropyMode.valueOf(GsonHelper.getAsString(json, "mode").toUpperCase(Locale.ROOT)));
 
         //// Parse inputs
-        JsonObject inputJson = JSONUtils.getAsJsonObject(json, "input");
+        JsonObject inputJson = GsonHelper.getAsJsonObject(json, "input");
 
         // Input block
-        JsonObject inputBlockObject = JSONUtils.getAsJsonObject(inputJson, "block", new JsonObject());
-        String inputBlockId = JSONUtils.getAsString(inputBlockObject, "id", null);
+        JsonObject inputBlockObject = GsonHelper.getAsJsonObject(inputJson, "block", new JsonObject());
+        String inputBlockId = GsonHelper.getAsString(inputBlockObject, "id", null);
         if (inputBlockId != null) {
-            Block block = getRequiredEntry(ForgeRegistries.BLOCKS, inputBlockId);
+            net.minecraft.world.level.block.Block block = getRequiredEntry(ForgeRegistries.BLOCKS, inputBlockId);
             builder.setInputBlock(block);
             parseStateMatchers(block.getStateDefinition(), inputBlockObject, builder::addBlockStateMatcher);
         }
 
         // input fluid
-        JsonObject inputFluidObject = JSONUtils.getAsJsonObject(inputJson, "fluid", new JsonObject());
-        String inputFluidId = JSONUtils.getAsString(inputFluidObject, "id", null);
+        JsonObject inputFluidObject = GsonHelper.getAsJsonObject(inputJson, "fluid", new JsonObject());
+        String inputFluidId = GsonHelper.getAsString(inputFluidObject, "id", null);
         if (inputFluidId != null) {
-            Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, inputFluidId);
+            net.minecraft.world.level.material.Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, inputFluidId);
             builder.setInputFluid(fluid);
             parseStateMatchers(fluid.getStateDefinition(), inputFluidObject, builder::addFluidStateMatcher);
         }
 
         //// Parse outputs
-        JsonObject outputJson = JSONUtils.getAsJsonObject(json, "output");
+        JsonObject outputJson = GsonHelper.getAsJsonObject(json, "output");
 
         // Output block
-        JsonObject outputBlockObject = JSONUtils.getAsJsonObject(outputJson, "block", new JsonObject());
-        String outputBlockId = JSONUtils.getAsString(outputBlockObject, "id", null);
+        JsonObject outputBlockObject = GsonHelper.getAsJsonObject(outputJson, "block", new JsonObject());
+        String outputBlockId = GsonHelper.getAsString(outputBlockObject, "id", null);
         if (outputBlockId != null) {
             Block block = getRequiredEntry(ForgeRegistries.BLOCKS, outputBlockId);
             builder.setOutputBlock(block);
 
-            boolean outputBlockKeep = JSONUtils.getAsBoolean(outputBlockObject, "keep", false);
+            boolean outputBlockKeep = GsonHelper.getAsBoolean(outputBlockObject, "keep", false);
             builder.setOutputBlockKeep(outputBlockKeep);
 
             parseStateAppliers(block.getStateDefinition(), outputBlockObject, builder::addBlockStateAppliers);
         }
 
         // Output fluid
-        JsonObject outputFluidObject = JSONUtils.getAsJsonObject(outputJson, "fluid", new JsonObject());
-        String outputFluidId = JSONUtils.getAsString(outputFluidObject, "id", null);
+        JsonObject outputFluidObject = GsonHelper.getAsJsonObject(outputJson, "fluid", new JsonObject());
+        String outputFluidId = GsonHelper.getAsString(outputFluidObject, "id", null);
         if (outputFluidId != null) {
             Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, outputFluidId);
             builder.setOutputFluid(fluid);
 
-            boolean outputFluidKeep = JSONUtils.getAsBoolean(outputFluidObject, "keep", false);
+            boolean outputFluidKeep = GsonHelper.getAsBoolean(outputFluidObject, "keep", false);
             builder.setOutputFluidKeep(outputFluidKeep);
 
             parseStateAppliers(fluid.getStateDefinition(), outputFluidObject, builder::addFluidStateAppliers);
@@ -115,14 +115,14 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
         // Parse additional drops
         if (outputJson.has("drops")) {
-            JsonArray dropList = JSONUtils.getAsJsonArray(outputJson, "drops");
+            JsonArray dropList = GsonHelper.getAsJsonArray(outputJson, "drops");
             List<ItemStack> drops = new ArrayList<>(dropList.size());
 
             for (JsonElement jsonElement : dropList) {
                 JsonObject object = jsonElement.getAsJsonObject();
-                String itemid = JSONUtils.getAsString(object, "item");
-                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemid));
-                int count = JSONUtils.getAsInt(object, "count", 1);
+                String itemid = GsonHelper.getAsString(object, "item");
+                net.minecraft.world.item.Item item = ForgeRegistries.ITEMS.getValue(new net.minecraft.resources.ResourceLocation(itemid));
+                int count = GsonHelper.getAsInt(object, "count", 1);
                 drops.add(new ItemStack(item, count));
             }
 
@@ -142,14 +142,14 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public EntropyRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public EntropyRecipe fromNetwork(net.minecraft.resources.ResourceLocation recipeId, FriendlyByteBuf buffer) {
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
         builder.setId(recipeId);
         builder.setMode(buffer.readEnum(EntropyMode.class));
 
         if (buffer.readBoolean()) {
-            Block inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+            net.minecraft.world.level.block.Block inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             builder.setInputBlock(inputBlock);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -158,7 +158,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+            net.minecraft.world.level.material.Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
             builder.setInputFluid(fluid);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -167,7 +167,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
 
         if (buffer.readBoolean()) {
-            Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+            net.minecraft.world.level.block.Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             builder.setOutputBlock(block);
             builder.setOutputBlockKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
@@ -177,7 +177,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+            net.minecraft.world.level.material.Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
             builder.setOutputFluid(fluid);
             builder.setOutputFluidKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
@@ -200,7 +200,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, EntropyRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, EntropyRecipe recipe) {
         buffer.writeEnum(recipe.getMode());
 
         buffer.writeBoolean(recipe.getInputBlock() != null);
@@ -255,9 +255,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         }
     }
 
-    private static void parseStateMatchers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
-            Consumer<StateMatcher> consumer) {
-        JsonObject properties = JSONUtils.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
+    private static void parseStateMatchers(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
+                                           Consumer<StateMatcher> consumer) {
+        JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
             String key = entry.getKey();
@@ -288,9 +288,9 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         });
     }
 
-    private static void parseStateAppliers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
-            Consumer<StateApplier<?>> consumer) {
-        JsonObject properties = JSONUtils.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
+    private static void parseStateAppliers(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
+                                           Consumer<StateApplier<?>> consumer) {
+        JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
             String key = entry.getKey();

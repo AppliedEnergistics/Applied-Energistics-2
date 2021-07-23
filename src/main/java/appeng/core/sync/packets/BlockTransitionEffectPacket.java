@@ -20,19 +20,19 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.GameData;
@@ -51,7 +51,7 @@ import appeng.util.Platform;
  */
 public class BlockTransitionEffectPacket extends BasePacket {
 
-    private final BlockPos pos;
+    private final net.minecraft.core.BlockPos pos;
     private final BlockState blockState;
     private final AEPartLocation direction;
     private final SoundMode soundMode;
@@ -67,7 +67,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.direction = direction;
         this.soundMode = soundMode;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(pos);
@@ -81,11 +81,11 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public BlockTransitionEffectPacket(final PacketBuffer stream) {
+    public BlockTransitionEffectPacket(final FriendlyByteBuf stream) {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
-        BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
+        net.minecraft.world.level.block.state.BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
         if (blockState == null) {
             AELog.warn("Received invalid blockstate id %d from server", blockStateId);
             blockState = Blocks.AIR.defaultBlockState();
@@ -97,7 +97,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         spawnParticles();
 
         playBreakOrPickupSound();
@@ -134,7 +134,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             soundEvent = fluid.getAttributes().getFillSound();
             if (soundEvent == null) {
                 if (fluid.is(FluidTags.LAVA)) {
-                    soundEvent = SoundEvents.BUCKET_FILL_LAVA;
+                    soundEvent = net.minecraft.sounds.SoundEvents.BUCKET_FILL_LAVA;
                 } else {
                     soundEvent = SoundEvents.BUCKET_FILL;
                 }
@@ -150,7 +150,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             return;
         }
 
-        SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
+        SimpleSoundInstance sound = new SimpleSoundInstance(soundEvent, SoundSource.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
                 pos);
         Minecraft.getInstance().getSoundManager().play(sound);
     }

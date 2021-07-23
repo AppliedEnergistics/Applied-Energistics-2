@@ -25,8 +25,8 @@ package appeng.api.implementations.parts;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Direction;
 
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -63,7 +63,7 @@ public interface ICablePart extends IPart {
      *
      * @return if the color change was successful.
      */
-    boolean changeColor(AEColor newColor, PlayerEntity who);
+    boolean changeColor(AEColor newColor, Player who);
 
     /**
      * Change sides on the cables node.
@@ -72,7 +72,7 @@ public interface ICablePart extends IPart {
      *
      * @param sides sides of cable
      */
-    void setExposedOnSides(EnumSet<Direction> sides);
+    void setExposedOnSides(EnumSet<net.minecraft.core.Direction> sides);
 
     /**
      * used to tests if a cable connects to neighbors visually.
@@ -81,6 +81,6 @@ public interface ICablePart extends IPart {
      *
      * @return true if this side is currently connects to an external block.
      */
-    boolean isConnected(Direction side);
+    boolean isConnected(net.minecraft.core.Direction side);
 
 }

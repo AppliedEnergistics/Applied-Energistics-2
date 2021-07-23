@@ -24,13 +24,13 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * AE can render the core of a cable (the core that connections are made to, in case the cable is not a straight line)
@@ -71,8 +71,8 @@ public enum CableCoreType {
         return cableMapping.get(cableType);
     }
 
-    public RenderMaterial getTexture(AEColor color) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    public Material getTexture(AEColor color) {
+        return new Material(TextureAtlas.LOCATION_BLOCKS,
                 new ResourceLocation(AppEng.MOD_ID, this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 

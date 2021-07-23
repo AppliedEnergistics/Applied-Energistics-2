@@ -18,10 +18,10 @@
 
 package appeng.fluids.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -33,7 +33,7 @@ public final class FluidSoundHelper {
     private FluidSoundHelper() {
     }
 
-    public static void playFillSound(PlayerEntity player, FluidStack fluidStack) {
+    public static void playFillSound(Player player, FluidStack fluidStack) {
         if (fluidStack.isEmpty()) {
             return;
         }
@@ -46,7 +46,7 @@ public final class FluidSoundHelper {
         playSound(player, fillSound);
     }
 
-    public static void playEmptySound(PlayerEntity player, FluidStack fluidStack) {
+    public static void playEmptySound(Player player, FluidStack fluidStack) {
         if (fluidStack.isEmpty()) {
             return;
         }
@@ -60,11 +60,11 @@ public final class FluidSoundHelper {
     }
 
     /**
-     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, PlayerEntity, boolean)
+     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
      */
-    private static void playSound(PlayerEntity player, SoundEvent fillSound) {
+    private static void playSound(Player player, SoundEvent fillSound) {
         // This should just play the sound for the player themselves
-        player.playNotifySound(fillSound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        player.playNotifySound(fillSound, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
 }

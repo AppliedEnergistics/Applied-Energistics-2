@@ -21,8 +21,8 @@ package appeng.parts.automation;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
 
 public class PlaneModelLoader implements IModelLoader<PlaneModel> {
@@ -30,7 +30,7 @@ public class PlaneModelLoader implements IModelLoader<PlaneModel> {
     public static final PlaneModelLoader INSTANCE = new PlaneModelLoader();
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
     }
 
     @Override
@@ -39,7 +39,7 @@ public class PlaneModelLoader implements IModelLoader<PlaneModel> {
         String sidesTexture = modelContents.get("sides").getAsString();
         String backTexture = modelContents.get("back").getAsString();
 
-        return new PlaneModel(new ResourceLocation(frontTexture), new ResourceLocation(sidesTexture),
+        return new PlaneModel(new net.minecraft.resources.ResourceLocation(frontTexture), new ResourceLocation(sidesTexture),
                 new ResourceLocation(backTexture));
     }
 

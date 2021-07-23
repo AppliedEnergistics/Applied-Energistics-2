@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -47,7 +47,7 @@ public interface IAEItemPowerStorage {
      *
      * @return what it could extract
      */
-    double extractAEPower(ItemStack stack, double amount, Actionable mode);
+    double extractAEPower(net.minecraft.world.item.ItemStack stack, double amount, Actionable mode);
 
     /**
      * @return the current maximum power ( this can change :P )
@@ -57,13 +57,13 @@ public interface IAEItemPowerStorage {
     /**
      * @return the current AE Power Level, this may exceed getMEMaxPower()
      */
-    double getAECurrentPower(ItemStack stack);
+    double getAECurrentPower(net.minecraft.world.item.ItemStack stack);
 
     /**
      * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */
-    AccessRestriction getPowerFlow(ItemStack stack);
+    AccessRestriction getPowerFlow(net.minecraft.world.item.ItemStack stack);
 
 }

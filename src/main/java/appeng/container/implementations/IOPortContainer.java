@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
@@ -38,7 +38,7 @@ import appeng.tile.storage.IOPortTileEntity;
  */
 public class IOPortContainer extends UpgradeableContainer {
 
-    public static final ContainerType<IOPortContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<IOPortContainer> TYPE = ContainerTypeBuilder
             .create(IOPortContainer::new, IOPortTileEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("ioport");
@@ -48,7 +48,7 @@ public class IOPortContainer extends UpgradeableContainer {
     @GuiSync(3)
     public OperationMode opMode = OperationMode.EMPTY;
 
-    public IOPortContainer(int id, final PlayerInventory ip, final IOPortTileEntity te) {
+    public IOPortContainer(int id, final Inventory ip, final IOPortTileEntity te) {
         super(TYPE, id, ip, te);
     }
 

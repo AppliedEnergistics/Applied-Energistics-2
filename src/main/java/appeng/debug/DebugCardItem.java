@@ -23,17 +23,15 @@ import java.util.Set;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -55,27 +53,29 @@ import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
 import appeng.util.InteractionUtil;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 
 public class DebugCardItem extends AEBaseItem {
 
-    public DebugCardItem(Properties properties) {
+    public DebugCardItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.getLevel().isClientSide()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
-        PlayerEntity player = context.getPlayer();
-        World world = context.getLevel();
+        Player player = context.getPlayer();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Direction side = context.getClickedFace();
+        net.minecraft.core.Direction side = context.getClickedFace();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
@@ -201,17 +201,17 @@ public class DebugCardItem extends AEBaseItem {
                 }
             }
         }
-        return ActionResultType.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string), Util.NIL_UUID);
+        player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 
-    private void outputMsg(final Entity player, String label, String value) {
-        player.sendMessage(new StringTextComponent("")
+    private void outputMsg(final net.minecraft.world.entity.Entity player, String label, String value) {
+        player.sendMessage(new TextComponent("")
                 .append(
-                        new StringTextComponent(label).withStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
+                        new TextComponent(label).withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE))
                 .append(value), Util.NIL_UUID);
     }
 

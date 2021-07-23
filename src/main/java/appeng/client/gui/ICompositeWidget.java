@@ -23,11 +23,10 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.Rectangle2d;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
 
@@ -45,7 +44,7 @@ public interface ICompositeWidget {
     /**
      * @return The area occupied by this widget relative to the dialogs origin.
      */
-    Rectangle2d getBounds();
+    Rect2i getBounds();
 
     /**
      * Allows the widget to add exclusion zones, which are used for managing space with other overlay mods such as JEI.
@@ -54,8 +53,8 @@ public interface ICompositeWidget {
      *                       coordinates.
      * @param screenBounds   The bounds of the current screen in window coordinates.
      */
-    default void addExclusionZones(List<Rectangle2d> exclusionZones, Rectangle2d screenBounds) {
-        Rectangle2d bounds = getBounds();
+    default void addExclusionZones(List<Rect2i> exclusionZones, Rect2i screenBounds) {
+        Rect2i bounds = getBounds();
         if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
             return;
         }
@@ -65,7 +64,7 @@ public interface ICompositeWidget {
                 || bounds.getY() < 0
                 || bounds.getX() + bounds.getWidth() > screenBounds.getWidth()
                 || bounds.getY() + bounds.getHeight() > screenBounds.getHeight()) {
-            exclusionZones.add(new Rectangle2d(
+            exclusionZones.add(new Rect2i(
                     screenBounds.getX() + bounds.getX(),
                     screenBounds.getY() + bounds.getY(),
                     bounds.getWidth(),
@@ -81,7 +80,7 @@ public interface ICompositeWidget {
      *
      * @param bounds The bounding box of the screen in window coordinates.
      */
-    default void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+    default void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
     }
 
     /**
@@ -106,7 +105,7 @@ public interface ICompositeWidget {
      * @param bounds   The bounds of the current dialog in window coordinates.
      * @param mouse    The current mouse position relative to the dialogs origin.
      */
-    default void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    default void drawBackgroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
     }
 
     /**
@@ -117,7 +116,7 @@ public interface ICompositeWidget {
      * @param bounds   The bounds of the current dialog in dialog coordinates (x,y are 0).
      * @param mouse    The current mouse position relative to the dialogs origin.
      */
-    default void drawForegroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    default void drawForegroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
     }
 
     /**

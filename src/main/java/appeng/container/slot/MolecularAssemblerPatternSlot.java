@@ -18,7 +18,7 @@
 
 package appeng.container.slot;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.implementations.MolecularAssemblerContainer;
@@ -40,7 +40,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     @Override
     protected boolean getCurrentValidationState() {
-        ItemStack stack = getItem();
+        net.minecraft.world.item.ItemStack stack = getItem();
         return stack.isEmpty() || mayPlace(stack);
     }
 

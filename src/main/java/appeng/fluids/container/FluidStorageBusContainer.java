@@ -20,8 +20,7 @@ package appeng.fluids.container;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -39,6 +38,7 @@ import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.world.inventory.MenuType;
 
 /**
  * @author BrockWS
@@ -47,7 +47,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class FluidStorageBusContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidStorageBusContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidStorageBusContainer> TYPE = ContainerTypeBuilder
             .create(FluidStorageBusContainer::new, FluidStorageBusPart.class)
             .build("fluid_storage_bus");
 
@@ -59,7 +59,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-    public FluidStorageBusContainer(int id, PlayerInventory ip, FluidStorageBusPart te) {
+    public FluidStorageBusContainer(int id, Inventory ip, FluidStorageBusPart te) {
         super(TYPE, id, ip, te);
         this.storageBus = te;
     }

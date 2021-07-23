@@ -21,13 +21,12 @@ package appeng.parts.p2p;
 import java.io.IOException;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -37,6 +36,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
+import net.minecraft.world.item.ItemStack;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
 
@@ -67,14 +67,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
         data.writeInt(this.opacity);
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         super.readFromStream(data);
         final int oldValue = this.lastValue;
         final int oldOpacity = this.opacity;
@@ -91,8 +91,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
             return false;
         }
 
-        final TileEntity te = this.getTile();
-        final World w = te.getLevel();
+        final BlockEntity te = this.getTile();
+        final Level w = te.getLevel();
 
         final int newLevel = w.getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
 
@@ -107,7 +107,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
         if (this.isOutput() && pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -132,7 +132,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final TileEntity te = this.getTile();
+            final BlockEntity te = this.getTile();
             this.opacity = 255 - te.getLevel().getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
         }
 
@@ -140,13 +140,13 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT tag) {
+    public void readFromNBT(final CompoundTag tag) {
         super.readFromNBT(tag);
         this.lastValue = tag.getInt("lastValue");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT tag) {
+    public void writeToNBT(final CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("lastValue", this.lastValue);
     }

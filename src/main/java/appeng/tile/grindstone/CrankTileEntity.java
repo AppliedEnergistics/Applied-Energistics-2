@@ -20,17 +20,17 @@ package appeng.tile.grindstone;
 
 import java.io.IOException;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
+public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
 
     private final int ticksPerRotation = 18;
 
@@ -41,7 +41,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CrankTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -67,8 +67,8 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
             return null;
         }
 
-        final Direction grinder = this.getUp().getOpposite();
-        final TileEntity te = this.level.getBlockEntity(this.worldPosition.relative(grinder));
+        final net.minecraft.core.Direction grinder = this.getUp().getOpposite();
+        final BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(grinder));
         if (te instanceof ICrankable) {
             return (ICrankable) te;
         }
@@ -76,20 +76,20 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         this.rotation = data.readInt();
         return c;
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeInt(this.rotation);
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(final Direction inForward, final net.minecraft.core.Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.level.getBlockState(this.worldPosition);
         state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition, false);

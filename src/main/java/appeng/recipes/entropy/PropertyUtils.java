@@ -20,14 +20,14 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
 
 final class PropertyUtils {
     private PropertyUtils() {
     }
 
-    static Property<?> getRequiredProperty(StateContainer<?, ?> stateContainer, String name) {
+    static net.minecraft.world.level.block.state.properties.Property<?> getRequiredProperty(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String name) {
         Objects.requireNonNull(stateContainer, "stateContainer must not be null");
 
         Property<?> property = stateContainer.getProperty(name);

@@ -18,24 +18,24 @@
 
 package appeng.helpers;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.util.IOrientable;
 import appeng.decorative.solid.QuartzPillarBlock;
 
 public class MetaRotation implements IOrientable {
 
-    private final Property<Direction> facingProp;
-    private final IBlockReader w;
-    private final BlockPos pos;
+    private final Property<net.minecraft.core.Direction> facingProp;
+    private final BlockGetter w;
+    private final net.minecraft.core.BlockPos pos;
 
-    public MetaRotation(final IBlockReader world, final BlockPos pos, final Property<Direction> facingProp) {
+    public MetaRotation(final BlockGetter world, final BlockPos pos, final net.minecraft.world.level.block.state.properties.Property<net.minecraft.core.Direction> facingProp) {
         this.w = world;
         this.pos = pos;
         this.facingProp = facingProp;
@@ -51,11 +51,11 @@ public class MetaRotation implements IOrientable {
         if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }
-        return Direction.SOUTH;
+        return net.minecraft.core.Direction.SOUTH;
     }
 
     @Override
-    public Direction getUp() {
+    public net.minecraft.core.Direction getUp() {
         final BlockState state = this.w.getBlockState(this.pos);
 
         if (this.facingProp != null && state.hasProperty(this.facingProp)) {
@@ -67,7 +67,7 @@ public class MetaRotation implements IOrientable {
             Axis a = state.getValue(QuartzPillarBlock.AXIS);
             switch (a) {
                 case X:
-                    return Direction.EAST;
+                    return net.minecraft.core.Direction.EAST;
                 case Z:
                     return Direction.SOUTH;
                 default:
@@ -80,13 +80,13 @@ public class MetaRotation implements IOrientable {
     }
 
     @Override
-    public void setOrientation(final Direction forward, final Direction up) {
-        if (this.w instanceof World) {
+    public void setOrientation(final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
+        if (this.w instanceof Level) {
             if (this.facingProp != null) {
-                ((World) this.w).setBlockAndUpdate(this.pos, this.w.getBlockState(this.pos).setValue(this.facingProp, up));
+                ((Level) this.w).setBlockAndUpdate(this.pos, this.w.getBlockState(this.pos).setValue(this.facingProp, up));
             } else {
                 // TODO 1.10.2-R - Temp
-                ((World) this.w).setBlockAndUpdate(this.pos,
+                ((Level) this.w).setBlockAndUpdate(this.pos,
                         this.w.getBlockState(this.pos).setValue(QuartzPillarBlock.AXIS, up.getAxis()));
             }
         } else {

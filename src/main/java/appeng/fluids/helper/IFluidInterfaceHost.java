@@ -20,8 +20,8 @@ package appeng.fluids.helper;
 
 import java.util.EnumSet;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;
@@ -31,7 +31,7 @@ public interface IFluidInterfaceHost extends IActionHost, IUpgradeableHost {
 
     EnumSet<Direction> getTargets();
 
-    TileEntity getTileEntity();
+    BlockEntity getTileEntity();
 
     void saveChanges();
 }

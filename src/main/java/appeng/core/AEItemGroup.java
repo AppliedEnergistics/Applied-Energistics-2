@@ -21,14 +21,14 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.core.NonNullList;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.ItemDefinition;
+import net.minecraft.world.item.ItemStack;
 
-public class AEItemGroup extends ItemGroup {
+public class AEItemGroup extends CreativeModeTab {
 
     private final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class AEItemGroup extends ItemGroup {
     }
 
     @Override
-    public void fillItemList(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<net.minecraft.world.item.ItemStack> items) {
         for (ItemDefinition<?> itemDef : this.itemDefs) {
             itemDef.asItem().fillItemCategory(this, items);
         }

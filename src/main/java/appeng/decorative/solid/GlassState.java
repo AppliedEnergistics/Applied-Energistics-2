@@ -20,7 +20,7 @@ package appeng.decorative.solid;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Immutable (and thus thread-safe) class that encapsulates the rendering state required for a connected texture glass
@@ -32,9 +32,9 @@ public final class GlassState {
     private final int y;
     private final int z;
 
-    private final EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
+    private final EnumSet<net.minecraft.core.Direction> flushWith = EnumSet.noneOf(net.minecraft.core.Direction.class);
 
-    public GlassState(int x, int y, int z, EnumSet<Direction> flushWith) {
+    public GlassState(int x, int y, int z, EnumSet<net.minecraft.core.Direction> flushWith) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -53,7 +53,7 @@ public final class GlassState {
         return this.z;
     }
 
-    public boolean isFlushWith(Direction side) {
+    public boolean isFlushWith(net.minecraft.core.Direction side) {
         return this.flushWith.contains(side);
     }
 

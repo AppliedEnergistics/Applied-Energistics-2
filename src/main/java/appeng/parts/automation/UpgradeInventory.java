@@ -18,10 +18,10 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -88,7 +88,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         this.cached = true;
         this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
-        for (final ItemStack is : this) {
+        for (final net.minecraft.world.item.ItemStack is : this) {
             if (is == null || is.getItem() == Items.AIR || !(is.getItem() instanceof IUpgradeModule)) {
                 continue;
             }
@@ -127,7 +127,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT target) {
+    public void readFromNBT(final CompoundTag target) {
         super.readFromNBT(target);
         this.updateUpgradeInfo();
     }

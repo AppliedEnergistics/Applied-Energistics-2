@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.sync.BasePacket;
@@ -32,7 +32,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     private final int amount;
     private final boolean autoStart;
 
-    public ConfirmAutoCraftPacket(final PacketBuffer stream) {
+    public ConfirmAutoCraftPacket(final FriendlyByteBuf stream) {
         this.autoStart = stream.readBoolean();
         this.amount = stream.readInt();
     }
@@ -41,7 +41,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
         this.amount = craftAmt;
         this.autoStart = autoStart;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeBoolean(autoStart);
         data.writeInt(this.amount);
@@ -49,7 +49,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
         if (player.containerMenu instanceof CraftAmountContainer) {
             final CraftAmountContainer cca = (CraftAmountContainer) player.containerMenu;
             cca.confirm(amount, autoStart);

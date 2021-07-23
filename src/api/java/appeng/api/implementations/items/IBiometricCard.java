@@ -27,7 +27,7 @@ import java.util.EnumSet;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -43,7 +43,7 @@ public interface IBiometricCard {
     /**
      * @return {@link GameProfile} of the player encoded on this card, or a blank string.
      */
-    GameProfile getProfile(ItemStack is);
+    GameProfile getProfile(net.minecraft.world.item.ItemStack is);
 
     /**
      * @param itemStack card
@@ -59,7 +59,7 @@ public interface IBiometricCard {
      *
      * @return true if this permission is set on the card.
      */
-    boolean hasPermission(ItemStack is, SecurityPermissions permission);
+    boolean hasPermission(net.minecraft.world.item.ItemStack is, SecurityPermissions permission);
 
     /**
      * remove a permission from the item stack.

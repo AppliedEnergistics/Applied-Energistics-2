@@ -42,8 +42,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.world.World;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -84,6 +82,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
+import net.minecraft.world.level.Level;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
@@ -380,7 +379,7 @@ public class CraftingService
 
     @Override
     public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(final IAEItemStack whatToCraft,
-            final ICraftingPatternDetails details, final int slotIndex, final World world) {
+            final ICraftingPatternDetails details, final int slotIndex, final Level world) {
         final ImmutableList<ICraftingPatternDetails> res = this.craftableItems.get(whatToCraft);
 
         if (res == null) {
@@ -404,8 +403,8 @@ public class CraftingService
     }
 
     @Override
-    public Future<ICraftingJob> beginCraftingJob(final World world, final IGrid grid, final IActionSource actionSrc,
-            final IAEItemStack slotItem, final ICraftingCallback cb) {
+    public Future<ICraftingJob> beginCraftingJob(final Level world, final IGrid grid, final IActionSource actionSrc,
+                                                 final IAEItemStack slotItem, final ICraftingCallback cb) {
         if (world == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }

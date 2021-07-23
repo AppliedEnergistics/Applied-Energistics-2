@@ -29,22 +29,22 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
@@ -68,10 +68,10 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject {
+public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject {
 
     private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
-    private static final Map<TileEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
+    private static final Map<net.minecraft.world.level.block.entity.BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
     private String customName;
@@ -79,11 +79,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBaseTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
-    public static void registerTileItem(TileEntityType<?> type, final Item wat) {
+    public static void registerTileItem(net.minecraft.world.level.block.entity.BlockEntityType<?> type, final Item wat) {
         REPRESENTATIVE_ITEMS.put(type, wat);
     }
 
@@ -97,7 +97,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Nonnull
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return this;
     }
 
@@ -111,7 +111,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
 
         if (data.contains("customName")) {
@@ -130,7 +130,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
 
         if (this.canBeRotated()) {
@@ -146,12 +146,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 64, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 64, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
         // / pkt.actionType
         if (pkt.getType() == 64) {
             this.handleUpdateTag(null, pkt.getTag());
@@ -169,10 +169,10 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * This builds a tag with the actual data that should be sent to the client for update syncs. If the tile entity
      * doesn't need update syncs, it returns null.
      */
-    private CompoundNBT writeUpdateData() {
-        final CompoundNBT data = new CompoundNBT();
+    private CompoundTag writeUpdateData() {
+        final CompoundTag data = new CompoundTag();
 
-        final PacketBuffer stream = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.buffer());
 
         try {
             this.writeToStream(stream);
@@ -188,7 +188,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return data;
     }
 
-    private boolean readUpdateData(PacketBuffer stream) {
+    private boolean readUpdateData(FriendlyByteBuf stream) {
         boolean output = false;
 
         try {
@@ -211,11 +211,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * Handles tile entites that are being sent to the client as part of a full chunk.
      */
     @Override
-    public CompoundNBT getUpdateTag() {
-        final CompoundNBT data = this.writeUpdateData();
+    public CompoundTag getUpdateTag() {
+        final CompoundTag data = this.writeUpdateData();
 
         if (data == null) {
-            return new CompoundNBT();
+            return new CompoundTag();
         }
 
         data.putInt("x", this.worldPosition.getX());
@@ -228,18 +228,18 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * Handles tile entites that are being received by the client as part of a full chunk.
      */
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        final PacketBuffer stream = new PacketBuffer(Unpooled.copiedBuffer(tag.getByteArray("X")));
+    public void handleUpdateTag(BlockState state, CompoundTag tag) {
+        final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
             this.markForUpdate();
         }
     }
 
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
-            final Direction old_Up = this.up;
+            final net.minecraft.core.Direction old_Up = this.up;
 
             final byte orientation = data.readByte();
             this.forward = Direction.values()[orientation & 0x7];
@@ -250,7 +250,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return false;
     }
 
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         if (this.canBeRotated()) {
             final byte orientation = (byte) (this.up.ordinal() << 3 | this.forward.ordinal());
             data.writeByte(orientation);
@@ -303,12 +303,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public Direction getUp() {
+    public net.minecraft.core.Direction getUp() {
         return this.up;
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(final net.minecraft.core.Direction inForward, final Direction inUp) {
         this.forward = inForward;
         this.up = inUp;
         this.markForUpdate();
@@ -316,7 +316,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         this.saveChanges();
     }
 
-    public void onPlacement(BlockItemUseContext context) {
+    public void onPlacement(BlockPlaceContext context) {
         ItemStack stack = context.getItemInHand();
         if (stack.hasTag()) {
             this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTag());
@@ -329,7 +329,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * @param from     source of settings
      * @param compound compound of source
      */
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         if (this instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
             if (cm != null) {
@@ -375,11 +375,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * @param drops drops of tile entity
      */
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
 
     }
 
-    public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getNoDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
 
     }
 
@@ -389,11 +389,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * @param from source of settings
      * @return compound of source
      */
-    public CompoundNBT downloadSettings(final SettingsFrom from) {
-        final CompoundNBT output = new CompoundNBT();
+    public CompoundTag downloadSettings(final SettingsFrom from) {
+        final CompoundTag output = new CompoundTag();
 
         if (this.hasCustomInventoryName()) {
-            final CompoundNBT dsp = new CompoundNBT();
+            final CompoundTag dsp = new CompoundTag();
             dsp.putString("Name", this.customName);
             output.put("display", dsp);
         }
@@ -426,8 +426,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public ITextComponent getCustomInventoryName() {
-        return new StringTextComponent(
+    public net.minecraft.network.chat.Component getCustomInventoryName() {
+        return new TextComponent(
                 this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }
 
@@ -445,7 +445,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * Checks if this tile entity is remote (we are running on the logical client side).
      */
     public boolean isRemote() {
-        World world = getLevel();
+        Level world = getLevel();
         return world == null || world.isClientSide();
     }
 
@@ -472,7 +472,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         }
     }
 
-    private Object markDirtyAtEndOfTick(final World w) {
+    private Object markDirtyAtEndOfTick(final Level w) {
         this.setChanged();
         this.markDirtyQueued = false;
         return null;
@@ -494,8 +494,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
 }

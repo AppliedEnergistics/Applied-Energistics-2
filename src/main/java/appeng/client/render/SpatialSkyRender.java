@@ -20,16 +20,16 @@ package appeng.client.render;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.vector.Quaternion;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.Quaternion;
 
 public class SpatialSkyRender {
 
@@ -47,11 +47,11 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
-            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
-            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { com.mojang.math.Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
+            new Quaternion(-90.0F, 0.0F, 0.0F, true), new com.mojang.math.Quaternion(180.0F, 0.0F, 0.0F, true),
+            new Quaternion(0.0F, 0.0F, 90.0F, true), new com.mojang.math.Quaternion(0.0F, 0.0F, -90.0F, true), };
 
-    public void render(MatrixStack matrixStack) {
+    public void render(PoseStack matrixStack) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;
@@ -69,17 +69,17 @@ public class SpatialSkyRender {
         RenderSystem.disableBlend();
         RenderSystem.depthMask(false);
         RenderSystem.color4f(0.0f, 0.0f, 0.0f, 1.0f);
-        final Tessellator tessellator = Tessellator.getInstance();
+        final Tesselator tessellator = Tesselator.getInstance();
         final BufferBuilder VertexBuffer = tessellator.getBuilder();
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
-        for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
+        for (com.mojang.math.Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.pushPose();
             matrixStack.mulPose(rotation);
 
             RenderSystem.disableTexture();
-            VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+            VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION);
             VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).endVertex();
             VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).endVertex();
             VertexBuffer.vertex(100.0D, -100.0D, 100.0D).endVertex();
@@ -99,7 +99,7 @@ public class SpatialSkyRender {
             RenderSystem.depthMask(false);
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            RenderHelper.turnOff();
+            Lighting.turnOff();
 
             RenderSystem.color4f(fade, fade, fade, 1.0f);
             GL11.glCallList(this.dspList);
@@ -115,9 +115,9 @@ public class SpatialSkyRender {
     }
 
     private void renderTwinkles() {
-        final Tessellator tessellator = Tessellator.getInstance();
+        final Tesselator tessellator = Tesselator.getInstance();
         final BufferBuilder vb = tessellator.getBuilder();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION);
 
         for (int i = 0; i < 50; ++i) {
             double iX = this.random.nextFloat() * 2.0F - 1.0F;

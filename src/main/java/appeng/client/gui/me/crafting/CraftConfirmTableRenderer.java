@@ -21,13 +21,13 @@ package appeng.client.gui.me.crafting;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.me.crafting.CraftingPlanSummaryEntry;
 import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;
+import net.minecraft.world.item.ItemStack;
 
 public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPlanSummaryEntry> {
 
@@ -36,8 +36,8 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     }
 
     @Override
-    protected List<ITextComponent> getEntryDescription(CraftingPlanSummaryEntry entry) {
-        List<ITextComponent> lines = new ArrayList<>(3);
+    protected List<net.minecraft.network.chat.Component> getEntryDescription(CraftingPlanSummaryEntry entry) {
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
             String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
             lines.add(GuiText.FromStorage.text(amount));
@@ -61,8 +61,8 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     }
 
     @Override
-    protected List<ITextComponent> getEntryTooltip(CraftingPlanSummaryEntry entry) {
-        List<ITextComponent> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
+    protected List<net.minecraft.network.chat.Component> getEntryTooltip(CraftingPlanSummaryEntry entry) {
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {

@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -59,7 +59,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
-    public ChargerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ChargerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
@@ -70,25 +70,25 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.COVERED;
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         try {
             final IAEItemStack item = AEItemStack.fromPacket(data);
             final ItemStack is = item.createItemStack();
             this.inv.setStackInSlot(0, is);
         } catch (final Throwable t) {
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
         }
         return c; // TESR doesn't need updates!
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         final AEItemStack is = AEItemStack.fromItemStack(this.inv.getStackInSlot(0));
         if (is != null) {
@@ -112,13 +112,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     public void applyTurn() {
         this.injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
 
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
 
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                net.minecraft.world.item.ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
             }
         }
@@ -136,7 +136,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final net.minecraft.world.item.ItemStack added) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });
@@ -144,14 +144,14 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         this.markForUpdate();
     }
 
-    public void activate(final PlayerEntity player) {
+    public void activate(final Player player) {
         if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
             return;
         }
 
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
         if (myItem.isEmpty()) {
-            ItemStack held = player.inventory.getSelected();
+            net.minecraft.world.item.ItemStack held = player.inventory.getSelected();
 
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
@@ -159,9 +159,9 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                 this.inv.setStackInSlot(0, held);
             }
         } else {
-            final List<ItemStack> drops = new ArrayList<>();
+            final List<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
             drops.add(myItem);
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
             Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), drops);
         }
     }
@@ -177,7 +177,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     private boolean doWork() {
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
         boolean changed = false;
 
         if (!myItem.isEmpty()) {
@@ -215,7 +215,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                net.minecraft.world.item.ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
 
                 changed = true;
@@ -244,13 +244,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
+        public boolean allowInsert(IItemHandler inv, final int i, final net.minecraft.world.item.ItemStack itemstack) {
             return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
         }
 
         @Override
         public boolean allowExtract(IItemHandler inv, final int slotIndex, int amount) {
-            ItemStack extractedItem = inv.getStackInSlot(slotIndex);
+            net.minecraft.world.item.ItemStack extractedItem = inv.getStackInSlot(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {
                 final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();

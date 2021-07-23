@@ -18,11 +18,11 @@
 
 package appeng.client.gui.me.common;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Base class for virtual client-side only slots that do not allow Vanilla to directly interact with the contained item
@@ -33,7 +33,7 @@ public class ClientReadOnlySlot extends Slot {
      * We use this fake/empty inventory to prevent other mods from attempting to interact with anything based on this
      * slot's inventory/slot index.
      */
-    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
+    private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
 
     public ClientReadOnlySlot(int xPosition, int yPosition) {
         super(EMPTY_INVENTORY, 0, xPosition, yPosition);
@@ -59,7 +59,7 @@ public class ClientReadOnlySlot extends Slot {
     }
 
     @Override
-    public final boolean mayPickup(PlayerEntity player) {
+    public final boolean mayPickup(Player player) {
         return false;
     }
 }

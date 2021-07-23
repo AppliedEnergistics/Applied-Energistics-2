@@ -20,7 +20,7 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.util.inv.ItemSlot;
 

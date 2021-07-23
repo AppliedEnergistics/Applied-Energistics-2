@@ -20,10 +20,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.container.AEBaseContainer;
@@ -34,17 +34,17 @@ import appeng.core.sync.network.INetworkInfo;
 
 public class SwitchGuisPacket extends BasePacket {
 
-    private final ContainerType<?> newGui;
+    private final MenuType<?> newGui;
 
-    public SwitchGuisPacket(final PacketBuffer stream) {
+    public SwitchGuisPacket(final FriendlyByteBuf stream) {
         this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
     }
 
     // api
-    public SwitchGuisPacket(final ContainerType<?> newGui) {
+    public SwitchGuisPacket(final MenuType<?> newGui) {
         this.newGui = newGui;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeResourceLocation(newGui.getRegistryName());
@@ -53,8 +53,8 @@ public class SwitchGuisPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.containerMenu;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseContainer) {
             final AEBaseContainer bc = (AEBaseContainer) c;
             final ContainerLocator locator = bc.getLocator();

@@ -25,12 +25,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.features.IWorldGen;
-
-import appeng.api.features.IWorldGen.WorldGenType;
 
 public final class WorldGenRegistry implements IWorldGen {
 
@@ -45,12 +43,12 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public boolean isWorldGenEnabled(WorldGenType type, ServerWorld w) {
+    public boolean isWorldGenEnabled(WorldGenType type, ServerLevel w) {
         return true;
     }
 
     @Override
-    public void disableWorldGenForBiome(final WorldGenType type, final ResourceLocation biomeId) {
+    public void disableWorldGenForBiome(final WorldGenType type, final net.minecraft.resources.ResourceLocation biomeId) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(biomeId);
 
@@ -79,10 +77,10 @@ public final class WorldGenRegistry implements IWorldGen {
         /**
          * Biomes blacklisted by other mods.
          */
-        final Set<ResourceLocation> modBiomeBlacklist = new HashSet<>();
+        final Set<net.minecraft.resources.ResourceLocation> modBiomeBlacklist = new HashSet<>();
         /**
          * Biomes blacklisted in the user's config.
          */
-        final Set<ResourceLocation> configBiomeBlacklist = new HashSet<>();
+        final Set<net.minecraft.resources.ResourceLocation> configBiomeBlacklist = new HashSet<>();
     }
 }

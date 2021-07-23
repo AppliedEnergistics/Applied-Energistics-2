@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -106,9 +106,9 @@ public class NetworkStatus {
     }
 
     /**
-     * Reads a network status previously written using {@link #write(PacketBuffer)}.
+     * Reads a network status previously written using {@link #write(FriendlyByteBuf)}.
      */
-    public static NetworkStatus read(PacketBuffer data) {
+    public static NetworkStatus read(FriendlyByteBuf data) {
         NetworkStatus status = new NetworkStatus();
         status.averagePowerInjection = data.readDouble();
         status.averagePowerUsage = data.readDouble();
@@ -126,9 +126,9 @@ public class NetworkStatus {
     }
 
     /**
-     * Writes the contents of this object to a packet buffer. Use {@link #read(PacketBuffer)} to restore.
+     * Writes the contents of this object to a packet buffer. Use {@link #read(FriendlyByteBuf)} to restore.
      */
-    public void write(PacketBuffer data) {
+    public void write(FriendlyByteBuf data) {
         data.writeDouble(averagePowerInjection);
         data.writeDouble(averagePowerUsage);
         data.writeDouble(storedPower);

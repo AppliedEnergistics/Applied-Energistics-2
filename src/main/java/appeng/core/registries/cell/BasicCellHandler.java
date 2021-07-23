@@ -18,7 +18,7 @@
 
 package appeng.core.registries.cell;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellHandler;

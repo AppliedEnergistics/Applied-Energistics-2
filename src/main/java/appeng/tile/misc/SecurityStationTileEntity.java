@@ -23,17 +23,17 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 
@@ -87,7 +87,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
 
-    public SecurityStationTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SecurityStationTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -107,12 +107,12 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+                                  final net.minecraft.world.item.ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
 
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
         if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
@@ -127,7 +127,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean wasActive = this.isActive;
         this.isActive = data.readBoolean();
@@ -139,14 +139,14 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isActive());
         data.writeByte(this.paintedColor.ordinal());
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
@@ -154,11 +154,11 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         data.putLong("securityKey", this.securityKey);
         this.getConfigSlot().writeToNBT(data, "config");
 
-        final CompoundNBT storedItems = new CompoundNBT();
+        final CompoundTag storedItems = new CompoundTag();
 
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final CompoundNBT it = new CompoundNBT();
+            final CompoundTag it = new CompoundTag();
             ais.createItemStack().save(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
@@ -169,7 +169,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
@@ -179,11 +179,11 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         this.securityKey = data.getLong("securityKey");
         this.getConfigSlot().readFromNBT(data, "config");
 
-        final CompoundNBT storedItems = data.getCompound("storedItems");
+        final CompoundTag storedItems = data.getCompound("storedItems");
         for (final Object key : storedItems.getAllKeys()) {
-            final INBT obj = storedItems.get((String) key);
-            if (obj instanceof CompoundNBT) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.of((CompoundNBT) obj)));
+            final Tag obj = storedItems.get((String) key);
+            if (obj instanceof CompoundTag) {
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(net.minecraft.world.item.ItemStack.of((CompoundTag) obj)));
             }
         }
     }
@@ -273,7 +273,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
         // read permissions
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final ItemStack is = ais.createItemStack();
+            final net.minecraft.world.item.ItemStack is = ais.createItemStack();
             final Item i = is.getItem();
             if (i instanceof IBiometricCard bc) {
                 bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);
@@ -300,7 +300,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final PlayerEntity who) {
+    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }

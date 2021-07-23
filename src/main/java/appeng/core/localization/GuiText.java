@@ -18,9 +18,9 @@
 
 package appeng.core.localization;
 
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public enum GuiText {
     inventory("container"), // mc's default Inventory localization.
@@ -94,16 +94,16 @@ public enum GuiText {
 
     private final String root;
 
-    private final ITextComponent text;
+    private final net.minecraft.network.chat.Component text;
 
     GuiText() {
         this.root = "gui.appliedenergistics2";
-        this.text = new TranslationTextComponent(getTranslationKey());
+        this.text = new TranslatableComponent(getTranslationKey());
     }
 
     GuiText(final String r) {
         this.root = r;
-        this.text = new TranslationTextComponent(getTranslationKey());
+        this.text = new TranslatableComponent(getTranslationKey());
     }
 
     public String getLocal() {
@@ -114,20 +114,20 @@ public enum GuiText {
         return this.root + '.' + this.toString();
     }
 
-    public ITextComponent text() {
+    public net.minecraft.network.chat.Component text() {
         return text;
     }
 
-    public IFormattableTextComponent withSuffix(String text) {
+    public MutableComponent withSuffix(String text) {
         return text().copy().append(text);
     }
 
-    public IFormattableTextComponent withSuffix(ITextComponent text) {
+    public MutableComponent withSuffix(net.minecraft.network.chat.Component text) {
         return text().copy().append(text);
     }
 
-    public IFormattableTextComponent text(Object... args) {
-        return new TranslationTextComponent(getTranslationKey(), args);
+    public MutableComponent text(Object... args) {
+        return new TranslatableComponent(getTranslationKey(), args);
     }
 
 }

@@ -20,10 +20,10 @@ package appeng.decorative;
 
 import appeng.block.AEBaseBlock;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class AEDecorativeBlock extends AEBaseBlock {
-    public AEDecorativeBlock(Properties props) {
+    public AEDecorativeBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 }

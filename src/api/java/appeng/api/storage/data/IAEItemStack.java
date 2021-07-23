@@ -23,8 +23,8 @@
 
 package appeng.api.storage.data;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * An alternate version of ItemStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -43,7 +43,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
      *
      * @return new ItemStack
      */
-    ItemStack createItemStack();
+    net.minecraft.world.item.ItemStack createItemStack();
 
     /**
      * is there NBT Data for this item?

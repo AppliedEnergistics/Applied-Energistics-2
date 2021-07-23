@@ -25,10 +25,9 @@ import java.util.Set;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -36,6 +35,7 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.statistics.GridChunkEvent;
 import appeng.me.InWorldGridNode;
+import net.minecraft.world.level.LevelAccessor;
 
 /**
  * A grid providing precomupted statistics about a network.
@@ -50,7 +50,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * This uses a {@link Multiset} so we can simply add or remove {@link IGridNode} without having to take into account
      * that others still might exist without explicitly counting these.
      */
-    private final Map<IWorld, Multiset<ChunkPos>> chunks;
+    private final Map<LevelAccessor, Multiset<ChunkPos>> chunks;
 
     public StatisticsService(final IGrid g) {
         this.grid = g;
@@ -76,11 +76,11 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     }
 
     /**
-     * A set of all {@link IWorld} this grid spans.
+     * A set of all {@link LevelAccessor} this grid spans.
      *
      * @return
      */
-    public Set<IWorld> worlds() {
+    public Set<LevelAccessor> worlds() {
         return this.chunks.keySet();
     }
 
@@ -90,11 +90,11 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * @param world
      * @return
      */
-    public Set<ChunkPos> chunks(IWorld world) {
+    public Set<ChunkPos> chunks(LevelAccessor world) {
         return this.chunks.get(world).elementSet();
     }
 
-    public Map<IWorld, Multiset<ChunkPos>> getChunks() {
+    public Map<LevelAccessor, Multiset<net.minecraft.world.level.ChunkPos>> getChunks() {
         return this.chunks;
     }
 
@@ -105,11 +105,11 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * @param pos
      * @return
      */
-    private boolean addChunk(IWorld world, BlockPos pos) {
-        final ChunkPos position = new ChunkPos(pos);
+    private boolean addChunk(LevelAccessor world, BlockPos pos) {
+        final net.minecraft.world.level.ChunkPos position = new ChunkPos(pos);
 
         if (!this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerWorld) world, position));
+            this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerLevel) world, position));
         }
 
         return this.getChunks(world).add(position);
@@ -125,12 +125,12 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * @param pos
      * @return
      */
-    private boolean removeChunk(IWorld world, BlockPos pos) {
-        final ChunkPos position = new ChunkPos(pos);
+    private boolean removeChunk(LevelAccessor world, BlockPos pos) {
+        final net.minecraft.world.level.ChunkPos position = new net.minecraft.world.level.ChunkPos(pos);
         boolean ret = this.getChunks(world).remove(position);
 
         if (ret && !this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new GridChunkEvent.GridChunkRemoved((ServerWorld) world, position));
+            this.grid.postEvent(new GridChunkEvent.GridChunkRemoved((ServerLevel) world, position));
         }
 
         this.clearWorld(world);
@@ -138,7 +138,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
         return ret;
     }
 
-    private Multiset<ChunkPos> getChunks(IWorld world) {
+    private Multiset<net.minecraft.world.level.ChunkPos> getChunks(LevelAccessor world) {
         return this.chunks.computeIfAbsent(world, w -> HashMultiset.create());
     }
 
@@ -147,7 +147,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      *
      * @param world
      */
-    private void clearWorld(IWorld world) {
+    private void clearWorld(LevelAccessor world) {
         if (this.chunks.get(world).isEmpty()) {
             this.chunks.remove(world);
         }

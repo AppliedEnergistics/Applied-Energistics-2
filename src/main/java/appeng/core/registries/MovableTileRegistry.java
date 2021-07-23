@@ -25,11 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
@@ -38,21 +36,22 @@ import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class MovableTileRegistry implements IMovableRegistry {
 
     private static final ResourceLocation TAG_WHITELIST = new ResourceLocation(AppEng.MOD_ID, "spatial/whitelist");
-    private static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "spatial/blacklist");
+    private static final net.minecraft.resources.ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "spatial/blacklist");
 
     private final Set<Block> blacklisted = new HashSet<>();
 
-    private final Map<Class<? extends TileEntity>, IMovableHandler> valid = new IdentityHashMap<>();
-    private final List<Class<? extends TileEntity>> test = new ArrayList<>();
+    private final Map<Class<? extends BlockEntity>, IMovableHandler> valid = new IdentityHashMap<>();
+    private final List<Class<? extends BlockEntity>> test = new ArrayList<>();
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final ITag.INamedTag<Block> blockTagWhiteList;
-    private final ITag.INamedTag<Block> blockTagBlackList;
+    private final Named<Block> blockTagWhiteList;
+    private final Named<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
         this.blockTagWhiteList = BlockTags.createOptional(TAG_WHITELIST);
@@ -60,13 +59,13 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void blacklistBlock(final Block blk) {
+    public void blacklistBlock(final net.minecraft.world.level.block.Block blk) {
         this.blacklisted.add(blk);
     }
 
     @Override
-    public void whiteListTileEntity(final Class<? extends TileEntity> c) {
-        if (c.getName().equals(TileEntity.class.getName())) {
+    public void whiteListTileEntity(final Class<? extends BlockEntity> c) {
+        if (c.getName().equals(BlockEntity.class.getName())) {
             throw new IllegalArgumentException(new AppEngException("Someone tried to make all tiles movable with " + c
                     + ", this is a clear violation of the purpose of the white list."));
         }
@@ -75,8 +74,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public boolean askToMove(final TileEntity te) {
-        final Class<? extends TileEntity> myClass = te.getClass();
+    public boolean askToMove(final BlockEntity te) {
+        final Class<? extends BlockEntity> myClass = te.getClass();
         IMovableHandler canMove = this.valid.get(myClass);
 
         if (canMove == null) {
@@ -95,7 +94,7 @@ public class MovableTileRegistry implements IMovableRegistry {
         return false;
     }
 
-    private IMovableHandler testClass(final Class<? extends TileEntity> myClass, final TileEntity te) {
+    private IMovableHandler testClass(final Class<? extends BlockEntity> myClass, final BlockEntity te) {
         IMovableHandler handler = null;
 
         // ask handlers...
@@ -126,7 +125,7 @@ public class MovableTileRegistry implements IMovableRegistry {
         }
 
         // if you are on the white list your opted in.
-        for (final Class<? extends TileEntity> testClass : this.test) {
+        for (final Class<? extends BlockEntity> testClass : this.test) {
             if (testClass.isAssignableFrom(myClass)) {
                 this.valid.put(myClass, this.dsh);
                 return this.dsh;
@@ -138,7 +137,7 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void doneMoving(final TileEntity te) {
+    public void doneMoving(final BlockEntity te) {
         if (te instanceof IMovableTile) {
             final IMovableTile mt = (IMovableTile) te;
             mt.doneMoving();
@@ -151,8 +150,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public IMovableHandler getHandler(final TileEntity te) {
-        final Class<? extends TileEntity> myClass = te.getClass();
+    public IMovableHandler getHandler(final BlockEntity te) {
+        final Class<? extends BlockEntity> myClass = te.getClass();
         final IMovableHandler h = this.valid.get(myClass);
         return h == null ? this.dsh : h;
     }

@@ -20,11 +20,11 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -73,7 +73,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.setCraftingRecipe(data.getBoolean("craftingMode"));
         this.setSubstitution(data.getBoolean("substitute"));
@@ -83,7 +83,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("craftingMode", this.craftingMode);
         data.putBoolean("substitute", this.substitute);
@@ -93,7 +93,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ContainerType<?> getContainerType(final PlayerEntity p) {
+    public MenuType<?> getContainerType(final Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return PatternTermContainer.TYPE;
         }
@@ -113,7 +113,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
                 for (int x = 0; x < this.crafting.getSlots() && x < details.getSparseInputs().length; x++) {
                     final IAEItemStack item = details.getSparseInputs()[x];
-                    this.crafting.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                    this.crafting.setStackInSlot(x, item == null ? net.minecraft.world.item.ItemStack.EMPTY : item.createItemStack());
                 }
 
                 for (int x = 0; x < this.output.getSlots() && x < details.getSparseOutputs().length; x++) {
@@ -131,7 +131,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     private void fixCraftingRecipes() {
         if (this.craftingMode) {
             for (int x = 0; x < this.crafting.getSlots(); x++) {
-                final ItemStack is = this.crafting.getStackInSlot(x);
+                final net.minecraft.world.item.ItemStack is = this.crafting.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.setCount(1);
                 }

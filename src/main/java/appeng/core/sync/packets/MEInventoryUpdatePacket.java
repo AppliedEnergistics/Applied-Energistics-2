@@ -30,10 +30,10 @@ import com.google.common.base.Preconditions;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -68,7 +68,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 
     private int windowId;
 
-    public MEInventoryUpdatePacket(final PacketBuffer data) {
+    public MEInventoryUpdatePacket(final FriendlyByteBuf data) {
         int itemCount = data.readShort();
         this.windowId = data.readVarInt();
         this.fullUpdate = data.readBoolean();
@@ -89,13 +89,13 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         // This is slightly dangerous since it accesses the game thread from the network thread,
         // but reading the current container is atomic (reference field), and from then the window id
         // and storage channel are immutable.
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             // Probably a race-condition when the player already has left the game
             return null;
         }
 
-        Container currentContainer = player.containerMenu;
+        AbstractContainerMenu currentContainer = player.containerMenu;
         if (!(currentContainer instanceof MEMonitorableContainer)) {
             // Ignore a packet for a screen that has already been closed
             return null;
@@ -124,7 +124,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         private final int windowId;
 
         @Nullable
-        private PacketBuffer data;
+        private FriendlyByteBuf data;
 
         private int itemCount;
 
@@ -181,7 +181,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         }
 
         public void add(GridInventoryEntry<T> entry) {
-            PacketBuffer data = ensureData();
+            FriendlyByteBuf data = ensureData();
 
             // This should only error out if the entire packet exceeds about 2 megabytes of memory,
             // if any item writes that much junk to a share tag, it's acceptable to crash.
@@ -214,16 +214,16 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
             }
         }
 
-        private PacketBuffer ensureData() {
+        private FriendlyByteBuf ensureData() {
             if (data == null) {
                 data = createPacketHeader(false);
             }
             return data;
         }
 
-        private PacketBuffer createPacketHeader(boolean fullUpdate) {
-            final PacketBuffer data;
-            data = new PacketBuffer(Unpooled.buffer(INITIAL_BUFFER_CAPACITY));
+        private FriendlyByteBuf createPacketHeader(boolean fullUpdate) {
+            final FriendlyByteBuf data;
+            data = new FriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY));
             // Since we don't have an instance of a packet we can't get the packet id the normal way now
             data.writeInt(BasePacketHandler.PacketTypes.ME_INVENTORY_UPDATE.getPacketId());
             Preconditions.checkState(data.writerIndex() == ITEM_COUNT_FIELD_OFFSET);
@@ -252,7 +252,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         MEMonitorableContainer<T> container = getContainer();
         if (container == null) {
             AELog.info("Ignoring ME inventory update packet because the target container isn't open.");

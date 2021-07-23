@@ -18,8 +18,8 @@
 
 package appeng.capabilities;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -61,12 +61,12 @@ public final class Capabilities {
     private static <T> Capability.IStorage<T> createNullStorage() {
         return new Capability.IStorage<T>() {
             @Override
-            public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
+            public Tag writeNBT(Capability<T> capability, T instance, net.minecraft.core.Direction side) {
                 return null;
             }
 
             @Override
-            public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
+            public void readNBT(Capability<T> capability, T instance, net.minecraft.core.Direction side, Tag nbt) {
 
             }
         };

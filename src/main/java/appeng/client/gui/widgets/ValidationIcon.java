@@ -21,11 +21,11 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.Icon;
 
@@ -34,7 +34,7 @@ import appeng.client.gui.Icon;
  */
 public class ValidationIcon extends IconButton {
 
-    private final List<ITextComponent> tooltip = new ArrayList<>();
+    private final List<net.minecraft.network.chat.Component> tooltip = new ArrayList<>();
 
     public ValidationIcon() {
         super(btn -> {
@@ -51,7 +51,7 @@ public class ValidationIcon extends IconButton {
         }
     }
 
-    public void setTooltip(List<ITextComponent> lines) {
+    public void setTooltip(List<net.minecraft.network.chat.Component> lines) {
         this.tooltip.clear();
         this.tooltip.addAll(lines);
     }
@@ -67,7 +67,7 @@ public class ValidationIcon extends IconButton {
     }
 
     @Override
-    public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
         if (this.tooltip.isEmpty()) {
             return;
         }

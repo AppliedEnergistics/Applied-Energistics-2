@@ -18,8 +18,8 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Describes an entry in a crafting job, which describes how many items of one type are yet to be crafted, or currently
@@ -27,12 +27,12 @@ import net.minecraft.network.PacketBuffer;
  */
 public class CraftingStatusEntry {
     private final long serial;
-    private final ItemStack item;
+    private final net.minecraft.world.item.ItemStack item;
     private final long storedAmount;
     private final long activeAmount;
     private final long pendingAmount;
 
-    public CraftingStatusEntry(long serial, ItemStack item, long storedAmount, long activeAmount, long pendingAmount) {
+    public CraftingStatusEntry(long serial, net.minecraft.world.item.ItemStack item, long storedAmount, long activeAmount, long pendingAmount) {
         this.serial = serial;
         this.item = item;
         this.storedAmount = storedAmount;
@@ -56,11 +56,11 @@ public class CraftingStatusEntry {
         return pendingAmount;
     }
 
-    public ItemStack getItem() {
+    public net.minecraft.world.item.ItemStack getItem() {
         return item;
     }
 
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(serial);
         buffer.writeVarLong(activeAmount);
         buffer.writeVarLong(storedAmount);
@@ -68,7 +68,7 @@ public class CraftingStatusEntry {
         buffer.writeItemStack(item, true);
     }
 
-    public static CraftingStatusEntry read(PacketBuffer buffer) {
+    public static CraftingStatusEntry read(FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();

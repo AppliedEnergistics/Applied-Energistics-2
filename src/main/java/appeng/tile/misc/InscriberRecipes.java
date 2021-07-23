@@ -24,14 +24,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
@@ -45,7 +45,7 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
-    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
+    public static final net.minecraft.resources.ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
 
     private InscriberRecipes() {
     }
@@ -53,15 +53,15 @@ public final class InscriberRecipes {
     /**
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
-    public static Iterable<InscriberRecipe> getRecipes(World world) {
-        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().byType(InscriberRecipe.TYPE)
+    public static Iterable<InscriberRecipe> getRecipes(Level world) {
+        Collection<Recipe<Container>> unfilteredRecipes = world.getRecipeManager().byType(InscriberRecipe.TYPE)
                 .values();
         return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
     }
 
     @Nullable
-    public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB,
-            boolean supportNamePress) {
+    public static InscriberRecipe findRecipe(Level world, ItemStack input, net.minecraft.world.item.ItemStack plateA, ItemStack plateB,
+                                             boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
             boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);
@@ -90,12 +90,12 @@ public final class InscriberRecipes {
         String name = "";
 
         if (!plateA.isEmpty()) {
-            final CompoundNBT tag = plateA.getOrCreateTag();
+            final CompoundTag tag = plateA.getOrCreateTag();
             name += tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
-            final CompoundNBT tag = plateB.getOrCreateTag();
+            final CompoundTag tag = plateB.getOrCreateTag();
             name += " " + tag.getString(NamePressItem.TAG_INSCRIBE_NAME);
         }
 
@@ -103,7 +103,7 @@ public final class InscriberRecipes {
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
-            renamedItem.setHoverName(new StringTextComponent(name));
+            renamedItem.setHoverName(new TextComponent(name));
         } else {
             renamedItem.setHoverName(null);
         }
@@ -119,7 +119,7 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses. Both the given
      * combination and the reverse will be searched.
      */
-    public static boolean isValidOptionalIngredientCombination(World world, ItemStack pressA, ItemStack pressB) {
+    public static boolean isValidOptionalIngredientCombination(Level world, net.minecraft.world.item.ItemStack pressA, ItemStack pressB) {
         for (InscriberRecipe recipe : getRecipes(world)) {
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
                     || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
@@ -134,7 +134,7 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient. Bottom and
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
-    public static boolean isValidOptionalIngredient(World world, ItemStack is) {
+    public static boolean isValidOptionalIngredient(Level world, net.minecraft.world.item.ItemStack is) {
         for (InscriberRecipe recipe : getRecipes(world)) {
             if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;

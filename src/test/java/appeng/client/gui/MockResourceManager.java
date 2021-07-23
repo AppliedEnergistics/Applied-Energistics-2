@@ -32,10 +32,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.data.IMetadataSectionSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
 
@@ -46,11 +46,11 @@ public final class MockResourceManager {
     private MockResourceManager() {
     }
 
-    public static IReloadableResourceManager create() throws IOException {
-        IReloadableResourceManager resourceManager = mock(IReloadableResourceManager.class, withSettings().lenient());
+    public static ReloadableResourceManager create() throws IOException {
+        ReloadableResourceManager resourceManager = mock(ReloadableResourceManager.class, withSettings().lenient());
 
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
-            ResourceLocation loc = invoc.getArgument(0);
+            net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
             return getResource(loc);
         });
         when(resourceManager.getAllResources(any())).thenAnswer(invoc -> {
@@ -64,16 +64,16 @@ public final class MockResourceManager {
         return resourceManager;
     }
 
-    private static IResource getResource(ResourceLocation loc) throws FileNotFoundException {
+    private static Resource getResource(net.minecraft.resources.ResourceLocation loc) throws FileNotFoundException {
         InputStream in = MockResourceManager.class
                 .getResourceAsStream("/assets/" + loc.getNamespace() + "/" + loc.getPath());
         if (in == null) {
             throw new FileNotFoundException("Missing resource: " + loc.getPath());
         }
 
-        return new IResource() {
+        return new Resource() {
             @Override
-            public ResourceLocation getLocation() {
+            public net.minecraft.resources.ResourceLocation getLocation() {
                 return loc;
             }
 
@@ -84,7 +84,7 @@ public final class MockResourceManager {
 
             @Nullable
             @Override
-            public <T> T getMetadata(IMetadataSectionSerializer<T> serializer) {
+            public <T> T getMetadata(MetadataSectionSerializer<T> serializer) {
                 return null;
             }
 

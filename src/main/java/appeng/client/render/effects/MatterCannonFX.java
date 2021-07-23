@@ -18,22 +18,22 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
 
-public class MatterCannonFX extends SpriteTexturedParticle {
+public class MatterCannonFX extends TextureSheetParticle {
 
-    public MatterCannonFX(final ClientWorld par1World, final double x, final double y, final double z,
-            IAnimatedSprite sprite) {
+    public MatterCannonFX(final ClientLevel par1World, final double x, final double y, final double z,
+                          SpriteSet sprite) {
         super(par1World, x, y, z);
         this.gravity = 0;
         this.bCol = 1;
@@ -52,8 +52,8 @@ public class MatterCannonFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
@@ -77,16 +77,16 @@ public class MatterCannonFX extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType data, ClientLevel world, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }
     }

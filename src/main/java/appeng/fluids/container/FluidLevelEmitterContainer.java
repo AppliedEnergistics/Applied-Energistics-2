@@ -18,8 +18,7 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -29,10 +28,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.world.inventory.MenuType;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidLevelEmitterContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidLevelEmitterContainer> TYPE = ContainerTypeBuilder
             .create(FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
@@ -47,7 +47,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     // Only synced once on container-open, and only used on client
     private long reportingValue;
 
-    public FluidLevelEmitterContainer(int id, final PlayerInventory ip, final FluidLevelEmitterPart te) {
+    public FluidLevelEmitterContainer(int id, final Inventory ip, final FluidLevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }

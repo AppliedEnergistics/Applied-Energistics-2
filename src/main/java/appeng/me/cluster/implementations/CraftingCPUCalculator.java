@@ -20,9 +20,9 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
@@ -37,7 +37,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+    public boolean checkMultiblockScale(final net.minecraft.core.BlockPos min, final net.minecraft.core.BlockPos max) {
         if (max.getX() - min.getX() > 16) {
             return false;
         }
@@ -54,15 +54,15 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public CraftingCPUCluster createCluster(final ServerWorld w, final BlockPos min, final BlockPos max) {
+    public CraftingCPUCluster createCluster(final ServerLevel w, final BlockPos min, final net.minecraft.core.BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerWorld w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerLevel w, final BlockPos min, final net.minecraft.core.BlockPos max) {
         boolean storage = false;
 
-        for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
+        for (net.minecraft.core.BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
 
             if (te == null || !te.isValid()) {
@@ -78,8 +78,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public void updateTiles(final CraftingCPUCluster c, final ServerWorld w, final BlockPos min, final BlockPos max) {
-        for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
+    public void updateTiles(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final net.minecraft.core.BlockPos max) {
+        for (net.minecraft.core.BlockPos blockPos : net.minecraft.core.BlockPos.betweenClosed(min, max)) {
             final CraftingTileEntity te = (CraftingTileEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
@@ -102,7 +102,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public boolean isValidTile(final TileEntity te) {
+    public boolean isValidTile(final BlockEntity te) {
         return te instanceof CraftingTileEntity;
     }
 }

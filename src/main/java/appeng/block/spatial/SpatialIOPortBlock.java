@@ -20,16 +20,16 @@ package appeng.block.spatial;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -46,8 +46,8 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+                                boolean isMoving) {
         final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
@@ -55,10 +55,10 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
@@ -67,8 +67,8 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

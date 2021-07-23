@@ -25,14 +25,14 @@ package appeng.api.implementations.items;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface IGrowableCrystal {
 
-    ItemStack triggerGrowth(ItemStack is);
+    ItemStack triggerGrowth(net.minecraft.world.item.ItemStack is);
 
     /**
      * Gets the crystal growth multiplier based on the material it is submerged in.
@@ -40,5 +40,5 @@ public interface IGrowableCrystal {
      * @param state The blockstate of the block the crystal is currently in.
      * @return The multiplier for the growth tick progress. Zero if the crystal cannot grow in the current material.
      */
-    float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos);
+    float getMultiplier(BlockState state, @Nullable Level world, @Nullable net.minecraft.core.BlockPos pos);
 }

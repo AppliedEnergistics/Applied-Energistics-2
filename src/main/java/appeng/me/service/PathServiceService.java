@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -264,9 +264,9 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
                 for (final IGridNode n : this.requireChannels) {
-                    PlayerEntity player = Api.instance().registries().players().findPlayer(n.getOwningPlayerId());
-                    if (player instanceof ServerPlayerEntity) {
-                        currentBracket.trigger((ServerPlayerEntity) player);
+                    Player player = Api.instance().registries().players().findPlayer(n.getOwningPlayerId());
+                    if (player instanceof ServerPlayer) {
+                        currentBracket.trigger((ServerPlayer) player);
                     }
                 }
             }

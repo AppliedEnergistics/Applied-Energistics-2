@@ -20,11 +20,11 @@ package appeng.client.gui.widgets;
 
 import java.time.Duration;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
@@ -53,7 +53,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
+    private static final ResourceLocation TEXTURE = new net.minecraft.resources.ResourceLocation("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
@@ -106,8 +106,8 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     private final EventRepeater eventRepeater = new EventRepeater(Duration.ofMillis(250), Duration.ofMillis(150));
 
     @Override
-    public Rectangle2d getBounds() {
-        return new Rectangle2d(displayX, displayY, width, height);
+    public Rect2i getBounds() {
+        return new Rect2i(displayX, displayY, width, height);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     @Override
-    public void drawForegroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
         // Draw the track (nice for debugging)
         // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
         // height, 0xffff0000);
@@ -253,7 +253,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         // handle height).
         double handleUpperEdgeY = mousePos.getY() - this.displayY - this.dragYOffset;
         double availableHeight = this.height - HANDLE_HEIGHT;
-        double position = MathHelper.clamp(handleUpperEdgeY / availableHeight, 0.0, 1.0);
+        double position = Mth.clamp(handleUpperEdgeY / availableHeight, 0.0, 1.0);
 
         this.currentScroll = this.minScroll + (int) Math.round(position * this.getRange());
         this.applyRange();

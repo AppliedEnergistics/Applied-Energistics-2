@@ -18,23 +18,23 @@
 
 package appeng.client.gui.style;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -62,11 +62,11 @@ public final class Blitter {
     private int g = 255;
     private int b = 255;
     private int a = 255;
-    private Rectangle2d srcRect;
-    private Rectangle2d destRect = new Rectangle2d(0, 0, 0, 0);
+    private Rect2i srcRect;
+    private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
 
-    Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
+    Blitter(net.minecraft.resources.ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
         this.referenceWidth = referenceWidth;
         this.referenceHeight = referenceHeight;
@@ -89,7 +89,7 @@ public final class Blitter {
     /**
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */
-    public static Blitter texture(ResourceLocation file, int referenceWidth, int referenceHeight) {
+    public static Blitter texture(net.minecraft.resources.ResourceLocation file, int referenceWidth, int referenceHeight) {
         return new Blitter(file, referenceWidth, referenceHeight);
     }
 
@@ -97,7 +97,7 @@ public final class Blitter {
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */
     public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
-        return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
+        return new Blitter(new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class Blitter {
         // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
         // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
         final int refSize = Integer.MAX_VALUE;
-        AtlasTexture atlas = sprite.atlas();
+        TextureAtlas atlas = sprite.atlas();
 
         return new Blitter(atlas.location(), refSize, refSize)
                 .src(
@@ -148,14 +148,14 @@ public final class Blitter {
      * Use the given rectangle from the texture (in pixels assuming a 256x256 texture size).
      */
     public Blitter src(int x, int y, int w, int h) {
-        this.srcRect = new Rectangle2d(x, y, w, h);
+        this.srcRect = new Rect2i(x, y, w, h);
         return this;
     }
 
     /**
      * Use the given rectangle from the texture (in pixels assuming a 256x256 texture size).
      */
-    public Blitter src(Rectangle2d rect) {
+    public Blitter src(Rect2i rect) {
         return src(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
@@ -163,7 +163,7 @@ public final class Blitter {
      * Draw into the rectangle defined by the given coordinates.
      */
     public Blitter dest(int x, int y, int w, int h) {
-        this.destRect = new Rectangle2d(x, y, w, h);
+        this.destRect = new Rect2i(x, y, w, h);
         return this;
     }
 
@@ -177,11 +177,11 @@ public final class Blitter {
     /**
      * Draw into the given rectangle.
      */
-    public Blitter dest(Rectangle2d rect) {
+    public Blitter dest(Rect2i rect) {
         return dest(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
-    public Rectangle2d getDestRect() {
+    public Rect2i getDestRect() {
         int x = destRect.getX();
         int y = destRect.getY();
         int w = 0, h = 0;
@@ -192,18 +192,18 @@ public final class Blitter {
             w = srcRect.getWidth();
             h = srcRect.getHeight();
         }
-        return new Rectangle2d(x, y, w, h);
+        return new Rect2i(x, y, w, h);
     }
 
     public Blitter color(float r, float g, float b) {
-        this.r = (int) (MathHelper.clamp(r, 0, 1) * 255);
-        this.g = (int) (MathHelper.clamp(g, 0, 1) * 255);
-        this.b = (int) (MathHelper.clamp(b, 0, 1) * 255);
+        this.r = (int) (Mth.clamp(r, 0, 1) * 255);
+        this.g = (int) (Mth.clamp(g, 0, 1) * 255);
+        this.b = (int) (Mth.clamp(b, 0, 1) * 255);
         return this;
     }
 
     public Blitter opacity(float a) {
-        this.a = (int) (MathHelper.clamp(a, 0, 1) * 255);
+        this.a = (int) (Mth.clamp(a, 0, 1) * 255);
         return this;
     }
 
@@ -231,7 +231,7 @@ public final class Blitter {
         return color(r, g, b);
     }
 
-    public void blit(MatrixStack matrices, int zIndex) {
+    public void blit(PoseStack matrices, int zIndex) {
         TextureManager textureManager = Minecraft.getInstance().getTextureManager();
         textureManager.bind(this.texture);
 
@@ -262,8 +262,8 @@ public final class Blitter {
 
         Matrix4f matrix = matrices.last().pose();
 
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
-        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
         bufferbuilder.vertex(matrix, x1, y2, zIndex)
                 .color(r, g, b, a)
                 .uv(minU, maxV).endVertex();
@@ -285,7 +285,7 @@ public final class Blitter {
             RenderSystem.disableBlend();
         }
         RenderSystem.enableTexture();
-        WorldVertexBufferUploader.end(bufferbuilder);
+        BufferUploader.end(bufferbuilder);
     }
 
 }

@@ -38,10 +38,9 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -57,9 +56,10 @@ import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
+import net.minecraft.world.item.ItemStack;
 
 public class GridNode implements IGridNode, IPathItem {
-    private final ServerWorld world;
+    private final ServerLevel world;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a tile-entity or
      * part.
@@ -79,7 +79,7 @@ public class GridNode implements IGridNode, IPathItem {
     // idle power usage per tick in AE
     private double idlePowerUsage = 1.0;
     @Nonnull
-    private ItemStack visualRepresentation = ItemStack.EMPTY;
+    private net.minecraft.world.item.ItemStack visualRepresentation = net.minecraft.world.item.ItemStack.EMPTY;
     @Nonnull
     private AEColor gridColor = AEColor.TRANSPARENT;
     private long lastSecurityKey = -1;
@@ -91,10 +91,10 @@ public class GridNode implements IGridNode, IPathItem {
     private int usedChannels = 0;
     private int lastUsedChannels = 0;
     private final EnumSet<GridFlags> flags;
-    protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
+    protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(net.minecraft.core.Direction.class);
     private ClassToInstanceMap<IGridNodeService> services;
 
-    public <T> GridNode(@Nonnull ServerWorld world,
+    public <T> GridNode(@Nonnull ServerLevel world,
             @Nonnull T owner,
             @Nonnull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
@@ -254,7 +254,7 @@ public class GridNode implements IGridNode, IPathItem {
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
      * {@link ItemStack#EMPTY} to hide the node from UIs.
      */
-    public void setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
+    public void setVisualRepresentation(@Nonnull net.minecraft.world.item.ItemStack visualRepresentation) {
         this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
     }
 
@@ -323,7 +323,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public EnumSet<Direction> getConnectedSides() {
-        var result = EnumSet.noneOf(Direction.class);
+        var result = EnumSet.noneOf(net.minecraft.core.Direction.class);
         for (IGridConnection connection : this.connections) {
             if (connection.isInWorld()) {
                 result.add(connection.getDirection(this));
@@ -335,7 +335,7 @@ public class GridNode implements IGridNode, IPathItem {
     @Nonnull
     @Override
     public Map<Direction, IGridConnection> getInWorldConnections() {
-        var result = new EnumMap<Direction, IGridConnection>(Direction.class);
+        var result = new EnumMap<net.minecraft.core.Direction, IGridConnection>(Direction.class);
         for (IGridConnection connection : this.connections) {
             var direction = connection.getDirection(this);
             if (direction != null) {
@@ -366,10 +366,10 @@ public class GridNode implements IGridNode, IPathItem {
         return myGrid.getService(IEnergyService.class).isNetworkPowered();
     }
 
-    public void loadFromNBT(final String name, final CompoundNBT nodeData) {
+    public void loadFromNBT(final String name, final CompoundTag nodeData) {
         Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
         if (this.myGrid == null) {
-            final CompoundNBT node = nodeData.getCompound(name);
+            final CompoundTag node = nodeData.getCompound(name);
             this.owningPlayerId = node.getInt("p");
             this.setLastSecurityKey(node.getLong("k"));
 
@@ -381,9 +381,9 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public void saveToNBT(final String name, final CompoundNBT nodeData) {
+    public void saveToNBT(final String name, final CompoundTag nodeData) {
         if (this.myStorage != null) {
-            final CompoundNBT node = new CompoundNBT();
+            final CompoundTag node = new CompoundTag();
 
             node.putInt("p", this.owningPlayerId);
             node.putLong("k", this.getLastSecurityKey());
@@ -412,7 +412,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Nonnull
     @Override
-    public ItemStack getVisualRepresentation() {
+    public net.minecraft.world.item.ItemStack getVisualRepresentation() {
         return visualRepresentation;
     }
 
@@ -609,7 +609,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Nonnull
     @Override
-    public ServerWorld getWorld() {
+    public ServerLevel getWorld() {
         return world;
     }
 

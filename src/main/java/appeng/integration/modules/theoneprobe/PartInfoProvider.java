@@ -23,10 +23,9 @@ import java.util.Optional;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -41,6 +40,7 @@ import appeng.integration.modules.theoneprobe.part.P2PStateInfoProvider;
 import appeng.integration.modules.theoneprobe.part.PartAccessor;
 import appeng.integration.modules.theoneprobe.part.PowerStateInfoProvider;
 import appeng.integration.modules.theoneprobe.part.StorageMonitorInfoProvider;
+import net.minecraft.world.entity.player.Player;
 
 public final class PartInfoProvider implements IProbeInfoProvider {
     private final List<IPartProbInfoProvider> providers;
@@ -62,9 +62,9 @@ public final class PartInfoProvider implements IProbeInfoProvider {
     }
 
     @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data) {
-        final TileEntity te = world.getBlockEntity(data.getPos());
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+                             BlockState blockState, IProbeHitData data) {
+        final BlockEntity te = world.getBlockEntity(data.getPos());
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, data);
 
         if (maybePart.isPresent()) {

@@ -18,30 +18,30 @@
 
 package appeng.init.internal;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.BannerTileEntity;
-import net.minecraft.tileentity.BeaconTileEntity;
-import net.minecraft.tileentity.BrewingStandTileEntity;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.CommandBlockTileEntity;
-import net.minecraft.tileentity.ComparatorTileEntity;
-import net.minecraft.tileentity.DaylightDetectorTileEntity;
-import net.minecraft.tileentity.DispenserTileEntity;
-import net.minecraft.tileentity.DropperTileEntity;
-import net.minecraft.tileentity.EnchantingTableTileEntity;
-import net.minecraft.tileentity.EndPortalTileEntity;
-import net.minecraft.tileentity.EnderChestTileEntity;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.HopperTileEntity;
-import net.minecraft.tileentity.MobSpawnerTileEntity;
-import net.minecraft.tileentity.PistonTileEntity;
-import net.minecraft.tileentity.ShulkerBoxTileEntity;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.tileentity.SkullTileEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BannerBlockEntity;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.CommandBlockEntity;
+import net.minecraft.world.level.block.entity.DaylightDetectorBlockEntity;
+import net.minecraft.world.level.block.entity.DropperBlockEntity;
+import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.level.block.entity.TheEndPortalBlockEntity;
+import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 
 import appeng.api.movable.IMovableRegistry;
 import appeng.core.Api;
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.entity.ComparatorBlockEntity;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.piston.PistonMovingBlockEntity;
 
 public final class InitSpatialMovableRegistry {
 
@@ -59,25 +59,25 @@ public final class InitSpatialMovableRegistry {
         /*
          * White List Vanilla...
          */
-        mr.whiteListTileEntity(BannerTileEntity.class);
-        mr.whiteListTileEntity(BeaconTileEntity.class);
-        mr.whiteListTileEntity(BrewingStandTileEntity.class);
-        mr.whiteListTileEntity(ChestTileEntity.class);
-        mr.whiteListTileEntity(CommandBlockTileEntity.class);
-        mr.whiteListTileEntity(ComparatorTileEntity.class);
-        mr.whiteListTileEntity(DaylightDetectorTileEntity.class);
-        mr.whiteListTileEntity(DispenserTileEntity.class);
-        mr.whiteListTileEntity(DropperTileEntity.class);
-        mr.whiteListTileEntity(EnchantingTableTileEntity.class);
-        mr.whiteListTileEntity(EnderChestTileEntity.class);
-        mr.whiteListTileEntity(EndPortalTileEntity.class);
-        mr.whiteListTileEntity(FurnaceTileEntity.class);
-        mr.whiteListTileEntity(HopperTileEntity.class);
-        mr.whiteListTileEntity(MobSpawnerTileEntity.class);
-        mr.whiteListTileEntity(PistonTileEntity.class);
-        mr.whiteListTileEntity(ShulkerBoxTileEntity.class);
-        mr.whiteListTileEntity(SignTileEntity.class);
-        mr.whiteListTileEntity(SkullTileEntity.class);
+        mr.whiteListTileEntity(BannerBlockEntity.class);
+        mr.whiteListTileEntity(BeaconBlockEntity.class);
+        mr.whiteListTileEntity(BrewingStandBlockEntity.class);
+        mr.whiteListTileEntity(ChestBlockEntity.class);
+        mr.whiteListTileEntity(CommandBlockEntity.class);
+        mr.whiteListTileEntity(ComparatorBlockEntity.class);
+        mr.whiteListTileEntity(DaylightDetectorBlockEntity.class);
+        mr.whiteListTileEntity(DispenserBlockEntity.class);
+        mr.whiteListTileEntity(DropperBlockEntity.class);
+        mr.whiteListTileEntity(EnchantmentTableBlockEntity.class);
+        mr.whiteListTileEntity(EnderChestBlockEntity.class);
+        mr.whiteListTileEntity(TheEndPortalBlockEntity.class);
+        mr.whiteListTileEntity(FurnaceBlockEntity.class);
+        mr.whiteListTileEntity(HopperBlockEntity.class);
+        mr.whiteListTileEntity(SpawnerBlockEntity.class);
+        mr.whiteListTileEntity(PistonMovingBlockEntity.class);
+        mr.whiteListTileEntity(ShulkerBoxBlockEntity.class);
+        mr.whiteListTileEntity(SignBlockEntity.class);
+        mr.whiteListTileEntity(SkullBlockEntity.class);
 
         /*
          * Whitelist AE2

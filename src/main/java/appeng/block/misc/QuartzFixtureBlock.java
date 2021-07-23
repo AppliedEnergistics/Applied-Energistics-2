@@ -24,28 +24,29 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.SoundType;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -58,10 +59,10 @@ import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
 
-public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, IWaterLoggable {
+public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, SimpleWaterloggedBlock {
 
     // Cache VoxelShapes for each facing
-    private static final Map<Direction, VoxelShape> SHAPES;
+    private static final Map<Direction, net.minecraft.world.phys.shapes.VoxelShape> SHAPES;
 
     static {
         SHAPES = new EnumMap<>(Direction.class);
@@ -70,14 +71,14 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
             final double xOff = -0.3 * facing.getStepX();
             final double yOff = -0.3 * facing.getStepY();
             final double zOff = -0.3 * facing.getStepZ();
-            VoxelShape shape = VoxelShapes
-                    .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+            net.minecraft.world.phys.shapes.VoxelShape shape = Shapes
+                    .create(new AABB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
             SHAPES.put(facing, shape);
         }
     }
 
     // Cannot use the vanilla FACING property here because it excludes facing DOWN
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -93,24 +94,24 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
         builder.add(FACING, ODD, WATERLOGGED);
     }
 
     // For reference, see WallTorchBlock
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = super.getStateForPlacement(context);
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
+        net.minecraft.core.BlockPos pos = context.getClickedPos();
+        net.minecraft.world.level.material.FluidState fluidState = context.getLevel().getFluidState(pos);
 
         // Set the even/odd property
         boolean oddPlacement = (pos.getX() + pos.getY() + pos.getZ()) % 2 != 0;
         blockstate = blockstate.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
-        IWorldReader iworldreader = context.getLevel();
-        Direction[] adirection = context.getNearestLookingDirections();
+        LevelReader iworldreader = context.getLevel();
+        net.minecraft.core.Direction[] adirection = context.getNearestLookingDirections();
 
         for (Direction direction : adirection) {
             if (canPlaceAt(iworldreader, pos, direction)) {
@@ -124,8 +125,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
-            BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState blockState, net.minecraft.core.Direction facing, net.minecraft.world.level.block.state.BlockState facingState, LevelAccessor world,
+                                  BlockPos currentPos, net.minecraft.core.BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));
@@ -139,27 +140,27 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final IWorldReader w, final BlockPos pos, final Direction dir) {
-        final BlockPos test = pos.relative(dir);
-        BlockState blockstate = w.getBlockState(test);
+    private boolean canPlaceAt(final LevelReader w, final net.minecraft.core.BlockPos pos, final Direction dir) {
+        final net.minecraft.core.BlockPos test = pos.relative(dir);
+        net.minecraft.world.level.block.state.BlockState blockstate = w.getBlockState(test);
         return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(FACING);
         return SHAPES.get(facing);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level w, final net.minecraft.core.BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -182,22 +183,22 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     // FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+                                boolean isMoving) {
         final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {
             this.dropTorch(world, pos);
         }
     }
 
-    private void dropTorch(final World w, final BlockPos pos) {
+    private void dropTorch(final Level w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
         w.destroyBlock(pos, true);
         w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -207,7 +208,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
         return new MetaRotation(w, pos, FACING);
     }
 

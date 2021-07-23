@@ -27,8 +27,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import appeng.api.config.FuzzyMode;
 
@@ -37,18 +37,18 @@ public class FuzzyItemVariantListTest {
     @Test
     void testOrderForDamagedItems() {
         // Diamond Sword @ 100% durability
-        ItemStack undamagedSword = new ItemStack(Items.DIAMOND_SWORD);
+        net.minecraft.world.item.ItemStack undamagedSword = new ItemStack(Items.DIAMOND_SWORD);
         AESharedItemStack undamagedStack = new AESharedItemStack(undamagedSword);
 
         // Unbreakable Diamond Sword @ 50% durability
-        ItemStack unbreakableSword = new ItemStack(Items.DIAMOND_SWORD);
+        net.minecraft.world.item.ItemStack unbreakableSword = new net.minecraft.world.item.ItemStack(Items.DIAMOND_SWORD);
         unbreakableSword.setDamage(unbreakableSword.getMaxDamage() / 2);
         unbreakableSword.getOrCreateTag().putBoolean("Unbreakable", true);
         assertFalse(unbreakableSword.isDamageable());
         AESharedItemStack unbreakableStack = new AESharedItemStack(unbreakableSword);
 
         // Unenchanted Diamond Sword @ 0% durability
-        ItemStack damagedSword = new ItemStack(Items.DIAMOND_SWORD);
+        ItemStack damagedSword = new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD);
         damagedSword.setDamage(damagedSword.getMaxDamage());
         AESharedItemStack damagedStack = new AESharedItemStack(damagedSword);
 
@@ -62,7 +62,7 @@ public class FuzzyItemVariantListTest {
 
     @Nested
     class Bounds {
-        final ItemStack stack = new ItemStack(Items.DIAMOND_SWORD);
+        final ItemStack stack = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD);
         final ItemStack damagedStack;
 
         {

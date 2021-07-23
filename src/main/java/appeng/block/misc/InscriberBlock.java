@@ -20,15 +20,15 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -36,24 +36,23 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
 import appeng.tile.misc.InscriberTileEntity;
 import appeng.util.InteractionUtil;
-
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
-    public InscriberBlock(Properties props) {
+    public InscriberBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
         // range. was 2 in 1.10
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
@@ -61,10 +60,10 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
                             ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
                 }
-                return ActionResultType.sidedSuccess(w.isClientSide());
+                return InteractionResult.sidedSuccess(w.isClientSide());
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
 
     }
 

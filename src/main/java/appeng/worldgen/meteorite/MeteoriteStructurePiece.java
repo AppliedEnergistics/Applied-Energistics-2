@@ -19,23 +19,23 @@ package appeng.worldgen.meteorite;
 
 import java.util.Random;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.structure.StructurePiece;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.levelgen.feature.StructurePieceType;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final IStructurePieceType TYPE = IStructurePieceType.setPieceId(MeteoriteStructurePiece::new,
+    public static final StructurePieceType TYPE = StructurePieceType.setPieceId(MeteoriteStructurePiece::new,
             "ae2mtrt");
 
     public static void register() {
@@ -46,8 +46,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
 
     private PlacedMeteoriteSettings settings;
 
-    protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
-            boolean pureCrater, boolean craterLake) {
+    protected MeteoriteStructurePiece(net.minecraft.core.BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
+                                      boolean pureCrater, boolean craterLake) {
         super(TYPE, 0);
         this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
 
@@ -55,15 +55,15 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // meteors spawned at about y64 are 9x9 chunks large at most.
         int range = 4 * 16;
 
-        ChunkPos chunkPos = new ChunkPos(center);
-        this.boundingBox = new MutableBoundingBox(chunkPos.getMinBlockX() - range, center.getY(),
+        net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(center);
+        this.boundingBox = new BoundingBox(chunkPos.getMinBlockX() - range, center.getY(),
                 chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, center.getY(), chunkPos.getMaxBlockZ() + range);
     }
 
-    public MeteoriteStructurePiece(TemplateManager templateManager, CompoundNBT tag) {
+    public MeteoriteStructurePiece(StructureManager templateManager, CompoundTag tag) {
         super(TYPE, tag);
 
-        BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
+        net.minecraft.core.BlockPos center = net.minecraft.core.BlockPos.of(tag.getLong(Constants.TAG_POS));
         float coreRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
@@ -82,7 +82,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT tag) {
+    protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
         tag.putLong(Constants.TAG_POS, settings.getPos().asLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());
@@ -92,8 +92,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean postProcess(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
-            Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
+    public boolean postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
+                               Random rand, BoundingBox bounds, net.minecraft.world.level.ChunkPos chunkPos, net.minecraft.core.BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 

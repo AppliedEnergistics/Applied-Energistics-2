@@ -20,8 +20,8 @@ package appeng.init;
 
 import java.util.Map;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlockEntities;
@@ -30,8 +30,8 @@ public final class InitBlockEntities {
     private InitBlockEntities() {
     }
 
-    public static void init(IForgeRegistry<TileEntityType<?>> registry) {
-        for (Map.Entry<ResourceLocation, TileEntityType<?>> entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
+    public static void init(IForgeRegistry<net.minecraft.world.level.block.entity.BlockEntityType<?>> registry) {
+        for (Map.Entry<ResourceLocation, net.minecraft.world.level.block.entity.BlockEntityType<?>> entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
             registry.register(entry.getValue());
         }
     }

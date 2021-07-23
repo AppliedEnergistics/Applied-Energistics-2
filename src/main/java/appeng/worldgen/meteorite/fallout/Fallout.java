@@ -18,18 +18,18 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class Fallout {
     private final MeteoriteBlockPutter putter;
     private final BlockState skyStone;
 
-    public Fallout(final MeteoriteBlockPutter putter, final BlockState skyStone) {
+    public Fallout(final MeteoriteBlockPutter putter, final net.minecraft.world.level.block.state.BlockState skyStone) {
         this.putter = putter;
         this.skyStone = skyStone;
     }
@@ -38,10 +38,10 @@ public class Fallout {
         return 0;
     }
 
-    public void getRandomFall(final IWorld w, BlockPos pos) {
+    public void getRandomFall(final LevelAccessor w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
+            this.putter.put(w, pos, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
         } else if (a > 0.8) {
             this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.7) {
@@ -51,7 +51,7 @@ public class Fallout {
         }
     }
 
-    public void getRandomInset(final IWorld w, BlockPos pos) {
+    public void getRandomInset(final LevelAccessor w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
             this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());

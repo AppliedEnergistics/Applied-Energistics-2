@@ -20,33 +20,33 @@ package appeng.items.parts;
 
 import java.util.function.Function;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.Api;
 import appeng.items.AEBaseItem;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
 
     private final Function<ItemStack, T> factory;
 
-    public PartItem(Properties properties, Function<ItemStack, T> factory) {
+    public PartItem(net.minecraft.world.item.Item.Properties properties, Function<ItemStack, T> factory) {
         super(properties);
         this.factory = factory;
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         ItemStack held = player.getItemInHand(context.getHand());
         if (held.getItem() != this) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         return Api.instance().partHelper().placeBus(held, context.getClickedPos(), context.getClickedFace(), player,

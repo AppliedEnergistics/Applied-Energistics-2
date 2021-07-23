@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -30,8 +30,8 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
-    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public SpatialIOPortScreen(SpatialIOPortContainer container, Inventory playerInventory,
+                               net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
@@ -48,7 +48,7 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
                 GuiText.RequiredPower.text(Platform.formatPowerLong(this.menu.getRequiredPower(), false)));
         setTextContent("efficiency", GuiText.Efficiency.text((float) this.menu.getEfficency() / 100));
 
-        ITextComponent scsSizeText;
+        net.minecraft.network.chat.Component scsSizeText;
         if (this.menu.xSize != 0 && this.menu.ySize != 0 && this.menu.zSize != 0) {
             scsSizeText = GuiText.SCSSize.text(this.menu.xSize, this.menu.ySize, this.menu.zSize);
         } else {

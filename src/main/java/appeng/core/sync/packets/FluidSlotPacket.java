@@ -23,10 +23,8 @@ import java.util.Map;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
@@ -34,9 +32,12 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 /**
- * Similar to {@link net.minecraft.network.play.server.SSetSlotPacket}, but for fluids, and used in both directions
+ * Similar to {@link ClientboundContainerSetSlotPacket}, but for fluids, and used in both directions
  * (server->client and client->server).
  * <p/>
  * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
@@ -46,9 +47,9 @@ import appeng.fluids.util.AEFluidStack;
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;
 
-    public FluidSlotPacket(final PacketBuffer stream) {
+    public FluidSlotPacket(final FriendlyByteBuf stream) {
         this.list = new HashMap<>();
-        CompoundNBT tag = stream.readNbt();
+        CompoundTag tag = stream.readNbt();
 
         for (final String key : tag.getAllKeys()) {
             this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
@@ -58,32 +59,32 @@ public class FluidSlotPacket extends BasePacket {
     // api
     public FluidSlotPacket(final Map<Integer, IAEFluidStack> list) {
         this.list = list;
-        final CompoundNBT sendTag = new CompoundNBT();
+        final CompoundTag sendTag = new CompoundTag();
         for (Map.Entry<Integer, IAEFluidStack> fs : list.entrySet()) {
-            final CompoundNBT tag = new CompoundNBT();
+            final CompoundTag tag = new CompoundTag();
             if (fs.getValue() != null) {
                 fs.getValue().writeToNBT(tag);
             }
             sendTag.put(fs.getKey().toString(), tag);
         }
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeNbt(sendTag);
         this.configureWrite(data);
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.containerMenu;
+    public void clientPacketData(final INetworkInfo manager, final Player player) {
+        final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
-        final Container c = player.containerMenu;
+    public void serverPacketData(INetworkInfo manager, Player player) {
+        final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof IFluidSyncContainer) {
             ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
         }

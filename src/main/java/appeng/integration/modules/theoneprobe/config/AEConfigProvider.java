@@ -18,10 +18,7 @@
 
 package appeng.integration.modules.theoneprobe.config;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
 
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfigProvider;
@@ -29,18 +26,21 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeHitEntityData;
 
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class AEConfigProvider implements IProbeConfigProvider {
 
     @Override
-    public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, Entity entity,
-            IProbeHitEntityData data) {
+    public void getProbeConfig(IProbeConfig config, Player player, Level world, Entity entity,
+                               IProbeHitEntityData data) {
         // Still no AE entities.
     }
 
     @Override
-    public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, BlockState blockState,
-            IProbeHitData data) {
+    public void getProbeConfig(IProbeConfig config, Player player, Level world, BlockState blockState,
+                               IProbeHitData data) {
         if (world.getBlockEntity(data.getPos()) instanceof AEBaseTileEntity) {
             config.setRFMode(0);
         }

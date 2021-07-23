@@ -18,9 +18,9 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.util.AEColor;
@@ -85,7 +85,7 @@ public final class InitItemColors {
         colors.register((is, tintIndex) -> renderColor, item);
     }
 
-    private static int getColorApplicatorColor(ItemStack itemStack, int idx) {
+    private static int getColorApplicatorColor(net.minecraft.world.item.ItemStack itemStack, int idx) {
         if (idx == 0) {
             return -1;
         }

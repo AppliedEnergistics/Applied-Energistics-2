@@ -18,26 +18,26 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by covers1624 on 1/6/20.
  */
 public class TargetPoint {
 
-    public final ServerPlayerEntity excluded;
+    public final ServerPlayer excluded;
     public final double x;
     public final double y;
     public final double z;
     public final double r2;
-    public final World world;
+    public final Level world;
 
-    public TargetPoint(double x, double y, double z, double r2, World world) {
+    public TargetPoint(double x, double y, double z, double r2, Level world) {
         this(null, x, y, z, r2, world);
     }
 
-    public TargetPoint(ServerPlayerEntity excluded, double x, double y, double z, double r2, World world) {
+    public TargetPoint(ServerPlayer excluded, double x, double y, double z, double r2, Level world) {
         this.excluded = excluded;
         this.x = x;
         this.y = y;
@@ -46,11 +46,11 @@ public class TargetPoint {
         this.world = world;
     }
 
-    public static TargetPoint at(double x, double y, double z, double r2, World world) {
+    public static TargetPoint at(double x, double y, double z, double r2, Level world) {
         return new TargetPoint(x, y, z, r2, world);
     }
 
-    public static TargetPoint at(ServerPlayerEntity excluded, double x, double y, double z, double r2, World world) {
+    public static TargetPoint at(ServerPlayer excluded, double x, double y, double z, double r2, Level world) {
         return new TargetPoint(excluded, x, y, z, r2, world);
     }
 }

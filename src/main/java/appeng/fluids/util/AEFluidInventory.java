@@ -22,13 +22,11 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
-
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class AEFluidInventory implements IAEFluidTank {
 
@@ -291,16 +289,16 @@ public class AEFluidInventory implements IAEFluidTank {
         return stack;
     }
 
-    public void writeToNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = new CompoundNBT();
+    public void writeToNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = new CompoundTag();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundNBT target) {
+    private void writeToNBT(final CompoundTag target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundNBT c = new CompoundNBT();
+                final CompoundTag c = new CompoundTag();
 
                 if (this.fluids[x] != EMPTY_AE_FLUIDSTACK) {
                     this.fluids[x].writeToNBT(c);
@@ -312,17 +310,17 @@ public class AEFluidInventory implements IAEFluidTank {
         }
     }
 
-    public void readFromNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = data.getCompound(name);
+    public void readFromNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = data.getCompound(name);
         if (!c.isEmpty()) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundNBT target) {
+    private void readFromNBT(final CompoundTag target) {
         for (int x = 0; x < this.fluids.length; x++) {
             try {
-                final CompoundNBT c = target.getCompound("#" + x);
+                final CompoundTag c = target.getCompound("#" + x);
 
                 if (!c.isEmpty()) {
                     this.fluids[x] = AEFluidStack.fromNBT(c);

@@ -30,15 +30,15 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -89,7 +89,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     private int priority = 0;
     private boolean wasActive = false;
     // This is only used on the client
-    private final Item[] cellItems = new Item[10];
+    private final net.minecraft.world.item.Item[] cellItems = new Item[10];
 
     /**
      * The state of all cells inside a drive as bitset, using the following format.
@@ -106,7 +106,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
      */
     private int state = 0;
 
-    public DriveTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public DriveTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.mySrc = new MachineSource(this);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -115,13 +115,13 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
+    public void setOrientation(Direction inForward, net.minecraft.core.Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         int newState = 0;
 
@@ -139,13 +139,13 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         writeCellItemIds(data);
     }
 
-    private void writeCellItemIds(PacketBuffer data) {
+    private void writeCellItemIds(FriendlyByteBuf data) {
         List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
-            Item item = getCellItem(x);
+            net.minecraft.world.item.Item item = getCellItem(x);
             if (item != null && item.getRegistryName() != null) {
-                ResourceLocation itemId = item.getRegistryName();
+                net.minecraft.resources.ResourceLocation itemId = item.getRegistryName();
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -168,7 +168,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         boolean c = super.readFromStream(data);
         final int oldState = this.state;
         this.state = data.readInt();
@@ -178,7 +178,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         return (this.state & BIT_STATE_MASK) != (oldState & BIT_STATE_MASK) || c;
     }
 
-    private boolean readCellItemIDs(final PacketBuffer data) {
+    private boolean readCellItemIDs(final FriendlyByteBuf data) {
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
@@ -190,11 +190,11 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             byte idx = data.readByte();
 
             // an index of 0 indicates the slot is empty
-            Item item = null;
+            net.minecraft.world.item.Item item = null;
             if (idx > 0) {
                 --idx;
                 String itemId = uniqueStrs[idx];
-                item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemId));
+                item = ForgeRegistries.ITEMS.getValue(new net.minecraft.resources.ResourceLocation(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -218,7 +218,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             return cellItems[slot];
         }
 
-        ItemStack stackInSlot = inv.getStackInSlot(slot);
+        net.minecraft.world.item.ItemStack stackInSlot = inv.getStackInSlot(slot);
         if (!stackInSlot.isEmpty()) {
             return stackInSlot.getItem();
         }
@@ -255,14 +255,14 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putInt("priority", this.priority);
         return data;
@@ -297,7 +297,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.SMART;
     }
 
@@ -435,7 +435,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return DriveContainer.TYPE;
     }
 

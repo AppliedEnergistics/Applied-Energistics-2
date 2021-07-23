@@ -20,7 +20,8 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
@@ -37,7 +38,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     private final IConfigManager manager;
     private final UpgradeInventory upgrades;
 
-    public UpgradeablePart(final ItemStack is) {
+    public UpgradeablePart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         this.upgrades = new StackUpgradeInventory(this.getItemStack(), this, this.getUpgradeSlots());
         this.manager = new ConfigManager(this);
@@ -59,7 +60,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+                                  final net.minecraft.world.item.ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
         }
@@ -111,14 +112,14 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
-    public void readFromNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.manager.readFromNBT(extra);
         this.upgrades.readFromNBT(extra, "upgrades");
     }
 
     @Override
-    public void writeToNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.manager.writeToNBT(extra);
         this.upgrades.writeToNBT(extra, "upgrades");
@@ -126,7 +127,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
 
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
-        for (final ItemStack is : this.upgrades) {
+        for (final net.minecraft.world.item.ItemStack is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }

@@ -18,10 +18,10 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -40,8 +40,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     private final SettingToggleButton<OperationMode> operationMode;
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public IOPortScreen(IOPortContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                        ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.fullMode = new ServerSettingToggleButton<>(Settings.FULLNESS_MODE,
@@ -65,8 +65,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.CELL1K.stack());

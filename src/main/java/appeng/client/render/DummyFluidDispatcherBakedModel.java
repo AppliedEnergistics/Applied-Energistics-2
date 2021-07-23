@@ -27,20 +27,20 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Direction;
+import com.mojang.math.Transformation;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,10 +52,10 @@ import appeng.fluids.items.FluidDummyItem;
  * on the item stack. A custom Item Override List is used to accomplish this.
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
-    private final Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter;
+    private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
 
-    public DummyFluidDispatcherBakedModel(IBakedModel baseModel,
-            Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+    public DummyFluidDispatcherBakedModel(BakedModel baseModel,
+                                          Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -82,11 +82,11 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return new ItemOverrideList() {
+    public ItemOverrides getOverrides() {
+        return new ItemOverrides() {
             @Override
-            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, ClientWorld world,
-                    LivingEntity entity) {
+            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
+                                      LivingEntity entity) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
                 }
@@ -100,14 +100,14 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
 
                 FluidAttributes attributes = fluidStack.getFluid().getAttributes();
                 ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
-                RenderMaterial stillMaterial = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, stillTexture);
+                Material stillMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, stillTexture);
                 TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());
                 }
 
                 return new DummyFluidBakedModel(
-                        ItemLayerModel.getQuadsForSprite(0, sprite, TransformationMatrix.identity()));
+                        ItemLayerModel.getQuadsForSprite(0, sprite, Transformation.identity()));
             }
         };
     }

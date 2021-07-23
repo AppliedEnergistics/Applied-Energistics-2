@@ -18,12 +18,11 @@
 
 package appeng.client.gui.me.items;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.Blitter;
@@ -55,12 +54,12 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private final ActionButton substitutionsEnabledBtn;
     private final ActionButton substitutionsDisabledBtn;
 
-    public PatternTermScreen(PatternTermContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public PatternTermScreen(PatternTermContainer container, Inventory playerInventory,
+                             net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(
-                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
+                new ItemStack(net.minecraft.world.level.block.Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
         widgets.add("craftingPatternMode", this.tabCraftButton);
 
@@ -131,7 +130,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         Blitter modeBg = this.menu.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;

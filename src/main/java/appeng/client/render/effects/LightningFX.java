@@ -20,25 +20,24 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class LightningFX extends SpriteTexturedParticle {
+public class LightningFX extends TextureSheetParticle {
 
     private static final Random RANDOM_GENERATOR = new Random();
     private static final int STEPS = 5;
@@ -49,14 +48,14 @@ public class LightningFX extends SpriteTexturedParticle {
     private final double[] verticesWithUV = new double[3];
     private boolean hasData = false;
 
-    private LightningFX(final ClientWorld w, final double x, final double y, final double z, final double r,
-            final double g, final double b) {
+    private LightningFX(final ClientLevel w, final double x, final double y, final double z, final double r,
+                        final double g, final double b) {
         this(w, x, y, z, r, g, b, 6);
         this.regen();
     }
 
-    protected LightningFX(final ClientWorld w, final double x, final double y, final double z, final double r,
-            final double g, final double b, final int maxAge) {
+    protected LightningFX(final ClientLevel w, final double x, final double y, final double z, final double r,
+                          final double g, final double b, final int maxAge) {
         super(w, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
         this.xd = 0;
@@ -84,9 +83,9 @@ public class LightningFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         // TODO: FIXME
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
@@ -107,11 +106,11 @@ public class LightningFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vector3d Vector3d = renderInfo.getPosition();
-        float centerX = (float) (MathHelper.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
-        float centerY = (float) (MathHelper.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
-        float centerZ = (float) (MathHelper.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        Vec3 Vector3d = renderInfo.getPosition();
+        float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
+        float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
+        float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
 
         final float j = 1.0f;
         float red = this.rCol * j * 0.9f;
@@ -135,7 +134,7 @@ public class LightningFX extends SpriteTexturedParticle {
         double oy = 0;
         double oz = 0;
 
-        final PlayerEntity p = Minecraft.getInstance().player;
+        final Player p = Minecraft.getInstance().player;
 
         // FIXME: Billboard rotation is not applied to the particle yet,
         // FIXME The old version apparently did this by hand using rX,rZ -> replicate
@@ -221,8 +220,8 @@ public class LightningFX extends SpriteTexturedParticle {
         this.hasData = false;
     }
 
-    private void draw(float red, float green, float blue, final IVertexBuilder tess, final double[] a, final double[] b,
-            final float u, final float v) {
+    private void draw(float red, float green, float blue, final VertexConsumer tess, final double[] a, final double[] b,
+                      final float u, final float v) {
         if (this.hasData) {
             tess.vertex(a[0], a[1], a[2]).uv(u, v).color(red, green, blue, this.alpha)
                     .uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
@@ -245,16 +244,16 @@ public class LightningFX extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;

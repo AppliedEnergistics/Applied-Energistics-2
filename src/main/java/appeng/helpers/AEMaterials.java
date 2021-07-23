@@ -18,17 +18,17 @@
 
 package appeng.helpers;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.PushReaction;
 
 public class AEMaterials {
 
-    public static final Material GLASS = make(MaterialColor.NONE, false, false, true, false, false, false,
-            PushReaction.NORMAL);
+    public static final Material GLASS = make(net.minecraft.world.level.material.MaterialColor.NONE, false, false, true, false, false, false,
+            net.minecraft.world.level.material.PushReaction.NORMAL);
 
     public static final Material FIXTURE = make(MaterialColor.METAL, false, false, false, false, false, false,
-            PushReaction.DESTROY);
+            net.minecraft.world.level.material.PushReaction.DESTROY);
 
     /**
      * Small factory helper with named parameters.
@@ -44,9 +44,9 @@ public class AEMaterials {
      * @param pushReaction
      * @return
      */
-    private static Material make(MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
-            boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
-        return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, flammable, replaceable, pushReaction);
+    private static Material make(net.minecraft.world.level.material.MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
+                                 boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
+        return new net.minecraft.world.level.material.Material(color, isLiquid, isSolid, blocksMovement, isOpaque, flammable, replaceable, pushReaction);
     }
 
 }

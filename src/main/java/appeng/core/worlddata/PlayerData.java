@@ -29,8 +29,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -43,7 +43,7 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerData extends WorldSavedData implements IWorldPlayerData {
+final class PlayerData extends SavedData implements IWorldPlayerData {
 
     public static final String NAME = AppEng.MOD_ID + "_players";
     public static final String TAG_PLAYER_IDS = "playerIds";
@@ -84,7 +84,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public void load(CompoundNBT nbt) {
+    public void load(CompoundTag nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -106,7 +106,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

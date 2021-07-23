@@ -20,18 +20,18 @@ package appeng.items.materials;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.items.AEBaseItem;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class NamePressItem extends AEBaseItem {
     /**
@@ -39,19 +39,19 @@ public class NamePressItem extends AEBaseItem {
      */
     public static final String TAG_INSCRIBE_NAME = "InscribeName";
 
-    public NamePressItem(Properties properties) {
+    public NamePressItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
-        final CompoundNBT c = stack.getOrCreateTag();
+        final CompoundTag c = stack.getOrCreateTag();
         if (c.contains(TAG_INSCRIBE_NAME)) {
-            lines.add(new StringTextComponent(c.getString(TAG_INSCRIBE_NAME)));
+            lines.add(new TextComponent(c.getString(TAG_INSCRIBE_NAME)));
         }
     }
 }

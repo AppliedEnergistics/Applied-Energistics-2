@@ -18,11 +18,11 @@
 
 package appeng.client.gui.me.interfaceterminal;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.container.slot.AppEngSlot;
 import appeng.items.misc.EncodedPatternItem;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * This slot is used in the {@link InterfaceTerminalScreen} to interact with the internal inventory of interfaces.
@@ -39,12 +39,12 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack getDisplayStack() {
+    public net.minecraft.world.item.ItemStack getDisplayStack() {
         if (isRemote()) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ItemStack out = iep.getOutput(is);
+                final net.minecraft.world.item.ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;
                 }
@@ -65,12 +65,12 @@ public class InterfaceSlot extends AppEngSlot {
     // The following methods are overridden to prevent client-side code from messing with the stack in the slot
     // Any interaction with the real content of this slot must go via a custom packet
     @Override
-    public final boolean mayPlace(final ItemStack stack) {
+    public final boolean mayPlace(final net.minecraft.world.item.ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void set(final ItemStack stack) {
+    public final void set(final net.minecraft.world.item.ItemStack stack) {
     }
 
     @Override
@@ -79,12 +79,12 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
-    public final ItemStack remove(int amount) {
-        return ItemStack.EMPTY;
+    public final net.minecraft.world.item.ItemStack remove(int amount) {
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public final boolean mayPickup(PlayerEntity player) {
+    public final boolean mayPickup(Player player) {
         return false;
     }
 }

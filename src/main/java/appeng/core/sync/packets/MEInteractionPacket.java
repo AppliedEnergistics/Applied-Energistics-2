@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.container.me.common.IMEInteractionHandler;
 import appeng.core.sync.BasePacket;
@@ -37,7 +37,7 @@ public class MEInteractionPacket extends BasePacket {
     private final long serial;
     private final InventoryAction action;
 
-    public MEInteractionPacket(PacketBuffer buffer) {
+    public MEInteractionPacket(FriendlyByteBuf buffer) {
         this.windowId = buffer.readInt();
         this.serial = buffer.readVarLong();
         this.action = buffer.readEnum(InventoryAction.class);
@@ -48,7 +48,7 @@ public class MEInteractionPacket extends BasePacket {
         this.serial = serial;
         this.action = action;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeInt(windowId);
         data.writeVarLong(serial);
@@ -57,7 +57,7 @@ public class MEInteractionPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
+    public void serverPacketData(INetworkInfo manager, Player player) {
         if (player.containerMenu instanceof IMEInteractionHandler) {
             // The open screen has changed since the client sent the packet
             if (player.containerMenu.containerId != windowId) {

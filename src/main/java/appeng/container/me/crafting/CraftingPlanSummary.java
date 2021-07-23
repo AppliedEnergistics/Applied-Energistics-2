@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -73,7 +73,7 @@ public class CraftingPlanSummary {
         return entries;
     }
 
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(usedBytes);
         buffer.writeBoolean(simulation);
         buffer.writeVarInt(entries.size());
@@ -82,7 +82,7 @@ public class CraftingPlanSummary {
         }
     }
 
-    public static CraftingPlanSummary read(PacketBuffer buffer) {
+    public static CraftingPlanSummary read(FriendlyByteBuf buffer) {
 
         long bytesUsed = buffer.readVarLong();
         boolean simulation = buffer.readBoolean();

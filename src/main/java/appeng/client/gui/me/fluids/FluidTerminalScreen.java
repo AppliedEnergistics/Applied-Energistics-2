@@ -25,13 +25,10 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -45,11 +42,14 @@ import appeng.fluids.client.gui.FluidBlitter;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
 
-    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public FluidTerminalScreen(FluidTerminalContainer container, Inventory playerInventory,
+                               net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -64,8 +64,8 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y,
-            GridInventoryEntry<IAEFluidStack> entry) {
+    protected void renderGridInventoryEntry(PoseStack matrices, int x, int y,
+                                            GridInventoryEntry<IAEFluidStack> entry) {
         IAEFluidStack fs = entry.getStack();
         FluidBlitter.create(fs.getFluidStack())
                 .dest(x, y, 16, 16)
@@ -73,18 +73,18 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x,
-            int y) {
+    protected void renderGridInventoryEntryTooltip(PoseStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x,
+                                                   int y) {
         IAEFluidStack fluidStack = entry.getStack();
         String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                 .format(entry.getStoredAmount() / 1000.0) + " B";
 
         String modName = Platform.getModName(Platform.getModId(fluidStack));
 
-        List<ITextComponent> list = new ArrayList<>();
+        List<net.minecraft.network.chat.Component> list = new ArrayList<>();
         list.add(fluidStack.getFluidStack().getDisplayName());
-        list.add(new StringTextComponent(formattedAmount));
-        list.add(new StringTextComponent(modName));
+        list.add(new TextComponent(formattedAmount));
+        list.add(new TextComponent(modName));
 
         this.renderWrappedToolTip(matrices, list, x, y, this.font);
     }
@@ -92,7 +92,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     @Override
     protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEFluidStack> entry,
             int mouseButton, ClickType clickType) {
-        if (clickType == ClickType.PICKUP) {
+        if (clickType == net.minecraft.world.inventory.ClickType.PICKUP) {
             // TODO: Allow more options
             if (mouseButton == 0 && entry != null) {
                 AELog.debug("mouse0 GUI STACK SIZE %s", entry.getStoredAmount());

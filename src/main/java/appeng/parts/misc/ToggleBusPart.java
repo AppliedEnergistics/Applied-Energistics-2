@@ -20,14 +20,14 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
@@ -51,13 +51,13 @@ public class ToggleBusPart extends BasicStatePart {
     @PartModels
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
@@ -101,7 +101,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         final boolean oldHasRedstone = this.hasRedstone;
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
 
@@ -112,13 +112,13 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.getOuterNode().loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.getOuterNode().saveToNBT(extra);
     }
@@ -138,7 +138,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
@@ -154,8 +154,8 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public void onPlacement(final Player player, final InteractionHand hand, final net.minecraft.world.item.ItemStack held,
+                            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.getOuterNode().setOwningPlayer(player);
     }

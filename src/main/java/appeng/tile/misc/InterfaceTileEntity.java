@@ -26,17 +26,17 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -79,7 +79,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public InterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public InterfaceTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -93,12 +93,12 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         this.duality.notifyNeighbors();
     }
 
-    public void setSide(final Direction facing) {
+    public void setSide(final net.minecraft.core.Direction facing) {
         if (isRemote()) {
             return;
         }
 
-        Direction newForward = facing;
+        net.minecraft.core.Direction newForward = facing;
 
         if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
             newForward = facing;
@@ -113,11 +113,11 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         }
 
         if (this.omniDirectional) {
-            this.setOrientation(Direction.NORTH, Direction.UP);
+            this.setOrientation(net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.UP);
         } else {
-            Direction newUp = Direction.UP;
-            if (newForward == Direction.UP || newForward == Direction.DOWN) {
-                newUp = Direction.NORTH;
+            Direction newUp = net.minecraft.core.Direction.UP;
+            if (newForward == net.minecraft.core.Direction.UP || newForward == net.minecraft.core.Direction.DOWN) {
+                newUp = net.minecraft.core.Direction.NORTH;
             }
             this.setOrientation(newForward, newUp);
         }
@@ -129,14 +129,14 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     private void configureNodeSides() {
         if (this.omniDirectional) {
-            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
+            this.getMainNode().setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
         } else {
             this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         }
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         this.duality.addDrops(drops);
     }
 
@@ -149,7 +149,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putBoolean("omniDirectional", this.omniDirectional);
         this.duality.writeToNBT(data);
@@ -157,7 +157,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
@@ -165,7 +165,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         boolean oldOmniDirectional = this.omniDirectional;
         this.omniDirectional = data.readBoolean();
@@ -173,7 +173,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.omniDirectional);
     }
@@ -184,7 +184,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean canInsert(final net.minecraft.world.item.ItemStack stack) {
         return this.duality.canInsert(stack);
     }
 
@@ -200,7 +200,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }
 
@@ -210,15 +210,15 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public EnumSet<Direction> getTargets() {
+    public EnumSet<net.minecraft.core.Direction> getTargets() {
         if (this.omniDirectional) {
-            return EnumSet.allOf(Direction.class);
+            return EnumSet.allOf(net.minecraft.core.Direction.class);
         }
         return EnumSet.of(this.getForward());
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this;
     }
 
@@ -228,7 +228,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingInventory table) {
+    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table) {
         return this.duality.pushPattern(patternDetails, table);
     }
 
@@ -280,7 +280,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
         LazyOptional<T> result = this.duality.getCapability(capability, facing);
         if (result.isPresent()) {
             return result;
@@ -289,12 +289,12 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
+    public net.minecraft.world.item.ItemStack getItemStackRepresentation() {
         return AEBlocks.INTERFACE.stack();
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return InterfaceContainer.TYPE;
     }
 }

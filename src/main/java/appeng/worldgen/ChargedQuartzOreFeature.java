@@ -22,16 +22,19 @@ import java.util.Random;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.feature.OreFeature;
 
 /**
- * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing for a replacement chance. In addition,
+ * Extends {@link OreFeature} by also allowing for a replacement chance. In addition,
  * the feature will check every block in the chunk.
  */
 public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
@@ -43,13 +46,13 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
-            ChargedQuartzOreConfig config) {
-        ChunkPos chunkPos = new ChunkPos(pos);
+    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
+                         ChargedQuartzOreConfig config) {
+        net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(pos);
 
-        BlockPos.Mutable bpos = new BlockPos.Mutable();
-        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-        IChunk chunk = worldIn.getChunk(pos);
+        MutableBlockPos bpos = new MutableBlockPos();
+        int height = worldIn.getHeight(Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        ChunkAccess chunk = worldIn.getChunk(pos);
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
             for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); x++) {

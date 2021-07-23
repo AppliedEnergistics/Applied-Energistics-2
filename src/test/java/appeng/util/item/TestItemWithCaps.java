@@ -21,25 +21,26 @@ package appeng.util.item;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TestItemWithCaps extends Item {
+public class TestItemWithCaps extends net.minecraft.world.item.Item {
     public TestItemWithCaps() {
-        super(new Properties());
+        super(new net.minecraft.world.item.Item.Properties());
         setRegistryName("appliedenergistics2:test_item");
     }
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         if (nbt == null) {
             return null;
         } else {
@@ -50,7 +51,7 @@ public class TestItemWithCaps extends Item {
     /**
      * Simple capability provider that just has a single counter value to produce different NBT.
      */
-    public static class CapabilityProvider implements ICapabilityProvider, INBTSerializable<IntNBT> {
+    public static class CapabilityProvider implements ICapabilityProvider, INBTSerializable<IntTag> {
         private int counter;
 
         @Nonnull
@@ -66,12 +67,12 @@ public class TestItemWithCaps extends Item {
         }
 
         @Override
-        public IntNBT serializeNBT() {
-            return IntNBT.valueOf(counter);
+        public IntTag serializeNBT() {
+            return IntTag.valueOf(counter);
         }
 
         @Override
-        public void deserializeNBT(IntNBT nbt) {
+        public void deserializeNBT(IntTag nbt) {
             counter = nbt.getInt();
         }
     }

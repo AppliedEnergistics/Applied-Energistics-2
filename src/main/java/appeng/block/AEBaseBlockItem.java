@@ -20,17 +20,18 @@ package appeng.block;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,47 +46,47 @@ public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, Item.Properties props) {
+    public AEBaseBlockItem(final Block id, net.minecraft.world.item.Item.Properties props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
-            final ITooltipFlag advancedTooltips) {
+    public final void appendHoverText(final ItemStack itemStack, final Level world, final List<net.minecraft.network.chat.Component> toolTip,
+                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
-            final ITooltipFlag advancedTooltips) {
+    public void addCheckedInformation(final net.minecraft.world.item.ItemStack itemStack, final Level world, final List<net.minecraft.network.chat.Component> toolTip,
+                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override
-    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+    public boolean isBookEnchantable(final net.minecraft.world.item.ItemStack itemstack1, final net.minecraft.world.item.ItemStack itemstack2) {
         return false;
     }
 
     @Override
-    public String getDescriptionId(final ItemStack is) {
+    public String getDescriptionId(final net.minecraft.world.item.ItemStack is) {
         return this.blockType.getDescriptionId();
     }
 
     @Override
-    public ActionResultType place(BlockItemUseContext context) {
+    public InteractionResult place(BlockPlaceContext context) {
 
         Direction up = null;
         Direction forward = null;
 
         Direction side = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
 
         if (this.blockType instanceof AEBaseTileBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
-                if (up == Direction.UP || up == Direction.DOWN) {
+                if (up == net.minecraft.core.Direction.UP || up == net.minecraft.core.Direction.DOWN) {
                     forward = Direction.SOUTH;
                 } else {
                     forward = Direction.UP;
@@ -93,12 +94,12 @@ public class AEBaseBlockItem extends BlockItem {
             } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
-                    up = Direction.SOUTH;
+                    up = net.minecraft.core.Direction.SOUTH;
                 } else {
                     up = Direction.UP;
                 }
             } else {
-                up = Direction.UP;
+                up = net.minecraft.core.Direction.UP;
                 forward = context.getHorizontalDirection().getOpposite();
 
                 if (player != null) {
@@ -124,10 +125,10 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         if (!this.blockType.isValidOrientation(context.getLevel(), context.getClickedPos(), forward, up)) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
 
-        ActionResultType result = super.place(context);
+        InteractionResult result = super.place(context);
         if (!result.consumesAction()) {
             return result;
         }

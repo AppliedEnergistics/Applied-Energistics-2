@@ -18,8 +18,7 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -29,11 +28,12 @@ import appeng.fluids.client.gui.widgets.FluidTankWidget;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.world.entity.player.Inventory;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
 
-    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public FluidInterfaceScreen(FluidInterfaceContainer container, Inventory playerInventory,
+                                net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();

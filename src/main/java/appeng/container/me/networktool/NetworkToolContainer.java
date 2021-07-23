@@ -18,10 +18,9 @@
 
 package appeng.container.me.networktool;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
@@ -29,13 +28,14 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.RestrictedInputSlot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @see appeng.client.gui.me.networktool.NetworkToolScreen
  */
 public class NetworkToolContainer extends AEBaseContainer {
 
-    public static final ContainerType<NetworkToolContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<NetworkToolContainer> TYPE = ContainerTypeBuilder
             .create(NetworkToolContainer::new, INetworkTool.class)
             .build("networktool");
 
@@ -44,7 +44,7 @@ public class NetworkToolContainer extends AEBaseContainer {
     @GuiSync(1)
     public boolean facadeMode;
 
-    public NetworkToolContainer(int id, final PlayerInventory ip, final INetworkTool te) {
+    public NetworkToolContainer(int id, final Inventory ip, final INetworkTool te) {
         super(TYPE, id, ip, null);
         this.toolInv = te;
 
@@ -59,14 +59,14 @@ public class NetworkToolContainer extends AEBaseContainer {
     }
 
     public void toggleFacadeMode() {
-        final CompoundNBT data = this.toolInv.getItemStack().getOrCreateTag();
+        final CompoundTag data = this.toolInv.getItemStack().getOrCreateTag();
         data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
         this.broadcastChanges();
     }
 
     @Override
     public void broadcastChanges() {
-        final ItemStack currentItem = this.getPlayerInventory().getSelected();
+        final net.minecraft.world.item.ItemStack currentItem = this.getPlayerInventory().getSelected();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
@@ -82,7 +82,7 @@ public class NetworkToolContainer extends AEBaseContainer {
         }
 
         if (this.isValidContainer()) {
-            final CompoundNBT data = currentItem.getOrCreateTag();
+            final CompoundTag data = currentItem.getOrCreateTag();
             this.setFacadeMode(data.getBoolean("hideFacades"));
         }
 

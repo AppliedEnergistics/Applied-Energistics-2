@@ -23,9 +23,9 @@ import java.util.PriorityQueue;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -108,7 +108,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 }
             }
         } catch (final Throwable t) {
-            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
+            final CrashReport crashreport = net.minecraft.CrashReport.forThrowable(t, "Ticking GridNode");
             final CrashReportCategory crashreportcategory = crashreport
                     .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
             tt.addEntityCrashInfo(crashreportcategory);

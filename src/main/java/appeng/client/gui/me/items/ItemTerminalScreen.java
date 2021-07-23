@@ -22,18 +22,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -48,8 +47,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         extends MEMonitorableScreen<IAEItemStack, C> {
-    public ItemTerminalScreen(C container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public ItemTerminalScreen(C container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                              ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -59,16 +58,16 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
     }
 
     @Override
-    protected IPartitionList<IAEItemStack> createPartitionList(List<ItemStack> viewCells) {
+    protected IPartitionList<IAEItemStack> createPartitionList(List<net.minecraft.world.item.ItemStack> viewCells) {
         return ViewCellItem.createFilter(viewCells);
     }
 
     @Override
-    protected void renderGridInventoryEntry(MatrixStack matrices, int x, int y,
-            GridInventoryEntry<IAEItemStack> entry) {
+    protected void renderGridInventoryEntry(PoseStack matrices, int x, int y,
+                                            GridInventoryEntry<IAEItemStack> entry) {
         // Annoying but easier than trying to splice into render item
         ItemStack displayStack = entry.getStack().asItemStackRepresentation();
-        Inventory displayInv = new Inventory(displayStack);
+        SimpleContainer displayInv = new SimpleContainer(displayStack);
         super.renderSlot(matrices, new Slot(displayInv, 0, x, y));
     }
 
@@ -77,7 +76,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
-            if (clickType == ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
+            if (clickType == net.minecraft.world.inventory.ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
                 InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
                 menu.handleInteraction(-1, action);
@@ -88,7 +87,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         long serial = entry.getSerial();
 
         // Move as many items of a single type as possible
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
             InventoryAction action = null;

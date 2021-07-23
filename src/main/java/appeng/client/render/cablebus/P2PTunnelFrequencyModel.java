@@ -21,27 +21,27 @@ package appeng.client.render.cablebus;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequencyModel> {
-    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
+    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         try {
             final TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
             return new P2PTunnelFrequencyBakedModel(texture);
@@ -51,7 +51,7 @@ public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequ
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return Stream.of(TEXTURE);
     }
 

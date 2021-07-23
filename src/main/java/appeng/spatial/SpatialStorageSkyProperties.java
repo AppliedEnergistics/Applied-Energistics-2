@@ -20,8 +20,9 @@ package appeng.spatial;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.client.renderer.DimensionSpecialEffects.SkyType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,12 +33,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
-    public static final DimensionRenderInfo INSTANCE = new DimensionRenderInfo(Float.NaN /* disables clouds */, false,
-            DimensionRenderInfo.FogType.NONE /* we use a custom render mixin */, true, false) {
+    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(Float.NaN /* disables clouds */, false,
+            SkyType.NONE /* we use a custom render mixin */, true, false) {
 
         @Override
-        public Vector3d getBrightnessDependentFogColor(Vector3d p_230494_1_, float p_230494_2_) {
-            return Vector3d.ZERO;
+        public Vec3 getBrightnessDependentFogColor(Vec3 p_230494_1_, float p_230494_2_) {
+            return Vec3.ZERO;
         }
 
         @Override

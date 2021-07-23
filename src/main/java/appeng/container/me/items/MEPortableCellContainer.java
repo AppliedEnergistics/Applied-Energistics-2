@@ -20,21 +20,21 @@ package appeng.container.me.items;
 
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.interfaces.IInventorySlotAware;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
 public class MEPortableCellContainer extends ItemTerminalContainer {
 
-    public static final ContainerType<MEPortableCellContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<MEPortableCellContainer> TYPE = ContainerTypeBuilder
             .create(MEPortableCellContainer::new, IPortableCell.class)
             .build("meportablecell");
 
@@ -43,8 +43,8 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
     private int ticks = 0;
     private double powerMultiplier = 0.5;
 
-    protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
-            final PlayerInventory ip, final IPortableCell monitorable) {
+    protected MEPortableCellContainer(MenuType<? extends MEPortableCellContainer> type, int id,
+                                      final Inventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         // Is the screen being opened a specific slot? If not, it must be for the currently held item
         if (monitorable instanceof IInventorySlotAware) {

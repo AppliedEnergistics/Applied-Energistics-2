@@ -34,11 +34,11 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -73,8 +73,8 @@ public class TickHandler {
 
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldRunnable> serverQueue = new ArrayDeque<>();
-    private final Multimap<IWorld, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<IWorld, Queue<IWorldRunnable>> callQueue = new HashMap<>();
+    private final Multimap<LevelAccessor, CraftingJob> craftingJobs = LinkedListMultimap.create();
+    private final Map<LevelAccessor, Queue<IWorldRunnable>> callQueue = new HashMap<>();
     private final ServerTileRepo tiles = new ServerTileRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
@@ -105,7 +105,7 @@ public class TickHandler {
         return this.cliPlayerColors;
     }
 
-    public void addCallable(final IWorld w, Runnable c) {
+    public void addCallable(final LevelAccessor w, Runnable c) {
         addCallable(w, ignored -> c.run());
     }
 
@@ -117,10 +117,10 @@ public class TickHandler {
      * Using null as world will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
      * corresponding {@link WorldTickEvent}.
      *
-     * @param w null or the specific {@link World}
+     * @param w null or the specific {@link Level}
      * @param c the callback
      */
-    public void addCallable(final IWorld w, IWorldRunnable c) {
+    public void addCallable(final LevelAccessor w, IWorldRunnable c) {
         Preconditions.checkArgument(w == null || !w.isClientSide(), "Can only register serverside callbacks");
 
         if (w == null) {
@@ -253,12 +253,12 @@ public class TickHandler {
     }
 
     /**
-     * Tick a single {@link World}
+     * Tick a single {@link Level}
      * <p>
      * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
      */
     public void onWorldTick(final WorldTickEvent ev) {
-        final World world = ev.world;
+        final Level world = ev.world;
 
         if (world.isClientSide || ev.side != LogicalSide.SERVER) {
             // While forge doesn't generate this event for client worlds,
@@ -306,7 +306,7 @@ public class TickHandler {
         }
     }
 
-    public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
+    public void registerCraftingSimulation(final Level world, final CraftingJob craftingJob) {
         Preconditions.checkArgument(!world.isClientSide, "Trying to register a crafting job for a client-world");
 
         synchronized (this.craftingJobs) {
@@ -317,7 +317,7 @@ public class TickHandler {
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
      */
-    private void simulateCraftingJobs(IWorld world) {
+    private void simulateCraftingJobs(LevelAccessor world) {
         synchronized (this.craftingJobs) {
             final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
 
@@ -341,8 +341,8 @@ public class TickHandler {
     /**
      * Ready the tiles in this world
      */
-    private void readyTiles(IWorld world) {
-        AbstractChunkProvider chunkProvider = world.getChunkSource();
+    private void readyTiles(LevelAccessor world) {
+        ChunkSource chunkProvider = world.getChunkSource();
 
         final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
 
@@ -351,7 +351,7 @@ public class TickHandler {
         long[] workSet = worldQueue.keySet().toLongArray();
 
         for (long packedChunkPos : workSet) {
-            ChunkPos chunkPos = new ChunkPos(packedChunkPos);
+            net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(packedChunkPos);
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.
@@ -398,7 +398,7 @@ public class TickHandler {
     }
 
     /**
-     * Process the {@link IWorldRunnable} queue in this {@link World}
+     * Process the {@link IWorldRunnable} queue in this {@link Level}
      * <p>
      * This has a hard limit of about 50 ms before deferring further processing into the next tick.
      *
@@ -406,7 +406,7 @@ public class TickHandler {
      * @param world the world in which the queue is processed or null for the server queue
      * @return the amount of remaining callbacks
      */
-    private int processQueue(final Queue<IWorldRunnable> queue, final World world) {
+    private int processQueue(final Queue<IWorldRunnable> queue, final Level world) {
         if (queue == null) {
             return 0;
         }

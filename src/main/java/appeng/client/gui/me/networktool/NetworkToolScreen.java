@@ -18,8 +18,7 @@
 
 package appeng.client.gui.me.networktool;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
@@ -29,13 +28,14 @@ import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import net.minecraft.world.entity.player.Inventory;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
     private final ToggleButton transparentFacadesButton;
 
-    public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public NetworkToolScreen(NetworkToolContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,

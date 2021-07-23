@@ -18,8 +18,8 @@
 
 package appeng.helpers;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 
 public interface IPriorityHost {
 
@@ -38,6 +38,6 @@ public interface IPriorityHost {
     /**
      * Used to show the user interface of this part when returning from the priority GUI.
      */
-    ContainerType<?> getContainerType();
+    MenuType<?> getContainerType();
 
 }

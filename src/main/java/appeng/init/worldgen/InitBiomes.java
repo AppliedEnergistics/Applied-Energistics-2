@@ -18,7 +18,7 @@
 
 package appeng.init.worldgen;
 
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.spatial.SpatialStorageBiome;
@@ -29,8 +29,8 @@ public final class InitBiomes {
     private InitBiomes() {
     }
 
-    public static void init(IForgeRegistry<Biome> registry) {
-        Biome biome = SpatialStorageBiome.INSTANCE;
+    public static void init(IForgeRegistry<net.minecraft.world.level.biome.Biome> registry) {
+        net.minecraft.world.level.biome.Biome biome = SpatialStorageBiome.INSTANCE;
         biome.setRegistryName(SpatialStorageDimensionIds.BIOME_KEY.location());
         registry.register(biome);
     }

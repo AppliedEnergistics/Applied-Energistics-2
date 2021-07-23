@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.storage.data.IAEItemStack;
@@ -36,7 +36,7 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
  * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
  * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
  * the packet size for updates, the {@link CraftingStatusEntry#getItem() display item} for entries that were previously
- * sent to the client are set to {@link ItemStack#EMPTY}.
+ * sent to the client are set to {@link net.minecraft.world.item.ItemStack#EMPTY}.
  */
 public class CraftingStatus {
 
@@ -94,7 +94,7 @@ public class CraftingStatus {
         return entries;
     }
 
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(fullStatus);
         buffer.writeVarLong(elapsedTime);
         buffer.writeVarLong(remainingItemCount);
@@ -105,7 +105,7 @@ public class CraftingStatus {
         }
     }
 
-    public static CraftingStatus read(PacketBuffer buffer) {
+    public static CraftingStatus read(FriendlyByteBuf buffer) {
         boolean fullStatus = buffer.readBoolean();
         long elapsedTime = buffer.readVarLong();
         long remainingItemCount = buffer.readVarLong();
@@ -135,7 +135,7 @@ public class CraftingStatus {
             long activeCount = active != null ? active.getStackSize() : 0;
             long pendingCount = pending != null ? pending.getStackSize() : 0;
 
-            ItemStack item = stack.getDefinition();
+            net.minecraft.world.item.ItemStack item = stack.getDefinition();
             if (!full && changes.getSerial(stack) != null) {
                 // The item was already sent to the client, so we can skip the item stack
                 item = ItemStack.EMPTY;

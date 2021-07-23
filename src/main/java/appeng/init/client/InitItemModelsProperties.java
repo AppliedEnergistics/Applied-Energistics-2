@@ -18,8 +18,8 @@
 
 package appeng.init.client;
 
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,7 +43,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        ItemModelsProperties.register(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
+        ItemProperties.register(colorApplicatorItem, new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "colored"),
                 (itemStack, world, entity) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -64,7 +64,7 @@ public final class InitItemModelsProperties {
             }
 
             AEBaseBlockItemChargeable chargeable = (AEBaseBlockItemChargeable) item;
-            ItemModelsProperties.register(chargeable, new ResourceLocation("appliedenergistics2:fill_level"),
+            ItemProperties.register(chargeable, new ResourceLocation("appliedenergistics2:fill_level"),
                     (is, world, entity) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
@@ -79,7 +79,7 @@ public final class InitItemModelsProperties {
      */
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
-        ItemModelsProperties.register(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
+        ItemProperties.register(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
                 (is, w, p) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 

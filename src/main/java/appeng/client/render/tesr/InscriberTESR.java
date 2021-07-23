@@ -18,23 +18,24 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Quaternion;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.items.IItemHandler;
 
@@ -47,20 +48,20 @@ import appeng.tile.misc.InscriberTileEntity;
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity> {
+public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final RenderMaterial TEXTURE_INSIDE = new RenderMaterial(PlayerContainer.BLOCK_ATLAS,
-            new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
+    private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
-    public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(InscriberTileEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
@@ -100,12 +101,12 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
         final TextureAtlasSprite tas = TEXTURE_INSIDE.sprite();
 
-        IVertexBuilder buffer = buffers.getBuffer(RenderType.solid());
+        VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
 
         // Bottom of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
+        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, net.minecraft.core.Direction.DOWN);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 13, combinedOverlay, combinedLight,
-                Direction.DOWN);
+                net.minecraft.core.Direction.DOWN);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
                 Direction.DOWN);
         addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
@@ -117,26 +118,26 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 3, combinedOverlay, combinedLight,
-                Direction.NORTH);
+                net.minecraft.core.Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 3, combinedOverlay, combinedLight, Direction.NORTH);
 
         // Top of Bottom Stamp
         middle -= 2.0f * 0.02f;
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 13, combinedOverlay, combinedLight,
                 Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 13, combinedOverlay, combinedLight, Direction.UP);
+        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 13, combinedOverlay, combinedLight, net.minecraft.core.Direction.UP);
         addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
                 Direction.UP);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
-                Direction.UP);
+                net.minecraft.core.Direction.UP);
 
         // Front of Bottom Stamp
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + -base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
-                combinedLight, Direction.NORTH);
+                combinedLight, net.minecraft.core.Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 3, combinedOverlay, combinedLight,
-                Direction.NORTH);
+                net.minecraft.core.Direction.NORTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 3, combinedOverlay, combinedLight,
                 Direction.NORTH);
 
@@ -187,8 +188,8 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         ms.popPose();
     }
 
-    private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y,
-            float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+    private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,
+                                  float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
         vb.vertex(ms.last().pose(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.uv(sprite.getU(texU), sprite.getV(texV));
@@ -200,8 +201,8 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
     private static final ResourceLocation TAG_STORAGE_BLOCKS = new ResourceLocation("forge:storage_blocks");
 
-    private void renderItem(MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers,
-            int combinedLight, int combinedOverlay) {
+    private void renderItem(PoseStack ms, final ItemStack stack, final float o, MultiBufferSource buffers,
+                            int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
             ms.pushPose();
             // move to center
@@ -217,7 +218,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms,
+            itemRenderer.renderStatic(stack, TransformType.FIXED, combinedLight, combinedOverlay, ms,
                     buffers);
             ms.popPose();
         }

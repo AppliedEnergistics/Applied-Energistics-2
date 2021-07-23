@@ -21,8 +21,8 @@ package appeng.container;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.AELog;
 
@@ -34,13 +34,13 @@ public final class ContainerOpener {
     private ContainerOpener() {
     }
 
-    private static final Map<ContainerType<? extends AEBaseContainer>, Opener> registry = new HashMap<>();
+    private static final Map<MenuType<? extends AEBaseContainer>, Opener> registry = new HashMap<>();
 
-    public static <T extends AEBaseContainer> void addOpener(ContainerType<T> type, Opener opener) {
+    public static <T extends AEBaseContainer> void addOpener(MenuType<T> type, Opener opener) {
         registry.put(type, opener);
     }
 
-    public static boolean openContainer(ContainerType<?> type, PlayerEntity player, ContainerLocator locator) {
+    public static boolean openContainer(MenuType<?> type, Player player, ContainerLocator locator) {
         Opener opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open container for unknown container type {}", type);
@@ -53,7 +53,7 @@ public final class ContainerOpener {
     @FunctionalInterface
     public interface Opener {
 
-        boolean open(PlayerEntity player, ContainerLocator locator);
+        boolean open(Player player, ContainerLocator locator);
 
     }
 

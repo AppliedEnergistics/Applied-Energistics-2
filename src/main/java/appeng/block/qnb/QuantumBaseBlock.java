@@ -18,21 +18,23 @@
 
 package appeng.block.qnb;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
 
@@ -42,33 +44,33 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
 
     static {
         final float shave = 2.0f / 16.0f;
-        SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
+        SHAPE = Shapes.create(new AABB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
-    public QuantumBaseBlock(AbstractBlock.Properties props) {
+    public QuantumBaseBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
         this.registerDefaultState(this.defaultBlockState().setValue(FORMED, false));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FORMED);
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, QuantumBridgeTileEntity te) {
         return currentState.setValue(FORMED, te.isFormed());
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+                                boolean isMoving) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);
@@ -76,7 +78,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }

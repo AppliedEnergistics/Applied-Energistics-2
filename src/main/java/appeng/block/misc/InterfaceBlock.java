@@ -20,19 +20,18 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
@@ -41,31 +40,33 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
 import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
-    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
+    private static final net.minecraft.world.level.block.state.properties.BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public InterfaceBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
         return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         final InterfaceTileEntity tg = this.getTileEntity(w, pos);
@@ -74,9 +75,9 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override

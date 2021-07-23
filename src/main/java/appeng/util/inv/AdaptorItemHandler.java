@@ -20,7 +20,7 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -51,7 +51,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
             }
 
             if (destination != null) {
-                ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
+                net.minecraft.world.item.ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
                 if (extracted.isEmpty()) {
                     continue;
                 }
@@ -180,7 +180,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack simulateAdd(ItemStack toBeSimulated) {
+    public ItemStack simulateAdd(net.minecraft.world.item.ItemStack toBeSimulated) {
         return this.addItems(toBeSimulated, true);
     }
 

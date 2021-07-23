@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -50,13 +49,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
     private final CraftingStatusTableRenderer table;
 
-    private final Button cancel;
+    private final net.minecraft.client.gui.components.Button cancel;
 
     private final Scrollbar scrollbar;
 
     private CraftingStatus status;
 
-    public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+    public CraftingCPUScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
@@ -75,7 +74,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         super.updateBeforeRender();
 
         // Update the dialog title with an ETA if possible
-        ITextComponent title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+        net.minecraft.network.chat.Component title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
         if (status != null) {
             final long elapsedTime = status.getElapsedTime();
             final double remainingItems = status.getRemainingItemCount();
@@ -101,14 +100,14 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     @Override
-    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
+    public void render(PoseStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
 
         super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+    public void drawFG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         if (status != null) {

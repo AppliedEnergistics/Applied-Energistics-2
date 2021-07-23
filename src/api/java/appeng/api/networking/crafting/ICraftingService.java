@@ -28,12 +28,11 @@ import java.util.concurrent.Future;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.world.World;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.world.level.Level;
 
 public interface ICraftingService extends IGridService {
 
@@ -46,7 +45,7 @@ public interface ICraftingService extends IGridService {
      * @return a collection of crafting patterns for the item in question.
      */
     ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
-            ICraftingPatternDetails details, int slot, World world);
+            ICraftingPatternDetails details, int slot, Level world);
 
     /**
      * Begin calculating a crafting job.
@@ -60,8 +59,8 @@ public interface ICraftingService extends IGridService {
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingJob> beginCraftingJob(World world, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
-            ICraftingCallback callback);
+    Future<ICraftingJob> beginCraftingJob(Level world, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
+                                          ICraftingCallback callback);
 
     /**
      * Submit the job to the Crafting system for processing.

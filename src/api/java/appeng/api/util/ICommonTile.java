@@ -25,9 +25,9 @@ package appeng.api.util;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public interface ICommonTile {
 
@@ -39,5 +39,5 @@ public interface ICommonTile {
      * @param pos   location of the block
      * @param drops drops of tile entity
      */
-    void getDrops(World world, BlockPos pos, List<ItemStack> drops);
+    void getDrops(Level world, BlockPos pos, List<ItemStack> drops);
 }

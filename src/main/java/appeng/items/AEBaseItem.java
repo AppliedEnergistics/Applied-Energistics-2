@@ -18,12 +18,13 @@
 
 package appeng.items;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item.Properties;
 
 public abstract class AEBaseItem extends Item {
 
-    public AEBaseItem(Item.Properties properties) {
+    public AEBaseItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties.setNoRepair());
     }
 

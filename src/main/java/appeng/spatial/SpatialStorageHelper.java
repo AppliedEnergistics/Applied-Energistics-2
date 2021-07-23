@@ -22,19 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.PortalInfo;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.util.WorldCoord;
@@ -60,11 +60,11 @@ public class SpatialStorageHelper {
      * @return teleported entity
      */
     private Entity teleportEntity(Entity entity, final TelDestination link) {
-        final ServerWorld oldWorld;
-        final ServerWorld newWorld;
+        final ServerLevel oldWorld;
+        final ServerLevel newWorld;
 
         try {
-            oldWorld = (ServerWorld) entity.level;
+            oldWorld = (ServerLevel) entity.level;
             newWorld = link.dim;
         } catch (final Throwable e) {
             return entity;
@@ -95,25 +95,25 @@ public class SpatialStorageHelper {
         // We keep track of all so we can remount them on the other side.
 
         // load the chunk!
-        newWorld.getChunkSource().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
+        newWorld.getChunkSource().getChunk(Mth.floor(link.x) >> 4, Mth.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
-            AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
+        if (entity instanceof ServerPlayer && link.dim.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
+            AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayer) entity);
         }
 
-        PortalInfo portalInfo = new PortalInfo(new Vector3d(link.x, link.y, link.z), Vector3d.ZERO, entity.yRot,
+        net.minecraft.world.level.portal.PortalInfo portalInfo = new net.minecraft.world.level.portal.PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.yRot,
                 entity.xRot);
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
-                    Function<Boolean, Entity> repositionEntity) {
+            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw,
+                                      Function<Boolean, net.minecraft.world.entity.Entity> repositionEntity) {
                 return repositionEntity.apply(false);
             }
 
             @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld,
-                    Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+            public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld,
+                    Function<ServerLevel, net.minecraft.world.level.portal.PortalInfo> defaultPortalInfo) {
                 return portalInfo;
             }
         });
@@ -131,38 +131,38 @@ public class SpatialStorageHelper {
             final int maxZ, final ISpatialVisitor visitor) {
         for (int y = minY; y < maxY; y++) {
             for (int z = minZ; z < maxZ; z++) {
-                visitor.visit(new BlockPos(minX, y, z));
+                visitor.visit(new net.minecraft.core.BlockPos(minX, y, z));
                 visitor.visit(new BlockPos(maxX, y, z));
             }
         }
 
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
-                visitor.visit(new BlockPos(x, minY, z));
-                visitor.visit(new BlockPos(x, maxY, z));
+                visitor.visit(new net.minecraft.core.BlockPos(x, minY, z));
+                visitor.visit(new net.minecraft.core.BlockPos(x, maxY, z));
             }
         }
 
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
-                visitor.visit(new BlockPos(x, y, minZ));
-                visitor.visit(new BlockPos(x, y, maxZ));
+                visitor.visit(new net.minecraft.core.BlockPos(x, y, minZ));
+                visitor.visit(new net.minecraft.core.BlockPos(x, y, maxZ));
             }
         }
     }
 
-    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ,
-            final ServerWorld dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
-            final int scaleY, final int scaleZ) {
+    public void swapRegions(final ServerLevel srcWorld, final int srcX, final int srcY, final int srcZ,
+                            final ServerLevel dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
+                            final int scaleY, final int scaleZ) {
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                 dstY + scaleY + 1, dstZ + scaleZ + 1,
                 new WrapInMatrixFrame(matrixFrameBlock.defaultBlockState(), dstWorld));
 
-        final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
+        final AABB srcBox = new AABB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
                 srcZ + scaleZ + 1);
 
-        final AxisAlignedBB dstBox = new AxisAlignedBB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
+        final AABB dstBox = new AABB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
                 dstZ + scaleZ + 1);
 
         final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
@@ -173,8 +173,8 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesOfClass(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesOfClass(net.minecraft.world.entity.Entity.class, srcBox);
+        final List<net.minecraft.world.entity.Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
             this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
@@ -187,7 +187,7 @@ public class SpatialStorageHelper {
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAt(wc.getPos(), net.minecraft.world.level.block.Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
@@ -207,14 +207,14 @@ public class SpatialStorageHelper {
 
     private static class TriggerUpdates implements ISpatialVisitor {
 
-        private final World dst;
+        private final Level dst;
 
-        public TriggerUpdates(final World dst2) {
+        public TriggerUpdates(final Level dst2) {
             this.dst = dst2;
         }
 
         @Override
-        public void visit(final BlockPos pos) {
+        public void visit(final net.minecraft.core.BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
             final Block blk = state.getBlock();
             blk.neighborChanged(state, this.dst, pos, blk, pos, false);
@@ -223,10 +223,10 @@ public class SpatialStorageHelper {
 
     private static class WrapInMatrixFrame implements ISpatialVisitor {
 
-        private final World dst;
+        private final Level dst;
         private final BlockState state;
 
-        public WrapInMatrixFrame(final BlockState state, final World dst2) {
+        public WrapInMatrixFrame(final BlockState state, final Level dst2) {
             this.dst = dst2;
             this.state = state;
         }
@@ -238,13 +238,13 @@ public class SpatialStorageHelper {
     }
 
     private static class TelDestination {
-        private final ServerWorld dim;
+        private final ServerLevel dim;
         private final double x;
         private final double y;
         private final double z;
 
-        TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y,
-                final double z, final int tileX, final int tileY, final int tileZ) {
+        TelDestination(final ServerLevel dimension, final AABB srcBox, final double x, final double y,
+                       final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));

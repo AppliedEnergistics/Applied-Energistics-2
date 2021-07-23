@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGrid;
@@ -56,9 +56,9 @@ public class ApiGrid implements IGridHelper {
 
     @Nullable
     @Override
-    public IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos) {
+    public IInWorldGridNodeHost getNodeHost(LevelAccessor world, net.minecraft.core.BlockPos pos) {
         if (world.hasChunkAt(pos)) {
-            final TileEntity te = world.getBlockEntity(pos);
+            final BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {
                 return host;
             }

@@ -18,8 +18,8 @@
 
 package appeng.me.storage;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -122,7 +122,7 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
         return this.getWhitelist();
     }
 
-    CompoundNBT openNbtData() {
+    CompoundTag openNbtData() {
         return this.getCellInv().getItemStack().getOrCreateTag();
     }
 }

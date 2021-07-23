@@ -25,12 +25,12 @@ package appeng.api.storage.data;
 
 import java.io.IOException;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
+import net.minecraft.world.item.ItemStack;
 
 public interface IAEStack<T extends IAEStack<T>> {
 
@@ -126,7 +126,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param i to be written data
      */
-    void writeToNBT(CompoundNBT i);
+    void writeToNBT(CompoundTag i);
 
     /**
      * Compare stacks using precise logic.
@@ -161,7 +161,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @throws IOException
      */
-    void writeToPacket(PacketBuffer data);
+    void writeToPacket(FriendlyByteBuf data);
 
     /**
      * Clone the Item / Fluid Stack

@@ -18,9 +18,9 @@
 
 package appeng.util;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class BlockUpdate implements IWorldRunnable {
     private final BlockPos pos;
@@ -30,7 +30,7 @@ public class BlockUpdate implements IWorldRunnable {
     }
 
     @Override
-    public void call(World world) throws Exception {
+    public void call(Level world) throws Exception {
         if (world.hasChunkAt(this.pos)) {
             world.updateNeighborsAt(this.pos, Blocks.AIR);
         }

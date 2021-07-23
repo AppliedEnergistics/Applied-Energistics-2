@@ -21,7 +21,7 @@ package appeng.api.parts;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.
@@ -40,7 +40,7 @@ public interface IPartModels {
     /**
      * Convenience overload of {@link #registerModels(Collection)}
      */
-    default void registerModels(ResourceLocation... partModels) {
+    default void registerModels(net.minecraft.resources.ResourceLocation... partModels) {
         registerModels(Arrays.asList(partModels));
     }
 }

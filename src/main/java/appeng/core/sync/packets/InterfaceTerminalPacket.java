@@ -21,10 +21,10 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -39,18 +39,18 @@ public class InterfaceTerminalPacket extends BasePacket {
 
     // input.
     private final boolean fullUpdate;
-    private final CompoundNBT in;
+    private final CompoundTag in;
 
-    public InterfaceTerminalPacket(final PacketBuffer stream) {
+    public InterfaceTerminalPacket(final FriendlyByteBuf stream) {
         this.fullUpdate = stream.readBoolean();
         this.in = stream.readNbt();
     }
 
     // api
-    public InterfaceTerminalPacket(boolean fullUpdate, CompoundNBT din) {
+    public InterfaceTerminalPacket(boolean fullUpdate, CompoundTag din) {
         this.fullUpdate = false;
         this.in = null;
-        PacketBuffer data = new PacketBuffer(Unpooled.buffer(2048));
+        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
         data.writeBoolean(fullUpdate);
         data.writeNbt(din);
@@ -59,7 +59,7 @@ public class InterfaceTerminalPacket extends BasePacket {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof InterfaceTerminalScreen) {

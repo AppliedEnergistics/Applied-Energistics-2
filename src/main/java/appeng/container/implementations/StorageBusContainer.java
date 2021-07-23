@@ -20,9 +20,9 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
@@ -49,7 +49,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class StorageBusContainer extends UpgradeableContainer {
 
-    public static final ContainerType<StorageBusContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<StorageBusContainer> TYPE = ContainerTypeBuilder
             .create(StorageBusContainer::new, StorageBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("storagebus");
@@ -62,7 +62,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-    public StorageBusContainer(int id, final PlayerInventory ip, final StorageBusPart te) {
+    public StorageBusContainer(int id, final Inventory ip, final StorageBusPart te) {
         super(TYPE, id, ip, te);
         this.storageBus = te;
     }

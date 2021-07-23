@@ -20,7 +20,7 @@ package appeng.util.inv;
 
 import java.util.function.Supplier;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -44,12 +44,12 @@ public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, net.minecraft.world.item.ItemStack stack, boolean simulate) {
         return this.sourceHandler.get().insertItem(slot, stack, simulate);
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
         return this.sourceHandler.get().extractItem(slot, amount, simulate);
     }
 

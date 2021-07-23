@@ -18,9 +18,9 @@
 
 package appeng.spatial;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public interface ISpatialVisitor {
 
-    void visit(BlockPos pos);
+    void visit(net.minecraft.core.BlockPos pos);
 }

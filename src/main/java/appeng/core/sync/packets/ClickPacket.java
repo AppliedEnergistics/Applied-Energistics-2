@@ -20,16 +20,15 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -43,56 +42,57 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
+import net.minecraft.world.phys.Vec3;
 
 public class ClickPacket extends BasePacket {
 
     private final int x;
     private final int y;
     private final int z;
-    private Direction side;
+    private net.minecraft.core.Direction side;
     private final float hitX;
     private final float hitY;
     private final float hitZ;
-    private Hand hand;
+    private InteractionHand hand;
     private final boolean leftClick;
 
-    public ClickPacket(final PacketBuffer stream) {
+    public ClickPacket(final FriendlyByteBuf stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
         byte side = stream.readByte();
         if (side != -1) {
-            this.side = Direction.values()[side];
+            this.side = net.minecraft.core.Direction.values()[side];
         } else {
             this.side = null;
         }
         this.hitX = stream.readFloat();
         this.hitY = stream.readFloat();
         this.hitZ = stream.readFloat();
-        this.hand = Hand.values()[stream.readByte()];
+        this.hand = InteractionHand.values()[stream.readByte()];
         this.leftClick = stream.readBoolean();
     }
 
     // API for when a block was right clicked
-    public ClickPacket(ItemUseContext context) {
+    public ClickPacket(UseOnContext context) {
         this(context.getClickedPos(), context.getClickedFace(), context.getClickedPos().getX(), context.getClickedPos().getY(),
                 context.getClickedPos().getZ(), context.getHand());
     }
 
     // API for when an item in hand was right-clicked, with no block context
-    public ClickPacket(Hand hand) {
+    public ClickPacket(InteractionHand hand) {
         this(BlockPos.ZERO, null, 0, 0, 0, hand);
     }
 
-    private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-            final Hand hand) {
+    private ClickPacket(final BlockPos pos, final net.minecraft.core.Direction side, final float hitX, final float hitY, final float hitZ,
+                        final InteractionHand hand) {
         this(pos, side, hitX, hitY, hitZ, hand, false);
     }
 
-    public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-            final Hand hand, boolean leftClick) {
+    public ClickPacket(final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction side, final float hitX, final float hitY, final float hitZ,
+                       final InteractionHand hand, boolean leftClick) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.x = pos.getX());
@@ -118,8 +118,8 @@ public class ClickPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final BlockPos pos = new BlockPos(this.x, this.y, this.z);
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final net.minecraft.core.BlockPos pos = new net.minecraft.core.BlockPos(this.x, this.y, this.z);
 
         final ItemStack is = player.getItemInHand(hand);
         final ItemDefinition<?> maybeMemoryCard = AEItems.MEMORY_CARD;
@@ -129,14 +129,14 @@ public class ClickPacket extends BasePacket {
             final Block block = player.level.getBlockState(pos).getBlock();
             if (block instanceof CableBusBlock) {
                 ((CableBusBlock) block).onBlockClickPacket(player.level, pos, player, this.hand,
-                        new Vector3d(this.hitX, this.hitY, this.hitZ));
+                        new Vec3(this.hitX, this.hitY, this.hitZ));
             }
         } else if (!is.isEmpty()) {
             if (is.getItem() instanceof NetworkToolItem tnt) {
                 if (hasBlockContext()) {
                     // Reconstruct an item use context
-                    ItemUseContext useContext = new ItemUseContext(player, hand,
-                            new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false));
+                    UseOnContext useContext = new UseOnContext(player, hand,
+                            new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, pos, false));
                     tnt.serverSideToolLogic(useContext);
                 } else {
                     ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,

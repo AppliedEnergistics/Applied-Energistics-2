@@ -18,13 +18,13 @@
 
 package appeng.container.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
 
 public class InaccessibleSlot extends AppEngSlot {
 
-    private ItemStack dspStack = ItemStack.EMPTY;
+    private net.minecraft.world.item.ItemStack dspStack = ItemStack.EMPTY;
 
     public InaccessibleSlot(final IItemHandler i, final int invSlot) {
         super(i, invSlot);
@@ -42,7 +42,7 @@ public class InaccessibleSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(final PlayerEntity player) {
+    public boolean mayPickup(final Player player) {
         return false;
     }
 

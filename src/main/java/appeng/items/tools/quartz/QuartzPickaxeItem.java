@@ -18,23 +18,24 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.PickaxeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
 
 import appeng.util.Platform;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
 
 public class QuartzPickaxeItem extends PickaxeItem {
     private final QuartzToolType type;
 
-    public QuartzPickaxeItem(Item.Properties props, final QuartzToolType type) {
-        super(ItemTier.IRON, 1, -2.8F, props);
+    public QuartzPickaxeItem(net.minecraft.world.item.Item.Properties props, final QuartzToolType type) {
+        super(Tiers.IRON, 1, -2.8F, props);
         this.type = type;
     }
 
     @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final net.minecraft.world.item.ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 }

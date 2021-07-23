@@ -23,14 +23,14 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -45,11 +45,11 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "item/color_applicator_colored");
 
-    private static final RenderMaterial TEXTURE_DARK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_DARK = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
-    private static final RenderMaterial TEXTURE_MEDIUM = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_MEDIUM = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
-    private static final RenderMaterial TEXTURE_BRIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_BRIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override
@@ -58,15 +58,15 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return Stream.of(TEXTURE_DARK, TEXTURE_MEDIUM, TEXTURE_DARK);
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
-        IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
+        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 
         TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);
         TextureAtlasSprite texMedium = spriteGetter.apply(TEXTURE_MEDIUM);

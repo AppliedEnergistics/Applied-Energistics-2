@@ -18,7 +18,7 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 import appeng.util.inv.IAEAppEngInventory;

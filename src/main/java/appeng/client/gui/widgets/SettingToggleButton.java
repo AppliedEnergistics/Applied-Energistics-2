@@ -30,10 +30,10 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
@@ -266,7 +266,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
     }
 
-    private static void onPress(Button btn) {
+    private static void onPress(net.minecraft.client.gui.components.Button btn) {
         if (btn instanceof SettingToggleButton) {
             ((SettingToggleButton<?>) btn).triggerPress();
         }
@@ -284,7 +284,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
-            final ButtonToolTips title, final ITextComponent hint) {
+            final ButtonToolTips title, final net.minecraft.network.chat.Component hint) {
         appearances.put(
                 new EnumPair(setting, val),
                 new ButtonAppearance(
@@ -328,7 +328,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
 
         if (this.buttonSetting == null || this.currentValue == null) {
             return Collections.emptyList();
@@ -337,7 +337,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         final ButtonAppearance buttonAppearance = appearances
                 .get(new EnumPair(this.buttonSetting, this.currentValue));
         if (buttonAppearance == null) {
-            return Collections.singletonList(new StringTextComponent("No Such Message"));
+            return Collections.singletonList(new TextComponent("No Such Message"));
         }
 
         return Arrays.asList(buttonAppearance.displayName, buttonAppearance.hint);
@@ -375,11 +375,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         @Nonnull
         public final Icon icon;
         @Nonnull
-        public final ITextComponent displayName;
+        public final net.minecraft.network.chat.Component displayName;
         @Nonnull
-        public final ITextComponent hint;
+        public final net.minecraft.network.chat.Component hint;
 
-        public ButtonAppearance(Icon icon, ITextComponent displayName, ITextComponent hint) {
+        public ButtonAppearance(Icon icon, net.minecraft.network.chat.Component displayName, net.minecraft.network.chat.Component hint) {
             this.icon = Objects.requireNonNull(icon);
             this.displayName = Objects.requireNonNull(displayName);
             this.hint = Objects.requireNonNull(hint);

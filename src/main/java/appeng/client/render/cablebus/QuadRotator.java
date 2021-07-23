@@ -21,11 +21,12 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import appeng.client.render.FacingToRotation;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
@@ -45,7 +46,7 @@ public class QuadRotator {
     private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
     public List<BakedQuad> rotateQuads(List<BakedQuad> quads, Direction newForward, Direction newUp) {
-        if (newForward == Direction.NORTH && newUp == Direction.UP) {
+        if (newForward == net.minecraft.core.Direction.NORTH && newUp == Direction.UP) {
             return quads; // This is the default orientation
         }
         FacingToRotation rotation = getRotation(newForward, newUp);
@@ -53,9 +54,9 @@ public class QuadRotator {
             return quads;
         }
 
-        List<BakedQuad> result = new ArrayList<>(quads.size());
+        List<net.minecraft.client.renderer.block.model.BakedQuad> result = new ArrayList<>(quads.size());
 
-        CachedFormat format = CachedFormat.lookup(DefaultVertexFormats.BLOCK);
+        CachedFormat format = CachedFormat.lookup(DefaultVertexFormat.BLOCK);
         BakedPipeline pipeline = pipelines.get();
         Quad collector = collectors.get();
         QuadMatrixTransformer transformer = pipeline.getElement("transformer", QuadMatrixTransformer.class);
@@ -79,13 +80,13 @@ public class QuadRotator {
         return result;
     }
 
-    private FacingToRotation getRotation(Direction forward, Direction up) {
+    private FacingToRotation getRotation(net.minecraft.core.Direction forward, Direction up) {
         // Sanitize forward/up
         if (forward.getAxis() == up.getAxis()) {
-            if (up.getAxis() == Direction.Axis.Y) {
-                up = Direction.NORTH;
+            if (up.getAxis() == Axis.Y) {
+                up = net.minecraft.core.Direction.NORTH;
             } else {
-                up = Direction.UP;
+                up = net.minecraft.core.Direction.UP;
             }
         }
 

@@ -21,7 +21,7 @@ package appeng.core.registries;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 import appeng.api.events.LocatableEventAnnounce;
@@ -41,8 +41,8 @@ public final class LocatableRegistry implements ILocatableRegistry {
 
     private void updateLocatable(final LocatableEventAnnounce e) {
         // TODO 1.17: Break compat and add isRemote() or getWorld() to ILocatable
-        if (e.target instanceof TileEntity) {
-            TileEntity tileEntity = (TileEntity) e.target;
+        if (e.target instanceof BlockEntity) {
+            BlockEntity tileEntity = (BlockEntity) e.target;
             if (tileEntity.getLevel() == null || tileEntity.getLevel().isClientSide()) {
                 return;
             }

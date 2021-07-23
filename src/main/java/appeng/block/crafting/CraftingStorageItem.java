@@ -18,18 +18,18 @@
 
 package appeng.block.crafting;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.block.Block;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 
-    public CraftingStorageItem(Block id, Properties props) {
+    public CraftingStorageItem(Block id, net.minecraft.world.item.Item.Properties props) {
         super(id, props);
     }
 
@@ -39,7 +39,7 @@ public class CraftingStorageItem extends AEBaseBlockItem {
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasContainerItem(final net.minecraft.world.item.ItemStack stack) {
         return AEConfig.instance().isDisassemblyCraftingEnabled();
     }
 }

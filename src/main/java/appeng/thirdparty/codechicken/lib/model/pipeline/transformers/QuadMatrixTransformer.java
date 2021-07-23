@@ -18,9 +18,9 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector4f;
+import com.mojang.math.Vector4f;
+import net.minecraft.core.Direction;
+import com.mojang.math.Matrix4f;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad;
@@ -39,7 +39,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         identity.setIdentity();
     }
 
-    private final Vector4f storage = new Vector4f();
+    private final com.mojang.math.Vector4f storage = new Vector4f();
     private Matrix4f matrix;
     private boolean identityMatrix;
 
@@ -47,7 +47,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         super();
     }
 
-    public QuadMatrixTransformer(IVertexConsumer parent, Matrix4f matrix) {
+    public QuadMatrixTransformer(IVertexConsumer parent, com.mojang.math.Matrix4f matrix) {
         super(parent);
         this.matrix = matrix;
         this.identityMatrix = matrix.equals(identity);

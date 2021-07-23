@@ -20,15 +20,15 @@ package appeng.parts;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,22 +46,22 @@ public interface ICableBusContainer {
 
     void onEntityCollision(Entity e);
 
-    boolean activate(PlayerEntity player, Hand hand, Vector3d vecFromPool);
+    boolean activate(Player player, InteractionHand hand, Vec3 vecFromPool);
 
-    boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec);
+    boolean clicked(Player player, InteractionHand hand, Vec3 hitVec);
 
-    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
-    SelectedPart selectPart(Vector3d v3);
+    SelectedPart selectPart(Vec3 v3);
 
-    boolean recolourBlock(Direction side, AEColor colour, PlayerEntity who);
+    boolean recolourBlock(Direction side, AEColor colour, Player who);
 
     boolean isLadder(LivingEntity entity);
 
     @OnlyIn(Dist.CLIENT)
-    void animateTick(World world, BlockPos pos, Random r);
+    void animateTick(Level world, BlockPos pos, Random r);
 
     int getLightValue();
 

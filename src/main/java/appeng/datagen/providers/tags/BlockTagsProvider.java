@@ -20,11 +20,12 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
@@ -33,9 +34,9 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-import net.minecraft.data.TagsProvider.Builder;
+import net.minecraft.data.tags.TagsProvider.TagAppender;
 
-public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider implements IAE2DataProvider {
+public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
     public BlockTagsProvider(GatherDataEvent dataEvent) {
         super(dataEvent.getGenerator(), AppEng.MOD_ID, dataEvent.getExistingFileHelper());
     }
@@ -48,23 +49,23 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         addForge("storage_blocks/certus_quartz", AEBlocks.QUARTZ_BLOCK);
         addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
 
-        addForge("terracotta", Blocks.TERRACOTTA,
-                Blocks.WHITE_TERRACOTTA,
-                Blocks.ORANGE_TERRACOTTA,
-                Blocks.MAGENTA_TERRACOTTA,
-                Blocks.LIGHT_BLUE_TERRACOTTA,
-                Blocks.YELLOW_TERRACOTTA,
-                Blocks.LIME_TERRACOTTA,
-                Blocks.PINK_TERRACOTTA,
-                Blocks.GRAY_TERRACOTTA,
+        addForge("terracotta", net.minecraft.world.level.block.Blocks.TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.WHITE_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.ORANGE_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.MAGENTA_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.LIGHT_BLUE_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.YELLOW_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.LIME_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.PINK_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.GRAY_TERRACOTTA,
                 Blocks.LIGHT_GRAY_TERRACOTTA,
-                Blocks.CYAN_TERRACOTTA,
-                Blocks.PURPLE_TERRACOTTA,
-                Blocks.BLUE_TERRACOTTA,
-                Blocks.BROWN_TERRACOTTA,
-                Blocks.GREEN_TERRACOTTA,
-                Blocks.RED_TERRACOTTA,
-                Blocks.BLACK_TERRACOTTA);
+                net.minecraft.world.level.block.Blocks.CYAN_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.PURPLE_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.BLUE_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.BROWN_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.GREEN_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.RED_TERRACOTTA,
+                net.minecraft.world.level.block.Blocks.BLACK_TERRACOTTA);
 
         addAe2("blacklisted/annihilation_plane");
 
@@ -72,7 +73,7 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
         addAe2("spatial/whitelist");
 
         addAe2("whitelisted/facades",
-                Blocks.GLASS,
+                net.minecraft.world.level.block.Blocks.GLASS,
                 Tags.Blocks.STAINED_GLASS,
                 AEBlocks.QUARTZ_GLASS,
                 AEBlocks.QUARTZ_VIBRANT_GLASS);
@@ -99,22 +100,22 @@ public class BlockTagsProvider extends net.minecraft.data.BlockTagsProvider impl
 
     @SuppressWarnings("unchecked")
     private void add(ResourceLocation tagName, Object... blockSources) {
-        Builder<Block> builder = tag(net.minecraft.tags.BlockTags.createOptional(tagName));
+        TagAppender<Block> builder = tag(BlockTags.createOptional(tagName));
 
         for (Object blockSource : blockSources) {
             if (blockSource instanceof Block) {
-                builder.add((Block) blockSource);
+                builder.add((net.minecraft.world.level.block.Block) blockSource);
             } else if (blockSource instanceof BlockDefinition) {
                 builder.add(((BlockDefinition) blockSource).block());
-            } else if (blockSource instanceof ITag.INamedTag) {
+            } else if (blockSource instanceof Named) {
                 builder.addTag(
-                        (ITag.INamedTag<Block>) blockSource);
+                        (Named<Block>) blockSource);
             } else if (blockSource instanceof String) {
                 String blockSourceString = (String) blockSource;
                 if (blockSourceString.startsWith("#")) {
-                    builder.add(new ITag.TagEntry(new ResourceLocation(blockSourceString.substring(1))));
+                    builder.add(new Tag.TagEntry(new ResourceLocation(blockSourceString.substring(1))));
                 } else {
-                    builder.add(new ITag.ItemEntry(new ResourceLocation(blockSourceString)));
+                    builder.add(new ElementEntry(new ResourceLocation(blockSourceString)));
                 }
             } else {
                 throw new IllegalArgumentException("Unknown block source: " + blockSource);

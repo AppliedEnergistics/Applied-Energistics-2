@@ -20,7 +20,7 @@ package appeng.init.client;
 
 import java.util.function.Supplier;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -71,12 +71,12 @@ public final class InitBuiltInModels {
                 PlaneModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
                 CraftingCubeModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
+        ModelLoaderRegistry.registerLoader(new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "cable_bus"),
                 new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
     }
 
     private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
+        ModelLoaderRegistry.registerLoader(new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, id),
                 new SimpleModelLoader<>(modelFactory));
     }
 }

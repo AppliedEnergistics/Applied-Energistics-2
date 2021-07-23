@@ -24,12 +24,12 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.parts.IPartModel;
@@ -52,7 +52,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items) {
+    protected float calculateEnergyUsage(final ServerLevel w, final net.minecraft.core.BlockPos pos, final List<net.minecraft.world.item.ItemStack> items) {
         final float requiredEnergy = super.calculateEnergyUsage(w, pos, items);
 
         return requiredEnergy * SILK_TOUCH_FACTOR;
@@ -60,7 +60,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
     @Override
     protected ItemStack createHarvestTool(BlockState state) {
-        ItemStack harvestTool = super.createHarvestTool(state);
+        net.minecraft.world.item.ItemStack harvestTool = super.createHarvestTool(state);
 
         // For silk touch purposes, enchant the fake tool
         if (harvestTool != null) {

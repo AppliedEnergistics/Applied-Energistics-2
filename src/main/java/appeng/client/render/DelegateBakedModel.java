@@ -23,26 +23,27 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class DelegateBakedModel implements IBakedModel {
-    private final IBakedModel baseModel;
+public abstract class DelegateBakedModel implements BakedModel {
+    private final BakedModel baseModel;
 
-    protected DelegateBakedModel(IBakedModel base) {
+    protected DelegateBakedModel(BakedModel base) {
         this.baseModel = base;
     }
 
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
         return baseModel.getQuads(state, side, rand);
     }
 
@@ -52,12 +53,12 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return baseModel.getOverrides();
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }
@@ -68,7 +69,7 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getTransforms() {
+    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 
@@ -87,7 +88,7 @@ public abstract class DelegateBakedModel implements IBakedModel {
         return this.baseModel.isCustomRenderer();
     }
 
-    public IBakedModel getBaseModel() {
+    public BakedModel getBaseModel() {
         return this.baseModel;
     }
 }

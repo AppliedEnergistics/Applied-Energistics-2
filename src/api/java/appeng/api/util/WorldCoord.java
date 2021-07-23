@@ -23,8 +23,8 @@
 
 package appeng.api.util;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 
 /**
  * Represents a relative coordinate, either relative to another object, or relative to the origin of a dimension.
@@ -37,7 +37,7 @@ public class WorldCoord {
     public int y;
     public int z;
 
-    public WorldCoord(final TileEntity s) {
+    public WorldCoord(final BlockEntity s) {
         this(s.getBlockPos());
     }
 
@@ -157,7 +157,7 @@ public class WorldCoord {
     }
 
     public BlockPos getPos() {
-        return new BlockPos(this.x, this.y, this.z);
+        return new net.minecraft.core.BlockPos(this.x, this.y, this.z);
     }
 
     @Override

@@ -20,15 +20,16 @@ package appeng.items.materials;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -43,12 +44,10 @@ import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 import appeng.util.inv.AdaptorItemHandler;
 
-import net.minecraft.item.Item.Properties;
-
 public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     private final Upgrades cardType;
 
-    public UpgradeCardItem(Properties properties, Upgrades cardType) {
+    public UpgradeCardItem(net.minecraft.world.item.Item.Properties properties, Upgrades cardType) {
         super(properties);
         this.cardType = cardType;
     }
@@ -60,8 +59,8 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> lines,
-            ITooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level world, List<net.minecraft.network.chat.Component> lines,
+                                net.minecraft.world.item.TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final Upgrades u = this.getType(stack);
@@ -71,11 +70,11 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        Hand hand = context.getHand();
+    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
+        InteractionHand hand = context.getHand();
         if (player != null && InteractionUtil.isInAlternateUseMode(player)) {
-            final TileEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
+            final BlockEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
             IItemHandler upgrades = null;
 
             if (te instanceof IPartHost) {
@@ -94,12 +93,12 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
                 if (u != null) {
                     if (player.getCommandSenderWorld().isClientSide()) {
-                        return ActionResultType.PASS;
+                        return InteractionResult.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
                     player.setItemInHand(hand, ad.addItems(heldStack));
-                    return ActionResultType.sidedSuccess(player.getCommandSenderWorld().isClientSide());
+                    return InteractionResult.sidedSuccess(player.getCommandSenderWorld().isClientSide());
                 }
             }
         }

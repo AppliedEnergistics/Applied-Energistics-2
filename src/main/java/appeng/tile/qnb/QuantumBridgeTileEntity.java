@@ -23,15 +23,15 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -51,7 +51,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
-        implements IAEMultiBlock<QuantumCluster>, ITickableTileEntity {
+        implements IAEMultiBlock<QuantumCluster>, TickableBlockEntity {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 
@@ -65,7 +65,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public QuantumBridgeTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
@@ -84,7 +84,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         int out = this.constructed;
 
@@ -100,7 +100,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int oldValue = this.constructed;
         this.constructed = data.readByte();
@@ -114,7 +114,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final net.minecraft.world.item.ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }
@@ -213,7 +213,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
         final EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
 
         for (final Direction d : Direction.values()) {
-            final TileEntity te = this.level.getBlockEntity(this.worldPosition.relative(d));
+            final BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(d));
             if (te instanceof QuantumBridgeTileEntity) {
                 set.add(d);
             }
@@ -225,7 +225,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     public long getQEFrequency() {
         final ItemStack is = this.internalInventory.getStackInSlot(0);
         if (!is.isEmpty()) {
-            final CompoundNBT c = is.getTag();
+            final CompoundTag c = is.getTag();
             if (c != null) {
                 return c.getLong("freq");
             }
@@ -252,7 +252,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     }
 
     public void neighborUpdate(BlockPos fromPos) {
-        if (level instanceof ServerWorld serverWorld) {
+        if (level instanceof ServerLevel serverWorld) {
             this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, this.worldPosition, fromPos);
         }
     }

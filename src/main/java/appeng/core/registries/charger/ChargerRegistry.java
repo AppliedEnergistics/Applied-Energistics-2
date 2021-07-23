@@ -26,8 +26,8 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.features.IChargerRegistry;
 
@@ -43,7 +43,7 @@ public class ChargerRegistry implements IChargerRegistry {
 
     @Override
     @Nonnegative
-    public double getChargeRate(@Nonnull IItemProvider item) {
+    public double getChargeRate(@Nonnull ItemLike item) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(item.asItem());
 
@@ -51,7 +51,7 @@ public class ChargerRegistry implements IChargerRegistry {
     }
 
     @Override
-    public void addChargeRate(@Nonnull IItemProvider item, @Nonnegative double value) {
+    public void addChargeRate(@Nonnull ItemLike item, @Nonnegative double value) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(item.asItem());
         Preconditions.checkArgument(value > 0d);
@@ -62,7 +62,7 @@ public class ChargerRegistry implements IChargerRegistry {
     }
 
     @Override
-    public void removeChargeRate(@Nonnull IItemProvider item) {
+    public void removeChargeRate(@Nonnull ItemLike item) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(item.asItem());
 

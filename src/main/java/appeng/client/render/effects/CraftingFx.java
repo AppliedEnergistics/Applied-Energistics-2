@@ -18,24 +18,24 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.Camera;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CraftingFx extends SpriteTexturedParticle {
+public class CraftingFx extends TextureSheetParticle {
 
     // Offset relative to center of block, is the starting point of the particle
     // movement
@@ -43,8 +43,8 @@ public class CraftingFx extends SpriteTexturedParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(final ClientWorld par1World, final double x, final double y, final double z,
-            final IAnimatedSprite sprite) {
+    public CraftingFx(final ClientLevel par1World, final double x, final double y, final double z,
+                      final SpriteSet sprite) {
         super(par1World, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
@@ -65,25 +65,25 @@ public class CraftingFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
 
         float f = (this.age + partialTicks) / this.lifetime;
 
-        float offX = (float) x + MathHelper.lerp(f, offsetX, 0);
-        float offY = (float) y + MathHelper.lerp(f, offsetY, 0);
-        float offZ = (float) z + MathHelper.lerp(f, offsetZ, 0);
-        float alpha = MathHelper.lerp(easeOutCirc(f), 1.3f, 0.1f);
-        float scale = MathHelper.lerp(easeOutCirc(f), 0.13f, 0.0f);
+        float offX = (float) x + Mth.lerp(f, offsetX, 0);
+        float offY = (float) y + Mth.lerp(f, offsetY, 0);
+        float offZ = (float) z + Mth.lerp(f, offsetZ, 0);
+        float alpha = Mth.lerp(easeOutCirc(f), 1.3f, 0.1f);
+        float scale = Mth.lerp(easeOutCirc(f), 0.13f, 0.0f);
 
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vector3d Vector3d = renderInfo.getPosition();
+        Vec3 Vector3d = renderInfo.getPosition();
         offX -= Vector3d.x;
         offY -= Vector3d.y;
         offZ -= Vector3d.z;
 
-        Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
+        Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new com.mojang.math.Vector3f(-1.0F, 1.0F, 0.0F),
                 new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F) };
 
         for (int i = 0; i < 4; ++i) {
@@ -114,8 +114,8 @@ public class CraftingFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -126,16 +126,16 @@ public class CraftingFx extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType data, ClientWorld worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType data, ClientLevel worldIn, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);
         }
     }

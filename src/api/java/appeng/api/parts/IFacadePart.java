@@ -23,9 +23,9 @@
 
 package appeng.api.parts;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
 
 import appeng.api.util.AEPartLocation;
 
@@ -61,7 +61,7 @@ public interface IFacadePart {
     /**
      * The item that this facade masquerades as.
      */
-    ItemStack getTextureItem();
+    net.minecraft.world.item.ItemStack getTextureItem();
 
     /**
      * @return The block state used for rendering.

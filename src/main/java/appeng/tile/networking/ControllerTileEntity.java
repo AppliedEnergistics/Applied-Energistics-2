@@ -20,10 +20,10 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -52,7 +52,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
     private boolean isValid = false;
 
-    public ControllerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ControllerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
@@ -79,9 +79,9 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     public void onNeighborChange(final boolean force) {
         final boolean xx = this.checkController(this.worldPosition.relative(Direction.EAST))
                 && this.checkController(this.worldPosition.relative(Direction.WEST));
-        final boolean yy = this.checkController(this.worldPosition.relative(Direction.UP))
+        final boolean yy = this.checkController(this.worldPosition.relative(net.minecraft.core.Direction.UP))
                 && this.checkController(this.worldPosition.relative(Direction.DOWN));
-        final boolean zz = this.checkController(this.worldPosition.relative(Direction.NORTH))
+        final boolean zz = this.checkController(this.worldPosition.relative(net.minecraft.core.Direction.NORTH))
                 && this.checkController(this.worldPosition.relative(Direction.SOUTH));
 
         // int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
@@ -167,7 +167,7 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
     }
 
     /**

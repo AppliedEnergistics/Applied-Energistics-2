@@ -21,9 +21,9 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
@@ -36,7 +36,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     private boolean hasPower = false;
 
-    public QuartzGrowthAcceleratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public QuartzGrowthAcceleratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags();
@@ -56,7 +56,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean hadPower = this.isPowered();
         this.setPowered(data.readBoolean());
@@ -64,7 +64,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isPowered());
     }

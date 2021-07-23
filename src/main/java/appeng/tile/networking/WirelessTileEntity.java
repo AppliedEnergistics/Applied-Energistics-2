@@ -21,10 +21,10 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -50,7 +50,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     private int clientFlags = 0;
 
-    public WirelessTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public WirelessTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -58,7 +58,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(final net.minecraft.core.Direction inForward, final net.minecraft.core.Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
     }
@@ -69,7 +69,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -78,7 +78,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         this.setClientFlags(0);
 
@@ -96,7 +96,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.SMART;
     }
 
@@ -112,7 +112,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
         // :P
     }
 
@@ -128,7 +128,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     private int getBoosters() {
-        final ItemStack boosters = this.inv.getStackInSlot(0);
+        final net.minecraft.world.item.ItemStack boosters = this.inv.getStackInSlot(0);
         return boosters == null ? 0 : boosters.getCount();
     }
 

@@ -18,9 +18,9 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -34,7 +34,7 @@ import appeng.container.implementations.ContainerTypeBuilder;
  */
 public class CraftingStatusContainer extends CraftingCPUContainer implements CraftingCPUCyclingContainer {
 
-    public static final ContainerType<CraftingStatusContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingStatusContainer> TYPE = ContainerTypeBuilder
             .create(CraftingStatusContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingstatus");
@@ -45,9 +45,9 @@ public class CraftingStatusContainer extends CraftingCPUContainer implements Cra
     public boolean noCPU = true;
 
     @GuiSync(7)
-    public ITextComponent cpuName;
+    public net.minecraft.network.chat.Component cpuName;
 
-    public CraftingStatusContainer(int id, final PlayerInventory ip, final ITerminalHost te) {
+    public CraftingStatusContainer(int id, final Inventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
     }
 

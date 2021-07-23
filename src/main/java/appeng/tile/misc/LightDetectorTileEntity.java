@@ -18,18 +18,18 @@
 
 package appeng.tile.misc;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
 
-public class LightDetectorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
+public class LightDetectorTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
 
     private int lastCheck = 30;
     private int lastLight = 0;
 
-    public LightDetectorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public LightDetectorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

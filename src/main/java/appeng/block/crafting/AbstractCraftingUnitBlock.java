@@ -18,20 +18,18 @@
 
 package appeng.block.crafting;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -39,30 +37,34 @@ import appeng.container.ContainerOpener;
 import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.BlockHitResult;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(AbstractBlock.Properties props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props, final CraftingUnitType type) {
         super(props);
         this.type = type;
         this.registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(POWERED, false));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
         builder.add(FORMED);
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
-            BlockPos currentPos, BlockPos facingPos) {
-        TileEntity te = worldIn.getBlockEntity(currentPos);
+    public net.minecraft.world.level.block.state.BlockState updateShape(net.minecraft.world.level.block.state.BlockState stateIn, net.minecraft.core.Direction facing, BlockState facingState, LevelAccessor worldIn,
+                                                                        BlockPos currentPos, BlockPos facingPos) {
+        BlockEntity te = worldIn.getBlockEntity(currentPos);
         if (te != null) {
             te.requestModelDataUpdate();
         }
@@ -70,8 +72,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
-            final BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(final net.minecraft.world.level.block.state.BlockState state, final Level worldIn, final BlockPos pos, final Block blockIn,
+                                final net.minecraft.core.BlockPos fromPos, boolean isMoving) {
         final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
@@ -79,7 +81,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
@@ -93,8 +95,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public ActionResultType use(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
-            BlockRayTraceResult hit) {
+    public InteractionResult use(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
+                                 BlockHitResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
@@ -103,7 +105,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
 
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
         return super.use(state, w, pos, p, hand, hit);

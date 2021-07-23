@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -27,8 +27,8 @@ import appeng.container.implementations.SkyChestContainer;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title,
-            ScreenStyle style) {
+    public SkyChestScreen(SkyChestContainer container, Inventory playerInv, net.minecraft.network.chat.Component title,
+                          ScreenStyle style) {
         super(container, playerInv, title, style);
     }
 

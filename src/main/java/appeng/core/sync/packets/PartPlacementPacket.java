@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
 
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
@@ -39,20 +39,20 @@ public class PartPlacementPacket extends BasePacket {
     private int z;
     private int face;
     private float eyeHeight;
-    private Hand hand;
+    private InteractionHand hand;
 
-    public PartPlacementPacket(final PacketBuffer stream) {
+    public PartPlacementPacket(final FriendlyByteBuf stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
         this.face = stream.readByte();
         this.eyeHeight = stream.readFloat();
-        this.hand = Hand.values()[stream.readByte()];
+        this.hand = InteractionHand.values()[stream.readByte()];
     }
 
     // api
-    public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+    public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight, final InteractionHand hand) {
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(pos.getX());
@@ -66,8 +66,8 @@ public class PartPlacementPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ServerPlayerEntity sender = (ServerPlayerEntity) player;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final ServerPlayer sender = (ServerPlayer) player;
         AppEng.instance().setPartInteractionPlayer(sender);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);

@@ -18,27 +18,27 @@
 
 package appeng.hooks;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.BlockSource;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 
 import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.util.Platform;
+import net.minecraft.world.level.block.DispenserBlock;
 
 public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final IBlockSource dispenser, ItemStack dispensedItem) {
-        final Item i = dispensedItem.getItem();
+    protected net.minecraft.world.item.ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
+        final net.minecraft.world.item.Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem) {
-            final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
+            final net.minecraft.core.Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                 if (Direction.getStepX() == d.xOffset && Direction.getStepY() == d.yOffset
@@ -49,9 +49,9 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
 
             final MatterCannonItem tm = (MatterCannonItem) i;
 
-            final World w = dispenser.getLevel();
-            if (w instanceof ServerWorld) {
-                final PlayerEntity p = Platform.getPlayer((ServerWorld) w);
+            final Level w = dispenser.getLevel();
+            if (w instanceof ServerLevel) {
+                final Player p = Platform.getPlayer((ServerLevel) w);
                 Platform.configurePlayer(p, dir, dispenser.getEntity());
 
                 p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);

@@ -18,19 +18,19 @@
 
 package appeng.helpers;
 
-import net.minecraft.util.Direction;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.Direction;
 
 import appeng.api.util.IOrientable;
+import net.minecraft.world.level.BlockGetter;
 
 public class LocationRotation implements IOrientable {
 
-    private final IBlockReader w;
+    private final BlockGetter w;
     private final int x;
     private final int y;
     private final int z;
 
-    public LocationRotation(final IBlockReader world, final int x, final int y, final int z) {
+    public LocationRotation(final BlockGetter world, final int x, final int y, final int z) {
         this.w = world;
         this.x = x;
         this.y = y;
@@ -43,7 +43,7 @@ public class LocationRotation implements IOrientable {
     }
 
     @Override
-    public Direction getForward() {
+    public net.minecraft.core.Direction getForward() {
         if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }

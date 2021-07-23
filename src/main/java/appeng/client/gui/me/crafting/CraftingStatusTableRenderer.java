@@ -21,8 +21,8 @@ package appeng.client.gui.me.crafting;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
@@ -40,8 +40,8 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     }
 
     @Override
-    protected List<ITextComponent> getEntryDescription(CraftingStatusEntry entry) {
-        List<ITextComponent> lines = new ArrayList<>(3);
+    protected List<net.minecraft.network.chat.Component> getEntryDescription(CraftingStatusEntry entry) {
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
             String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
             lines.add(GuiText.FromStorage.text(amount));
@@ -65,8 +65,8 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     }
 
     @Override
-    protected List<ITextComponent> getEntryTooltip(CraftingStatusEntry entry) {
-        List<ITextComponent> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
+    protected List<net.minecraft.network.chat.Component> getEntryTooltip(CraftingStatusEntry entry) {
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {

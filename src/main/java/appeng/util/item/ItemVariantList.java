@@ -26,7 +26,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * Stores variants of a single type of {@link net.minecraft.item.Item}, i.e. versions with different durability, or
+ * Stores variants of a single type of {@link net.minecraft.world.item.Item}, i.e. versions with different durability, or
  * different NBT or capabilities.
  */
 abstract class ItemVariantList {

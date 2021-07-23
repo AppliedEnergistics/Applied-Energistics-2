@@ -25,17 +25,17 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -64,25 +64,25 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
 
     private int oldLV = -1; // on re-calculate light when it changes
 
-    public CableBusTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CableBusTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.getCableBus().readFromNBT(data);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.getCableBus().writeToNBT(data);
         return data;
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         boolean ret = this.getCableBus().readFromStream(data);
 
@@ -98,7 +98,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         this.getCableBus().writeToStream(data);
     }
@@ -169,12 +169,12 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List drops) {
         this.getCableBus().getDrops(drops);
     }
 
     @Override
-    public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getNoDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         this.getCableBus().getNoDrops(drops);
     }
 
@@ -201,8 +201,8 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public AEPartLocation addPart(final ItemStack is, final AEPartLocation side, final PlayerEntity player,
-            final Hand hand) {
+    public AEPartLocation addPart(final ItemStack is, final AEPartLocation side, final Player player,
+            final InteractionHand hand) {
         return this.getCableBus().addPart(is, side, player, hand);
     }
 
@@ -212,7 +212,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public IPart getPart(final Direction side) {
+    public IPart getPart(final net.minecraft.core.Direction side) {
         return this.getCableBus().getPart(side);
     }
 
@@ -237,13 +237,13 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public boolean isBlocked(final Direction side) {
+    public boolean isBlocked(final net.minecraft.core.Direction side) {
         // TODO 1.10.2-R - Stuff.
         return false;
     }
 
     @Override
-    public SelectedPart selectPart(final Vector3d pos) {
+    public SelectedPart selectPart(final Vec3 pos) {
         return this.getCableBus().selectPart(pos);
     }
 
@@ -290,7 +290,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor colour, final PlayerEntity who) {
+    public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
         return this.getCableBus().recolourBlock(side, colour, who);
     }
 
@@ -320,7 +320,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     @Nonnull
     @Override
     public IModelData getModelData() {
-        World world = getLevel();
+        Level world = getLevel();
         if (world == null) {
             return EmptyModelData.INSTANCE;
         }

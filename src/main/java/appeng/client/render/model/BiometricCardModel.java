@@ -25,14 +25,14 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -44,28 +44,28 @@ import appeng.core.AppEng;
  */
 public class BiometricCardModel implements BasicUnbakedModel<BiometricCardModel> {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
-    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_hash"));
+    private static final ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
+    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "item/biometric_card_hash"));
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return Stream.of(TEXTURE);
     }
 
     @Nullable
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform transformIn,
-            ItemOverrideList overrides, ResourceLocation locationIn) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState transformIn,
+                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation locationIn) {
         TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
 
-        IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, transformIn, spriteGetter);
+        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, transformIn, spriteGetter);
 
         return new BiometricCardBakedModel(baseModel, texture);
     }

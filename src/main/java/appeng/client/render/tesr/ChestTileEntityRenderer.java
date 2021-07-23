@@ -25,23 +25,22 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -57,13 +56,13 @@ import appeng.tile.storage.ChestTileEntity;
  * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity> {
+public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestTileEntity> {
 
     private final ModelManager modelManager;
 
-    private final BlockModelRenderer blockRenderer;
+    private final ModelBlockRenderer blockRenderer;
 
-    public ChestTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public ChestTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
@@ -71,10 +70,10 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
     }
 
     @Override
-    public void render(ChestTileEntity chest, float partialTicks, MatrixStack matrices, IRenderTypeBuffer buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(ChestTileEntity chest, float partialTicks, PoseStack matrices, MultiBufferSource buffers,
+                       int combinedLight, int combinedOverlay) {
 
-        World world = chest.getLevel();
+        Level world = chest.getLevel();
         if (world == null) {
             return;
         }
@@ -92,7 +91,7 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         if (driveModel == null) {
             return;
         }
-        IBakedModel cellModel = driveModel.getCellChassisModel(cellItem);
+        BakedModel cellModel = driveModel.getCellChassisModel(cellItem);
 
         matrices.pushPose();
         matrices.translate(0.5, 0.5, 0.5);
@@ -105,21 +104,21 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
         matrices.translate(5 / 16.0, 4 / 16.0, 0);
 
         // Render the cell model as-if it was a block model
-        IVertexBuilder buffer = buffers.getBuffer(RenderType.cutout());
+        VertexConsumer buffer = buffers.getBuffer(RenderType.cutout());
         // We "fake" the position here to make it use the light-value in front of the
         // drive
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
         blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer, false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
-        IVertexBuilder ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
+        VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
         CellLedRenderer.renderLed(chest, 0, ledBuffer, matrices, partialTicks);
 
         matrices.popPose();
     }
 
     private DriveBakedModel getDriveModel() {
-        IBakedModel driveModel = modelManager.getBlockModelShaper()
+        BakedModel driveModel = modelManager.getBlockModelShaper()
                 .getBlockModel(AEBlocks.DRIVE.block().defaultBlockState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
@@ -131,15 +130,15 @@ public class ChestTileEntityRenderer extends TileEntityRenderer<ChestTileEntity>
     private static class FaceRotatingModel extends DelegateBakedModel {
         private final FacingToRotation r;
 
-        protected FaceRotatingModel(IBakedModel base, FacingToRotation r) {
+        protected FaceRotatingModel(BakedModel base, FacingToRotation r) {
             super(base);
             this.r = r;
         }
 
         @Nonnull
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                @Nonnull IModelData extraData) {
+        public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, @Nonnull Random rand,
+                                                                                  @Nonnull IModelData extraData) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }

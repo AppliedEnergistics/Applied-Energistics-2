@@ -18,10 +18,10 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.SlotSemantic;
@@ -39,15 +39,15 @@ import appeng.tile.misc.InscriberTileEntity;
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static final ContainerType<InscriberContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<InscriberContainer> TYPE = ContainerTypeBuilder
             .create(InscriberContainer::new, InscriberTileEntity.class)
             .build("inscriber");
 
     private final InscriberTileEntity ti;
 
-    private final Slot top;
+    private final net.minecraft.world.inventory.Slot top;
     private final Slot middle;
-    private final Slot bottom;
+    private final net.minecraft.world.inventory.Slot bottom;
 
     @GuiSync(2)
     public int maxProcessingTime = -1;
@@ -55,7 +55,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberContainer(int id, final PlayerInventory ip, final InscriberTileEntity te) {
+    public InscriberContainer(int id, final Inventory ip, final InscriberTileEntity te) {
         super(TYPE, id, ip, te);
         this.ti = te;
 
@@ -102,8 +102,8 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    public boolean isValidForSlot(final Slot s, final ItemStack is) {
-        final ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
+    public boolean isValidForSlot(final net.minecraft.world.inventory.Slot s, final ItemStack is) {
+        final net.minecraft.world.item.ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
         final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
@@ -114,7 +114,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
             return InscriberRecipes.findRecipe(ti.getLevel(), is, top, bot, false) != null;
         } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
-            ItemStack otherSlot;
+            net.minecraft.world.item.ItemStack otherSlot;
             if (s == this.top) {
                 otherSlot = this.bottom.getItem();
             } else {

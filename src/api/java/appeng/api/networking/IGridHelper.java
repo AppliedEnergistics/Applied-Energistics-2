@@ -29,12 +29,12 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
+import net.minecraft.world.level.LevelAccessor;
 
 /**
  * A helper responsible for creating new {@link IGridNode}, and connecting existing nodes.
@@ -94,16 +94,16 @@ public interface IGridHelper {
      * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
      */
     @Nullable
-    IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos);
+    IInWorldGridNodeHost getNodeHost(LevelAccessor world, BlockPos pos);
 
     /**
      * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making
      * connections) on another host in the world.
      *
-     * @see #getNodeHost(IWorld, BlockPos)
+     * @see #getNodeHost(LevelAccessor, BlockPos)
      */
     @Nullable
-    default IGridNode getExposedNode(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull Direction side) {
+    default IGridNode getExposedNode(@Nonnull LevelAccessor world, @Nonnull net.minecraft.core.BlockPos pos, @Nonnull Direction side) {
         var host = getNodeHost(world, pos);
         if (host == null) {
             return null;

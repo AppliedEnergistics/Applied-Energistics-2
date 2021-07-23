@@ -25,7 +25,7 @@ package appeng.api.implementations.tiles;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellContainer;

@@ -20,10 +20,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
@@ -38,7 +38,7 @@ public class InventoryActionPacket extends BasePacket {
     private final long id;
     private final ItemStack slotItem;
 
-    public InventoryActionPacket(final PacketBuffer stream) {
+    public InventoryActionPacket(final FriendlyByteBuf stream) {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
@@ -46,7 +46,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     // api
-    public InventoryActionPacket(final InventoryAction action, final int slot, final ItemStack slotItem) {
+    public InventoryActionPacket(final InventoryAction action, final int slot, final net.minecraft.world.item.ItemStack slotItem) {
 
         if (Platform.isClient() && action != InventoryAction.SET_FILTER) {
             throw new IllegalStateException("invalid packet, client cannot post inv actions with stacks.");
@@ -57,7 +57,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = 0;
         this.slotItem = slotItem.copy();
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
@@ -75,20 +75,20 @@ public class InventoryActionPacket extends BasePacket {
         this.id = id;
         this.slotItem = null;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(id);
-        data.writeItem(ItemStack.EMPTY);
+        data.writeItem(net.minecraft.world.item.ItemStack.EMPTY);
 
         this.configureWrite(data);
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ServerPlayerEntity sender = (ServerPlayerEntity) player;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final ServerPlayer sender = (ServerPlayer) player;
         if (sender.containerMenu instanceof AEBaseContainer) {
             final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
 
@@ -101,7 +101,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
             player.inventory.setCarried(this.slotItem);
         }

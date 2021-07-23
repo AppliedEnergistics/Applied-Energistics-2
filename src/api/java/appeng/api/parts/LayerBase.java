@@ -25,11 +25,11 @@ package appeng.api.parts;
 
 import java.util.Set;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.util.AEPartLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * All Layers must extends this, this get part implementation is provided to interface with the parts, however a real
@@ -37,10 +37,10 @@ import appeng.api.util.AEPartLocation;
  *
  * TODO: Consider removing and replacing with capabilities.
  */
-public abstract class LayerBase extends TileEntity // implements IPartHost
+public abstract class LayerBase extends BlockEntity // implements IPartHost
 {
 
-    public LayerBase(TileEntityType<?> tileEntityTypeIn) {
+    public LayerBase(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         // TODO Auto-generated constructor stub
     }

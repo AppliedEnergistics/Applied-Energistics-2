@@ -18,11 +18,11 @@
 
 package appeng.block.spatial;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
@@ -36,8 +36,8 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+                                boolean isMoving) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
             tsp.neighborChanged(fromPos);
@@ -45,7 +45,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(w, pos);
         if (tsp != null) {
             return tsp.getLightValue();

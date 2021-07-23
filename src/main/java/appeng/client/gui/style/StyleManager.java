@@ -34,9 +34,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
@@ -50,7 +50,7 @@ public final class StyleManager {
     private static final Map<String, ScreenStyle> styleCache = new HashMap<>();
     public static final String PROP_INCLUDES = "includes";
 
-    private static IResourceManager resourceManager;
+    private static ResourceManager resourceManager;
 
     private static String getBasePath(String path) {
         int lastSep = path.lastIndexOf('/');
@@ -89,7 +89,7 @@ public final class StyleManager {
         String basePath = getBasePath(path);
 
         JsonObject document;
-        try (IResource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
+        try (Resource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
             resourcePacks.add(resource.getSourceName());
             document = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), JsonObject.class);
         }
@@ -184,22 +184,22 @@ public final class StyleManager {
         return style;
     }
 
-    public static void initialize(IResourceManager resourceManager) {
-        if (resourceManager instanceof IReloadableResourceManager) {
-            ((IReloadableResourceManager) resourceManager).registerReloadListener(new ReloadListener());
+    public static void initialize(ResourceManager resourceManager) {
+        if (resourceManager instanceof ReloadableResourceManager) {
+            ((ReloadableResourceManager) resourceManager).registerReloadListener(new ReloadListener());
         }
         setResourceManager(resourceManager);
     }
 
-    private static void setResourceManager(IResourceManager resourceManager) {
+    private static void setResourceManager(ResourceManager resourceManager) {
         StyleManager.resourceManager = resourceManager;
         StyleManager.styleCache.clear();
     }
 
     private static class ReloadListener implements ISelectiveResourceReloadListener {
         @Override
-        public void onResourceManagerReload(IResourceManager resourceManager,
-                Predicate<IResourceType> resourcePredicate) {
+        public void onResourceManagerReload(ResourceManager resourceManager,
+                                            Predicate<IResourceType> resourcePredicate) {
             setResourceManager(resourceManager);
         }
     }

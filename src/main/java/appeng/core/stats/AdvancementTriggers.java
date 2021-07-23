@@ -18,8 +18,8 @@
 
 package appeng.core.stats;
 
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.ICriterionTrigger;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.CriterionTrigger;
 
 public class AdvancementTriggers {
     private AppEngAdvancementTrigger networkApprentice = new AppEngAdvancementTrigger("network_apprentice");
@@ -52,7 +52,7 @@ public class AdvancementTriggers {
 
     @FunctionalInterface
     public interface ICriterionTriggerRegistry {
-        void register(ICriterionTrigger<? extends ICriterionInstance> trigger);
+        void register(CriterionTrigger<? extends CriterionTriggerInstance> trigger);
     }
 
 }

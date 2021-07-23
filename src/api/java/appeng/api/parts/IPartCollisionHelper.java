@@ -23,7 +23,7 @@
 
 package appeng.api.parts;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public interface IPartCollisionHelper {
 
@@ -44,12 +44,12 @@ public interface IPartCollisionHelper {
     /**
      * @return east in world space.
      */
-    Direction getWorldX();
+    net.minecraft.core.Direction getWorldX();
 
     /**
      * @return up in world space.
      */
-    Direction getWorldY();
+    net.minecraft.core.Direction getWorldY();
 
     /**
      * @return forward in world space.

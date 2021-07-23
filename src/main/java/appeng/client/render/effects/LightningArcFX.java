@@ -20,11 +20,11 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,8 +37,8 @@ public class LightningArcFX extends LightningFX {
     private final double ry;
     private final double rz;
 
-    public LightningArcFX(final ClientWorld w, final double x, final double y, final double z, final double ex,
-            final double ey, final double ez, final double r, final double g, final double b) {
+    public LightningArcFX(final ClientLevel w, final double x, final double y, final double z, final double ex,
+                          final double ey, final double ez, final double r, final double g, final double b) {
         super(w, x, y, z, r, g, b, 6);
 
         this.rx = ex - x;
@@ -67,17 +67,17 @@ public class LightningArcFX extends LightningFX {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<LightningArcParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<LightningArcParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(LightningArcParticleData data, ClientWorld worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+        public Particle createParticle(LightningArcParticleData data, ClientLevel worldIn, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
+            TextureSheetParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;

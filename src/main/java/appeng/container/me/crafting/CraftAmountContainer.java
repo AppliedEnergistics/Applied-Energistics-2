@@ -22,12 +22,11 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -50,13 +49,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
+import net.minecraft.world.level.Level;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
  */
 public class CraftAmountContainer extends AEBaseContainer {
 
-    public static final ContainerType<CraftAmountContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftAmountContainer> TYPE = ContainerTypeBuilder
             .create(CraftAmountContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftamount");
@@ -74,7 +74,7 @@ public class CraftAmountContainer extends AEBaseContainer {
     @GuiSync(1)
     private int initialAmount = -1;
 
-    public CraftAmountContainer(int id, PlayerInventory ip, final ITerminalHost te) {
+    public CraftAmountContainer(int id, Inventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
 
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0);
@@ -84,8 +84,8 @@ public class CraftAmountContainer extends AEBaseContainer {
     /**
      * Opens the craft amount screen for the given player.
      */
-    public static void open(ServerPlayerEntity player, ContainerLocator locator, IAEItemStack itemToCraft,
-            int initialAmount) {
+    public static void open(ServerPlayer player, ContainerLocator locator, IAEItemStack itemToCraft,
+                            int initialAmount) {
         ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountContainer) {
@@ -106,7 +106,7 @@ public class CraftAmountContainer extends AEBaseContainer {
         return h.getActionableNode().getGrid();
     }
 
-    public World getWorld() {
+    public Level getWorld() {
         return this.getPlayerInventory().player.level;
     }
 
@@ -157,7 +157,7 @@ public class CraftAmountContainer extends AEBaseContainer {
 
                 final ContainerLocator locator = getLocator();
                 if (locator != null) {
-                    PlayerEntity player = this.getPlayerInventory().player;
+                    Player player = this.getPlayerInventory().player;
                     ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
 
                     if (player.containerMenu instanceof CraftConfirmContainer) {

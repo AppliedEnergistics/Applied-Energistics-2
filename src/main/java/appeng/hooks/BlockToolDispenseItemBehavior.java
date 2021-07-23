@@ -18,29 +18,29 @@
 
 package appeng.hooks;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.BlockSource;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 
 public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final IBlockSource dispenser, final ItemStack dispensedItem) {
-        final Item i = dispensedItem.getItem();
+    protected net.minecraft.world.item.ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
+        final net.minecraft.world.item.Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool) {
             final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             final IBlockTool tm = (IBlockTool) i;
 
-            final World w = dispenser.getLevel();
-            if (w instanceof ServerWorld) {
-                ItemUseContext context = new DirectionalPlaceContext(w, dispenser.getPos().relative(direction),
+            final Level w = dispenser.getLevel();
+            if (w instanceof ServerLevel) {
+                UseOnContext context = new DirectionalPlaceContext(w, dispenser.getPos().relative(direction),
                         direction, dispensedItem, direction.getOpposite());
                 tm.useOn(context);
             }

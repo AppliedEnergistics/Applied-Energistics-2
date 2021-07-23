@@ -22,10 +22,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AELog;
@@ -44,9 +44,9 @@ public final class SpatialStoragePlotManager {
     /**
      * Gets the world used to store spatial storage cell's content.
      */
-    public ServerWorld getWorld() {
+    public ServerLevel getWorld() {
         MinecraftServer server = getServer();
-        ServerWorld world = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
+        ServerLevel world = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
         if (world == null) {
             throw new IllegalStateException("The storage cell world is missing.");
         }
@@ -94,15 +94,15 @@ public final class SpatialStoragePlotManager {
         }
 
         if (resetBlocks) {
-            BlockPos from = plot.getOrigin();
-            BlockPos to = from.offset(plot.getSize()).offset(-1, -1, -1);
+            net.minecraft.core.BlockPos from = plot.getOrigin();
+            net.minecraft.core.BlockPos to = from.offset(plot.getSize()).offset(-1, -1, -1);
 
             AELog.info("Clearing spatial storage plot %s (%s -> %s)", plotId, from, to);
 
             // This is slow, but it should usually be just an admin-command
-            ServerWorld world = getWorld();
+            ServerLevel world = getWorld();
             BlockState matrixFrame = AEBlocks.MATRIX_FRAME.block().defaultBlockState();
-            for (BlockPos blockPos : BlockPos.betweenClosed(from, to)) {
+            for (net.minecraft.core.BlockPos blockPos : net.minecraft.core.BlockPos.betweenClosed(from, to)) {
                 world.setBlockAndUpdate(blockPos, matrixFrame);
             }
         }

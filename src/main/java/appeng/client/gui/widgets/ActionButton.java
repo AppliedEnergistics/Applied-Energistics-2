@@ -21,8 +21,8 @@ package appeng.client.gui.widgets;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.Icon;
@@ -80,7 +80,7 @@ public class ActionButton extends IconButton {
         return icon;
     }
 
-    private ITextComponent buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+    private net.minecraft.network.chat.Component buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
         String name = displayName.text().getString();
         String value = displayValue.text().getString();
 
@@ -95,7 +95,7 @@ public class ActionButton extends IconButton {
             sb.replace(i, i + 1, "\n");
         }
 
-        return new StringTextComponent(name + '\n' + sb);
+        return new TextComponent(name + '\n' + sb);
     }
 
 }

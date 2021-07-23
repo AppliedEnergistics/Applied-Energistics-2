@@ -18,17 +18,16 @@
 
 package appeng.fluids.items;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.AEBaseItem;
-
-import net.minecraft.item.Item.Properties;
 
 /**
  * Dummy item to display the fluid Icon
@@ -39,12 +38,12 @@ import net.minecraft.item.Item.Properties;
  */
 public class FluidDummyItem extends AEBaseItem {
 
-    public FluidDummyItem(Properties properties) {
+    public FluidDummyItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
+    public String getDescriptionId(net.minecraft.world.item.ItemStack stack) {
         FluidStack fluidStack = this.getFluidStack(stack);
         if (fluidStack.isEmpty()) {
             fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
@@ -54,24 +53,24 @@ public class FluidDummyItem extends AEBaseItem {
 
     public FluidStack getFluidStack(ItemStack is) {
         if (is.hasTag()) {
-            CompoundNBT tag = is.getTag();
+            CompoundTag tag = is.getTag();
             return FluidStack.loadFluidStackFromNBT(tag);
         }
         return FluidStack.EMPTY;
     }
 
-    public void setFluidStack(ItemStack is, FluidStack fs) {
+    public void setFluidStack(net.minecraft.world.item.ItemStack is, FluidStack fs) {
         if (fs.isEmpty()) {
             is.setTag(null);
         } else {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             fs.writeToNBT(tag);
             is.setTag(tag);
         }
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<net.minecraft.world.item.ItemStack> items) {
         // Don't show this item in CreativeTabs
     }
 }

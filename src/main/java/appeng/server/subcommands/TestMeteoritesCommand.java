@@ -18,7 +18,7 @@
 
 package appeng.server.subcommands;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,24 +30,26 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.server.ISubCommand;
@@ -61,7 +63,7 @@ import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 public class TestMeteoritesCommand implements ISubCommand {
 
     @Override
-    public void addArguments(LiteralArgumentBuilder<CommandSource> builder) {
+    public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.then(literal("force").executes(ctx -> {
             test(ServerLifecycleHooks.getCurrentServer(), ctx.getSource(), true);
             return 1;
@@ -69,25 +71,25 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> ctx, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> ctx, final CommandSourceStack sender) {
         test(srv, sender, false);
     }
 
-    private static void test(MinecraftServer srv, final CommandSource sender, boolean force) {
+    private static void test(MinecraftServer srv, final CommandSourceStack sender, boolean force) {
         int radius = 100;
 
-        ServerPlayerEntity player = null;
+        ServerPlayer player = null;
         try {
             player = sender.getPlayerOrException();
         } catch (CommandSyntaxException ignored) {
         }
-        ServerWorld world;
+        ServerLevel world;
         BlockPos centerBlock;
         if (player != null) {
             world = player.getLevel();
             centerBlock = new BlockPos(player.getX(), 0, player.getZ());
         } else {
-            world = srv.getLevel(World.OVERWORLD);
+            world = srv.getLevel(Level.OVERWORLD);
             centerBlock = world.getSharedSpawnPos();
         }
 
@@ -105,7 +107,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 BlockPos p = new BlockPos(cp.getMinBlockX(), 0, cp.getMinBlockZ());
                 BlockPos nearest = generator.findNearestMapFeature(world, MeteoriteStructure.INSTANCE, p, 0, false);
                 if (nearest != null) {
-                    IChunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
+                    ChunkAccess chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
                     MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                     if (piece != null) {
@@ -148,7 +150,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             String state = "not final";
 
             if (force && settings.getFallout() == null) {
-                IChunk chunk = world.getChunk(pos);
+                ChunkAccess chunk = world.getChunk(pos);
                 MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                 if (piece == null) {
                     state = "removed";
@@ -158,34 +160,34 @@ public class TestMeteoritesCommand implements ISubCommand {
                 }
             }
 
-            ITextComponent restOfLine;
+            net.minecraft.network.chat.Component restOfLine;
             if (settings.getFallout() == null) {
-                restOfLine = new StringTextComponent(
+                restOfLine = new TextComponent(
                         String.format(Locale.ROOT, ", radius=%.2f [%s]", settings.getMeteoriteRadius(), state));
             } else {
-                restOfLine = new StringTextComponent(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
+                restOfLine = new TextComponent(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
                         settings.getMeteoriteRadius(), settings.getCraterType().name().toLowerCase(),
                         settings.getFallout().name().toLowerCase()));
             }
 
-            IFormattableTextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
+            MutableComponent msg = new TextComponent(" #" + (i + 1) + " ");
             msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
             String biomeId = world.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
-            ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").copy()
+            net.minecraft.network.chat.Component tooltip = new TextComponent(settings.toString() + "\nBiome: ").copy()
                     .append(biomeId);
-            msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.withStyle(style -> style.withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendSuccess(msg, true);
         }
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static ITextComponent getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
-            BlockPos pos) {
+    private static net.minecraft.network.chat.Component getClickablePosition(ServerLevel world, PlacedMeteoriteSettings settings,
+                                                                             BlockPos pos) {
         BlockPos tpPos = pos.above((int) Math.ceil(settings.getMeteoriteRadius()));
-        int surfaceY = world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, tpPos).getY();
+        int surfaceY = world.getHeightmapPos(Types.WORLD_SURFACE, tpPos).getY();
         if (surfaceY > tpPos.getY()) {
             tpPos = new BlockPos(tpPos.getX(), surfaceY, tpPos.getZ());
         }
@@ -193,11 +195,11 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new StringTextComponent(displayText).withStyle(TextFormatting.UNDERLINE)
-                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
+        return new TextComponent(displayText).withStyle(ChatFormatting.UNDERLINE)
+                .withStyle(style -> style.withClickEvent(new net.minecraft.network.chat.ClickEvent(Action.RUN_COMMAND, tpCommand)));
     }
 
-    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {
+    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk) {
         StructureStart<?> start = chunk.getStartForFeature(MeteoriteStructure.INSTANCE);
 
         if (start != null && start.getPieces().size() > 0
@@ -207,8 +209,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         return null;
     }
 
-    private static void sendLine(CommandSource sender, String text, Object... args) {
-        sender.sendSuccess(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
+    private static void sendLine(CommandSourceStack sender, String text, Object... args) {
+        sender.sendSuccess(new TextComponent(String.format(Locale.ROOT, text, args)), true);
     }
 
 }

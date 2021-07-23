@@ -18,21 +18,21 @@
 
 package appeng.hooks;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.Direction;
 
 import appeng.entity.TinyTNTPrimedEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 
 public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final IBlockSource dispenser, final ItemStack dispensedItem) {
+    protected ItemStack execute(final BlockSource dispenser, final net.minecraft.world.item.ItemStack dispensedItem) {
         final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
-        final World world = dispenser.getLevel();
+        final Level world = dispenser.getLevel();
         final int i = dispenser.getPos().getX() + Direction.getStepX();
         final int j = dispenser.getPos().getY() + Direction.getStepY();
         final int k = dispenser.getPos().getZ() + Direction.getStepZ();

@@ -18,7 +18,7 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GlassCablePart extends CablePart {
     public GlassCablePart(final ItemStack is) {

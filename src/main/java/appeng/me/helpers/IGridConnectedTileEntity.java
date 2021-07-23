@@ -20,7 +20,7 @@ package appeng.me.helpers;
 
 import java.util.function.Consumer;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -73,7 +73,7 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
     }
 
     @Override
-    default void setOwner(PlayerEntity owner) {
+    default void setOwner(Player owner) {
         getMainNode().setOwningPlayer(owner);
     }
 

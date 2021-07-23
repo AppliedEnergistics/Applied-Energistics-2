@@ -25,47 +25,47 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-class ColorApplicatorBakedModel implements IBakedModel {
+class ColorApplicatorBakedModel implements BakedModel {
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
-    private final IModelTransform transforms;
+    private final ModelState transforms;
 
     private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(IBakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark,
-            TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+    ColorApplicatorBakedModel(BakedModel baseModel, ModelState transforms, TextureAtlasSprite texDark,
+                              TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
         this.baseModel = baseModel;
         this.transforms = transforms;
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
         this.generalQuads = this.fixQuadTint(null, texDark, texMedium, texBright);
         this.quadsBySide = new EnumMap<>(Direction.class);
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : net.minecraft.core.Direction.values()) {
             this.quadsBySide.put(facing, this.fixQuadTint(facing, texDark, texMedium, texBright));
         }
     }
 
-    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
-            TextureAtlasSprite texBright) {
+    private List<net.minecraft.client.renderer.block.model.BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
+                                                                                  TextureAtlasSprite texBright) {
         List<BakedQuad> quads = this.baseModel.getQuads(null, facing, new Random(0), EmptyModelData.INSTANCE);
         List<BakedQuad> result = new ArrayList<>(quads.size());
-        for (BakedQuad quad : quads) {
+        for (net.minecraft.client.renderer.block.model.BakedQuad quad : quads) {
             int tint;
 
             if (quad.getSprite() == texDark) {
@@ -88,7 +88,7 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
         if (side == null) {
             return this.generalQuads;
         }
@@ -121,17 +121,17 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getTransforms() {
+    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return this.baseModel.getOverrides();
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
         return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
     }
 }

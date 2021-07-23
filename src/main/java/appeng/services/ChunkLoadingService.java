@@ -18,10 +18,10 @@
 
 package appeng.services;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
 import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
@@ -55,17 +55,17 @@ public class ChunkLoadingService implements LoadingValidationCallback {
     }
 
     @Override
-    public void validateTickets(ServerWorld world, TicketHelper ticketHelper) {
+    public void validateTickets(ServerLevel world, TicketHelper ticketHelper) {
         // Iterate over all blockpos registered as chunk loader to initialize them
         ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
-            TileEntity tileEntity = world.getBlockEntity(blockPos);
+            BlockEntity tileEntity = world.getBlockEntity(blockPos);
 
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
             if (tileEntity instanceof SpatialAnchorTileEntity) {
                 SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) tileEntity;
                 for (Long chunk : chunks.getSecond()) {
-                    anchor.registerChunk(new ChunkPos(chunk.longValue()));
+                    anchor.registerChunk(new net.minecraft.world.level.ChunkPos(chunk.longValue()));
                 }
             } else {
                 ticketHelper.removeAllTickets(blockPos);
@@ -73,7 +73,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         });
     }
 
-    public boolean forceChunk(ServerWorld world, BlockPos owner, ChunkPos position, boolean ticking) {
+    public boolean forceChunk(ServerLevel world, net.minecraft.core.BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
             return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, true, true);
         }
@@ -81,7 +81,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         return false;
     }
 
-    public boolean releaseChunk(ServerWorld world, BlockPos owner, ChunkPos position, boolean ticking) {
+    public boolean releaseChunk(ServerLevel world, BlockPos owner, net.minecraft.world.level.ChunkPos position, boolean ticking) {
         if (running) {
             return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, false, true);
         }

@@ -18,7 +18,7 @@
 
 package appeng.client.render;
 
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.resources.model.BakedModel;
 
 /**
  * Helper to get a specific baked model class out of a chain of delegating baked models.
@@ -28,7 +28,7 @@ public final class BakedModelUnwrapper {
     private BakedModelUnwrapper() {
     }
 
-    public static <T> T unwrap(IBakedModel model, Class<T> targetClass) {
+    public static <T> T unwrap(BakedModel model, Class<T> targetClass) {
         if (targetClass.isInstance(model)) {
             return targetClass.cast(model);
         }

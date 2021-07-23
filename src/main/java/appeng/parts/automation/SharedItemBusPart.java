@@ -18,11 +18,12 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
@@ -48,13 +49,13 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void readFromNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.getConfig().readFromNBT(extra, "config");
     }
 
     @Override
-    public void writeToNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.getConfig().writeToNBT(extra, "config");
     }
@@ -69,7 +70,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -80,14 +81,14 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected InventoryAdaptor getHandler() {
-        final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
+        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity target = this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
     }
 
-    private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
-        final World w = self.getLevel();
+    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
+        final Level w = self.getLevel();
 
         if (w.getChunkSource().isTickingChunk(pos)) {
             return w.getBlockEntity(pos);
@@ -124,9 +125,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      * @return true, if the the bus should do its work.
      */
     protected boolean canDoBusWork() {
-        final TileEntity self = this.getHost().getTile();
+        final BlockEntity self = this.getHost().getTile();
         final BlockPos selfPos = self.getBlockPos().relative(this.getSide().getDirection());
-        final World world = self.getLevel();
+        final Level world = self.getLevel();
 
         return world != null && world.getChunkSource().isTickingChunk(selfPos);
     }

@@ -19,7 +19,7 @@
 package appeng.init.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import appeng.core.definitions.AEEntities;
@@ -38,11 +38,11 @@ public final class InitEntityRendering {
 
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.SINGULARITY,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.GROWING_CRYSTAL,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.CHARGED_QUARTZ,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
     }
 
 }

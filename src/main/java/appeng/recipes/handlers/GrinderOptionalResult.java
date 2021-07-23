@@ -18,7 +18,7 @@
 
 package appeng.recipes.handlers;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Describes an optional result of a grinder recipe.

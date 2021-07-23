@@ -23,7 +23,7 @@
 
 package appeng.api.networking.crafting;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -54,5 +54,5 @@ public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
     /**
      * @return a null or the name of the cpu.
      */
-    ITextComponent getName();
+    net.minecraft.network.chat.Component getName();
 }

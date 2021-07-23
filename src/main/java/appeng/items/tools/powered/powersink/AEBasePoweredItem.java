@@ -22,13 +22,13 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -40,13 +40,13 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
     private final DoubleSupplier powerCapacity;
 
-    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
+    public AEBasePoweredItem(final DoubleSupplier powerCapacity, net.minecraft.world.item.Item.Properties props) {
         super(props);
         // FIXME this.setFull3D();
 
@@ -55,9 +55,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
-        final CompoundNBT tag = stack.getTag();
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+        final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getAEMaxPower(stack);
 
@@ -74,23 +74,23 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
 
         if (this.allowdedIn(group)) {
-            final ItemStack charged = new ItemStack(this, 1);
+            final net.minecraft.world.item.ItemStack charged = new net.minecraft.world.item.ItemStack(this, 1);
             injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
             items.add(charged);
         }
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean showDurabilityBar(net.minecraft.world.item.ItemStack stack) {
         return true;
     }
 
     @Override
-    public double getDurabilityForDisplay(final ItemStack is) {
+    public double getDurabilityForDisplay(final net.minecraft.world.item.ItemStack is) {
         return 1 - this.getAECurrentPower(is) / this.getAEMaxPower(is);
     }
 
@@ -102,7 +102,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         final double overflow = amount - required;
 
         if (mode == Actionable.MODULATE) {
-            final CompoundNBT data = is.getOrCreateTag();
+            final CompoundTag data = is.getOrCreateTag();
             final double toAdd = Math.min(amount, required);
 
             data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage + toAdd);
@@ -112,12 +112,12 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double extractAEPower(final ItemStack is, final double amount, Actionable mode) {
+    public double extractAEPower(final net.minecraft.world.item.ItemStack is, final double amount, Actionable mode) {
         final double currentStorage = this.getAECurrentPower(is);
         final double fulfillable = Math.min(amount, currentStorage);
 
         if (mode == Actionable.MODULATE) {
-            final CompoundNBT data = is.getOrCreateTag();
+            final CompoundTag data = is.getOrCreateTag();
 
             data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage - fulfillable);
         }
@@ -126,24 +126,24 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAEMaxPower(final ItemStack is) {
+    public double getAEMaxPower(final net.minecraft.world.item.ItemStack is) {
         return this.powerCapacity.getAsDouble();
     }
 
     @Override
-    public double getAECurrentPower(final ItemStack is) {
-        final CompoundNBT data = is.getOrCreateTag();
+    public double getAECurrentPower(final net.minecraft.world.item.ItemStack is) {
+        final CompoundTag data = is.getOrCreateTag();
 
         return data.getDouble(CURRENT_POWER_NBT_KEY);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(final ItemStack is) {
+    public AccessRestriction getPowerFlow(final net.minecraft.world.item.ItemStack is) {
         return AccessRestriction.WRITE;
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(net.minecraft.world.item.ItemStack stack, CompoundTag nbt) {
         return new PoweredItemCapabilities(stack, this);
     }
 }

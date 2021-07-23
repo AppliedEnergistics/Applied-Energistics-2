@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Maintains a save specific list of userids and username combinations this greatly simplifies storage internally and
@@ -47,7 +47,7 @@ public interface IPlayerRegistry {
      *
      * @return user id of a player entity.
      */
-    int getID(PlayerEntity player);
+    int getID(Player player);
 
     /**
      * @param playerID to be found player id
@@ -55,5 +55,5 @@ public interface IPlayerRegistry {
      * @return PlayerEntity, or null if the player could not be found.
      */
     @Nullable
-    PlayerEntity findPlayer(int playerID);
+    Player findPlayer(int playerID);
 }

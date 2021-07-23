@@ -23,9 +23,9 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 
 /**
  * Implemented on AE's wrench(s) as a substitute for if BC's API is not available.
@@ -40,5 +40,5 @@ public interface IAEWrench {
      *
      * @return true if wrench can be used
      */
-    boolean canWrench(ItemStack wrench, PlayerEntity player, BlockPos pos);
+    boolean canWrench(ItemStack wrench, Player player, BlockPos pos);
 }

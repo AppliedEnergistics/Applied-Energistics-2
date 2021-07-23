@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
@@ -38,7 +38,7 @@ public class CraftingCubeModelLoader implements IModelLoader<CraftingCubeModel> 
     public static final CraftingCubeModelLoader INSTANCE = new CraftingCubeModelLoader();
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
     }
 
     @Override

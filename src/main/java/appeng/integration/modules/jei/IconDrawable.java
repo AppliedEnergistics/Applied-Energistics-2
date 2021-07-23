@@ -18,7 +18,7 @@
 
 package appeng.integration.modules.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 
@@ -50,7 +50,7 @@ final class IconDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int xOffset, int yOffset) {
+    public void draw(PoseStack matrixStack, int xOffset, int yOffset) {
         blitter.dest(x + xOffset, y + yOffset).blit(matrixStack, 0);
     }
 }

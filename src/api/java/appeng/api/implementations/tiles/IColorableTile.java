@@ -23,8 +23,8 @@
 
 package appeng.api.implementations.tiles;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Direction;
 
 import appeng.api.util.AEColor;
 
@@ -32,5 +32,5 @@ public interface IColorableTile {
 
     AEColor getColor();
 
-    boolean recolourBlock(Direction side, AEColor colour, PlayerEntity who);
+    boolean recolourBlock(net.minecraft.core.Direction side, AEColor colour, Player who);
 }

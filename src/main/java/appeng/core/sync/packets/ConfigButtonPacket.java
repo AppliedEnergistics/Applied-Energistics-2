@@ -22,9 +22,9 @@ import java.util.EnumSet;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
@@ -38,7 +38,7 @@ public final class ConfigButtonPacket extends BasePacket {
     private final Settings option;
     private final boolean rotationDirection;
 
-    public ConfigButtonPacket(final PacketBuffer stream) {
+    public ConfigButtonPacket(final FriendlyByteBuf stream) {
         this.option = Settings.values()[stream.readInt()];
         this.rotationDirection = stream.readBoolean();
     }
@@ -48,7 +48,7 @@ public final class ConfigButtonPacket extends BasePacket {
         this.option = option;
         this.rotationDirection = rotationDirection;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(option.ordinal());
@@ -58,8 +58,8 @@ public final class ConfigButtonPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ServerPlayerEntity sender = (ServerPlayerEntity) player;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final ServerPlayer sender = (ServerPlayer) player;
         if (sender.containerMenu instanceof AEBaseContainer) {
             final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
             if (baseContainer.getTarget() instanceof IConfigurableObject) {

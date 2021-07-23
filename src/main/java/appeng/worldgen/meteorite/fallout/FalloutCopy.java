@@ -18,10 +18,10 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
@@ -33,14 +33,14 @@ public class FalloutCopy extends Fallout {
     private final BlockState block;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+    public FalloutCopy(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter, final net.minecraft.world.level.block.state.BlockState skyStone) {
         super(putter, skyStone);
         this.putter = putter;
         this.block = w.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
     }
 
     @Override
-    public void getRandomFall(final IWorld w, BlockPos pos) {
+    public void getRandomFall(final LevelAccessor w, net.minecraft.core.BlockPos pos) {
         final double a = Math.random();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(w, pos, this.block);
@@ -49,12 +49,12 @@ public class FalloutCopy extends Fallout {
         }
     }
 
-    public void getOther(final IWorld w, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor w, net.minecraft.core.BlockPos pos, final double a) {
 
     }
 
     @Override
-    public void getRandomInset(final IWorld w, BlockPos pos) {
+    public void getRandomInset(final LevelAccessor w, net.minecraft.core.BlockPos pos) {
         final double a = Math.random();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(w, pos, this.block);

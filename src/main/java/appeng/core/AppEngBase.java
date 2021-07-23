@@ -27,26 +27,26 @@ import javax.annotation.Nullable;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -115,7 +115,7 @@ public abstract class AppEngBase implements AppEng {
      * requested for, so they will call {@link #getCableRenderMode()} below, which then will use this field to figure
      * out which player it's for.
      */
-    private final ThreadLocal<PlayerEntity> partInteractionPlayer = new ThreadLocal<>();
+    private final ThreadLocal<Player> partInteractionPlayer = new ThreadLocal<>();
 
     static AppEngBase INSTANCE;
 
@@ -146,14 +146,14 @@ public abstract class AppEngBase implements AppEng {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerDimension);
         modEventBus.addGenericListener(Biome.class, this::registerBiomes);
-        modEventBus.addGenericListener(Block.class, this::registerBlocks);
-        modEventBus.addGenericListener(Item.class, this::registerItems);
-        modEventBus.addGenericListener(EntityType.class, this::registerEntities);
+        modEventBus.addGenericListener(net.minecraft.world.level.block.Block.class, this::registerBlocks);
+        modEventBus.addGenericListener(net.minecraft.world.item.Item.class, this::registerItems);
+        modEventBus.addGenericListener(net.minecraft.world.entity.EntityType.class, this::registerEntities);
         modEventBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
-        modEventBus.addGenericListener(TileEntityType.class, this::registerTileEntities);
-        modEventBus.addGenericListener(ContainerType.class, this::registerContainerTypes);
-        modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
-        modEventBus.addGenericListener(Structure.class, this::registerStructures);
+        modEventBus.addGenericListener(net.minecraft.world.level.block.entity.BlockEntityType.class, this::registerTileEntities);
+        modEventBus.addGenericListener(MenuType.class, this::registerContainerTypes);
+        modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+        modEventBus.addGenericListener(net.minecraft.world.level.levelgen.feature.StructureFeature.class, this::registerStructures);
         modEventBus.addGenericListener(Feature.class, this::registerFeatures);
 
         modEventBus.addListener(Integrations::enqueueIMC);
@@ -228,15 +228,15 @@ public abstract class AppEngBase implements AppEng {
         InitItems.init(event.getRegistry());
     }
 
-    public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+    public void registerTileEntities(RegistryEvent.Register<net.minecraft.world.level.block.entity.BlockEntityType<?>> event) {
         InitBlockEntities.init(event.getRegistry());
     }
 
-    public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
+    public void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event) {
         InitContainerTypes.init(event.getRegistry());
     }
 
-    public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+    public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
         InitRecipeSerializers.init(event.getRegistry());
     }
 
@@ -244,20 +244,20 @@ public abstract class AppEngBase implements AppEng {
         InitEntityTypes.init(event.getRegistry());
     }
 
-    public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+    public void registerParticleTypes(RegistryEvent.Register<net.minecraft.core.particles.ParticleType<?>> event) {
         InitParticleTypes.init(event.getRegistry());
     }
 
-    public void registerStructures(RegistryEvent.Register<Structure<?>> event) {
+    public void registerStructures(RegistryEvent.Register<net.minecraft.world.level.levelgen.feature.StructureFeature<?>> event) {
         InitStructures.init(event.getRegistry());
     }
 
-    public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+    public void registerFeatures(RegistryEvent.Register<net.minecraft.world.level.levelgen.feature.Feature<?>> event) {
         InitFeatures.init(event.getRegistry());
     }
 
     public void registerCommands(final FMLServerStartingEvent evt) {
-        CommandDispatcher<CommandSource> dispatcher = evt.getServer().getCommands().getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = evt.getServer().getCommands().getDispatcher();
         new AECommand().register(dispatcher);
     }
 
@@ -282,7 +282,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public Collection<ServerPlayerEntity> getPlayers() {
+    public Collection<ServerPlayer> getPlayers() {
         final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
         if (server != null) {
@@ -293,12 +293,12 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
-            final double dist, final World w, final BasePacket packet) {
+    public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
+                                    final double dist, final Level w, final BasePacket packet) {
         if (w.isClientSide()) {
             return;
         }
-        for (final ServerPlayerEntity o : getPlayers()) {
+        for (final ServerPlayer o : getPlayers()) {
             if (o != p && o.level == w) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
@@ -311,7 +311,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public void setPartInteractionPlayer(final PlayerEntity player) {
+    public void setPartInteractionPlayer(final Player player) {
         this.partInteractionPlayer.set(player);
     }
 
@@ -320,13 +320,13 @@ public abstract class AppEngBase implements AppEng {
         return this.getCableRenderModeForPlayer(partInteractionPlayer.get());
     }
 
-    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final PlayerEntity player) {
+    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final Player player) {
         if (player != null) {
-            for (int x = 0; x < PlayerInventory.getSelectionSize(); x++) {
+            for (int x = 0; x < Inventory.getSelectionSize(); x++) {
                 final ItemStack is = player.inventory.getItem(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundNBT c = is.getTag();
+                    final CompoundTag c = is.getTag();
                     if (c != null && c.getBoolean("hideFacades")) {
                         return CableRenderMode.CABLE_VIEW;
                     }

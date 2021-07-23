@@ -25,12 +25,11 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -39,6 +38,7 @@ import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
 import appeng.container.slot.AppEngSlot;
+import net.minecraft.world.inventory.Slot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -52,7 +52,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
     private static final Blitter INNER_CORNER = BACKGROUND.copy().src(12, 33, SLOT_SIZE, SLOT_SIZE);
 
-    private final List<Slot> slots;
+    private final List<net.minecraft.world.inventory.Slot> slots;
 
     // The screen origin in window space (used to layout slots)
     private Point screenOrigin = Point.ZERO;
@@ -61,13 +61,13 @@ public final class UpgradesPanel implements ICompositeWidget {
     private int x;
     private int y;
 
-    private final Supplier<List<ITextComponent>> tooltipSupplier;
+    private final Supplier<List<net.minecraft.network.chat.Component>> tooltipSupplier;
 
-    public UpgradesPanel(List<Slot> slots) {
+    public UpgradesPanel(List<net.minecraft.world.inventory.Slot> slots) {
         this(slots, Collections::emptyList);
     }
 
-    public UpgradesPanel(List<Slot> slots, Supplier<List<ITextComponent>> tooltipSupplier) {
+    public UpgradesPanel(List<net.minecraft.world.inventory.Slot> slots, Supplier<List<net.minecraft.network.chat.Component>> tooltipSupplier) {
         this.slots = slots;
         this.tooltipSupplier = tooltipSupplier;
     }
@@ -90,16 +90,16 @@ public final class UpgradesPanel implements ICompositeWidget {
      * The overall bounding box in screen coordinates.
      */
     @Override
-    public Rectangle2d getBounds() {
+    public Rect2i getBounds() {
         int slotCount = getUpgradeSlotCount();
 
         int height = 2 * PADDING + Math.min(MAX_ROWS, slotCount) * SLOT_SIZE;
         int width = 2 * PADDING + (slotCount + MAX_ROWS - 1) / MAX_ROWS * SLOT_SIZE;
-        return new Rectangle2d(x, y, width, height);
+        return new Rect2i(x, y, width, height);
     }
 
     @Override
-    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+    public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         this.screenOrigin = Point.fromTopLeft(bounds);
     }
 
@@ -108,7 +108,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         int slotOriginX = this.x + PADDING;
         int slotOriginY = this.y + PADDING;
 
-        for (Slot slot : slots) {
+        for (net.minecraft.world.inventory.Slot slot : slots) {
             if (!slot.isActive()) {
                 continue;
             }
@@ -120,7 +120,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack matrices, int zIndex, Rectangle2d bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
         int slotCount = getUpgradeSlotCount();
         if (slotCount <= 0) {
             return;
@@ -156,7 +156,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void addExclusionZones(List<Rectangle2d> exclusionZones, Rectangle2d screenBounds) {
+    public void addExclusionZones(List<Rect2i> exclusionZones, Rect2i screenBounds) {
         int offsetX = screenBounds.getX();
         int offsetY = screenBounds.getY();
 
@@ -170,7 +170,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         int rightEdge = offsetX + x;
         if (fullCols > 0) {
             int fullColWidth = PADDING * 2 + fullCols * SLOT_SIZE;
-            exclusionZones.add(Rects.expand(new Rectangle2d(
+            exclusionZones.add(Rects.expand(new Rect2i(
                     rightEdge,
                     offsetY + y,
                     fullColWidth,
@@ -181,7 +181,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         // If there's a partially populated row at the end, add a smaller rectangle for it
         int remaining = slotCount - fullCols * MAX_ROWS;
         if (remaining > 0) {
-            exclusionZones.add(Rects.expand(new Rectangle2d(
+            exclusionZones.add(Rects.expand(new Rect2i(
                     rightEdge,
                     offsetY + y,
                     // We need to add padding in case there's no full column that already includes it
@@ -198,7 +198,7 @@ public final class UpgradesPanel implements ICompositeWidget {
             return null;
         }
 
-        List<ITextComponent> tooltip = this.tooltipSupplier.get();
+        List<net.minecraft.network.chat.Component> tooltip = this.tooltipSupplier.get();
         if (tooltip.isEmpty()) {
             return null;
         }
@@ -206,8 +206,8 @@ public final class UpgradesPanel implements ICompositeWidget {
         return new Tooltip(tooltip);
     }
 
-    private static void drawSlot(MatrixStack matrices, int zIndex, int x, int y,
-            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
+    private static void drawSlot(PoseStack matrices, int zIndex, int x, int y,
+                                 boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
         int srcWidth = SLOT_SIZE;

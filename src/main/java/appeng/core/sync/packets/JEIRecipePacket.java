@@ -28,17 +28,17 @@ import com.mojang.datafixers.util.Pair;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.items.IItemHandler;
 
@@ -85,10 +85,10 @@ public class JEIRecipePacket extends BasePacket {
      * This is optional, in case the client already knows it could not resolve the recipe id.
      */
     @Nullable
-    private IRecipe<?> recipe;
+    private Recipe<?> recipe;
     private boolean crafting;
 
-    public JEIRecipePacket(final PacketBuffer stream) {
+    public JEIRecipePacket(final FriendlyByteBuf stream) {
         this.crafting = stream.readBoolean();
         final String id = stream.readUtf(Short.MAX_VALUE);
         this.recipeId = new ResourceLocation(id);
@@ -98,7 +98,7 @@ public class JEIRecipePacket extends BasePacket {
             case INLINE_RECIPE_NONE:
                 break;
             case INLINE_RECIPE_SHAPED:
-                recipe = IRecipeSerializer.SHAPED_RECIPE.fromNetwork(this.recipeId, stream);
+                recipe = RecipeSerializer.SHAPED_RECIPE.fromNetwork(this.recipeId, stream);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid inline recipe type.");
@@ -108,8 +108,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
-    public JEIRecipePacket(final ResourceLocation recipeId, final boolean crafting) {
-        PacketBuffer data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
+    public JEIRecipePacket(final net.minecraft.resources.ResourceLocation recipeId, final boolean crafting) {
+        FriendlyByteBuf data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
         this.configureWrite(data);
     }
 
@@ -119,13 +119,13 @@ public class JEIRecipePacket extends BasePacket {
      * Prefer the id-based constructor above whereever possible.
      */
     public JEIRecipePacket(final ShapedRecipe recipe, final boolean crafting) {
-        PacketBuffer data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
-        IRecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
+        FriendlyByteBuf data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
+        RecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
         this.configureWrite(data);
     }
 
-    private PacketBuffer createCommonHeader(ResourceLocation recipeId, boolean crafting, int inlineRecipeType) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+    private FriendlyByteBuf createCommonHeader(ResourceLocation recipeId, boolean crafting, int inlineRecipeType) {
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBoolean(crafting);
@@ -142,13 +142,13 @@ public class JEIRecipePacket extends BasePacket {
      * in general these cases should never happen except in an error case and should be logged then.
      */
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
         // Setup and verification
-        final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
-        final Container con = pmp.containerMenu;
+        final ServerPlayer pmp = (ServerPlayer) player;
+        final AbstractContainerMenu con = pmp.containerMenu;
         Preconditions.checkArgument(con instanceof IContainerCraftingPacket);
 
-        IRecipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
+        Recipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
         if (recipe == null && this.recipe != null) {
             // Certain recipes (i.e. AE2 facades) are represented in JEI as ShapedRecipe's,
             // while in reality they
@@ -184,12 +184,12 @@ public class JEIRecipePacket extends BasePacket {
         // Handle each slot
         for (int x = 0; x < craftMatrix.getSlots(); x++) {
             ItemStack currentItem = craftMatrix.getStackInSlot(x);
-            Ingredient ingredient = ingredients.get(x);
+            net.minecraft.world.item.crafting.Ingredient ingredient = ingredients.get(x);
 
             // prepare slots
             if (!currentItem.isEmpty()) {
                 // already the correct item? True, skip everything else
-                ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
+                net.minecraft.world.item.ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
 
                 // put away old item, if not correct
                 if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
@@ -200,7 +200,7 @@ public class JEIRecipePacket extends BasePacket {
                     if (out != null) {
                         currentItem = out.createItemStack();
                     } else {
-                        currentItem = ItemStack.EMPTY;
+                        currentItem = net.minecraft.world.item.ItemStack.EMPTY;
                     }
                 }
             }
@@ -233,7 +233,7 @@ public class JEIRecipePacket extends BasePacket {
             // If still nothing, search the player inventory.
             if (currentItem.isEmpty()) {
                 ItemStack[] matchingStacks = ingredient.getItems();
-                for (ItemStack matchingStack : matchingStacks) {
+                for (net.minecraft.world.item.ItemStack matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
                         AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
 
@@ -261,9 +261,9 @@ public class JEIRecipePacket extends BasePacket {
      * Will throw an {@link IllegalArgumentException} in case it has more than 9 or a shaped recipe is either wider or
      * higher than 3. ingredients.
      */
-    private NonNullList<Ingredient> ensure3by3CraftingMatrix(IRecipe<?> recipe) {
+    private net.minecraft.core.NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        NonNullList<Ingredient> expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        net.minecraft.core.NonNullList<Ingredient> expandedIngredients = net.minecraft.core.NonNullList.withSize(9, Ingredient.EMPTY);
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
@@ -298,9 +298,9 @@ public class JEIRecipePacket extends BasePacket {
      * @param is itemstack
      * @return is if it can be used, else EMPTY
      */
-    private ItemStack canUseInSlot(Ingredient ingredient, ItemStack is) {
+    private ItemStack canUseInSlot(Ingredient ingredient, net.minecraft.world.item.ItemStack is) {
         return Arrays.stream(ingredient.getItems()).filter(p -> p.sameItem(is)).findFirst()
-                .orElse(ItemStack.EMPTY);
+                .orElse(net.minecraft.world.item.ItemStack.EMPTY);
     }
 
     /**
@@ -347,14 +347,14 @@ public class JEIRecipePacket extends BasePacket {
                 .orElse(null);
     }
 
-    private void handleProcessing(Container con, IContainerCraftingPacket cct, IRecipe<?> recipe) {
+    private void handleProcessing(AbstractContainerMenu con, IContainerCraftingPacket cct, Recipe<?> recipe) {
         if (con instanceof PatternTermContainer) {
             PatternTermContainer patternTerm = (PatternTermContainer) con;
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());
-                ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
-                ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 1, net.minecraft.world.item.ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 2, net.minecraft.world.item.ItemStack.EMPTY);
             }
         }
     }

@@ -18,16 +18,16 @@
 
 package appeng.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
@@ -36,6 +36,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEEntities;
 import appeng.items.misc.CrystalSeedItem;
+import net.minecraft.world.phys.Vec3;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
@@ -56,11 +57,11 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
      */
     private int progress_1000 = 0;
 
-    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, World world) {
+    public GrowingCrystalEntity(net.minecraft.world.entity.EntityType<? extends GrowingCrystalEntity> type, Level world) {
         super(type, world);
     }
 
-    public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
+    public GrowingCrystalEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
         super(AEEntities.GROWING_CRYSTAL, w, x, y, z, is);
         this.setExtendedLifetime();
     }
@@ -84,11 +85,11 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
             return;
         }
 
-        final int x = MathHelper.floor(this.getX());
-        final int y = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int z = MathHelper.floor(this.getZ());
+        final int x = Mth.floor(this.getX());
+        final int y = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
+        final int z = Mth.floor(this.getZ());
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new net.minecraft.core.BlockPos(x, y, z);
         final BlockState state = this.level.getBlockState(pos);
 
         final float multiplier = cry.getMultiplier(state, level, pos);
@@ -175,8 +176,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     private int getAcceleratorCount(BlockPos pos) {
         int count = 0;
 
-        BlockPos.Mutable testPos = new BlockPos.Mutable();
-        for (Direction direction : Direction.values()) {
+        MutableBlockPos testPos = new MutableBlockPos();
+        for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
             if (this.isPoweredAccelerator(testPos.setWithOffset(pos, direction))) {
                 count++;
             }
@@ -185,21 +186,21 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         return count;
     }
 
-    private boolean isPoweredAccelerator(BlockPos pos) {
-        final TileEntity te = this.level.getBlockEntity(pos);
+    private boolean isPoweredAccelerator(net.minecraft.core.BlockPos pos) {
+        final BlockEntity te = this.level.getBlockEntity(pos);
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
     }
 
     @Override
     protected void setUnderwaterMovement() {
-        ItemStack item = getItem();
+        net.minecraft.world.item.ItemStack item = getItem();
 
         // Make ungrown seeds sink, and fully grown seeds bouyant allowing for
         // automation based around dropping seeds between 5 CGAs, then catchiung
         // them on their way up.
         if (item.getItem() instanceof CrystalSeedItem) {
-            Vector3d v = this.getDeltaMovement();
+            Vec3 v = this.getDeltaMovement();
 
             // Apply a much smaller acceleration to make them slowly sink
             double yAccel = this.isNoGravity() ? 0 : -0.002;

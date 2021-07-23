@@ -18,7 +18,7 @@
 
 package appeng.items.contents;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 

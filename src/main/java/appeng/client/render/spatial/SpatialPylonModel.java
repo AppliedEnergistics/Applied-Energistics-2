@@ -25,14 +25,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -41,9 +41,9 @@ import appeng.core.AppEng;
 public class SpatialPylonModel implements BasicUnbakedModel<SpatialPylonModel> {
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
@@ -54,13 +54,13 @@ public class SpatialPylonModel implements BasicUnbakedModel<SpatialPylonModel> {
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath);
     }
 
-    private static RenderMaterial getTexturePath(SpatialPylonTextureType type) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-                new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+    private static Material getTexturePath(SpatialPylonTextureType type) {
+        return new Material(TextureAtlas.LOCATION_BLOCKS,
+                new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

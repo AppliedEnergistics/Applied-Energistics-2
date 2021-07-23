@@ -18,21 +18,21 @@
 
 package appeng.block.paint;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,18 +46,18 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.empty();
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
+        return Shapes.empty();
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+                                boolean isMoving) {
         final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
 
         if (tp != null) {
@@ -66,14 +66,14 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public void handleRain(final World w, final BlockPos pos) {
+    public void handleRain(final Level w, final net.minecraft.core.BlockPos pos) {
         if (!w.isClientSide()) {
             w.removeBlock(pos, false);
         }
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+    public int getLightValue(final net.minecraft.world.level.block.state.BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos) {
         final PaintSplotchesTileEntity tp = this.getTileEntity(w, pos);
 
         if (tp != null) {
@@ -84,17 +84,17 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isAir(final BlockState state, final IBlockReader world, final BlockPos pos) {
+    public boolean isAir(final BlockState state, final BlockGetter world, final net.minecraft.core.BlockPos pos) {
         return true;
     }
 
     @Override
-    public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
+    public boolean canBeReplaced(net.minecraft.world.level.block.state.BlockState state, BlockPlaceContext useContext) {
         return true;
     }
 
     @Override
-    public boolean canBeReplaced(BlockState state, Fluid fluid) {
+    public boolean canBeReplaced(net.minecraft.world.level.block.state.BlockState state, Fluid fluid) {
         return true;
     }
 

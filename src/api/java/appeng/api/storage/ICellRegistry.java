@@ -26,7 +26,7 @@ package appeng.api.storage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.IAppEngApi;
 import appeng.api.storage.cells.ICellGuiHandler;
@@ -78,7 +78,7 @@ public interface ICellRegistry {
      * @return the handler registered for this item type.
      */
     @Nullable
-    ICellHandler getHandler(ItemStack is);
+    ICellHandler getHandler(net.minecraft.world.item.ItemStack is);
 
     /**
      * get the handler, for the requested channel.
@@ -88,7 +88,7 @@ public interface ICellRegistry {
      * @return the handler registered for this channel.
      */
     @Nullable
-    <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel, ItemStack is);
+    <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel, net.minecraft.world.item.ItemStack is);
 
     /**
      * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
@@ -100,6 +100,6 @@ public interface ICellRegistry {
      * @return new ICellInventoryHandler, or null if there isn't one.
      */
     @Nullable
-    <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
-            IStorageChannel<T> chan);
+    <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(net.minecraft.world.item.ItemStack is, ISaveProvider host,
+                                                                      IStorageChannel<T> chan);
 }

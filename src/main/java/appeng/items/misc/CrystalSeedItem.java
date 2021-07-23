@@ -24,23 +24,24 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.tags.Tag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,8 +50,6 @@ import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
-
-import net.minecraft.item.Item.Properties;
 
 /**
  * This item reprents one of the seeds used to grow various forms of quartz by throwing them into water (for that
@@ -73,9 +72,9 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     /**
      * The item to convert to, when growth finishes.
      */
-    private final IItemProvider grownItem;
+    private final ItemLike grownItem;
 
-    public CrystalSeedItem(Properties properties, IItemProvider grownItem) {
+    public CrystalSeedItem(net.minecraft.world.item.Item.Properties properties, ItemLike grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
     }
@@ -93,29 +92,29 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     public static int getGrowthTicks(final ItemStack is) {
-        CompoundNBT tag = is.getTag();
+        CompoundTag tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }
 
     private void setGrowthTicks(final ItemStack is, int ticks) {
-        ticks = MathHelper.clamp(ticks, 0, GROWTH_TICKS_REQUIRED);
+        ticks = Mth.clamp(ticks, 0, GROWTH_TICKS_REQUIRED);
         is.getOrCreateTag().putInt(TAG_GROWTH_TICKS, ticks);
     }
 
     @Override
-    public float getMultiplier(BlockState state, @Nullable World world, @Nullable BlockPos pos) {
+    public float getMultiplier(BlockState state, @Nullable Level world, @Nullable net.minecraft.core.BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
         if (improvedFluidTagName != null) {
-            ITag<Fluid> tag = FluidTags.getAllTags().getTag(new ResourceLocation(improvedFluidTagName));
+            Tag<Fluid> tag = FluidTags.getAllTags().getTag(new ResourceLocation(improvedFluidTagName));
             if (tag != null && state.getFluidState().is(tag)) {
                 return AEConfig.instance().getImprovedFluidMultiplier();
             }
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.dimension() == World.NETHER) {
+        if (world != null && world.dimension() == Level.NETHER) {
             // In the nether, use Lava as the "normal" fluid
             return state.getFluidState().is(FluidTags.LAVA) ? 1 : 0;
         } else {
@@ -125,21 +124,21 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
         super.appendHoverText(stack, world, lines, advancedTooltips);
     }
 
-    public ITextComponent getGrowthTooltipItem(ItemStack stack) {
+    public net.minecraft.network.chat.Component getGrowthTooltipItem(ItemStack stack) {
         final int progress = getGrowthTicks(stack);
-        return new StringTextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
+        return new TextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
 
     @Override
-    public int getEntityLifespan(final ItemStack itemStack, final World world) {
+    public int getEntityLifespan(final ItemStack itemStack, final Level world) {
         return Integer.MAX_VALUE;
     }
 
@@ -149,7 +148,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public Entity createEntity(final World world, final Entity location, final ItemStack itemstack) {
+    public net.minecraft.world.entity.Entity createEntity(final Level world, final Entity location, final ItemStack itemstack) {
         final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
                 location.getZ(), itemstack);
 
@@ -164,7 +163,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
             // lvl 0
             items.add(new ItemStack(this, 1));

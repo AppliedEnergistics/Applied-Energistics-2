@@ -20,23 +20,24 @@ package appeng.block.networking;
 
 import java.util.Locale;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -48,7 +49,7 @@ import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
 
-    enum State implements IStringSerializable {
+    enum State implements StringRepresentable {
         OFF, ON, HAS_CHANNEL;
 
         @Override
@@ -57,7 +58,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
         }
     }
 
-    public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
         super(defaultProps(AEMaterials.GLASS).noOcclusion());
@@ -65,7 +66,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, WirelessTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, WirelessTileEntity te) {
         State teState = State.OFF;
 
         if (te.isActive()) {
@@ -78,14 +79,14 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(STATE);
     }
 
     @Override
-    public ActionResultType use(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockRayTraceResult hit) {
+    public InteractionResult use(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
@@ -93,17 +94,17 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
         return super.use(state, w, pos, player, hand, hit);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
         final WirelessTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
-            final Direction forward = tile.getForward();
+            final net.minecraft.core.Direction forward = tile.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -153,17 +154,17 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+            return Shapes.create(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
         }
-        return VoxelShapes.empty();
+        return Shapes.empty();
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
 
         final WirelessTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
-            final Direction forward = tile.getForward();
+            final net.minecraft.core.Direction forward = tile.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -213,14 +214,14 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+            return Shapes.create(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
         } else {
-            return VoxelShapes.empty();
+            return Shapes.empty();
         }
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, net.minecraft.core.BlockPos pos) {
         return true;
     }
 

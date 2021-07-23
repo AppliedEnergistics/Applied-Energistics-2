@@ -20,11 +20,12 @@ package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -42,7 +43,7 @@ public class StackSizeRenderer {
     protected static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
     protected static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-    public void renderStackSize(FontRenderer fontRenderer, long stackSize, boolean craftable, int xPos, int yPos) {
+    public void renderStackSize(Font fontRenderer, long stackSize, boolean craftable, int xPos, int yPos) {
         if (stackSize == 0 && craftable) {
             final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
                     : GuiText.SmallFontCraft.getLocal();
@@ -55,13 +56,13 @@ public class StackSizeRenderer {
         }
     }
 
-    public void renderSizeLabel(FontRenderer fontRenderer, float xPos, float yPos, String text) {
+    public void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
 
         final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
-        TransformationMatrix tm = new TransformationMatrix(new Vector3f(0, 0, 300), // Taken from
+        Transformation tm = new Transformation(new com.mojang.math.Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
@@ -69,7 +70,7 @@ public class StackSizeRenderer {
         final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor)
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.endBatch();
         RenderSystem.enableBlend();

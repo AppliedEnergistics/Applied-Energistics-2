@@ -35,29 +35,30 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.Point;
@@ -85,7 +86,7 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 
-public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
+public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractContainerScreen<T> {
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
@@ -97,11 +98,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private final VerticalButtonBar verticalToolbar;
 
     // drag y
-    private final Set<Slot> drag_click = new HashSet<>();
+    private final Set<net.minecraft.world.inventory.Slot> drag_click = new HashSet<>();
     private boolean disableShiftClick = false;
     private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
-    private Slot bl_clicked;
+    private net.minecraft.world.inventory.Slot bl_clicked;
     private boolean handlingRightClick;
     private final List<CustomSlotWidget> guiSlots = new ArrayList<>();
     private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
@@ -110,7 +111,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+    public AEBaseScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title);
 
         // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
@@ -145,7 +146,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 continue;
             }
 
-            List<Slot> slots = menu.getSlots(entry.getKey());
+            List<net.minecraft.world.inventory.Slot> slots = menu.getSlots(entry.getKey());
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
 
@@ -178,11 +179,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return pos;
     }
 
-    private Rectangle2d getBounds(boolean absolute) {
+    private Rect2i getBounds(boolean absolute) {
         if (absolute) {
-            return new Rectangle2d(leftPos, topPos, imageWidth, imageHeight);
+            return new Rect2i(leftPos, topPos, imageWidth, imageHeight);
         } else {
-            return new Rectangle2d(0, 0, imageWidth, imageHeight);
+            return new Rect2i(0, 0, imageWidth, imageHeight);
         }
     }
 
@@ -204,7 +205,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+    public void render(PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
@@ -231,8 +232,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         if (AEConfig.instance().isShowDebugGuiOverlays()) {
             // Show a green overlay on exclusion zones
-            List<Rectangle2d> exclusionZones = getExclusionZones();
-            for (Rectangle2d rectangle2d : exclusionZones) {
+            List<Rect2i> exclusionZones = getExclusionZones();
+            for (Rect2i rectangle2d : exclusionZones) {
                 fillRect(matrixStack, rectangle2d, 0x7f00FF00);
             }
 
@@ -246,7 +247,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     /**
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
-    private void renderTooltips(MatrixStack matrixStack, int mouseX, int mouseY) {
+    private void renderTooltips(PoseStack matrixStack, int mouseX, int mouseY) {
         this.renderTooltip(matrixStack, mouseX, mouseY);
 
         // The line above should have render a tooltip if this condition is true, and no
@@ -255,7 +256,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return;
         }
 
-        for (Widget c : this.buttons) {
+        for (AbstractWidget c : this.buttons) {
             if (c instanceof ITooltip) {
                 Tooltip tooltip = ((ITooltip) c).getTooltip(mouseX, mouseY);
                 if (tooltip != null) {
@@ -271,8 +272,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+    protected void drawGuiSlot(PoseStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -290,23 +291,23 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private void drawTooltip(MatrixStack matrixStack, Tooltip tooltip, int mouseX, int mouseY) {
+    private void drawTooltip(PoseStack matrixStack, Tooltip tooltip, int mouseX, int mouseY) {
         // Only difference between this and the Vanilla function is that we can specify a maximum width here
         GuiUtils.drawHoveringText(matrixStack, tooltip.getContent(), mouseX, mouseY, width, height, 200, font);
     }
 
     // FIXME FABRIC: move out to json (?)
-    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormat(TextFormatting.WHITE);
-    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormat(TextFormatting.GRAY);
+    private static final net.minecraft.network.chat.Style TOOLTIP_HEADER = net.minecraft.network.chat.Style.EMPTY.applyFormat(ChatFormatting.WHITE);
+    private static final net.minecraft.network.chat.Style TOOLTIP_BODY = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 
-    public void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
+    public void drawTooltip(PoseStack matrices, int x, int y, List<net.minecraft.network.chat.Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
 
         // Make the first line white
         // All lines after the first are colored gray
-        List<ITextComponent> styledLines = new ArrayList<>(lines.size());
+        List<net.minecraft.network.chat.Component> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
             styledLines.add(lines.get(i).copy().withStyle(s -> style));
@@ -317,7 +318,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    protected final void renderLabels(MatrixStack matrixStack, final int x, final int y) {
+    protected final void renderLabels(PoseStack matrixStack, final int x, final int y) {
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
@@ -334,7 +335,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private void drawText(MatrixStack matrixStack, Text text, @Nullable TextOverride override) {
+    private void drawText(PoseStack matrixStack, Text text, @Nullable TextOverride override) {
         // Don't draw if the screen decided to hide this
         if (override != null && override.isHidden()) {
             return;
@@ -343,7 +344,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         int color = style.getColor(text.getColor()).toARGB();
 
         // Allow overrides for which content is shown
-        ITextComponent content = text.getText();
+        net.minecraft.network.chat.Component content = text.getText();
         if (override != null && override.getContent() != null) {
             content = override.getContent();
         }
@@ -363,18 +364,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 color);
     }
 
-    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+    public void drawFG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
     }
 
     @Override
-    protected final void renderBg(MatrixStack matrixStack, final float f, final int x,
-            final int y) {
+    protected final void renderBg(PoseStack matrixStack, final float f, final int x,
+                                  final int y) {
 
         this.drawBG(matrixStack, leftPos, topPos, x, y, f);
 
         widgets.drawBackgroundLayer(matrixStack, getBlitOffset(), getBounds(true), new Point(x - leftPos, y - topPos));
 
-        for (final Slot slot : this.getInventorySlots()) {
+        for (final net.minecraft.world.inventory.Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
                 drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, false);
             }
@@ -388,7 +389,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     }
 
-    private void drawOptionalSlotBackground(MatrixStack matrixStack, IOptionalSlot slot, boolean alwaysDraw) {
+    private void drawOptionalSlotBackground(PoseStack matrixStack, IOptionalSlot slot, boolean alwaysDraw) {
         // If a slot is optional and doesn't currently render, we still need to provide a background for it
         if (alwaysDraw || slot.isRenderDisabled()) {
             // If the slot is disabled, shade the background overlay
@@ -424,7 +425,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         if (btn == 1) {
             handlingRightClick = true;
             try {
-                for (Widget widget : this.buttons) {
+                for (AbstractWidget widget : this.buttons) {
                     if (widget.isMouseOver(xCoord, yCoord)) {
                         return super.mouseClicked(xCoord, yCoord, 0);
                     }
@@ -457,7 +458,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
+        final net.minecraft.world.inventory.Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
@@ -483,8 +484,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    protected void slotClicked(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+    protected void slotClicked(@Nullable net.minecraft.world.inventory.Slot slot, final int slotIdx, final int mouseButton,
+                               final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -531,7 +532,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
 
         if (slot != null &&
-                InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+                InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             NetworkHandler.instance().sendToServer(p);
@@ -546,19 +547,19 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 // some simple double click logic.
                 this.bl_clicked = slot;
                 this.dbl_clickTimer = Stopwatch.createStarted();
-                this.dbl_whichItem = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
+                this.dbl_whichItem = slot.hasItem() ? slot.getItem().copy() : net.minecraft.world.item.ItemStack.EMPTY;
             } else if (!this.dbl_whichItem.isEmpty()) {
                 // a replica of the weird broken vanilla feature.
 
                 final List<Slot> slots = this.getInventorySlots();
-                for (final Slot inventorySlot : slots) {
+                for (final net.minecraft.world.inventory.Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
                             && inventorySlot.isSameInventory(slot)
-                            && Container.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
+                            && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
                         this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
                     }
                 }
-                this.dbl_whichItem = ItemStack.EMPTY;
+                this.dbl_whichItem = net.minecraft.world.item.ItemStack.EMPTY;
             }
 
             this.disableShiftClick = false;
@@ -569,22 +570,22 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
     @Override
     protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
-        return checkHotbarKeys(InputMappings.getKey(keyCode, scanCode));
+        return checkHotbarKeys(InputConstants.getKey(keyCode, scanCode));
     }
 
-    protected ClientPlayerEntity getPlayer() {
+    protected LocalPlayer getPlayer() {
         // Our UIs are usually not opened when not in-game, so this should not be a
         // problem
         return Preconditions.checkNotNull(getMinecraft().player);
     }
 
-    protected boolean checkHotbarKeys(final InputMappings.Input input) {
-        final Slot theSlot = this.getSlotUnderMouse();
+    protected boolean checkHotbarKeys(final Key input) {
+        final net.minecraft.world.inventory.Slot theSlot = this.getSlotUnderMouse();
 
         if (getPlayer().inventory.getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
                 if (getMinecraft().options.keyHotbarSlots[j].isActiveAndMatches(input)) {
-                    final List<Slot> slots = this.getInventorySlots();
+                    final List<net.minecraft.world.inventory.Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
                         if (s.getSlotIndex() == j && s.container == this.menu.getPlayerInventory()
                                 && !s.mayPickup(this.menu.getPlayerInventory().player)) {
@@ -596,7 +597,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         this.slotClicked(theSlot, theSlot.index, j, ClickType.SWAP);
                         return true;
                     } else {
-                        for (final Slot s : slots) {
+                        for (final net.minecraft.world.inventory.Slot s : slots) {
                             if (s.getSlotIndex() == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 NetworkHandler.instance()
@@ -612,9 +613,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return false;
     }
 
-    protected Slot getSlot(final int mouseX, final int mouseY) {
-        final List<Slot> slots = this.getInventorySlots();
-        for (final Slot slot : slots) {
+    protected net.minecraft.world.inventory.Slot getSlot(final int mouseX, final int mouseY) {
+        final List<net.minecraft.world.inventory.Slot> slots = this.getInventorySlots();
+        for (final net.minecraft.world.inventory.Slot slot : slots) {
             if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 return slot;
             }
@@ -623,8 +624,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return null;
     }
 
-    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+    public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
+                       float partialTicks) {
         if (style.getBackground() != null) {
             style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }
@@ -634,14 +635,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         this.itemRenderer.blitOffset = 100.0F;
 
         // FIXME I dont think this is needed anymore...
-        RenderHelper.turnBackOn();
+        Lighting.turnBackOn();
         this.itemRenderer.renderAndDecorateItem(is, x, y);
-        RenderHelper.turnOff();
+        Lighting.turnOff();
 
         this.itemRenderer.blitOffset = 0.0F;
     }
 
-    protected ITextComponent getGuiDisplayName(final ITextComponent in) {
+    protected net.minecraft.network.chat.Component getGuiDisplayName(final net.minecraft.network.chat.Component in) {
         return title.getString().isEmpty() ? in : title;
     }
 
@@ -649,7 +650,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    protected void renderSlot(MatrixStack matrices, Slot s) {
+    protected void renderSlot(PoseStack matrices, Slot s) {
         if (s instanceof AppEngSlot) {
             try {
                 renderAppEngSlot(matrices, (AppEngSlot) s);
@@ -661,7 +662,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    private void renderAppEngSlot(MatrixStack matrices, AppEngSlot s) {
+    private void renderAppEngSlot(PoseStack matrices, AppEngSlot s) {
         final ItemStack is = s.getItem();
 
         // If the slot has a background icon, render it, but only if the slot is empty
@@ -689,7 +690,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void bindTexture(final String file) {
-        final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
+        final net.minecraft.resources.ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
         getMinecraft().getTextureManager().bind(loc);
     }
 
@@ -699,7 +700,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         widgets.tick();
 
-        for (IGuiEventListener child : children) {
+        for (GuiEventListener child : children) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();
             }
@@ -717,7 +718,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller. The button
      * will automatically be positioned. This button will automatically be re-added to the screen when it's resized.
      */
-    protected final <B extends Button> B addToLeftToolbar(B button) {
+    protected final <B extends net.minecraft.client.gui.components.Button> B addToLeftToolbar(B button) {
         verticalToolbar.add(button);
         return button;
     }
@@ -727,13 +728,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * defined by [guiLeft, guiTop, xSize, ySize], which is assumed to be occluded. This is used for moving JEI items
      * out of the way.
      */
-    public List<Rectangle2d> getExclusionZones() {
-        List<Rectangle2d> result = new ArrayList<>(2);
+    public List<Rect2i> getExclusionZones() {
+        List<Rect2i> result = new ArrayList<>(2);
         widgets.addExclusionZones(result, getBounds(true));
         return result;
     }
 
-    protected void fillRect(MatrixStack matrices, Rectangle2d rect, int color) {
+    protected void fillRect(PoseStack matrices, Rect2i rect, int color) {
         fill(matrices, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
     }
 
@@ -791,7 +792,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     /**
      * Changes the text that will be displayed for a text defined in this screen's style file.
      */
-    protected final void setTextContent(String id, ITextComponent content) {
+    protected final void setTextContent(String id, net.minecraft.network.chat.Component content) {
         getOrCreateTextOverride(id).setContent(content);
     }
 
@@ -817,7 +818,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         // Then any of the children
         if (ingredientSupplier == null) {
-            for (IGuiEventListener child : super.children) {
+            for (GuiEventListener child : super.children) {
                 if (child instanceof IIngredientSupplier && child.isMouseOver(mouseX, mouseY)) {
                     ingredientSupplier = (IIngredientSupplier) child;
                     break;

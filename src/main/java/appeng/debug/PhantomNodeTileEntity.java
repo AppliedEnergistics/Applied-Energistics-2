@@ -20,8 +20,8 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -34,7 +34,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     private IManagedGridNode proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public PhantomNodeTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -60,7 +60,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     void triggerCrashMode() {
         if (this.proxy != null) {
             this.crashMode = true;
-            this.proxy.setExposedOnSides(EnumSet.allOf(Direction.class));
+            this.proxy.setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
         }
     }
 }

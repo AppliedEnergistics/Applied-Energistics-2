@@ -26,7 +26,7 @@ package appeng.api.networking.security;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridService;
@@ -49,7 +49,7 @@ public interface ISecurityService extends IGridService {
      * @param perm   The permission to check.
      * @return True if the player has permission.
      */
-    boolean hasPermission(@Nonnull PlayerEntity player, @Nonnull SecurityPermissions perm);
+    boolean hasPermission(@Nonnull Player player, @Nonnull SecurityPermissions perm);
 
     /**
      * Check if a player has the specified permissions on this grid.

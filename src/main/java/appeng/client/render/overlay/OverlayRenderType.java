@@ -22,15 +22,16 @@ import java.util.OptionalDouble;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.RenderStateShard.LineStateShard;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.RenderState.LineState;
-import net.minecraft.client.renderer.RenderState.TransparencyState;
+import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -45,9 +46,9 @@ public class OverlayRenderType extends RenderType {
 
     public static RenderType getBlockHilightFace() {
         return create("block_hilight",
-                DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 65536,
-                RenderType.State.builder()
-                        .setTransparencyState(TransparencyState.CRUMBLING_TRANSPARENCY)
+                DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 65536,
+                CompositeState.builder()
+                        .setTransparencyState(TransparencyStateShard.CRUMBLING_TRANSPARENCY)
                         .setTextureState(NO_TEXTURE)
                         .setLightmapState(NO_LIGHTMAP)
                         .setDepthTestState(NO_DEPTH_TEST)
@@ -56,13 +57,13 @@ public class OverlayRenderType extends RenderType {
                         .createCompositeState(false));
     }
 
-    private static final LineState LINE_3 = new LineState(OptionalDouble.of(3.0));
+    private static final LineStateShard LINE_3 = new LineStateShard(OptionalDouble.of(3.0));
 
     public static RenderType getBlockHilightLine() {
         return create("block_hilight_line",
-                DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 65536,
-                RenderType.State.builder().setLineState(LINE_3)
-                        .setTransparencyState(TransparencyState.GLINT_TRANSPARENCY)
+                DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 65536,
+                CompositeState.builder().setLineState(LINE_3)
+                        .setTransparencyState(TransparencyStateShard.GLINT_TRANSPARENCY)
                         .setTextureState(NO_TEXTURE)
                         .setDepthTestState(NO_DEPTH_TEST)
                         .setCullState(NO_CULL)
@@ -71,10 +72,10 @@ public class OverlayRenderType extends RenderType {
                         .createCompositeState(false));
     }
 
-    public static void finishBuffer(IRenderTypeBuffer buffer, RenderType type) {
-        if (buffer instanceof IRenderTypeBuffer.Impl) {
+    public static void finishBuffer(MultiBufferSource buffer, RenderType type) {
+        if (buffer instanceof BufferSource) {
             RenderSystem.disableDepthTest();
-            ((IRenderTypeBuffer.Impl) buffer).endBatch(type);
+            ((BufferSource) buffer).endBatch(type);
         }
     }
 

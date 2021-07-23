@@ -20,18 +20,17 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.Util;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -73,29 +72,29 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private boolean isLocked;
     private IStackWatcher myWatcher;
 
-    public AbstractMonitorPart(final ItemStack is) {
+    public AbstractMonitorPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
 
         getMainNode().addService(IStackWatcherHost.class, this);
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
 
         this.isLocked = data.getBoolean("isLocked");
 
-        final CompoundNBT myItem = data.getCompound("configuredItem");
+        final CompoundTag myItem = data.getCompound("configuredItem");
         this.configuredItem = AEItemStack.fromNBT(myItem);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
 
         data.putBoolean("isLocked", this.isLocked);
 
-        final CompoundNBT myItem = new CompoundNBT();
+        final CompoundTag myItem = new CompoundTag();
         if (this.configuredItem != null) {
             this.configuredItem.writeToNBT(myItem);
         }
@@ -104,7 +103,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -115,7 +114,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         boolean needRedraw = super.readFromStream(data);
 
         final boolean isLocked = data.readBoolean();
@@ -134,7 +133,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -161,7 +160,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartShiftActivate(PlayerEntity player, Hand hand, Vector3d pos) {
+    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -216,8 +215,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void renderDynamic(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers,
+                              int combinedLightIn, int combinedOverlayIn) {
 
         if ((this.getClientFlags() & (PanelPart.POWERED_FLAG | PanelPart.CHANNEL_FLAG)) != (PanelPart.POWERED_FLAG
                 | PanelPart.CHANNEL_FLAG)) {
@@ -287,7 +286,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean showNetworkInfo(final RayTraceResult where) {
+    public boolean showNetworkInfo(final net.minecraft.world.phys.HitResult where) {
         return false;
     }
 

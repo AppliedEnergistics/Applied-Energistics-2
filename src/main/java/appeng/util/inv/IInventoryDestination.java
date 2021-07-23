@@ -18,7 +18,7 @@
 
 package appeng.util.inv;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface IInventoryDestination {
 

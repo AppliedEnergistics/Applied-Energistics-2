@@ -18,16 +18,15 @@
 
 package appeng.client.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.client.Point;
 
-public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
+public abstract class CustomSlotWidget extends GuiComponent implements ITooltip {
     private final int serverId;
     private int x;
     private int y;
@@ -45,15 +44,15 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
         this.y = pos.getY();
     }
 
-    public boolean canClick(final PlayerEntity player) {
+    public boolean canClick(final Player player) {
         return true;
     }
 
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
-            final float partialTicks);
+    public abstract void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+                                     final float partialTicks);
 
     @Override
     public int getTooltipAreaX() {

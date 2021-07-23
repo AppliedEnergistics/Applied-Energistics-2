@@ -23,7 +23,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Nearly all of AE's Tile Entities implement IOrientable.
@@ -42,12 +42,12 @@ public interface IOrientable {
     /**
      * @return the direction the tile is facing
      */
-    Direction getForward();
+    net.minecraft.core.Direction getForward();
 
     /**
      * @return the direction top of the tile
      */
-    Direction getUp();
+    net.minecraft.core.Direction getUp();
 
     /**
      * Update the orientation
@@ -55,5 +55,5 @@ public interface IOrientable {
      * @param Forward new forward direction
      * @param Up      new upwards direction
      */
-    void setOrientation(Direction Forward, Direction Up);
+    void setOrientation(net.minecraft.core.Direction Forward, net.minecraft.core.Direction Up);
 }

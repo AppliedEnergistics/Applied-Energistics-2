@@ -20,13 +20,12 @@ package appeng.block.grindstone;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -35,25 +34,26 @@ import appeng.container.implementations.GrinderContainer;
 import appeng.tile.grindstone.GrinderTileEntity;
 import appeng.util.InteractionUtil;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 
-    public GrinderBlock(Properties props) {
+    public GrinderBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final GrinderTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

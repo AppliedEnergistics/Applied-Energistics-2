@@ -20,9 +20,9 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,7 +42,7 @@ import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
 
-    private final BlockPos boundsMin;
+    private final net.minecraft.core.BlockPos boundsMin;
     private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
@@ -148,15 +148,15 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private boolean canUseNode(final long qe) {
         final QuantumCluster qc = (QuantumCluster) Api.instance().registries().locatable().getLocatableBy(qe);
         if (qc != null) {
-            final World theWorld = qc.center.getLevel();
+            final Level theWorld = qc.center.getLevel();
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // tile begins ticking normally.
                 if (theWorld.hasChunkAt(qc.center.getBlockPos())) {
-                    final World cur = theWorld.getServer().getLevel(theWorld.dimension());
+                    final Level cur = theWorld.getServer().getLevel(theWorld.dimension());
 
-                    final TileEntity te = theWorld.getBlockEntity(qc.center.getBlockPos());
+                    final BlockEntity te = theWorld.getBlockEntity(qc.center.getBlockPos());
                     return te != qc.center || theWorld != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
@@ -183,12 +183,12 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
-    public BlockPos getBoundsMin() {
+    public net.minecraft.core.BlockPos getBoundsMin() {
         return boundsMin;
     }
 
     @Override
-    public BlockPos getBoundsMax() {
+    public net.minecraft.core.BlockPos getBoundsMax() {
         return boundsMax;
     }
 
@@ -277,7 +277,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
             return "QuantumCluster{no-center}";
         }
 
-        World world = center.getLevel();
+        Level world = center.getLevel();
         BlockPos pos = center.getBlockPos();
 
         return "QuantumCluster{" + world + "," + pos + "}";

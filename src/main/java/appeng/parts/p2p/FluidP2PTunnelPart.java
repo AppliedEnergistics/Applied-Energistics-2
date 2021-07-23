@@ -22,10 +22,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,8 +35,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
 
@@ -65,7 +63,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor) {
         if (this.isOutput()) {
             final FluidP2PTunnelPart in = this.getInput();
             if (in != null) {
@@ -95,8 +93,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     private IFluidHandler getAttachedFluidHandler() {
         LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
         if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+            final BlockEntity self = this.getTile();
+            final BlockEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -31,12 +29,14 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+                             Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof IAEPowerStorage) {
             final IAEPowerStorage storage = (IAEPowerStorage) tile;
             final double maxPower = storage.getAEMaxPower();
@@ -49,7 +49,7 @@ public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
                     final String formatCurrentPower = Platform.formatPowerLong(internalCurrentPower, false);
                     final String formatMaxPower = Platform.formatPowerLong(internalMaxPower, false);
-                    final ITextComponent formattedString = TheOneProbeText.STORED_ENERGY
+                    final net.minecraft.network.chat.Component formattedString = TheOneProbeText.STORED_ENERGY
                             .getTranslationComponent(formatCurrentPower, formatMaxPower);
 
                     probeInfo.text(formattedString);

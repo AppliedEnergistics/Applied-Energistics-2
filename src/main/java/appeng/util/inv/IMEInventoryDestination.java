@@ -18,12 +18,11 @@
 
 package appeng.util.inv;
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class IMEInventoryDestination implements IInventoryDestination {
 

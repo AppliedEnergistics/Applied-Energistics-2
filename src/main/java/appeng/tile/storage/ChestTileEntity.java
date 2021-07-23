@@ -25,17 +25,17 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -108,10 +108,8 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-
 public class ChestTileEntity extends AENetworkPowerTileEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickableTileEntity {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, TickableBlockEntity {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -138,10 +136,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     // This is only used on the client to display the right cell model without
     // synchronizing the entire
     // cell's inventory when a chest comes into view.
-    private Item cellItem = Items.AIR;
+    private net.minecraft.world.item.Item cellItem = Items.AIR;
     private double idlePowerUsage;
 
-    public ChestTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ChestTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -269,7 +267,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Nullable
     @Override
-    public Item getCellItem(int slot) {
+    public net.minecraft.world.item.Item getCellItem(int slot) {
         if (slot != 0) {
             return null;
         }
@@ -346,7 +344,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
 
         this.state = 0;
@@ -372,7 +370,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
 
         final int oldState = this.state;
@@ -388,7 +386,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
@@ -398,7 +396,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.config.writeToNBT(data);
         data.putInt("priority", this.priority);
@@ -469,7 +467,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
                 if (returns == null) {
-                    this.inputInventory.setStackInSlot(0, ItemStack.EMPTY);
+                    this.inputInventory.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
                 } else {
                     this.inputInventory.setStackInSlot(0, returns.createItemStack());
                 }
@@ -526,7 +524,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     }
 
-    public boolean openGui(final PlayerEntity p) {
+    public boolean openGui(final Player p) {
         this.updateHandler();
         if (this.cellHandler != null) {
             final ICellHandler ch = Api.instance().registries().cell().getHandler(this.getCell());
@@ -551,7 +549,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final PlayerEntity who) {
+    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }
@@ -630,7 +628,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             return super.injectItems(input, mode, src);
         }
 
-        private boolean securityCheck(final PlayerEntity player, final SecurityPermissions requiredPermission) {
+        private boolean securityCheck(final Player player, final SecurityPermissions requiredPermission) {
             if (ChestTileEntity.this.getTile() instanceof IActionHost && requiredPermission != null) {
 
                 final IGridNode gn = ((IActionHost) ChestTileEntity.this.getTile()).getActionableNode();
@@ -806,7 +804,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         this.updateHandler();
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()

@@ -20,10 +20,10 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public final class InvIterator implements Iterator<ItemStack> {
+public final class InvIterator implements Iterator<net.minecraft.world.item.ItemStack> {
     private final IItemHandler inventory;
     private final int size;
 
@@ -41,7 +41,7 @@ public final class InvIterator implements Iterator<ItemStack> {
 
     @Override
     public ItemStack next() {
-        final ItemStack result = this.inventory.getStackInSlot(this.counter);
+        final net.minecraft.world.item.ItemStack result = this.inventory.getStackInSlot(this.counter);
         this.counter++;
 
         return result;

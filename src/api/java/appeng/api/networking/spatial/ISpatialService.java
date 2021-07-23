@@ -23,8 +23,8 @@
 
 package appeng.api.networking.spatial;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridService;
 
@@ -44,17 +44,17 @@ public interface ISpatialService extends IGridService {
     /**
      * @return The world that the spatial region is in.
      */
-    World getWorld();
+    Level getWorld();
 
     /**
      * @return the minimum anchor point for the spatial region.
      */
-    BlockPos getMin();
+    net.minecraft.core.BlockPos getMin();
 
     /**
      * @return the maximum anchor point for the spatial region.
      */
-    BlockPos getMax();
+    net.minecraft.core.BlockPos getMax();
 
     /**
      * @return how many AE units are required to preform the activation

@@ -23,8 +23,8 @@
 
 package appeng.api.features;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 
 public interface IWorldGen {
 
@@ -35,7 +35,7 @@ public interface IWorldGen {
      * @deprecated Scheduled for removal in 9.0.0.
      */
     @Deprecated
-    boolean isWorldGenEnabled(WorldGenType type, ServerWorld w);
+    boolean isWorldGenEnabled(WorldGenType type, ServerLevel w);
 
     /**
      * Forces a given AE2 world-generation type to be disabled for a given biome.
@@ -47,7 +47,7 @@ public interface IWorldGen {
      * <p>
      * This also takes AE2's configuration file into account.
      */
-    boolean isWorldGenDisabledForBiome(WorldGenType type, ResourceLocation biomeId);
+    boolean isWorldGenDisabledForBiome(WorldGenType type, net.minecraft.resources.ResourceLocation biomeId);
 
     enum WorldGenType {
         CERTUS_QUARTZ,

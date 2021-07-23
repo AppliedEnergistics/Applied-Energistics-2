@@ -22,14 +22,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -95,7 +95,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public IOPortTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -112,7 +112,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.manager.writeToNBT(data);
         this.upgrades.writeToNBT(data, "upgrades");
@@ -121,7 +121,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
@@ -211,14 +211,14 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(final Direction facing) {
+    protected IItemHandler getItemHandlerForSide(final net.minecraft.core.Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {
@@ -426,7 +426,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
      * @param drops drops of tile entity
      */
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {

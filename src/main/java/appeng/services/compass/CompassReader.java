@@ -23,13 +23,13 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public final class CompassReader {
     private final Map<Long, CompassRegion> regions = new HashMap<>(100);
-    private final ServerWorld world;
+    private final ServerLevel world;
 
-    public CompassReader(ServerWorld world) {
+    public CompassReader(ServerLevel world) {
         this.world = Preconditions.checkNotNull(world);
     }
 

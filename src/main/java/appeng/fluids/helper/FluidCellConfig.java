@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -43,7 +43,7 @@ public class FluidCellConfig extends CellConfig {
 
     @Override
     @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.insertItem(slot, stack, simulate);
         }
@@ -61,7 +61,7 @@ public class FluidCellConfig extends CellConfig {
     }
 
     @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    public void setStackInSlot(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.setStackInSlot(slot, stack);
         }
@@ -72,7 +72,7 @@ public class FluidCellConfig extends CellConfig {
         FluidStack fluid = fluidOpt.orElse(null);
 
         fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
+        net.minecraft.world.item.ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         super.setStackInSlot(slot, is);

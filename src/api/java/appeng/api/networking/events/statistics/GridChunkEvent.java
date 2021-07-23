@@ -23,8 +23,8 @@
 
 package appeng.api.networking.events.statistics;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * An event send from the statistics grid once something about a chunk changes.
@@ -33,15 +33,15 @@ import net.minecraft.world.server.ServerWorld;
  */
 public abstract class GridChunkEvent extends GridStatisticsEvent {
 
-    private final ServerWorld world;
+    private final ServerLevel world;
     private final ChunkPos chunkPos;
 
-    public GridChunkEvent(ServerWorld world, ChunkPos chunkPos) {
+    public GridChunkEvent(ServerLevel world, net.minecraft.world.level.ChunkPos chunkPos) {
         this.world = world;
         this.chunkPos = chunkPos;
     }
 
-    public ServerWorld getWorld() {
+    public ServerLevel getWorld() {
         return world;
     }
 
@@ -54,7 +54,7 @@ public abstract class GridChunkEvent extends GridStatisticsEvent {
      */
     public static class GridChunkAdded extends GridChunkEvent {
 
-        public GridChunkAdded(ServerWorld world, ChunkPos chunkPos) {
+        public GridChunkAdded(ServerLevel world, net.minecraft.world.level.ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 
@@ -65,7 +65,7 @@ public abstract class GridChunkEvent extends GridStatisticsEvent {
      */
     public static class GridChunkRemoved extends GridChunkEvent {
 
-        public GridChunkRemoved(ServerWorld world, ChunkPos chunkPos) {
+        public GridChunkRemoved(ServerLevel world, net.minecraft.world.level.ChunkPos chunkPos) {
             super(world, chunkPos);
         }
 

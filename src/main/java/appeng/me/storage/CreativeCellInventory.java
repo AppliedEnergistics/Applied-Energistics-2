@@ -18,7 +18,7 @@
 
 package appeng.me.storage;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -40,7 +40,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
 
     protected CreativeCellInventory(final ItemStack o) {
         final CellConfig cc = new CellConfig(o);
-        for (final ItemStack is : cc) {
+        for (final net.minecraft.world.item.ItemStack is : cc) {
             if (!is.isEmpty()) {
                 final IAEItemStack i = AEItemStack.fromItemStack(is);
                 i.setStackSize(Integer.MAX_VALUE);
@@ -49,7 +49,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
         }
     }
 
-    public static ICellInventoryHandler getCell(final ItemStack o) {
+    public static ICellInventoryHandler getCell(final net.minecraft.world.item.ItemStack o) {
         return new BasicCellInventoryHandler(new CreativeCellInventory(o),
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }

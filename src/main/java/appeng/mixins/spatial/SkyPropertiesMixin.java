@@ -18,25 +18,25 @@
 
 package appeng.mixins.spatial;
 
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStorageSkyProperties;
 
-@Mixin(DimensionRenderInfo.class)
+@Mixin(DimensionSpecialEffects.class)
 public class SkyPropertiesMixin {
 
     @Shadow
-    private static Object2ObjectMap<ResourceLocation, DimensionRenderInfo> EFFECTS/* BY_IDENTIFIER */;
+    private static Object2ObjectMap<ResourceLocation, DimensionSpecialEffects> EFFECTS/* BY_IDENTIFIER */;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void init(CallbackInfo ci) {

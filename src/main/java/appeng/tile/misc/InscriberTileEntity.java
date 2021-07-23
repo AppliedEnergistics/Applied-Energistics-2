@@ -25,14 +25,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -97,7 +97,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     private final IItemHandlerModifiable inv = new WrapperChainedItemHandler(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
-    public InscriberTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public InscriberTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         this.getMainNode()
@@ -122,12 +122,12 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.COVERED;
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.upgrades.writeToNBT(data, "upgrades");
         this.settings.writeToNBT(data);
@@ -135,14 +135,14 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.settings.readFromNBT(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int slot = data.readByte();
 
@@ -167,7 +167,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         int slot = this.isSmash() ? 64 : 0;
 
@@ -187,14 +187,14 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(final net.minecraft.core.Direction inForward, final net.minecraft.core.Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<net.minecraft.world.item.ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
@@ -212,7 +212,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
         if (slot == 0) {
             this.setProcessingTime(0);
         }
@@ -245,7 +245,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     public InscriberRecipe getTask() {
         if (this.cachedTask == null && level != null) {
             ItemStack input = this.sideItemHandler.getStackInSlot(0);
-            ItemStack plateA = this.topItemHandler.getStackInSlot(0);
+            net.minecraft.world.item.ItemStack plateA = this.topItemHandler.getStackInSlot(0);
             ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
             if (input.isEmpty()) {
                 return null; // No input to handle
@@ -268,13 +268,13 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             if (this.finalStep == 8) {
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getOutput().copy();
+                    final net.minecraft.world.item.ItemStack outputCopy = out.getOutput().copy();
 
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
                         if (out.getProcessType() == InscriberProcessType.PRESS) {
-                            this.topItemHandler.setStackInSlot(0, ItemStack.EMPTY);
-                            this.bottomItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+                            this.topItemHandler.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
+                            this.bottomItemHandler.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
                         }
                         this.sideItemHandler.setStackInSlot(0, ItemStack.EMPTY);
                     }
@@ -348,7 +348,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction facing) {
+    protected IItemHandler getItemHandlerForSide(@Nonnull net.minecraft.core.Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {

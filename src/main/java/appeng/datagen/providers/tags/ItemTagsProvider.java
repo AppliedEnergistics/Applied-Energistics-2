@@ -20,12 +20,14 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
@@ -36,9 +38,9 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
-import net.minecraft.data.TagsProvider.Builder;
+import net.minecraft.data.tags.TagsProvider.TagAppender;
 
-public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implements IAE2DataProvider {
+public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
     public ItemTagsProvider(GatherDataEvent dataEvent, BlockTagsProvider blockTagsProvider) {
         super(dataEvent.getGenerator(), blockTagsProvider, AppEng.MOD_ID, dataEvent.getExistingFileHelper());
@@ -98,7 +100,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
                 AEParts.SEMI_DARK_MONITOR,
                 AEParts.DARK_MONITOR);
 
-        addAe2("glass", Items.GLASS, Tags.Items.GLASS);
+        addAe2("glass", net.minecraft.world.item.Items.GLASS, Tags.Items.GLASS);
 
         addAe2("gears/wooden", AEItems.WOODEN_GEAR);
     }
@@ -127,7 +129,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     private void addForge(String tagName, Object... itemSources) {
-        add(new ResourceLocation("forge", tagName), itemSources);
+        add(new net.minecraft.resources.ResourceLocation("forge", tagName), itemSources);
     }
 
     private void addAe2(String tagName, Object... itemSources) {
@@ -135,20 +137,20 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     @SuppressWarnings("unchecked")
-    private void add(ResourceLocation tagName, Object... itemSources) {
-        Builder<Item> builder = tag(net.minecraft.tags.ItemTags.createOptional(tagName));
+    private void add(net.minecraft.resources.ResourceLocation tagName, Object... itemSources) {
+        TagAppender<net.minecraft.world.item.Item> builder = tag(ItemTags.createOptional(tagName));
 
         for (Object itemSource : itemSources) {
-            if (itemSource instanceof IItemProvider) {
-                builder.add(((IItemProvider) itemSource).asItem());
-            } else if (itemSource instanceof ITag.INamedTag) {
-                builder.addTag((ITag.INamedTag<Item>) itemSource);
+            if (itemSource instanceof ItemLike) {
+                builder.add(((ItemLike) itemSource).asItem());
+            } else if (itemSource instanceof Named) {
+                builder.addTag((Named<Item>) itemSource);
             } else if (itemSource instanceof String) {
                 String itemSourceString = (String) itemSource;
                 if (itemSourceString.startsWith("#")) {
-                    builder.add(new ITag.TagEntry(new ResourceLocation(itemSourceString.substring(1))));
+                    builder.add(new Tag.TagEntry(new net.minecraft.resources.ResourceLocation(itemSourceString.substring(1))));
                 } else {
-                    builder.add(new ITag.ItemEntry(new ResourceLocation(itemSourceString)));
+                    builder.add(new ElementEntry(new net.minecraft.resources.ResourceLocation(itemSourceString)));
                 }
             } else {
                 throw new IllegalArgumentException("Unknown item source: " + itemSource);
@@ -157,17 +159,17 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     private void mirrorForgeBlockTag(String tagName) {
-        mirrorBlockTag(new ResourceLocation("forge:" + tagName));
+        mirrorBlockTag(new net.minecraft.resources.ResourceLocation("forge:" + tagName));
     }
 
     private void mirrorAe2BlockTag(String tagName) {
         mirrorBlockTag(AppEng.makeId(tagName));
     }
 
-    private void mirrorBlockTag(ResourceLocation tagName) {
+    private void mirrorBlockTag(net.minecraft.resources.ResourceLocation tagName) {
         copy(
-                net.minecraft.tags.BlockTags.createOptional(tagName),
-                net.minecraft.tags.ItemTags.createOptional(tagName));
+                BlockTags.createOptional(tagName),
+                ItemTags.createOptional(tagName));
     }
 
     @Override

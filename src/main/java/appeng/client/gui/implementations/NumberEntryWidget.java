@@ -24,17 +24,16 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -48,13 +47,13 @@ import appeng.core.AEConfig;
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
  * number in fixed intervals.
  */
-public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
+public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
 
-    private static final ITextComponent INVALID_NUMBER = new TranslationTextComponent(
+    private static final net.minecraft.network.chat.Component INVALID_NUMBER = new TranslatableComponent(
             "gui.appliedenergistics2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.appliedenergistics2.validation.NumberLessThanMinValue";
-    private static final ITextComponent PLUS = new StringTextComponent("+");
-    private static final ITextComponent MINUS = new StringTextComponent("-");
+    private static final net.minecraft.network.chat.Component PLUS = new TextComponent("+");
+    private static final net.minecraft.network.chat.Component MINUS = new TextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
@@ -72,17 +71,17 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
 
     private boolean hideValidationIcon;
 
-    private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
+    private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
     private Point textFieldOrigin = Point.ZERO;
 
     public NumberEntryWidget(NumberEntryType type) {
         this.type = type;
 
-        FontRenderer font = Minecraft.getInstance().font;
+        Font font = Minecraft.getInstance().font;
 
         this.textField = new ConfirmableTextField(font, 0, 0, 0, font.lineHeight,
-                StringTextComponent.EMPTY);
+                TextComponent.EMPTY);
         this.textField.setBordered(false);
         this.textField.setMaxLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
@@ -132,21 +131,21 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
 
     @Override
     public void setPosition(Point position) {
-        bounds = new Rectangle2d(position.getX(), position.getY(), bounds.getWidth(), bounds.getHeight());
+        bounds = new Rect2i(position.getX(), position.getY(), bounds.getWidth(), bounds.getHeight());
     }
 
     @Override
     public void setSize(int width, int height) {
-        bounds = new Rectangle2d(bounds.getX(), bounds.getY(), width, height);
+        bounds = new Rect2i(bounds.getX(), bounds.getY(), width, height);
     }
 
     @Override
-    public Rectangle2d getBounds() {
+    public Rect2i getBounds() {
         return bounds;
     }
 
     @Override
-    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+    public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         final int[] steps = AEConfig.instance().getNumberEntrySteps(type);
         int a = steps[0];
         int b = steps[1];
@@ -158,10 +157,10 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
 
         List<Button> buttons = new ArrayList<>(9);
 
-        buttons.add(new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
+        buttons.add(new net.minecraft.client.gui.components.Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
         buttons.add(new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
-        buttons.add(new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
-        buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
+        buttons.add(new net.minecraft.client.gui.components.Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
+        buttons.add(new net.minecraft.client.gui.components.Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addWidget);
@@ -172,7 +171,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
-        buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
+        buttons.add(new net.minecraft.client.gui.components.Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
         buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
         buttons.add(new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
         buttons.add(new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
@@ -242,18 +241,18 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
         getLongValue().ifPresent(currentValue -> setValue(currentValue + i));
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
         this.textField.render(matrices, mouseX, mouseY, partialTicks);
     }
 
     private void validate() {
-        List<ITextComponent> validationErrors = new ArrayList<>();
+        List<net.minecraft.network.chat.Component> validationErrors = new ArrayList<>();
 
         String text = textField.getValue().trim();
         try {
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
-                validationErrors.add(new TranslationTextComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
+                validationErrors.add(new TranslatableComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
             }
         } catch (NumberFormatException ignored) {
             validationErrors.add(INVALID_NUMBER);
@@ -267,7 +266,7 @@ public class NumberEntryWidget extends AbstractGui implements ICompositeWidget {
         }
     }
 
-    private ITextComponent makeLabel(ITextComponent prefix, int amount) {
+    private net.minecraft.network.chat.Component makeLabel(net.minecraft.network.chat.Component prefix, int amount) {
         return prefix.plainCopy().append(String.valueOf(amount));
     }
 

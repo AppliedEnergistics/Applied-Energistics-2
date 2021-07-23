@@ -18,9 +18,9 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -33,13 +33,13 @@ import appeng.tile.storage.SkyChestTileEntity;
  */
 public class SkyChestContainer extends AEBaseContainer {
 
-    public static final ContainerType<SkyChestContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<SkyChestContainer> TYPE = ContainerTypeBuilder
             .create(SkyChestContainer::new, SkyChestTileEntity.class)
             .build("skychest");
 
     private final SkyChestTileEntity chest;
 
-    public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestTileEntity chest) {
+    public SkyChestContainer(int id, final Inventory ip, final SkyChestTileEntity chest) {
         super(TYPE, id, ip, chest);
         this.chest = chest;
 
@@ -54,7 +54,7 @@ public class SkyChestContainer extends AEBaseContainer {
     }
 
     @Override
-    public void removed(final PlayerEntity par1PlayerEntity) {
+    public void removed(final Player par1PlayerEntity) {
         super.removed(par1PlayerEntity);
         this.chest.closeInventory(par1PlayerEntity);
     }

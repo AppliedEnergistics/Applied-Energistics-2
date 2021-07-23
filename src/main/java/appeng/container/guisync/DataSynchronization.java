@@ -22,8 +22,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.core.AELog;
 
@@ -54,7 +54,7 @@ public class DataSynchronization {
 
         // Recurse upwards through the class hierarchy
         Class<?> superclass = clazz.getSuperclass();
-        if (superclass != Container.class && superclass != Object.class) {
+        if (superclass != AbstractContainerMenu.class && superclass != Object.class) {
             collectFields(host, superclass);
         }
     }
@@ -71,18 +71,18 @@ public class DataSynchronization {
     /**
      * Write the data for all fields to the given buffer, and marks all fields as unchanged.
      */
-    public void writeFull(PacketBuffer data) {
+    public void writeFull(FriendlyByteBuf data) {
         writeFields(data, true);
     }
 
     /**
      * Write the data for changed fields to the given buffer, and marks all fields as unchanged.
      */
-    public void writeUpdate(PacketBuffer data) {
+    public void writeUpdate(FriendlyByteBuf data) {
         writeFields(data, false);
     }
 
-    private void writeFields(PacketBuffer data, boolean includeUnchanged) {
+    private void writeFields(FriendlyByteBuf data, boolean includeUnchanged) {
         for (Map.Entry<Short, SynchronizedField<?>> entry : fields.entrySet()) {
             if (includeUnchanged || entry.getValue().hasChanges()) {
                 data.writeShort(entry.getKey());
@@ -94,7 +94,7 @@ public class DataSynchronization {
         data.writeVarInt(-1);
     }
 
-    public void readUpdate(PacketBuffer data) {
+    public void readUpdate(FriendlyByteBuf data) {
         for (short key = data.readShort(); key != -1; key = data.readShort()) {
             SynchronizedField<?> field = fields.get(key);
             if (field == null) {

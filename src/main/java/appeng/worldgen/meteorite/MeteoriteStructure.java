@@ -20,42 +20,42 @@ package appeng.worldgen.meteorite;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 
 import appeng.core.AppEng;
 
-import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
 
-public class MeteoriteStructure extends Structure<NoFeatureConfig> {
+public class MeteoriteStructure extends net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
-    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.CODEC);
+    public static final net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(NoneFeatureConfiguration.CODEC);
 
-    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_INSTANCE = INSTANCE
-            .configured(NoFeatureConfig.INSTANCE);
+    public static final ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration>> CONFIGURED_INSTANCE = INSTANCE
+            .configured(NoneFeatureConfiguration.INSTANCE);
 
-    public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
+    public MeteoriteStructure(Codec<NoneFeatureConfiguration> configCodec) {
         super(configCodec);
     }
 
     @Override
-    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider biomeSource, long seed,
-            SharedSeedRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
-            NoFeatureConfig featureConfig) {
+    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeSource biomeSource, long seed,
+                                     WorldgenRandom randIn, int chunkX, int chunkZ, net.minecraft.world.level.biome.Biome biome, ChunkPos chunkPos2,
+                                     NoneFeatureConfiguration featureConfig) {
         return randIn.nextBoolean();
     }
 
     @Override
-    public IStartFactory<NoFeatureConfig> getStartFactory() {
+    public StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
         return MeteoriteStructureStart::new;
     }
 

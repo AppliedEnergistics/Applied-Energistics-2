@@ -20,7 +20,7 @@ package appeng.container.me.crafting;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 
@@ -28,7 +28,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     private final ICraftingCPU cpu;
     private final long size;
     private final int processors;
-    private ITextComponent name;
+    private net.minecraft.network.chat.Component name;
 
     public CraftingCPURecord(final long size, final int coProcessors, final ICraftingCPU server) {
         this.size = size;
@@ -58,11 +58,11 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
         return this.size;
     }
 
-    public ITextComponent getName() {
+    public net.minecraft.network.chat.Component getName() {
         return name;
     }
 
-    public void setName(ITextComponent name) {
+    public void setName(net.minecraft.network.chat.Component name) {
         this.name = name;
     }
 

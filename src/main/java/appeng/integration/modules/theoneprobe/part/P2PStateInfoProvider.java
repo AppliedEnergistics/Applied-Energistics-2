@@ -20,11 +20,10 @@ package appeng.integration.modules.theoneprobe.part;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -34,6 +33,7 @@ import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class P2PStateInfoProvider implements IPartProbInfoProvider {
 
@@ -42,8 +42,8 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
     private static final int STATE_INPUT = 2;
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+                             BlockState blockState, IProbeHitData data) {
         if (part instanceof P2PTunnelPart) {
             final P2PTunnelPart tunnel = (P2PTunnelPart) part;
 
@@ -81,7 +81,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
             }
 
             final short freq = tunnel.getFrequency();
-            final ITextComponent freqTooltip = new StringTextComponent(Platform.p2p().toHexString(freq));
+            final net.minecraft.network.chat.Component freqTooltip = new TextComponent(Platform.p2p().toHexString(freq));
 
             probeInfo.text(freqTooltip);
         }
@@ -91,7 +91,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
         return Iterators.size(tunnel.getOutputs().iterator());
     }
 
-    private static ITextComponent getOutputText(int outputs) {
+    private static net.minecraft.network.chat.Component getOutputText(int outputs) {
         if (outputs <= 1) {
             return TheOneProbeText.P2P_INPUT_ONE_OUTPUT.getTranslationComponent();
         } else {

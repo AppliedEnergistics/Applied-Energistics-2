@@ -30,24 +30,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootEntry;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.loot.conditions.SurvivesExplosion;
-import net.minecraft.loot.functions.ApplyBonus;
-import net.minecraft.loot.functions.SetCount;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.storage.loot.ConstantIntValue;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.RandomValueBounds;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -56,21 +57,21 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
-    private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
+public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
+    private Map<Block, Function<net.minecraft.world.level.block.Block, net.minecraft.world.level.storage.loot.LootTable.Builder>> overrides = ImmutableMap.<Block, Function<net.minecraft.world.level.block.Block, net.minecraft.world.level.storage.loot.LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
                             applyExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
-                                    ItemLootEntry.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
-                                            .apply(SetCount.setCount(RandomValueRange.between(1.0F, 2.0F)))
-                                            .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
+                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
+                                            .apply(SetItemCountFunction.setCount(RandomValueBounds.between(1.0F, 2.0F)))
+                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .put(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                             applyExplosionDecay(AEBlocks.QUARTZ_ORE_CHARGED.block(),
-                                    ItemLootEntry.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-                                            .apply(SetCount.setCount(RandomValueRange.between(1.0F, 2.0F)))
-                                            .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
+                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+                                            .apply(SetItemCountFunction.setCount(RandomValueBounds.between(1.0F, 2.0F)))
+                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -82,36 +83,36 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
     }
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) throws IOException {
-        for (Map.Entry<RegistryKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
-            LootTable.Builder builder;
+    public void run(@Nonnull HashCache cache) throws IOException {
+        for (Map.Entry<ResourceKey<Block>, net.minecraft.world.level.block.Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+            net.minecraft.world.level.storage.loot.LootTable.Builder builder;
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                IDataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
+                DataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
             }
         }
     }
 
-    private LootTable.Builder defaultBuilder(Block block) {
-        LootEntry.Builder<?> entry = ItemLootEntry.lootTableItem(block);
-        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantRange.exactly(1)).add(entry)
-                .when(SurvivesExplosion.survivesExplosion());
+    private net.minecraft.world.level.storage.loot.LootTable.Builder defaultBuilder(Block block) {
+        Builder<?> entry = LootItem.lootTableItem(block);
+        net.minecraft.world.level.storage.loot.LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantIntValue.exactly(1)).add(entry)
+                .when(ExplosionCondition.survivesExplosion());
 
-        return LootTable.lootTable().withPool(pool);
+        return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(pool);
     }
 
     private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
-    public JsonElement toJson(LootTable.Builder builder) {
-        return LootTableManager.serialize(finishBuilding(builder));
+    public JsonElement toJson(net.minecraft.world.level.storage.loot.LootTable.Builder builder) {
+        return LootTables.serialize(finishBuilding(builder));
     }
 
     @Nonnull
-    public LootTable finishBuilding(LootTable.Builder builder) {
-        return builder.setParamSet(LootParameterSets.BLOCK).build();
+    public net.minecraft.world.level.storage.loot.LootTable finishBuilding(net.minecraft.world.level.storage.loot.LootTable.Builder builder) {
+        return builder.setParamSet(LootContextParamSets.BLOCK).build();
     }
 
     @Nonnull

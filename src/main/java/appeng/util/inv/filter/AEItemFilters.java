@@ -18,7 +18,7 @@
 
 package appeng.util.inv.filter;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class AEItemFilters {
@@ -35,7 +35,7 @@ public class AEItemFilters {
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(IItemHandler inv, int slot, net.minecraft.world.item.ItemStack stack) {
             return true;
         }
     }

@@ -21,9 +21,9 @@ package appeng.fluids.container;
 import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ContainerListener;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
@@ -39,7 +39,7 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidInterfaceContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidInterfaceContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidInterfaceContainer> TYPE = ContainerTypeBuilder
             .create(FluidInterfaceContainer::new, IFluidInterfaceHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_interface");
@@ -47,7 +47,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     private final DualityFluidInterface myDuality;
     private final FluidSyncHelper tankSync;
 
-    public FluidInterfaceContainer(int id, final PlayerInventory ip, final IFluidInterfaceHost te) {
+    public FluidInterfaceContainer(int id, final Inventory ip, final IFluidInterfaceHost te) {
         super(TYPE, id, ip, te.getDualityFluidInterface().getHost());
 
         this.myDuality = te.getDualityFluidInterface();
@@ -83,7 +83,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void addSlotListener(IContainerListener listener) {
+    public void addSlotListener(ContainerListener listener) {
         super.addSlotListener(listener);
         this.tankSync.sendFull(Collections.singleton(listener));
     }

@@ -20,17 +20,17 @@ package appeng.tile.storage;
 
 import java.io.IOException;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.IChestLid;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -40,8 +40,8 @@ import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-@OnlyIn(value = Dist.CLIENT, _interface = IChestLid.class)
-public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickableTileEntity, IChestLid {
+@OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
+public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
@@ -49,18 +49,18 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestTileEntity(TileEntityType<? extends SkyChestTileEntity> type) {
+    public SkyChestTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<? extends SkyChestTileEntity> type) {
         super(type);
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.numPlayersUsing > 0);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int wasOpen = this.numPlayersUsing;
         this.numPlayersUsing = data.readBoolean() ? 1 : 0;
@@ -73,7 +73,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         return this.inv;
     }
 
-    public void openInventory(final PlayerEntity player) {
+    public void openInventory(final Player player) {
         // Ignore calls to this function on the client, since the server is responsible for
         // calculating the numPlayersUsing count.
         if (!player.isSpectator() && !isRemote()) {
@@ -82,7 +82,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         }
     }
 
-    public void closeInventory(final PlayerEntity player) {
+    public void closeInventory(final Player player) {
         // Ignore calls to this function on the client, since the server is responsible for
         // calculating the numPlayersUsing count.
         if (!player.isSpectator() && !isRemote()) {
@@ -105,7 +105,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         this.prevLidAngle = this.lidAngle;
         // Play a sound on initial opening.
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
-            this.playSound(SoundEvents.CHEST_OPEN);
+            this.playSound(net.minecraft.sounds.SoundEvents.CHEST_OPEN);
         }
 
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
@@ -123,7 +123,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         double d0 = this.worldPosition.getX() + 0.5d;
         double d1 = this.worldPosition.getY() + 0.5d;
         double d2 = this.worldPosition.getZ() + 0.5d;
-        this.level.playSound(null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
+        this.level.playSound(null, d0, d1, d2, soundIn, SoundSource.BLOCKS, 0.5f,
                 this.level.random.nextFloat() * 0.1f + 0.9f);
     }
 
@@ -138,13 +138,13 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
 
     }
 
     @Override
     public float getOpenNess(float partialTicks) {
-        return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
+        return Mth.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 
 }

@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Crank/Crankable API,
@@ -51,5 +51,5 @@ public interface ICrankable {
     /**
      * @return true if the crank can attach on the given side.
      */
-    boolean canCrankAttach(Direction directionToCrank);
+    boolean canCrankAttach(net.minecraft.core.Direction directionToCrank);
 }

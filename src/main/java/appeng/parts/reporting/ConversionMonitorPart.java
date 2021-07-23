@@ -21,12 +21,12 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -48,16 +48,16 @@ import appeng.util.item.AEItemStack;
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_off");
     @PartModels
     public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_on");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_LOCKED_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_locked_off");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_LOCKED_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
@@ -68,12 +68,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    public ConversionMonitorPart(final ItemStack is) {
+    public ConversionMonitorPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
     }
 
     @Override
-    public boolean onPartActivate(PlayerEntity player, Hand hand, Vector3d pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -86,7 +86,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        final ItemStack eq = player.getItemInHand(hand);
+        final net.minecraft.world.item.ItemStack eq = player.getItemInHand(hand);
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
@@ -107,7 +107,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+    public boolean onClicked(Player player, InteractionHand hand, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -128,7 +128,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+    public boolean onShiftClicked(Player player, InteractionHand hand, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -148,7 +148,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         return true;
     }
 
-    private void insertItem(final PlayerEntity player, final Hand hand, final boolean allItems) {
+    private void insertItem(final Player player, final InteractionHand hand, final boolean allItems) {
         getMainNode().ifPresent(grid -> {
             final IEnergySource energy = grid.getEnergyService();
             final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
@@ -182,7 +182,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         });
     }
 
-    private void extractItem(final PlayerEntity player, int count) {
+    private void extractItem(final Player player, int count) {
         final IAEItemStack input = this.getDisplayed();
         if (input == null) {
             return;
@@ -202,11 +202,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
                     new PlayerSource(player, this));
             if (retrieved != null) {
-                ItemStack newItems = retrieved.createItemStack();
+                net.minecraft.world.item.ItemStack newItems = retrieved.createItemStack();
                 final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
                 newItems = adaptor.addItems(newItems);
                 if (!newItems.isEmpty()) {
-                    final TileEntity te = this.getTile();
+                    final BlockEntity te = this.getTile();
                     final List<ItemStack> list = Collections.singletonList(newItems);
                     Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide().getDirection()), list);
                 }

@@ -29,14 +29,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -51,16 +51,16 @@ import appeng.tile.misc.PaintSplotchesTileEntity;
  */
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
-    private static final RenderMaterial TEXTURE_PAINT1 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
-    private static final RenderMaterial TEXTURE_PAINT2 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
-    private static final RenderMaterial TEXTURE_PAINT3 = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
+    private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/paint3"));
 
     private final TextureAtlasSprite[] textures;
 
-    PaintSplotchesBakedModel(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+    PaintSplotchesBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         this.textures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
                 bakedTextureGetter.apply(TEXTURE_PAINT2), bakedTextureGetter.apply(TEXTURE_PAINT3) };
     }
@@ -68,7 +68,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-            @Nonnull IModelData extraData) {
+                                    @Nonnull IModelData extraData) {
 
         if (side != null) {
             return Collections.emptyList();
@@ -79,7 +79,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
         if (splotchesState == null) {
             // This is the inventory model which should usually not be used other than in
             // special cases
-            List<BakedQuad> quads = new ArrayList<>(1);
+            List<net.minecraft.client.renderer.block.model.BakedQuad> quads = new ArrayList<>(1);
             CubeBuilder builder = new CubeBuilder(quads);
             builder.setTexture(this.textures[0]);
             builder.addCube(0, 0, 0, 16, 16, 16);
@@ -178,8 +178,8 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
     @Override
@@ -187,7 +187,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-    static List<RenderMaterial> getRequiredTextures() {
+    static List<Material> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3);
     }
 }

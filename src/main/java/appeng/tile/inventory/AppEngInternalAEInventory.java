@@ -22,8 +22,8 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -37,7 +37,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
-public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack> {
+public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<net.minecraft.world.item.ItemStack> {
     private final IAEAppEngInventory te;
     private final IAEItemStack[] inv;
     private final int size;
@@ -59,16 +59,16 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return this.inv[var1];
     }
 
-    public void writeToNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = new CompoundNBT();
+    public void writeToNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = new CompoundTag();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundNBT target) {
+    private void writeToNBT(final CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundNBT c = new CompoundNBT();
+                final CompoundTag c = new CompoundTag();
 
                 if (this.inv[x] != null) {
                     this.inv[x].writeToNBT(c);
@@ -80,17 +80,17 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         }
     }
 
-    public void readFromNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = data.getCompound(name);
+    public void readFromNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundNBT target) {
+    private void readFromNBT(final CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundNBT c = target.getCompound("#" + x);
+                final CompoundTag c = target.getCompound("#" + x);
 
                 if (c != null) {
                     this.inv[x] = AEItemStack.fromNBT(c);
@@ -101,7 +101,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         }
     }
 
-    protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+    protected int getStackLimit(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
         return Math.min(this.getSlotLimit(slot), stack.getMaxStackSize());
     }
 
@@ -111,21 +111,21 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public ItemStack getStackInSlot(final int var1) {
+    public net.minecraft.world.item.ItemStack getStackInSlot(final int var1) {
         if (this.inv[var1] == null) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         return this.inv[var1].createItemStack();
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    public net.minecraft.world.item.ItemStack insertItem(int slot, net.minecraft.world.item.ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
-        ItemStack existing = this.getStackInSlot(slot);
+        net.minecraft.world.item.ItemStack existing = this.getStackInSlot(slot);
         int limit = this.getStackLimit(slot, stack);
 
         if (!existing.isEmpty()) {
@@ -149,53 +149,53 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
             }
-            this.fireOnChangeInventory(slot, InvOperation.INSERT, ItemStack.EMPTY,
+            this.fireOnChangeInventory(slot, InvOperation.INSERT, net.minecraft.world.item.ItemStack.EMPTY,
                     reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
         }
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (this.inv[slot] != null) {
-            final ItemStack split = this.getStackInSlot(slot);
+            final net.minecraft.world.item.ItemStack split = this.getStackInSlot(slot);
 
             if (amount >= split.getCount()) {
                 if (!simulate) {
                     this.inv[slot] = null;
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT, split, ItemStack.EMPTY);
+                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT, split, net.minecraft.world.item.ItemStack.EMPTY);
                 }
                 return split;
             } else {
                 if (!simulate) {
                     split.grow(-amount);
                     this.fireOnChangeInventory(slot, InvOperation.EXTRACT,
-                            ItemHandlerHelper.copyStackWithSize(split, amount), ItemStack.EMPTY);
+                            ItemHandlerHelper.copyStackWithSize(split, amount), net.minecraft.world.item.ItemStack.EMPTY);
                 }
                 return ItemHandlerHelper.copyStackWithSize(split, amount);
             }
         }
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public void setStackInSlot(final int slot, final ItemStack newItemStack) {
-        ItemStack oldStack = this.getStackInSlot(slot).copy();
+    public void setStackInSlot(final int slot, final net.minecraft.world.item.ItemStack newItemStack) {
+        net.minecraft.world.item.ItemStack oldStack = this.getStackInSlot(slot).copy();
         this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createStack(newItemStack);
 
         if (this.te != null && !this.te.isRemote()) {
-            ItemStack newStack = newItemStack.copy();
+            net.minecraft.world.item.ItemStack newStack = newItemStack.copy();
             InvOperation op = InvOperation.SET;
 
-            if (ItemStack.isSame(oldStack, newStack)) {
+            if (net.minecraft.world.item.ItemStack.isSame(oldStack, newStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
-                    oldStack = ItemStack.EMPTY;
+                    oldStack = net.minecraft.world.item.ItemStack.EMPTY;
                     op = InvOperation.INSERT;
                 } else {
                     oldStack.shrink(newStack.getCount());
-                    newStack = ItemStack.EMPTY;
+                    newStack = net.minecraft.world.item.ItemStack.EMPTY;
                     op = InvOperation.EXTRACT;
                 }
             }
@@ -203,7 +203,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         }
     }
 
-    private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
+    private void fireOnChangeInventory(int slot, InvOperation op, net.minecraft.world.item.ItemStack removed, ItemStack inserted) {
         if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             this.te.onChangeInventory(this, slot, op, removed, inserted);
@@ -218,7 +218,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public Iterator<ItemStack> iterator() {
+    public Iterator<net.minecraft.world.item.ItemStack> iterator() {
         return new InvIterator(this);
     }
 
@@ -227,7 +227,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
+    public boolean isItemValid(int slot, net.minecraft.world.item.ItemStack stack) {
         return true;
     }
 }

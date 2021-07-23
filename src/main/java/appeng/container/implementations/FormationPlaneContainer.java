@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -40,7 +40,7 @@ import appeng.parts.automation.FormationPlanePart;
  */
 public class FormationPlaneContainer extends UpgradeableContainer {
 
-    public static final ContainerType<FormationPlaneContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FormationPlaneContainer> TYPE = ContainerTypeBuilder
             .create(FormationPlaneContainer::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("formationplane");
@@ -48,7 +48,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
     @GuiSync(7)
     public YesNo placeMode;
 
-    public FormationPlaneContainer(int id, final PlayerInventory ip, final FormationPlanePart te) {
+    public FormationPlaneContainer(int id, final Inventory ip, final FormationPlanePart te) {
         super(TYPE, id, ip, te);
     }
 

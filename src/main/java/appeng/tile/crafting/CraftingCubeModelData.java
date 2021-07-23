@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.client.render.model.AEModelData;

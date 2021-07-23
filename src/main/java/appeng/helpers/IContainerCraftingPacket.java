@@ -20,7 +20,7 @@ package appeng.helpers;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridNode;

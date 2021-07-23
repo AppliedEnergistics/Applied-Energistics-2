@@ -21,10 +21,9 @@ package appeng.client.gui.me.networktool;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -36,6 +35,7 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import net.minecraft.world.entity.player.Inventory;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -54,8 +54,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     private final Scrollbar scrollbar;
 
-    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public NetworkStatusScreen(NetworkStatusContainer container, Inventory playerInventory,
+                               net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -75,14 +75,14 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
-        List<ITextComponent> tooltip = null;
+        List<net.minecraft.network.chat.Component> tooltip = null;
         List<MachineGroup> machines = status.getGroupedMachines();
         for (int i = viewStart; i < Math.min(viewEnd, machines.size()); i++) {
             MachineGroup entry = machines.get(i);
@@ -123,7 +123,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     }
 
     // x,y is upper left corner of related machine icon (which is 16x16)
-    private void drawMachineCount(MatrixStack matrixStack, int x, int y, long count) {
+    private void drawMachineCount(PoseStack matrixStack, int x, int y, long count) {
         String str;
         if (count >= 10000) {
             str = Long.toString(count / 1000) + 'k';
