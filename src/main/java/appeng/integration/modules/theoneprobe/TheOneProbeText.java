@@ -20,7 +20,7 @@ package appeng.integration.modules.theoneprobe;
 
 import java.util.Locale;
 
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public enum TheOneProbeText {
     CRAFTING, DEVICE_ONLINE, DEVICE_OFFLINE, DEVICE_MISSING_CHANNEL, P2P_UNLINKED, P2P_INPUT_ONE_OUTPUT,
@@ -32,8 +32,8 @@ public enum TheOneProbeText {
         this.root = "theoneprobe.appliedenergistics2";
     }
 
-    public TranslationTextComponent getTranslationComponent(Object... args) {
-        return new TranslationTextComponent(this.getUnlocalized(), args);
+    public TranslatableComponent getTranslationComponent(Object... args) {
+        return new TranslatableComponent(this.getUnlocalized(), args);
     }
 
     public String getUnlocalized() {

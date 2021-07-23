@@ -19,7 +19,7 @@
 package appeng.init.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleEngine;
 
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.CraftingFx;
@@ -36,7 +36,7 @@ public final class InitParticleFactories {
     }
 
     public static void init() {
-        ParticleManager particles = Minecraft.getInstance().particleEngine;
+        ParticleEngine particles = Minecraft.getInstance().particleEngine;
         particles.register(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
         particles.register(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
         particles.register(ParticleTypes.ENERGY, EnergyFx.Factory::new);

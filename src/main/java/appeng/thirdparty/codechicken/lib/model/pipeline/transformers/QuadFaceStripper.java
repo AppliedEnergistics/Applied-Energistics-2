@@ -18,10 +18,10 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
+import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
-import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
@@ -37,14 +37,14 @@ public class QuadFaceStripper extends QuadTransformer {
 
     public static final IPipelineElementFactory<QuadFaceStripper> FACTORY = QuadFaceStripper::new;
 
-    private AxisAlignedBB bounds;
+    private AABB bounds;
     private int mask;
 
     QuadFaceStripper() {
         super();
     }
 
-    public QuadFaceStripper(IVertexConsumer parent, AxisAlignedBB bounds, int mask) {
+    public QuadFaceStripper(IVertexConsumer parent, AABB bounds, int mask) {
         super(parent);
         this.bounds = bounds;
         this.mask = mask;
@@ -56,7 +56,7 @@ public class QuadFaceStripper extends QuadTransformer {
      *
      * @param bounds The bounds.
      */
-    public void setBounds(AxisAlignedBB bounds) {
+    public void setBounds(AABB bounds) {
         this.bounds = bounds;
     }
 
@@ -76,7 +76,7 @@ public class QuadFaceStripper extends QuadTransformer {
         }
         // If the bit for this quad is set, then check if we should strip.
         if ((this.mask & 1 << this.quad.orientation.ordinal()) != 0) {
-            AxisDirection dir = this.quad.orientation.getAxisDirection();
+            net.minecraft.core.Direction.AxisDirection dir = this.quad.orientation.getAxisDirection();
             Vertex[] vertices = this.quad.vertices;
             switch (this.quad.orientation.getAxis()) {
                 case X: {

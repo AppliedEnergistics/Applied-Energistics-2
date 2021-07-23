@@ -18,8 +18,8 @@
 
 package appeng.client.gui.style;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 /**
  * Text that will be drawn on top of a {@link appeng.client.gui.AEBaseScreen}.
@@ -29,7 +29,7 @@ public class Text {
     /**
      * The text to display.
      */
-    private ITextComponent text = StringTextComponent.EMPTY;
+    private net.minecraft.network.chat.Component text = TextComponent.EMPTY;
 
     /**
      * The color to show the text in.
@@ -46,11 +46,11 @@ public class Text {
      */
     private boolean centerHorizontally;
 
-    public ITextComponent getText() {
+    public net.minecraft.network.chat.Component getText() {
         return text;
     }
 
-    public void setText(ITextComponent text) {
+    public void setText(net.minecraft.network.chat.Component text) {
         this.text = text;
     }
 

@@ -21,8 +21,8 @@ package appeng.thirdparty.codechicken.lib.model.pipeline;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;

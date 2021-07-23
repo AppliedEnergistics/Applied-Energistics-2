@@ -18,11 +18,11 @@
 
 package appeng.facade;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
@@ -30,7 +30,7 @@ import appeng.api.util.AEPartLocation;
 
 public class FacadePart implements IFacadePart {
 
-    private final ItemStack facade;
+    private final net.minecraft.world.item.ItemStack facade;
     private final AEPartLocation side;
 
     public FacadePart(final ItemStack facade, final AEPartLocation side) {
@@ -43,7 +43,7 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public ItemStack getItemStack() {
+    public net.minecraft.world.item.ItemStack getItemStack() {
         return this.facade;
     }
 
@@ -78,8 +78,8 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public ItemStack getTextureItem() {
-        final Item maybeFacade = this.facade.getItem();
+    public net.minecraft.world.item.ItemStack getTextureItem() {
+        final net.minecraft.world.item.Item maybeFacade = this.facade.getItem();
 
         // AE Facade
         if (maybeFacade instanceof IFacadeItem) {
@@ -88,7 +88,7 @@ public class FacadePart implements IFacadePart {
             return facade.getTextureItem(this.facade);
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override

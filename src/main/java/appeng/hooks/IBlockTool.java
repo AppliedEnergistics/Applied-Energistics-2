@@ -18,11 +18,11 @@
 
 package appeng.hooks;
 
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 
 public interface IBlockTool {
     // Workaround for dispenser logic.
-    ActionResultType useOn(ItemUseContext itemUseContext);
+    InteractionResult useOn(UseOnContext itemUseContext);
 
 }

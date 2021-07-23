@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -55,9 +55,9 @@ public class ItemRepo extends Repo<IAEItemStack> {
         }
 
         if (searchMode == SearchMode.NAME_OR_TOOLTIP) {
-            List<ITextComponent> tooltip = aeStack.getToolTip();
+            List<net.minecraft.network.chat.Component> tooltip = aeStack.getToolTip();
 
-            for (ITextComponent line : tooltip) {
+            for (net.minecraft.network.chat.Component line : tooltip) {
                 if (searchPattern.matcher(line.getString()).find()) {
                     return true;
                 }

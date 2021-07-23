@@ -18,11 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
@@ -40,8 +40,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     // "Progress-bar" that indicates the energy generation rate
     private final ProgressBar generationRateBar;
 
-    public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public VibrationChamberScreen(VibrationChamberContainer container, Inventory playerInventory,
+                                  net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
@@ -53,13 +53,13 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.generationRateBar.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
+        this.generationRateBar.setFullMsg(new TextComponent(VibrationChamberTileEntity.POWER_PER_TICK
                 * this.menu.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
     }
 
     @Override
-    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack matrices, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.menu.getRemainingBurnTime() > 0) {
             int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;

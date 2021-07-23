@@ -20,14 +20,14 @@ package appeng.client.gui.me.items;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.me.common.ClientReadOnlySlot;
 import appeng.client.gui.me.common.Repo;
 import appeng.container.me.common.GridInventoryEntry;
+import net.minecraft.world.inventory.Slot;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
@@ -81,7 +81,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
         if (entry != null) {
             return entry.getStack().asItemStackRepresentation();
         }
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override

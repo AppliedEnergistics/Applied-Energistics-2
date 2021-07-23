@@ -22,28 +22,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.Icon;
 
-import net.minecraft.client.gui.widget.button.Button.IPressable;
+import net.minecraft.client.gui.components.Button.OnPress;
 
-public class ToggleButton extends Button implements ITooltip {
+public class ToggleButton extends net.minecraft.client.gui.components.Button implements ITooltip {
     private final Icon icon;
     private final Icon iconDisabled;
 
-    private final ITextComponent displayName;
-    private final ITextComponent displayHint;
+    private final net.minecraft.network.chat.Component displayName;
+    private final net.minecraft.network.chat.Component displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final Icon on, final Icon off, final ITextComponent displayName,
-            final ITextComponent displayHint, IPressable onPress) {
-        super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
+    public ToggleButton(final Icon on, final Icon off, final net.minecraft.network.chat.Component displayName,
+                        final net.minecraft.network.chat.Component displayHint, OnPress onPress) {
+        super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
         this.icon = on;
         this.iconDisabled = off;
         this.displayName = Objects.requireNonNull(displayName);
@@ -55,7 +55,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(PoseStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
             getIcon().getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());
@@ -67,7 +67,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
         return Arrays.asList(
                 displayName,
                 displayHint);

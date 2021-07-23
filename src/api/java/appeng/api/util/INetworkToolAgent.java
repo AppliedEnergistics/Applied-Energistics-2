@@ -23,12 +23,12 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.phys.HitResult;
 
 /**
  * Implement on Tile or part to customize if the info gui opens, or an action is preformed.
  */
 public interface INetworkToolAgent {
 
-    boolean showNetworkInfo(RayTraceResult where);
+    boolean showNetworkInfo(net.minecraft.world.phys.HitResult where);
 }

@@ -21,12 +21,11 @@ package appeng.parts.automation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -64,14 +63,15 @@ import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class ExportBusPart extends SharedItemBusPart implements ICraftingRequester {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_base");
+    public static final net.minecraft.resources.ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_off"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
@@ -87,7 +87,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     private boolean didSomething = false;
     private int nextSlot = 0;
 
-    public ExportBusPart(final ItemStack is) {
+    public ExportBusPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -98,14 +98,14 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.craftingTracker.readFromNBT(extra);
         this.nextSlot = extra.getInt("nextSlot");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.craftingTracker.writeToNBT(extra);
         extra.putInt("nextSlot", this.nextSlot);
@@ -193,7 +193,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(IOBusContainer.EXPORT_TYPE, player, ContainerLocator.forPart(this));
         }
@@ -262,7 +262,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
-        final ItemStack is = ais.createItemStack();
+        final net.minecraft.world.item.ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);
 
         final ItemStack o = d.simulateAdd(is);
@@ -276,7 +276,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
             if (itemsToAdd != null) {
                 this.itemToSend -= itemsToAdd.getStackSize();
 
-                final ItemStack failed = d.addItems(itemsToAdd.createItemStack());
+                final net.minecraft.world.item.ItemStack failed = d.addItems(itemsToAdd.createItemStack());
                 if (!failed.isEmpty()) {
                     ais.setStackSize(failed.getCount());
                     inv.injectItems(ais, Actionable.MODULATE, this.mySrc);

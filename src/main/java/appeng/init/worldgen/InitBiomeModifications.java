@@ -18,11 +18,13 @@
 
 package appeng.init.worldgen;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 import appeng.api.features.IWorldGen;
@@ -54,23 +56,23 @@ public final class InitBiomeModifications {
                 e.getCategory())) {
 
             ConfiguredFeature<?, ?> quartzOreFeature = getConfiguredFeature(WorldgenIds.QUARTZ_ORE);
-            e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
+            e.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, quartzOreFeature);
 
             ConfiguredFeature<?, ?> chargedQuartzOreFeature = getConfiguredFeature(WorldgenIds.CHARGED_QUARTZ_ORE);
-            e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+            e.getGeneration().addFeature(Decoration.UNDERGROUND_DECORATION,
                     chargedQuartzOreFeature);
         }
     }
 
-    private static ConfiguredFeature<?, ?> getConfiguredFeature(ResourceLocation id) {
-        return WorldGenRegistries.CONFIGURED_FEATURE.getOptional(id)
+    private static ConfiguredFeature<?, ?> getConfiguredFeature(net.minecraft.resources.ResourceLocation id) {
+        return BuiltinRegistries.CONFIGURED_FEATURE.getOptional(id)
                 .orElseThrow(() -> new RuntimeException("Configured feature " + id + " is not registered"));
     }
 
     private static boolean shouldGenerateIn(ResourceLocation id,
-            boolean enabled,
-            IWorldGen.WorldGenType worldGenType,
-            Biome.Category category) {
+                                            boolean enabled,
+                                            IWorldGen.WorldGenType worldGenType,
+                                            BiomeCategory category) {
         if (id == null) {
             return false; // We don't add to unnamed biomes
         }
@@ -80,8 +82,8 @@ public final class InitBiomeModifications {
             return false;
         }
 
-        if (category == Biome.Category.THEEND || category == Biome.Category.NETHER
-                || category == Biome.Category.NONE) {
+        if (category == BiomeCategory.THEEND || category == BiomeCategory.NETHER
+                || category == BiomeCategory.NONE) {
             AELog.debug("Not generating %s in %s because it's of category %s", worldGenType, id, category);
             return false;
         }

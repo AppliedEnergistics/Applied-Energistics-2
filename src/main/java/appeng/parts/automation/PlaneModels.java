@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -37,7 +37,7 @@ public class PlaneModels {
             "part/transition_plane_off");
     public static final ResourceLocation MODEL_CHASSIS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/transition_plane_on");
-    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/transition_plane_has_channel");
 
     private final IPartModel modelOff;

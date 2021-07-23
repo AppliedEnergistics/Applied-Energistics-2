@@ -18,7 +18,7 @@
 
 package appeng.init;
 
-import net.minecraft.block.DispenserBlock;
+import net.minecraft.world.level.block.DispenserBlock;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -27,7 +27,7 @@ import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
 
 /**
- * Registers custom {@link DispenserBlock} behaviors for our items.
+ * Registers custom {@link net.minecraft.world.level.block.DispenserBlock} behaviors for our items.
  */
 public final class InitDispenserBehavior {
 
@@ -38,7 +38,7 @@ public final class InitDispenserBehavior {
         DispenserBlock.registerBehavior(AEBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
         DispenserBlock.registerBehavior(AEItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
         DispenserBlock.registerBehavior(AEItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
-        DispenserBlock.registerBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
+        net.minecraft.world.level.block.DispenserBlock.registerBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
     }
 
 }

@@ -24,17 +24,17 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -87,7 +87,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
-    public FluidFormationPlanePart(final ItemStack is) {
+    public FluidFormationPlanePart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         this.updateHandler();
     }
@@ -121,8 +121,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final TileEntity te = this.getHost().getTile();
-        final World w = te.getLevel();
+        final BlockEntity te = this.getHost().getTile();
+        final Level w = te.getLevel();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getBlockPos().relative(side.getDirection());
         final BlockState state = w.getBlockState(pos);
@@ -135,8 +135,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                 final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
                 tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
 
-                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerWorld) w);
-                if (!FluidUtil.tryPlaceFluid(fakePlayer, w, Hand.MAIN_HAND, pos, tank, fs)) {
+                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) w);
+                if (!FluidUtil.tryPlaceFluid(fakePlayer, w, InteractionHand.MAIN_HAND, pos, tank, fs)) {
                     return input;
                 }
             }
@@ -148,7 +148,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return input;
     }
 
-    private boolean canReplace(World w, BlockState state, BlockPos pos) {
+    private boolean canReplace(Level w, BlockState state, BlockPos pos) {
         return state.getMaterial().isReplaceable() && w.getFluidState(pos).isEmpty() && !state.getMaterial().isLiquid();
     }
 
@@ -160,14 +160,14 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
     }
@@ -181,7 +181,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
@@ -226,7 +226,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return FluidFormationPlaneContainer.TYPE;
     }
 }

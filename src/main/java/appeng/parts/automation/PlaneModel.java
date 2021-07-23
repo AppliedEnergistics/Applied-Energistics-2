@@ -21,14 +21,14 @@ package appeng.parts.automation;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -38,20 +38,20 @@ import appeng.client.render.BasicUnbakedModel;
  */
 public class PlaneModel implements BasicUnbakedModel<PlaneModel> {
 
-    private final RenderMaterial frontTexture;
-    private final RenderMaterial sidesTexture;
-    private final RenderMaterial backTexture;
+    private final Material frontTexture;
+    private final Material sidesTexture;
+    private final Material backTexture;
 
     public PlaneModel(ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture) {
-        this.frontTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, frontTexture);
-        this.sidesTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, sidesTexture);
-        this.backTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, backTexture);
+        this.frontTexture = new Material(TextureAtlas.LOCATION_BLOCKS, frontTexture);
+        this.sidesTexture = new Material(TextureAtlas.LOCATION_BLOCKS, sidesTexture);
+        this.backTexture = new Material(TextureAtlas.LOCATION_BLOCKS, backTexture);
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
         TextureAtlasSprite sidesSprite = spriteGetter.apply(this.sidesTexture);
         TextureAtlasSprite backSprite = spriteGetter.apply(this.backTexture);
@@ -60,7 +60,7 @@ public class PlaneModel implements BasicUnbakedModel<PlaneModel> {
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return Stream.of(frontTexture, sidesTexture, backTexture);
     }
 

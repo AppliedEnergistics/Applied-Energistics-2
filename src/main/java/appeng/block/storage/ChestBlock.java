@@ -20,19 +20,16 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -41,10 +38,14 @@ import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.ChestTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
-    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
+    private final static BooleanProperty LIGHTS_ON = net.minecraft.world.level.block.state.properties.BooleanProperty.create("lights_on");
 
     public ChestBlock() {
         super(defaultProps(Material.METAL));
@@ -52,13 +53,13 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIGHTS_ON);
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestTileEntity te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, ChestTileEntity te) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
         if (te.getCellCount() >= 1) {
@@ -73,8 +74,8 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
@@ -88,9 +89,9 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
                 }
             }
 
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

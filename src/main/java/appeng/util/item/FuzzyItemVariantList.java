@@ -24,7 +24,7 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
@@ -108,7 +108,7 @@ class FuzzyItemVariantList extends ItemVariantList {
                 return Integer.compare(itemDamageB, itemDamageA);
             }
 
-            ItemStack itemStackA = stackA.getDefinition();
+            net.minecraft.world.item.ItemStack itemStackA = stackA.getDefinition();
             ItemStack itemStackB = stackB.getDefinition();
             Preconditions.checkState(itemStackA.getCount() == 1, "ItemStack#getCount() has to be 1");
             Preconditions.checkArgument(itemStackB.getCount() == 1, "ItemStack#getCount() has to be 1");

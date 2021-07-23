@@ -18,10 +18,8 @@
 
 package appeng.fluids.parts;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.container.me.fluids.FluidTerminalContainer;
@@ -29,6 +27,8 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @author BrockWS
@@ -51,7 +51,7 @@ public class FluidTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ContainerType<?> getContainerType(PlayerEntity player) {
+    public MenuType<?> getContainerType(Player player) {
         return FluidTerminalContainer.TYPE;
     }
 

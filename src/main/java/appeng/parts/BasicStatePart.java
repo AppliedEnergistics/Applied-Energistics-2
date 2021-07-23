@@ -22,8 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -31,6 +30,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.core.Api;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and
@@ -62,7 +62,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
 
         var flags = this.calculateClientFlags();
@@ -87,7 +87,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean eh = super.readFromStream(data);
 
         final int old = this.getClientFlags();

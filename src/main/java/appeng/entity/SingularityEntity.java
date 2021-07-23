@@ -21,31 +21,31 @@ package appeng.entity;
 import java.util.Date;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
+import net.minecraft.world.phys.AABB;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
-    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
+    private static final ResourceLocation TAG_ENDER_PEARL = new net.minecraft.resources.ResourceLocation("forge:ender_pearls");
 
     private static int randTickSeed = 0;
 
-    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, final World w) {
+    public SingularityEntity(net.minecraft.world.entity.EntityType<? extends SingularityEntity> entityType, final Level w) {
         super(entityType, w);
     }
 
-    public SingularityEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
+    public SingularityEntity(final Level w, final double x, final double y, final double z, final net.minecraft.world.item.ItemStack is) {
         super(AEEntities.SINGULARITY, w, x, y, z, is);
     }
 
@@ -68,15 +68,15 @@ public final class SingularityEntity extends AEBaseItemEntity {
             return;
         }
 
-        final ItemStack item = this.getItem();
+        final net.minecraft.world.item.ItemStack item = this.getItem();
 
         if (AEItems.SINGULARITY.isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
+            final AABB region = new AABB(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
                     this.getX() + 4, this.getY() + 4, this.getZ() + 4);
-            final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
+            final List<net.minecraft.world.entity.Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
-                if (e instanceof ItemEntity) {
+                if (e instanceof net.minecraft.world.entity.item.ItemEntity) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         boolean matches = false;
@@ -98,8 +98,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     e.remove();
                                 }
 
-                                ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
-                                final CompoundNBT cmp = singularityStack.getOrCreateTag();
+                                net.minecraft.world.item.ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
+                                final CompoundTag cmp = singularityStack.getOrCreateTag();
                                 cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                 randTickSeed++;
                                 item.grow(-1);

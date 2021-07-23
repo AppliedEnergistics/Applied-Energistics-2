@@ -34,16 +34,16 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -65,10 +65,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private static final Comparator<IAEItemStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
             .compare(right.getStackSize(), left.getStackSize());
 
-    private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
-    private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
-    private final ItemStack correctOutput;
-    private final ICraftingRecipe standardRecipe;
+    private final CraftingContainer crafting = new CraftingContainer(new ContainerNull(), 3, 3);
+    private final CraftingContainer testFrame = new CraftingContainer(new ContainerNull(), 3, 3);
+    private final net.minecraft.world.item.ItemStack correctOutput;
+    private final CraftingRecipe standardRecipe;
     private final List<IAEItemStack> inputs;
     private final List<IAEItemStack> outputs;
     private final IAEItemStack[] sparseInputs;
@@ -81,12 +81,12 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final IAEItemStack pattern;
     private int priority = 0;
 
-    public CraftingPatternDetails(final IAEItemStack is, final World w) {
+    public CraftingPatternDetails(final IAEItemStack is, final Level w) {
         Preconditions.checkArgument(is.getItem() instanceof EncodedPatternItem,
                 "itemStack is not a ICraftingPatternItem");
 
         final EncodedPatternItem templateItem = (EncodedPatternItem) is.getItem();
-        final ItemStack itemStack = is.createItemStack();
+        final net.minecraft.world.item.ItemStack itemStack = is.createItemStack();
 
         final List<IAEItemStack> ingredients = templateItem.getIngredients(itemStack);
         final List<IAEItemStack> products = templateItem.getProducts(itemStack);
@@ -114,20 +114,20 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.isCraftable) {
-            IRecipe<?> recipe = w.getRecipeManager().byType(IRecipeType.CRAFTING).get(recipeId);
+            Recipe<?> recipe = w.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
 
-            if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
+            if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");
             }
 
-            this.standardRecipe = (ICraftingRecipe) recipe;
+            this.standardRecipe = (CraftingRecipe) recipe;
             this.correctOutput = this.standardRecipe.assemble(this.crafting);
 
             out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createStack(this.correctOutput));
         } else {
             this.standardRecipe = null;
-            this.correctOutput = ItemStack.EMPTY;
+            this.correctOutput = net.minecraft.world.item.ItemStack.EMPTY;
 
             for (int x = 0; x < PROCESSING_OUTPUT_LIMIT; x++) {
                 final IAEItemStack ais = products.get(x);
@@ -145,7 +145,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         this.outputs = this.condenseStacks(out);
     }
 
-    private void markItemAs(final int slotIndex, final ItemStack i, final TestStatus b) {
+    private void markItemAs(final int slotIndex, final net.minecraft.world.item.ItemStack i, final TestStatus b) {
         if (b == TestStatus.TEST || i.hasTag()) {
             return;
         }
@@ -159,7 +159,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public synchronized boolean isValidItemForSlot(final int slotIndex, final ItemStack i, final World w) {
+    public synchronized boolean isValidItemForSlot(final int slotIndex, final ItemStack i, final Level w) {
         if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
@@ -239,7 +239,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         return this.substituteInputs.computeIfAbsent(slot, value -> {
-            ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
+            net.minecraft.world.item.ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
             List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
             for (ItemStack matchingStack : matchingStacks) {
                 itemList.add(AEItemStack.fromItemStack(matchingStack));
@@ -253,13 +253,13 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     /**
-     * Gets the {@link Ingredient} from the actual used recipe for a given slot-index into {@link #getSparseInputs()}.
+     * Gets the {@link net.minecraft.world.item.crafting.Ingredient} from the actual used recipe for a given slot-index into {@link #getSparseInputs()}.
      * <p/>
      * Conversion is needed for two reasons: our sparse ingredients are always organized in a 3x3 grid, while Vanilla's
      * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
      * shift the actual recipe input to the right and down.
      */
-    private Ingredient getRecipeIngredient(int slot) {
+    private net.minecraft.world.item.crafting.Ingredient getRecipeIngredient(int slot) {
 
         if (standardRecipe instanceof IShapedRecipe) {
             IShapedRecipe<?> shapedRecipe = (IShapedRecipe<?>) standardRecipe;
@@ -270,7 +270,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
     }
 
-    private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+    private net.minecraft.world.item.crafting.Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
         int topOffset = 0;
@@ -315,7 +315,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             }
         }
 
-        NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
+        net.minecraft.core.NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
         if (ingredientIndex < ingredients.size()) {
             return ingredients.get(ingredientIndex);
         }
@@ -324,14 +324,14 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public ItemStack getOutput(final CraftingInventory craftingInv, final World w) {
+    public ItemStack getOutput(final CraftingContainer craftingInv, final Level w) {
         if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
         for (int x = 0; x < craftingInv.getContainerSize(); x++) {
             if (!this.isValidItemForSlot(x, craftingInv.getItem(x), w)) {
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
             }
         }
 
@@ -339,10 +339,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             return this.sparseOutputs[0].createItemStack();
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
-    private TestStatus getStatus(final int slotIndex, final ItemStack i) {
+    private TestStatus getStatus(final int slotIndex, final net.minecraft.world.item.ItemStack i) {
         if (this.crafting.getItem(slotIndex).isEmpty()) {
             return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
         }
@@ -437,9 +437,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this(slot, i.getItem(), i.getDamageValue());
         }
 
-        public TestLookup(final int slot, final Item item, final int dmg) {
+        public TestLookup(final int slot, final net.minecraft.world.item.Item item, final int dmg) {
             this.slot = slot;
-            this.ref = dmg << Platform.DEF_OFFSET | Item.getId(item) & 0xffff;
+            this.ref = dmg << Platform.DEF_OFFSET | net.minecraft.world.item.Item.getId(item) & 0xffff;
             final int offset = 3 * slot;
             this.hash = this.ref << offset | this.ref >> offset + 32;
         }

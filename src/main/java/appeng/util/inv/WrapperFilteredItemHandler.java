@@ -20,7 +20,7 @@ package appeng.util.inv;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -52,7 +52,7 @@ public class WrapperFilteredItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    public net.minecraft.world.item.ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (!this.filter.allowInsert(this.handler, slot, stack)) {
             return stack;
         }
@@ -61,7 +61,7 @@ public class WrapperFilteredItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (!this.filter.allowExtract(this.handler, slot, amount)) {
             return ItemStack.EMPTY;
         }

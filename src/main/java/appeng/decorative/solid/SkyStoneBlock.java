@@ -18,14 +18,14 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -33,14 +33,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
     private static final double BREAK_SPEAK_THRESHOLD = 7.0;
     private final SkystoneType type;
 
-    public SkyStoneBlock(SkystoneType type, Properties props) {
+    public SkyStoneBlock(SkystoneType type, net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
         this.type = type;
 
@@ -49,7 +49,7 @@ public class SkyStoneBlock extends AEBaseBlock {
 
     private void breakFaster(final PlayerEvent.BreakSpeed event) {
         if (event.getState().getBlock() == this && event.getPlayer() != null) {
-            final ItemStack is = event.getPlayer().getItemBySlot(EquipmentSlotType.MAINHAND);
+            final ItemStack is = event.getPlayer().getItemBySlot(EquipmentSlot.MAINHAND);
             int level = -1;
 
             if (!is.isEmpty()) {
@@ -63,10 +63,10 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
-            BlockPos currentPos, BlockPos facingPos) {
-        if (worldIn instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
+    public net.minecraft.world.level.block.state.BlockState updateShape(net.minecraft.world.level.block.state.BlockState stateIn, net.minecraft.core.Direction facing, net.minecraft.world.level.block.state.BlockState facingState, LevelAccessor worldIn,
+                                                                        net.minecraft.core.BlockPos currentPos, BlockPos facingPos) {
+        if (worldIn instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
         }
 
@@ -74,15 +74,15 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
         super.onRemove(state, w, pos, newState, isMoving);
 
-        if (w instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) w;
+        if (w instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel) w;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, pos);
         }
     }

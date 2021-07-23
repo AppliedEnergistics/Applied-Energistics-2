@@ -30,23 +30,23 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -75,15 +75,15 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return item of part
      */
-    ItemStack getItemStack(PartItemStack type);
+    net.minecraft.world.item.ItemStack getItemStack(PartItemStack type);
 
     /**
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
     @OnlyIn(Dist.CLIENT)
-    default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    default void renderDynamic(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers,
+                               int combinedLightIn, int combinedOverlayIn) {
     }
 
     /**
@@ -109,14 +109,14 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param data to be written nbt data
      */
-    void writeToNBT(CompoundNBT data);
+    void writeToNBT(CompoundTag data);
 
     /**
      * Read the previously written NBT Data. this is the mirror for writeToNBT
      *
      * @param data to be read nbt data
      */
-    void readFromNBT(CompoundNBT data);
+    void readFromNBT(CompoundTag data);
 
     /**
      * @return get the amount of light produced by the bus
@@ -135,7 +135,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side
@@ -154,7 +154,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @throws IOException
      */
-    void writeToStream(PacketBuffer data) throws IOException;
+    void writeToStream(FriendlyByteBuf data) throws IOException;
 
     /**
      * read data from bus packet.
@@ -165,7 +165,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @throws IOException
      */
-    boolean readFromStream(PacketBuffer data) throws IOException;
+    boolean readFromStream(FriendlyByteBuf data) throws IOException;
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
@@ -206,7 +206,7 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is returned
-     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the part host for the
+     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(net.minecraft.core.Direction)} by the part host for the
      * side this part is on.
      */
     default AECableType getExternalCableConnectionType() {
@@ -219,7 +219,7 @@ public interface IPart extends ICustomCableConnection {
      * @param host part side
      * @param tile tile entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
+    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity tile);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -230,7 +230,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return if your activate method performed something.
      */
-    boolean onActivate(PlayerEntity player, Hand hand, Vector3d pos);
+    boolean onActivate(Player player, InteractionHand hand, Vec3 pos);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -241,7 +241,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    boolean onShiftActivate(PlayerEntity player, Hand hand, Vector3d pos);
+    boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos);
 
     /**
      * Called when you left click the part, very similar to Block.onBlockClicked
@@ -252,7 +252,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+    default boolean onClicked(Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 
@@ -265,7 +265,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
+    default boolean onShiftClicked(Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 
@@ -276,7 +276,7 @@ public interface IPart extends ICustomCableConnection {
      * @param drops    item drops if wrenched
      * @param wrenched control flag for wrenched vs broken
      */
-    void getDrops(List<ItemStack> drops, boolean wrenched);
+    void getDrops(List<net.minecraft.world.item.ItemStack> drops, boolean wrenched);
 
     /**
      * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
@@ -292,7 +292,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos   location of block
      * @param r     random
      */
-    void animateTick(World world, BlockPos pos, Random r);
+    void animateTick(Level world, BlockPos pos, Random r);
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.
@@ -301,7 +301,7 @@ public interface IPart extends ICustomCableConnection {
      * @param held   held item
      * @param side   placing side
      */
-    void onPlacement(PlayerEntity player, Hand hand, ItemStack held, AEPartLocation side);
+    void onPlacement(Player player, InteractionHand hand, ItemStack held, AEPartLocation side);
 
     /**
      * Used to determine which parts can be placed on what cables.
@@ -343,7 +343,7 @@ public interface IPart extends ICustomCableConnection {
      * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
      * forwarded to parts on the appropriate side.
      *
-     * @see CapabilityProvider#getCapability(Capability, net.minecraft.util.Direction)
+     * @see CapabilityProvider#getCapability(Capability, net.minecraft.core.Direction)
      *
      * @return The capability
      */

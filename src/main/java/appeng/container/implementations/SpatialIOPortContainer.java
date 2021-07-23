@@ -18,8 +18,7 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.energy.IEnergyService;
@@ -30,13 +29,14 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
+import net.minecraft.world.inventory.MenuType;
 
 /**
  * @see appeng.client.gui.implementations.SpatialIOPortScreen
  */
 public class SpatialIOPortContainer extends AEBaseContainer {
 
-    public static final ContainerType<SpatialIOPortContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<SpatialIOPortContainer> TYPE = ContainerTypeBuilder
             .create(SpatialIOPortContainer::new, SpatialIOPortTileEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialioport");
@@ -58,7 +58,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     @GuiSync(33)
     public int zSize;
 
-    public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
+    public SpatialIOPortContainer(int id, final Inventory ip, final SpatialIOPortTileEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,

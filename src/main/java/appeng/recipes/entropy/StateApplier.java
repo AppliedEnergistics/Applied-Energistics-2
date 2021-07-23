@@ -20,10 +20,10 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,7 +34,7 @@ class StateApplier<T extends Comparable<T>> {
     private final Property<T> property;
     private final T value;
 
-    private StateApplier(Property<T> property, String valueName) {
+    private StateApplier(net.minecraft.world.level.block.state.properties.Property<T> property, String valueName) {
         this.property = Objects.requireNonNull(property, "property must not be null");
         this.value = PropertyUtils.getRequiredPropertyValue(property, valueName);
     }
@@ -43,18 +43,18 @@ class StateApplier<T extends Comparable<T>> {
         return state.setValue(property, value);
     }
 
-    void writeToPacket(PacketBuffer buffer) {
+    void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeUtf(property.getName());
         buffer.writeUtf(property.getName(value));
     }
 
-    static StateApplier<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
+    static StateApplier<?> create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName, String value) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new StateApplier<>(property, value);
     }
 
     @OnlyIn(Dist.CLIENT)
-    static StateApplier<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+    static StateApplier<?> readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();
         return create(stateContainer, propertyName, value);

@@ -23,18 +23,18 @@ import java.util.List;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,46 +46,46 @@ import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
-    public BiometricCardItem(Properties properties) {
+    public BiometricCardItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getItemInHand(hand), p);
             p.swing(hand);
-            return ActionResult.success(p.getItemInHand(hand));
+            return InteractionResultHolder.success(p.getItemInHand(hand));
         }
 
-        return ActionResult.pass(p.getItemInHand(hand));
+        return InteractionResultHolder.pass(p.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType interactLivingEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
-            final Hand hand) {
-        if (target instanceof PlayerEntity && !InteractionUtil.isInAlternateUseMode(player)) {
+    public InteractionResult interactLivingEntity(ItemStack is, final Player player, final LivingEntity target,
+                                                  final InteractionHand hand) {
+        if (target instanceof Player && !InteractionUtil.isInAlternateUseMode(player)) {
             if (player.isCreative()) {
                 is = player.getItemInHand(hand);
             }
-            this.encode(is, (PlayerEntity) target);
+            this.encode(is, (Player) target);
             player.swing(hand);
-            return ActionResultType.sidedSuccess(player.getCommandSenderWorld().isClientSide());
+            return InteractionResult.sidedSuccess(player.getCommandSenderWorld().isClientSide());
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ITextComponent getName(final ItemStack is) {
+    public net.minecraft.network.chat.Component getName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
         return username != null ? super.getName(is).copy().append(" - " + username.getName())
                 : super.getName(is);
     }
 
-    private void encode(final ItemStack is, final PlayerEntity p) {
+    private void encode(final ItemStack is, final Player p) {
         final GameProfile username = this.getProfile(is);
 
         if (username != null && username.equals(p.getGameProfile())) {
@@ -97,11 +97,11 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void setProfile(final ItemStack itemStack, final GameProfile profile) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
 
         if (profile != null) {
-            final CompoundNBT pNBT = new CompoundNBT();
-            NBTUtil.writeGameProfile(pNBT, profile);
+            final CompoundTag pNBT = new CompoundTag();
+            NbtUtils.writeGameProfile(pNBT, profile);
             tag.put("profile", pNBT);
         } else {
             tag.remove("profile");
@@ -110,16 +110,16 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public GameProfile getProfile(final ItemStack is) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         if (tag.contains("profile")) {
-            return NBTUtil.readGameProfile(tag.getCompound("profile"));
+            return NbtUtils.readGameProfile(tag.getCompound("profile"));
         }
         return null;
     }
 
     @Override
     public EnumSet<SecurityPermissions> getPermissions(final ItemStack is) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         final EnumSet<SecurityPermissions> result = EnumSet.noneOf(SecurityPermissions.class);
 
         for (final SecurityPermissions sp : SecurityPermissions.values()) {
@@ -133,13 +133,13 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public boolean hasPermission(final ItemStack is, final SecurityPermissions permission) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         return tag.getBoolean(permission.name());
     }
 
     @Override
     public void removePermission(final ItemStack itemStack, final SecurityPermissions permission) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
         if (tag.contains(permission.name())) {
             tag.remove(permission.name());
         }
@@ -147,7 +147,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
         tag.putBoolean(permission.name(), true);
     }
 
@@ -158,13 +158,13 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
-            lines.add(new TranslationTextComponent(GuiText.NoPermissions.getLocal()));
+            lines.add(new TranslatableComponent(GuiText.NoPermissions.getLocal()));
         } else {
-            ITextComponent msg = null;
+            net.minecraft.network.chat.Component msg = null;
 
             for (final SecurityPermissions sp : perms) {
                 if (msg == null) {

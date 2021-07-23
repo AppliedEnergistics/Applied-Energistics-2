@@ -24,11 +24,11 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -49,9 +49,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     private final AESharedItemStack sharedStack;
 
     @OnlyIn(Dist.CLIENT)
-    private ITextComponent displayName;
+    private net.minecraft.network.chat.Component displayName;
     @OnlyIn(Dist.CLIENT)
-    private List<ITextComponent> tooltip;
+    private List<net.minecraft.network.chat.Component> tooltip;
 
     private AEItemStack(final AEItemStack is) {
         this.setStackSize(is.getStackSize());
@@ -76,7 +76,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), stack.getCount());
     }
 
-    public static IAEItemStack fromNBT(final CompoundNBT i) {
+    public static IAEItemStack fromNBT(final CompoundTag i) {
         if (i == null) {
             return null;
         }
@@ -94,8 +94,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT i) {
-        final CompoundNBT itemStack = new CompoundNBT();
+    public void writeToNBT(final CompoundTag i) {
+        final CompoundTag itemStack = new CompoundTag();
         this.getDefinition().save(itemStack);
 
         i.put(NBT_ITEMSTACK, itemStack);
@@ -104,7 +104,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         i.putBoolean(NBT_CRAFTABLE, this.isCraftable());
     }
 
-    public static AEItemStack fromPacket(final PacketBuffer buffer) {
+    public static AEItemStack fromPacket(final FriendlyByteBuf buffer) {
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
@@ -121,7 +121,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToPacket(final PacketBuffer buffer) {
+    public void writeToPacket(final FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
@@ -158,7 +158,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public ItemStack createItemStack() {
+    public net.minecraft.world.item.ItemStack createItemStack() {
         return ItemHandlerHelper.copyStackWithSize(this.getDefinition(),
                 (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
     }
@@ -205,7 +205,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     public boolean equals(final Object ia) {
         if (ia instanceof AEItemStack) {
             return this.isSameType((AEItemStack) ia);
-        } else if (ia instanceof ItemStack) {
+        } else if (ia instanceof net.minecraft.world.item.ItemStack) {
             // this actually breaks the equals contract (being equals to unrelated classes)
             return equals((ItemStack) ia);
         }
@@ -223,7 +223,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<ITextComponent> getToolTip() {
+    public List<net.minecraft.network.chat.Component> getToolTip() {
         if (this.tooltip == null) {
             this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
         }
@@ -231,7 +231,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ITextComponent getDisplayName() {
+    public net.minecraft.network.chat.Component getDisplayName() {
         if (this.displayName == null) {
             this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
         }

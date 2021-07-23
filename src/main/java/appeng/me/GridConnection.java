@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
@@ -44,7 +44,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     private Object visitorIterationNumber = null;
     private GridNode sideA;
     @Nullable
-    private Direction fromAtoB;
+    private net.minecraft.core.Direction fromAtoB;
     private GridNode sideB;
 
     private GridConnection(final GridNode aNode, final GridNode bNode, @Nullable Direction fromAtoB) {

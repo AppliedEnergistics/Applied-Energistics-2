@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -40,8 +40,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.util.item.AEItemStack;
 
-import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
-
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
 
     CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
@@ -49,8 +47,8 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, IRecipe<?> recipe,
-            IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer) {
+    protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, Recipe<?> recipe,
+                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients
         // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
@@ -61,16 +59,16 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         // the grid.
         Map<IAEItemStack, Integer> reservedGridAmounts = new HashMap<>();
 
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
+        for (Map.Entry<Integer, ? extends IGuiIngredient<net.minecraft.world.item.ItemStack>> entry : recipeLayout.getItemStacks()
                 .getGuiIngredients().entrySet()) {
-            IGuiIngredient<ItemStack> ingredient = entry.getValue();
-            List<ItemStack> ingredients = ingredient.getAllIngredients();
+            IGuiIngredient<net.minecraft.world.item.ItemStack> ingredient = entry.getValue();
+            List<net.minecraft.world.item.ItemStack> ingredients = ingredient.getAllIngredients();
             if (!ingredient.isInput() || ingredients.isEmpty()) {
                 continue;
             }
             boolean found = false;
             // Player inventory is cheaper to check
-            for (ItemStack itemStack : ingredients) {
+            for (net.minecraft.world.item.ItemStack itemStack : ingredients) {
                 if (itemStack != null && player.inventory.findSlotMatchingItem(itemStack) != -1) {
                     found = true;
                     break;
@@ -98,7 +96,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         }
 
         if (!missingSlots.isEmpty()) {
-            ITextComponent message = new TranslationTextComponent("jei.appliedenergistics2.missing_items");
+            net.minecraft.network.chat.Component message = new TranslatableComponent("jei.appliedenergistics2.missing_items");
             return new TransferWarning(helper.createUserErrorForSlots(message, missingSlots));
         }
 
@@ -124,8 +122,8 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         }
 
         @Override
-        public void showError(MatrixStack matrixStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
-                int recipeY) {
+        public void showError(PoseStack matrixStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
+                              int recipeY) {
             this.parent.showError(matrixStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
         }
 

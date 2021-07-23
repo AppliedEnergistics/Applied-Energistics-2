@@ -28,21 +28,23 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component.Serializer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
@@ -105,21 +107,21 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     // Bounding boxes of key areas in the UI texture.
     // The upper part of the UI, anything above the scrollable area (incl. its top border)
-    private static final Rectangle2d HEADER_BBOX = new Rectangle2d(0, 0, GUI_WIDTH, GUI_HEADER_HEIGHT);
+    private static final Rect2i HEADER_BBOX = new Rect2i(0, 0, GUI_WIDTH, GUI_HEADER_HEIGHT);
     // Background for a text row in the scroll-box.
     // Spans across the whole texture including the right and left borders including the scrollbar.
     // Covers separate textures for the top, middle and bottoms rows for more customization.
-    private static final Rectangle2d ROW_TEXT_TOP_BBOX = new Rectangle2d(0, 17, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rectangle2d ROW_TEXT_MIDDLE_BBOX = new Rectangle2d(0, 53, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rectangle2d ROW_TEXT_BOTTOM_BBOX = new Rectangle2d(0, 89, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_TEXT_TOP_BBOX = new Rect2i(0, 17, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_TEXT_MIDDLE_BBOX = new Rect2i(0, 53, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_TEXT_BOTTOM_BBOX = new Rect2i(0, 89, GUI_WIDTH, ROW_HEIGHT);
     // Background for a inventory row in the scroll-box.
     // Spans across the whole texture including the right and left borders including the scrollbar.
     // Covers separate textures for the top, middle and bottoms rows for more customization.
-    private static final Rectangle2d ROW_INVENTORY_TOP_BBOX = new Rectangle2d(0, 35, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rectangle2d ROW_INVENTORY_MIDDLE_BBOX = new Rectangle2d(0, 71, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rectangle2d ROW_INVENTORY_BOTTOM_BBOX = new Rectangle2d(0, 107, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_INVENTORY_TOP_BBOX = new Rect2i(0, 35, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_INVENTORY_MIDDLE_BBOX = new Rect2i(0, 71, GUI_WIDTH, ROW_HEIGHT);
+    private static final Rect2i ROW_INVENTORY_BOTTOM_BBOX = new Rect2i(0, 107, GUI_WIDTH, ROW_HEIGHT);
     // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
-    private static final Rectangle2d FOOTER_BBOX = new Rectangle2d(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
+    private static final Rect2i FOOTER_BBOX = new Rect2i(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
 
     private final HashMap<Long, InterfaceRecord> byId = new HashMap<>();
     // Used to show multiple interfaces with the same name under a single header
@@ -134,8 +136,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private AETextField searchField;
     private int numLines = 0;
 
-    public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public InterfaceTerminalScreen(InterfaceTerminalContainer container, Inventory playerInventory,
+                                   net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;
@@ -152,7 +154,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
         int maxLines = terminalStyle == TerminalStyle.SMALL ? DEFAULT_ROW_COUNT : Integer.MAX_VALUE;
         this.numLines = (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT) / ROW_HEIGHT;
-        this.numLines = MathHelper.clamp(this.numLines, MIN_ROW_COUNT, maxLines);
+        this.numLines = Mth.clamp(this.numLines, MIN_ROW_COUNT, maxLines);
         // Render inventory in correct place.
         this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
 
@@ -172,8 +174,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
 
@@ -260,8 +262,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
 
         // Draw the top of the dialog
@@ -289,7 +291,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 isInvLine = lineObj instanceof InterfaceRecord;
             }
 
-            Rectangle2d bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
+            Rect2i bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
             blit(matrixStack, offsetX, currentY, bbox);
 
             currentY += ROW_HEIGHT;
@@ -301,7 +303,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         }
     }
 
-    private Rectangle2d selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
+    private Rect2i selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
         if (isInvLine) {
             if (firstLine) {
                 return ROW_INVENTORY_TOP_BBOX;
@@ -330,7 +332,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+        Key input = InputConstants.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
@@ -356,7 +358,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(boolean fullUpdate, final CompoundNBT in) {
+    public void postUpdate(boolean fullUpdate, final CompoundTag in) {
         if (fullUpdate) {
             this.byId.clear();
             this.refreshList = true;
@@ -366,14 +368,14 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final CompoundNBT invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
+                    final CompoundTag invData = in.getCompound(key);
+                    net.minecraft.network.chat.Component un = Serializer.fromJson(invData.getString("un"));
                     final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.of(invData.getCompound(which)));
+                            current.getInventory().setStackInSlot(x, net.minecraft.world.item.ItemStack.of(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -413,7 +415,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             // Search if the current inventory holds a pattern containing the search term.
             if (!found) {
-                for (final ItemStack itemStack : entry.getInventory()) {
+                for (final net.minecraft.world.item.ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
                     if (found) {
                         break;
@@ -465,7 +467,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             return false;
         }
 
-        final CompoundNBT encodedValue = itemStack.getTag();
+        final CompoundTag encodedValue = itemStack.getTag();
 
         if (encodedValue == null) {
             return false;
@@ -473,11 +475,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         // Potential later use to filter by input
         // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListNBT outTag = encodedValue.getList("out", 10);
+        final ListTag outTag = encodedValue.getList("out", 10);
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
+            final net.minecraft.world.item.ItemStack parsedItemStack = net.minecraft.world.item.ItemStack.of(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()
@@ -535,7 +537,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return this.names.size() + this.byId.size();
     }
 
-    private InterfaceRecord getById(final long id, final long sortBy, final ITextComponent name) {
+    private InterfaceRecord getById(final long id, final long sortBy, final net.minecraft.network.chat.Component name) {
         InterfaceRecord o = this.byId.get(id);
 
         if (o == null) {
@@ -549,9 +551,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     /**
      * A version of blit that lets us pass a source rectangle
      *
-     * @see AbstractGui#blit(MatrixStack, int, int, int, int, int, int)
+     * @see GuiComponent#blit(PoseStack, int, int, int, int, int, int)
      */
-    private void blit(MatrixStack matrixStack, int offsetX, int offsetY, Rectangle2d srcRect) {
+    private void blit(PoseStack matrixStack, int offsetX, int offsetY, Rect2i srcRect) {
         blit(matrixStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
     }
 

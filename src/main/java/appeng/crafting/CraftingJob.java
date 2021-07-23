@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -49,7 +49,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s, %s]";
 
     private final MECraftingInventory original;
-    private final World world;
+    private final Level world;
     private final IItemList<IAEItemStack> crafting = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
     private final IItemList<IAEItemStack> missing = Api.instance().storage()
@@ -69,12 +69,12 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    private World wrapWorld(final World w) {
+    private Level wrapWorld(final Level w) {
         return w;
     }
 
-    public CraftingJob(final World w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
-            final ICraftingCallback callback) {
+    public CraftingJob(final Level w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
+                       final ICraftingCallback callback) {
         this.world = this.wrapWorld(w);
         this.output = what.copy();
         this.actionSrc = actionSrc;
@@ -102,7 +102,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         return this.availableCheck.extractItems(available, Actionable.MODULATE, this.actionSrc);
     }
 
-    public void writeToNBT(final CompoundNBT out) {
+    public void writeToNBT(final CompoundTag out) {
 
     }
 
@@ -259,7 +259,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         return this.done;
     }
 
-    World getWorld() {
+    Level getWorld() {
         return this.world;
     }
 
@@ -317,7 +317,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
             final String actionSource;
 
             if (this.actionSrc.player().isPresent()) {
-                final PlayerEntity player = this.actionSrc.player().get();
+                final Player player = this.actionSrc.player().get();
 
                 actionSource = player.toString();
             } else if (this.actionSrc.machine().isPresent()) {

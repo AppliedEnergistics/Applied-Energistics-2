@@ -18,23 +18,23 @@
 
 package appeng.client.render.cablebus;
 
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
 @OnlyIn(Dist.CLIENT)
-public class CableBusBreakingParticle extends SpriteTexturedParticle {
+public class CableBusBreakingParticle extends TextureSheetParticle {
 
     private final float uCoord;
     private final float vCoord;
 
-    public CableBusBreakingParticle(ClientWorld world, double x, double y, double z, double speedX, double speedY,
-            double speedZ, TextureAtlasSprite sprite) {
+    public CableBusBreakingParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY,
+                                    double speedZ, TextureAtlasSprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.gravity = 1.0F;
@@ -43,13 +43,13 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
         this.vCoord = this.random.nextFloat() * 3.0F;
     }
 
-    public CableBusBreakingParticle(ClientWorld world, double x, double y, double z, TextureAtlasSprite sprite) {
+    public CableBusBreakingParticle(ClientLevel world, double x, double y, double z, TextureAtlasSprite sprite) {
         this(world, x, y, z, 0, 0, 0, sprite);
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.TERRAIN_SHEET;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.TERRAIN_SHEET;
     }
 
     @Override

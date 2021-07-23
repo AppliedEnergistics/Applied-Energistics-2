@@ -27,14 +27,14 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
@@ -61,14 +61,14 @@ public class CraftingTileEntity extends AENetworkTileEntity
         implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
-    private CompoundNBT previousState = null;
+    private CompoundTag previousState = null;
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CraftingTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
+                .setExposedOnSides(EnumSet.noneOf(net.minecraft.core.Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
@@ -110,13 +110,13 @@ public class CraftingTileEntity extends AENetworkTileEntity
     public void onReady() {
         super.onReady();
         this.getMainNode().setVisualRepresentation(this.getItemFromTile());
-        if (level instanceof ServerWorld serverWorld) {
+        if (level instanceof ServerLevel serverWorld) {
             this.calc.calculateMultiblock(serverWorld, worldPosition);
         }
     }
 
-    public void updateMultiBlock(BlockPos changedPos) {
-        if (level instanceof ServerWorld serverWorld) {
+    public void updateMultiBlock(net.minecraft.core.BlockPos changedPos) {
+        if (level instanceof ServerLevel serverWorld) {
             this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, worldPosition, changedPos);
         }
     }
@@ -146,7 +146,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
         // The tile might try to update while being destroyed
         if (current.getBlock() instanceof AbstractCraftingUnitBlock) {
-            final BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
+            final net.minecraft.world.level.block.state.BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
                     .setValue(AbstractCraftingUnitBlock.FORMED, formed);
 
             if (current != newState) {
@@ -159,7 +159,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
         if (updateFormed) {
             if (formed) {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
+                this.getMainNode().setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
             } else {
                 this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
             }
@@ -174,7 +174,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
@@ -184,7 +184,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
@@ -251,8 +251,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
                 if (h == this) {
                     places.add(worldPosition);
                 } else {
-                    for (Direction d : Direction.values()) {
-                        BlockPos p = h.worldPosition.relative(d);
+                    for (Direction d : net.minecraft.core.Direction.values()) {
+                        net.minecraft.core.BlockPos p = h.worldPosition.relative(d);
                         if (this.level.isEmptyBlock(p)) {
                             places.add(p);
                         }
@@ -313,11 +313,11 @@ public class CraftingTileEntity extends AENetworkTileEntity
         this.isCoreBlock = isCoreBlock;
     }
 
-    public CompoundNBT getPreviousState() {
+    public CompoundTag getPreviousState() {
         return this.previousState;
     }
 
-    public void setPreviousState(final CompoundNBT previousState) {
+    public void setPreviousState(final CompoundTag previousState) {
         this.previousState = previousState;
     }
 
@@ -332,7 +332,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
             return EnumSet.noneOf(Direction.class);
         }
 
-        EnumSet<Direction> connections = EnumSet.noneOf(Direction.class);
+        EnumSet<net.minecraft.core.Direction> connections = EnumSet.noneOf(net.minecraft.core.Direction.class);
 
         for (Direction facing : Direction.values()) {
             if (this.isConnected(level, worldPosition, facing)) {
@@ -343,8 +343,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
         return connections;
     }
 
-    private boolean isConnected(IBlockReader world, BlockPos pos, Direction side) {
-        BlockPos adjacentPos = pos.relative(side);
+    private boolean isConnected(BlockGetter world, BlockPos pos, net.minecraft.core.Direction side) {
+        net.minecraft.core.BlockPos adjacentPos = pos.relative(side);
         return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }
 

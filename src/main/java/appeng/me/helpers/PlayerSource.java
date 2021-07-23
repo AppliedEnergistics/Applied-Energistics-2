@@ -22,24 +22,24 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 
 public class PlayerSource implements IActionSource {
 
-    private final PlayerEntity player;
+    private final Player player;
     private final IActionHost via;
 
-    public PlayerSource(final PlayerEntity p, final IActionHost v) {
+    public PlayerSource(final Player p, final IActionHost v) {
         Preconditions.checkNotNull(p);
         this.player = p;
         this.via = v;
     }
 
     @Override
-    public Optional<PlayerEntity> player() {
+    public Optional<Player> player() {
         return Optional.of(this.player);
     }
 

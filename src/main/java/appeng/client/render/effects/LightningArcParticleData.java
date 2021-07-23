@@ -23,25 +23,25 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.phys.Vec3;
 
-import net.minecraft.particles.IParticleData.IDeserializer;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
 /**
  * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
  */
-public class LightningArcParticleData implements IParticleData {
+public class LightningArcParticleData implements net.minecraft.core.particles.ParticleOptions {
 
-    public final Vector3d target;
+    public final Vec3 target;
 
-    public LightningArcParticleData(Vector3d target) {
+    public LightningArcParticleData(Vec3 target) {
         this.target = target;
     }
 
-    public static final IDeserializer<LightningArcParticleData> DESERIALIZER = new IDeserializer<LightningArcParticleData>() {
+    public static final Deserializer<LightningArcParticleData> DESERIALIZER = new Deserializer<LightningArcParticleData>() {
         @Override
         public LightningArcParticleData fromCommand(ParticleType<LightningArcParticleData> particleTypeIn,
                 StringReader reader) throws CommandSyntaxException {
@@ -51,16 +51,16 @@ public class LightningArcParticleData implements IParticleData {
             float y = reader.readFloat();
             reader.expect(' ');
             float z = reader.readFloat();
-            return new LightningArcParticleData(new Vector3d(x, y, z));
+            return new LightningArcParticleData(new Vec3(x, y, z));
         }
 
         @Override
-        public LightningArcParticleData fromNetwork(ParticleType<LightningArcParticleData> particleTypeIn,
-                PacketBuffer buffer) {
+        public LightningArcParticleData fromNetwork(net.minecraft.core.particles.ParticleType<LightningArcParticleData> particleTypeIn,
+                                                    FriendlyByteBuf buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();
-            return new LightningArcParticleData(new Vector3d(x, y, z));
+            return new LightningArcParticleData(new Vec3(x, y, z));
         }
     };
 
@@ -70,7 +70,7 @@ public class LightningArcParticleData implements IParticleData {
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         buffer.writeFloat((float) target.x);
         buffer.writeFloat((float) target.y);
         buffer.writeFloat((float) target.z);

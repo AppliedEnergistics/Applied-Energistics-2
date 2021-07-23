@@ -22,13 +22,13 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -62,7 +62,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
-    public FluidInterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public FluidInterfaceTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -82,19 +82,19 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this;
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.duality.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void load(BlockState state, final CompoundNBT data) {
+    public void load(BlockState state, final CompoundTag data) {
         super.load(state, data);
         this.duality.readFromNBT(data);
     }
@@ -154,7 +154,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
     }
 }

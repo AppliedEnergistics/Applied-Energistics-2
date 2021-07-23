@@ -18,8 +18,8 @@
 
 package appeng.worldgen.meteorite;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 /**
  * IMPORTANT: DO NOT CHANGE THE ORDER. Only append. No removals.
@@ -39,35 +39,35 @@ public enum CraterType {
     /**
      * A crater lake filled with lava.
      */
-    LAVA(Blocks.LAVA),
+    LAVA(net.minecraft.world.level.block.Blocks.LAVA),
 
     /**
      * A lava crater lake cooled down to obsidian.
      */
-    OBSIDIAN(Blocks.OBSIDIAN),
+    OBSIDIAN(net.minecraft.world.level.block.Blocks.OBSIDIAN),
 
     /**
      * A crater filled with water by rain
      */
-    WATER(Blocks.WATER),
+    WATER(net.minecraft.world.level.block.Blocks.WATER),
 
     /**
      * A crater filled with snow by snowing.
      */
-    SNOW(Blocks.SNOW_BLOCK),
+    SNOW(net.minecraft.world.level.block.Blocks.SNOW_BLOCK),
 
     /**
      * A frozen water filled crater.
      */
-    ICE(Blocks.ICE);
+    ICE(net.minecraft.world.level.block.Blocks.ICE);
 
     private final Block filler;
 
-    CraterType(Block filler) {
+    CraterType(net.minecraft.world.level.block.Block filler) {
         this.filler = filler;
     }
 
-    public Block getFiller() {
+    public net.minecraft.world.level.block.Block getFiller() {
         return filler;
     }
 

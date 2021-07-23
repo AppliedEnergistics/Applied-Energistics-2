@@ -20,9 +20,9 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -41,7 +41,7 @@ public class PatternSlotPacket extends BasePacket {
 
     public final boolean shift;
 
-    public PatternSlotPacket(final PacketBuffer stream) {
+    public PatternSlotPacket(final FriendlyByteBuf stream) {
 
         this.shift = stream.readBoolean();
 
@@ -52,7 +52,7 @@ public class PatternSlotPacket extends BasePacket {
         }
     }
 
-    private IAEItemStack readItem(final PacketBuffer stream) {
+    private IAEItemStack readItem(final FriendlyByteBuf stream) {
         final boolean hasItem = stream.readBoolean();
 
         if (hasItem) {
@@ -68,7 +68,7 @@ public class PatternSlotPacket extends BasePacket {
         this.slotItem = slotItem;
         this.shift = shift;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
@@ -84,7 +84,7 @@ public class PatternSlotPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    private void writeItem(final IAEItemStack slotItem, final PacketBuffer data) {
+    private void writeItem(final IAEItemStack slotItem, final FriendlyByteBuf data) {
         if (slotItem == null) {
             data.writeBoolean(false);
         } else {
@@ -94,8 +94,8 @@ public class PatternSlotPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final ServerPlayerEntity sender = (ServerPlayerEntity) player;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final ServerPlayer sender = (ServerPlayer) player;
         if (sender.containerMenu instanceof PatternTermContainer) {
             final PatternTermContainer patternTerminal = (PatternTermContainer) sender.containerMenu;
             patternTerminal.craftOrGetItem(this);

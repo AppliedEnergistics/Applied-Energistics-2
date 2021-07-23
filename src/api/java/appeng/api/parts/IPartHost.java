@@ -25,12 +25,12 @@ package appeng.api.parts;
 
 import java.util.Set;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -69,7 +69,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
      *         {@link AEPartLocation}.UNKNOWN )
      */
-    AEPartLocation addPart(ItemStack is, AEPartLocation side, PlayerEntity owner, Hand hand);
+    AEPartLocation addPart(ItemStack is, AEPartLocation side, Player owner, InteractionHand hand);
 
     /**
      * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )
@@ -113,7 +113,7 @@ public interface IPartHost extends ICustomCableConnection {
     /**
      * @return the tile entity for the host, this can either be an FMP tile, or a AE tile
      */
-    TileEntity getTile();
+    BlockEntity getTile();
 
     /**
      * @return the color of the host type ( this is determined by the middle cable. ) if no cable is present, it returns
@@ -140,7 +140,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return a new SelectedPart, this is never null.
      */
-    SelectedPart selectPart(Vector3d pos);
+    SelectedPart selectPart(Vec3 pos);
 
     /**
      * can be used by parts to trigger the tile or part to save.

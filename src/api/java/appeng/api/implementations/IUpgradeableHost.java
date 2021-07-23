@@ -27,7 +27,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -46,7 +46,7 @@ public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInvento
      *
      * @return tile entity
      */
-    TileEntity getTile();
+    BlockEntity getTile();
 
     /**
      * @return The inventory used to store the upgrade cards.

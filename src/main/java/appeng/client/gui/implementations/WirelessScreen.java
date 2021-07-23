@@ -18,9 +18,9 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -31,8 +31,8 @@ import appeng.util.Platform;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
-    public WirelessScreen(WirelessContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public WirelessScreen(WirelessContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                          ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
@@ -41,8 +41,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        ITextComponent rangeText = StringTextComponent.EMPTY;
-        ITextComponent energyUseText = StringTextComponent.EMPTY;
+        net.minecraft.network.chat.Component rangeText = TextComponent.EMPTY;
+        net.minecraft.network.chat.Component energyUseText = TextComponent.EMPTY;
         if (menu.getRange() > 0) {
             double rangeBlocks = menu.getRange() / 10.0;
             rangeText = GuiText.WirelessRange.text(rangeBlocks);

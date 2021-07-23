@@ -20,9 +20,9 @@ package appeng.client.gui.me.common;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot. Used to prevent
  * the default item count from rendering.
  */
-class Size1Slot extends Slot {
+class Size1Slot extends net.minecraft.world.inventory.Slot {
 
     private final Slot delegate;
 
@@ -41,15 +41,15 @@ class Size1Slot extends Slot {
 
     @Override
     @Nonnull
-    public ItemStack getItem() {
-        ItemStack orgStack = this.delegate.getItem();
+    public net.minecraft.world.item.ItemStack getItem() {
+        net.minecraft.world.item.ItemStack orgStack = this.delegate.getItem();
         if (!orgStack.isEmpty()) {
-            ItemStack modifiedStack = orgStack.copy();
+            net.minecraft.world.item.ItemStack modifiedStack = orgStack.copy();
             modifiedStack.setCount(1);
             return modifiedStack;
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
@@ -68,7 +68,7 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public boolean mayPickup(PlayerEntity playerIn) {
+    public boolean mayPickup(Player playerIn) {
         return this.delegate.mayPickup(playerIn);
     }
 
@@ -84,7 +84,7 @@ class Size1Slot extends Slot {
     }
 
     @Override
-    public boolean isSameInventory(Slot other) {
+    public boolean isSameInventory(net.minecraft.world.inventory.Slot other) {
         return this.delegate.isSameInventory(other);
     }
 }

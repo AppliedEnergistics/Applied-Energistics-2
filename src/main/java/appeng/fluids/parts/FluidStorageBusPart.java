@@ -24,15 +24,15 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -91,17 +91,17 @@ import appeng.util.prioritylist.PrecisePriorityList;
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
         implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory {
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
 
     private final IActionSource source;
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
@@ -119,8 +119,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         this.source = new MachineSource(this);
     }
 
-    private IMEInventory<IAEFluidStack> getInventoryWrapper(TileEntity target) {
-        Direction targetSide = this.getSide().getDirection().getOpposite();
+    private IMEInventory<IAEFluidStack> getInventoryWrapper(BlockEntity target) {
+        net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
         // Prioritize a handler to directly link to another ME network
         IStorageMonitorableAccessor accessor = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
@@ -214,7 +214,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FluidStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
@@ -229,13 +229,13 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.config.writeToNBT(data, "config");
     }
@@ -264,8 +264,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -335,7 +335,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final TileEntity target, final AEPartLocation side) {
+    private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IInterfaceHost achievement = null;
 
         if (target instanceof IInterfaceHost) {
@@ -370,12 +370,12 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         return super.getCellArray(channel);
     }
 
-    private int createHandlerHash(TileEntity target) {
+    private int createHandlerHash(BlockEntity target) {
         if (target == null) {
             return 0;
         }
 
-        final Direction targetSide = this.getSide().getDirection().getOpposite();
+        final net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
 
         LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
@@ -439,7 +439,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return FluidStorageBusContainer.TYPE;
     }
 }

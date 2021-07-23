@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -37,7 +37,7 @@ import appeng.tile.AEBaseTileEntity;
 class ServerTileRepo {
 
     // Mapping is world -> encoded chunk pos -> tile entities waiting to be initialized
-    private final Map<IWorld, Long2ObjectMap<List<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
+    private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
@@ -50,7 +50,7 @@ class ServerTileRepo {
      * Add a new tile to be initializes in a later tick.
      */
     synchronized void addTile(AEBaseTileEntity tile) {
-        final IWorld world = tile.getLevel();
+        final LevelAccessor world = tile.getLevel();
         final int x = tile.getBlockPos().getX() >> 4;
         final int z = tile.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
@@ -63,14 +63,14 @@ class ServerTileRepo {
     /**
      * Sets up the necessary defaults when a new world is loaded
      */
-    synchronized void addWorld(IWorld world) {
+    synchronized void addWorld(LevelAccessor world) {
         this.tiles.computeIfAbsent(world, key -> new Long2ObjectOpenHashMap<>());
     }
 
     /**
      * Tears down data related to a now unloaded world
      */
-    synchronized void removeWorld(IWorld world) {
+    synchronized void removeWorld(LevelAccessor world) {
         this.tiles.remove(world);
     }
 
@@ -80,7 +80,7 @@ class ServerTileRepo {
      * There is no related addWorldChunk. The necessary queue will be created once the first tile is added to a chunk to
      * save memory.
      */
-    synchronized void removeWorldChunk(IWorld world, long chunkPos) {
+    synchronized void removeWorldChunk(LevelAccessor world, long chunkPos) {
         Map<Long, List<AEBaseTileEntity>> queue = this.tiles.get(world);
         if (queue != null) {
             queue.remove(chunkPos);
@@ -88,9 +88,9 @@ class ServerTileRepo {
     }
 
     /**
-     * Get the tiles needing to be initialized in this specific {@link IWorld}.
+     * Get the tiles needing to be initialized in this specific {@link LevelAccessor}.
      */
-    public Long2ObjectMap<List<AEBaseTileEntity>> getTiles(IWorld world) {
+    public Long2ObjectMap<List<AEBaseTileEntity>> getTiles(LevelAccessor world) {
         return tiles.get(world);
     }
 

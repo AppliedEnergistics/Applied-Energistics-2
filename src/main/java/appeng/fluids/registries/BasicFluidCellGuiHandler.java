@@ -18,9 +18,7 @@
 
 package appeng.fluids.registries;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
@@ -33,6 +31,8 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.Api;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
@@ -42,9 +42,9 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
     }
 
     @Override
-    public void openChestGui(final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler,
-            final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
+    public void openChestGui(final Player player, final IChestOrDrive chest, final ICellHandler cellHandler,
+                             final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
         ContainerOpener.openContainer(FluidTerminalContainer.TYPE, player,
-                ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
+                ContainerLocator.forTileEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

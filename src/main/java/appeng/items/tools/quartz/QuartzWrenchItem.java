@@ -18,14 +18,11 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalBlockPos;
@@ -33,17 +30,21 @@ import appeng.block.AEBaseBlock;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
-    public QuartzWrenchItem(Item.Properties props) {
+    public QuartzWrenchItem(net.minecraft.world.item.Item.Properties props) {
         super(props);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        PlayerEntity p = context.getPlayer();
-        World w = context.getLevel();
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player p = context.getPlayer();
+        Level w = context.getLevel();
         BlockPos pos = context.getClickedPos();
 
         if (!InteractionUtil.isInAlternateUseMode(p) && Platform
@@ -54,21 +55,21 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
                 if (w.isClientSide()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !w.isClientSide() ? ActionResultType.sidedSuccess(w.isClientSide()) : ActionResultType.PASS;
+                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide()) : InteractionResult.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
                 if (aeBlock.rotateAroundFaceAxis(w, pos, context.getClickedFace())) {
                     p.swing(context.getHand());
-                    return !w.isClientSide() ? ActionResultType.sidedSuccess(w.isClientSide()) : ActionResultType.FAIL;
+                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide()) : InteractionResult.FAIL;
                 }
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public boolean canWrench(final ItemStack wrench, final PlayerEntity player, final BlockPos pos) {
+    public boolean canWrench(final net.minecraft.world.item.ItemStack wrench, final Player player, final BlockPos pos) {
         return true;
     }
 }

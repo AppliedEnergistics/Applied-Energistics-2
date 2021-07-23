@@ -18,23 +18,24 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
 
 import appeng.util.Platform;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
 
 public class QuartzSwordItem extends SwordItem {
     private final QuartzToolType type;
 
-    public QuartzSwordItem(Item.Properties props, QuartzToolType type) {
-        super(ItemTier.IRON, 3, -2.4F, props);
+    public QuartzSwordItem(net.minecraft.world.item.Item.Properties props, QuartzToolType type) {
+        super(Tiers.IRON, 3, -2.4F, props);
         this.type = type;
     }
 
     @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final net.minecraft.world.item.ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 }

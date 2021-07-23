@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.config.Actionable;
@@ -48,7 +48,7 @@ public class CraftingTreeProcess {
     private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
     private final int depth;
     boolean possible = true;
-    private World world;
+    private Level world;
     private long crafts = 0;
     private boolean containerItems;
     private boolean limitQty;
@@ -61,29 +61,29 @@ public class CraftingTreeProcess {
         this.details = details;
         this.job = job;
         this.depth = depth;
-        final World world = job.getWorld();
+        final Level world = job.getWorld();
 
         if (details.isCraftable()) {
             final IAEItemStack[] list = details.getSparseInputs();
 
-            final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
             final IAEItemStack[] is = details.getSparseInputs();
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) world),
+            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) world),
                     details.getOutput(ic, world), ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
-                final ItemStack g = ic.getItem(x);
+                final net.minecraft.world.item.ItemStack g = ic.getItem(x);
                 if (!g.isEmpty() && g.getCount() > 1) {
                     this.fullSimulation = true;
                 }
             }
 
             for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
+                final net.minecraft.world.item.ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
                 for (final IAEItemStack a : details.getOutputs()) {
@@ -128,7 +128,7 @@ public class CraftingTreeProcess {
             }
         } else {
             for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
+                final net.minecraft.world.item.ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
                 for (final IAEItemStack a : details.getOutputs()) {
@@ -164,7 +164,7 @@ public class CraftingTreeProcess {
         this.job.handlePausing();
 
         if (this.fullSimulation) {
-            final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
 
             for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
                 final IAEItemStack item = entry.getKey().getStack(entry.getValue());
@@ -173,11 +173,11 @@ public class CraftingTreeProcess {
                 ic.setItem(entry.getKey().getSlot(), stack.createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.world),
+            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) this.world),
                     this.details.getOutput(ic, this.world), ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
-                ItemStack is = ic.getItem(x);
+                net.minecraft.world.item.ItemStack is = ic.getItem(x);
                 is = Platform.getContainerItem(is);
 
                 final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -194,7 +194,7 @@ public class CraftingTreeProcess {
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * i, src);
 
                 if (this.containerItems) {
-                    final ItemStack is = Platform.getContainerItem(stack.createItemStack());
+                    final net.minecraft.world.item.ItemStack is = Platform.getContainerItem(stack.createItemStack());
                     final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(is);
                     if (o != null) {

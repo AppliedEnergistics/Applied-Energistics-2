@@ -22,38 +22,37 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.style.Blitter;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
-public class ProgressBar extends Widget implements ITooltip {
+public class ProgressBar extends AbstractWidget implements ITooltip {
 
     private final IProgressProvider source;
     private final Blitter blitter;
     private final Direction layout;
-    private final Rectangle2d sourceRect;
-    private final ITextComponent titleName;
-    private ITextComponent fullMsg;
+    private final Rect2i sourceRect;
+    private final net.minecraft.network.chat.Component titleName;
+    private net.minecraft.network.chat.Component fullMsg;
 
     public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
         this(source, blitter, dir, null);
     }
 
     public ProgressBar(final IProgressProvider source, Blitter blitter,
-            final Direction dir, final ITextComponent title) {
-        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), StringTextComponent.EMPTY);
+            final Direction dir, final net.minecraft.network.chat.Component title) {
+        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), TextComponent.EMPTY);
         this.source = source;
         this.blitter = blitter.copy();
         this.layout = dir;
         this.titleName = title;
-        this.sourceRect = new Rectangle2d(
+        this.sourceRect = new Rect2i(
                 blitter.getSrcX(),
                 blitter.getSrcY(),
                 blitter.getSrcWidth(),
@@ -61,7 +60,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();
@@ -88,20 +87,20 @@ public class ProgressBar extends Widget implements ITooltip {
         }
     }
 
-    public void setFullMsg(final ITextComponent msg) {
+    public void setFullMsg(final net.minecraft.network.chat.Component msg) {
         this.fullMsg = msg;
     }
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
         if (this.fullMsg != null) {
             return Collections.singletonList(this.fullMsg);
         }
 
-        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
+        net.minecraft.network.chat.Component result = this.titleName != null ? this.titleName : TextComponent.EMPTY;
         return Arrays.asList(
                 result,
-                new StringTextComponent(this.source.getCurrentProgress() + " ")
+                new TextComponent(this.source.getCurrentProgress() + " ")
                         .append(GuiText.Of.text().copy().append(" " + this.source.getMaxProgress())));
     }
 

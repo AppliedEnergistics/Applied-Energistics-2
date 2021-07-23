@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A container to store a collection of {@link ResourceLocation} as models for a part as well as other properties.
@@ -53,7 +53,7 @@ public interface IPartModel {
      * @return a collection of models, never null.
      */
     @Nonnull
-    default List<ResourceLocation> getModels() {
+    default List<net.minecraft.resources.ResourceLocation> getModels() {
         return Collections.emptyList();
     }
 

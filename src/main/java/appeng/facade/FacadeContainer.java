@@ -20,9 +20,9 @@ package appeng.facade;
 
 import java.io.IOException;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -89,10 +89,10 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT c) {
+    public void writeToNBT(final CompoundTag c) {
         for (int x = 0; x < this.facades; x++) {
             if (this.storage.getFacade(x) != null) {
-                final CompoundNBT data = new CompoundNBT();
+                final CompoundTag data = new CompoundTag();
                 this.storage.getFacade(x).getItemStack().save(data);
                 c.put("facade:" + x, data);
             }
@@ -100,7 +100,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer out) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf out) throws IOException {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -127,15 +127,15 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT c) {
+    public void readFromNBT(final CompoundTag c) {
         for (int x = 0; x < this.facades; x++) {
             this.storage.setFacade(x, null);
 
-            final CompoundNBT t = c.getCompound("facade:" + x);
+            final CompoundTag t = c.getCompound("facade:" + x);
             if (t != null) {
                 final ItemStack is = ItemStack.of(t);
                 if (!is.isEmpty()) {
-                    final net.minecraft.item.Item i = is.getItem();
+                    final net.minecraft.world.item.Item i = is.getItem();
                     if (i instanceof IFacadeItem) {
                         this.storage.setFacade(x,
                                 ((IFacadeItem) i).createPartFromItemStack(is, AEPartLocation.fromOrdinal(x)));
@@ -146,7 +146,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(final PacketBuffer out) throws IOException {
+    public void writeToStream(final FriendlyByteBuf out) throws IOException {
         int facadeSides = 0;
         for (int x = 0; x < this.facades; x++) {
             if (this.getFacade(AEPartLocation.fromOrdinal(x)) != null) {
@@ -158,7 +158,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
             if (part != null) {
-                final int itemID = net.minecraft.item.Item.getId(part.getItem());
+                final int itemID = net.minecraft.world.item.Item.getId(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
             }
         }

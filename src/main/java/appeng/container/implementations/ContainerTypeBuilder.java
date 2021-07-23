@@ -24,19 +24,19 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -67,7 +67,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     private final ContainerFactory<C, I> factory;
 
-    private Function<I, ITextComponent> containerTitleStrategy = this::getDefaultContainerTitle;
+    private Function<I, net.minecraft.network.chat.Component> containerTitleStrategy = this::getDefaultContainerTitle;
 
     @Nullable
     private SecurityPermissions requiredPermission;
@@ -78,7 +78,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     @Nullable
     private InitialDataDeserializer<C, I> initialDataDeserializer;
 
-    private ContainerType<C> containerType;
+    private MenuType<C> containerType;
 
     private ContainerTypeBuilder(Class<I> hostInterface, TypedContainerFactory<C, I> typedFactory) {
         this.hostInterface = hostInterface;
@@ -112,9 +112,9 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     /**
      * Specifies a custom strategy for obtaining a custom container name.
      * <p>
-     * The stratgy should return {@link StringTextComponent#EMPTY} if there's no custom name.
+     * The stratgy should return {@link TextComponent#EMPTY} if there's no custom name.
      */
-    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, ITextComponent> containerTitleStrategy) {
+    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, net.minecraft.network.chat.Component> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
         return this;
     }
@@ -134,7 +134,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
      * Opens a container that is based around a single tile entity. The tile entity's position is encoded in the packet
      * buffer.
      */
-    private C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
+    private C fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
             C container = factory.create(windowId, inv, host);
@@ -146,8 +146,8 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         return null;
     }
 
-    private boolean open(PlayerEntity player, ContainerLocator locator) {
-        if (!(player instanceof ServerPlayerEntity)) {
+    private boolean open(Player player, ContainerLocator locator) {
+        if (!(player instanceof ServerPlayer)) {
             // Cannot open containers on the client or for non-players
             // FIXME logging?
             return false;
@@ -163,16 +163,16 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
             return false;
         }
 
-        ITextComponent title = containerTitleStrategy.apply(accessInterface);
+        net.minecraft.network.chat.Component title = containerTitleStrategy.apply(accessInterface);
 
-        INamedContainerProvider container = new SimpleNamedContainerProvider((wnd, p, pl) -> {
+        MenuProvider container = new SimpleMenuProvider((wnd, p, pl) -> {
             C c = factory.create(wnd, p, accessInterface);
             // Set the original locator on the opened server-side container for it to more
             // easily remember how to re-open after being closed.
             c.setLocator(locator);
             return c;
         }, title);
-        NetworkHooks.openGui((ServerPlayerEntity) player, container, buffer -> {
+        NetworkHooks.openGui((ServerPlayer) player, container, buffer -> {
             locator.write(buffer);
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buffer);
@@ -182,7 +182,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         return true;
     }
 
-    private I getHostFromLocator(PlayerEntity player, ContainerLocator locator) {
+    private I getHostFromLocator(Player player, ContainerLocator locator) {
         if (locator.hasItemIndex()) {
             return getHostFromPlayerInventory(player, locator);
         }
@@ -191,7 +191,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
             return null; // No block was clicked
         }
 
-        TileEntity tileEntity = player.level.getBlockEntity(locator.getBlockPos());
+        BlockEntity tileEntity = player.level.getBlockEntity(locator.getBlockPos());
 
         // The tile entity itself can host a terminal (i.e. Chest!)
         if (hostInterface.isInstance(tileEntity)) {
@@ -223,7 +223,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         }
     }
 
-    private I getHostFromPlayerInventory(PlayerEntity player, ContainerLocator locator) {
+    private I getHostFromPlayerInventory(Player player, ContainerLocator locator) {
 
         ItemStack it = player.inventory.getItem(locator.getItemIndex());
 
@@ -236,7 +236,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         if (it.getItem() instanceof IGuiItem) {
             IGuiItem guiItem = (IGuiItem) it.getItem();
             // Optionally contains the block the item was used on to open the container
-            BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
+            net.minecraft.core.BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
             IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.level, blockPos);
             if (hostInterface.isInstance(guiObject)) {
                 return hostInterface.cast(guiObject);
@@ -256,7 +256,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     /**
      * Creates a container type that uses this helper as a factory and network deserializer.
      */
-    public ContainerType<C> build(String id) {
+    public MenuType<C> build(String id) {
         Preconditions.checkState(containerType == null, "build was already called");
 
         containerType = IForgeContainerType.create(this::fromNetwork);
@@ -267,12 +267,12 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     @FunctionalInterface
     public interface ContainerFactory<C, I> {
-        C create(int windowId, PlayerInventory playerInv, I accessObj);
+        C create(int windowId, Inventory playerInv, I accessObj);
     }
 
     @FunctionalInterface
-    public interface TypedContainerFactory<C extends Container, I> {
-        C create(ContainerType<C> type, int windowId, PlayerInventory playerInv, I accessObj);
+    public interface TypedContainerFactory<C extends AbstractContainerMenu, I> {
+        C create(MenuType<C> type, int windowId, Inventory playerInv, I accessObj);
     }
 
     /**
@@ -281,7 +281,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
-        void serializeInitialData(I host, PacketBuffer buffer);
+        void serializeInitialData(I host, FriendlyByteBuf buffer);
     }
 
     /**
@@ -290,10 +290,10 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C container, PacketBuffer buffer);
+        void deserializeInitialData(I host, C container, FriendlyByteBuf buffer);
     }
 
-    private boolean checkPermission(PlayerEntity player, Object accessInterface) {
+    private boolean checkPermission(Player player, Object accessInterface) {
 
         if (requiredPermission != null) {
             return Platform.checkPermissions(player, accessInterface, requiredPermission, true);
@@ -303,7 +303,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     }
 
-    private ITextComponent getDefaultContainerTitle(I accessInterface) {
+    private net.minecraft.network.chat.Component getDefaultContainerTitle(I accessInterface) {
         if (accessInterface instanceof ICustomNameObject) {
             ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
             if (customNameObject.hasCustomInventoryName()) {
@@ -311,7 +311,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
             }
         }
 
-        return StringTextComponent.EMPTY;
+        return TextComponent.EMPTY;
     }
 
 }

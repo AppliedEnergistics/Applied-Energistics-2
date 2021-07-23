@@ -22,14 +22,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -43,7 +43,7 @@ import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
     private static final String TAG_PLOT_ID = "plot_id";
@@ -55,18 +55,18 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Properties props, final int spatialScale) {
+    public SpatialStorageCellItem(net.minecraft.world.item.Item.Properties props, final int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(GuiText.Unformatted.text().copy().withStyle(TextFormatting.ITALIC));
+            lines.add(GuiText.Unformatted.text().copy().withStyle(ChatFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
             return;
         }
@@ -76,9 +76,9 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
         lines.add(GuiText.SerialNumber.text(serialNumber));
 
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag != null && tag.contains(TAG_PLOT_SIZE, Constants.NBT.TAG_LONG)) {
-            BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
+            net.minecraft.core.BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
             lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
         }
     }
@@ -95,7 +95,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public int getAllocatedPlotId(final ItemStack is) {
-        final CompoundNBT c = is.getTag();
+        final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_PLOT_ID)) {
             try {
                 int plotId = c.getInt(TAG_PLOT_ID);
@@ -111,8 +111,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean doSpatialTransition(final ItemStack is, final ServerWorld w, final BlockPos min,
-            final BlockPos max, int playerId) {
+    public boolean doSpatialTransition(final ItemStack is, final ServerLevel w, final net.minecraft.core.BlockPos min,
+                                       final net.minecraft.core.BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;
@@ -124,7 +124,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             return false;
         }
 
-        final BlockPos targetSize = new BlockPos(targetX, targetY, targetZ);
+        final net.minecraft.core.BlockPos targetSize = new net.minecraft.core.BlockPos(targetX, targetY, targetZ);
 
         SpatialStoragePlotManager manager = SpatialStoragePlotManager.INSTANCE;
 
@@ -147,9 +147,9 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         manager.setLastTransition(plot.getId(), info);
 
         try {
-            ServerWorld cellWorld = manager.getWorld();
+            ServerLevel cellWorld = manager.getWorld();
 
-            BlockPos offset = plot.getOrigin();
+            net.minecraft.core.BlockPos offset = plot.getOrigin();
 
             this.setStoredDimension(is, plot.getId(), plot.getSize());
             SpatialStorageHelper.getInstance().swapRegions(w, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
@@ -165,8 +165,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
     }
 
-    public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
-        final CompoundNBT c = is.getOrCreateTag();
+    public void setStoredDimension(final ItemStack is, int plotId, net.minecraft.core.BlockPos size) {
+        final CompoundTag c = is.getOrCreateTag();
         c.putInt(TAG_PLOT_ID, plotId);
         c.putLong(TAG_PLOT_SIZE, size.asLong());
     }

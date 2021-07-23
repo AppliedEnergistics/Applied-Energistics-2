@@ -20,9 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.sync.BasePacket;
@@ -30,6 +29,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
+import net.minecraft.world.entity.player.Player;
 
 public class CompassRequestPacket extends BasePacket implements ICompassCallback {
 
@@ -38,9 +38,9 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     final int cz;
     final int cdy;
 
-    private PlayerEntity talkBackTo;
+    private Player talkBackTo;
 
-    public CompassRequestPacket(final PacketBuffer stream) {
+    public CompassRequestPacket(final FriendlyByteBuf stream) {
         this.attunement = stream.readLong();
         this.cx = stream.readInt();
         this.cz = stream.readInt();
@@ -50,7 +50,7 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     // api
     public CompassRequestPacket(final long attunement, final int cx, final int cz, final int cdy) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeLong(this.attunement = attunement);
@@ -65,11 +65,11 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     public void calculatedDirection(final boolean hasResult, final boolean spin, final double radians,
             final double dist) {
         NetworkHandler.instance().sendTo(new CompassResponsePacket(this, hasResult, spin, radians),
-                (ServerPlayerEntity) this.talkBackTo);
+                (ServerPlayer) this.talkBackTo);
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
         this.talkBackTo = player;
 
         final DimensionalBlockPos loc = new DimensionalBlockPos(player.level, this.cx << 4, this.cdy << 5,

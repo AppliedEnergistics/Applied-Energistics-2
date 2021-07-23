@@ -20,10 +20,10 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -46,18 +46,18 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
         return Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE);
     }
 
-    public AENetworkTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AENetworkTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.getMainNode().loadFromNBT(data);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.getMainNode().saveToNBT(data);
         return data;

@@ -18,8 +18,7 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -29,14 +28,15 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.FormationPlaneContainer;
+import net.minecraft.world.entity.player.Inventory;
 
 public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContainer> {
 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final SettingToggleButton<YesNo> placeMode;
 
-    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public FormationPlaneScreen(FormationPlaneContainer container, Inventory playerInventory,
+                                net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.placeMode = new ServerSettingToggleButton<>(Settings.PLACE_BLOCK,

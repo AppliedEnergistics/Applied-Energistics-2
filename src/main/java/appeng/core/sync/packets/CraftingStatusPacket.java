@@ -21,9 +21,9 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.container.me.crafting.CraftingStatus;
@@ -33,21 +33,21 @@ import appeng.core.sync.network.INetworkInfo;
 public class CraftingStatusPacket extends BasePacket {
     private final CraftingStatus status;
 
-    public CraftingStatusPacket(PacketBuffer buffer) {
+    public CraftingStatusPacket(FriendlyByteBuf buffer) {
         this.status = CraftingStatus.read(buffer);
     }
 
     public CraftingStatusPacket(CraftingStatus status) {
         this.status = status;
 
-        PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
         status.write(data);
         configureWrite(data);
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, PlayerEntity player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         Screen screen = Minecraft.getInstance().screen;
 
         if (screen instanceof CraftingCPUScreen) {

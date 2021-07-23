@@ -20,20 +20,20 @@ package appeng.helpers;
 
 import java.util.EnumSet;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingRequester;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IInterfaceHost extends ICraftingProvider, IUpgradeableHost, ICraftingRequester {
 
     DualityInterface getInterfaceDuality();
 
-    EnumSet<Direction> getTargets();
+    EnumSet<net.minecraft.core.Direction> getTargets();
 
-    TileEntity getTileEntity();
+    BlockEntity getTileEntity();
 
     void saveChanges();
 }

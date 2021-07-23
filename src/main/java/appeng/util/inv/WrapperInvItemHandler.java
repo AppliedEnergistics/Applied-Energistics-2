@@ -18,14 +18,14 @@
 
 package appeng.util.inv;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
-public class WrapperInvItemHandler implements IInventory {
+public class WrapperInvItemHandler implements Container {
     private final IItemHandler inv;
 
     public WrapperInvItemHandler(final IItemHandler inv) {
@@ -43,22 +43,22 @@ public class WrapperInvItemHandler implements IInventory {
     }
 
     @Override
-    public ItemStack getItem(int index) {
+    public net.minecraft.world.item.ItemStack getItem(int index) {
         return this.inv.getStackInSlot(index);
     }
 
     @Override
-    public ItemStack removeItem(int index, int count) {
+    public net.minecraft.world.item.ItemStack removeItem(int index, int count) {
         return this.inv.extractItem(index, count, false);
     }
 
     @Override
-    public ItemStack removeItemNoUpdate(int index) {
+    public net.minecraft.world.item.ItemStack removeItemNoUpdate(int index) {
         return this.inv.extractItem(index, this.inv.getSlotLimit(index), false);
     }
 
     @Override
-    public void setItem(int index, ItemStack stack) {
+    public void setItem(int index, net.minecraft.world.item.ItemStack stack) {
         ItemHandlerUtil.setStackInSlot(this.inv, index, stack);
     }
 
@@ -77,17 +77,17 @@ public class WrapperInvItemHandler implements IInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return false;
     }
 
     @Override
-    public void startOpen(PlayerEntity player) {
+    public void startOpen(Player player) {
         // NOP
     }
 
     @Override
-    public void stopOpen(PlayerEntity player) {
+    public void stopOpen(Player player) {
         // NOP
     }
 

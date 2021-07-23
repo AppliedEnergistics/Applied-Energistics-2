@@ -29,13 +29,11 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -69,10 +67,12 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
+    private static final net.minecraft.resources.ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -118,25 +118,25 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
+        net.minecraft.world.item.ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-        ItemStack condenser = AEBlocks.CONDENSER.stack();
+        net.minecraft.world.item.ItemStack condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
+        net.minecraft.world.item.ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
 
-        final ITextComponent[] message;
+        final net.minecraft.network.chat.Component[] message;
         if (AEConfig.instance().isGenerateQuartzOre()) {
             // " " Used to enforce a new paragraph
-            message = new ITextComponent[] { GuiText.ChargedQuartz.text(), new StringTextComponent(" "),
+            message = new net.minecraft.network.chat.Component[] { GuiText.ChargedQuartz.text(), new TextComponent(" "),
                     GuiText.ChargedQuartzFind.text() };
         } else {
-            message = new ITextComponent[] { GuiText.ChargedQuartz.text() };
+            message = new net.minecraft.network.chat.Component[] { GuiText.ChargedQuartz.text() };
         }
         this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
 
@@ -169,7 +169,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
-            ITextComponent... message) {
+            net.minecraft.network.chat.Component... message) {
         registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM, message);
     }
 
@@ -178,7 +178,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (AEConfig.instance().isShowFacadesInJEIEnabled()) {
             FacadeItem itemFacade = AEItems.FACADE.asItem();
-            ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
+            net.minecraft.world.item.ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
 
@@ -186,9 +186,9 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGenericGuiContainerHandler(AEBaseScreen.class, new IGuiContainerHandler<ContainerScreen<?>>() {
+        registration.addGenericGuiContainerHandler(AEBaseScreen.class, new IGuiContainerHandler<AbstractContainerScreen<?>>() {
             @Override
-            public List<Rectangle2d> getGuiExtraAreas(ContainerScreen containerScreen) {
+            public List<Rect2i> getGuiExtraAreas(AbstractContainerScreen containerScreen) {
                 if (containerScreen instanceof AEBaseScreen) {
                     return ((AEBaseScreen<?>) containerScreen).getExclusionZones();
                 } else {
@@ -198,7 +198,7 @@ public class JEIPlugin implements IModPlugin {
 
             @Nullable
             @Override
-            public Object getIngredientUnderMouse(ContainerScreen<?> containerScreen, double mouseX, double mouseY) {
+            public Object getIngredientUnderMouse(AbstractContainerScreen<?> containerScreen, double mouseX, double mouseY) {
                 // The following code allows the player to show recipes involving fluids in AE fluid terminals or AE
                 // fluid tanks shown in fluid interfaces and other UI.
                 if (containerScreen instanceof AEBaseScreen) {
@@ -210,8 +210,8 @@ public class JEIPlugin implements IModPlugin {
             }
 
             @Override
-            public Collection<IGuiClickableArea> getGuiClickableAreas(ContainerScreen<?> containerScreen, double mouseX,
-                    double mouseY) {
+            public Collection<IGuiClickableArea> getGuiClickableAreas(AbstractContainerScreen<?> containerScreen, double mouseX,
+                                                                      double mouseY) {
                 if (containerScreen instanceof GrinderScreen) {
                     return Arrays.asList(
                             IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),

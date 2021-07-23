@@ -18,9 +18,9 @@
 
 package appeng.me.storage;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
@@ -43,7 +43,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
         this.channel = cellType.getChannel();
     }
 
-    public static <T extends IAEStack<T>> ICellInventory<T> createInventory(final ItemStack o,
+    public static <T extends IAEStack<T>> ICellInventory<T> createInventory(final net.minecraft.world.item.ItemStack o,
             final ISaveProvider container) {
         try {
             if (o == null) {
@@ -225,7 +225,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
     }
 
     @Override
-    protected boolean loadCellItem(CompoundNBT compoundTag, int stackSize) {
+    protected boolean loadCellItem(CompoundTag compoundTag, int stackSize) {
         // Now load the item stack
         final T t;
         try {

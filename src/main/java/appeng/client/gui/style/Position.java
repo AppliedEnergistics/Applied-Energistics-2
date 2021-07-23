@@ -20,7 +20,7 @@ package appeng.client.gui.style;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
 
@@ -76,7 +76,7 @@ public class Position {
     /**
      * Resolves this relative position against the given bounds, and makes it absolute.
      */
-    public Point resolve(Rectangle2d bounds) {
+    public Point resolve(Rect2i bounds) {
         // Start by computing the x,y position
         int x, y;
         if (left != null) {

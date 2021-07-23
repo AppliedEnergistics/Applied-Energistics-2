@@ -20,22 +20,22 @@ package appeng.items.tools;
 
 import java.util.List;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,7 +48,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
@@ -56,30 +56,30 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, };
 
-    public MemoryCardItem(Properties properties) {
+    public MemoryCardItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
-        lines.add(new TranslationTextComponent(firstLineKey));
+        lines.add(new TranslatableComponent(firstLineKey));
 
-        final CompoundNBT data = this.getData(stack);
+        final CompoundTag data = this.getData(stack);
         if (data.contains("tooltip")) {
             String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
                     data.getString("tooltip"));
-            lines.add(new TranslationTextComponent(tooltipKey));
+            lines.add(new TranslatableComponent(tooltipKey));
         }
 
         if (data.contains("freq")) {
             final short freq = data.getShort("freq");
-            final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString(freq);
+            final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(freq);
 
-            lines.add(new TranslationTextComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
+            lines.add(new TranslatableComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
         }
     }
 
@@ -104,29 +104,29 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundNBT data) {
-        final CompoundNBT c = is.getOrCreateTag();
+    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundTag data) {
+        final CompoundTag c = is.getOrCreateTag();
         c.putString("Config", settingsName);
         c.put("Data", data);
     }
 
     @Override
     public String getSettingsName(final ItemStack is) {
-        final CompoundNBT c = is.getOrCreateTag();
+        final CompoundTag c = is.getOrCreateTag();
         final String name = c.getString("Config");
         return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
     }
 
     @Override
-    public CompoundNBT getData(final ItemStack is) {
-        final CompoundNBT c = is.getOrCreateTag();
-        CompoundNBT o = c.getCompound("Data");
+    public CompoundTag getData(final ItemStack is) {
+        final CompoundTag c = is.getOrCreateTag();
+        CompoundTag o = c.getCompound("Data");
         return o.copy();
     }
 
     @Override
     public AEColor[] getColorCode(ItemStack is) {
-        final CompoundNBT tag = this.getData(is);
+        final CompoundTag tag = this.getData(is);
 
         if (tag.contains("colorCode")) {
             final int[] frequency = tag.getIntArray("colorCode");
@@ -141,14 +141,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public void notifyUser(final PlayerEntity player, final MemoryCardMessages msg) {
+    public void notifyUser(final Player player, final MemoryCardMessages msg) {
         if (player.getCommandSenderWorld().isClientSide()) {
             return;
         }
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get(), Util.NIL_UUID);
+                player.sendMessage(PlayerMessages.SettingCleared.get(), net.minecraft.Util.NIL_UUID);
                 break;
             case INVALID_MACHINE:
                 player.sendMessage(PlayerMessages.InvalidMachine.get(), Util.NIL_UUID);
@@ -167,20 +167,20 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
-            World w = context.getLevel();
+            Level w = context.getLevel();
             if (!w.isClientSide()) {
                 this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         } else {
             return super.useOn(context);
         }
     }
 
     @Override
-    public ActionResult<ItemStack> use(World w, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level w, Player player, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(player) && !w.isClientSide) {
             this.clearCard(player, w, hand);
         }
@@ -189,11 +189,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
         return true;
     }
 
-    private void clearCard(final PlayerEntity player, final World w, final Hand hand) {
+    private void clearCard(final Player player, final Level w, final InteractionHand hand) {
         final IMemoryCard mem = (IMemoryCard) player.getItemInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getItemInHand(hand).setTag(null);

@@ -20,16 +20,17 @@ package appeng.block.misc;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -44,7 +45,7 @@ import appeng.util.Platform;
 public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>
         implements IOrientableBlock {
 
-    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    private static final BooleanProperty POWERED = net.minecraft.world.level.block.state.properties.BooleanProperty.create("powered");
 
     public QuartzGrowthAcceleratorBlock() {
         super(defaultProps(Material.STONE).sound(SoundType.METAL));
@@ -57,14 +58,14 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final net.minecraft.world.level.block.state.BlockState state, final Level w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -76,8 +77,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             final double d1 = r.nextFloat() - 0.5F;
 
             final Direction up = cga.getUp();
-            final Direction forward = cga.getForward();
-            final Direction west = Platform.crossProduct(forward, up);
+            final net.minecraft.core.Direction forward = cga.getForward();
+            final net.minecraft.core.Direction west = Platform.crossProduct(forward, up);
 
             double rx = 0.5 + pos.getX();
             double ry = 0.5 + pos.getY();
@@ -111,7 +112,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                 case 2:
                     dx = d1;
                     dz = -0.6;
-                    pt = new BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
+                    pt = new net.minecraft.core.BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
 
                     break;
                 case 3:

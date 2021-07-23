@@ -18,23 +18,23 @@
 
 package appeng.server;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
 import java.util.Locale;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AEConfig;
 
 public final class AECommand {
 
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
-        LiteralArgumentBuilder<CommandSource> builder = literal("ae2");
+        LiteralArgumentBuilder<CommandSourceStack> builder = literal("ae2");
         for (Commands command : Commands.values()) {
             if (command.test && !AEConfig.instance().isDebugToolsEnabled()) {
                 continue;
@@ -45,9 +45,9 @@ public final class AECommand {
         dispatcher.register(builder);
     }
 
-    private void add(LiteralArgumentBuilder<net.minecraft.command.CommandSource> builder, Commands subCommand) {
+    private void add(LiteralArgumentBuilder<CommandSourceStack> builder, Commands subCommand) {
 
-        LiteralArgumentBuilder<CommandSource> subCommandBuilder = literal(subCommand.name().toLowerCase(Locale.ROOT))
+        LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder = literal(subCommand.name().toLowerCase(Locale.ROOT))
                 .requires(src -> src.hasPermission(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {

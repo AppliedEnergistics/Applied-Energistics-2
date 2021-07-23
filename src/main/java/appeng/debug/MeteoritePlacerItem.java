@@ -18,23 +18,24 @@
 
 package appeng.debug;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SChunkDataPacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.Util;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -44,25 +45,23 @@ import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
 
-import net.minecraft.item.Item.Properties;
-
 public class MeteoritePlacerItem extends AEBaseItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(Properties properties) {
+    public MeteoritePlacerItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         if (world.isClientSide()) {
-            return ActionResult.pass(player.getItemInHand(hand));
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             final ItemStack itemStack = player.getItemInHand(hand);
-            final CompoundNBT tag = itemStack.getOrCreateTag();
+            final CompoundTag tag = itemStack.getOrCreateTag();
 
             if (tag.contains(MODE_TAG)) {
                 final byte mode = tag.getByte("mode");
@@ -73,29 +72,29 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new StringTextComponent(craterType.name()), Util.NIL_UUID);
+            player.sendMessage(new TextComponent(craterType.name()), net.minecraft.Util.NIL_UUID);
 
-            return ActionResult.success(itemStack);
+            return InteractionResultHolder.success(itemStack);
         }
 
         return super.use(world, player, hand);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.getLevel().isClientSide()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
-        ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
-        ServerWorld world = (ServerWorld) context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        ServerPlayer player = (ServerPlayer) context.getPlayer();
+        ServerLevel world = (ServerLevel) context.getLevel();
+        net.minecraft.core.BlockPos pos = context.getClickedPos();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         if (!tag.contains(MODE_TAG)) {
             tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
         }
@@ -110,31 +109,31 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.NIL_UUID);
-            return ActionResultType.FAIL;
+            player.sendMessage(new TextComponent("Un-suitable Location."), net.minecraft.Util.NIL_UUID);
+            return InteractionResult.FAIL;
         }
 
         // Since we don't know yet if the meteorite will be underground or not,
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
+        BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
                 pos.getX() + range, pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();
 
-        player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
+        player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
                 + " biomeCategory=" + world.getBiome(pos).getBiomeCategory()), Util.NIL_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-            Chunk c = world.getChunk(cp.x, cp.z);
-            player.connection.send(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+        ChunkPos.rangeClosed(new net.minecraft.world.level.ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+            LevelChunk c = world.getChunk(cp.x, cp.z);
+            player.connection.send(new ClientboundLevelChunkPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResultType.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 }

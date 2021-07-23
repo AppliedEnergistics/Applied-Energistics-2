@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -32,12 +32,12 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
  */
 public class QNBContainer extends AEBaseContainer {
 
-    public static final ContainerType<QNBContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<QNBContainer> TYPE = ContainerTypeBuilder
             .create(QNBContainer::new, QuantumBridgeTileEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("qnb");
 
-    public QNBContainer(int id, final PlayerInventory ip, final QuantumBridgeTileEntity quantumBridge) {
+    public QNBContainer(int id, final Inventory ip, final QuantumBridgeTileEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,

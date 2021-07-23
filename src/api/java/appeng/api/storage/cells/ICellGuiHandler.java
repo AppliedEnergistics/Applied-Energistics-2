@@ -23,13 +23,12 @@
 
 package appeng.api.storage.cells;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public interface ICellGuiHandler {
     /**
@@ -46,7 +45,7 @@ public interface ICellGuiHandler {
      * @param is Cell ItemStack
      * @return True, if specialized else false.
      */
-    default boolean isSpecializedFor(ItemStack is) {
+    default boolean isSpecializedFor(net.minecraft.world.item.ItemStack is) {
         return false;
     }
 
@@ -62,7 +61,7 @@ public interface ICellGuiHandler {
      * @param is          item
      * @param chan        storage channel
      */
-    <T extends IAEStack<T>> void openChestGui(PlayerEntity player, IChestOrDrive chest, ICellHandler cellHandler,
-            IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan);
+    <T extends IAEStack<T>> void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler,
+                                              IMEInventoryHandler<T> inv, net.minecraft.world.item.ItemStack is, IStorageChannel<T> chan);
 
 }

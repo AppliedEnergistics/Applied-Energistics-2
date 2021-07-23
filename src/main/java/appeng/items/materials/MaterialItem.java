@@ -19,11 +19,10 @@
 package appeng.items.materials;
 
 import appeng.items.AEBaseItem;
-
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public final class MaterialItem extends AEBaseItem {
-    public MaterialItem(Properties properties) {
+    public MaterialItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 }

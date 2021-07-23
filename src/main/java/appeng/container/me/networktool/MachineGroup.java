@@ -18,8 +18,8 @@
 
 package appeng.container.me.networktool;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Represents the status of machines grouped by their {@link IGridBlock#getMachineRepresentation() item representation}.
@@ -42,28 +42,28 @@ public class MachineGroup {
      */
     private int count;
 
-    MachineGroup(ItemStack display) {
+    MachineGroup(net.minecraft.world.item.ItemStack display) {
         this.display = display;
     }
 
     /**
-     * Reads back a machine group previously {@link #write(PacketBuffer) written}.
+     * Reads back a machine group previously {@link #write(FriendlyByteBuf) written}.
      */
-    static MachineGroup read(PacketBuffer data) {
-        ItemStack stack = data.readItem();
+    static MachineGroup read(FriendlyByteBuf data) {
+        net.minecraft.world.item.ItemStack stack = data.readItem();
         MachineGroup entry = new MachineGroup(stack);
         entry.idlePowerUsage = data.readDouble();
         entry.count = data.readVarInt();
         return entry;
     }
 
-    void write(PacketBuffer data) {
+    void write(FriendlyByteBuf data) {
         data.writeItemStack(display, true);
         data.writeDouble(idlePowerUsage);
         data.writeVarInt(count);
     }
 
-    public ItemStack getDisplay() {
+    public net.minecraft.world.item.ItemStack getDisplay() {
         return display;
     }
 

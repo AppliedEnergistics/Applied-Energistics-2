@@ -20,10 +20,10 @@ package appeng.container.me.fluids;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -50,17 +50,17 @@ import appeng.util.Platform;
  */
 public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack> {
 
-    public static final ContainerType<FluidTerminalContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidTerminalContainer> TYPE = ContainerTypeBuilder
             .create(FluidTerminalContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_terminal");
 
-    public FluidTerminalContainer(int id, PlayerInventory ip, ITerminalHost monitorable) {
+    public FluidTerminalContainer(int id, Inventory ip, ITerminalHost monitorable) {
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public FluidTerminalContainer(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost host,
-            boolean bindInventory) {
+    public FluidTerminalContainer(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
+                                  boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
@@ -71,8 +71,8 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayerEntity player, @Nullable IAEFluidStack stack,
-            InventoryAction action) {
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable IAEFluidStack stack,
+                                            InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
             return;

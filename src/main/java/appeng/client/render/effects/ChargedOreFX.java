@@ -18,23 +18,23 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.RedstoneParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.client.particle.DustParticle;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ChargedOreFX extends RedstoneParticle {
+public class ChargedOreFX extends DustParticle {
 
-    private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
+    private static final DustParticleOptions PARTICLE_DATA = new DustParticleOptions(0.21f, 0.61f, 1.0f, 1.0f);
 
-    private ChargedOreFX(ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
-            IAnimatedSprite spriteSet) {
+    private ChargedOreFX(ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+                         SpriteSet spriteSet) {
         super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
     }
 
@@ -50,16 +50,16 @@ public class ChargedOreFX extends RedstoneParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

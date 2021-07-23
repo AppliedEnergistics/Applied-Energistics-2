@@ -18,9 +18,9 @@
 
 package appeng.core.localization;
 
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public enum ButtonToolTips {
     PowerUnits, IOMode, CondenserOutput, RedstoneMode, MatchingFuzzy,
@@ -73,18 +73,18 @@ public enum ButtonToolTips {
 
     OverlayMode, OverlayModeYes, OverlayModeNo;
 
-    private final TranslationTextComponent text;
+    private final TranslatableComponent text;
 
     ButtonToolTips() {
-        this.text = new TranslationTextComponent("gui.tooltips.appliedenergistics2." + this.name());
+        this.text = new TranslatableComponent("gui.tooltips.appliedenergistics2." + this.name());
     }
 
-    public ITextComponent text() {
+    public net.minecraft.network.chat.Component text() {
         return text;
     }
 
-    public IFormattableTextComponent text(Object... args) {
-        return new TranslationTextComponent(text.getKey(), args);
+    public MutableComponent text(Object... args) {
+        return new TranslatableComponent(text.getKey(), args);
     }
 
 }

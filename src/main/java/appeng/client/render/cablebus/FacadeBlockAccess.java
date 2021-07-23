@@ -20,14 +20,14 @@ package appeng.client.render.cablebus;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ColorResolver;
-import net.minecraft.world.lighting.WorldLightManager;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 
 /**
  * This is used to retrieve the ExtendedState of a block for facade rendering. It fakes the block at BlockPos provided
@@ -35,14 +35,14 @@ import net.minecraft.world.lighting.WorldLightManager;
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements IBlockDisplayReader {
+public class FacadeBlockAccess implements BlockAndTintGetter {
 
-    private final IBlockDisplayReader world;
+    private final BlockAndTintGetter world;
     private final BlockPos pos;
-    private final Direction side;
+    private final net.minecraft.core.Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(IBlockDisplayReader world, BlockPos pos, Direction side, BlockState state) {
+    public FacadeBlockAccess(BlockAndTintGetter world, BlockPos pos, net.minecraft.core.Direction side, net.minecraft.world.level.block.state.BlockState state) {
         this.world = world;
         this.pos = pos;
         this.side = side;
@@ -51,7 +51,7 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
 
     @Nullable
     @Override
-    public TileEntity getBlockEntity(BlockPos pos) {
+    public BlockEntity getBlockEntity(BlockPos pos) {
         return this.world.getBlockEntity(pos);
     }
 
@@ -64,18 +64,18 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
     }
 
     @Override
-    public FluidState getFluidState(BlockPos pos) {
+    public FluidState getFluidState(net.minecraft.core.BlockPos pos) {
         return world.getFluidState(pos);
     }
 
     // This is for diffuse lighting
     @Override
-    public float getShade(Direction p_230487_1_, boolean p_230487_2_) {
+    public float getShade(net.minecraft.core.Direction p_230487_1_, boolean p_230487_2_) {
         return world.getShade(p_230487_1_, p_230487_2_);
     }
 
     @Override
-    public WorldLightManager getLightEngine() {
+    public LevelLightEngine getLightEngine() {
         return world.getLightEngine();
     }
 

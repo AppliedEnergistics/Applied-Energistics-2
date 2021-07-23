@@ -18,15 +18,15 @@
 
 package appeng.debug;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 
@@ -37,18 +37,18 @@ public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(World w, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItem,
-            BlockRayTraceResult hit) {
+    public InteractionResult onActivated(Level w, net.minecraft.core.BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
+                                         BlockHitResult hit) {
 
-        TileEntity tileEntity = w.getBlockEntity(pos);
+        BlockEntity tileEntity = w.getBlockEntity(pos);
         if (tileEntity instanceof ItemGenTileEntity) {
             ItemGenTileEntity itemGen = (ItemGenTileEntity) tileEntity;
             itemGen.setItem(heldItem.getItem());
 
-            return ActionResultType.sidedSuccess(w.isClientSide);
+            return InteractionResult.sidedSuccess(w.isClientSide);
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
 }

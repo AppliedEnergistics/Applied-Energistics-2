@@ -18,13 +18,13 @@
 
 package appeng.worldgen.meteorite;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 
 public class MeteoriteBlockPutter {
-    public boolean put(final IWorld w, BlockPos pos, final BlockState blk) {
+    public boolean put(final LevelAccessor w, net.minecraft.core.BlockPos pos, final net.minecraft.world.level.block.state.BlockState blk) {
         final BlockState original = w.getBlockState(pos);
 
         if (original.getBlock() == Blocks.BEDROCK || original == blk) {

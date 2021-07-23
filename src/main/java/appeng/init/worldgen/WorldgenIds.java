@@ -18,9 +18,11 @@
 
 package appeng.init.worldgen;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * IDS used for world generation features.
@@ -31,14 +33,14 @@ final class WorldgenIds {
     }
 
     /**
-     * ID of the {@link net.minecraft.world.gen.feature.ConfiguredFeature} that generates quartz ore.
+     * ID of the {@link ConfiguredFeature} that generates quartz ore.
      */
     public static final ResourceLocation QUARTZ_ORE = AppEng.makeId("quartz_ore");
 
     /**
-     * ID of the {@link net.minecraft.world.gen.feature.ConfiguredFeature} and
-     * {@link net.minecraft.world.gen.feature.Feature} that generate charged quartz ore.
+     * ID of the {@link ConfiguredFeature} and
+     * {@link Feature} that generate charged quartz ore.
      */
-    public static final ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
+    public static final net.minecraft.resources.ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
 
 }

@@ -23,16 +23,16 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -74,7 +74,7 @@ import appeng.util.inv.InvOperation;
 public class InterfacePart extends BasicStatePart implements IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
+    public static final net.minecraft.resources.ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
 
     private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
         @Override
@@ -86,11 +86,11 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
@@ -98,7 +98,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     private final DualityInterface duality;
 
-    public InterfacePart(final ItemStack is) {
+    public InterfacePart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         this.duality = new DualityInterface(this.getMainNode(), this, is);
     }
@@ -131,13 +131,13 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.duality.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.duality.writeToNBT(data);
     }
@@ -169,7 +169,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             ContainerOpener.openContainer(InterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
@@ -188,7 +188,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+                                  final net.minecraft.world.item.ItemStack removedStack, final ItemStack newStack) {
         this.duality.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
@@ -198,17 +198,17 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    public EnumSet<Direction> getTargets() {
+    public EnumSet<net.minecraft.core.Direction> getTargets() {
         return EnumSet.of(this.getSide().getDirection());
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return super.getHost().getTile();
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingInventory table) {
+    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table) {
         return this.duality.pushPattern(patternDetails, table);
     }
 
@@ -269,7 +269,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return InterfaceContainer.TYPE;
     }
 }

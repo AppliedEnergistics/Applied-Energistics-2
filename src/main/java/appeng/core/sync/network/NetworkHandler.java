@@ -19,13 +19,13 @@
 package appeng.core.sync.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.ThreadQuickExitException;
-import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.server.RunningOnDifferentThreadException;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
@@ -40,12 +40,12 @@ import appeng.core.sync.BasePacket;
 public class NetworkHandler {
     private static NetworkHandler instance;
 
-    private final ResourceLocation myChannelName;
+    private final net.minecraft.resources.ResourceLocation myChannelName;
 
     private final IPacketHandler clientHandler;
     private final IPacketHandler serverHandler;
 
-    public NetworkHandler(final ResourceLocation channelName) {
+    public NetworkHandler(final net.minecraft.resources.ResourceLocation channelName) {
         EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
                 .networkProtocolVersion(() -> "1").clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true)
                 .eventNetworkChannel();
@@ -76,12 +76,12 @@ public class NetworkHandler {
         if (this.serverHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                ServerPlayNetHandler netHandler = (ServerPlayNetHandler) ctx.getNetworkManager().getPacketListener();
+                ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) ctx.getNetworkManager().getPacketListener();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(
                         () -> this.serverHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));
 
-            } catch (final ThreadQuickExitException ignored) {
+            } catch (final RunningOnDifferentThreadException ignored) {
 
             }
         }
@@ -95,16 +95,16 @@ public class NetworkHandler {
         if (this.clientHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                INetHandler netHandler = ctx.getNetworkManager().getPacketListener();
+                PacketListener netHandler = ctx.getNetworkManager().getPacketListener();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(() -> this.clientHandler.onPacketData(null, netHandler, ev.getPayload(), null));
-            } catch (final ThreadQuickExitException ignored) {
+            } catch (final RunningOnDifferentThreadException ignored) {
 
             }
         }
     }
 
-    public ResourceLocation getChannel() {
+    public net.minecraft.resources.ResourceLocation getChannel() {
         return this.myChannelName;
     }
 
@@ -112,12 +112,12 @@ public class NetworkHandler {
         getServer().getPlayerList().broadcastAll(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
-    public void sendTo(final BasePacket message, final ServerPlayerEntity player) {
+    public void sendTo(final BasePacket message, final ServerPlayer player) {
         player.connection.send(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
-        IPacket<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
+        Packet<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
         getServer().getPlayerList().broadcast(point.excluded, point.x, point.y, point.z, point.r2,
                 point.world.dimension(), pkt);
     }

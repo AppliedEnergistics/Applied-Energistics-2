@@ -18,27 +18,31 @@
 
 package appeng.spatial;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeAmbience;
-import net.minecraft.world.biome.BiomeGenerationSettings;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraft.world.level.biome.Biome.BiomeBuilder;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraft.world.level.biome.BiomeSpecialEffects.Builder;
+import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 
 /**
  * The single biome used within the spatial storage world.
  */
 public class SpatialStorageBiome {
 
-    public static final Biome INSTANCE = new Biome.Builder()
-            .generationSettings(new BiomeGenerationSettings.Builder().surfaceBuilder(
-                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.CONFIG_STONE))
+    public static final net.minecraft.world.level.biome.Biome INSTANCE = new BiomeBuilder()
+            .generationSettings(new net.minecraft.world.level.biome.BiomeGenerationSettings.Builder().surfaceBuilder(
+                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder.CONFIG_STONE))
                     .build())
-            .precipitation(Biome.RainType.NONE).biomeCategory(Biome.Category.NONE).depth(0).scale(1)
+            .precipitation(Precipitation.NONE).biomeCategory(BiomeCategory.NONE).depth(0).scale(1)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
-            .specialEffects(new BiomeAmbience.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)
+            .specialEffects(new Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)
                     .skyColor(0x111111).build())
-            .mobSpawnSettings(new MobSpawnInfo.Builder().creatureGenerationProbability(0).build()).build();
+            .mobSpawnSettings(new net.minecraft.world.level.biome.MobSpawnSettings.Builder().creatureGenerationProbability(0).build()).build();
 
 }

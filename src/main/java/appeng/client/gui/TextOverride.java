@@ -20,7 +20,7 @@ package appeng.client.gui;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * Properties of {@link appeng.client.gui.style.Text} can be overridden by their ID. This class stores those overrides.
@@ -31,7 +31,7 @@ public class TextOverride {
      * If this is not-null, this overrides the content to be displayed.
      */
     @Nullable
-    private ITextComponent content;
+    private net.minecraft.network.chat.Component content;
 
     /**
      * If true, the text will not be drawn.
@@ -39,11 +39,11 @@ public class TextOverride {
     private boolean hidden;
 
     @Nullable
-    public ITextComponent getContent() {
+    public net.minecraft.network.chat.Component getContent() {
         return content;
     }
 
-    public void setContent(@Nullable ITextComponent content) {
+    public void setContent(@Nullable net.minecraft.network.chat.Component content) {
         this.content = content;
     }
 

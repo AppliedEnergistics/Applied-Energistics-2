@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
@@ -47,9 +48,9 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     private final IGrid myGrid;
     private long powerRequired = 0;
     private double efficiency = 0.0;
-    private ServerWorld captureWorld;
+    private ServerLevel captureWorld;
     private BlockPos captureMin;
-    private BlockPos captureMax;
+    private net.minecraft.core.BlockPos captureMax;
     private boolean isValid = false;
     private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
@@ -83,8 +84,8 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         this.captureWorld = null;
         this.isValid = true;
 
-        BlockPos.Mutable minPoint = null;
-        BlockPos.Mutable maxPoint = null;
+        MutableBlockPos minPoint = null;
+        MutableBlockPos maxPoint = null;
 
         int pylonBlocks = 0;
         for (final SpatialPylonCluster cl : this.clusters.values()) {
@@ -198,7 +199,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     }
 
     @Override
-    public ServerWorld getWorld() {
+    public ServerLevel getWorld() {
         return this.captureWorld;
     }
 
@@ -208,7 +209,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     }
 
     @Override
-    public BlockPos getMax() {
+    public net.minecraft.core.BlockPos getMax() {
         return this.captureMax;
     }
 

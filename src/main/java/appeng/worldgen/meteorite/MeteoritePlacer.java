@@ -21,19 +21,20 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
@@ -47,15 +48,16 @@ import appeng.worldgen.meteorite.fallout.FalloutCopy;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 import appeng.worldgen.meteorite.fallout.FalloutSand;
 import appeng.worldgen.meteorite.fallout.FalloutSnow;
+import net.minecraft.world.entity.item.ItemEntity;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
     private static final int SKYSTONE_SPAWN_LIMIT = 12;
     private final BlockDefinition skyChestDefinition;
     private final BlockState skyStone;
-    private final Item skyStoneItem;
+    private final net.minecraft.world.item.Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
-    private final IWorld world;
+    private final LevelAccessor world;
     private final Fallout type;
     private final BlockPos pos;
     private final int x;
@@ -69,9 +71,9 @@ public final class MeteoritePlacer {
     private final CraterType craterType;
     private final boolean pureCrater;
     private final boolean craterLake;
-    private final MutableBoundingBox boundingBox;
+    private final BoundingBox boundingBox;
 
-    public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
+    public MeteoritePlacer(LevelAccessor world, PlacedMeteoriteSettings settings, BoundingBox boundingBox) {
         this.boundingBox = boundingBox;
         this.world = world;
         this.pos = settings.getPos();
@@ -149,7 +151,7 @@ public final class MeteoritePlacer {
 
     private void placeCrater() {
         final int maxY = 255;
-        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        MutableBlockPos blockPos = new MutableBlockPos();
         BlockState filler = craterType.getFiller().defaultBlockState();
 
         for (int j = y - 5; j <= maxY; j++) {
@@ -183,7 +185,7 @@ public final class MeteoritePlacer {
         }
 
         for (final Object o : world.getEntitiesOfClass(ItemEntity.class,
-                new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
+                new AABB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
             final Entity e = (Entity) o;
             e.remove();
         }
@@ -200,7 +202,7 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             this.putter.put(world, pos, this.skyChestDefinition.block().defaultBlockState());
 
-            final TileEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
+            final BlockEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
             final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {
@@ -225,7 +227,7 @@ public final class MeteoritePlacer {
                             r = (int) (Math.random() * 1000);
                         }
 
-                        ItemStack toAdd = ItemStack.EMPTY;
+                        ItemStack toAdd = net.minecraft.world.item.ItemStack.EMPTY;
 
                         switch (r % 4) {
                             case 0:
@@ -258,13 +260,13 @@ public final class MeteoritePlacer {
                     switch ((int) (Math.random() * 1000) % 3) {
                         case 0:
                             final int amount = (int) (Math.random() * SKYSTONE_SPAWN_LIMIT + 1);
-                            ap.addItems(new ItemStack(skyStoneItem, amount));
+                            ap.addItems(new net.minecraft.world.item.ItemStack(skyStoneItem, amount));
                             break;
                         case 1:
                             final List<ItemStack> possibles = new ArrayList<>();
-                            possibles.add(new ItemStack(net.minecraft.item.Items.GOLD_NUGGET));
+                            possibles.add(new ItemStack(Items.GOLD_NUGGET));
 
-                            ItemStack nugget = Platform.pickRandom(possibles);
+                            net.minecraft.world.item.ItemStack nugget = Platform.pickRandom(possibles);
                             if (nugget != null && !nugget.isEmpty()) {
                                 nugget = nugget.copy();
                                 nugget.setCount((int) (Math.random() * 12) + 1);
@@ -283,7 +285,7 @@ public final class MeteoritePlacer {
         final int meteorZLength = minZ(z - 8);
         final int meteorZHeight = maxZ(z + 8);
 
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        MutableBlockPos pos = new MutableBlockPos();
         for (int i = meteorXLength; i <= meteorXHeight; i++) {
             pos.setX(i);
             for (int j = y - 8; j < y + 8; j++) {
@@ -310,9 +312,9 @@ public final class MeteoritePlacer {
         final int meteorZLength = minZ(z - 30);
         final int meteorZHeight = maxZ(z + 30);
 
-        BlockPos.Mutable blockPos = new BlockPos.Mutable();
-        BlockPos.Mutable blockPosUp = new BlockPos.Mutable();
-        BlockPos.Mutable blockPosDown = new BlockPos.Mutable();
+        MutableBlockPos blockPos = new MutableBlockPos();
+        MutableBlockPos blockPosUp = new MutableBlockPos();
+        MutableBlockPos blockPosDown = new MutableBlockPos();
         for (int i = meteorXLength; i <= meteorXHeight; i++) {
             blockPos.setX(i);
             blockPosUp.setX(i);
@@ -375,7 +377,7 @@ public final class MeteoritePlacer {
      */
     private void placeCraterLake() {
         final int maxY = world.getSeaLevel() - 1;
-        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        MutableBlockPos blockPos = new MutableBlockPos();
 
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
@@ -394,7 +396,7 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = world.getBlockState(blockPos);
                         if (currentBlock.getBlock() == Blocks.AIR) {
-                            this.putter.put(world, blockPos, Blocks.WATER.defaultBlockState());
+                            this.putter.put(world, blockPos, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
                         }
 
                     }
@@ -403,7 +405,7 @@ public final class MeteoritePlacer {
         }
     }
 
-    private Fallout getFallout(IWorld w, BlockPos pos, FalloutMode mode) {
+    private Fallout getFallout(LevelAccessor w, BlockPos pos, FalloutMode mode) {
         switch (mode) {
             case SAND:
                 return new FalloutSand(w, pos, this.putter, this.skyStone);

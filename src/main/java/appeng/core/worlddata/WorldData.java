@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.services.CompassService;
 import appeng.services.compass.CompassThreadFactory;
@@ -56,11 +56,11 @@ public final class WorldData implements IWorldData {
     private final IWorldGridStorageData storageData;
     private final IWorldCompassData compassData;
 
-    private WorldData(@Nonnull final ServerWorld overworld) {
+    private WorldData(@Nonnull final ServerLevel overworld) {
         Preconditions.checkNotNull(overworld);
 
         // Attach shared data to the server's overworld dimension
-        if (overworld.dimension() != ServerWorld.OVERWORLD) {
+        if (overworld.dimension() != ServerLevel.OVERWORLD) {
             throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
@@ -92,7 +92,7 @@ public final class WorldData implements IWorldData {
                 throw new IllegalStateException("No server set.");
             }
 
-            ServerWorld overworld = server.getLevel(ServerWorld.OVERWORLD);
+            ServerLevel overworld = server.getLevel(ServerLevel.OVERWORLD);
             instance = new WorldData(overworld);
         }
         return instance;

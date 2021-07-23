@@ -18,12 +18,11 @@
 
 package appeng.items.contents;
 
-import net.minecraft.item.ItemStack;
-
 import appeng.parts.automation.StackUpgradeInventory;
+import net.minecraft.world.item.ItemStack;
 
 public final class CellUpgrades extends StackUpgradeInventory {
-    private final ItemStack is;
+    private final net.minecraft.world.item.ItemStack is;
 
     public CellUpgrades(final ItemStack is, final int upgrades) {
         super(is, null, upgrades);

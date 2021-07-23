@@ -18,13 +18,13 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,15 +36,15 @@ import appeng.tile.storage.DriveTileEntity;
  * Renders the drive cell status indicators.
  */
 @OnlyIn(Dist.CLIENT)
-public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
+public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveTileEntity> {
 
-    public DriveLedTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(DriveTileEntity drive, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");
@@ -55,7 +55,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        IVertexBuilder buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
+        VertexConsumer buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
 
         Vector3f slotTranslation = new Vector3f();
         for (int row = 0; row < 5; row++) {

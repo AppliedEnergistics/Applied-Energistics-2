@@ -18,36 +18,36 @@
 
 package appeng.recipes.handlers;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class InscriberRecipe implements IRecipe<IInventory> {
+public class InscriberRecipe implements Recipe<Container> {
 
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
+    public static final net.minecraft.resources.ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final IRecipeType<InscriberRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     private final String group;
 
-    private final Ingredient middleInput;
-    private final Ingredient topOptional;
-    private final Ingredient bottomOptional;
+    private final net.minecraft.world.item.crafting.Ingredient middleInput;
+    private final net.minecraft.world.item.crafting.Ingredient topOptional;
+    private final net.minecraft.world.item.crafting.Ingredient bottomOptional;
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
-            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+    public InscriberRecipe(ResourceLocation id, String group, net.minecraft.world.item.crafting.Ingredient middleInput, ItemStack output,
+                           Ingredient topOptional, net.minecraft.world.item.crafting.Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;
@@ -58,12 +58,12 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(Container inv, Level worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv) {
+    public net.minecraft.world.item.ItemStack assemble(Container inv) {
         return this.output.copy();
     }
 
@@ -83,18 +83,18 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return InscriberRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return TYPE;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+    public NonNullList<net.minecraft.world.item.crafting.Ingredient> getIngredients() {
+        NonNullList<net.minecraft.world.item.crafting.Ingredient> nonnulllist = net.minecraft.core.NonNullList.create();
         nonnulllist.add(this.topOptional);
         nonnulllist.add(this.middleInput);
         nonnulllist.add(this.bottomOptional);
@@ -109,11 +109,11 @@ public class InscriberRecipe implements IRecipe<IInventory> {
         return output;
     }
 
-    public Ingredient getTopOptional() {
+    public net.minecraft.world.item.crafting.Ingredient getTopOptional() {
         return topOptional;
     }
 
-    public Ingredient getBottomOptional() {
+    public net.minecraft.world.item.crafting.Ingredient getBottomOptional() {
         return bottomOptional;
     }
 

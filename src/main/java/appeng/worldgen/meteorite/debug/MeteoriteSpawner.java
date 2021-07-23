@@ -19,13 +19,14 @@ package appeng.worldgen.meteorite.debug;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Makes decisions about spawning meteorites in the world.
@@ -35,11 +36,11 @@ public class MeteoriteSpawner {
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
-            float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, net.minecraft.core.BlockPos startPos,
+                                                                     float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
-        BlockPos.Mutable mutablePos = startPos.mutable();
+        MutableBlockPos mutablePos = startPos.mutable();
 
         mutablePos.move(Direction.DOWN, stepSize);
 
@@ -56,8 +57,8 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius,
-            CraterType craterType, boolean pureCrater) {
+    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, net.minecraft.core.BlockPos pos, float coreRadius,
+                                                     CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
         }
@@ -79,8 +80,8 @@ public class MeteoriteSpawner {
         return new PlacedMeteoriteSettings(pos, coreRadius, craterType, null, pureCrater, craterLake);
     }
 
-    private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {
-        BlockPos.Mutable testPos = pos.mutable();
+    private static boolean isAirBelowSpawnPoint(LevelReader w, BlockPos pos) {
+        MutableBlockPos testPos = pos.mutable();
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
             if (w.isEmptyBlock(testPos)) {
@@ -90,10 +91,10 @@ public class MeteoriteSpawner {
         return false;
     }
 
-    private int countBlockWithSkyLight(IWorldReader w, BlockPos pos) {
+    private int countBlockWithSkyLight(LevelReader w, net.minecraft.core.BlockPos pos) {
         int skyMode = 0;
 
-        BlockPos.Mutable testPos = new BlockPos.Mutable();
+        MutableBlockPos testPos = new MutableBlockPos();
         for (int i = pos.getX() - 15; i < pos.getX() + 15; i++) {
             testPos.setX(i);
             for (int j = pos.getY() - 15; j < pos.getY() + 11; j++) {
@@ -109,17 +110,17 @@ public class MeteoriteSpawner {
         return skyMode;
     }
 
-    private boolean areSurroundingsSuitable(IWorldReader w, BlockPos pos) {
+    private boolean areSurroundingsSuitable(LevelReader w, BlockPos pos) {
         int realValidBlocks = 0;
 
-        BlockPos.Mutable testPos = new BlockPos.Mutable();
+        MutableBlockPos testPos = new MutableBlockPos();
         for (int i = pos.getX() - 6; i < pos.getX() + 6; i++) {
             testPos.setX(i);
             for (int j = pos.getY() - 6; j < pos.getY() + 6; j++) {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
-                    Block block = w.getBlockState(testPos).getBlock();
+                    net.minecraft.world.level.block.Block block = w.getBlockState(testPos).getBlock();
                     realValidBlocks++;
                 }
             }

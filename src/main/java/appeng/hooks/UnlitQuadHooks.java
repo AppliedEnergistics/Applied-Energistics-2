@@ -21,17 +21,19 @@ package appeng.hooks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BlockFaceUV;
-import net.minecraft.client.renderer.model.BlockPartFace;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockFaceUV;
+import net.minecraft.client.renderer.block.model.BlockElementFace;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 import appeng.core.AppEng;
 import appeng.mixins.unlitquad.BakedQuadAccessor;
@@ -58,7 +60,7 @@ public class UnlitQuadHooks {
 
     /**
      * Notify the unlit model system that a specific model is about to be deserialized by
-     * {@link net.minecraft.client.renderer.model.ModelBakery}.
+     * {@link ModelBakery}.
      */
     public static void beginDeserializingModel(ResourceLocation location) {
         String namespace = location.getNamespace();
@@ -79,9 +81,9 @@ public class UnlitQuadHooks {
         return b != null && b;
     }
 
-    public static BlockPartFace enhanceModelElementFace(BlockPartFace modelElement, JsonElement jsonElement) {
+    public static net.minecraft.client.renderer.block.model.BlockElementFace enhanceModelElementFace(net.minecraft.client.renderer.block.model.BlockElementFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        if (JSONUtils.getAsBoolean(jsonObject, "unlit", false)) {
+        if (GsonHelper.getAsBoolean(jsonObject, "unlit", false)) {
             return new UnlitBlockPartFace(modelElement.cullForDirection, modelElement.tintIndex, modelElement.texture,
                     modelElement.uv);
         }
@@ -93,9 +95,9 @@ public class UnlitQuadHooks {
      * nor the prebaked lightmap). This works on the assumption that Vanilla will not modify a quad's lightmap data if
      * it's not zero.
      */
-    public static BakedQuad makeUnlit(BakedQuad quad) {
+    public static net.minecraft.client.renderer.block.model.BakedQuad makeUnlit(net.minecraft.client.renderer.block.model.BakedQuad quad) {
         int[] vertexData = quad.getVertices().clone();
-        int stride = DefaultVertexFormats.BLOCK.getIntegerSize();
+        int stride = DefaultVertexFormat.BLOCK.getIntegerSize();
         // Set the pre-baked texture coords for the lightmap.
         // Vanilla will not overwrite them if they are non-zero
         for (int i = 0; i < 4; i++) {
@@ -108,9 +110,9 @@ public class UnlitQuadHooks {
 
     /**
      * This subclass is used as a marker to indicate this face deserialized from JSON is supposed to be unlit, which
-     * translates to processing by {@link #makeUnlit(BakedQuad)}.
+     * translates to processing by {@link #makeUnlit(net.minecraft.client.renderer.block.model.BakedQuad)}.
      */
-    public static class UnlitBlockPartFace extends BlockPartFace {
+    public static class UnlitBlockPartFace extends net.minecraft.client.renderer.block.model.BlockElementFace {
         public UnlitBlockPartFace(Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
         }
@@ -121,12 +123,12 @@ public class UnlitQuadHooks {
      * vertex format.
      */
     private static int getLightOffset() {
-        VertexFormat format = DefaultVertexFormats.BLOCK;
+        VertexFormat format = DefaultVertexFormat.BLOCK;
         int offset = 0;
         for (VertexFormatElement element : format.getElements()) {
             // TEX_2SB is the lightmap vertex element
-            if (element == DefaultVertexFormats.ELEMENT_UV2) {
-                if (element.getType() != VertexFormatElement.Type.SHORT) {
+            if (element == DefaultVertexFormat.ELEMENT_UV2) {
+                if (element.getType() != Type.SHORT) {
                     throw new UnsupportedOperationException("Expected light map format to be of type SHORT");
                 }
                 if (offset % 4 != 0) {

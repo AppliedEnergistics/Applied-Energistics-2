@@ -18,7 +18,7 @@
 
 package appeng.util.inv;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
@@ -29,15 +29,15 @@ public class ItemSlot {
     private boolean isExtractable;
     // one or the other..
     private IAEItemStack aeItemStack;
-    private ItemStack itemStack;
+    private net.minecraft.world.item.ItemStack itemStack;
 
-    public ItemStack getItemStack() {
+    public net.minecraft.world.item.ItemStack getItemStack() {
         return this.itemStack.isEmpty()
                 ? this.aeItemStack == null ? ItemStack.EMPTY : (this.itemStack = this.aeItemStack.createItemStack())
                 : this.itemStack;
     }
 
-    public void setItemStack(final ItemStack is) {
+    public void setItemStack(final net.minecraft.world.item.ItemStack is) {
         this.aeItemStack = null;
         this.itemStack = is;
     }
@@ -50,7 +50,7 @@ public class ItemSlot {
 
     void setAEItemStack(final IAEItemStack is) {
         this.aeItemStack = is;
-        this.itemStack = ItemStack.EMPTY;
+        this.itemStack = net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     public boolean isExtractable() {

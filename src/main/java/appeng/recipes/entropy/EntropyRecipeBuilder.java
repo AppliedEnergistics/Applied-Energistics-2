@@ -25,10 +25,10 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.resources.ResourceLocation;
 
 class EntropyRecipeBuilder {
     private ResourceLocation id;
@@ -37,7 +37,7 @@ class EntropyRecipeBuilder {
     private Block inputBlock;
     private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
 
-    private Fluid inputFluid;
+    private net.minecraft.world.level.material.Fluid inputFluid;
     private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
 
     private Block outputBlock;
@@ -61,7 +61,7 @@ class EntropyRecipeBuilder {
         this.inputBlock = Objects.requireNonNull(inputBlock, "inputBlock must not be null");
     }
 
-    void setInputFluid(Fluid inputFluid) {
+    void setInputFluid(net.minecraft.world.level.material.Fluid inputFluid) {
         this.inputFluid = Objects.requireNonNull(inputFluid, "inputFluid must not be null");
     }
 
@@ -81,7 +81,7 @@ class EntropyRecipeBuilder {
         this.outputFluidKeep = outputFluidKeep;
     }
 
-    void setDrops(List<ItemStack> drops) {
+    void setDrops(List<net.minecraft.world.item.ItemStack> drops) {
         Preconditions.checkArgument(!drops.isEmpty(), "drops needs to be a non empty list when set");
 
         this.drops = drops;

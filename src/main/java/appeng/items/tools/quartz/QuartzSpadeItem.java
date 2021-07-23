@@ -18,18 +18,19 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tiers;
 
 import appeng.util.Platform;
+import net.minecraft.world.item.Item.Properties;
 
 public class QuartzSpadeItem extends ShovelItem {
     private final QuartzToolType type;
 
-    public QuartzSpadeItem(Item.Properties props, final QuartzToolType type) {
-        super(ItemTier.IRON, 1.5F, -3.0F, props);
+    public QuartzSpadeItem(net.minecraft.world.item.Item.Properties props, final QuartzToolType type) {
+        super(Tiers.IRON, 1.5F, -3.0F, props);
         this.type = type;
     }
 

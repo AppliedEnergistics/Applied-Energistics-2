@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
@@ -32,14 +32,14 @@ public class SwapSlotsPacket extends BasePacket {
     private final int slotA;
     private final int slotB;
 
-    public SwapSlotsPacket(final PacketBuffer stream) {
+    public SwapSlotsPacket(final FriendlyByteBuf stream) {
         this.slotA = stream.readInt();
         this.slotB = stream.readInt();
     }
 
     // api
     public SwapSlotsPacket(final int slotA, final int slotB) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.slotA = slotA);
@@ -49,7 +49,7 @@ public class SwapSlotsPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
         if (player != null && player.containerMenu instanceof AEBaseContainer) {
             ((AEBaseContainer) player.containerMenu).swapSlotContents(this.slotA, this.slotB);
         }

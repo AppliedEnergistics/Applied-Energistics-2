@@ -18,22 +18,22 @@
 
 package appeng.core.definitions;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.util.AEColor;
 
 public final class ColoredItemDefinition {
 
-    private final IItemProvider[] colors = new IItemProvider[AEColor.values().length];
+    private final ItemLike[] colors = new ItemLike[AEColor.values().length];
 
-    void add(final AEColor v, final IItemProvider is) {
+    void add(final AEColor v, final ItemLike is) {
         this.colors[v.ordinal()] = is;
     }
 
     public Item item(final AEColor color) {
-        final IItemProvider is = this.colors[color.ordinal()];
+        final ItemLike is = this.colors[color.ordinal()];
 
         if (is == null) {
             return null;
@@ -43,7 +43,7 @@ public final class ColoredItemDefinition {
     }
 
     public ItemStack stack(final AEColor color, final int stackSize) {
-        final IItemProvider is = this.colors[color.ordinal()];
+        final ItemLike is = this.colors[color.ordinal()];
 
         if (is == null) {
             return ItemStack.EMPTY;

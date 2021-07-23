@@ -18,8 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -42,8 +42,8 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public FluidIOBusScreen(FluidIOBusContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank inv = this.menu.getFluidConfigInventory();

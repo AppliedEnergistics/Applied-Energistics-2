@@ -21,10 +21,10 @@ package appeng.client.gui.implementations;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
@@ -49,7 +49,7 @@ import appeng.tile.storage.ChestTileEntity;
  */
 public final class AESubScreen {
 
-    private final ContainerType<?> previousContainerType;
+    private final MenuType<?> previousContainerType;
     private final ItemStack previousContainerIcon;
 
     /**
@@ -91,7 +91,7 @@ public final class AESubScreen {
         return addBackButton(id, widgets, null);
     }
 
-    public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable ITextComponent label) {
+    public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable net.minecraft.network.chat.Component label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
                 label = previousContainerIcon.getHoverName();

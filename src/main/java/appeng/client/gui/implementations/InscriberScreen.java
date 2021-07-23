@@ -18,21 +18,21 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
+import net.minecraft.world.entity.player.Inventory;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
     private final ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public InscriberScreen(InscriberContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                           ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
@@ -44,7 +44,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
         super.updateBeforeRender();
 
         int progress = this.menu.getCurrentProgress() * 100 / this.menu.getMaxProgress();
-        this.pb.setFullMsg(new StringTextComponent(progress + "%"));
+        this.pb.setFullMsg(new TextComponent(progress + "%"));
     }
 
 }

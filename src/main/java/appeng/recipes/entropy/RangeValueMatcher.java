@@ -20,10 +20,10 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,21 +48,21 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeEnum(MatcherType.RANGE);
         buffer.writeUtf(property.getName());
         buffer.writeUtf(property.getName(minValue));
         buffer.writeUtf(property.getName(maxValue));
     }
 
-    public static StateMatcher create(StateContainer<?, ?> stateContainer, String propertyName, String minValueName,
-            String maxValueName) {
-        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+    public static StateMatcher create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName, String minValueName,
+                                      String maxValueName) {
+        net.minecraft.world.level.block.state.properties.Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new RangeValueMatcher<>(property, minValueName, maxValueName);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static StateMatcher readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+    public static StateMatcher readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String minName = buffer.readUtf();
         String maxName = buffer.readUtf();

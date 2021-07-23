@@ -18,12 +18,11 @@
 
 package appeng.client.render.crafting;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,15 +34,15 @@ import appeng.tile.crafting.CraftingMonitorTileEntity;
  * Renders the item currently being crafted
  */
 @OnlyIn(Dist.CLIENT)
-public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorTileEntity> {
+public class CraftingMonitorTESR extends BlockEntityRenderer<CraftingMonitorTileEntity> {
 
-    public CraftingMonitorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CraftingMonitorTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CraftingMonitorTileEntity te, float partialTicks, MatrixStack matrixStack,
-            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+    public void render(CraftingMonitorTileEntity te, float partialTicks, PoseStack matrixStack,
+                       MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

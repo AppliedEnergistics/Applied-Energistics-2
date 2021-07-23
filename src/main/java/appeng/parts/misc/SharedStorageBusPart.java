@@ -21,10 +21,9 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.config.Settings;
 import appeng.api.networking.IGridNodeListener;
@@ -41,6 +40,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.UpgradeablePart;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @author BrockWS
@@ -123,20 +123,20 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.resetCache(false);
         }
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putInt("priority", this.priority);
     }

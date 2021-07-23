@@ -20,7 +20,7 @@ package appeng.client.gui.me.interfaceterminal;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.helpers.DualityInterface;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -48,7 +48,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
      */
     private final long order;
 
-    public InterfaceRecord(long serverId, int slots, long order, ITextComponent name) {
+    public InterfaceRecord(long serverId, int slots, long order, net.minecraft.network.chat.Component name) {
         this.inventory = new AppEngInternalInventory(null, slots);
         this.displayName = name.getString();
         this.searchName = this.displayName.toLowerCase();

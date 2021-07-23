@@ -20,12 +20,12 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -61,12 +61,12 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     private int tbSlot;
     private NetworkToolViewer tbInventory;
 
-    public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final IUpgradeableHost te) {
+    public UpgradeableContainer(MenuType<?> containerType, int id, final Inventory ip,
+                                final IUpgradeableHost te) {
         super(containerType, id, ip, te);
         this.upgradeable = te;
 
-        final IInventory pi = this.getPlayerInventory();
+        final Container pi = this.getPlayerInventory();
         for (int x = 0; x < pi.getContainerSize(); x++) {
             final ItemStack pii = pi.getItem(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
@@ -97,9 +97,9 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     }
 
     @Nonnull
-    public ITextComponent getToolboxName() {
+    public net.minecraft.network.chat.Component getToolboxName() {
         return this.tbInventory != null ? this.tbInventory.getItemStack().getHoverName()
-                : StringTextComponent.EMPTY;
+                : TextComponent.EMPTY;
     }
 
     protected abstract void setupConfig();
@@ -164,7 +164,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
+                    if (net.minecraft.world.item.ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
                         this.getPlayerInventory().setItem(this.tbSlot,
                                 this.tbInventory.getItemStack());
                     } else {

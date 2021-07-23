@@ -18,11 +18,11 @@
 
 package appeng.helpers;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public interface ICustomNameObject {
 
-    ITextComponent getCustomInventoryName();
+    net.minecraft.network.chat.Component getCustomInventoryName();
 
     boolean hasCustomInventoryName();
 }

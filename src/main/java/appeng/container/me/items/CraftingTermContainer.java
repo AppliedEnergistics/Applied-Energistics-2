@@ -20,15 +20,15 @@ package appeng.container.me.items;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -55,7 +55,7 @@ import appeng.util.inv.WrapperInvItemHandler;
  */
 public class CraftingTermContainer extends ItemTerminalContainer implements IContainerCraftingPacket {
 
-    public static final ContainerType<CraftingTermContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingTermContainer> TYPE = ContainerTypeBuilder
             .create(CraftingTermContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingterm");
@@ -63,9 +63,9 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
     private final CraftingTermSlot outputSlot;
-    private IRecipe<CraftingInventory> currentRecipe;
+    private Recipe<CraftingContainer> currentRecipe;
 
-    public CraftingTermContainer(int id, final PlayerInventory ip, final ITerminalHost host) {
+    public CraftingTermContainer(int id, final Inventory ip, final ITerminalHost host) {
         super(TYPE, id, ip, host, false);
         this.craftingInventoryHost = (ISegmentedInventory) host;
 
@@ -89,17 +89,17 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
      */
 
     @Override
-    public void slotsChanged(IInventory inventory) {
+    public void slotsChanged(Container inventory) {
         final ContainerNull cn = new ContainerNull();
-        final CraftingInventory ic = new CraftingInventory(cn, 3, 3);
+        final CraftingContainer ic = new CraftingContainer(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {
             ic.setItem(x, this.craftingSlots[x].getItem());
         }
 
-        World world = this.getPlayerInventory().player.level;
+        Level world = this.getPlayerInventory().player.level;
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
@@ -122,7 +122,7 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
         return true;
     }
 
-    public IRecipe<CraftingInventory> getCurrentRecipe() {
+    public Recipe<CraftingContainer> getCurrentRecipe() {
         return this.currentRecipe;
     }
 
@@ -137,11 +137,11 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
     }
 
     @Override
-    public boolean hasItemType(ItemStack itemStack, int amount) {
+    public boolean hasItemType(net.minecraft.world.item.ItemStack itemStack, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
-            ItemStack stackInSlot = slot.getItem();
+            net.minecraft.world.item.ItemStack stackInSlot = slot.getItem();
             if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {
                     return true;

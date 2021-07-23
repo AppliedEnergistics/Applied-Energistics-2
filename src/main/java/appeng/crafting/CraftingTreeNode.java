@@ -24,7 +24,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -46,7 +46,7 @@ public class CraftingTreeNode {
             .createList();
     // parent node.
     private final CraftingTreeProcess parent;
-    private final World world;
+    private final Level world;
     // what item is this?
     private final IAEItemStack what;
     // what are the crafting patterns for this?

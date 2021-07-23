@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.theoneprobe.part;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -30,23 +28,25 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PowerStateInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+                             BlockState blockState, IProbeHitData data) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;
-            final ITextComponent tooltip = this.getToolTip(state.isActive(), state.isPowered());
+            final net.minecraft.network.chat.Component tooltip = this.getToolTip(state.isActive(), state.isPowered());
 
             probeInfo.text(tooltip);
         }
 
     }
 
-    private ITextComponent getToolTip(final boolean isActive, final boolean isPowered) {
-        final ITextComponent result;
+    private net.minecraft.network.chat.Component getToolTip(final boolean isActive, final boolean isPowered) {
+        final net.minecraft.network.chat.Component result;
 
         if (isActive && isPowered) {
             result = TheOneProbeText.DEVICE_ONLINE.getTranslationComponent();

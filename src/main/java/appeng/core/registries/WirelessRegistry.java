@@ -21,11 +21,10 @@ package appeng.core.registries;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.Util;
 
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
@@ -35,6 +34,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
+import net.minecraft.world.level.BlockGetter;
 
 public final class WirelessRegistry implements IWirelessTermRegistry {
     private final List<IWirelessTermHandler> handlers;
@@ -71,27 +71,27 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
     }
 
     @Override
-    public void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand) {
+    public void openWirelessTerminalGui(ItemStack item, BlockGetter world, Player player, InteractionHand hand) {
         if (player.getCommandSenderWorld().isClientSide()) {
             return;
         }
 
         if (!this.isWirelessTerminal(item)) {
-            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), net.minecraft.Util.NIL_UUID);
             return;
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
-            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), net.minecraft.Util.NIL_UUID);
             return;
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
         final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
-            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), net.minecraft.Util.NIL_UUID);
             return;
         }
 

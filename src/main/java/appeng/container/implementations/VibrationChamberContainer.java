@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -33,7 +33,7 @@ import appeng.tile.misc.VibrationChamberTileEntity;
  */
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static final ContainerType<VibrationChamberContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<VibrationChamberContainer> TYPE = ContainerTypeBuilder
             .create(VibrationChamberContainer::new, VibrationChamberTileEntity.class)
             .build("vibrationchamber");
 
@@ -43,7 +43,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
-    public VibrationChamberContainer(int id, final PlayerInventory ip,
+    public VibrationChamberContainer(int id, final Inventory ip,
             final VibrationChamberTileEntity vibrationChamber) {
         super(TYPE, id, ip, vibrationChamber);
         this.vibrationChamber = vibrationChamber;

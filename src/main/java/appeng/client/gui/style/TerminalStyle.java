@@ -20,7 +20,7 @@ package appeng.client.gui.style;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
 import appeng.client.gui.me.common.StackSizeRenderer;
@@ -66,7 +66,7 @@ public class TerminalStyle {
      */
     private int slotsPerRow;
 
-    private Rectangle2d searchFieldRect;
+    private Rect2i searchFieldRect;
 
     private boolean sortable = true;
 
@@ -132,7 +132,7 @@ public class TerminalStyle {
         this.slotsPerRow = slotsPerRow;
     }
 
-    public void setSearchFieldRect(Rectangle2d searchFieldRect) {
+    public void setSearchFieldRect(Rect2i searchFieldRect) {
         this.searchFieldRect = searchFieldRect;
     }
 
@@ -178,7 +178,7 @@ public class TerminalStyle {
     /**
      * The bounding box of the search field in the background.
      */
-    public Rectangle2d getSearchFieldRect() {
+    public Rect2i getSearchFieldRect() {
         return searchFieldRect;
     }
 

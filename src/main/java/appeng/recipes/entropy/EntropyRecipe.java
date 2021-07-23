@@ -26,21 +26,21 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateHolder;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
 import appeng.items.tools.powered.EntropyManipulatorItem;
@@ -48,14 +48,14 @@ import appeng.items.tools.powered.EntropyManipulatorItem;
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
  */
-public class EntropyRecipe implements IRecipe<IInventory> {
+public class EntropyRecipe implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static final IRecipeType<EntropyRecipe> TYPE = IRecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<EntropyRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     @Nonnull
-    private final ResourceLocation id;
+    private final net.minecraft.resources.ResourceLocation id;
     @Nonnull
     private final EntropyMode mode;
 
@@ -75,7 +75,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     private final List<StateApplier<?>> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
-    private final Fluid outputFluid;
+    private final net.minecraft.world.level.material.Fluid outputFluid;
     @Nonnull
     private final List<StateApplier<?>> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
@@ -83,10 +83,10 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     @Nonnull
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
-            Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
-            List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
-            List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
+    public EntropyRecipe(net.minecraft.resources.ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
+                         net.minecraft.world.level.material.Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
+                         List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, net.minecraft.world.level.material.Fluid outputFluid,
+                         List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
         Preconditions.checkArgument(inputBlock != null || inputFluid != null,
                 "One of inputBlock or inputFluid must not be null");
 
@@ -113,12 +113,12 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(Container inv, Level worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv) {
+    public ItemStack assemble(Container inv) {
         return ItemStack.EMPTY;
     }
 
@@ -133,17 +133,17 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public net.minecraft.resources.ResourceLocation getId() {
         return id;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return EntropyRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return TYPE;
     }
 
@@ -158,12 +158,12 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    public Block getInputBlock() {
+    public net.minecraft.world.level.block.Block getInputBlock() {
         return this.inputBlock;
     }
 
     @Nullable
-    public Fluid getInputFluid() {
+    public net.minecraft.world.level.material.Fluid getInputFluid() {
         return this.inputFluid;
     }
 
@@ -182,7 +182,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
             return null;
         }
 
-        BlockState state = getOutputBlock().defaultBlockState();
+        net.minecraft.world.level.block.state.BlockState state = getOutputBlock().defaultBlockState();
 
         if (this.outputBlockKeep) {
             for (Property<?> property : originalBlockState.getProperties()) {
@@ -198,7 +198,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    public Fluid getOutputFluid() {
+    public net.minecraft.world.level.material.Fluid getOutputFluid() {
         return this.outputFluid;
     }
 
@@ -207,7 +207,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
     }
 
     @Nullable
-    public FluidState getOutputFluidState(FluidState originalFluidState) {
+    public net.minecraft.world.level.material.FluidState getOutputFluidState(net.minecraft.world.level.material.FluidState originalFluidState) {
         if (this.getOutputFluid() == null) {
             return null;
         }
@@ -278,7 +278,7 @@ public class EntropyRecipe implements IRecipe<IInventory> {
      * Copies a property from one stateholder to another (if that stateholder also has that property).
      */
     private static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH copyProperty(SH from, SH to,
-            Property<T> property) {
+                                                                                            Property<T> property) {
         if (to.hasProperty(property)) {
             return to.setValue(property, from.getValue(property));
         } else {

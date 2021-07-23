@@ -22,6 +22,12 @@ import java.util.OptionalLong;
 
 import com.mojang.serialization.Lifecycle;
 
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistryAccess.RegistryHolder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,14 +35,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -49,20 +50,20 @@ import appeng.spatial.SpatialStorageDimensionIds;
 public class DimensionTypeMixin {
 
     @Invoker("<init>")
-    static DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
-            boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
-            boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation skyProperties,
-            float ambientLight) {
+    static net.minecraft.world.level.dimension.DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
+                                                                    boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
+                                                                    boolean hasRaids, int logicalHeight, net.minecraft.resources.ResourceLocation infiniburn, ResourceLocation skyProperties,
+                                                                    float ambientLight) {
         throw new AssertionError();
     }
 
     @Inject(method = "registerBuiltin", at = @At("TAIL"))
-    private static void addRegistryDefaults(DynamicRegistries.Impl registryTracker, CallbackInfoReturnable<?> cir) {
-        DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
+    private static void addRegistryDefaults(RegistryHolder registryTracker, CallbackInfoReturnable<?> cir) {
+        net.minecraft.world.level.dimension.DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
                 false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, 1.0f);
 
-        Registry.register(registryTracker.dimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
+        net.minecraft.core.Registry.register(registryTracker.dimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
                 dimensionType);
     }
 
@@ -71,13 +72,13 @@ public class DimensionTypeMixin {
      * new World.</em>
      */
     @Inject(method = "defaultDimensions", at = @At("RETURN"))
-    private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
-            Registry<DimensionSettings> dimensionSettings, long seed,
-            CallbackInfoReturnable<SimpleRegistry<Dimension>> cir) {
-        SimpleRegistry<Dimension> simpleregistry = cir.getReturnValue();
+    private static void buildDimensionRegistry(net.minecraft.core.Registry<net.minecraft.world.level.dimension.DimensionType> dimensionTypes, Registry<Biome> biomes,
+                                               net.minecraft.core.Registry<NoiseGeneratorSettings> dimensionSettings, long seed,
+                                               CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
+        MappedRegistry<LevelStem> simpleregistry = cir.getReturnValue();
 
         simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,
-                new Dimension(() -> dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
+                new LevelStem(() -> dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
                         new SpatialStorageChunkGenerator(biomes)),
                 Lifecycle.stable());
 

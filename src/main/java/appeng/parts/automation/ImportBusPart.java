@@ -18,12 +18,11 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -54,13 +53,14 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.item.AEItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class ImportBusPart extends SharedItemBusPart implements IInventoryDestination {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_on"));
@@ -72,7 +72,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private int itemsToSend; // used in tickingRequest
     private boolean worked; // used in tickingRequest
 
-    public ImportBusPart(final ItemStack is) {
+    public ImportBusPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -81,7 +81,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     }
 
     @Override
-    public boolean canInsert(final ItemStack stack) {
+    public boolean canInsert(final net.minecraft.world.item.ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() == Items.AIR) {
             return false;
         }
@@ -116,7 +116,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(IOBusContainer.IMPORT_TYPE, player, ContainerLocator.forPart(this));
         }
@@ -183,14 +183,14 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private boolean importStuff(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode) {
         final int toSend = this.calculateMaximumAmountToImport(myAdaptor, whatToImport, inv, fzMode);
-        final ItemStack newItems;
+        final net.minecraft.world.item.ItemStack newItems;
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             newItems = myAdaptor.removeSimilarItems(toSend,
-                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this);
+                    whatToImport == null ? net.minecraft.world.item.ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this);
         } else {
             newItems = myAdaptor.removeItems(toSend,
-                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this);
+                    whatToImport == null ? net.minecraft.world.item.ItemStack.EMPTY : whatToImport.getDefinition(), this);
         }
 
         if (!newItems.isEmpty()) {
@@ -220,10 +220,10 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private int calculateMaximumAmountToImport(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode) {
         final int toSend = Math.min(this.itemsToSend, 64);
-        final ItemStack itemStackToImport;
+        final net.minecraft.world.item.ItemStack itemStackToImport;
 
         if (whatToImport == null) {
-            itemStackToImport = ItemStack.EMPTY;
+            itemStackToImport = net.minecraft.world.item.ItemStack.EMPTY;
         } else {
             itemStackToImport = whatToImport.getDefinition();
         }

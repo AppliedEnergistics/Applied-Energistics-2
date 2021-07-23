@@ -21,7 +21,7 @@ package appeng.util.inv;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;

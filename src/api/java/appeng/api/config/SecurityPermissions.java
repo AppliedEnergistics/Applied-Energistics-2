@@ -25,8 +25,8 @@ package appeng.api.config;
 
 import java.util.Locale;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
@@ -62,15 +62,15 @@ public enum SecurityPermissions {
 
     private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase(Locale.ROOT);
 
-    private final ITextComponent displayName = new TranslationTextComponent(this.translationKey + ".name");
+    private final net.minecraft.network.chat.Component displayName = new TranslatableComponent(this.translationKey + ".name");
 
-    private final ITextComponent displayHint = new TranslationTextComponent(this.translationKey + ".tip");
+    private final net.minecraft.network.chat.Component displayHint = new TranslatableComponent(this.translationKey + ".tip");
 
-    public ITextComponent getDisplayName() {
+    public net.minecraft.network.chat.Component getDisplayName() {
         return this.displayName;
     }
 
-    public ITextComponent getDisplayHint() {
+    public net.minecraft.network.chat.Component getDisplayHint() {
         return this.displayHint;
     }
 }

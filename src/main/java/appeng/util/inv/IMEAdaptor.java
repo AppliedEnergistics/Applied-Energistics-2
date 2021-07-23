@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -62,7 +62,7 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack removeItems(final int amount, final ItemStack filter, final IInventoryDestination destination) {
+    public ItemStack removeItems(final int amount, final net.minecraft.world.item.ItemStack filter, final IInventoryDestination destination) {
         return this.doRemoveItems(amount, filter, destination, Actionable.MODULATE);
     }
 
@@ -94,24 +94,24 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack simulateRemove(final int amount, final ItemStack filter, final IInventoryDestination destination) {
+    public ItemStack simulateRemove(final int amount, final net.minecraft.world.item.ItemStack filter, final IInventoryDestination destination) {
         return this.doRemoveItems(amount, filter, destination, Actionable.SIMULATE);
     }
 
     @Override
-    public ItemStack removeSimilarItems(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
-            final IInventoryDestination destination) {
+    public ItemStack removeSimilarItems(final int amount, final net.minecraft.world.item.ItemStack filter, final FuzzyMode fuzzyMode,
+                                        final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, null, destination, Actionable.MODULATE);
         }
         return this.doRemoveItemsFuzzy(amount, filter, destination, Actionable.MODULATE, fuzzyMode);
     }
 
-    private ItemStack doRemoveItemsFuzzy(final int amount, final ItemStack filter,
+    private ItemStack doRemoveItemsFuzzy(final int amount, final net.minecraft.world.item.ItemStack filter,
             final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode) {
         final IAEItemStack reqFilter = AEItemStack.fromItemStack(filter);
         if (reqFilter == null) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         IAEItemStack out = null;
@@ -126,12 +126,12 @@ public class IMEAdaptor extends InventoryAdaptor {
             }
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack simulateSimilarRemove(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
-            final IInventoryDestination destination) {
+    public net.minecraft.world.item.ItemStack simulateSimilarRemove(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
+                                                                    final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, ItemStack.EMPTY, destination, Actionable.SIMULATE);
         }
@@ -139,7 +139,7 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack addItems(final ItemStack toBeAdded) {
+    public net.minecraft.world.item.ItemStack addItems(final ItemStack toBeAdded) {
         final IAEItemStack in = AEItemStack.fromItemStack(toBeAdded);
         if (in != null) {
             final IAEItemStack out = this.target.injectItems(in, Actionable.MODULATE, this.src);
@@ -147,11 +147,11 @@ public class IMEAdaptor extends InventoryAdaptor {
                 return out.createItemStack();
             }
         }
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack simulateAdd(final ItemStack toBeSimulated) {
+    public net.minecraft.world.item.ItemStack simulateAdd(final ItemStack toBeSimulated) {
         final IAEItemStack in = AEItemStack.fromItemStack(toBeSimulated);
         if (in != null) {
             final IAEItemStack out = this.target.injectItems(in, Actionable.SIMULATE, this.src);
@@ -159,7 +159,7 @@ public class IMEAdaptor extends InventoryAdaptor {
                 return out.createItemStack();
             }
         }
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override

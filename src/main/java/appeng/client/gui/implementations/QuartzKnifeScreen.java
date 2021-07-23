@@ -18,15 +18,15 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
@@ -38,10 +38,10 @@ import appeng.core.sync.packets.ConfigValuePacket;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
-    private TextFieldWidget name;
+    private EditBox name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public QuartzKnifeScreen(QuartzKnifeContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                             ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -49,8 +49,8 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     public void init() {
         super.init();
 
-        this.name = new TextFieldWidget(this.font, this.leftPos + 24, this.topPos + 32, 79, this.font.lineHeight,
-                StringTextComponent.EMPTY);
+        this.name = new EditBox(this.font, this.leftPos + 24, this.topPos + 32, 79, this.font.lineHeight,
+                TextComponent.EMPTY);
         this.name.setBordered(false);
         this.name.setMaxLength(32);
         this.name.setTextColor(0xFFFFFF);
@@ -59,8 +59,8 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(PoseStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+                       float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.name.render(matrices, mouseX, mouseY, partialTicks);
     }
@@ -80,7 +80,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+        Key input = InputConstants.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {

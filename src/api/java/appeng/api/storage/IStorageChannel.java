@@ -26,9 +26,9 @@ package appeng.api.storage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
@@ -77,12 +77,12 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     T createStack(@Nonnull Object input);
 
     @Nullable
-    T readFromPacket(@Nonnull PacketBuffer input);
+    T readFromPacket(@Nonnull FriendlyByteBuf input);
 
     /**
      * create from nbt data
      */
     @Nullable
-    T createFromNBT(@Nonnull CompoundNBT nbt);
+    T createFromNBT(@Nonnull CompoundTag nbt);
 
 }

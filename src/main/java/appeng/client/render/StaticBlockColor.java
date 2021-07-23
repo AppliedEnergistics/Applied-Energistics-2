@@ -20,17 +20,17 @@ package appeng.client.render;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import appeng.api.util.AEColor;
 
 /**
  * Returns the shades of a single AE color for tint indices 0, 1, and 2.
  */
-public class StaticBlockColor implements IBlockColor {
+public class StaticBlockColor implements BlockColor {
 
     private final AEColor color;
 
@@ -39,8 +39,8 @@ public class StaticBlockColor implements IBlockColor {
     }
 
     @Override
-    public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos,
-            int tintIndex) {
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable net.minecraft.core.BlockPos pos,
+                        int tintIndex) {
         return this.color.getVariantByTintIndex(tintIndex);
     }
 

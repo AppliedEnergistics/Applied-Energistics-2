@@ -20,23 +20,23 @@ package appeng.entity;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public abstract class AEBaseItemEntity extends ItemEntity {
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world) {
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level world) {
         super(entityType, world);
     }
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world, final double x,
-            final double y, final double z, final ItemStack stack) {
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level world, final double x,
+                               final double y, final double z, final ItemStack stack) {
         this(entityType, world);
         this.setPos(x, y, z);
         this.yRot = this.random.nextFloat() * 360.0F;
@@ -45,12 +45,12 @@ public abstract class AEBaseItemEntity extends ItemEntity {
         this.lifespan = stack.getEntityLifespan(world);
     }
 
-    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AxisAlignedBB region) {
+    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AABB region) {
         return this.level.getEntities(this, region);
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

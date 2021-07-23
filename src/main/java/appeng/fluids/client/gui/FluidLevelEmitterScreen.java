@@ -18,10 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -34,6 +32,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.SlotSemantic;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
+import net.minecraft.world.entity.player.Inventory;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 
@@ -41,8 +40,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     private final NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, Inventory playerInventory,
+                                   net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
@@ -71,8 +70,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }

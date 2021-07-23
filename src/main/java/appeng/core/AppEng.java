@@ -23,16 +23,16 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
+import net.minecraft.world.entity.player.Player;
 
 public interface AppEng {
 
@@ -44,7 +44,7 @@ public interface AppEng {
     }
 
     static ResourceLocation makeId(String id) {
-        return new ResourceLocation(MOD_ID, id);
+        return new net.minecraft.resources.ResourceLocation(MOD_ID, id);
     }
 
     @Nonnull
@@ -53,19 +53,19 @@ public interface AppEng {
     /**
      * Allows common item use methods to get the current mouse over without relying on client-only methods.
      */
-    default RayTraceResult getCurrentMouseOver() {
+    default net.minecraft.world.phys.HitResult getCurrentMouseOver() {
         return null;
     }
 
     /**
      * @return A stream of all players in the game. On the client it'll be empty if no world is loaded.
      */
-    Collection<ServerPlayerEntity> getPlayers();
+    Collection<ServerPlayer> getPlayers();
 
-    void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w, BasePacket packet);
+    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level w, BasePacket packet);
 
-    void spawnEffect(final EffectType effect, final World world, final double posX, final double posY,
-            final double posZ, final Object o);
+    void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
+                     final double posZ, final Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
@@ -73,7 +73,7 @@ public interface AppEng {
      *
      * @param player Null to revert to the default cable render mode.
      */
-    void setPartInteractionPlayer(PlayerEntity player);
+    void setPartInteractionPlayer(Player player);
 
     CableRenderMode getCableRenderMode();
 
@@ -83,5 +83,5 @@ public interface AppEng {
      * @return null if no client world is available (i.e. on a dedicated server)
      */
     @Nullable
-    World getClientWorld();
+    Level getClientWorld();
 }

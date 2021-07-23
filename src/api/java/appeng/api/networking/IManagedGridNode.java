@@ -31,14 +31,14 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.util.AEColor;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * This interface is intended for the host that created this node. It is used to configure the node's properties.
@@ -55,17 +55,17 @@ public interface IManagedGridNode {
      * Finish creation of the node, which means it'll try to make a connection to adjacent nodes if it's exposed on the
      * host, and it'll be available for connections from other nodes.
      */
-    void create(World world, @Nullable BlockPos blockPos);
+    void create(Level world, @Nullable net.minecraft.core.BlockPos blockPos);
 
     /**
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
      * your nods on a single compound using name.
      * <p>
-     * Important: You must call this before {@link #create(World, BlockPos)}.
+     * Important: You must call this before {@link #create(Level, net.minecraft.core.BlockPos)}.
      *
      * @param nodeData to be loaded data
      */
-    void loadFromNBT(@Nonnull CompoundNBT nodeData);
+    void loadFromNBT(@Nonnull CompoundTag nodeData);
 
     /**
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -73,7 +73,7 @@ public interface IManagedGridNode {
      *
      * @param nodeData to be saved data
      */
-    void saveToNBT(@Nonnull CompoundNBT nodeData);
+    void saveToNBT(@Nonnull CompoundTag nodeData);
 
     /**
      * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't initialized
@@ -137,7 +137,7 @@ public interface IManagedGridNode {
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
      * {@link ItemStack#EMPTY} to hide the node from UIs.
      */
-    IManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation);
+    IManagedGridNode setVisualRepresentation(@Nonnull net.minecraft.world.item.ItemStack visualRepresentation);
 
     IManagedGridNode setInWorldNode(boolean accessible);
 
@@ -153,7 +153,7 @@ public interface IManagedGridNode {
 
     /**
      * @return True if the node and its grid are available. This will never be the case on the client-side. Server-side,
-     *         it'll be true after {@link #create(World, BlockPos)} and before {@link #destroy()} are called.
+     *         it'll be true after {@link #create(Level, net.minecraft.core.BlockPos)} and before {@link #destroy()} are called.
      */
     boolean isReady();
 
@@ -175,7 +175,7 @@ public interface IManagedGridNode {
      *
      * @param ownerPlayer The owning player.
      */
-    void setOwningPlayer(PlayerEntity ownerPlayer);
+    void setOwningPlayer(Player ownerPlayer);
 
     /**
      * @return The node that was created by the managed node. Will be non-null when {@link #isReady()} is true.

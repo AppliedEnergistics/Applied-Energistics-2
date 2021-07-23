@@ -20,24 +20,24 @@ package appeng.parts;
 
 import java.util.List;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
 
 public class BusCollisionHelper implements IPartCollisionHelper {
 
-    private final List<AxisAlignedBB> boxes;
+    private final List<AABB> boxes;
 
-    private final Direction x;
-    private final Direction y;
-    private final Direction z;
+    private final net.minecraft.core.Direction x;
+    private final net.minecraft.core.Direction y;
+    private final net.minecraft.core.Direction z;
 
     private final boolean isVisual;
 
-    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final Direction x, final Direction y, final Direction z,
-            final boolean visual) {
+    public BusCollisionHelper(final List<AABB> boxes, final net.minecraft.core.Direction x, final net.minecraft.core.Direction y, final net.minecraft.core.Direction z,
+                              final boolean visual) {
         this.boxes = boxes;
         this.x = x;
         this.y = y;
@@ -45,46 +45,46 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final AEPartLocation s, final boolean visual) {
+    public BusCollisionHelper(final List<AABB> boxes, final AEPartLocation s, final boolean visual) {
         this.boxes = boxes;
         this.isVisual = visual;
 
         switch (s) {
             case DOWN:
-                this.x = Direction.EAST;
-                this.y = Direction.NORTH;
-                this.z = Direction.DOWN;
+                this.x = net.minecraft.core.Direction.EAST;
+                this.y = net.minecraft.core.Direction.NORTH;
+                this.z = net.minecraft.core.Direction.DOWN;
                 break;
             case UP:
-                this.x = Direction.EAST;
-                this.y = Direction.SOUTH;
-                this.z = Direction.UP;
+                this.x = net.minecraft.core.Direction.EAST;
+                this.y = net.minecraft.core.Direction.SOUTH;
+                this.z = net.minecraft.core.Direction.UP;
                 break;
             case EAST:
-                this.x = Direction.SOUTH;
-                this.y = Direction.UP;
+                this.x = net.minecraft.core.Direction.SOUTH;
+                this.y = net.minecraft.core.Direction.UP;
                 this.z = Direction.EAST;
                 break;
             case WEST:
-                this.x = Direction.NORTH;
-                this.y = Direction.UP;
-                this.z = Direction.WEST;
+                this.x = net.minecraft.core.Direction.NORTH;
+                this.y = net.minecraft.core.Direction.UP;
+                this.z = net.minecraft.core.Direction.WEST;
                 break;
             case NORTH:
-                this.x = Direction.WEST;
-                this.y = Direction.UP;
-                this.z = Direction.NORTH;
+                this.x = net.minecraft.core.Direction.WEST;
+                this.y = net.minecraft.core.Direction.UP;
+                this.z = net.minecraft.core.Direction.NORTH;
                 break;
             case SOUTH:
-                this.x = Direction.EAST;
-                this.y = Direction.UP;
-                this.z = Direction.SOUTH;
+                this.x = net.minecraft.core.Direction.EAST;
+                this.y = net.minecraft.core.Direction.UP;
+                this.z = net.minecraft.core.Direction.SOUTH;
                 break;
             case INTERNAL:
             default:
-                this.x = Direction.EAST;
-                this.y = Direction.UP;
-                this.z = Direction.SOUTH;
+                this.x = net.minecraft.core.Direction.EAST;
+                this.y = net.minecraft.core.Direction.UP;
+                this.z = net.minecraft.core.Direction.SOUTH;
                 break;
         }
     }
@@ -128,21 +128,21 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         maxY = Math.max(aY, bY);
         maxZ = Math.max(aZ, bZ);
 
-        this.boxes.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        this.boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
     @Override
-    public Direction getWorldX() {
+    public net.minecraft.core.Direction getWorldX() {
         return this.x;
     }
 
     @Override
-    public Direction getWorldY() {
+    public net.minecraft.core.Direction getWorldY() {
         return this.y;
     }
 
     @Override
-    public Direction getWorldZ() {
+    public net.minecraft.core.Direction getWorldZ() {
         return this.z;
     }
 

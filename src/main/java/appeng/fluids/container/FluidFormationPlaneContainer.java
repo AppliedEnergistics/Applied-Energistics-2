@@ -18,8 +18,7 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
@@ -27,17 +26,18 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.fluids.parts.FluidFormationPlanePart;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.world.inventory.MenuType;
 
 public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidFormationPlaneContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidFormationPlaneContainer> TYPE = ContainerTypeBuilder
             .create(FluidFormationPlaneContainer::new, FluidFormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_formation_plane");
 
     private final FluidFormationPlanePart plane;
 
-    public FluidFormationPlaneContainer(int id, final PlayerInventory ip, final FluidFormationPlanePart te) {
+    public FluidFormationPlaneContainer(int id, final Inventory ip, final FluidFormationPlanePart te) {
         super(TYPE, id, ip, te);
         this.plane = te;
     }

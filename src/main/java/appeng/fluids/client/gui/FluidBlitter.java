@@ -20,8 +20,8 @@ package appeng.fluids.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -39,7 +39,7 @@ public final class FluidBlitter {
         Fluid fluid = stack.getFluid();
         FluidAttributes attributes = fluid.getAttributes();
         TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(PlayerContainer.BLOCK_ATLAS)
+                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(attributes.getStillTexture(stack));
 
         return Blitter.sprite(sprite)

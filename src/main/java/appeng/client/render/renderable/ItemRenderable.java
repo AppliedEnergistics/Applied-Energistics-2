@@ -20,27 +20,29 @@ package appeng.client.render.renderable;
 
 import java.util.function.Function;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
+public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
 
-    private final Function<T, Pair<ItemStack, TransformationMatrix>> f;
+    private final Function<T, Pair<net.minecraft.world.item.ItemStack, Transformation>> f;
 
-    public ItemRenderable(Function<T, Pair<ItemStack, TransformationMatrix>> f) {
+    public ItemRenderable(Function<T, Pair<net.minecraft.world.item.ItemStack, Transformation>> f) {
         this.f = f;
     }
 
     @Override
-    public void renderTileEntityAt(T te, float partialTicks, com.mojang.blaze3d.matrix.MatrixStack matrixStack,
-            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
-        Pair<ItemStack, TransformationMatrix> pair = this.f.apply(te);
+    public void renderTileEntityAt(T te, float partialTicks, PoseStack matrixStack,
+                                   MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
+        Pair<ItemStack, Transformation> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
             if (pair.getRight() != null) {
                 pair.getRight().push(matrixStack);
@@ -48,7 +50,7 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
                 matrixStack.pushPose();
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
-                    ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
+                    TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.popPose();
         }
     }

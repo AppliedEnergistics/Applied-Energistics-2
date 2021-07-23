@@ -33,17 +33,17 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -72,26 +72,26 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 
-public abstract class AEBaseContainer extends Container {
+public abstract class AEBaseContainer extends AbstractContainerMenu {
     private final IActionSource mySrc;
-    private final TileEntity tileEntity;
+    private final BlockEntity tileEntity;
     private final IPart part;
     private final IGuiItemObject guiItem;
     private final DataSynchronization dataSync = new DataSynchronization(this);
-    private final PlayerInventory playerInventory;
+    private final Inventory playerInventory;
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
     private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
-    private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
+    private final ArrayListMultimap<SlotSemantic, net.minecraft.world.inventory.Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean isContainerValid = true;
     private ContainerLocator locator;
     private int ticksSinceCheck = 900;
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory playerInventory,
-            final Object host) {
+    public AEBaseContainer(MenuType<?> containerType, int id, final Inventory playerInventory,
+                           final Object host) {
         super(containerType, id);
         this.playerInventory = playerInventory;
-        this.tileEntity = host instanceof TileEntity ? (TileEntity) host : null;
+        this.tileEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
         this.guiItem = host instanceof IGuiItemObject ? (IGuiItemObject) host : null;
 
@@ -166,7 +166,7 @@ public abstract class AEBaseContainer extends Container {
         return false;
     }
 
-    public PlayerInventory getPlayerInventory() {
+    public Inventory getPlayerInventory() {
         return this.playerInventory;
     }
 
@@ -186,11 +186,11 @@ public abstract class AEBaseContainer extends Container {
         return this.guiItem;
     }
 
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this.tileEntity;
     }
 
-    protected final void createPlayerInventorySlots(PlayerInventory playerInventory) {
+    protected final void createPlayerInventorySlots(Inventory playerInventory) {
         Preconditions.checkState(
                 getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
@@ -198,20 +198,20 @@ public abstract class AEBaseContainer extends Container {
         IItemHandler ih = new PlayerInvWrapper(playerInventory);
 
         for (int i = 0; i < playerInventory.items.size(); i++) {
-            Slot slot;
+            net.minecraft.world.inventory.Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
                 slot = new DisabledSlot(ih, i);
             } else {
-                slot = new Slot(playerInventory, i, 0, 0);
+                slot = new net.minecraft.world.inventory.Slot(playerInventory, i, 0, 0);
             }
-            SlotSemantic s = i < PlayerInventory.getSelectionSize()
+            SlotSemantic s = i < Inventory.getSelectionSize()
                     ? SlotSemantic.PLAYER_HOTBAR
                     : SlotSemantic.PLAYER_INVENTORY;
             addSlot(slot, s);
         }
     }
 
-    protected Slot addSlot(Slot slot, SlotSemantic semantic) {
+    protected Slot addSlot(net.minecraft.world.inventory.Slot slot, SlotSemantic semantic) {
         slot = this.addSlot(slot);
 
         Preconditions.checkState(!semanticBySlot.containsKey(slot));
@@ -220,12 +220,12 @@ public abstract class AEBaseContainer extends Container {
         return slot;
     }
 
-    public List<Slot> getSlots(SlotSemantic semantic) {
+    public List<net.minecraft.world.inventory.Slot> getSlots(SlotSemantic semantic) {
         return slotsBySemantic.get(semantic);
     }
 
     @Override
-    protected Slot addSlot(final Slot newSlot) {
+    protected net.minecraft.world.inventory.Slot addSlot(final Slot newSlot) {
         if (newSlot instanceof AppEngSlot) {
             final AppEngSlot s = (AppEngSlot) newSlot;
             s.setContainer(this);
@@ -253,7 +253,7 @@ public abstract class AEBaseContainer extends Container {
      * Check if a given slot is considered to be "on the player side" for the purposes of shift-clicking items back and
      * forth between the opened container and the player's inventory.
      */
-    private boolean isPlayerSideSlot(Slot slot) {
+    private boolean isPlayerSideSlot(net.minecraft.world.inventory.Slot slot) {
         if (slot.container == playerInventory) {
             return true;
         }
@@ -266,25 +266,25 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public ItemStack quickMoveStack(final PlayerEntity p, final int idx) {
+    public net.minecraft.world.item.ItemStack quickMoveStack(final Player p, final int idx) {
         if (isRemote()) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         final Slot clickSlot = this.slots.get(idx);
         boolean playerSide = isPlayerSideSlot(clickSlot);
 
         if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
         if (clickSlot.hasItem()) {
-            ItemStack tis = clickSlot.getItem();
+            net.minecraft.world.item.ItemStack tis = clickSlot.getItem();
 
             if (tis.isEmpty()) {
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
             }
 
-            final List<Slot> selectedSlots = new ArrayList<>();
+            final List<net.minecraft.world.inventory.Slot> selectedSlots = new ArrayList<>();
 
             // Gather a list of valid destinations.
             if (playerSide) {
@@ -292,7 +292,7 @@ public abstract class AEBaseContainer extends Container {
 
                 if (!tis.isEmpty()) {
                     // target slots in the container...
-                    for (final Slot cs : this.slots) {
+                    for (final net.minecraft.world.inventory.Slot cs : this.slots) {
                         if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
                                 && cs.mayPlace(tis)) {
                             selectedSlots.add(cs);
@@ -303,7 +303,7 @@ public abstract class AEBaseContainer extends Container {
                 tis = tis.copy();
 
                 // target slots in the container...
-                for (final Slot cs : this.slots) {
+                for (final net.minecraft.world.inventory.Slot cs : this.slots) {
                     if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
                             && cs.mayPlace(tis)) {
                         selectedSlots.add(cs);
@@ -314,8 +314,8 @@ public abstract class AEBaseContainer extends Container {
             // Handle Fake Slot Shift clicking.
             if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
                 // target slots in the container...
-                for (final Slot cs : this.slots) {
-                    final ItemStack destination = cs.getItem();
+                for (final net.minecraft.world.inventory.Slot cs : this.slots) {
+                    final net.minecraft.world.item.ItemStack destination = cs.getItem();
 
                     if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
                         if (Platform.itemComparisons().isSameItem(destination, tis)) {
@@ -334,7 +334,7 @@ public abstract class AEBaseContainer extends Container {
                 // find slots to stack the item into
                 for (final Slot d : selectedSlots) {
                     if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
-                        return ItemStack.EMPTY;
+                        return net.minecraft.world.item.ItemStack.EMPTY;
                     }
                 }
 
@@ -344,7 +344,7 @@ public abstract class AEBaseContainer extends Container {
                     if (d.mayPlace(tis)) {
                         if (d.hasItem()) {
                             if (x(clickSlot, tis, d)) {
-                                return ItemStack.EMPTY;
+                                return net.minecraft.world.item.ItemStack.EMPTY;
                             }
                         } else {
                             int maxSize = tis.getMaxStackSize();
@@ -352,7 +352,7 @@ public abstract class AEBaseContainer extends Container {
                                 maxSize = d.getMaxStackSize();
                             }
 
-                            final ItemStack tmp = tis.copy();
+                            final net.minecraft.world.item.ItemStack tmp = tis.copy();
                             if (tmp.getCount() > maxSize) {
                                 tmp.setCount(maxSize);
                             }
@@ -361,11 +361,11 @@ public abstract class AEBaseContainer extends Container {
                             d.set(tmp);
 
                             if (tis.getCount() <= 0) {
-                                clickSlot.set(ItemStack.EMPTY);
+                                clickSlot.set(net.minecraft.world.item.ItemStack.EMPTY);
                                 d.setChanged();
 
                                 this.broadcastChanges();
-                                return ItemStack.EMPTY;
+                                return net.minecraft.world.item.ItemStack.EMPTY;
                             } else {
                                 this.broadcastChanges();
                             }
@@ -374,16 +374,16 @@ public abstract class AEBaseContainer extends Container {
                 }
             }
 
-            clickSlot.set(!tis.isEmpty() ? tis : ItemStack.EMPTY);
+            clickSlot.set(!tis.isEmpty() ? tis : net.minecraft.world.item.ItemStack.EMPTY);
         }
 
         // ???
         this.broadcastChanges();
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
-    private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
-        final ItemStack t = d.getItem().copy();
+    private boolean x(net.minecraft.world.inventory.Slot clickSlot, net.minecraft.world.item.ItemStack tis, net.minecraft.world.inventory.Slot d) {
+        final net.minecraft.world.item.ItemStack t = d.getItem().copy();
 
         if (Platform.itemComparisons().isSameItem(t, tis)) {
             int maxSize = t.getMaxStackSize();
@@ -403,7 +403,7 @@ public abstract class AEBaseContainer extends Container {
                 d.set(t);
 
                 if (tis.getCount() <= 0) {
-                    clickSlot.set(ItemStack.EMPTY);
+                    clickSlot.set(net.minecraft.world.item.ItemStack.EMPTY);
                     d.setChanged();
 
                     // ???
@@ -421,10 +421,10 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(final PlayerEntity PlayerEntity) {
+    public boolean stillValid(final Player PlayerEntity) {
         if (this.isValidContainer()) {
-            if (this.tileEntity instanceof IInventory) {
-                return ((IInventory) this.tileEntity).stillValid(PlayerEntity);
+            if (this.tileEntity instanceof Container) {
+                return ((Container) this.tileEntity).stillValid(PlayerEntity);
             }
             return true;
         }
@@ -432,7 +432,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean canDragTo(final Slot s) {
+    public boolean canDragTo(final net.minecraft.world.inventory.Slot s) {
         if (s instanceof AppEngSlot) {
             return ((AppEngSlot) s).isDraggable();
         } else {
@@ -443,11 +443,11 @@ public abstract class AEBaseContainer extends Container {
     /**
      * Sets a filter slot based on a <b>non-existent</b> item sent by the client.
      */
-    public void setFilter(final int slotIndex, ItemStack item) {
+    public void setFilter(final int slotIndex, net.minecraft.world.item.ItemStack item) {
         if (slotIndex < 0 || slotIndex >= this.slots.size()) {
             return;
         }
-        final Slot s = this.getSlot(slotIndex);
+        final net.minecraft.world.inventory.Slot s = this.getSlot(slotIndex);
         if (!(s instanceof AppEngSlot)) {
             return;
         }
@@ -461,11 +461,11 @@ public abstract class AEBaseContainer extends Container {
         }
     }
 
-    public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
+    public void doAction(final ServerPlayer player, final InventoryAction action, final int slot, final long id) {
         if (slot < 0 || slot >= this.slots.size()) {
             return;
         }
-        final Slot s = this.getSlot(slot);
+        final net.minecraft.world.inventory.Slot s = this.getSlot(slot);
 
         if (s instanceof CraftingTermSlot) {
             switch (action) {
@@ -479,13 +479,13 @@ public abstract class AEBaseContainer extends Container {
         }
 
         if (s instanceof FakeSlot) {
-            final ItemStack hand = player.inventory.getCarried();
+            final net.minecraft.world.item.ItemStack hand = player.inventory.getCarried();
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
 
                     if (hand.isEmpty()) {
-                        s.set(ItemStack.EMPTY);
+                        s.set(net.minecraft.world.item.ItemStack.EMPTY);
                     } else {
                         s.set(hand.copy());
                     }
@@ -494,7 +494,7 @@ public abstract class AEBaseContainer extends Container {
                 case PLACE_SINGLE:
 
                     if (!hand.isEmpty()) {
-                        final ItemStack is = hand.copy();
+                        final net.minecraft.world.item.ItemStack is = hand.copy();
                         is.setCount(1);
                         s.set(is);
                     }
@@ -502,7 +502,7 @@ public abstract class AEBaseContainer extends Container {
                     break;
                 case SPLIT_OR_PLACE_SINGLE:
 
-                    ItemStack is = s.getItem();
+                    net.minecraft.world.item.ItemStack is = s.getItem();
                     if (!is.isEmpty()) {
                         if (hand.isEmpty()) {
                             is.setCount(Math.max(1, is.getCount() - 1));
@@ -530,32 +530,32 @@ public abstract class AEBaseContainer extends Container {
         }
 
         if (action == InventoryAction.MOVE_REGION) {
-            final List<Slot> from = new ArrayList<>();
+            final List<net.minecraft.world.inventory.Slot> from = new ArrayList<>();
 
-            for (final Slot j : this.slots) {
+            for (final net.minecraft.world.inventory.Slot j : this.slots) {
                 if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
                     from.add(j);
                 }
             }
 
-            for (final Slot fr : from) {
+            for (final net.minecraft.world.inventory.Slot fr : from) {
                 this.quickMoveStack(player, fr.index);
             }
         }
 
     }
 
-    protected void updateHeld(final ServerPlayerEntity p) {
+    protected void updateHeld(final ServerPlayer p) {
         NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
                 p.inventory.getCarried()), p);
     }
 
-    protected ItemStack transferStackToContainer(final ItemStack input) {
+    protected net.minecraft.world.item.ItemStack transferStackToContainer(final net.minecraft.world.item.ItemStack input) {
         return input;
     }
 
     public void swapSlotContents(final int slotA, final int slotB) {
-        final Slot a = this.getSlot(slotA);
+        final net.minecraft.world.inventory.Slot a = this.getSlot(slotA);
         final Slot b = this.getSlot(slotB);
 
         // NPE protection...
@@ -563,8 +563,8 @@ public abstract class AEBaseContainer extends Container {
             return;
         }
 
-        final ItemStack isA = a.getItem();
-        final ItemStack isB = b.getItem();
+        final net.minecraft.world.item.ItemStack isA = a.getItem();
+        final net.minecraft.world.item.ItemStack isB = b.getItem();
 
         // something to do?
         if (isA.isEmpty() && isB.isEmpty()) {
@@ -591,8 +591,8 @@ public abstract class AEBaseContainer extends Container {
             return;
         }
 
-        ItemStack testA = isB.isEmpty() ? ItemStack.EMPTY : isB.copy();
-        ItemStack testB = isA.isEmpty() ? ItemStack.EMPTY : isA.copy();
+        net.minecraft.world.item.ItemStack testA = isB.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : isB.copy();
+        net.minecraft.world.item.ItemStack testB = isA.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : isA.copy();
 
         // can put some back?
         if (!testA.isEmpty() && testA.getCount() > a.getMaxStackSize()) {
@@ -630,11 +630,11 @@ public abstract class AEBaseContainer extends Container {
     public void onServerDataSync() {
     }
 
-    public void onSlotChange(final Slot s) {
+    public void onSlotChange(final net.minecraft.world.inventory.Slot s) {
 
     }
 
-    public boolean isValidForSlot(final Slot s, final ItemStack i) {
+    public boolean isValidForSlot(final net.minecraft.world.inventory.Slot s, final ItemStack i) {
         return true;
     }
 
@@ -669,9 +669,9 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected final void sendPacketToClient(BasePacket packet) {
-        for (IContainerListener c : this.containerListeners) {
-            if (c instanceof ServerPlayerEntity) {
-                NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) c);
+        for (ContainerListener c : this.containerListeners) {
+            if (c instanceof ServerPlayer) {
+                NetworkHandler.instance().sendTo(packet, (ServerPlayer) c);
             }
         }
     }
@@ -684,13 +684,13 @@ public abstract class AEBaseContainer extends Container {
      * @return True if {@link IGuiItemObject#getItemStack()} is still in the expected slot.
      */
     protected final boolean ensureGuiItemIsInSlot(IGuiItemObject guiObject, int slot) {
-        ItemStack expectedItem = guiObject.getItemStack();
+        net.minecraft.world.item.ItemStack expectedItem = guiObject.getItemStack();
 
-        ItemStack currentItem = this.getPlayerInventory().getItem(slot);
+        net.minecraft.world.item.ItemStack currentItem = this.getPlayerInventory().getItem(slot);
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
             if (currentItem == expectedItem) {
                 return true;
-            } else if (ItemStack.isSame(expectedItem, currentItem)) {
+            } else if (net.minecraft.world.item.ItemStack.isSame(expectedItem, currentItem)) {
                 // If the items are still equivalent, we just restore referential equality so that modifications
                 // to the GUI item are reflected in the slot
                 this.getPlayerInventory().setItem(slot, expectedItem);
@@ -702,13 +702,13 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public void addSlotListener(IContainerListener listener) {
+    public void addSlotListener(ContainerListener listener) {
         super.addSlotListener(listener);
 
         // The first listener that is added is our opportunity to send the initial data packet, since
         // this happens after the OpenContainer packet has been sent to the client, but before any other
         // processing continues.
-        if (listener instanceof ServerPlayerEntity && dataSync.hasFields()) {
+        if (listener instanceof ServerPlayer && dataSync.hasFields()) {
             sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
         }
     }
@@ -725,7 +725,7 @@ public abstract class AEBaseContainer extends Container {
      * Receives a container action from the client.
      */
     public final void receiveClientAction(GuiDataSyncPacket packet) {
-        PacketBuffer data = packet.getData();
+        FriendlyByteBuf data = packet.getData();
         String name = data.readUtf(256);
 
         ClientAction<?> action = clientActions.get(name);
@@ -825,7 +825,7 @@ public abstract class AEBaseContainer extends Container {
             this.handler = handler;
         }
 
-        public void handle(PacketBuffer buffer) {
+        public void handle(FriendlyByteBuf buffer) {
             T arg = null;
             if (argClass != Void.class) {
                 String payload = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);

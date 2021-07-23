@@ -24,13 +24,14 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -83,7 +84,7 @@ public class AppEngClient extends AppEngBase {
 
     private static AppEngClient INSTANCE;
 
-    private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+    private final EnumMap<ActionKey, KeyMapping> bindings = new EnumMap<>(ActionKey.class);
 
     public AppEngClient() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -104,7 +105,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public World getClientWorld() {
+    public Level getClientWorld() {
         return Minecraft.getInstance().level;
     }
 
@@ -141,7 +142,7 @@ public class AppEngClient extends AppEngBase {
         MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
 
         for (ActionKey key : ActionKey.values()) {
-            final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
+            final KeyMapping binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
             ClientRegistry.registerKeyBinding(binding);
             this.bindings.put(key, binding);
         }
@@ -185,10 +186,10 @@ public class AppEngClient extends AppEngBase {
         }
 
         final Minecraft mc = Minecraft.getInstance();
-        final PlayerEntity player = mc.player;
+        final Player player = mc.player;
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            final boolean mainHand = player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean mainHand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()
@@ -198,7 +199,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    public boolean isActionKey(ActionKey key, InputMappings.Input pressedKey) {
+    public boolean isActionKey(ActionKey key, Key pressedKey) {
         return this.bindings.get(key).isActiveAndMatches(pressedKey);
     }
 
@@ -215,15 +216,15 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public RayTraceResult getCurrentMouseOver() {
+    public net.minecraft.world.phys.HitResult getCurrentMouseOver() {
         return Minecraft.getInstance().hitResult;
     }
 
     // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
     // vanilla particle system
     @Override
-    public void spawnEffect(final EffectType effect, final World world, final double posX, final double posY,
-            final double posZ, final Object o) {
+    public void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
+                            final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:
@@ -240,7 +241,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnVibrant(final World w, final double x, final double y, final double z) {
+    private void spawnVibrant(final Level w, final double x, final double y, final double z) {
         if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
@@ -251,7 +252,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnEnergy(final World w, final double posX, final double posY, final double posZ) {
+    private void spawnEnergy(final Level w, final double posX, final double posY, final double posZ) {
         final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
@@ -260,7 +261,7 @@ public class AppEngClient extends AppEngBase {
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
-    private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
+    private void spawnLightning(final Level world, final double posX, final double posY, final double posZ) {
         Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
                 0.0f);
     }
@@ -271,7 +272,7 @@ public class AppEngClient extends AppEngBase {
             return;
         }
 
-        final PlayerEntity player = mc.player;
+        final Player player = mc.player;
 
         final int x = (int) player.getX();
         final int y = (int) player.getY();
@@ -290,7 +291,7 @@ public class AppEngClient extends AppEngBase {
         }
 
         final Minecraft mc = Minecraft.getInstance();
-        final PlayerEntity player = mc.player;
+        final Player player = mc.player;
 
         return this.getCableRenderModeForPlayer(player);
     }

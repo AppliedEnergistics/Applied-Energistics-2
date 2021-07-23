@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -34,26 +34,26 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.tile.AEBaseTileEntity;
 
-public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity, IEnergyStorage {
+public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements TickableBlockEntity, IEnergyStorage {
     /**
      * The base energy injected each tick. Adjacent TileEnergyGenerators will increase it to pow(base, #generators).
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public EnergyGeneratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
     public void tick() {
-        World world = this.getLevel();
+        Level world = this.getLevel();
         if (world == null || world.isClientSide) {
             return;
         }
 
         int tier = 1;
-        for (Direction facing : Direction.values()) {
-            final TileEntity te = world.getBlockEntity(this.getBlockPos().relative(facing));
+        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+            final BlockEntity te = world.getBlockEntity(this.getBlockPos().relative(facing));
 
             if (te instanceof EnergyGeneratorTileEntity) {
                 tier++;
@@ -62,8 +62,8 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
 
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
-        for (Direction facing : Direction.values()) {
-            final TileEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
+        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+            final BlockEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
             if (te == null) {
                 continue;
             }
@@ -80,7 +80,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
     @SuppressWarnings("unchecked")
     @Override
     @Nullable
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
         if (capability == CapabilityEnergy.ENERGY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this);
         }

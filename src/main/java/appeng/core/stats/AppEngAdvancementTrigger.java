@@ -27,25 +27,26 @@ import java.util.Set;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTrigger.Listener;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
 
 public class AppEngAdvancementTrigger
-        implements ICriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
+        implements CriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
     private final ResourceLocation ID;
     private final Map<PlayerAdvancements, AppEngAdvancementTrigger.Listeners> listeners = new HashMap<>();
 
     public AppEngAdvancementTrigger(String parString) {
         super();
-        this.ID = new ResourceLocation(AppEng.MOD_ID, parString);
+        this.ID = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, parString);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void addPlayerListener(PlayerAdvancements playerAdvancementsIn,
-            ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
+            net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l == null) {
@@ -68,7 +69,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void removePlayerListener(PlayerAdvancements playerAdvancementsIn,
-            ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
+            net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l != null) {
@@ -86,12 +87,12 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public Instance createInstance(JsonObject object, ConditionArrayParser conditions) {
+    public Instance createInstance(JsonObject object, DeserializationContext conditions) {
         return new AppEngAdvancementTrigger.Instance(this.getId());
     }
 
     @Override
-    public void trigger(ServerPlayerEntity parPlayer) {
+    public void trigger(ServerPlayer parPlayer) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(parPlayer.getAdvancements());
 
         if (l != null) {
@@ -99,8 +100,8 @@ public class AppEngAdvancementTrigger
         }
     }
 
-    public static class Instance implements ICriterionInstance {
-        private final ResourceLocation id;
+    public static class Instance implements CriterionTriggerInstance {
+        private final net.minecraft.resources.ResourceLocation id;
 
         public Instance(ResourceLocation id) {
             this.id = id;
@@ -111,19 +112,19 @@ public class AppEngAdvancementTrigger
         }
 
         @Override
-        public ResourceLocation getCriterion() {
+        public net.minecraft.resources.ResourceLocation getCriterion() {
             return id;
         }
 
         @Override
-        public JsonObject serializeToJson(ConditionArraySerializer conditions) {
+        public JsonObject serializeToJson(SerializationContext conditions) {
             return new JsonObject();
         }
     }
 
     static class Listeners {
         private final PlayerAdvancements playerAdvancements;
-        private final Set<ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance>> listeners = new HashSet<>();
+        private final Set<net.minecraft.advancements.CriterionTrigger.Listener<Instance>> listeners = new HashSet<>();
 
         Listeners(PlayerAdvancements playerAdvancementsIn) {
             this.playerAdvancements = playerAdvancementsIn;
@@ -133,18 +134,18 @@ public class AppEngAdvancementTrigger
             return this.listeners.isEmpty();
         }
 
-        public void add(ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
+        public void add(net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
             this.listeners.add(listener);
         }
 
-        public void remove(ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
+        public void remove(net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
             this.listeners.remove(listener);
         }
 
-        public void trigger(PlayerEntity player) {
-            List<ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance>> list = null;
+        public void trigger(Player player) {
+            List<net.minecraft.advancements.CriterionTrigger.Listener<Instance>> list = null;
 
-            for (ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener : this.listeners) {
+            for (net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener : this.listeners) {
                 if (listener.getTriggerInstance().test()) {
                     if (list == null) {
                         list = new ArrayList<>();
@@ -155,7 +156,7 @@ public class AppEngAdvancementTrigger
             }
 
             if (list != null) {
-                for (ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> l : list) {
+                for (net.minecraft.advancements.CriterionTrigger.Listener<Instance> l : list) {
                     l.run(this.playerAdvancements);
                 }
             }

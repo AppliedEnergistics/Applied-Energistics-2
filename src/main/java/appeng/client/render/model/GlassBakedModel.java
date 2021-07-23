@@ -31,21 +31,21 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -64,30 +64,30 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final RenderMaterial TEXTURE_A = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final RenderMaterial TEXTURE_B = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    static final Material TEXTURE_B = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final RenderMaterial TEXTURE_C = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final RenderMaterial TEXTURE_D = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
+    static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
-    static final RenderMaterial[] TEXTURES_FRAME = generateTexturesFrame();
+    static final Material[] TEXTURES_FRAME = generateTexturesFrame();
 
     // Generates the required textures for the frame
-    private static RenderMaterial[] generateTexturesFrame() {
+    private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, rl)).toArray(RenderMaterial[]::new);
+                .map(rl -> new Material(TextureAtlas.LOCATION_BLOCKS, rl)).toArray(Material[]::new);
     }
 
     private final TextureAtlasSprite[] glassTextures;
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+    public GlassBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
                 bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
                 bakedTextureGetter.apply(TEXTURE_D) };
@@ -102,7 +102,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData extraData) {
+                                    IModelData extraData) {
         if (side == null) {
             return Collections.emptyList();
         }
@@ -133,7 +133,7 @@ class GlassBakedModel implements IDynamicBakedModel {
         // Render the glass side
         final List<BakedQuad> quads = new ArrayList<>(5); // At most 5
 
-        final List<Vector3d> corners = RenderHelper.getFaceCorners(side);
+        final List<Vec3> corners = RenderHelper.getFaceCorners(side);
         quads.add(this.createQuad(side, corners, glassTexture, u, v));
 
         /*
@@ -163,26 +163,26 @@ class GlassBakedModel implements IDynamicBakedModel {
     /**
      * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
      */
-    private static int makeBitmask(GlassState state, Direction side) {
+    private static int makeBitmask(GlassState state, net.minecraft.core.Direction side) {
         switch (side) {
             case DOWN:
-                return makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
+                return makeBitmask(state, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.EAST, Direction.NORTH, net.minecraft.core.Direction.WEST);
             case UP:
-                return makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
+                return makeBitmask(state, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST);
             case NORTH:
-                return makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
+                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.EAST);
             case SOUTH:
-                return makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
+                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.WEST);
             case WEST:
-                return makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
+                return makeBitmask(state, Direction.UP, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH);
             case EAST:
-                return makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
+                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.SOUTH);
             default:
                 throw new IllegalArgumentException("Unsupported side!");
         }
     }
 
-    private static int makeBitmask(GlassState state, Direction up, Direction right, Direction down, Direction left) {
+    private static int makeBitmask(GlassState state, net.minecraft.core.Direction up, net.minecraft.core.Direction right, net.minecraft.core.Direction down, net.minecraft.core.Direction left) {
 
         int bitmask = 0;
 
@@ -201,23 +201,23 @@ class GlassBakedModel implements IDynamicBakedModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(Direction side, List<Vector3d> corners, TextureAtlasSprite sprite, float uOffset,
-            float vOffset) {
+    private BakedQuad createQuad(net.minecraft.core.Direction side, List<Vec3> corners, TextureAtlasSprite sprite, float uOffset,
+                                 float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private BakedQuad createQuad(Direction side, Vector3d c1, Vector3d c2, Vector3d c3, Vector3d c4,
-            TextureAtlasSprite sprite, float uOffset, float vOffset) {
-        Vector3d normal = new Vector3d(side.getNormal().getX(), side.getNormal().getY(),
+    private BakedQuad createQuad(net.minecraft.core.Direction side, Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4,
+                                 TextureAtlasSprite sprite, float uOffset, float vOffset) {
+        Vec3 normal = new Vec3(side.getNormal().getX(), side.getNormal().getY(),
                 side.getNormal().getZ());
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
-        float u1 = MathHelper.clamp(0 - uOffset, 0, 16);
-        float u2 = MathHelper.clamp(16 - uOffset, 0, 16);
-        float v1 = MathHelper.clamp(0 - vOffset, 0, 16);
-        float v2 = MathHelper.clamp(16 - vOffset, 0, 16);
+        float u1 = Mth.clamp(0 - uOffset, 0, 16);
+        float u2 = Mth.clamp(16 - uOffset, 0, 16);
+        float v1 = Mth.clamp(0 - vOffset, 0, 16);
+        float v2 = Mth.clamp(16 - vOffset, 0, 16);
 
         BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
         builder.setQuadOrientation(side);
@@ -232,8 +232,8 @@ class GlassBakedModel implements IDynamicBakedModel {
      * This method is as complicated as it is, because the order in which we push data into the vertexbuffer actually
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
-    private void putVertex(BakedQuadBuilder builder, Vector3d normal, double x, double y, double z,
-            TextureAtlasSprite sprite, float u, float v) {
+    private void putVertex(BakedQuadBuilder builder, Vec3 normal, double x, double y, double z,
+                           TextureAtlasSprite sprite, float u, float v) {
         VertexFormat vertexFormat = builder.getVertexFormat();
         for (int e = 0; e < vertexFormat.getElements().size(); e++) {
             VertexFormatElement el = vertexFormat.getElements().get(e);
@@ -263,8 +263,8 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
     @Override
@@ -302,12 +302,12 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull net.minecraft.core.BlockPos pos, @Nonnull net.minecraft.world.level.block.state.BlockState state,
+                                   @Nonnull IModelData tileData) {
 
-        EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
+        EnumSet<net.minecraft.core.Direction> flushWith = EnumSet.noneOf(net.minecraft.core.Direction.class);
         // Test every direction for another glass block
-        for (Direction facing : Direction.values()) {
+        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
             if (isGlassBlock(world, pos, facing)) {
                 flushWith.add(facing);
             }
@@ -318,7 +318,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     }
 
-    private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing) {
+    private static boolean isGlassBlock(BlockGetter world, net.minecraft.core.BlockPos pos, net.minecraft.core.Direction facing) {
         return world.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 

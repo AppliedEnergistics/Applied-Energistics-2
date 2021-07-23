@@ -18,16 +18,16 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
 
 import appeng.api.config.Upgrades;
 import appeng.util.inv.IAEAppEngInventory;
+import net.minecraft.world.level.ItemLike;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
-    private final Item item;
+    private final net.minecraft.world.item.Item item;
 
-    public DefinitionUpgradeInventory(final IItemProvider item, final IAEAppEngInventory parent, final int s) {
+    public DefinitionUpgradeInventory(final ItemLike item, final IAEAppEngInventory parent, final int s) {
         super(parent, s);
 
         this.item = item.asItem();

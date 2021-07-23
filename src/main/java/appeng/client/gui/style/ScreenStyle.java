@@ -28,9 +28,10 @@ import javax.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component.Serializer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 import appeng.container.SlotSemantic;
 
@@ -41,10 +42,10 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(ITextComponent.class, new ITextComponent.Serializer())
-            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+            .registerTypeHierarchyAdapter(net.minecraft.network.chat.Component.class, new Serializer())
+            .registerTypeHierarchyAdapter(Style.class, new net.minecraft.network.chat.Style.Serializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
-            .registerTypeAdapter(Rectangle2d.class, Rectangle2dDeserializer.INSTANCE)
+            .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)
             .create();
 

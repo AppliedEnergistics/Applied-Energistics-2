@@ -22,12 +22,12 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
-public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> {
+public class BlockDefinition<T extends Block> extends ItemDefinition<net.minecraft.world.item.BlockItem> {
     private final T block;
 
     public BlockDefinition(ResourceLocation id, T block, BlockItem item) {
@@ -43,7 +43,7 @@ public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> 
     public final ItemStack stack(int stackSize) {
         Preconditions.checkArgument(stackSize > 0);
 
-        return new ItemStack(block, stackSize);
+        return new net.minecraft.world.item.ItemStack(block, stackSize);
     }
 
 }

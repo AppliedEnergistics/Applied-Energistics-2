@@ -23,15 +23,15 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 
 import appeng.api.util.AEPartLocation;
 
-import net.minecraft.particles.IParticleData.IDeserializer;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
-public class EnergyParticleData implements IParticleData {
+public class EnergyParticleData implements net.minecraft.core.particles.ParticleOptions {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
 
@@ -44,7 +44,7 @@ public class EnergyParticleData implements IParticleData {
         this.direction = direction;
     }
 
-    public static final IDeserializer<EnergyParticleData> DESERIALIZER = new IDeserializer<EnergyParticleData>() {
+    public static final Deserializer<EnergyParticleData> DESERIALIZER = new Deserializer<EnergyParticleData>() {
         @Override
         public EnergyParticleData fromCommand(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
                 throws CommandSyntaxException {
@@ -56,7 +56,7 @@ public class EnergyParticleData implements IParticleData {
         }
 
         @Override
-        public EnergyParticleData fromNetwork(ParticleType<EnergyParticleData> particleTypeIn, PacketBuffer buffer) {
+        public EnergyParticleData fromNetwork(ParticleType<EnergyParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             boolean forItem = buffer.readBoolean();
             AEPartLocation direction = AEPartLocation.values()[buffer.readByte()];
             return new EnergyParticleData(forItem, direction);
@@ -64,12 +64,12 @@ public class EnergyParticleData implements IParticleData {
     };
 
     @Override
-    public ParticleType<?> getType() {
+    public net.minecraft.core.particles.ParticleType<?> getType() {
         return ParticleTypes.ENERGY;
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         buffer.writeBoolean(forItem);
         buffer.writeByte((byte) direction.ordinal());
     }

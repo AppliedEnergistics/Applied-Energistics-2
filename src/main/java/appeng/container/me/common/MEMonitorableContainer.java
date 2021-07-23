@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -114,9 +114,9 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     @Nullable
     private IClientRepo<T> clientRepo;
 
-    public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-            final ITerminalHost host, final boolean bindInventory,
-            IStorageChannel<T> storageChannel) {
+    public MEMonitorableContainer(MenuType<?> containerType, int id, Inventory ip,
+                                  final ITerminalHost host, final boolean bindInventory,
+                                  IStorageChannel<T> storageChannel) {
         super(containerType, id, ip, host);
 
         this.storageChannel = storageChannel;
@@ -304,7 +304,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void removeSlotListener(final IContainerListener c) {
+    public void removeSlotListener(final ContainerListener c) {
         super.removeSlotListener(c);
 
         if (this.containerListeners.isEmpty() && this.monitor != null) {
@@ -313,7 +313,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void removed(final PlayerEntity player) {
+    public void removed(final Player player) {
         super.removed(player);
         if (this.monitor != null) {
             this.monitor.removeListener(this);
@@ -382,7 +382,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
             return;
         }
 
-        ServerPlayerEntity player = (ServerPlayerEntity) this.getPlayerInventory().player;
+        ServerPlayer player = (ServerPlayer) this.getPlayerInventory().player;
 
         // Serial -1 is used to target empty virtual slots, which only allows the player to put
         // items under their cursor into the network inventory
@@ -401,8 +401,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayerEntity player, @Nullable T stack,
-            InventoryAction action);
+    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T stack,
+                                                     InventoryAction action);
 
     @Nullable
     protected final T getStackBySerial(long serial) {

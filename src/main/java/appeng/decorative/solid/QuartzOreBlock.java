@@ -18,23 +18,23 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 
 import appeng.block.AEBaseBlock;
-
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class QuartzOreBlock extends AEBaseBlock {
-    public QuartzOreBlock(Properties props) {
+    public QuartzOreBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune,
-            int silktouch) {
-        return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
+    public int getExpDrop(BlockState state, LevelReader reader, BlockPos pos, int fortune,
+                          int silktouch) {
+        return silktouch == 0 ? Mth.nextInt(RANDOM, 2, 5) : 0;
     }
 
 }

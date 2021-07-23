@@ -21,11 +21,11 @@ package appeng.container.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -36,7 +36,7 @@ import appeng.core.AELog;
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
-    private static final IInventory EMPTY_INVENTORY = new Inventory(0);
+    private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
     private final IItemHandler itemHandler;
     private final int invSlot;
 
@@ -70,11 +70,11 @@ public class AppEngSlot extends Slot {
     }
 
     public void clearStack() {
-        ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, ItemStack.EMPTY);
+        ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, net.minecraft.world.item.ItemStack.EMPTY);
     }
 
     @Override
-    public boolean mayPlace(@Nonnull final ItemStack stack) {
+    public boolean mayPlace(@Nonnull final net.minecraft.world.item.ItemStack stack) {
         if (this.isSlotEnabled()) {
             return this.itemHandler.isItemValid(this.invSlot, stack);
         }
@@ -85,11 +85,11 @@ public class AppEngSlot extends Slot {
     @Nonnull
     public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         if (this.itemHandler.getSlots() <= this.getSlotIndex()) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         // Some slots may want to display a different stack in the GUI, which we solve by
@@ -133,12 +133,12 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public int getMaxStackSize(@Nonnull ItemStack stack) {
+    public int getMaxStackSize(@Nonnull net.minecraft.world.item.ItemStack stack) {
         return Math.min(this.getMaxStackSize(), stack.getMaxStackSize());
     }
 
     @Override
-    public boolean mayPickup(final PlayerEntity player) {
+    public boolean mayPickup(final Player player) {
         if (this.isSlotEnabled()) {
             return !this.itemHandler.extractItem(this.invSlot, 1, true).isEmpty();
         }
@@ -170,7 +170,7 @@ public class AppEngSlot extends Slot {
      * This method can be overridden in a subclass to show a specific item stack in the UI when this slot is being
      * rendered.
      */
-    public ItemStack getDisplayStack() {
+    public net.minecraft.world.item.ItemStack getDisplayStack() {
         return this.itemHandler.getStackInSlot(this.invSlot);
     }
 

@@ -20,16 +20,15 @@ package appeng.integration.modules.jei;
 
 import java.util.Map;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -41,8 +40,9 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.helpers.IContainerCraftingPacket;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPacket>
+abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContainerCraftingPacket>
         implements IRecipeTransferHandler<T> {
 
     private final Class<T> containerClass;
@@ -60,16 +60,16 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
 
     @Override
     public final IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
-            PlayerEntity player, boolean maxTransfer, boolean doTransfer) {
-        if (!(recipe instanceof IRecipe)) {
+                                                     Player player, boolean maxTransfer, boolean doTransfer) {
+        if (!(recipe instanceof Recipe)) {
             return this.helper.createInternalError();
         }
-        final IRecipe<?> irecipe = (IRecipe<?>) recipe;
+        final Recipe<?> irecipe = (Recipe<?>) recipe;
         final ResourceLocation recipeId = irecipe.getId();
 
         if (recipeId == null) {
             return this.helper
-                    .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.missing_id"));
+                    .createUserErrorWithTooltip(new TranslatableComponent("jei.appliedenergistics2.missing_id"));
         }
 
         // Check that the recipe can actually be looked up via the manager, i.e. our facade recipes have an ID, but are
@@ -79,14 +79,14 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
             // Validate that the recipe is a shapeless or shapedrecipe, since we can serialize those
             if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
                 return this.helper
-                        .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.missing_id"));
+                        .createUserErrorWithTooltip(new TranslatableComponent("jei.appliedenergistics2.missing_id"));
             }
             canSendReference = false;
         }
 
         if (!irecipe.canCraftInDimensions(3, 3)) {
             return this.helper.createUserErrorWithTooltip(
-                    new TranslationTextComponent("jei.appliedenergistics2.recipe_too_large"));
+                    new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
         }
 
         final IRecipeTransferError error = doTransferRecipe(container, irecipe, recipeLayout, player, maxTransfer);
@@ -106,7 +106,7 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
                         .filter(e -> e.getValue().isInput()).mapToInt(Map.Entry::getKey).min().orElse(0);
 
                 // Now map the actual ingredients into the output/input
-                for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
+                for (Map.Entry<Integer, ? extends IGuiIngredient<net.minecraft.world.item.ItemStack>> entry : recipeLayout.getItemStacks()
                         .getGuiIngredients().entrySet()) {
                     IGuiIngredient<ItemStack> item = entry.getValue();
                     if (item.getDisplayedIngredient() == null) {
@@ -132,8 +132,8 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
         return error;
     }
 
-    protected abstract IRecipeTransferError doTransferRecipe(T container, IRecipe<?> recipe, IRecipeLayout recipeLayout,
-            PlayerEntity player, boolean maxTransfer);
+    protected abstract IRecipeTransferError doTransferRecipe(T container, Recipe<?> recipe, IRecipeLayout recipeLayout,
+                                                             Player player, boolean maxTransfer);
 
     protected abstract boolean isCrafting();
 

@@ -18,11 +18,11 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -44,7 +44,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
     private byte currentMeta = -1;
 
-    public EnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public EnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setIdlePowerUsage(0)
@@ -71,7 +71,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     public static int getStorageLevelFromFillFactor(double fillFactor) {
         byte factor = (byte) (8.0 * fillFactor);
 
-        return MathHelper.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
+        return Mth.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
     }
 
     private void changePowerLevel() {
@@ -89,14 +89,14 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putDouble("internalCurrentPower", this.internalCurrentPower);
         return data;
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
@@ -107,16 +107,16 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = compound.getDouble("internalCurrentPower");
         }
     }
 
     @Override
-    public CompoundNBT downloadSettings(final SettingsFrom from) {
+    public CompoundTag downloadSettings(final SettingsFrom from) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
-            final CompoundNBT tag = new CompoundNBT();
+            final CompoundTag tag = new CompoundTag();
             tag.putDouble("internalCurrentPower", this.internalCurrentPower);
             tag.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
             return tag;

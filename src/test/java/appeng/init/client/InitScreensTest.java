@@ -36,10 +36,10 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.network.chat.Component;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;
@@ -53,7 +53,7 @@ class InitScreensTest {
 
     @BeforeAll
     static void setUp() {
-        try (MockedStatic<ScreenManager> registration = Mockito.mockStatic(ScreenManager.class)) {
+        try (MockedStatic<MenuScreens> registration = Mockito.mockStatic(MenuScreens.class)) {
             InitScreens.init();
         }
     }
@@ -102,9 +102,9 @@ class InitScreensTest {
     @Test
     void testMissingTranslationKeys() throws IOException {
         // Load AE2 translation data
-        Map<String, String> i18n = new HashMap<>(LanguageMap.getInstance().getLanguageData());
+        Map<String, String> i18n = new HashMap<>(Language.getInstance().getLanguageData());
         try (InputStream in = getClass().getResourceAsStream("/assets/appliedenergistics2/lang/en_us.json")) {
-            LanguageMap.func_240593_a_(in, i18n::put);
+            Language.func_240593_a_(in, i18n::put);
         }
 
         StyleManager.initialize(MockResourceManager.create());
@@ -121,16 +121,16 @@ class InitScreensTest {
         assertThat(errors).withFailMessage(formatMissingTranslations(errors)).isEmpty();
     }
 
-    private void collectMissingTranslations(String path, ITextComponent text, Map<String, String> errors,
-            Set<String> i18nKeys) {
-        if (text instanceof TranslationTextComponent) {
-            String key = ((TranslationTextComponent) text).getKey();
+    private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text, Map<String, String> errors,
+                                            Set<String> i18nKeys) {
+        if (text instanceof TranslatableComponent) {
+            String key = ((TranslatableComponent) text).getKey();
             if (!i18nKeys.contains(key)) {
                 errors.merge(path, key, (a, b) -> a + ", " + b);
             }
         }
 
-        for (ITextComponent sibling : text.getSiblings()) {
+        for (net.minecraft.network.chat.Component sibling : text.getSiblings()) {
             collectMissingTranslations(path, sibling, errors, i18nKeys);
         }
     }

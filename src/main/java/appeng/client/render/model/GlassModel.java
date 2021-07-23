@@ -23,13 +23,13 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -40,16 +40,16 @@ import appeng.client.render.BasicUnbakedModel;
 public class GlassModel implements BasicUnbakedModel<GlassModel> {
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         return new GlassBakedModel(spriteGetter);
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return ImmutableSet
-                .<RenderMaterial>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
+                .<Material>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
                         GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D)
                 .add(GlassBakedModel.TEXTURES_FRAME).build().stream();
     }

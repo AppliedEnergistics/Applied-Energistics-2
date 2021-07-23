@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.TunnelType;
@@ -35,7 +35,7 @@ import appeng.api.features.IP2PTunnelRegistry;
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     private static final int INITIAL_CAPACITY = 40;
 
-    private final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
+    private final Map<net.minecraft.world.item.ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
     private final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
     private final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
 

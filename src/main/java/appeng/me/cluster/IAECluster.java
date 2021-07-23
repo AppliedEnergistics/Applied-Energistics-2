@@ -20,15 +20,15 @@ package appeng.me.cluster;
 
 import java.util.Iterator;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 
 public interface IAECluster {
 
     /**
      * The minimum x,y,z position still within the bounds of the cluster.
      */
-    BlockPos getBoundsMin();
+    net.minecraft.core.BlockPos getBoundsMin();
 
     /**
      * The maximum x,y,z position still within the bounds of the cluster.
@@ -45,5 +45,5 @@ public interface IAECluster {
      */
     boolean isDestroyed();
 
-    Iterator<? extends TileEntity> getTiles();
+    Iterator<? extends BlockEntity> getTiles();
 }

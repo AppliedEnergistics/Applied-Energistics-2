@@ -26,22 +26,22 @@ import java.util.WeakHashMap;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -58,7 +58,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class EncodedPatternItem extends AEBaseItem {
 
@@ -70,31 +70,31 @@ public class EncodedPatternItem extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-    public EncodedPatternItem(Properties properties) {
+    public EncodedPatternItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
         this.clearPattern(player.getItemInHand(hand), player);
 
-        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.clearPattern(stack, context.getPlayer())
-                ? ActionResultType.sidedSuccess(context.getLevel().isClientSide())
-                : ActionResultType.PASS;
+                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                : InteractionResult.PASS;
     }
 
-    private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
+    private boolean clearPattern(final ItemStack stack, final Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             if (player.getCommandSenderWorld().isClientSide()) {
                 return false;
             }
 
-            final PlayerInventory inv = player.inventory;
+            final Inventory inv = player.inventory;
 
             ItemStack is = AEItems.BLANK_PATTERN.stack(stack.getCount());
             if (!is.isEmpty()) {
@@ -112,8 +112,8 @@ public class EncodedPatternItem extends AEBaseItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
 
         if (details == null) {
@@ -121,16 +121,16 @@ public class EncodedPatternItem extends AEBaseItem {
                 return;
             }
 
-            stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(TextFormatting.RED));
+            stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
+            final net.minecraft.network.chat.Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
                     .copy().append(": ");
-            final ITextComponent and = new StringTextComponent(" ").copy().append(GuiText.And.text())
+            final net.minecraft.network.chat.Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                     .copy()
                     .append(" ");
-            final ITextComponent with = GuiText.With.text().copy().append(": ");
+            final net.minecraft.network.chat.Component with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
@@ -145,8 +145,8 @@ public class EncodedPatternItem extends AEBaseItem {
             }
 
             if (invalid.isCraftable()) {
-                final ITextComponent substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-                final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
+                final net.minecraft.network.chat.Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                final net.minecraft.network.chat.Component canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
                 lines.add(substitutionLabel.copy().append(canSubstitute));
             }
@@ -164,11 +164,11 @@ public class EncodedPatternItem extends AEBaseItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+        final net.minecraft.network.chat.Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
                 .append(": ");
-        final ITextComponent and = new StringTextComponent(" ").copy().append(GuiText.And.text())
+        final net.minecraft.network.chat.Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                 .append(" ");
-        final ITextComponent with = GuiText.With.text().copy().append(": ");
+        final net.minecraft.network.chat.Component with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -193,28 +193,28 @@ public class EncodedPatternItem extends AEBaseItem {
         }
 
         if (isCrafting) {
-            final ITextComponent substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-            final ITextComponent canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
+            final net.minecraft.network.chat.Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+            final net.minecraft.network.chat.Component canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
             lines.add(substitutionLabel.copy().append(canSubstitute));
         }
     }
 
-    public ItemStack getOutput(final ItemStack item) {
+    public net.minecraft.world.item.ItemStack getOutput(final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
         if (out != null) {
             return out;
         }
 
-        final World w = AppEng.instance().getClientWorld();
+        final Level w = AppEng.instance().getClientWorld();
         if (w == null) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
 
-        out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
+        out = details != null ? details.getOutputs().get(0).createItemStack() : net.minecraft.world.item.ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
@@ -229,7 +229,7 @@ public class EncodedPatternItem extends AEBaseItem {
     public ResourceLocation getCraftingRecipeId(ItemStack itemStack) {
         Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
                 itemStack);
-        final CompoundNBT tag = itemStack.getTag();
+        final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
         return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING)
@@ -237,19 +237,19 @@ public class EncodedPatternItem extends AEBaseItem {
                 : null;
     }
 
-    public List<IAEItemStack> getIngredients(ItemStack itemStack) {
+    public List<IAEItemStack> getIngredients(net.minecraft.world.item.ItemStack itemStack) {
         Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
                 itemStack);
-        final CompoundNBT tag = itemStack.getTag();
+        final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        final ListNBT inTag = tag.getList(NBT_INGREDIENTS, 10);
+        final ListTag inTag = tag.getList(NBT_INGREDIENTS, 10);
         Preconditions.checkArgument(inTag.size() < 10, "Cannot use more than 9 ingredients");
 
         final List<IAEItemStack> in = new ArrayList<>(inTag.size());
         for (int x = 0; x < inTag.size(); x++) {
-            CompoundNBT ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.of(ingredient);
+            CompoundTag ingredient = inTag.getCompound(x);
+            final ItemStack gs = net.minecraft.world.item.ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -259,19 +259,19 @@ public class EncodedPatternItem extends AEBaseItem {
         return in;
     }
 
-    public List<IAEItemStack> getProducts(ItemStack itemStack) {
+    public List<IAEItemStack> getProducts(net.minecraft.world.item.ItemStack itemStack) {
         Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
                 itemStack);
-        final CompoundNBT tag = itemStack.getTag();
+        final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        final ListNBT outTag = tag.getList(NBT_PRODUCTS, 10);
+        final ListTag outTag = tag.getList(NBT_PRODUCTS, 10);
         Preconditions.checkArgument(outTag.size() < 4, "Cannot use more than 3 ingredients");
 
         final List<IAEItemStack> out = new ArrayList<>(outTag.size());
         for (int x = 0; x < outTag.size(); x++) {
-            CompoundNBT ingredient = outTag.getCompound(x);
-            final ItemStack gs = ItemStack.of(ingredient);
+            CompoundTag ingredient = outTag.getCompound(x);
+            final ItemStack gs = net.minecraft.world.item.ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -283,7 +283,7 @@ public class EncodedPatternItem extends AEBaseItem {
     }
 
     public boolean allowsSubstitution(ItemStack itemStack) {
-        final CompoundNBT tag = itemStack.getTag();
+        final CompoundTag tag = itemStack.getTag();
 
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
@@ -293,9 +293,9 @@ public class EncodedPatternItem extends AEBaseItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, net.minecraft.world.item.ItemStack[] out,
             ResourceLocation recipeId, boolean allowSubstitutes) {
-        CompoundNBT encodedValue = encodeInputsAndOutputs(in, out);
+        CompoundTag encodedValue = encodeInputsAndOutputs(in, out);
         encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
         encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);
         stack.setTag(encodedValue);
@@ -304,18 +304,18 @@ public class EncodedPatternItem extends AEBaseItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeProcessingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out) {
+    public static void encodeProcessingPattern(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.ItemStack[] in, ItemStack[] out) {
         stack.setTag(encodeInputsAndOutputs(in, out));
     }
 
-    private static CompoundNBT encodeInputsAndOutputs(ItemStack[] in, ItemStack[] out) {
-        final CompoundNBT encodedValue = new CompoundNBT();
+    private static CompoundTag encodeInputsAndOutputs(net.minecraft.world.item.ItemStack[] in, net.minecraft.world.item.ItemStack[] out) {
+        final CompoundTag encodedValue = new CompoundTag();
 
-        final ListNBT tagIn = new ListNBT();
-        final ListNBT tagOut = new ListNBT();
+        final ListTag tagIn = new ListTag();
+        final ListTag tagOut = new ListTag();
 
         boolean hasInput = false;
-        for (final ItemStack i : in) {
+        for (final net.minecraft.world.item.ItemStack i : in) {
             tagIn.add(createItemTag(i));
             if (!i.isEmpty()) {
                 hasInput = true;
@@ -325,7 +325,7 @@ public class EncodedPatternItem extends AEBaseItem {
         Preconditions.checkArgument(hasInput, "cannot encode a pattern that has no inputs.");
 
         boolean hasNonEmptyOutput = false;
-        for (final ItemStack i : out) {
+        for (final net.minecraft.world.item.ItemStack i : out) {
             tagOut.add(createItemTag(i));
             if (!i.isEmpty()) {
                 hasNonEmptyOutput = true;
@@ -340,8 +340,8 @@ public class EncodedPatternItem extends AEBaseItem {
         return encodedValue;
     }
 
-    private static INBT createItemTag(final ItemStack i) {
-        final CompoundNBT c = new CompoundNBT();
+    private static Tag createItemTag(final net.minecraft.world.item.ItemStack i) {
+        final CompoundTag c = new CompoundTag();
 
         if (!i.isEmpty()) {
             i.save(c);

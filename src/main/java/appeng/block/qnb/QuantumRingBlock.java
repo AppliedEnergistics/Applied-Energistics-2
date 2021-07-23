@@ -18,14 +18,14 @@
 
 package appeng.block.qnb;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 
@@ -40,7 +40,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null && bridge.isCorner()) {
             return SHAPE_CORNER;
@@ -50,8 +50,8 @@ public class QuantumRingBlock extends QuantumBaseBlock {
         return SHAPE;
     }
 
-    private static VoxelShape createShape(double onePixel) {
-        return VoxelShapes.create(
-                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+    private static net.minecraft.world.phys.shapes.VoxelShape createShape(double onePixel) {
+        return Shapes.create(
+                new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

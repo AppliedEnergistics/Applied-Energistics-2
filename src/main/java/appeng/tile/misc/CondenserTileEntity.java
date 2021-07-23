@@ -21,11 +21,11 @@ package appeng.tile.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -62,8 +62,6 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-
 public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigManagerHost, IConfigurableObject {
 
     public static final int BYTE_MULTIPLIER = 8;
@@ -83,13 +81,13 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     private double storedPower = 0;
 
-    public CondenserTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CondenserTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
@@ -97,7 +95,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
@@ -139,7 +137,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
      *
      * @param output to be added output
      */
-    private void addOutput(final ItemStack output) {
+    private void addOutput(final net.minecraft.world.item.ItemStack output) {
         this.outputSlot.insertItem(0, output, false);
     }
 
@@ -158,7 +156,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
             case TRASH:
             default:
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
         }
     }
 
@@ -173,7 +171,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
         }
@@ -219,14 +217,14 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
             return slot == 0;
         }
 
         @Override
         public ItemStack getStackInSlot(int slot) {
             // The void slot never has any content
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override
@@ -237,12 +235,12 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
             if (!simulate && !stack.isEmpty()) {
                 CondenserTileEntity.this.addPower(stack.getCount());
             }
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override

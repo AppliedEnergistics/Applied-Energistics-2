@@ -18,7 +18,7 @@
 
 package appeng.client;
 
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.Rect2i;
 
 /**
  * Represents a x,y coordinate in the UI.
@@ -35,7 +35,7 @@ public final class Point {
         this.y = y;
     }
 
-    public static Point fromTopLeft(Rectangle2d bounds) {
+    public static Point fromTopLeft(Rect2i bounds) {
         return new Point(bounds.getX(), bounds.getY());
     }
 
@@ -51,7 +51,7 @@ public final class Point {
         return new Point(this.x + x, this.y + y);
     }
 
-    public boolean isIn(Rectangle2d rect) {
+    public boolean isIn(Rect2i rect) {
         return x >= rect.getX()
                 && y >= rect.getY()
                 && x < rect.getX() + rect.getWidth()

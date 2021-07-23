@@ -18,26 +18,26 @@
 
 package appeng.debug;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Registry;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -46,18 +46,18 @@ import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class ReplicatorCardItem extends AEBaseItem {
 
-    public ReplicatorCardItem(Properties properties) {
+    public ReplicatorCardItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         if (!worldIn.isClientSide()) {
-            final CompoundNBT tag = playerIn.getItemInHand(handIn).getOrCreateTag();
+            final CompoundTag tag = playerIn.getItemInHand(handIn).getOrCreateTag();
             final int replications;
 
             if (tag.contains("r")) {
@@ -68,28 +68,28 @@ public class ReplicatorCardItem extends AEBaseItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new StringTextComponent(replications + 1 + "³ Replications"), Util.NIL_UUID);
+            playerIn.sendMessage(new TextComponent(replications + 1 + "³ Replications"), net.minecraft.Util.NIL_UUID);
         }
 
         return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World w = context.getLevel();
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Level w = context.getLevel();
         if (w.isClientSide()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
-        PlayerEntity player = context.getPlayer();
-        World world = context.getLevel();
+        Player player = context.getPlayer();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Direction side = context.getClickedFace();
-        Hand hand = context.getHand();
+        net.minecraft.core.Direction side = context.getClickedFace();
+        InteractionHand hand = context.getHand();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         int x = pos.getX();
@@ -100,7 +100,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             var gridHost = Api.instance().grid().getNodeHost(world, pos);
 
             if (gridHost != null) {
-                final CompoundNBT tag = player.getItemInHand(hand).getOrCreateTag();
+                final CompoundTag tag = player.getItemInHand(hand).getOrCreateTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
                 tag.putInt("z", z);
@@ -113,15 +113,15 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "This is not a Grid Tile.");
             }
         } else {
-            final CompoundNBT ish = player.getItemInHand(hand).getTag();
+            final CompoundTag ish = player.getItemInHand(hand).getTag();
             if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
                 final int src_z = ish.getInt("z");
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
-                final World src_w = world.getServer()
-                        .getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
+                final Level src_w = world.getServer()
+                        .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 var gh = Api.instance().grid().getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
@@ -155,9 +155,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                 final int min_z = min.getZ();
 
                                 // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.yRot));
+                                final int x_rot = (int) -Math.signum(Mth.wrapDegrees(player.yRot));
                                 // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.yRot + 90));
+                                final int z_rot = (int) Math.signum(Mth.wrapDegrees(player.yRot + 90));
 
                                 // Loops for replication in each direction
                                 for (int r_x = 0; r_x < replications; r_x++) {
@@ -174,9 +174,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                             for (int i = 1; i < sc_size_x; i++) {
                                                 for (int j = 1; j < sc_size_y; j++) {
                                                     for (int k = 1; k < sc_size_z; k++) {
-                                                        final BlockPos p = new BlockPos(min_x + i, min_y + j,
+                                                        final net.minecraft.core.BlockPos p = new net.minecraft.core.BlockPos(min_x + i, min_y + j,
                                                                 min_z + k);
-                                                        final BlockPos d = new BlockPos(i + rel_x, j + rel_y,
+                                                        final BlockPos d = new net.minecraft.core.BlockPos(i + rel_x, j + rel_y,
                                                                 k + rel_z);
 
                                                         final BlockState state = src_w.getBlockState(p);
@@ -185,9 +185,9 @@ public class ReplicatorCardItem extends AEBaseItem {
 
                                                         world.setBlockAndUpdate(d, state);
                                                         if (blk != null && blk.hasTileEntity(state)) {
-                                                            final TileEntity ote = src_w.getBlockEntity(p);
-                                                            final TileEntity nte = blk.createTileEntity(state, world);
-                                                            final CompoundNBT data = new CompoundNBT();
+                                                            final BlockEntity ote = src_w.getBlockEntity(p);
+                                                            final BlockEntity nte = blk.createTileEntity(state, world);
+                                                            final CompoundTag data = new CompoundTag();
                                                             ote.save(data);
                                                             nte.load(state, data.copy());
                                                             world.setBlockEntity(d, nte);
@@ -215,10 +215,10 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResultType.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(w.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string), Util.NIL_UUID);
+        player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 }

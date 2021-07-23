@@ -18,14 +18,14 @@
 
 package appeng.util.inv;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.util.Platform;
 
 public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
-    public AdaptorItemHandlerPlayerInv(final PlayerEntity playerInv) {
+    public AdaptorItemHandlerPlayerInv(final Player playerInv) {
         super(new PlayerMainInvWrapper(playerInv.inventory));
     }
 
@@ -33,12 +33,12 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
      * Tries to fill existing stacks first
      */
     @Override
-    protected ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
+    protected net.minecraft.world.item.ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
         if (itemsToAdd.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
-        ItemStack left = itemsToAdd.copy();
+        net.minecraft.world.item.ItemStack left = itemsToAdd.copy();
 
         for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
             ItemStack is = this.itemHandler.getStackInSlot(slot);
@@ -47,14 +47,14 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
                 left = this.itemHandler.insertItem(slot, left, simulate);
             }
             if (left.isEmpty()) {
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
             }
         }
 
         for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
             left = this.itemHandler.insertItem(slot, left, simulate);
             if (left.isEmpty()) {
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
             }
         }
 

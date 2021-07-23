@@ -21,11 +21,11 @@ package appeng.client.render.tesr;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,19 +34,19 @@ import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class ModularTESR<T extends AEBaseTileEntity> extends TileEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseTileEntity> extends BlockEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 
     @SafeVarargs
-    public ModularTESR(TileEntityRendererDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
+    public ModularTESR(BlockEntityRenderDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
         super(rendererDispatcherIn);
         this.renderables = ImmutableList.copyOf(renderables);
     }
 
     @Override
-    public void render(T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight,
-            int combinedOverlay) {
+    public void render(T te, float partialTicks, PoseStack ms, MultiBufferSource buffers, int combinedLight,
+                       int combinedOverlay) {
         ms.pushPose();
         ms.translate(0.5, 0.5, 0.5);
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);

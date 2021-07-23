@@ -18,7 +18,7 @@
 
 package appeng.client.render.cablebus;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Captures the state required to render a facade properly.
@@ -30,12 +30,12 @@ public class FacadeRenderState {
 
     private final boolean transparent;
 
-    public FacadeRenderState(BlockState sourceBlock, boolean transparent) {
+    public FacadeRenderState(net.minecraft.world.level.block.state.BlockState sourceBlock, boolean transparent) {
         this.sourceBlock = sourceBlock;
         this.transparent = transparent;
     }
 
-    public BlockState getSourceBlock() {
+    public net.minecraft.world.level.block.state.BlockState getSourceBlock() {
         return this.sourceBlock;
     }
 

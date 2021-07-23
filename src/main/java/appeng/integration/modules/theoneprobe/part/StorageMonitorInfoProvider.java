@@ -18,11 +18,11 @@
 
 package appeng.integration.modules.theoneprobe.part;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -38,8 +38,8 @@ import appeng.integration.modules.theoneprobe.TheOneProbeText;
 public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+                             BlockState blockState, IProbeHitData data) {
         if (part instanceof IStorageMonitorPart) {
             final IStorageMonitorPart monitor = (IStorageMonitorPart) part;
 
@@ -54,7 +54,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
                 final String fluidName = I18n.get(ais.getFluidStack().getTranslationKey());
-                final ITextComponent text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
+                final net.minecraft.network.chat.Component text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
 
                 probeInfo.text(text);
             }

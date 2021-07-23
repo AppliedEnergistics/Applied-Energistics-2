@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -40,8 +40,8 @@ public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
     private final SettingToggleButton<YesNo> craftMode;
     private final SettingToggleButton<SchedulingMode> schedulingMode;
 
-    public IOBusScreen(IOBusContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public IOBusScreen(IOBusContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                       ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);

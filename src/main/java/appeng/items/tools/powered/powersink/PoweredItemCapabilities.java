@@ -20,8 +20,8 @@ package appeng.items.tools.powered.powersink;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,7 +37,7 @@ import appeng.capabilities.Capabilities;
  */
 class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage {
 
-    private final ItemStack is;
+    private final net.minecraft.world.item.ItemStack is;
 
     private final IAEItemPowerStorage item;
 

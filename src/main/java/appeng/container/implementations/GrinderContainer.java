@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.client.gui.Icon;
@@ -35,11 +35,11 @@ import appeng.tile.grindstone.GrinderTileEntity;
  */
 public class GrinderContainer extends AEBaseContainer {
 
-    public static final ContainerType<GrinderContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<GrinderContainer> TYPE = ContainerTypeBuilder
             .create(GrinderContainer::new, GrinderTileEntity.class)
             .build("grinder");
 
-    public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
+    public GrinderContainer(int id, final Inventory ip, final GrinderTileEntity grinder) {
         super(TYPE, id, ip, grinder);
 
         IItemHandler inv = grinder.getInternalInventory();

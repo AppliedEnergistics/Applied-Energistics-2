@@ -18,11 +18,11 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import mcjty.theoneprobe.api.ElementAlignment;
@@ -36,15 +36,15 @@ import appeng.tile.misc.ChargerTileEntity;
 public class ChargerInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+                             Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof ChargerTileEntity) {
             final ChargerTileEntity charger = (ChargerTileEntity) tile;
             final IItemHandler chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                final ITextComponent currentInventory = chargingItem.getHoverName();
+                final net.minecraft.network.chat.Component currentInventory = chargingItem.getHoverName();
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
 

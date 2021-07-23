@@ -18,8 +18,8 @@
 
 package appeng.client.render.model;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
 
 /**
  * Used as the cache key for caching automatically rotated baked models.
@@ -27,9 +27,9 @@ import net.minecraft.util.Direction;
 final class AutoRotatingCacheKey {
     private final BlockState blockState;
     private final AEModelData modelData;
-    private final Direction side;
+    private final net.minecraft.core.Direction side;
 
-    AutoRotatingCacheKey(BlockState blockState, AEModelData modelData, Direction side) {
+    AutoRotatingCacheKey(BlockState blockState, AEModelData modelData, net.minecraft.core.Direction side) {
         this.blockState = blockState;
         this.modelData = modelData;
         this.side = side;
@@ -43,7 +43,7 @@ final class AutoRotatingCacheKey {
         return modelData;
     }
 
-    public Direction getSide() {
+    public net.minecraft.core.Direction getSide() {
         return this.side;
     }
 

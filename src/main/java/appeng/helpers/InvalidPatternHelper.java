@@ -21,13 +21,13 @@ package appeng.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 
 import appeng.util.Platform;
 
@@ -39,14 +39,14 @@ public class InvalidPatternHelper {
     private final boolean canSubstitute;
 
     public InvalidPatternHelper(final ItemStack is) {
-        final CompoundNBT encodedValue = is.getTag();
+        final CompoundTag encodedValue = is.getTag();
 
         if (encodedValue == null) {
             throw new IllegalArgumentException("No pattern here!");
         }
 
-        final ListNBT inTag = encodedValue.getList("in", 10);
-        final ListNBT outTag = encodedValue.getList("out", 10);
+        final ListTag inTag = encodedValue.getList("in", 10);
+        final ListTag outTag = encodedValue.getList("out", 10);
         this.isCrafting = encodedValue.getBoolean("crafting");
 
         this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");
@@ -56,7 +56,7 @@ public class InvalidPatternHelper {
         }
 
         for (int i = 0; i < inTag.size(); i++) {
-            CompoundNBT in = inTag.getCompound(i);
+            CompoundTag in = inTag.getCompound(i);
 
             // skip empty slots in the crafting grid
             if (in.isEmpty()) {
@@ -90,7 +90,7 @@ public class InvalidPatternHelper {
 
         private ItemStack stack;
 
-        public PatternIngredient(CompoundNBT tag) {
+        public PatternIngredient(CompoundTag tag) {
             this.stack = ItemStack.of(tag);
 
             if (this.stack.isEmpty()) {
@@ -104,9 +104,9 @@ public class InvalidPatternHelper {
             return !this.stack.isEmpty();
         }
 
-        public ITextComponent getName() {
+        public net.minecraft.network.chat.Component getName() {
             return this.isValid() ? Platform.getItemDisplayName(this.stack)
-                    : new StringTextComponent(this.id + '@' + this.getDamage());
+                    : new TextComponent(this.id + '@' + this.getDamage());
         }
 
         public int getDamage() {
@@ -125,12 +125,12 @@ public class InvalidPatternHelper {
             return this.stack;
         }
 
-        public ITextComponent getFormattedToolTip() {
-            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ")
+        public net.minecraft.network.chat.Component getFormattedToolTip() {
+            MutableComponent result = new TextComponent(this.getCount() + " ")
                     .append(this.getName());
 
             if (!this.isValid()) {
-                result.withStyle(TextFormatting.RED);
+                result.withStyle(ChatFormatting.RED);
             }
 
             return result;

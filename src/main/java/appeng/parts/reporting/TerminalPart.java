@@ -18,8 +18,8 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -29,9 +29,9 @@ import appeng.parts.PartModel;
 public class TerminalPart extends AbstractTerminalPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/terminal_off");
+    public static final net.minecraft.resources.ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/terminal_on");
+    public static final net.minecraft.resources.ResourceLocation MODEL_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);

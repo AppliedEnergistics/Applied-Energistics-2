@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -37,17 +37,17 @@ import appeng.parts.automation.SharedItemBusPart;
  */
 public class IOBusContainer extends UpgradeableContainer {
 
-    public static final ContainerType<IOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<IOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
             .create(IOBusContainer::new, ExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("export_bus");
 
-    public static final ContainerType<IOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<IOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
             .create(IOBusContainer::new, ImportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
-    public IOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedItemBusPart te) {
+    public IOBusContainer(MenuType<?> containerType, int id, Inventory ip, SharedItemBusPart te) {
         super(containerType, id, ip, te);
     }
 

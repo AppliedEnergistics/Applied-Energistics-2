@@ -23,45 +23,46 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -85,11 +86,11 @@ import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, IWaterLoggable {
+public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, SimpleWaterloggedBlock {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
-    private static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
+    private static final net.minecraft.world.level.block.state.properties.IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
@@ -99,22 +100,22 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(net.minecraft.world.level.block.state.BlockState state, BlockGetter reader, net.minecraft.core.BlockPos pos) {
         return true;
     }
 
     @Override
-    public void animateTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
+    public void animateTick(final net.minecraft.world.level.block.state.BlockState state, final Level worldIn, final net.minecraft.core.BlockPos pos, final Random rand) {
         this.cb(worldIn, pos).animateTick(worldIn, pos, rand);
     }
 
     @Override
-    public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(net.minecraft.world.level.block.state.BlockState state, LevelReader w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
         this.cb(w, pos).onNeighborChanged(w, pos, neighbor);
     }
 
     @Override
-    public int getSignal(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getSignal(final BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
@@ -126,37 +127,37 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public void entityInside(BlockState state, World w, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, Level w, net.minecraft.core.BlockPos pos, Entity entityIn) {
         this.cb(w, pos).onEntityCollision(entityIn);
     }
 
     @Override
-    public int getDirectSignal(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getDirectSignal(final BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIGHT_LEVEL, WATERLOGGED);
     }
 
     @Override
-    public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
+    public boolean isLadder(BlockState state, LevelReader world, net.minecraft.core.BlockPos pos, LivingEntity entity) {
         return this.cb(world, pos).isLadder(entity);
     }
 
     @Override
-    public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         // FIXME: Potentially check the fluid one too
         return super.canBeReplaced(state, useContext) && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            boolean willHarvest, FluidState fluid) {
+    public boolean removedByPlayer(BlockState state, Level world, net.minecraft.core.BlockPos pos, Player player,
+                                   boolean willHarvest, net.minecraft.world.level.material.FluidState fluid) {
         if (player.abilities.instabuild) {
             final AEBaseTileEntity tile = this.getTileEntity(world, pos);
             if (tile != null) {
@@ -168,8 +169,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean canConnectRedstone(final BlockState state, final IBlockReader w, final BlockPos pos,
-            Direction side) {
+    public boolean canConnectRedstone(final BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos,
+                                      net.minecraft.core.Direction side) {
         // TODO: Verify this.
         if (side == null) {
             return false;
@@ -179,9 +180,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos,
-            PlayerEntity player) {
-        final Vector3d v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+    public ItemStack getPickBlock(BlockState state, net.minecraft.world.phys.HitResult target, BlockGetter world, BlockPos pos,
+                                  Player player) {
+        final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
         if (sp.part != null) {
@@ -195,8 +196,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(final BlockState state, final World world, final RayTraceResult target,
-            final ParticleManager effectRenderer) {
+    public boolean addHitEffects(final BlockState state, final Level world, final net.minecraft.world.phys.HitResult target,
+                                 final ParticleEngine effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
         // our particle effect otherwise looks too strong
@@ -207,12 +208,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         if (target.getType() != Type.BLOCK) {
             return false;
         }
-        BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
+        net.minecraft.core.BlockPos blockPos = new net.minecraft.core.BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
 
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRenderer()
+        BakedModel model = Minecraft.getInstance().getBlockRenderer()
                 .getBlockModel(this.defaultBlockState());
 
         // We cannot add the effect if we don't have the model
@@ -233,7 +234,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
             effectRenderer.add(
-                    new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).scale(0.8F));
+                    new CableBusBreakingParticle((ClientLevel) world, x, y, z, texture).scale(0.8F));
         }
 
         return true;
@@ -241,11 +242,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager effectRenderer) {
+    public boolean addDestroyEffects(BlockState state, Level world, net.minecraft.core.BlockPos pos, ParticleEngine effectRenderer) {
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRenderer()
+        BakedModel model = Minecraft.getInstance().getBlockRenderer()
                 .getBlockModel(this.defaultBlockState());
 
         // We cannot add the effect if we dont have the model
@@ -274,7 +275,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
                         // FIXME: Check how this looks, probably like shit, maybe provide parts the
                         // ability to supply particle textures???
-                        Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z,
+                        Particle effect = new CableBusBreakingParticle((ClientLevel) world, x, y, z,
                                 x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
                         effectRenderer.add(effect);
                     }
@@ -286,15 +287,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+                                boolean isMoving) {
         if (!world.isClientSide()) {
             this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
         }
     }
 
-    private ICableBusContainer cb(final IBlockReader w, final BlockPos pos) {
-        final TileEntity te = w.getBlockEntity(pos);
+    private ICableBusContainer cb(final BlockGetter w, final net.minecraft.core.BlockPos pos) {
+        final BlockEntity te = w.getBlockEntity(pos);
         ICableBusContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -305,8 +306,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Nullable
-    private IFacadeContainer fc(final IBlockReader w, final BlockPos pos) {
-        final TileEntity te = w.getBlockEntity(pos);
+    private IFacadeContainer fc(final BlockGetter w, final net.minecraft.core.BlockPos pos) {
+        final BlockEntity te = w.getBlockEntity(pos);
         IFacadeContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -317,40 +318,40 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public void attack(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+    public void attack(BlockState state, Level worldIn, net.minecraft.core.BlockPos pos, Player player) {
         if (worldIn.isClientSide()) {
-            final RayTraceResult rtr = Minecraft.getInstance().hitResult;
-            if (rtr instanceof BlockRayTraceResult) {
-                BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+            final net.minecraft.world.phys.HitResult rtr = Minecraft.getInstance().hitResult;
+            if (rtr instanceof BlockHitResult) {
+                BlockHitResult brtr = (BlockHitResult) rtr;
                 if (brtr.getBlockPos().equals(pos)) {
-                    final Vector3d hitVec = rtr.getLocation().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
+                    final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
 
-                    if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
+                    if (this.cb(worldIn, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
                         NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
-                                (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+                                (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
                     }
                 }
             }
         }
     }
 
-    public void onBlockClickPacket(World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vector3d hitVec) {
+    public void onBlockClickPacket(Level worldIn, net.minecraft.core.BlockPos pos, Player playerIn, InteractionHand hand, Vec3 hitVec) {
         this.cb(worldIn, pos).clicked(playerIn, hand, hitVec);
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player player, final InteractionHand hand,
+                                         final @Nullable net.minecraft.world.item.ItemStack heldItem, final BlockHitResult hit) {
         // Transform from world into block space
-        Vector3d hitVec = hit.getLocation();
-        Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+        Vec3 hitVec = hit.getLocation();
+        Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock)
-                ? ActionResultType.sidedSuccess(w.isClientSide())
-                : ActionResultType.PASS;
+                ? InteractionResult.sidedSuccess(w.isClientSide())
+                : InteractionResult.PASS;
     }
 
-    public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side,
-            final DyeColor color, final PlayerEntity who) {
+    public boolean recolorBlock(final BlockGetter world, final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction side,
+                                final DyeColor color, final Player who) {
         try {
             return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
         } catch (final Throwable ignored) {
@@ -360,12 +361,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
     @Override
-    public BlockState getFacadeState(IBlockReader world, BlockPos pos, Direction side) {
+    public BlockState getFacadeState(BlockGetter world, net.minecraft.core.BlockPos pos, Direction side) {
         if (side != null) {
             IFacadeContainer container = this.fc(world, pos);
             if (container != null) {
@@ -379,27 +380,27 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
         CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
-            return VoxelShapes.empty();
+            return Shapes.empty();
         } else {
             return te.getCableBus().getShape();
         }
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
         CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
-            return VoxelShapes.empty();
+            return Shapes.empty();
         } else {
             return te.getCableBus().getCollisionShape(context.getEntity());
         }
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusTileEntity te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusTileEntity te) {
         if (currentState.getBlock() != this) {
             return currentState;
         }
@@ -409,11 +410,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public net.minecraft.world.level.block.state.BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
+        net.minecraft.world.level.material.FluidState fluidState = context.getLevel().getFluidState(pos);
         BlockState blockState = this.defaultBlockState()
-                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+                .setValue(WATERLOGGED, fluidState.getType() == net.minecraft.world.level.material.Fluids.WATER);
 
         return blockState;
     }
@@ -426,8 +427,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, IWorld world,
-            BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState blockState, net.minecraft.core.Direction facing, BlockState facingState, LevelAccessor world,
+                                  BlockPos currentPos, net.minecraft.core.BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));

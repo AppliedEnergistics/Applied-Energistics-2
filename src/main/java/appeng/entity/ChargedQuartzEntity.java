@@ -21,17 +21,17 @@ package appeng.entity;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
@@ -46,11 +46,11 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     private int delay = 0;
     private int transformTime = 0;
 
-    public ChargedQuartzEntity(EntityType<? extends ChargedQuartzEntity> entityType, World world) {
+    public ChargedQuartzEntity(net.minecraft.world.entity.EntityType<? extends ChargedQuartzEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public ChargedQuartzEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
+    public ChargedQuartzEntity(final Level w, final double x, final double y, final double z, final net.minecraft.world.item.ItemStack is) {
         super(AEEntities.CHARGED_QUARTZ, w, x, y, z, is);
     }
 
@@ -71,11 +71,11 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
         this.delay++;
 
-        final int j = MathHelper.floor(this.getX());
-        final int i = MathHelper.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int k = MathHelper.floor(this.getZ());
+        final int j = Mth.floor(this.getX());
+        final int i = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
+        final int k = Mth.floor(this.getZ());
 
-        BlockState state = this.level.getBlockState(new BlockPos(j, i, k));
+        BlockState state = this.level.getBlockState(new net.minecraft.core.BlockPos(j, i, k));
         final Material mat = state.getMaterial();
 
         if (!level.isClientSide() && mat.isLiquid()) {
@@ -92,22 +92,22 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final ItemStack item = this.getItem();
 
         if (AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
+            final AABB region = new AABB(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
                     this.getX() + 1, this.getY() + 1, this.getZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             ItemEntity redstone = null;
-            ItemEntity netherQuartz = null;
+            net.minecraft.world.entity.item.ItemEntity netherQuartz = null;
 
             for (final Entity e : l) {
                 if (e instanceof ItemEntity && !e.removed) {
-                    final ItemStack other = ((ItemEntity) e).getItem();
+                    final ItemStack other = ((net.minecraft.world.entity.item.ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         if (ItemStack.isSame(other, new ItemStack(Items.REDSTONE))) {
                             redstone = (ItemEntity) e;
                         }
 
-                        if (ItemStack.isSame(other, new ItemStack(Items.QUARTZ))) {
+                        if (ItemStack.isSame(other, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.QUARTZ))) {
                             netherQuartz = (ItemEntity) e;
                         }
                     }

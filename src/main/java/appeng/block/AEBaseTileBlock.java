@@ -27,22 +27,23 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -64,7 +65,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
-    public AEBaseTileBlock(final AbstractBlock.Properties props) {
+    public AEBaseTileBlock(final net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -89,17 +90,17 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Nullable
-    public T getTileEntity(final IBlockReader w, final int x, final int y, final int z) {
+    public T getTileEntity(final BlockGetter w, final int x, final int y, final int z) {
         return this.getTileEntity(w, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getTileEntity(final IBlockReader w, final BlockPos pos) {
+    public T getTileEntity(final BlockGetter w, final BlockPos pos) {
         if (!this.hasBlockTileEntity()) {
             return null;
         }
 
-        final TileEntity te = w.getBlockEntity(pos);
+        final BlockEntity te = w.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.tileEntityClass != null && this.tileEntityClass.isInstance(te)) {
             return this.tileEntityClass.cast(te);
@@ -109,19 +110,19 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public final TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public final BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return this.tileEntityFactory.get();
     }
 
     @Override
-    public void onRemove(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
         final AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null) {
-            final ArrayList<ItemStack> drops = new ArrayList<>();
+            final ArrayList<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
                 te.getDrops(w, pos, drops);
             } else {
@@ -137,8 +138,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final World w, final BlockPos pos) {
-        final TileEntity te = this.getTileEntity(w, pos);
+    public int getAnalogOutputSignal(BlockState state, final Level w, final BlockPos pos) {
+        final BlockEntity te = this.getTileEntity(w, pos);
         if (te instanceof AEBaseInvTileEntity) {
             AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
             if (invTile.getInternalInventory().getSlots() > 0) {
@@ -149,16 +150,16 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public boolean triggerEvent(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
-            final int eventParam) {
+    public boolean triggerEvent(final BlockState state, final Level worldIn, final BlockPos pos, final int eventID,
+                                final int eventParam) {
         super.triggerEvent(state, worldIn, pos, eventID, eventParam);
-        final TileEntity tileentity = worldIn.getBlockEntity(pos);
+        final BlockEntity tileentity = worldIn.getBlockEntity(pos);
         return tileentity != null ? tileentity.triggerEvent(eventID, eventParam) : false;
     }
 
     @Override
-    public void setPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
-            final ItemStack is) {
+    public void setPlacedBy(final Level w, final BlockPos pos, final BlockState state, final LivingEntity placer,
+                            final net.minecraft.world.item.ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
         // than a translation component, since our custom naming cannot handle
@@ -166,17 +167,17 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         // I18N strings and we would translate it using the server's locale :-(
         AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null && is.hasCustomHoverName()) {
-            ITextComponent displayName = is.getHoverName();
-            if (displayName instanceof StringTextComponent) {
-                te.setName(((StringTextComponent) displayName).getText());
+            net.minecraft.network.chat.Component displayName = is.getHoverName();
+            if (displayName instanceof TextComponent) {
+                te.setName(((TextComponent) displayName).getText());
             }
         }
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            Hand hand, BlockRayTraceResult hit) {
-        ItemStack heldItem;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
+                                 InteractionHand hand, BlockHitResult hit) {
+        net.minecraft.world.item.ItemStack heldItem;
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
 
@@ -187,19 +188,19 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 final AEBaseTileEntity tile = this.getTileEntity(world, pos);
 
                 if (tile == null) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
 
                 if (tile instanceof CableBusTileEntity || tile instanceof SkyChestTileEntity) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
 
-                final ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
-                final ItemStack op = new ItemStack(this);
+                final net.minecraft.world.item.ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
+                final net.minecraft.world.item.ItemStack op = new ItemStack(this);
 
-                for (final ItemStack ol : itemDropCandidates) {
+                for (final net.minecraft.world.item.ItemStack ol : itemDropCandidates) {
                     if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                        final CompoundNBT tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
+                        final CompoundTag tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
                         if (tag != null) {
                             ol.setTag(tag);
                         }
@@ -207,12 +208,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 }
 
                 if (block.removedByPlayer(blockState, world, pos, player, false, world.getFluidState(pos))) {
-                    final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
+                    final List<net.minecraft.world.item.ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
                     Platform.spawnDrops(world, pos, itemsToDrop);
                     world.removeBlock(pos, false);
                 }
 
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
@@ -220,20 +221,20 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 final AEBaseTileEntity tileEntity = this.getTileEntity(world, pos);
 
                 if (tileEntity == null) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
 
                 final String name = this.getDescriptionId();
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
-                    final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
+                    final CompoundTag data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                     }
                 } else {
                     final String savedName = memoryCard.getSettingsName(heldItem);
-                    final CompoundNBT data = memoryCard.getData(heldItem);
+                    final CompoundTag data = memoryCard.getData(heldItem);
 
                     if (this.getDescriptionId().equals(savedName)) {
                         tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
@@ -243,20 +244,20 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     }
                 }
 
-                return ActionResultType.sidedSuccess(world.isClientSide());
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
 
         return this.onActivated(world, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        return ActionResultType.PASS;
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
+                                         final @Nullable net.minecraft.world.item.ItemStack heldItem, final BlockHitResult hit) {
+        return InteractionResult.PASS;
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
         return this.getTileEntity(w, pos);
     }
 
@@ -266,7 +267,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
      * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
      * the case if the given block state does not belong to this block.
      */
-    public final BlockState getTileEntityBlockState(BlockState current, TileEntity te) {
+    public final BlockState getTileEntityBlockState(BlockState current, BlockEntity te) {
         if (current.getBlock() != this || !tileEntityClass.isInstance(te)) {
             return current;
         }
@@ -280,7 +281,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
      * <p>
      * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
      */
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, T te) {
         return currentState;
     }
 

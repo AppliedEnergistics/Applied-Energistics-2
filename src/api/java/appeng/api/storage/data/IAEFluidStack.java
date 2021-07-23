@@ -23,7 +23,7 @@
 
 package appeng.api.storage.data;
 
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /**

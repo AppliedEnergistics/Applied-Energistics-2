@@ -34,16 +34,16 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -53,7 +53,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.client.render.model.AEModelData;
 
-public class CableBusBakedModel implements IBakedModel {
+public class CableBusBakedModel implements BakedModel {
 
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
@@ -64,7 +64,7 @@ public class CableBusBakedModel implements IBakedModel {
      * DUNSWE for the facing index, 4 spin values per facing.
      */
     private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
-            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, net.minecraft.core.Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
             Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
             Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
             Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
@@ -72,25 +72,25 @@ public class CableBusBakedModel implements IBakedModel {
             Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
     };
 
-    private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
+    private final LoadingCache<CableBusRenderState, List<net.minecraft.client.renderer.block.model.BakedQuad>> cableModelCache;
 
     private final CableBuilder cableBuilder;
 
     private final FacadeBuilder facadeBuilder;
 
-    private final Map<ResourceLocation, IBakedModel> partModels;
+    private final Map<ResourceLocation, BakedModel> partModels;
 
     private final TextureAtlasSprite particleTexture;
 
     CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-            Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture) {
+                       Map<ResourceLocation, BakedModel> partModels, TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
         this.particleTexture = particleTexture;
         this.cableModelCache = CacheBuilder.newBuilder()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
-                .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
+                .weigher((Weigher<CableBusRenderState, List<net.minecraft.client.renderer.block.model.BakedQuad>>) (key, value) -> value.size())//
                 .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
                     @Override
                     public List<BakedQuad> load(CableBusRenderState renderState) {
@@ -102,13 +102,13 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nullable Direction side, Random rand) {
         return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData data) {
+    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                                                              IModelData data) {
         CableBusRenderState renderState = data.getData(CableBusRenderState.PROPERTY);
 
         if (renderState == null || side != null) {
@@ -129,7 +129,7 @@ public class CableBusBakedModel implements IBakedModel {
             quads.addAll(cableModel);
 
             // Then handle attachments
-            for (Direction facing : Direction.values()) {
+            for (net.minecraft.core.Direction facing : Direction.values()) {
                 final IPartModel partModel = renderState.getAttachments().get(facing);
                 if (partModel == null) {
                     continue;
@@ -141,13 +141,13 @@ public class CableBusBakedModel implements IBakedModel {
                 }
 
                 for (ResourceLocation model : partModel.getModels()) {
-                    IBakedModel bakedModel = this.partModels.get(model);
+                    BakedModel bakedModel = this.partModels.get(model);
 
                     if (bakedModel == null) {
                         throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                     }
 
-                    List<BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
+                    List<net.minecraft.client.renderer.block.model.BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
 
                     Direction spinDirection = getPartSpin(facing, partModelData);
 
@@ -246,7 +246,7 @@ public class CableBusBakedModel implements IBakedModel {
         this.cableBuilder.addCableCore(renderState.getCoreType(), cableColor, quadsOut);
 
         // Render all internal connections to attachments
-        EnumMap<Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
+        EnumMap<net.minecraft.core.Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
         for (Direction facing : attachmentConnections.keySet()) {
             int distance = attachmentConnections.get(facing);
             int channels = renderState.getChannelsOnSide().get(facing);
@@ -322,7 +322,7 @@ public class CableBusBakedModel implements IBakedModel {
             IPartModel partModel = renderState.getAttachments().get(side);
 
             for (ResourceLocation model : partModel.getModels()) {
-                IBakedModel bakedModel = this.partModels.get(model);
+                BakedModel bakedModel = this.partModels.get(model);
 
                 if (bakedModel == null) {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
@@ -343,7 +343,7 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
-        return particleTexture instanceof MissingTextureSprite;
+        return particleTexture instanceof MissingTextureAtlasSprite;
     }
 
     @Override
@@ -372,13 +372,13 @@ public class CableBusBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getTransforms() {
-        return ItemCameraTransforms.NO_TRANSFORMS;
+    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
+        return net.minecraft.client.renderer.block.model.ItemTransforms.NO_TRANSFORMS;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
 }

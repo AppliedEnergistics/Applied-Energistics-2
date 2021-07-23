@@ -18,9 +18,9 @@
 
 package appeng.fluids.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.IStorageChannel;
@@ -32,7 +32,7 @@ import appeng.fluids.helper.FluidCellConfig;
 import appeng.items.storage.AbstractStorageCell;
 import appeng.util.InventoryAdaptor;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 /**
  * @author DrummerMC
@@ -44,8 +44,8 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     private final int bytesPerType;
     private final double idleDrain;
 
-    public BasicFluidStorageCell(Properties props, IItemProvider coreItem, int kilobytes, float idleDrain,
-            int bytesPerType) {
+    public BasicFluidStorageCell(net.minecraft.world.item.Item.Properties props, ItemLike coreItem, int kilobytes, float idleDrain,
+                                 int bytesPerType) {
         super(props, coreItem, kilobytes);
         this.idleDrain = idleDrain;
         this.bytesPerType = bytesPerType;
@@ -67,18 +67,18 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(final net.minecraft.world.item.ItemStack cellItem) {
         return 5;
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public IItemHandler getConfigInventory(final net.minecraft.world.item.ItemStack is) {
         return new FluidCellConfig(is);
     }
 
     @Override
-    protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
-        final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
+    protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player) {
+        final net.minecraft.world.item.ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
         if (!extraA.isEmpty()) {
             player.drop(extraA, false);
         }

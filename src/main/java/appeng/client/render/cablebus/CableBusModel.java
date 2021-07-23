@@ -27,13 +27,13 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.api.util.AEColor;
@@ -47,7 +47,7 @@ import appeng.core.registries.PartModels;
  */
 public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
 
-    public static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
+    public static final net.minecraft.resources.ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     private final PartModels partModels;
 
@@ -56,27 +56,27 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
     }
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
         partModels.setInitialized(true);
-        List<ResourceLocation> models = new ArrayList<>(partModels.getModels());
+        List<net.minecraft.resources.ResourceLocation> models = new ArrayList<>(partModels.getModels());
         models.add(TRANSLUCENT_FACADE_MODEL);
         return models;
     }
 
     @Override
-    public Stream<RenderMaterial> getAdditionalTextures() {
+    public Stream<Material> getAdditionalTextures() {
         return CableBuilder.getTextures().stream();
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
-        Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
+        Map<ResourceLocation, BakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
 
-        IBakedModel translucentFacadeModel = bakery.getBakedModel(TRANSLUCENT_FACADE_MODEL, modelTransform,
+        BakedModel translucentFacadeModel = bakery.getBakedModel(TRANSLUCENT_FACADE_MODEL, modelTransform,
                 spriteGetter);
 
         FacadeBuilder facadeBuilder = new FacadeBuilder(translucentFacadeModel);
@@ -89,12 +89,12 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }
 
-    private Map<ResourceLocation, IBakedModel> loadPartModels(ModelBakery bakery,
-            Function<RenderMaterial, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn) {
-        ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
+    private Map<ResourceLocation, BakedModel> loadPartModels(net.minecraft.client.resources.model.ModelBakery bakery,
+                                                             Function<Material, TextureAtlasSprite> spriteGetterIn, ModelState transformIn) {
+        ImmutableMap.Builder<ResourceLocation, BakedModel> result = ImmutableMap.builder();
 
-        for (ResourceLocation location : this.partModels.getModels()) {
-            IBakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
+        for (net.minecraft.resources.ResourceLocation location : this.partModels.getModels()) {
+            BakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);
             } else {

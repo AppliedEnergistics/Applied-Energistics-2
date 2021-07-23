@@ -18,11 +18,10 @@
 
 package appeng.client.gui.me.crafting;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -43,8 +42,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private boolean initialAmountInitialized;
 
-    public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public CraftAmountScreen(CraftAmountContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);
@@ -83,8 +82,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
+    public void drawBG(PoseStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+                       float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.amountToCraft.render(matrices, offsetX, offsetY, partialTicks);

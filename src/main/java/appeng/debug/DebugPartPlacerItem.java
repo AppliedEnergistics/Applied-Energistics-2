@@ -20,18 +20,19 @@ package appeng.debug;
 
 import java.util.Arrays;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.parts.IPart;
@@ -42,57 +43,55 @@ import appeng.items.AEBaseItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 
-import net.minecraft.item.Item.Properties;
-
 /**
  * This tool will try to place anything that is registered as a {@link PartItem} (and not a colored one) onto an
  * existing cable to quickly test parts and their rendering.
  */
 public class DebugPartPlacerItem extends AEBaseItem {
 
-    public DebugPartPlacerItem(Properties properties) {
+    public DebugPartPlacerItem(net.minecraft.world.item.Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
+        Level world = context.getLevel();
         if (world.isClientSide()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (!player.abilities.instabuild) {
-            player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.NIL_UUID);
-            return ActionResultType.FAIL;
+            player.sendMessage(new TextComponent("Only usable in creative mode"), net.minecraft.Util.NIL_UUID);
+            return InteractionResult.FAIL;
         }
 
-        TileEntity te = world.getBlockEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"),
-                    Util.NIL_UUID);
-            return ActionResultType.FAIL;
+            player.sendMessage(new TextComponent("Right-click something that will accept parts"),
+                    net.minecraft.Util.NIL_UUID);
+            return InteractionResult.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
-            return ActionResultType.FAIL;
+            player.sendMessage(new TextComponent("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
+            return InteractionResult.FAIL;
         }
 
-        Direction face = context.getClickedFace();
-        Vector3i offset = face.getNormal();
-        Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
-                .toArray(Direction[]::new);
+        net.minecraft.core.Direction face = context.getClickedFace();
+        Vec3i offset = face.getNormal();
+        Direction[] perpendicularFaces = Arrays.stream(net.minecraft.core.Direction.values()).filter(d -> d.getAxis() != face.getAxis())
+                .toArray(net.minecraft.core.Direction[]::new);
 
         BlockPos nextPos = pos;
-        for (Item item : ForgeRegistries.ITEMS) {
+        for (net.minecraft.world.item.Item item : ForgeRegistries.ITEMS) {
             if (!(item instanceof PartItem)) {
                 continue;
             }
@@ -106,7 +105,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
 
-            TileEntity t = world.getBlockEntity(nextPos);
+            BlockEntity t = world.getBlockEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }
@@ -117,12 +116,12 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
             for (Direction dir : perpendicularFaces) {
-                ItemStack itemStack = new ItemStack(item, 1);
+                net.minecraft.world.item.ItemStack itemStack = new ItemStack(item, 1);
                 partHost.addPart(itemStack, AEPartLocation.fromFacing(dir), player, null);
             }
         }
 
-        return ActionResultType.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
 }

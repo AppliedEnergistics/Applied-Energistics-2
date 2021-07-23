@@ -20,8 +20,8 @@ package appeng.client.render.effects;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.particles.ParticleType;
 
 import appeng.core.AppEng;
 
@@ -30,9 +30,9 @@ public final class ParticleTypes {
     private ParticleTypes() {
     }
 
-    public static final BasicParticleType CHARGED_ORE = new BasicParticleType(false);
-    public static final BasicParticleType CRAFTING = new BasicParticleType(false);
-    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
+    public static final SimpleParticleType CHARGED_ORE = new SimpleParticleType(false);
+    public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
+    public static final ParticleType<EnergyParticleData> ENERGY = new net.minecraft.core.particles.ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
         @Override
         public Codec<EnergyParticleData> codec() {
@@ -46,9 +46,9 @@ public final class ParticleTypes {
             return null;
         }
     };
-    public static final BasicParticleType LIGHTNING = new BasicParticleType(false);
-    public static final BasicParticleType MATTER_CANNON = new BasicParticleType(false);
-    public static final BasicParticleType VIBRANT = new BasicParticleType(false);
+    public static final SimpleParticleType LIGHTNING = new SimpleParticleType(false);
+    public static final SimpleParticleType MATTER_CANNON = new SimpleParticleType(false);
+    public static final SimpleParticleType VIBRANT = new SimpleParticleType(false);
 
     static {
         CHARGED_ORE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");

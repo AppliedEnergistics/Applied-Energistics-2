@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 
+import net.minecraft.world.item.Items;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
@@ -219,7 +219,7 @@ public class ItemListTest {
         itemList.add(sword);
         AEItemStack nameTag = nameTag(1, 0, false);
         itemList.add(nameTag);
-        AEItemStack craftingTable = AEItemStack.fromItemStack(new ItemStack(Items.CRAFTING_TABLE));
+        AEItemStack craftingTable = AEItemStack.fromItemStack(new ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE));
 
         assertThrows(ConcurrentModificationException.class, () -> {
             Iterator<IAEItemStack> it = itemList.iterator();
@@ -365,7 +365,7 @@ public class ItemListTest {
         AEItemStack item3 = nameTag("name2", 1, 0, false);
         itemList.add(item3);
         // Add another item to ensure this is not returned
-        itemList.add(AEItemStack.fromItemStack(new ItemStack(Items.CRAFTING_TABLE)));
+        itemList.add(AEItemStack.fromItemStack(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE)));
 
         for (FuzzyMode fuzzyMode : FuzzyMode.values()) {
             Collection<IAEItemStack> result = itemList.findFuzzy(nameTag(null, 0, 0, false), fuzzyMode);
@@ -442,7 +442,7 @@ public class ItemListTest {
             boolean craftable) {
         ItemStack is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
-            is.setDisplayName(new StringTextComponent(customName));
+            is.setDisplayName(new TextComponent(customName));
         }
         int damage = (int) ((100 - durabilityPercent) / 100.0f * is.getMaxDamage());
         is.setDamage(damage);
@@ -459,9 +459,9 @@ public class ItemListTest {
     }
 
     private AEItemStack nameTag(String customName, long stored, long requestable, boolean craftable) {
-        ItemStack is = new ItemStack(Items.NAME_TAG);
+        ItemStack is = new ItemStack(net.minecraft.world.item.Items.NAME_TAG);
         if (customName != null) {
-            is.setDisplayName(new StringTextComponent(customName));
+            is.setDisplayName(new TextComponent(customName));
         }
         AEItemStack ais = AEItemStack.fromItemStack(is);
         ais.setStackSize(stored);

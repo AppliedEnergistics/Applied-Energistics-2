@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -31,11 +31,11 @@ import appeng.tile.storage.DriveTileEntity;
  */
 public class DriveContainer extends AEBaseContainer {
 
-    public static final ContainerType<DriveContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<DriveContainer> TYPE = ContainerTypeBuilder
             .create(DriveContainer::new, DriveTileEntity.class)
             .build("drive");
 
-    public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
+    public DriveContainer(int id, final Inventory ip, final DriveTileEntity drive) {
         super(TYPE, id, ip, drive);
 
         for (int i = 0; i < 10; i++) {

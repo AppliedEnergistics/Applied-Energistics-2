@@ -24,11 +24,10 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.world.entity.player.Player;
 
 public class PlayerRegistry implements IPlayerRegistry {
 
@@ -42,19 +41,19 @@ public class PlayerRegistry implements IPlayerRegistry {
     }
 
     @Override
-    public int getID(final PlayerEntity player) {
+    public int getID(final Player player) {
         return this.getID(player.getGameProfile());
     }
 
     @Nullable
     @Override
-    public PlayerEntity findPlayer(final int playerID) {
+    public Player findPlayer(final int playerID) {
         UUID profileId = WorldData.instance().playerData().getProfileId(playerID);
         if (profileId == null) {
             return null;
         }
 
-        for (final PlayerEntity player : AppEng.instance().getPlayers()) {
+        for (final Player player : AppEng.instance().getPlayers()) {
             if (player.getUUID().equals(profileId)) {
                 return player;
             }

@@ -18,14 +18,15 @@
 
 package appeng.block.networking;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,7 +38,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     public static final int MAX_FULLNESS = 4;
 
-    public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, MAX_FULLNESS);
+    public static final IntegerProperty ENERGY_STORAGE = net.minecraft.world.level.block.state.properties.IntegerProperty.create("fullness", 0, MAX_FULLNESS);
 
     public EnergyCellBlock() {
         super(defaultProps(AEMaterials.GLASS));
@@ -45,11 +46,11 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         super.fillItemCategory(group, itemStacks);
 
-        final ItemStack charged = new ItemStack(this, 1);
-        final CompoundNBT tag = charged.getOrCreateTag();
+        final net.minecraft.world.item.ItemStack charged = new ItemStack(this, 1);
+        final CompoundTag tag = charged.getOrCreateTag();
         tag.putDouble("internalCurrentPower", this.getMaxPower());
         tag.putDouble("internalMaxPower", this.getMaxPower());
 
@@ -61,7 +62,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ENERGY_STORAGE);
     }

@@ -20,10 +20,10 @@ package appeng.spatial;
 
 import java.time.Instant;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Defines the source world and area of a transition into the spatial storage plot.
@@ -35,30 +35,30 @@ public final class TransitionInfo {
     public static final String TAG_MAX = "max";
     public static final String TAG_TIMESTAMP = "timestamp";
 
-    private final ResourceLocation worldId;
+    private final net.minecraft.resources.ResourceLocation worldId;
 
-    private final BlockPos min;
+    private final net.minecraft.core.BlockPos min;
 
-    private final BlockPos max;
+    private final net.minecraft.core.BlockPos max;
 
     private final Instant timestamp;
 
-    public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
+    public TransitionInfo(net.minecraft.resources.ResourceLocation worldId, BlockPos min, net.minecraft.core.BlockPos max, Instant timestamp) {
         this.worldId = worldId;
         this.min = min.immutable();
         this.max = max.immutable();
         this.timestamp = timestamp;
     }
 
-    public ResourceLocation getWorldId() {
+    public net.minecraft.resources.ResourceLocation getWorldId() {
         return worldId;
     }
 
-    public BlockPos getMin() {
+    public net.minecraft.core.BlockPos getMin() {
         return min;
     }
 
-    public BlockPos getMax() {
+    public net.minecraft.core.BlockPos getMax() {
         return max;
     }
 
@@ -66,19 +66,19 @@ public final class TransitionInfo {
         return timestamp;
     }
 
-    public CompoundNBT toTag() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
         tag.putString(TAG_WORLD_ID, worldId.toString());
-        tag.put(TAG_MIN, NBTUtil.writeBlockPos(min));
-        tag.put(TAG_MAX, NBTUtil.writeBlockPos(max));
+        tag.put(TAG_MIN, NbtUtils.writeBlockPos(min));
+        tag.put(TAG_MAX, NbtUtils.writeBlockPos(max));
         tag.putLong(TAG_TIMESTAMP, timestamp.toEpochMilli());
         return tag;
     }
 
-    public static TransitionInfo fromTag(CompoundNBT tag) {
-        ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
-        BlockPos min = NBTUtil.readBlockPos(tag.getCompound(TAG_MIN));
-        BlockPos max = NBTUtil.readBlockPos(tag.getCompound(TAG_MAX));
+    public static TransitionInfo fromTag(CompoundTag tag) {
+        net.minecraft.resources.ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
+        net.minecraft.core.BlockPos min = NbtUtils.readBlockPos(tag.getCompound(TAG_MIN));
+        BlockPos max = NbtUtils.readBlockPos(tag.getCompound(TAG_MAX));
         Instant timestamp = Instant.ofEpochMilli(tag.getLong(TAG_TIMESTAMP));
         return new TransitionInfo(worldId, min, max, timestamp);
     }

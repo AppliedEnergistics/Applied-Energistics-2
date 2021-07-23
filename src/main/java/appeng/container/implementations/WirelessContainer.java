@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -34,7 +34,7 @@ import appeng.tile.networking.WirelessTileEntity;
  */
 public class WirelessContainer extends AEBaseContainer {
 
-    public static final ContainerType<WirelessContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<WirelessContainer> TYPE = ContainerTypeBuilder
             .create(WirelessContainer::new, WirelessTileEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("wireless");
@@ -45,7 +45,7 @@ public class WirelessContainer extends AEBaseContainer {
     @GuiSync(2)
     public long drain = 0;
 
-    public WirelessContainer(int id, final PlayerInventory ip, final WirelessTileEntity te) {
+    public WirelessContainer(int id, final Inventory ip, final WirelessTileEntity te) {
         super(TYPE, id, ip, te);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,

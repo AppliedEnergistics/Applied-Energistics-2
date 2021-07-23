@@ -25,11 +25,12 @@ package appeng.api.networking.crafting;
 
 import java.util.List;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * Describes a crafting or processing pattern decoded by {@link appeng.api.crafting.ICraftingHelper}.
@@ -50,10 +51,10 @@ public interface ICraftingPatternDetails {
      *
      * @return if an item can be used in the specific slot for this pattern.
      */
-    boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, World world);
+    boolean isValidItemForSlot(int slotIndex, net.minecraft.world.item.ItemStack itemStack, Level world);
 
     /**
-     * @return if this pattern is for a Vanilla {@link net.minecraft.item.crafting.IRecipeType#CRAFTING crafting
+     * @return if this pattern is for a Vanilla {@link RecipeType#CRAFTING crafting
      *         recipe}.
      */
     boolean isCraftable();
@@ -131,7 +132,7 @@ public interface ICraftingPatternDetails {
      *
      * @return the crafted ( work bench ) item.
      */
-    ItemStack getOutput(CraftingInventory craftingInv, World world);
+    net.minecraft.world.item.ItemStack getOutput(CraftingContainer craftingInv, Level world);
 
     /**
      * Get the priority of this pattern

@@ -28,20 +28,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.core.AEConfig;
 import appeng.core.sync.BasePacket;
 
-public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<GrinderRecipe> {
+public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<GrinderRecipe> {
 
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 
@@ -54,17 +54,17 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Override
     public GrinderRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        String group = JSONUtils.getAsString(json, "group", "");
-        JsonObject inputObj = JSONUtils.getAsJsonObject(json, "input");
-        Ingredient ingredient = Ingredient.fromJson(inputObj);
+        String group = GsonHelper.getAsString(json, "group", "");
+        JsonObject inputObj = GsonHelper.getAsJsonObject(json, "input");
+        net.minecraft.world.item.crafting.Ingredient ingredient = Ingredient.fromJson(inputObj);
         int ingredientCount = 1;
         if (inputObj.has("count")) {
             ingredientCount = inputObj.get("count").getAsInt();
         }
 
-        JsonObject result = JSONUtils.getAsJsonObject(json, "result");
-        ItemStack primaryResult = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(result, "primary"));
-        JsonArray optionalResultsJson = JSONUtils.getAsJsonArray(result, "optional", null);
+        JsonObject result = GsonHelper.getAsJsonObject(json, "result");
+        net.minecraft.world.item.ItemStack primaryResult = net.minecraft.world.item.crafting.ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(result, "primary"));
+        JsonArray optionalResultsJson = GsonHelper.getAsJsonArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
             optionalResults = new ArrayList<>(optionalResultsJson.size());
@@ -73,31 +73,31 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
                 ItemStack optionalResultItem = ShapedRecipe.itemFromJson(optionalResultJson.getAsJsonObject());
-                float optionalChance = JSONUtils.getAsFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
+                float optionalChance = GsonHelper.getAsFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
                         AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));
             }
         }
 
-        int turns = JSONUtils.getAsInt(json, "turns", 8);
+        int turns = GsonHelper.getAsInt(json, "turns", 8);
 
         return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
 
     @Nullable
     @Override
-    public GrinderRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public GrinderRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 
         String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
-        Ingredient ingredient = Ingredient.fromNetwork(buffer);
+        net.minecraft.world.item.crafting.Ingredient ingredient = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
         int ingredientCount = buffer.readVarInt();
-        ItemStack result = buffer.readItem();
+        net.minecraft.world.item.ItemStack result = buffer.readItem();
         int turns = buffer.readVarInt();
         int optionalResultsCount = buffer.readVarInt();
         List<GrinderOptionalResult> optionalResults = new ArrayList<>(optionalResultsCount);
         for (int i = 0; i < optionalResultsCount; i++) {
             float chance = buffer.readFloat();
-            ItemStack optionalResult = buffer.readItem();
+            net.minecraft.world.item.ItemStack optionalResult = buffer.readItem();
             optionalResults.add(new GrinderOptionalResult(chance, optionalResult));
         }
 
@@ -105,7 +105,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, GrinderRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, GrinderRecipe recipe) {
         buffer.writeUtf(recipe.getGroup());
         recipe.getIngredient().toNetwork(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());

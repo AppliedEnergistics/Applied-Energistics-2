@@ -23,11 +23,11 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
- * Implemented on a {@link Item}
+ * Implemented on a {@link net.minecraft.world.item.Item}
  */
 public interface IStorageComponent {
 

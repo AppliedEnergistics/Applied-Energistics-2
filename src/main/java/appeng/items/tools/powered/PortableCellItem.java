@@ -20,16 +20,17 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -56,21 +57,21 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     private final StorageTier tier;
 
-    public PortableCellItem(StorageTier tier, Item.Properties props) {
+    public PortableCellItem(StorageTier tier, net.minecraft.world.item.Item.Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.tier = tier;
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
@@ -80,22 +81,22 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(final net.minecraft.world.item.ItemStack cellItem) {
         return this.tier.getBytes();
     }
 
     @Override
-    public int getBytesPerType(final ItemStack cellItem) {
+    public int getBytesPerType(final net.minecraft.world.item.ItemStack cellItem) {
         return this.tier.getBytesPerType();
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(final net.minecraft.world.item.ItemStack cellItem) {
         return this.tier.getTypes();
     }
 
     @Override
-    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
+    public boolean isBlackListed(final net.minecraft.world.item.ItemStack cellItem, final IAEItemStack requestedAddition) {
         return false;
     }
 
@@ -105,7 +106,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public boolean isStorageCell(final ItemStack i) {
+    public boolean isStorageCell(final net.minecraft.world.item.ItemStack i) {
         return true;
     }
 
@@ -120,12 +121,12 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(final net.minecraft.world.item.ItemStack is) {
         return true;
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public IItemHandler getUpgradesInventory(final net.minecraft.world.item.ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
@@ -145,12 +146,12 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(final net.minecraft.world.item.ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World w, final BlockPos pos) {
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level w, final BlockPos pos) {
         return new PortableCellViewer(is, playerInventorySlot);
     }
 

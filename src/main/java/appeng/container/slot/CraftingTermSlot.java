@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -65,9 +65,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IStorageMonitorable storage;
     private final IContainerCraftingPacket container;
 
-    public CraftingTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-            final IContainerCraftingPacket ccp) {
+    public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
+                            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+                            final IContainerCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -82,16 +82,16 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public boolean mayPickup(final PlayerEntity player) {
+    public boolean mayPickup(final Player player) {
         return false;
     }
 
     @Override
-    public ItemStack onTake(final PlayerEntity p, final ItemStack is) {
+    public net.minecraft.world.item.ItemStack onTake(final Player p, final net.minecraft.world.item.ItemStack is) {
         return is;
     }
 
-    public void doClick(final InventoryAction action, final PlayerEntity who) {
+    public void doClick(final InventoryAction action, final Player who) {
         if (this.getItem().isEmpty()) {
             return;
         }
@@ -126,7 +126,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             return;
         }
 
-        final ItemStack rs = this.getItem().copy();
+        final net.minecraft.world.item.ItemStack rs = this.getItem().copy();
         if (rs.isEmpty()) {
             return;
         }
@@ -134,9 +134,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         for (int x = 0; x < maxTimesToCraft; x++) {
             if (ia.simulateAdd(rs).isEmpty()) {
                 final IItemList<IAEItemStack> all = inv.getStorageList();
-                final ItemStack extra = ia.addItems(this.craftItem(who, rs, inv, all));
+                final net.minecraft.world.item.ItemStack extra = ia.addItems(this.craftItem(who, rs, inv, all));
                 if (!extra.isEmpty()) {
-                    final List<ItemStack> drops = new ArrayList<>();
+                    final List<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
                     Platform.spawnDrops(who.level,
                             new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
@@ -148,26 +148,26 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected IRecipe<CraftingInventory> findRecipe(CraftingInventory ic, World world) {
+    protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level world) {
         if (this.container instanceof CraftingTermContainer) {
             final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
-            final IRecipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
+            final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, world)) {
                 return containerTerminal.getCurrentRecipe();
             }
         }
 
-        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
+        return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level world) {
         if (this.container instanceof CraftingTermContainer) {
             final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
-            final IRecipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
+            final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, world)) {
                 return containerTerminal.getCurrentRecipe().getRemainingItems(ic);
@@ -181,32 +181,32 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return maxTimesToCraft;
     }
 
-    private ItemStack craftItem(final PlayerEntity p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
-            final IItemList all) {
+    private net.minecraft.world.item.ItemStack craftItem(final Player p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
+                                                         final IItemList all) {
         // update crafting matrix...
-        ItemStack is = this.getItem();
+        net.minecraft.world.item.ItemStack is = this.getItem();
 
-        if (!is.isEmpty() && ItemStack.isSame(request, is)) {
-            final ItemStack[] set = new ItemStack[this.getPattern().getSlots()];
+        if (!is.isEmpty() && net.minecraft.world.item.ItemStack.isSame(request, is)) {
+            final net.minecraft.world.item.ItemStack[] set = new net.minecraft.world.item.ItemStack[this.getPattern().getSlots()];
             // Safeguard for empty slots in the inventory for now
-            Arrays.fill(set, ItemStack.EMPTY);
+            Arrays.fill(set, net.minecraft.world.item.ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            World world = p.level;
+            Level world = p.level;
             if (!world.isClientSide()) {
-                final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
+                final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
                 for (int x = 0; x < 9; x++) {
                     ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
 
-                final IRecipe<CraftingInventory> r = this.findRecipe(ic, world);
+                final Recipe<CraftingContainer> r = this.findRecipe(ic, world);
 
                 if (r == null) {
-                    final Item target = request.getItem();
+                    final net.minecraft.world.item.Item target = request.getItem();
                     if (target.canBeDepleted() && target.isRepairable(request)) {
                         boolean isBad = false;
                         for (int x = 0; x < ic.getContainerSize(); x++) {
-                            final ItemStack pis = ic.getItem(x);
+                            final net.minecraft.world.item.ItemStack pis = ic.getItem(x);
                             if (pis.isEmpty()) {
                                 continue;
                             }
@@ -221,7 +221,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                             return request;
                         }
                     }
-                    return ItemStack.EMPTY;
+                    return net.minecraft.world.item.ItemStack.EMPTY;
                 }
 
                 is = r.assemble(ic);
@@ -249,21 +249,21 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             return is;
         }
 
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
-    private boolean preCraft(final PlayerEntity p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set,
-            final ItemStack result) {
+    private boolean preCraft(final Player p, final IMEMonitor<IAEItemStack> inv, final net.minecraft.world.item.ItemStack[] set,
+                             final net.minecraft.world.item.ItemStack result) {
         return true;
     }
 
-    private void makeItem(final PlayerEntity p, final ItemStack is) {
+    private void makeItem(final Player p, final net.minecraft.world.item.ItemStack is) {
         super.onTake(p, is);
     }
 
-    private void postCraft(final PlayerEntity p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set,
-            final ItemStack result) {
-        final List<ItemStack> drops = new ArrayList<>();
+    private void postCraft(final Player p, final IMEMonitor<IAEItemStack> inv, final net.minecraft.world.item.ItemStack[] set,
+                           final net.minecraft.world.item.ItemStack result) {
+        final List<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
         if (!p.getCommandSenderWorld().isClientSide()) {

@@ -26,9 +26,9 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -59,7 +59,7 @@ public final class InitAutoRotatingModel {
             AEBlocks.CRAFTING_STORAGE_64K);
 
     // Maps from resource path to customizer
-    private static final Map<String, Function<IBakedModel, IBakedModel>> CUSTOMIZERS = new HashMap<>();
+    private static final Map<String, Function<BakedModel, BakedModel>> CUSTOMIZERS = new HashMap<>();
 
     private InitAutoRotatingModel() {
     }
@@ -82,12 +82,12 @@ public final class InitAutoRotatingModel {
         modEventBus.addListener(InitAutoRotatingModel::onModelBake);
     }
 
-    private static void register(BlockDefinition block, Function<IBakedModel, IBakedModel> customizer) {
+    private static void register(BlockDefinition block, Function<BakedModel, BakedModel> customizer) {
         String path = block.block().getRegistryName().getPath();
         CUSTOMIZERS.put(path, customizer);
     }
 
-    private static IBakedModel customizeCraftingMonitorModel(IBakedModel model) {
+    private static BakedModel customizeCraftingMonitorModel(BakedModel model) {
         // The formed model handles rotations itself, the unformed one does not
         if (model instanceof MonitorBakedModel) {
             return model;
@@ -96,25 +96,25 @@ public final class InitAutoRotatingModel {
     }
 
     private static void onModelBake(ModelBakeEvent event) {
-        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
-        IBakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
+        Map<ResourceLocation, BakedModel> modelRegistry = event.getModelRegistry();
+        Set<net.minecraft.resources.ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
+        BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 
-        for (ResourceLocation location : keys) {
+        for (net.minecraft.resources.ResourceLocation location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }
 
-            IBakedModel orgModel = modelRegistry.get(location);
+            BakedModel orgModel = modelRegistry.get(location);
 
             // Don't customize the missing model. This causes Forge to swallow exceptions
             if (orgModel == missingModel) {
                 continue;
             }
 
-            Function<IBakedModel, IBakedModel> customizer = CUSTOMIZERS.get(location.getPath());
+            Function<BakedModel, BakedModel> customizer = CUSTOMIZERS.get(location.getPath());
             if (customizer != null) {
-                IBakedModel newModel = customizer.apply(orgModel);
+                BakedModel newModel = customizer.apply(orgModel);
 
                 if (newModel != orgModel) {
                     modelRegistry.put(location, newModel);

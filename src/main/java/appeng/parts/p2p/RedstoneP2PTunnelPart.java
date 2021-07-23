@@ -20,20 +20,20 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.util.Platform;
+import net.minecraft.world.level.block.Block;
 
 public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> {
 
@@ -82,7 +82,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void notifyNeighbors() {
-        final World world = this.getTile().getLevel();
+        final Level world = this.getTile().getLevel();
 
         Platform.notifyBlocksOfNeighbors(world, this.getTile().getBlockPos());
 
@@ -99,13 +99,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT tag) {
+    public void readFromNBT(final CompoundTag tag) {
         super.readFromNBT(tag);
         this.power = tag.getInt("power");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT tag) {
+    public void writeToNBT(final CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("power", this.power);
     }
@@ -116,7 +116,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
             final BlockPos target = this.getTile().getBlockPos().relative(this.getSide().getDirection());
 
@@ -124,7 +124,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
             final Block b = state.getBlock();
             if (b != null && !this.isOutput()) {
                 Direction srcSide = this.getSide().getDirection();
-                if (b instanceof RedstoneWireBlock) {
+                if (b instanceof RedStoneWireBlock) {
                     srcSide = Direction.UP;
                 }
 

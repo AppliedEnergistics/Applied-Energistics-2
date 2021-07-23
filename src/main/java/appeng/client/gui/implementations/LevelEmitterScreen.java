@@ -18,10 +18,10 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -43,8 +43,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title,
-            ScreenStyle style) {
+    public LevelEmitterScreen(LevelEmitterContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+                              ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,
@@ -93,8 +93,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }

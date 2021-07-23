@@ -18,22 +18,22 @@
 
 package appeng.worldgen.meteorite;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
+import net.minecraft.nbt.CompoundTag;
 
 public final class PlacedMeteoriteSettings {
 
-    private final BlockPos pos;
+    private final net.minecraft.core.BlockPos pos;
     private final float meteoriteRadius;
     private final CraterType craterType;
     private final FalloutMode fallout;
     private final boolean pureCrater;
     private final boolean craterLake;
 
-    public PlacedMeteoriteSettings(BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
-            boolean pureCrater, boolean craterLake) {
+    public PlacedMeteoriteSettings(net.minecraft.core.BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
+                                   boolean pureCrater, boolean craterLake) {
         this.pos = pos;
         this.craterType = craterType;
         this.meteoriteRadius = meteoriteRadius;
@@ -70,7 +70,7 @@ public final class PlacedMeteoriteSettings {
         return craterLake;
     }
 
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundTag write(CompoundTag tag) {
         tag.putLong(Constants.TAG_POS, pos.asLong());
 
         tag.putFloat(Constants.TAG_RADIUS, meteoriteRadius);
@@ -81,8 +81,8 @@ public final class PlacedMeteoriteSettings {
         return tag;
     }
 
-    public static PlacedMeteoriteSettings read(CompoundNBT tag) {
-        BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
+    public static PlacedMeteoriteSettings read(CompoundTag tag) {
+        net.minecraft.core.BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
         float meteoriteRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];

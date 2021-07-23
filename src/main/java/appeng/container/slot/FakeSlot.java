@@ -18,8 +18,8 @@
 
 package appeng.container.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class FakeSlot extends AppEngSlot {
@@ -29,17 +29,17 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack onTake(final PlayerEntity player, final ItemStack stack) {
+    public net.minecraft.world.item.ItemStack onTake(final Player player, final ItemStack stack) {
         return stack;
     }
 
     @Override
     public ItemStack remove(final int par1) {
-        return ItemStack.EMPTY;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(final net.minecraft.world.item.ItemStack stack) {
         return false;
     }
 
@@ -53,7 +53,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(final PlayerEntity player) {
+    public boolean mayPickup(final Player player) {
         return false;
     }
 }

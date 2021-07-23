@@ -21,13 +21,13 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,23 +38,23 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block id, Properties props) {
+    public AEBaseBlockItemChargeable(Block id, net.minecraft.world.item.Item.Properties props) {
         super(id, props);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void addCheckedInformation(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
         if (internalMaxPower > 0) {
-            final CompoundNBT tag = stack.getTag();
+            final CompoundTag tag = stack.getTag();
             if (tag != null) {
                 internalCurrentPower = tag.getDouble("internalCurrentPower");
             }
@@ -63,7 +63,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             lines.add(GuiText.StoredEnergy.text().copy()
                     .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .append(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .append(new TranslatableComponent(PowerUnits.AE.unlocalizedName))
                     .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
@@ -86,7 +86,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double extractAEPower(final ItemStack is, double amount, Actionable mode) {
+    public double extractAEPower(final net.minecraft.world.item.ItemStack is, double amount, Actionable mode) {
         final double internalCurrentPower = this.getInternal(is);
         final double fulfillable = Math.min(amount, internalCurrentPower);
 
@@ -110,12 +110,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public AccessRestriction getPowerFlow(final ItemStack is) {
+    public AccessRestriction getPowerFlow(final net.minecraft.world.item.ItemStack is) {
         return AccessRestriction.WRITE;
     }
 
     private double getMaxEnergyCapacity() {
-        if (Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
+        if (net.minecraft.world.level.block.Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
             return 200000;
         } else {
             return 8 * 200000;
@@ -123,12 +123,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getInternal(final ItemStack is) {
-        final CompoundNBT nbt = is.getOrCreateTag();
+        final CompoundTag nbt = is.getOrCreateTag();
         return nbt.getDouble("internalCurrentPower");
     }
 
-    private void setInternal(final ItemStack is, final double amt) {
-        final CompoundNBT nbt = is.getOrCreateTag();
+    private void setInternal(final net.minecraft.world.item.ItemStack is, final double amt) {
+        final CompoundTag nbt = is.getOrCreateTag();
         nbt.putDouble("internalCurrentPower", amt);
     }
 

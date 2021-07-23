@@ -18,7 +18,7 @@
 
 package appeng.container.slot;
 
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 
 public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
@@ -28,7 +28,7 @@ public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
 
     public OptionalRestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv,
             final IOptionalSlotHost host, final int invSlot, final int grpNum,
-            final PlayerInventory invPlayer) {
+            final Inventory invPlayer) {
         super(valid, inv, invSlot);
         this.groupNum = grpNum;
         this.host = host;

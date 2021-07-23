@@ -22,22 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.network.play.server.SChunkDataPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EmptyBlockReader;
-import net.minecraft.world.ITickList;
-import net.minecraft.world.NextTickListEntry;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.lighting.WorldLightManager;
-import net.minecraft.world.server.ServerTickList;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.ServerWorldLightManager;
+import net.minecraft.world.level.TickList;
+import net.minecraft.world.level.TickNextTickData;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.world.level.ServerTickList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -57,18 +57,18 @@ public class CachedPlane {
     private final int y_offset;
     private final int z_offset;
     private final int y_size;
-    private final Chunk[][] myChunks;
+    private final LevelChunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<TileEntity> tiles = new ArrayList<>();
-    private final List<NextTickListEntry<Block>> ticks = new ArrayList<>();
-    private final ServerWorld world;
+    private final List<BlockEntity> tiles = new ArrayList<>();
+    private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
+    private final ServerLevel world;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private int verticalBits;
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX,
-            final int maxY, final int maxZ) {
+    public CachedPlane(final ServerLevel w, final int minX, final int minY, final int minZ, final int maxX,
+                       final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         if (matrixFrameBlock != null) {
@@ -98,7 +98,7 @@ public class CachedPlane {
         final int cy_size = maxCY - minCY + 1;
         this.cz_size = maxCZ - minCZ + 1;
 
-        this.myChunks = new Chunk[this.cx_size][this.cz_size];
+        this.myChunks = new LevelChunk[this.cx_size][this.cz_size];
         this.myColumns = new Column[this.x_size][this.z_size];
 
         this.verticalBits = 0;
@@ -119,13 +119,13 @@ public class CachedPlane {
             for (int cz = 0; cz < this.cz_size; cz++) {
                 final List<BlockPos> deadTiles = new ArrayList<>();
 
-                final Chunk c = w.getChunk(minCX + cx, minCZ + cz);
+                final LevelChunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
-                for (final Entry<BlockPos, TileEntity> tx : rawTiles) {
-                    final BlockPos cp = tx.getKey();
-                    final TileEntity te = tx.getValue();
+                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
+                for (final Entry<net.minecraft.core.BlockPos, BlockEntity> tx : rawTiles) {
+                    final net.minecraft.core.BlockPos cp = tx.getKey();
+                    final BlockEntity te = tx.getValue();
 
                     final BlockPos tePOS = te.getBlockPos();
                     if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
@@ -138,7 +138,7 @@ public class CachedPlane {
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
 
                             // don't skip air, just let the code replace it...
-                            if (details.state.isAir(EmptyBlockReader.INSTANCE, tePOS)) {
+                            if (details.state.isAir(EmptyBlockGetter.INSTANCE, tePOS)) {
                                 w.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());
@@ -152,15 +152,15 @@ public class CachedPlane {
                 }
 
                 final long gameTime = this.getWorld().getGameTime();
-                final ITickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
+                final TickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
                 if (pendingBlockTicks instanceof ServerTickList) {
-                    List<NextTickListEntry<Block>> pending = ((ServerTickList<Block>) pendingBlockTicks)
+                    List<TickNextTickData<Block>> pending = ((net.minecraft.world.level.ServerTickList<Block>) pendingBlockTicks)
                             .fetchTicksInChunk(c.getPos(), false, true);
-                    for (final NextTickListEntry<Block> entry : pending) {
-                        final BlockPos tePOS = entry.pos;
+                    for (final TickNextTickData<Block> entry : pending) {
+                        final net.minecraft.core.BlockPos tePOS = entry.pos;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                            this.ticks.add(new NextTickListEntry<>(tePOS, entry.getType(),
+                            this.ticks.add(new TickNextTickData<>(tePOS, entry.getType(),
                                     entry.triggerTick - gameTime, entry.priority));
                         }
                     }
@@ -168,10 +168,10 @@ public class CachedPlane {
             }
         }
 
-        for (final TileEntity te : this.tiles) {
+        for (final BlockEntity te : this.tiles) {
             try {
                 this.getWorld().blockEntityList.remove(te);
-                if (te instanceof ITickableTileEntity) {
+                if (te instanceof TickableBlockEntity) {
                     this.getWorld().tickableBlockEntities.remove(te);
                 }
             } catch (final Exception e) {
@@ -180,7 +180,7 @@ public class CachedPlane {
         }
     }
 
-    private IMovableHandler getHandler(final TileEntity te) {
+    private IMovableHandler getHandler(final BlockEntity te) {
         final IMovableRegistry mr = Api.instance().registries().movable();
         return mr.getHandler(te);
     }
@@ -222,25 +222,25 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final TileEntity te : this.tiles) {
-                final BlockPos tePOS = te.getBlockPos();
+            for (final BlockEntity te : this.tiles) {
+                final net.minecraft.core.BlockPos tePOS = te.getBlockPos();
                 dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
-            for (final TileEntity te : dst.tiles) {
-                final BlockPos tePOS = te.getBlockPos();
+            for (final BlockEntity te : dst.tiles) {
+                final net.minecraft.core.BlockPos tePOS = te.getBlockPos();
                 this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
-            for (final NextTickListEntry<Block> entry : this.ticks) {
-                final BlockPos tePOS = entry.pos;
+            for (final TickNextTickData<Block> entry : this.ticks) {
+                final net.minecraft.core.BlockPos tePOS = entry.pos;
                 dst.addTick(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         entry);
             }
 
-            for (final NextTickListEntry<Block> entry : dst.ticks) {
+            for (final TickNextTickData<Block> entry : dst.ticks) {
                 final BlockPos tePOS = entry.pos;
                 this.addTick(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset,
                         entry);
@@ -263,13 +263,13 @@ public class CachedPlane {
         }
     }
 
-    private void addTick(final int x, final int y, final int z, final NextTickListEntry<Block> entry) {
-        BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
+    private void addTick(final int x, final int y, final int z, final TickNextTickData<Block> entry) {
+        net.minecraft.core.BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
         this.world.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
                 entry.priority);
     }
 
-    private void addTile(final int x, final int y, final int z, final TileEntity te,
+    private void addTile(final int x, final int y, final int z, final BlockEntity te,
             final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];
@@ -279,11 +279,11 @@ public class CachedPlane {
 
                 try {
                     handler.moveTile(te, this.world,
-                            new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
+                            new net.minecraft.core.BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
                 } catch (final Throwable e) {
                     AELog.debug(e);
 
-                    final BlockPos pos = new BlockPos(x, y, z);
+                    final BlockPos pos = new net.minecraft.core.BlockPos(x, y, z);
 
                     // attempt recovery...
                     c.c.addBlockEntity(te);
@@ -302,14 +302,14 @@ public class CachedPlane {
 
     private void updateChunks() {
 
-        WorldLightManager lightManager = world.getLightEngine();
+        LevelLightEngine lightManager = world.getLightEngine();
 
         // update shit..
-        if (lightManager instanceof ServerWorldLightManager) {
-            ServerWorldLightManager serverLightManager = (ServerWorldLightManager) lightManager;
+        if (lightManager instanceof ThreadedLevelLightEngine) {
+            ThreadedLevelLightEngine serverLightManager = (ThreadedLevelLightEngine) lightManager;
             for (int x = 0; x < this.cx_size; x++) {
                 for (int z = 0; z < this.cz_size; z++) {
-                    final Chunk c = this.myChunks[x][z];
+                    final LevelChunk c = this.myChunks[x][z];
                     serverLightManager.lightChunk(c, false);
                     c.markUnsaved();
                 }
@@ -320,11 +320,11 @@ public class CachedPlane {
         for (int x = 0; x < this.cx_size; x++) {
             for (int z = 0; z < this.cz_size; z++) {
 
-                final Chunk c = this.myChunks[x][z];
+                final LevelChunk c = this.myChunks[x][z];
 
                 WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
 
-                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
+                ClientboundLevelChunkPacket cdp = new ClientboundLevelChunkPacket(c, verticalBits);
                 world.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.send(cdp));
             }
@@ -338,33 +338,33 @@ public class CachedPlane {
         return this.updates;
     }
 
-    ServerWorld getWorld() {
+    ServerLevel getWorld() {
         return this.world;
     }
 
     private static class BlockStorageData {
-        public BlockState state;
+        public net.minecraft.world.level.block.state.BlockState state;
     }
 
     private class Column {
         private final int x;
         private final int z;
-        private final Chunk c;
+        private final LevelChunk c;
         private List<Integer> skipThese = null;
 
-        public Column(final Chunk chunk, final int x, final int z, final int chunkY, final int chunkHeight) {
+        public Column(final LevelChunk chunk, final int x, final int z, final int chunkY, final int chunkHeight) {
             this.x = x;
             this.z = z;
             this.c = chunk;
 
-            final ChunkSection[] storage = this.c.getSections();
+            final LevelChunkSection[] storage = this.c.getSections();
 
             // make sure storage exists before hand...
             for (int ay = 0; ay < chunkHeight; ay++) {
                 final int by = ay + chunkY;
-                ChunkSection extendedblockstorage = storage[by];
+                LevelChunkSection extendedblockstorage = storage[by];
                 if (extendedblockstorage == null) {
-                    extendedblockstorage = storage[by] = new ChunkSection(by << 4);
+                    extendedblockstorage = storage[by] = new LevelChunkSection(by << 4);
                 }
             }
         }
@@ -373,21 +373,21 @@ public class CachedPlane {
             if (data.state == CachedPlane.this.matrixBlockState) {
                 data.state = Blocks.AIR.defaultBlockState();
             }
-            final ChunkSection[] storage = this.c.getSections();
-            final ChunkSection extendedBlockStorage = storage[y >> 4];
+            final LevelChunkSection[] storage = this.c.getSections();
+            final LevelChunkSection extendedBlockStorage = storage[y >> 4];
             extendedBlockStorage.setBlockState(this.x, y & 15, this.z, data.state);
         }
 
         private void fillData(final int y, BlockStorageData data) {
-            final ChunkSection[] storage = this.c.getSections();
-            final ChunkSection extendedblockstorage = storage[y >> 4];
+            final LevelChunkSection[] storage = this.c.getSections();
+            final LevelChunkSection extendedblockstorage = storage[y >> 4];
 
             data.state = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
         }
 
         private boolean doNotSkip(final int y) {
-            final ChunkSection[] storage = this.c.getSections();
-            final ChunkSection extendedblockstorage = storage[y >> 4];
+            final LevelChunkSection[] storage = this.c.getSections();
+            final LevelChunkSection extendedblockstorage = storage[y >> 4];
             if (CachedPlane.this.reg
                     .isBlacklisted(extendedblockstorage.getBlockState(this.x, y & 15, this.z).getBlock())) {
                 return false;

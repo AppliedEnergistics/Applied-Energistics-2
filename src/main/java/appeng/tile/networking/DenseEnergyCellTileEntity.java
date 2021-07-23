@@ -18,13 +18,13 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class DenseEnergyCellTileEntity extends EnergyCellTileEntity {
 
     private final static double MAX_STORED = 200000 * 8;
 
-    public DenseEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public DenseEnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(MAX_STORED);
     }

@@ -20,12 +20,12 @@ package appeng.tile.misc;
 
 import java.util.List;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CopyMode;
@@ -54,7 +54,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     private IItemHandler cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CellWorkbenchTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
@@ -95,7 +95,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToNBT(data, "config");
@@ -104,7 +104,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");
@@ -199,7 +199,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         if (this.cell.getStackInSlot(0) != null) {

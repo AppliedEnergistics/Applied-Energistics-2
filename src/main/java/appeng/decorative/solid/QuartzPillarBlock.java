@@ -18,40 +18,41 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.helpers.MetaRotation;
-
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableBlock {
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 
-    public QuartzPillarBlock(Properties props) {
+    public QuartzPillarBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
 
         // The upwards facing pillar is the default (i.e. for the item model)
-        this.registerDefaultState(this.defaultBlockState().setValue(AXIS, Direction.Axis.Y));
+        this.registerDefaultState(this.defaultBlockState().setValue(AXIS, Axis.Y));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(AXIS);
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockGetter w, final net.minecraft.core.BlockPos pos) {
         return new MetaRotation(w, pos, null);
     }
 

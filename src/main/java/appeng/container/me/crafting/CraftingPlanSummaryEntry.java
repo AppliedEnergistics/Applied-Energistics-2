@@ -18,27 +18,27 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
  * network, or have to be crafted.
  */
 public class CraftingPlanSummaryEntry {
-    private final ItemStack item;
+    private final net.minecraft.world.item.ItemStack item;
     private final long missingAmount;
     private final long storedAmount;
     private final long craftAmount;
 
-    public CraftingPlanSummaryEntry(ItemStack item, long missingAmount, long storedAmount, long craftAmount) {
+    public CraftingPlanSummaryEntry(net.minecraft.world.item.ItemStack item, long missingAmount, long storedAmount, long craftAmount) {
         this.item = item;
         this.missingAmount = missingAmount;
         this.storedAmount = storedAmount;
         this.craftAmount = craftAmount;
     }
 
-    public ItemStack getItem() {
+    public net.minecraft.world.item.ItemStack getItem() {
         return item;
     }
 
@@ -54,14 +54,14 @@ public class CraftingPlanSummaryEntry {
         return craftAmount;
     }
 
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeItemStack(item, true);
         buffer.writeVarLong(missingAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(craftAmount);
     }
 
-    public static CraftingPlanSummaryEntry read(PacketBuffer buffer) {
+    public static CraftingPlanSummaryEntry read(FriendlyByteBuf buffer) {
         ItemStack item = buffer.readItem();
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();

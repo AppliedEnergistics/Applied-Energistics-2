@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
@@ -37,7 +37,7 @@ import appeng.tile.misc.CondenserTileEntity;
  */
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static final ContainerType<CondenserContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CondenserContainer> TYPE = ContainerTypeBuilder
             .create(CondenserContainer::new, CondenserTileEntity.class)
             .build("condenser");
 
@@ -49,7 +49,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     @GuiSync(2)
     public CondenserOutput output = CondenserOutput.TRASH;
 
-    public CondenserContainer(int id, final PlayerInventory ip, final CondenserTileEntity condenser) {
+    public CondenserContainer(int id, final Inventory ip, final CondenserTileEntity condenser) {
         super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 

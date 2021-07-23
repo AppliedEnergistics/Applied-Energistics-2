@@ -25,8 +25,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
@@ -180,7 +180,7 @@ public class BakedPipeline implements ISmartVertexConsumer {
     }
 
     @Override
-    public VertexFormat getVertexFormat() {
+    public com.mojang.blaze3d.vertex.VertexFormat getVertexFormat() {
         this.check();
         return this.first.getVertexFormat();
     }
@@ -192,7 +192,7 @@ public class BakedPipeline implements ISmartVertexConsumer {
     }
 
     @Override
-    public void setQuadOrientation(Direction orientation) {
+    public void setQuadOrientation(net.minecraft.core.Direction orientation) {
         this.check();
         this.unpacker.setQuadOrientation(orientation);
     }

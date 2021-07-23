@@ -20,15 +20,15 @@ package appeng.client.gui.widgets;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
 
-public class ConfirmableTextField extends TextFieldWidget {
+public class ConfirmableTextField extends EditBox {
 
     private Runnable onConfirm;
 
-    public ConfirmableTextField(FontRenderer fontRenderer, int x, int y, int width, int height, ITextComponent text) {
+    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height, net.minecraft.network.chat.Component text) {
         super(fontRenderer, x, y, width, height, text);
     }
 

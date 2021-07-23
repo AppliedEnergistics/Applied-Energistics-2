@@ -23,8 +23,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 /**
  * This class is responsible for synchronizing Container-fields from server to client.
@@ -62,13 +62,13 @@ public abstract class SynchronizedField<T> {
         return !Objects.equals(getCurrentValue(), this.clientVersion);
     }
 
-    public final void write(PacketBuffer data) {
+    public final void write(FriendlyByteBuf data) {
         T currentValue = getCurrentValue();
         this.clientVersion = currentValue;
         this.writeValue(data, currentValue);
     }
 
-    public final void read(PacketBuffer data) {
+    public final void read(FriendlyByteBuf data) {
         T value = readValue(data);
         try {
             setter.invoke(source, value);
@@ -77,14 +77,14 @@ public abstract class SynchronizedField<T> {
         }
     }
 
-    protected abstract void writeValue(PacketBuffer data, T value);
+    protected abstract void writeValue(FriendlyByteBuf data, T value);
 
-    protected abstract T readValue(PacketBuffer data);
+    protected abstract T readValue(FriendlyByteBuf data);
 
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
 
-        if (fieldType.isAssignableFrom(ITextComponent.class)) {
+        if (fieldType.isAssignableFrom(net.minecraft.network.chat.Component.class)) {
             return new TextComponentField(source, field);
         } else if (fieldType == String.class) {
             return new StringField(source, field);
@@ -111,12 +111,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, String value) {
+        protected void writeValue(FriendlyByteBuf data, String value) {
             data.writeUtf(value);
         }
 
         @Override
-        protected String readValue(PacketBuffer data) {
+        protected String readValue(FriendlyByteBuf data) {
             return data.readUtf();
         }
     }
@@ -127,12 +127,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, Integer value) {
+        protected void writeValue(FriendlyByteBuf data, Integer value) {
             data.writeInt(value);
         }
 
         @Override
-        protected Integer readValue(PacketBuffer data) {
+        protected Integer readValue(FriendlyByteBuf data) {
             return data.readInt();
         }
     }
@@ -143,12 +143,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, Long value) {
+        protected void writeValue(FriendlyByteBuf data, Long value) {
             data.writeLong(value);
         }
 
         @Override
-        protected Long readValue(PacketBuffer data) {
+        protected Long readValue(FriendlyByteBuf data) {
             return data.readLong();
         }
     }
@@ -159,12 +159,12 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, Boolean value) {
+        protected void writeValue(FriendlyByteBuf data, Boolean value) {
             data.writeBoolean(value);
         }
 
         @Override
-        protected Boolean readValue(PacketBuffer data) {
+        protected Boolean readValue(FriendlyByteBuf data) {
             return data.readBoolean();
         }
     }
@@ -178,24 +178,24 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, T value) {
+        protected void writeValue(FriendlyByteBuf data, T value) {
             data.writeVarInt(value.ordinal());
         }
 
         @Override
-        protected T readValue(PacketBuffer data) {
+        protected T readValue(FriendlyByteBuf data) {
             int ordinal = data.readVarInt();
             return values[ordinal];
         }
     }
 
-    private static class TextComponentField extends SynchronizedField<ITextComponent> {
+    private static class TextComponentField extends SynchronizedField<net.minecraft.network.chat.Component> {
         private TextComponentField(Object source, Field field) {
             super(source, field);
         }
 
         @Override
-        protected void writeValue(PacketBuffer data, ITextComponent value) {
+        protected void writeValue(FriendlyByteBuf data, net.minecraft.network.chat.Component value) {
             if (value == null) {
                 data.writeBoolean(false);
             } else {
@@ -205,7 +205,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected ITextComponent readValue(PacketBuffer data) {
+        protected net.minecraft.network.chat.Component readValue(FriendlyByteBuf data) {
             if (data.readBoolean()) {
                 return data.readComponent();
             } else {

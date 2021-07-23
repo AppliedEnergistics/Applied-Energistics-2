@@ -19,7 +19,7 @@
 package appeng.init.client;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -65,11 +65,11 @@ public final class InitRenderTypes {
 
     public static void init() {
         for (BlockDefinition definition : CUTOUT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(definition.block(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(definition.block(), RenderType.cutout());
         }
 
         // Cable bus multiblock renders in all layers
-        RenderTypeLookup.setRenderLayer(AEBlocks.MULTI_PART.block(), rt -> true);
+        ItemBlockRenderTypes.setRenderLayer(AEBlocks.MULTI_PART.block(), rt -> true);
     }
 
 }

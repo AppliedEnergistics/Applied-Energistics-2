@@ -18,9 +18,8 @@
 
 package appeng.core.registries.cell;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
@@ -33,6 +32,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
+import net.minecraft.world.item.ItemStack;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
@@ -41,10 +41,10 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
     }
 
     @Override
-    public <T extends IAEStack<T>> void openChestGui(final PlayerEntity player, final IChestOrDrive chest,
-            final ICellHandler cellHandler,
-            final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
+    public <T extends IAEStack<T>> void openChestGui(final Player player, final IChestOrDrive chest,
+                                                     final ICellHandler cellHandler,
+                                                     final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
         ContainerOpener.openContainer(ItemTerminalContainer.TYPE, player,
-                ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
+                ContainerLocator.forTileEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

@@ -26,9 +26,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 enum BlitterDeserializer implements JsonDeserializer<Blitter> {
 
@@ -43,9 +43,9 @@ enum BlitterDeserializer implements JsonDeserializer<Blitter> {
 
         JsonObject root = json.getAsJsonObject();
 
-        String texture = JSONUtils.getAsString(root, "texture");
-        int textureWidth = JSONUtils.getAsInt(root, "textureWidth", Blitter.DEFAULT_TEXTURE_WIDTH);
-        int textureHeight = JSONUtils.getAsInt(root, "textureHeight", Blitter.DEFAULT_TEXTURE_HEIGHT);
+        String texture = GsonHelper.getAsString(root, "texture");
+        int textureWidth = GsonHelper.getAsInt(root, "textureWidth", Blitter.DEFAULT_TEXTURE_WIDTH);
+        int textureHeight = GsonHelper.getAsInt(root, "textureHeight", Blitter.DEFAULT_TEXTURE_HEIGHT);
 
         Blitter blitter;
         if (texture.contains(":")) {
@@ -55,7 +55,7 @@ enum BlitterDeserializer implements JsonDeserializer<Blitter> {
         }
 
         if (root.has("srcRect")) {
-            Rectangle2d srcRect = context.deserialize(root.get("srcRect"), Rectangle2d.class);
+            Rect2i srcRect = context.deserialize(root.get("srcRect"), Rect2i.class);
             blitter = blitter.src(srcRect);
         }
 

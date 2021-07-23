@@ -23,8 +23,8 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 /**
  * Implemented on many of AE's non Tile Entity Blocks as a way to get a IOrientable.
@@ -37,5 +37,5 @@ public interface IOrientableBlock {
      *
      * @return a IOrientable if applicable
      */
-    IOrientable getOrientable(IBlockReader world, BlockPos pos);
+    IOrientable getOrientable(BlockGetter world, net.minecraft.core.BlockPos pos);
 }

@@ -18,10 +18,9 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
+import net.minecraft.world.item.ItemStack;
 
 public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
 

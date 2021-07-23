@@ -18,20 +18,20 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.block.AbstractGlassBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.AbstractGlassBlock;
+import net.minecraft.core.Direction;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class QuartzGlassBlock extends AbstractGlassBlock {
 
-    public QuartzGlassBlock(Properties props) {
+    public QuartzGlassBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean skipRendering(BlockState state, net.minecraft.world.level.block.state.BlockState adjacentBlockState, net.minecraft.core.Direction side) {
         if (adjacentBlockState.getBlock() instanceof QuartzGlassBlock
                 && adjacentBlockState.getRenderShape() == state.getRenderShape()) {
             return true;

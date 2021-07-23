@@ -23,8 +23,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -35,7 +35,7 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class StorageData extends WorldSavedData implements IWorldGridStorageData {
+final class StorageData extends SavedData implements IWorldGridStorageData {
 
     public static final String NAME = AppEng.MOD_ID + "_storage";
 
@@ -96,12 +96,12 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
     }
 
     @Override
-    public void load(CompoundNBT tag) {
+    public void load(CompoundTag tag) {
 
         nextGridId = tag.getLong(TAG_NEXT_ID);
 
         // Load serialized grid storage
-        CompoundNBT storageTag = tag.getCompound(TAG_STORAGE);
+        CompoundTag storageTag = tag.getCompound(TAG_STORAGE);
         for (String storageIdStr : storageTag.getAllKeys()) {
             long storageId;
             try {
@@ -114,7 +114,7 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         }
 
         // Load ordered values map
-        CompoundNBT orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
+        CompoundTag orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
         this.orderedValues.clear();
         for (String key : orderedValuesTag.getAllKeys()) {
             this.orderedValues.put(key, orderedValuesTag.getInt(key));
@@ -123,12 +123,12 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
 
         tag.putLong(TAG_NEXT_ID, nextGridId);
 
         // Save serialized grid storage
-        CompoundNBT storageTag = new CompoundNBT();
+        CompoundTag storageTag = new CompoundTag();
         for (Map.Entry<Long, GridStorage> entry : storage.entrySet()) {
 
             GridStorage gridStorage = entry.getValue();
@@ -147,7 +147,7 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         tag.put(TAG_STORAGE, storageTag);
 
         // Save ordered values
-        CompoundNBT orderedValuesTag = new CompoundNBT();
+        CompoundTag orderedValuesTag = new CompoundTag();
         for (Map.Entry<String, Integer> entry : orderedValues.entrySet()) {
             orderedValuesTag.putInt(entry.getKey(), entry.getValue());
         }

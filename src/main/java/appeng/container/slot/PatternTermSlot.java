@@ -18,8 +18,8 @@
 
 package appeng.container.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.energy.IEnergySource;
@@ -36,10 +36,10 @@ public class PatternTermSlot extends CraftingTermSlot {
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public PatternTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-            final IOptionalSlotHost h, final int groupNumber,
-            final IContainerCraftingPacket c) {
+    public PatternTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
+                           final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+                           final IOptionalSlotHost h, final int groupNumber,
+                           final IContainerCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);
 
         this.host = h;

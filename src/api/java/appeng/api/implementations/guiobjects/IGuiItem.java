@@ -25,9 +25,9 @@ package appeng.api.implementations.guiobjects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Implemented on Item objects, to return objects used to manage, and interact with the contents.
@@ -43,5 +43,5 @@ public interface IGuiItem {
      * @return Null if no GUI object is available.
      */
     @Nullable
-    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, World world, @Nullable BlockPos pos);
+    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level world, @Nullable net.minecraft.core.BlockPos pos);
 }

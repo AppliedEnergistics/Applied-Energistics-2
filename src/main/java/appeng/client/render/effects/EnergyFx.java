@@ -18,28 +18,28 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EnergyFx extends SpriteTexturedParticle {
+public class EnergyFx extends TextureSheetParticle {
 
     private final int startBlkX;
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(final ClientWorld par1World, final double par2, final double par4, final double par6,
-            final IAnimatedSprite sprite) {
+    public EnergyFx(final ClientLevel par1World, final double par2, final double par4, final double par6,
+                    final SpriteSet sprite) {
         super(par1World, par2, par4, par6);
         this.gravity = 0;
         this.bCol = 1;
@@ -49,14 +49,14 @@ public class EnergyFx extends SpriteTexturedParticle {
         this.quadSize = 3.5f;
         this.pickSprite(sprite);
 
-        this.startBlkX = MathHelper.floor(this.x);
-        this.startBlkY = MathHelper.floor(this.y);
-        this.startBlkZ = MathHelper.floor(this.z);
+        this.startBlkX = Mth.floor(this.x);
+        this.startBlkY = Mth.floor(this.y);
+        this.startBlkZ = Mth.floor(this.z);
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -65,14 +65,14 @@ public class EnergyFx extends SpriteTexturedParticle {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         float x = (float) (this.xo + (this.x - this.xo) * partialTicks);
         float y = (float) (this.yo + (this.y - this.yo) * partialTicks);
         float z = (float) (this.zo + (this.z - this.zo) * partialTicks);
 
-        final int blkX = MathHelper.floor(x);
-        final int blkY = MathHelper.floor(y);
-        final int blkZ = MathHelper.floor(z);
+        final int blkX = Mth.floor(x);
+        final int blkY = Mth.floor(y);
+        final int blkZ = Mth.floor(z);
 
         if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
             super.render(buffer, renderInfo, partialTicks);
@@ -101,16 +101,16 @@ public class EnergyFx extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<EnergyParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<EnergyParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle createParticle(EnergyParticleData data, ClientWorld worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(EnergyParticleData data, ClientLevel worldIn, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);

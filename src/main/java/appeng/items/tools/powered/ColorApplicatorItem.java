@@ -27,27 +27,28 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.SnowballItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.item.SnowballItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -91,37 +92,37 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             .put(new ResourceLocation("forge:dyes/cyan"), AEColor.CYAN)
             .put(new ResourceLocation("forge:dyes/gray"), AEColor.GRAY)
             .put(new ResourceLocation("forge:dyes/green"), AEColor.GREEN)
-            .put(new ResourceLocation("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
+            .put(new net.minecraft.resources.ResourceLocation("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
             .put(new ResourceLocation("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
             .put(new ResourceLocation("forge:dyes/lime"), AEColor.LIME)
             .put(new ResourceLocation("forge:dyes/magenta"), AEColor.MAGENTA)
             .put(new ResourceLocation("forge:dyes/orange"), AEColor.ORANGE)
-            .put(new ResourceLocation("forge:dyes/pink"), AEColor.PINK)
+            .put(new net.minecraft.resources.ResourceLocation("forge:dyes/pink"), AEColor.PINK)
             .put(new ResourceLocation("forge:dyes/purple"), AEColor.PURPLE)
             .put(new ResourceLocation("forge:dyes/red"), AEColor.RED)
             .put(new ResourceLocation("forge:dyes/white"), AEColor.WHITE)
-            .put(new ResourceLocation("forge:dyes/yellow"), AEColor.YELLOW).build();
+            .put(new net.minecraft.resources.ResourceLocation("forge:dyes/yellow"), AEColor.YELLOW).build();
 
     private static final String TAG_COLOR = "color";
 
-    public ColorApplicatorItem(Item.Properties props) {
+    public ColorApplicatorItem(net.minecraft.world.item.Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World w = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level w = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        ItemStack is = context.getItemInHand();
+        net.minecraft.world.item.ItemStack is = context.getItemInHand();
         Direction side = context.getClickedFace();
-        PlayerEntity p = context.getPlayer(); // This can be null
-        if (p == null && w instanceof ServerWorld) {
-            p = Platform.getPlayer((ServerWorld) w);
+        Player p = context.getPlayer(); // This can be null
+        if (p == null && w instanceof ServerLevel) {
+            p = Platform.getPlayer((ServerLevel) w);
         }
 
         final Block blk = w.getBlockState(pos).getBlock();
 
-        ItemStack paintBall = this.getColor(is);
+        net.minecraft.world.item.ItemStack paintBall = this.getColor(is);
 
         final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -133,16 +134,16 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 paintBall = option.createItemStack();
                 paintBall.setCount(1);
             } else {
-                paintBall = ItemStack.EMPTY;
+                paintBall = net.minecraft.world.item.ItemStack.EMPTY;
             }
 
             if (p != null && !Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
 
             final double powerPerUse = 100;
-            if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final TileEntity te = w.getBlockEntity(pos);
+            if (!paintBall.isEmpty() && paintBall.getItem() instanceof net.minecraft.world.item.SnowballItem) {
+                final BlockEntity te = w.getBlockEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableTile && p != null && this.getAECurrentPower(is) > powerPerUse
                         && ((IColorableTile) te).getColor() != AEColor.TRANSPARENT) {
@@ -150,19 +151,19 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResultType.sidedSuccess(w.isClientSide());
+                        return InteractionResult.sidedSuccess(w.isClientSide());
                     }
                 }
 
                 // clean paint balls..
-                final Block testBlk = w.getBlockState(pos.relative(side)).getBlock();
-                final TileEntity painted = w.getBlockEntity(pos.relative(side));
+                final net.minecraft.world.level.block.Block testBlk = w.getBlockState(pos.relative(side)).getBlock();
+                final BlockEntity painted = w.getBlockEntity(pos.relative(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesTileEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
-                    return ActionResultType.sidedSuccess(w.isClientSide());
+                    return InteractionResult.sidedSuccess(w.isClientSide());
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
@@ -172,7 +173,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                             new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                    return ActionResultType.sidedSuccess(w.isClientSide());
+                    return InteractionResult.sidedSuccess(w.isClientSide());
                 }
             }
         }
@@ -181,27 +182,27 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             this.cycleColors(is, paintBall, 1);
         }
 
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
-    public ITextComponent getName(final ItemStack is) {
-        ITextComponent extra = GuiText.Empty.text();
+    public net.minecraft.network.chat.Component getName(final net.minecraft.world.item.ItemStack is) {
+        net.minecraft.network.chat.Component extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
 
         if (selected != null && Platform.isClient()) {
-            extra = new TranslationTextComponent(selected.translationKey);
+            extra = new TranslatableComponent(selected.translationKey);
         }
 
         return super.getName(is).copy().append(" - ").append(extra);
     }
 
-    public AEColor getActiveColor(final ItemStack tol) {
+    public AEColor getActiveColor(final net.minecraft.world.item.ItemStack tol) {
         return this.getColorFromItem(this.getColor(tol));
     }
 
-    private AEColor getColorFromItem(final ItemStack paintBall) {
+    private AEColor getColorFromItem(final net.minecraft.world.item.ItemStack paintBall) {
         if (paintBall.isEmpty()) {
             return null;
         }
@@ -215,7 +216,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return ipb.getColor();
         } else {
             for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
-                ITag<Item> tag = ItemTags.getAllTags().getTag(entry.getKey());
+                Tag<Item> tag = ItemTags.getAllTags().getTag(entry.getKey());
                 if (tag != null && paintBall.getItem().is(tag)) {
                     return entry.getValue();
                 }
@@ -225,21 +226,21 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return null;
     }
 
-    public ItemStack getColor(final ItemStack is) {
-        final CompoundNBT c = is.getTag();
+    public net.minecraft.world.item.ItemStack getColor(final ItemStack is) {
+        final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
-            final CompoundNBT color = c.getCompound(TAG_COLOR);
-            final ItemStack oldColor = ItemStack.of(color);
+            final CompoundTag color = c.getCompound(TAG_COLOR);
+            final net.minecraft.world.item.ItemStack oldColor = ItemStack.of(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
             }
         }
 
-        return this.findNextColor(is, ItemStack.EMPTY, 0);
+        return this.findNextColor(is, net.minecraft.world.item.ItemStack.EMPTY, 0);
     }
 
-    private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
-        ItemStack newColor = ItemStack.EMPTY;
+    private net.minecraft.world.item.ItemStack findNextColor(final net.minecraft.world.item.ItemStack is, final net.minecraft.world.item.ItemStack anchor, final int scrollOffset) {
+        net.minecraft.world.item.ItemStack newColor = net.minecraft.world.item.ItemStack.EMPTY;
 
         final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -259,7 +260,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 }
 
                 if (list.isEmpty()) {
-                    return ItemStack.EMPTY;
+                    return net.minecraft.world.item.ItemStack.EMPTY;
                 }
 
                 // Sort by color
@@ -297,19 +298,19 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return newColor;
     }
 
-    private void setColor(final ItemStack is, final ItemStack newColor) {
-        final CompoundNBT data = is.getOrCreateTag();
+    private void setColor(final net.minecraft.world.item.ItemStack is, final net.minecraft.world.item.ItemStack newColor) {
+        final CompoundTag data = is.getOrCreateTag();
         if (newColor.isEmpty()) {
             data.remove(TAG_COLOR);
         } else {
-            final CompoundNBT color = new CompoundNBT();
+            final CompoundTag color = new CompoundTag();
             newColor.save(color);
             data.put(TAG_COLOR, color);
         }
     }
 
-    private boolean recolourBlock(final Block blk, final Direction side, final World w, final BlockPos pos,
-            final AEColor newColor, @Nullable final PlayerEntity p) {
+    private boolean recolourBlock(final Block blk, final Direction side, final Level w, final net.minecraft.core.BlockPos pos,
+                                  final AEColor newColor, @Nullable final Player p) {
         final BlockState state = w.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
@@ -326,7 +327,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
-        TileEntity be = w.getBlockEntity(pos);
+        BlockEntity be = w.getBlockEntity(pos);
         if (be instanceof IColorableTile) {
             IColorableTile ct = (IColorableTile) be;
             AEColor c = ct.getColor();
@@ -339,15 +340,15 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return false;
     }
 
-    private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
-            Property<T> prop) {
+    private static <T extends Comparable<T>> BlockState copyProp(net.minecraft.world.level.block.state.BlockState oldState, BlockState newState,
+                                                                 net.minecraft.world.level.block.state.properties.Property<T> prop) {
         if (newState.hasProperty(prop)) {
             return newState.setValue(prop, oldState.getValue(prop));
         }
         return newState;
     }
 
-    public void cycleColors(final ItemStack is, final ItemStack paintBall, final int i) {
+    public void cycleColors(final net.minecraft.world.item.ItemStack is, final ItemStack paintBall, final int i) {
         if (paintBall.isEmpty()) {
             this.setColor(is, this.getColor(is));
         } else {
@@ -357,8 +358,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
@@ -368,22 +369,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(final net.minecraft.world.item.ItemStack cellItem) {
         return 512;
     }
 
     @Override
-    public int getBytesPerType(final ItemStack cellItem) {
+    public int getBytesPerType(final net.minecraft.world.item.ItemStack cellItem) {
         return 8;
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(final net.minecraft.world.item.ItemStack cellItem) {
         return 27;
     }
 
     @Override
-    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
+    public boolean isBlackListed(final net.minecraft.world.item.ItemStack cellItem, final IAEItemStack requestedAddition) {
         if (requestedAddition != null) {
             return getColorFromItem(requestedAddition.getDefinition()) == null;
         }
@@ -411,17 +412,17 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(final net.minecraft.world.item.ItemStack is) {
         return true;
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public IItemHandler getUpgradesInventory(final net.minecraft.world.item.ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public IItemHandler getConfigInventory(final net.minecraft.world.item.ItemStack is) {
         return new CellConfig(is);
     }
 
@@ -439,12 +440,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(final net.minecraft.world.item.ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public void onWheel(final ItemStack is, final boolean up) {
+    public void onWheel(final net.minecraft.world.item.ItemStack is, final boolean up) {
         this.cycleColors(is, this.getColor(is), up ? 1 : -1);
     }
 

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -36,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 
 public final class ItemList implements IItemList<IAEItemStack> {
 
-    private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<net.minecraft.world.item.Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
     /**
      * We increment this version field everytime an attempt to mutate this item list (or potentially one of its
      * sub-lists) is made. Iterators will copy the version when they are created and compare it against the current
@@ -144,11 +144,11 @@ public final class ItemList implements IItemList<IAEItemStack> {
         }
     }
 
-    private ItemVariantList getOrCreateRecord(Item item) {
+    private ItemVariantList getOrCreateRecord(net.minecraft.world.item.Item item) {
         return this.records.computeIfAbsent(item, this::makeRecordMap);
     }
 
-    private ItemVariantList makeRecordMap(Item item) {
+    private ItemVariantList makeRecordMap(net.minecraft.world.item.Item item) {
         if (item.canBeDepleted()) {
             return new FuzzyItemVariantList();
         } else {

@@ -21,8 +21,8 @@ package appeng.core.api;
 
 import java.util.List;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.api.client.IClientHelper;
@@ -39,7 +39,7 @@ public class ApiClientHelper implements IClientHelper {
 
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
-            List<ITextComponent> lines) {
+            List<net.minecraft.network.chat.Component> lines) {
         if (handler == null) {
             return;
         }
@@ -47,10 +47,10 @@ public class ApiClientHelper implements IClientHelper {
         final ICellInventory<?> cellInventory = handler.getCellInv();
 
         if (cellInventory != null) {
-            lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ").append(GuiText.Of.text())
+            lines.add(new TextComponent(cellInventory.getUsedBytes() + " ").append(GuiText.Of.text())
                     .append(" " + cellInventory.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
 
-            lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ").append(GuiText.Of.text())
+            lines.add(new TextComponent(cellInventory.getStoredItemTypes() + " ").append(GuiText.Of.text())
                     .append(" " + cellInventory.getTotalItemTypes() + " ").append(GuiText.Types.text()));
         }
 

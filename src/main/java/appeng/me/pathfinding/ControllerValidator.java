@@ -18,7 +18,7 @@
 
 package appeng.me.pathfinding;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
@@ -35,7 +35,7 @@ public class ControllerValidator implements IGridVisitor {
     private int maxY;
     private int maxZ;
 
-    public ControllerValidator(BlockPos pos) {
+    public ControllerValidator(net.minecraft.core.BlockPos pos) {
         this.minX = pos.getX();
         this.maxX = pos.getX();
         this.minY = pos.getY();

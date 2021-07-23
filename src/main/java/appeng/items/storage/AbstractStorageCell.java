@@ -20,17 +20,17 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -51,7 +51,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 /**
  * @author DrummerMC
@@ -62,10 +62,10 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     /**
      * This can be retrieved when disassembling the storage cell.
      */
-    protected final IItemProvider coreItem;
+    protected final ItemLike coreItem;
     protected final int totalBytes;
 
-    public AbstractStorageCell(Properties properties, final IItemProvider coreItem, final int kilobytes) {
+    public AbstractStorageCell(net.minecraft.world.item.Item.Properties properties, final ItemLike coreItem, final int kilobytes) {
         super(properties);
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
@@ -73,14 +73,14 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
+                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(final net.minecraft.world.item.ItemStack cellItem) {
         return this.totalBytes;
     }
 
@@ -100,17 +100,17 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public boolean isStorageCell(final ItemStack i) {
+    public boolean isStorageCell(final net.minecraft.world.item.ItemStack i) {
         return true;
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(final net.minecraft.world.item.ItemStack is) {
         return true;
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public IItemHandler getUpgradesInventory(final net.minecraft.world.item.ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
@@ -120,7 +120,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(final net.minecraft.world.item.ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         if (fz.isEmpty()) {
             return FuzzyMode.IGNORE_ALL;
@@ -133,23 +133,23 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(final net.minecraft.world.item.ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World world, final PlayerEntity player, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level world, final Player player, final InteractionHand hand) {
         this.disassembleDrive(player.getItemInHand(hand), world, player);
-        return new ActionResult<>(ActionResultType.sidedSuccess(world.isClientSide()), player.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(world.isClientSide()), player.getItemInHand(hand));
     }
 
-    private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
+    private boolean disassembleDrive(final ItemStack stack, final Level world, final Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             if (world.isClientSide()) {
                 return false;
             }
 
-            final PlayerInventory playerInventory = player.inventory;
+            final Inventory playerInventory = player.inventory;
             final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());
             if (inv != null && playerInventory.getSelected() == stack) {
@@ -159,7 +159,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
                     // drop core
-                    final ItemStack extraB = ia.addItems(new ItemStack(coreItem));
+                    final net.minecraft.world.item.ItemStack extraB = ia.addItems(new ItemStack(coreItem));
                     if (!extraB.isEmpty()) {
                         player.drop(extraB, false);
                     }
@@ -167,8 +167,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     // drop upgrades
                     final IItemHandler upgradesInventory = this.getUpgradesInventory(stack);
                     for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++) {
-                        final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
-                        final ItemStack leftStack = ia.addItems(upgradeStack);
+                        final net.minecraft.world.item.ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
+                        final net.minecraft.world.item.ItemStack leftStack = ia.addItems(upgradeStack);
                         if (!leftStack.isEmpty() && upgradeStack.getItem() instanceof IUpgradeModule) {
                             player.drop(upgradeStack, false);
                         }
@@ -188,22 +188,22 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
         return false;
     }
 
-    protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player);
+    protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player);
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
         return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                ? ActionResultType.sidedSuccess(context.getLevel().isClientSide())
-                : ActionResultType.PASS;
+                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                : InteractionResult.PASS;
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
+    public ItemStack getContainerItem(final net.minecraft.world.item.ItemStack itemStack) {
         return AEItems.EMPTY_STORAGE_CELL.stack();
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasContainerItem(final net.minecraft.world.item.ItemStack stack) {
         return AEConfig.instance().isDisassemblyCraftingEnabled();
     }
 

@@ -21,7 +21,7 @@ package appeng.client.render.cablebus;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
 import appeng.core.registries.PartModels;
@@ -35,7 +35,7 @@ public class CableBusModelLoader implements IModelLoader<CableBusModel> {
     }
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
     }
 
     @Override

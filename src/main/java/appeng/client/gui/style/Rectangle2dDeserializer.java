@@ -27,18 +27,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.util.GsonHelper;
 
 /**
- * Deserializes a {@link Rectangle2d} either from an Array <code>[x,y,width,height]</code> or a JSON object with the
+ * Deserializes a {@link Rect2i} either from an Array <code>[x,y,width,height]</code> or a JSON object with the
  * properties x, y, width, height (where x and y default to 0).
  */
-public enum Rectangle2dDeserializer implements JsonDeserializer<Rectangle2d> {
+public enum Rectangle2dDeserializer implements JsonDeserializer<Rect2i> {
     INSTANCE;
 
     @Override
-    public Rectangle2d deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public Rect2i deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
         if (json.isJsonArray()) {
             JsonArray arr = json.getAsJsonArray();
@@ -50,14 +50,14 @@ public enum Rectangle2dDeserializer implements JsonDeserializer<Rectangle2d> {
             int y = arr.get(1).getAsInt();
             int width = arr.get(2).getAsInt();
             int height = arr.get(3).getAsInt();
-            return new Rectangle2d(x, y, width, height);
+            return new Rect2i(x, y, width, height);
         } else {
             JsonObject obj = json.getAsJsonObject();
-            int x = JSONUtils.getAsInt(obj, "x", 0);
-            int y = JSONUtils.getAsInt(obj, "y", 0);
-            int width = JSONUtils.getAsInt(obj, "width");
-            int height = JSONUtils.getAsInt(obj, "height");
-            return new Rectangle2d(x, y, width, height);
+            int x = GsonHelper.getAsInt(obj, "x", 0);
+            int y = GsonHelper.getAsInt(obj, "y", 0);
+            int width = GsonHelper.getAsInt(obj, "width");
+            int height = GsonHelper.getAsInt(obj, "height");
+            return new Rect2i(x, y, width, height);
         }
     }
 }

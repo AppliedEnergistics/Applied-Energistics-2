@@ -22,10 +22,10 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
- * An interface similar to {@link Callable}, but allowing to pass the {@link World} when calling.
+ * An interface similar to {@link Callable}, but allowing to pass the {@link Level} when calling.
  *
  * @author yueh
  * @version rv3
@@ -42,5 +42,5 @@ public interface IWorldRunnable {
      * @throws Exception if the call fails
      * @see Runnable#run()
      */
-    void call(@Nullable World world) throws Exception;
+    void call(@Nullable Level world) throws Exception;
 }

@@ -24,11 +24,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,18 +41,18 @@ import appeng.fluids.client.gui.FluidBlitter;
 import appeng.fluids.util.IAEFluidTank;
 
 @OnlyIn(Dist.CLIENT)
-public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupplier {
+public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngredientSupplier {
     private final IAEFluidTank tank;
     private final int slot;
 
     public FluidTankWidget(IAEFluidTank tank, int slot) {
-        super(0, 0, 0, 0, StringTextComponent.EMPTY);
+        super(0, 0, 0, 0, TextComponent.EMPTY);
         this.tank = tank;
         this.slot = slot;
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
@@ -87,12 +87,12 @@ public class FluidTankWidget extends Widget implements ITooltip, IIngredientSupp
     }
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             return Arrays.asList(
                     fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()),
-                    new StringTextComponent(fluid.getStackSize() + "mB"));
+                    new TextComponent(fluid.getStackSize() + "mB"));
         }
         return Collections.emptyList();
     }

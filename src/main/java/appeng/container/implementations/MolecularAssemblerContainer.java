@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -43,7 +43,7 @@ import appeng.tile.crafting.MolecularAssemblerTileEntity;
  */
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static final ContainerType<MolecularAssemblerContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<MolecularAssemblerContainer> TYPE = ContainerTypeBuilder
             .create(MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class)
             .build("molecular_assembler");
 
@@ -54,7 +54,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
     private Slot encodedPatternSlot;
 
-    public MolecularAssemblerContainer(int id, final PlayerInventory ip, final MolecularAssemblerTileEntity te) {
+    public MolecularAssemblerContainer(int id, final Inventory ip, final MolecularAssemblerTileEntity te) {
         super(TYPE, id, ip, te);
         this.tma = te;
     }
@@ -62,13 +62,13 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
         final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
-        final ItemStack is = mac.getStackInSlot(10);
+        final net.minecraft.world.item.ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
             return false;
         }
 
         if (is.getItem() instanceof EncodedPatternItem) {
-            final World w = this.getTileEntity().getLevel();
+            final Level w = this.getTileEntity().getLevel();
             final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
             if (ph != null && ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);

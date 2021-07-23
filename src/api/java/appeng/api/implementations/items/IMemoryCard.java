@@ -23,11 +23,11 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.util.AEColor;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Memory Card API
@@ -50,7 +50,7 @@ public interface IMemoryCard {
      * @param settingsName unlocalized string that represents the tile entity.
      * @param data         the NBT tag, refer to the normal comment for special keys.
      */
-    void setMemoryCardContents(ItemStack is, String settingsName, CompoundNBT data);
+    void setMemoryCardContents(net.minecraft.world.item.ItemStack is, String settingsName, CompoundTag data);
 
     /**
      * returns the settings name provided by a previous call to setMemoryCardContents, or "AppEng.GuiITooltip.Blank" if
@@ -67,7 +67,7 @@ public interface IMemoryCard {
      *
      * @return the NBT Data previously saved by setMemoryCardContents, or an empty NBTCompound
      */
-    CompoundNBT getData(ItemStack is);
+    CompoundTag getData(net.minecraft.world.item.ItemStack is);
 
     /**
      * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
@@ -78,7 +78,7 @@ public interface IMemoryCard {
      *
      * @return a hash representation of the memory card content
      */
-    AEColor[] getColorCode(ItemStack is);
+    AEColor[] getColorCode(net.minecraft.world.item.ItemStack is);
 
     /**
      * notify the user of a outcome related to the memory card.
@@ -86,5 +86,5 @@ public interface IMemoryCard {
      * @param player that used the card.
      * @param msg    which message to send.
      */
-    void notifyUser(PlayerEntity player, MemoryCardMessages msg);
+    void notifyUser(Player player, MemoryCardMessages msg);
 }

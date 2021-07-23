@@ -18,16 +18,16 @@
 
 package appeng.recipes.entropy;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
 
 public interface StateMatcher {
     boolean matches(StateHolder<?, ?> state);
 
-    void writeToPacket(PacketBuffer buffer);
+    void writeToPacket(FriendlyByteBuf buffer);
 
-    static StateMatcher read(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+    static StateMatcher read(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         MatcherType type = buffer.readEnum(MatcherType.class);
 
         switch (type) {

@@ -18,8 +18,8 @@
 
 package appeng.fluids.container;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.implementations.ContainerTypeBuilder;
@@ -35,19 +35,19 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidIOBusContainer extends FluidConfigurableContainer {
 
-    public static final ContainerType<FluidIOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidIOBusContainer> EXPORT_TYPE = ContainerTypeBuilder
             .create(FluidIOBusContainer::new, FluidExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_export_bus");
 
-    public static final ContainerType<FluidIOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidIOBusContainer> IMPORT_TYPE = ContainerTypeBuilder
             .create(FluidIOBusContainer::new, FluidImportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_import_bus");
 
     private final SharedFluidBusPart bus;
 
-    public FluidIOBusContainer(ContainerType<?> containerType, int id, PlayerInventory ip, SharedFluidBusPart bus) {
+    public FluidIOBusContainer(MenuType<?> containerType, int id, Inventory ip, SharedFluidBusPart bus) {
         super(containerType, id, ip, bus);
         this.bus = bus;
     }

@@ -20,12 +20,12 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -56,7 +56,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
-    public static final ContainerType<CellWorkbenchContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CellWorkbenchContainer> TYPE = ContainerTypeBuilder
             .create(CellWorkbenchContainer::new, CellWorkbenchTileEntity.class)
             .build("cellworkbench");
 
@@ -66,7 +66,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     private ItemStack prevStack = ItemStack.EMPTY;
     private int lastUpgrades = 0;
 
-    public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchTileEntity te) {
+    public CellWorkbenchContainer(int id, final Inventory ip, final CellWorkbenchTileEntity te) {
         super(TYPE, id, ip, te);
         this.workBench = te;
     }
@@ -128,7 +128,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public void broadcastChanges() {
         final ItemStack is = getWorkbenchItem();
         if (isServer()) {
-            for (final IContainerListener listener : this.containerListeners) {
+            for (final ContainerListener listener : this.containerListeners) {
                 if (this.prevStack != is) {
                     // if the bars changed an item was probably made, so just send shit!
                     for (final Slot s : this.slots) {
@@ -138,8 +138,8 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
                         }
                     }
 
-                    if (listener instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) listener).ignoreSlotUpdateHack = false;
+                    if (listener instanceof ServerPlayer) {
+                        ((ServerPlayer) listener).ignoreSlotUpdateHack = false;
                     }
                 }
             }
@@ -199,15 +199,15 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);
             } else {
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.EMPTY);
             }
         }
 
         this.broadcastChanges();
     }
 
-    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
-            IStorageChannel<T> channel) {
+    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(net.minecraft.world.item.ItemStack is,
+                                                                                     IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
         if (cellInv != null) {
             final IItemList<T> list = cellInv.getAvailableItems(channel.createList());

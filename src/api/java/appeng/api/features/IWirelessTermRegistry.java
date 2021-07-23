@@ -23,10 +23,10 @@
 
 package appeng.api.features;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 
 /**
  * Registration record for a Custom Cell handler.
@@ -56,5 +56,5 @@ public interface IWirelessTermRegistry {
     /**
      * opens the wireless terminal gui, the wireless terminal item, must be in the active slot on the tool bar.
      */
-    void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand);
+    void openWirelessTerminalGui(ItemStack item, BlockGetter world, Player player, InteractionHand hand);
 }

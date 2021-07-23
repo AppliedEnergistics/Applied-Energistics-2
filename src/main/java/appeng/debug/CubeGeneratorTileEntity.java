@@ -18,30 +18,30 @@
 
 package appeng.debug;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
 
-public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickableTileEntity {
+public class CubeGeneratorTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
 
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
-    private PlayerEntity who = null;
+    private Player who = null;
 
-    public CubeGeneratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CubeGeneratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -52,7 +52,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(p -> {
-                    p.sendMessage(new StringTextComponent("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
+                    p.sendMessage(new TextComponent("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
                 });
             }
 
@@ -74,7 +74,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
             for (int x = -half; x < half; x++) {
                 for (int z = -half; z < half; z++) {
                     final BlockPos p = this.worldPosition.offset(x, y - 1, z);
-                    ItemUseContext useContext = new DirectionalPlaceContext(this.level, p, side, this.is,
+                    UseOnContext useContext = new DirectionalPlaceContext(this.level, p, side, this.is,
                             side.getOpposite());
                     i.useOn(useContext);
                 }
@@ -82,13 +82,13 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
         }
     }
 
-    void click(final PlayerEntity player) {
+    void click(final Player player) {
         if (!isRemote()) {
             final ItemStack hand = player.inventory.getSelected();
             this.who = player;
 
             if (hand.isEmpty()) {
-                this.is = ItemStack.EMPTY;
+                this.is = net.minecraft.world.item.ItemStack.EMPTY;
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
                     this.size--;
@@ -103,7 +103,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
                     this.size = 64;
                 }
 
-                player.sendMessage(new StringTextComponent("Size: " + this.size), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Size: " + this.size), Util.NIL_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

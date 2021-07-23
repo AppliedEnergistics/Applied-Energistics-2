@@ -23,57 +23,59 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
 
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.EntityType.EntityFactory;
 
 public final class AEEntities {
 
-    private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
+    private static final List<net.minecraft.world.entity.EntityType<?>> ENTITY_TYPES = new ArrayList<>();
 
-    public static List<EntityType<?>> getEntityTypes() {
+    public static List<net.minecraft.world.entity.EntityType<?>> getEntityTypes() {
         return Collections.unmodifiableList(ENTITY_TYPES);
     }
 
-    public static final EntityType<SingularityEntity> SINGULARITY = create(
+    public static final net.minecraft.world.entity.EntityType<SingularityEntity> SINGULARITY = create(
             "singularity",
             SingularityEntity::new,
-            EntityClassification.MISC,
+            MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
-    public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
+    public static final net.minecraft.world.entity.EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
             "charged_quartz",
             ChargedQuartzEntity::new,
-            EntityClassification.MISC,
+            MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
-    public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
+    public static final net.minecraft.world.entity.EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
             TinyTNTPrimedEntity::new,
-            EntityClassification.MISC,
+            MobCategory.MISC,
             builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true));
 
-    public static EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
+    public static net.minecraft.world.entity.EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
             "growing_crystal",
             GrowingCrystalEntity::new,
-            EntityClassification.MISC,
+            MobCategory.MISC,
             builder -> builder.sized(0.25F, 0.4F));
 
-    private static <T extends Entity> EntityType<T> create(String id,
-            EntityType.IFactory<T> entityFactory,
-            EntityClassification classification,
-            Consumer<EntityType.Builder<T>> customizer) {
+    private static <T extends Entity> net.minecraft.world.entity.EntityType<T> create(String id,
+                                                                                      EntityFactory<T> entityFactory,
+                                                                                      MobCategory classification,
+                                                                                      Consumer<Builder<T>> customizer) {
         String registryLoc = "appliedenergistics2:" + id;
-        EntityType.Builder<T> builder = EntityType.Builder.of(entityFactory, classification);
+        Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
-        EntityType<T> result = builder.build(registryLoc);
+        net.minecraft.world.entity.EntityType<T> result = builder.build(registryLoc);
         result.setRegistryName(registryLoc);
         ENTITY_TYPES.add(result);
         return result;

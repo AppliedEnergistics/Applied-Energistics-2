@@ -22,14 +22,14 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.util.Platform;
+import net.minecraft.world.item.ItemStack;
 
-public class ItemDefinition<T extends Item> implements IItemProvider {
+public class ItemDefinition<T extends Item> implements ItemLike {
     private final ResourceLocation id;
     private final T item;
 
@@ -44,16 +44,16 @@ public class ItemDefinition<T extends Item> implements IItemProvider {
         return this.id;
     }
 
-    public ItemStack stack() {
+    public net.minecraft.world.item.ItemStack stack() {
         return stack(1);
     }
 
-    public ItemStack stack(final int stackSize) {
-        return new ItemStack(item, stackSize);
+    public net.minecraft.world.item.ItemStack stack(final int stackSize) {
+        return new net.minecraft.world.item.ItemStack(item, stackSize);
     }
 
     /**
-     * Compare {@link ItemStack} with this
+     * Compare {@link net.minecraft.world.item.ItemStack} with this
      *
      * @param comparableStack compared item
      *

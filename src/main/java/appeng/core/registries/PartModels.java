@@ -22,18 +22,18 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModels;
 
 public class PartModels implements IPartModels {
 
-    private final Set<ResourceLocation> models = new HashSet<>();
+    private final Set<net.minecraft.resources.ResourceLocation> models = new HashSet<>();
 
     private boolean initialized = false;
 
     @Override
-    public void registerModels(Collection<ResourceLocation> partModels) {
+    public void registerModels(Collection<net.minecraft.resources.ResourceLocation> partModels) {
         if (this.initialized) {
             throw new IllegalStateException("Cannot register models after the pre-initialization phase!");
         }

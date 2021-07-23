@@ -24,13 +24,13 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -53,8 +53,8 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
-            final float partialTicks) {
+    public void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+                            final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             FluidBlitter.create(fs.getFluidStack())
@@ -64,8 +64,8 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getCarried();
+    public boolean canClick(final Player player) {
+        final net.minecraft.world.item.ItemStack mouseStack = player.inventory.getCarried();
         return mouseStack.isEmpty()
                 || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
     }
@@ -83,10 +83,10 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
-            return Collections.singletonList(new TranslationTextComponent(fluid.getFluidStack().getTranslationKey()));
+            return Collections.singletonList(new TranslatableComponent(fluid.getFluidStack().getTranslationKey()));
         }
         return Collections.emptyList();
     }

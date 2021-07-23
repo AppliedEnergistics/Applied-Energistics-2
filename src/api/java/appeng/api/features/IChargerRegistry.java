@@ -26,8 +26,8 @@ package appeng.api.features;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
@@ -56,7 +56,7 @@ public interface IChargerRegistry {
      * @return custom rate or default of 160
      */
     @Nonnegative
-    double getChargeRate(@Nonnull IItemProvider item);
+    double getChargeRate(@Nonnull ItemLike item);
 
     /**
      * Register a custom charge rate for a specific item.
@@ -68,7 +68,7 @@ public interface IChargerRegistry {
      * @param item       A {@link Item} implementing {@link IAEItemPowerStorage}.
      * @param chargeRate the custom rate, must be &gt; 0, capped to 16000d
      */
-    void addChargeRate(@Nonnull IItemProvider item, @Nonnegative double chargeRate);
+    void addChargeRate(@Nonnull ItemLike item, @Nonnegative double chargeRate);
 
     /**
      * Remove the custom rate for a specific item.
@@ -77,6 +77,6 @@ public interface IChargerRegistry {
      *
      * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
      */
-    void removeChargeRate(@Nonnull IItemProvider item);
+    void removeChargeRate(@Nonnull ItemLike item);
 
 }

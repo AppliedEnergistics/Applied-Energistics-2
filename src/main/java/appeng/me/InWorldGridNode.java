@@ -23,9 +23,10 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
@@ -45,18 +46,18 @@ public class InWorldGridNode extends GridNode {
 
     private final BlockPos location;
 
-    public <T> InWorldGridNode(ServerWorld world,
-            BlockPos location,
-            T owner,
-            @Nonnull IGridNodeListener<T> listener,
-            Set<GridFlags> flags) {
+    public <T> InWorldGridNode(ServerLevel world,
+                               BlockPos location,
+                               T owner,
+                               @Nonnull IGridNodeListener<T> listener,
+                               Set<GridFlags> flags) {
         super(world, owner, listener, flags);
         this.location = location;
     }
 
     @Override
     protected void findInWorldConnections() {
-        final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
+        final EnumSet<net.minecraft.core.Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
 
         var gridApi = Api.INSTANCE.grid();
 
@@ -64,7 +65,7 @@ public class InWorldGridNode extends GridNode {
         cleanupConnections();
 
         // Find adjacent nodes in the world based on the sides of the host this node is exposed on
-        var pos = new BlockPos.Mutable();
+        var pos = new MutableBlockPos();
         sides: for (var direction : exposedOnSides) {
             pos.setWithOffset(location, direction);
             var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
@@ -153,7 +154,7 @@ public class InWorldGridNode extends GridNode {
     }
 
     // construct a new connection between this and another nodes.
-    private boolean connectTo(Direction direction, IGridNode adjacentNode) {
+    private boolean connectTo(net.minecraft.core.Direction direction, IGridNode adjacentNode) {
         try {
             GridConnection.create(adjacentNode, this, direction.getOpposite());
             return true;

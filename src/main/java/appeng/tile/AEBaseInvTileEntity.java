@@ -22,13 +22,13 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -41,19 +41,19 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IAEAppEngInventory {
 
-    public AEBaseInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBaseInvTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
-            final CompoundNBT opt = data.getCompound("inv");
+            final CompoundTag opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
-                final CompoundNBT item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.of(item));
+                final CompoundTag item = opt.getCompound("item" + x);
+                ItemHandlerUtil.setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.of(item));
             }
         }
     }
@@ -61,14 +61,14 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     public abstract @Nonnull IItemHandler getInternalInventory();
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
-            final CompoundNBT opt = new CompoundNBT();
+            final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.getSlots(); x++) {
-                final CompoundNBT item = new CompoundNBT();
-                final ItemStack is = inv.getStackInSlot(x);
+                final CompoundTag item = new CompoundTag();
+                final net.minecraft.world.item.ItemStack is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.save(item);
                 }
@@ -80,11 +80,11 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         final IItemHandler inv = this.getInternalInventory();
 
         for (int l = 0; l < inv.getSlots(); l++) {
-            final ItemStack is = inv.getStackInSlot(l);
+            final net.minecraft.world.item.ItemStack is = inv.getStackInSlot(l);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -92,7 +92,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removed,
+    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, net.minecraft.world.item.ItemStack removed,
             ItemStack added);
 
     protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {

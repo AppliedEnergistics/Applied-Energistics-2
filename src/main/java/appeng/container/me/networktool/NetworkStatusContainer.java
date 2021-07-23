@@ -18,9 +18,9 @@
 
 package appeng.container.me.networktool;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
@@ -36,19 +36,19 @@ import appeng.core.sync.packets.NetworkStatusPacket;
  */
 public class NetworkStatusContainer extends AEBaseContainer {
 
-    public static final ContainerType<NetworkStatusContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<NetworkStatusContainer> TYPE = ContainerTypeBuilder
             .create(NetworkStatusContainer::new, INetworkTool.class)
             .build("networkstatus");
 
     private IGrid grid;
     private int delay = 40;
 
-    public NetworkStatusContainer(int id, PlayerInventory ip, final INetworkTool te) {
+    public NetworkStatusContainer(int id, Inventory ip, final INetworkTool te) {
         super(TYPE, id, ip, null);
         var host = te.getGridHost();
 
         if (host != null) {
-            for (var d : Direction.values()) {
+            for (var d : net.minecraft.core.Direction.values()) {
                 this.findNode(host, d);
             }
         }
@@ -58,7 +58,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
         }
     }
 
-    private void findNode(final IInWorldGridNodeHost host, final Direction d) {
+    private void findNode(final IInWorldGridNodeHost host, final net.minecraft.core.Direction d) {
         if (this.grid == null) {
             final IGridNode node = host.getGridNode(d);
             if (node != null) {

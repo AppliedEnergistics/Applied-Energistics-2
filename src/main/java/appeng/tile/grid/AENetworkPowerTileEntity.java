@@ -20,10 +20,10 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -45,7 +45,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkPowerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AENetworkPowerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -54,13 +54,13 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.getMainNode().loadFromNBT(data);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.getMainNode().saveToNBT(data);
         return data;
@@ -76,7 +76,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public IGridNode getGridNode(Direction dir) {
+    public IGridNode getGridNode(net.minecraft.core.Direction dir) {
         var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side
@@ -88,7 +88,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
         return AECableType.SMART;
     }
 

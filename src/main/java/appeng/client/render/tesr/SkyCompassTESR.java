@@ -18,18 +18,18 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -39,26 +39,26 @@ import appeng.client.render.model.SkyCompassBakedModel;
 import appeng.tile.misc.SkyCompassTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
+public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassTileEntity> {
 
-    private static BlockRendererDispatcher blockRenderer;
+    private static BlockRenderDispatcher blockRenderer;
 
-    public SkyCompassTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public SkyCompassTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyCompassTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         if (blockRenderer == null) {
             blockRenderer = Minecraft.getInstance().getBlockRenderer();
         }
 
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.cutoutBlockSheet());
+        VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
 
         BlockState blockState = te.getBlockState();
-        IBakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(blockState);
+        BakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(blockState);
 
         // FIXME: Rotation was previously handled by an auto rotating model I think, but
         // FIXME: Should be handled using matrices instead
@@ -68,7 +68,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
         // is symmetrical, this should
         // not affect the appearance
         if (forward == Direction.UP || forward == Direction.DOWN) {
-            up = Direction.NORTH;
+            up = net.minecraft.core.Direction.NORTH;
         }
         // Flip forward/up for rendering, the base model is facing up without any
         // rotation

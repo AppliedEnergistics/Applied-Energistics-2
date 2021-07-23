@@ -20,7 +20,7 @@ package appeng.me.service.helpers;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.CrashReportCategory;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;

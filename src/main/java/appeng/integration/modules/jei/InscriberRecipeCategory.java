@@ -18,10 +18,9 @@
 
 package appeng.integration.modules.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -55,7 +54,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     private final IDrawable icon;
 
     public InscriberRecipeCategory(IGuiHelper guiHelper) {
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
+        net.minecraft.resources.ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
         this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
         this.localizedName = I18n.get("block.appliedenergistics2.inscriber");
 
@@ -111,7 +110,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public void draw(InscriberRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(InscriberRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         this.progress.draw(matrixStack);
     }
 }

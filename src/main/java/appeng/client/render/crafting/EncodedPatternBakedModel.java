@@ -21,17 +21,18 @@ package appeng.client.render.crafting;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import com.mojang.math.Transformation;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 
 import appeng.client.render.DelegateBakedModel;
@@ -42,22 +43,22 @@ import appeng.items.misc.EncodedPatternItem;
  * conditions are met: - The player is holding shift - The itemstack is being rendered in the UI (not on the ground,
  * etc.)
  * <p>
- * We do this by abusing a custom {@link ItemOverrideList} since it will be called each frame with the itemstack that is
+ * We do this by abusing a custom {@link ItemOverrides} since it will be called each frame with the itemstack that is
  * about to be rendered. We return a custom IBakedModel ({@link ShiftHoldingModelWrapper} if the player is holding down
  * shift from the override list. This custom baked model implements {@link #doesHandlePerspectives()} and returns the
- * crafting result model if the model for {@link ItemCameraTransforms.TransformType#GUI} is requested.
+ * crafting result model if the model for {@link TransformType#GUI} is requested.
  */
 public class EncodedPatternBakedModel extends DelegateBakedModel {
 
     private final CustomOverrideList overrides;
 
-    EncodedPatternBakedModel(IBakedModel baseModel) {
+    EncodedPatternBakedModel(BakedModel baseModel) {
         super(baseModel);
         this.overrides = new CustomOverrideList();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return this.overrides;
     }
 
@@ -71,9 +72,9 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
      */
     private static class ShiftHoldingModelWrapper extends DelegateBakedModel {
 
-        private final IBakedModel outputModel;
+        private final BakedModel outputModel;
 
-        private ShiftHoldingModelWrapper(IBakedModel patternModel, IBakedModel outputModel) {
+        private ShiftHoldingModelWrapper(BakedModel patternModel, BakedModel outputModel) {
             super(patternModel);
             this.outputModel = outputModel;
         }
@@ -84,11 +85,11 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         }
 
         @Override
-        public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+        public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
             // No need to re-check for shift being held since this model is only handed out
             // in that case
-            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
-                ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> transforms = PerspectiveMapWrapper
+            if (cameraTransformType == TransformType.GUI) {
+                ImmutableMap<TransformType, Transformation> transforms = PerspectiveMapWrapper
                         .getTransforms(outputModel.getTransforms());
                 return PerspectiveMapWrapper.handlePerspective(this.outputModel, transforms, cameraTransformType, mat);
             } else {
@@ -111,7 +112,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
         return getBaseModel().handlePerspective(cameraTransformType, mat);
     }
 
@@ -120,18 +121,18 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
      * rendered. So this is the point where we actually check if shift is being held, and if so, determine the crafting
      * output model.
      */
-    private class CustomOverrideList extends ItemOverrideList {
+    private class CustomOverrideList extends ItemOverrides {
 
         @Nullable
         @Override
-        public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
-                @Nullable LivingEntity entity) {
+        public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world,
+                                  @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
-                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper()
+                    BakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
                     realModel = realModel.getOverrides().resolve(realModel, output, world, entity);

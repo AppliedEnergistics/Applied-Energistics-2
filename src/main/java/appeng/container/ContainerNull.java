@@ -18,20 +18,20 @@
 
 package appeng.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.entity.player.Player;
 
 /*
  * Totally useless container that does nothing.
  */
-public class ContainerNull extends Container {
+public class ContainerNull extends AbstractContainerMenu {
 
     public ContainerNull() {
         super(null, 0);
     }
 
     @Override
-    public boolean stillValid(final PlayerEntity PlayerEntity) {
+    public boolean stillValid(final Player PlayerEntity) {
         return false;
     }
 }

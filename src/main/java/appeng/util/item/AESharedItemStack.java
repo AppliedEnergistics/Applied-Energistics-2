@@ -22,27 +22,27 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 final class AESharedItemStack {
 
-    private final ItemStack itemStack;
+    private final net.minecraft.world.item.ItemStack itemStack;
     private final int itemId;
     private final int itemDamage;
     private final int hashCode;
 
-    public AESharedItemStack(final ItemStack itemStack) {
+    public AESharedItemStack(final net.minecraft.world.item.ItemStack itemStack) {
         this(itemStack, itemStack.getDamageValue());
     }
 
     /**
-     * A constructor to explicitly set the damage value and not fetch it from the {@link ItemStack}
+     * A constructor to explicitly set the damage value and not fetch it from the {@link net.minecraft.world.item.ItemStack}
      *
-     * @param itemStack The {@link ItemStack} to filter
+     * @param itemStack The {@link net.minecraft.world.item.ItemStack} to filter
      * @param damage    The damage of the item
      */
-    private AESharedItemStack(ItemStack itemStack, int damage) {
+    private AESharedItemStack(net.minecraft.world.item.ItemStack itemStack, int damage) {
         this.itemStack = itemStack;
         this.itemId = Item.getId(itemStack.getItem());
         this.itemDamage = damage;
@@ -51,7 +51,7 @@ final class AESharedItemStack {
         this.hashCode = this.makeHashCode();
     }
 
-    ItemStack getDefinition() {
+    net.minecraft.world.item.ItemStack getDefinition() {
         return this.itemStack;
     }
 

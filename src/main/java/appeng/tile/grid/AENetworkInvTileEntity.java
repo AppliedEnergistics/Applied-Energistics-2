@@ -20,10 +20,9 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -33,6 +32,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.AEBaseInvTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
         implements IInWorldGridNodeHost, IGridConnectedTileEntity {
@@ -42,7 +42,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AENetworkInvTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -51,13 +51,13 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.getMainNode().loadFromNBT(data);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.getMainNode().saveToNBT(data);
         return data;
@@ -73,7 +73,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public IGridNode getGridNode(final Direction dir) {
+    public IGridNode getGridNode(final net.minecraft.core.Direction dir) {
         var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side

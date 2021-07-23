@@ -25,25 +25,25 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
 
@@ -92,7 +92,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
 
-    public FormationPlanePart(final ItemStack is) {
+    public FormationPlanePart(final net.minecraft.world.item.ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
@@ -130,7 +130,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
         if (inv == this.Config) {
@@ -139,14 +139,14 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.Config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.Config.writeToNBT(data, "config");
     }
@@ -161,7 +161,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
         }
@@ -193,15 +193,15 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
         boolean worked = false;
 
-        final TileEntity te = this.getHost().getTile();
-        final World w = te.getLevel();
+        final BlockEntity te = this.getHost().getTile();
+        final Level w = te.getLevel();
         final AEPartLocation side = this.getSide();
 
-        final BlockPos placePos = te.getBlockPos().relative(side.getDirection());
+        final net.minecraft.core.BlockPos placePos = te.getBlockPos().relative(side.getDirection());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
-                final PlayerEntity player = Platform.getPlayer((ServerWorld) w);
+                final Player player = Platform.getPlayer((ServerLevel) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 // Seems to work without...
                 // Hand hand = player.getActiveHand();
@@ -212,7 +212,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (type == Actionable.MODULATE) {
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
-                    Direction lookDirection = side.getDirection();
+                    net.minecraft.core.Direction lookDirection = side.getDirection();
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
@@ -258,7 +258,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return input;
     }
 
-    private static boolean spawnItemEntity(World w, TileEntity te, AEPartLocation side, ItemStack is) {
+    private static boolean spawnItemEntity(Level w, BlockEntity te, AEPartLocation side, net.minecraft.world.item.ItemStack is) {
         // The center of the block the plane is located in
         final double centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -270,7 +270,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Replace it if there is a custom entity
         if (is.getItem().hasCustomEntity(is)) {
-            Entity result = is.getItem().createEntity(w, entity, is);
+            net.minecraft.world.entity.Entity result = is.getItem().createEntity(w, entity, is);
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != null) {
@@ -337,17 +337,17 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
+    public net.minecraft.world.item.ItemStack getItemStackRepresentation() {
         return AEParts.FORMATION_PLANE.stack();
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return FormationPlaneContainer.TYPE;
     }
 
-    private int countEntitesAround(World world, BlockPos pos) {
-        final AxisAlignedBB t = new AxisAlignedBB(pos).inflate(8);
+    private int countEntitesAround(Level world, BlockPos pos) {
+        final AABB t = new AABB(pos).inflate(8);
         final List<Entity> list = world.getEntitiesOfClass(Entity.class, t);
 
         return list.size();
@@ -359,18 +359,18 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
      * Also removed {@link DirectionalPlaceContext#replacingClickedOnBlock} as this can cause a
      * {@link StackOverflowError} for certain replaceable blocks.
      */
-    private static class PlaneDirectionalPlaceContext extends BlockItemUseContext {
-        private final Direction lookDirection;
+    private static class PlaneDirectionalPlaceContext extends BlockPlaceContext {
+        private final net.minecraft.core.Direction lookDirection;
 
-        public PlaneDirectionalPlaceContext(World world, PlayerEntity player, BlockPos pos, Direction lookDirection,
-                ItemStack itemStack, Direction facing) {
-            super(world, player, Hand.MAIN_HAND, itemStack,
-                    new BlockRayTraceResult(Vector3d.atBottomCenterOf(pos), facing, pos, false));
+        public PlaneDirectionalPlaceContext(Level world, Player player, BlockPos pos, net.minecraft.core.Direction lookDirection,
+                                            ItemStack itemStack, net.minecraft.core.Direction facing) {
+            super(world, player, InteractionHand.MAIN_HAND, itemStack,
+                    new BlockHitResult(Vec3.atBottomCenterOf(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
-        public BlockPos getClickedPos() {
+        public net.minecraft.core.BlockPos getClickedPos() {
             return this.getHitResult().getBlockPos();
         }
 
@@ -380,38 +380,38 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public Direction getNearestLookingDirection() {
-            return Direction.DOWN;
+        public net.minecraft.core.Direction getNearestLookingDirection() {
+            return net.minecraft.core.Direction.DOWN;
         }
 
         @Override
-        public Direction[] getNearestLookingDirections() {
+        public net.minecraft.core.Direction[] getNearestLookingDirections() {
             switch (this.lookDirection) {
                 case DOWN:
                 default:
-                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
-                            Direction.WEST, Direction.UP };
+                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.SOUTH,
+                            net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.UP };
                 case UP:
-                    return new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
-                            Direction.SOUTH, Direction.WEST };
+                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.UP, Direction.NORTH, net.minecraft.core.Direction.EAST,
+                            net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST };
                 case NORTH:
-                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
-                            Direction.UP, Direction.SOUTH };
+                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.WEST,
+                            net.minecraft.core.Direction.UP, net.minecraft.core.Direction.SOUTH };
                 case SOUTH:
-                    return new Direction[] { Direction.DOWN, Direction.SOUTH, Direction.EAST, Direction.WEST,
-                            Direction.UP, Direction.NORTH };
+                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.WEST,
+                            net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH };
                 case WEST:
-                    return new Direction[] { Direction.DOWN, Direction.WEST, Direction.SOUTH, Direction.UP,
-                            Direction.NORTH, Direction.EAST };
+                    return new Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.WEST, Direction.SOUTH, Direction.UP,
+                            net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST };
                 case EAST:
-                    return new Direction[] { Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.UP,
-                            Direction.NORTH, Direction.WEST };
+                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.UP,
+                            net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.WEST };
             }
         }
 
         @Override
-        public Direction getHorizontalDirection() {
-            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
+        public net.minecraft.core.Direction getHorizontalDirection() {
+            return this.lookDirection.getAxis() == Axis.Y ? net.minecraft.core.Direction.NORTH : this.lookDirection;
         }
 
         @Override

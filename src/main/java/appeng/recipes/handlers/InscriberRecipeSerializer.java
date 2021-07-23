@@ -22,20 +22,20 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.sync.BasePacket;
 
-public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<InscriberRecipe> {
+public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
 
@@ -47,7 +47,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     private static InscriberProcessType getMode(JsonObject json) {
-        String mode = JSONUtils.getAsString(json, "mode", "inscribe");
+        String mode = GsonHelper.getAsString(json, "mode", "inscribe");
         switch (mode) {
             case "inscribe":
                 return InscriberProcessType.INSCRIBE;
@@ -64,19 +64,19 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
 
         InscriberProcessType mode = getMode(json);
 
-        String group = JSONUtils.getAsString(json, "group", "");
-        ItemStack result = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "result"));
+        String group = GsonHelper.getAsString(json, "group", "");
+        net.minecraft.world.item.ItemStack result = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
-        JsonObject ingredients = JSONUtils.getAsJsonObject(json, "ingredients");
-        Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
-        Ingredient top = Ingredient.EMPTY;
+        JsonObject ingredients = GsonHelper.getAsJsonObject(json, "ingredients");
+        net.minecraft.world.item.crafting.Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
+        net.minecraft.world.item.crafting.Ingredient top = Ingredient.EMPTY;
         if (ingredients.has("top")) {
-            top = Ingredient.fromJson(ingredients.get("top"));
+            top = net.minecraft.world.item.crafting.Ingredient.fromJson(ingredients.get("top"));
         }
-        Ingredient bottom = Ingredient.EMPTY;
+        net.minecraft.world.item.crafting.Ingredient bottom = Ingredient.EMPTY;
         if (ingredients.has("bottom")) {
-            bottom = Ingredient.fromJson(ingredients.get("bottom"));
+            bottom = net.minecraft.world.item.crafting.Ingredient.fromJson(ingredients.get("bottom"));
         }
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
@@ -84,19 +84,19 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
 
     @Nullable
     @Override
-    public InscriberRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public InscriberRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
-        Ingredient middle = Ingredient.fromNetwork(buffer);
+        net.minecraft.world.item.crafting.Ingredient middle = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
-        Ingredient top = Ingredient.fromNetwork(buffer);
-        Ingredient bottom = Ingredient.fromNetwork(buffer);
+        net.minecraft.world.item.crafting.Ingredient top = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
+        Ingredient bottom = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
         InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, InscriberRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, InscriberRecipe recipe) {
         buffer.writeUtf(recipe.getGroup());
         recipe.getMiddleInput().toNetwork(buffer);
         buffer.writeItem(recipe.getResultItem());

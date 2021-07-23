@@ -22,14 +22,14 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.Block;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.data.SingleItemRecipeBuilder;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -60,7 +60,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
     }
 
     @Override
-    public void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+    public void buildShapelessRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
         for (BlockDefinition[] block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
@@ -68,9 +68,9 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
         }
     }
 
-    private void slabRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition slabs) {
+    private void slabRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition slabs) {
         Block inputBlock = block.block();
-        Block outputBlock = slabs.block();
+        net.minecraft.world.level.block.Block outputBlock = slabs.block();
 
         ShapedRecipeBuilder.shaped(slabs.block(), 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
@@ -81,23 +81,23 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
-    private void stairRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
-        Block inputBlock = block.block();
+    private void stairRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
+        net.minecraft.world.level.block.Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+        net.minecraft.data.recipes.ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/stairs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+        SingleItemRecipeBuilder.stonecutting(net.minecraft.world.item.crafting.Ingredient.of(inputBlock), outputBlock)
                 .unlocks(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
-    private void wallRecipe(Consumer<IFinishedRecipe> consumer, BlockDefinition block, BlockDefinition wall) {
-        Block inputBlock = block.block();
-        Block outputBlock = wall.block();
+    private void wallRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition wall) {
+        net.minecraft.world.level.block.Block inputBlock = block.block();
+        net.minecraft.world.level.block.Block outputBlock = wall.block();
 
         ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
@@ -109,7 +109,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     }
 
-    private ResourceLocation prefix(String prefix, ResourceLocation id) {
+    private net.minecraft.resources.ResourceLocation prefix(String prefix, net.minecraft.resources.ResourceLocation id) {
         return new ResourceLocation(
                 id.getNamespace(),
                 prefix + id.getPath());

@@ -32,28 +32,29 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag.Default;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -118,7 +119,7 @@ public class Platform {
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
-    private static final WeakHashMap<World, PlayerEntity> FAKE_PLAYERS = new WeakHashMap<>();
+    private static final WeakHashMap<Level, Player> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 
@@ -170,30 +171,30 @@ public class Platform {
         return df.format(p) + ' ' + level + unitName + (isRate ? "/t" : "");
     }
 
-    public static Direction crossProduct(final Direction forward, final Direction up) {
+    public static net.minecraft.core.Direction crossProduct(final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
         final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
         final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         switch (west_x + west_y * 2 + west_z * 3) {
             case 1:
-                return Direction.EAST;
+                return net.minecraft.core.Direction.EAST;
             case -1:
-                return Direction.WEST;
+                return net.minecraft.core.Direction.WEST;
 
             case 2:
                 return Direction.UP;
             case -2:
-                return Direction.DOWN;
+                return net.minecraft.core.Direction.DOWN;
 
             case 3:
-                return Direction.SOUTH;
+                return net.minecraft.core.Direction.SOUTH;
             case -3:
-                return Direction.NORTH;
+                return net.minecraft.core.Direction.NORTH;
         }
 
         // something is better then nothing?
-        return Direction.NORTH;
+        return net.minecraft.core.Direction.NORTH;
     }
 
     /**
@@ -210,15 +211,15 @@ public class Platform {
         return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
-    public static boolean hasPermissions(final DimensionalBlockPos dc, final PlayerEntity player) {
+    public static boolean hasPermissions(final DimensionalBlockPos dc, final Player player) {
         if (!dc.isInWorld(player.level)) {
             return false;
         }
         return player.level.mayInteract(player, dc.getPos());
     }
 
-    public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
-            SecurityPermissions requiredPermission, boolean notifyPlayer) {
+    public static boolean checkPermissions(final Player player, final Object accessInterface,
+                                           SecurityPermissions requiredPermission, boolean notifyPlayer) {
         // FIXME: Check permissions...
         if (requiredPermission != null && accessInterface instanceof IActionHost) {
             final IGridNode gn = ((IActionHost) accessInterface).getActionableNode();
@@ -236,8 +237,8 @@ public class Platform {
 
                     final ISecurityService sg = g.getService(ISecurityService.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
-                                .withStyle(TextFormatting.RED), Util.NIL_UUID);
+                        player.sendMessage(new TranslatableComponent("appliedenergistics2.permission_denied")
+                                .withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -248,34 +249,34 @@ public class Platform {
         return true;
     }
 
-    public static ItemStack[] getBlockDrops(final World w, final BlockPos pos) {
+    public static net.minecraft.world.item.ItemStack[] getBlockDrops(final Level w, final net.minecraft.core.BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
         // server world
-        if (!(w instanceof ServerWorld)) {
-            return new ItemStack[0];
+        if (!(w instanceof ServerLevel)) {
+            return new net.minecraft.world.item.ItemStack[0];
         }
 
-        ServerWorld serverWorld = (ServerWorld) w;
+        ServerLevel serverWorld = (ServerLevel) w;
 
         final BlockState state = w.getBlockState(pos);
-        final TileEntity tileEntity = w.getBlockEntity(pos);
+        final BlockEntity tileEntity = w.getBlockEntity(pos);
 
-        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
+        List<net.minecraft.world.item.ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
-        return out.toArray(new ItemStack[0]);
+        return out.toArray(new net.minecraft.world.item.ItemStack[0]);
     }
 
     /*
      * Generates Item entities in the world similar to how items are generally dropped.
      */
-    public static void spawnDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+    public static void spawnDrops(final Level w, final BlockPos pos, final List<net.minecraft.world.item.ItemStack> drops) {
         if (!w.isClientSide()) {
             for (final ItemStack i : drops) {
                 if (!i.isEmpty() && i.getCount() > 0) {
                     final double offset_x = (getRandomInt() % 32 - 16) / 82;
                     final double offset_y = (getRandomInt() % 32 - 16) / 82;
                     final double offset_z = (getRandomInt() % 32 - 16) / 82;
-                    final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
+                    final ItemEntity ei = new net.minecraft.world.entity.item.ItemEntity(w, 0.5 + offset_x + pos.getX(),
                             0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
                     w.addFreshEntity(ei);
                 }
@@ -305,12 +306,12 @@ public class Platform {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static List<ITextComponent> getTooltip(final Object o) {
+    public static List<net.minecraft.network.chat.Component> getTooltip(final Object o) {
         if (o == null) {
             return Collections.emptyList();
         }
 
-        ItemStack itemStack = ItemStack.EMPTY;
+        net.minecraft.world.item.ItemStack itemStack = net.minecraft.world.item.ItemStack.EMPTY;
         if (o instanceof AEItemStack) {
             final AEItemStack ais = (AEItemStack) o;
             return ais.getToolTip();
@@ -321,9 +322,9 @@ public class Platform {
         }
 
         try {
-            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
-                    ? ITooltipFlag.TooltipFlags.ADVANCED
-                    : ITooltipFlag.TooltipFlags.NORMAL;
+            Default tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
+                    ? Default.ADVANCED
+                    : Default.NORMAL;
             return itemStack.getTooltipLines(Minecraft.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
@@ -349,39 +350,39 @@ public class Platform {
     }
 
     public static String getModName(String modId) {
-        return "" + TextFormatting.BLUE + TextFormatting.ITALIC
+        return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
                 + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }
 
-    public static ITextComponent getItemDisplayName(final Object o) {
+    public static net.minecraft.network.chat.Component getItemDisplayName(final Object o) {
         if (o == null) {
-            return new StringTextComponent("** Null");
+            return new TextComponent("** Null");
         }
 
-        ItemStack itemStack = ItemStack.EMPTY;
+        ItemStack itemStack = net.minecraft.world.item.ItemStack.EMPTY;
         if (o instanceof AEItemStack) {
-            final ITextComponent n = ((AEItemStack) o).getDisplayName();
-            return n == null ? new StringTextComponent("** Null") : n;
+            final net.minecraft.network.chat.Component n = ((AEItemStack) o).getDisplayName();
+            return n == null ? new TextComponent("** Null") : n;
         } else if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
         } else {
-            return new StringTextComponent("**Invalid Object");
+            return new TextComponent("**Invalid Object");
         }
 
         try {
             return itemStack.getHoverName();
         } catch (final Exception errA) {
             try {
-                return new TranslationTextComponent(itemStack.getDescriptionId());
+                return new TranslatableComponent(itemStack.getDescriptionId());
             } catch (final Exception errB) {
-                return new StringTextComponent("** Exception");
+                return new TextComponent("** Exception");
             }
         }
     }
 
-    public static ITextComponent getFluidDisplayName(IAEFluidStack o) {
+    public static net.minecraft.network.chat.Component getFluidDisplayName(IAEFluidStack o) {
         if (o == null) {
-            return new StringTextComponent("** Null");
+            return new TextComponent("** Null");
         }
         FluidStack fluidStack = o.getFluidStack();
         return fluidStack.getDisplayName();
@@ -398,15 +399,15 @@ public class Platform {
         return false;
     }
 
-    public static PlayerEntity getPlayer(final ServerWorld w) {
+    public static Player getPlayer(final ServerLevel w) {
         Objects.requireNonNull(w);
 
-        final PlayerEntity wrp = FAKE_PLAYERS.get(w);
+        final Player wrp = FAKE_PLAYERS.get(w);
         if (wrp != null) {
             return wrp;
         }
 
-        final PlayerEntity p = FakePlayerFactory.getMinecraft(w);
+        final Player p = FakePlayerFactory.getMinecraft(w);
         FAKE_PLAYERS.put(w, p);
         return p;
     }
@@ -524,7 +525,7 @@ public class Platform {
         return forward;
     }
 
-    public static Direction rotateAround(final Direction forward, final Direction axis) {
+    public static net.minecraft.core.Direction rotateAround(final net.minecraft.core.Direction forward, final net.minecraft.core.Direction axis) {
         switch (forward) {
             case DOWN:
                 switch (axis) {
@@ -533,13 +534,13 @@ public class Platform {
                     case UP:
                         return forward;
                     case NORTH:
-                        return Direction.EAST;
+                        return net.minecraft.core.Direction.EAST;
                     case SOUTH:
-                        return Direction.WEST;
+                        return net.minecraft.core.Direction.WEST;
                     case EAST:
-                        return Direction.NORTH;
+                        return net.minecraft.core.Direction.NORTH;
                     case WEST:
-                        return Direction.SOUTH;
+                        return net.minecraft.core.Direction.SOUTH;
                     default:
                         break;
                 }
@@ -547,13 +548,13 @@ public class Platform {
             case UP:
                 switch (axis) {
                     case NORTH:
-                        return Direction.WEST;
+                        return net.minecraft.core.Direction.WEST;
                     case SOUTH:
-                        return Direction.EAST;
+                        return net.minecraft.core.Direction.EAST;
                     case EAST:
-                        return Direction.SOUTH;
+                        return net.minecraft.core.Direction.SOUTH;
                     case WEST:
-                        return Direction.NORTH;
+                        return net.minecraft.core.Direction.NORTH;
                     default:
                         break;
                 }
@@ -561,13 +562,13 @@ public class Platform {
             case NORTH:
                 switch (axis) {
                     case UP:
-                        return Direction.WEST;
+                        return net.minecraft.core.Direction.WEST;
                     case DOWN:
-                        return Direction.EAST;
+                        return net.minecraft.core.Direction.EAST;
                     case EAST:
-                        return Direction.UP;
+                        return net.minecraft.core.Direction.UP;
                     case WEST:
-                        return Direction.DOWN;
+                        return net.minecraft.core.Direction.DOWN;
                     default:
                         break;
                 }
@@ -577,11 +578,11 @@ public class Platform {
                     case UP:
                         return Direction.EAST;
                     case DOWN:
-                        return Direction.WEST;
+                        return net.minecraft.core.Direction.WEST;
                     case EAST:
-                        return Direction.DOWN;
+                        return net.minecraft.core.Direction.DOWN;
                     case WEST:
-                        return Direction.UP;
+                        return net.minecraft.core.Direction.UP;
                     default:
                         break;
                 }
@@ -591,24 +592,24 @@ public class Platform {
                     case UP:
                         return Direction.NORTH;
                     case DOWN:
-                        return Direction.SOUTH;
+                        return net.minecraft.core.Direction.SOUTH;
                     case NORTH:
-                        return Direction.UP;
+                        return net.minecraft.core.Direction.UP;
                     case SOUTH:
-                        return Direction.DOWN;
+                        return net.minecraft.core.Direction.DOWN;
                     default:
                         break;
                 }
             case WEST:
                 switch (axis) {
                     case UP:
-                        return Direction.SOUTH;
+                        return net.minecraft.core.Direction.SOUTH;
                     case DOWN:
-                        return Direction.NORTH;
+                        return net.minecraft.core.Direction.NORTH;
                     case NORTH:
-                        return Direction.DOWN;
+                        return net.minecraft.core.Direction.DOWN;
                     case SOUTH:
-                        return Direction.UP;
+                        return net.minecraft.core.Direction.UP;
                     default:
                         break;
                 }
@@ -728,7 +729,7 @@ public class Platform {
      * Post inventory changes from a whole cell being added or removed from the grid.
      */
     public static void postWholeCellChanges(IStorageService service,
-            ItemStack removedCell,
+            net.minecraft.world.item.ItemStack removedCell,
             ItemStack addedCell,
             IActionSource src) {
         for (var channel : Api.instance().storage().storageChannels()) {
@@ -844,7 +845,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile) {
+    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity tile) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;
@@ -899,14 +900,14 @@ public class Platform {
         }
     }
 
-    public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final World w, final IRecipe<CraftingInventory> r,
-            final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot,
-            final IItemList<IAEItemStack> items, final Actionable realForFake,
-            final IPartitionList<IAEItemStack> filter) {
+    public static net.minecraft.world.item.ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
+                                                                          final IMEMonitor<IAEItemStack> src, final Level w, final Recipe<CraftingContainer> r,
+                                                                          final net.minecraft.world.item.ItemStack output, final CraftingContainer ci, final net.minecraft.world.item.ItemStack providedTemplate, final int slot,
+                                                                          final IItemList<IAEItemStack> items, final Actionable realForFake,
+                                                                          final IPartitionList<IAEItemStack> filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
-                return ItemStack.EMPTY;
+                return net.minecraft.world.item.ItemStack.EMPTY;
             }
 
             final AEItemStack ae_req = AEItemStack.fromItemStack(providedTemplate);
@@ -915,7 +916,7 @@ public class Platform {
             if (filter == null || filter.isListed(ae_req)) {
                 final IAEItemStack ae_ext = src.extractItems(ae_req, realForFake, mySrc);
                 if (ae_ext != null) {
-                    final ItemStack extracted = ae_ext.createItemStack();
+                    final net.minecraft.world.item.ItemStack extracted = ae_ext.createItemStack();
                     if (!extracted.isEmpty()) {
                         energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
                         return extracted;
@@ -932,7 +933,7 @@ public class Platform {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
                     if (Platform.itemComparisons().isEqualItemType(providedTemplate, sh)
-                            && !ItemStack.isSame(sh, output)) {
+                            && !net.minecraft.world.item.ItemStack.isSame(sh, output)) {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
                         ci.setItem(slot, cp);
@@ -959,7 +960,7 @@ public class Platform {
      * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
      * crafting, i.E. the empty bucket for a bucket of water.
      */
-    public static ItemStack getContainerItem(final ItemStack stackInSlot) {
+    public static net.minecraft.world.item.ItemStack getContainerItem(final net.minecraft.world.item.ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;
         }
@@ -970,18 +971,18 @@ public class Platform {
                 stackInSlot.setCount(stackInSlot.getCount() - 1);
                 return stackInSlot;
             }
-            return ItemStack.EMPTY;
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         ItemStack ci = i.getContainerItem(stackInSlot.copy());
         if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
-            ci = ItemStack.EMPTY;
+            ci = net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         return ci;
     }
 
-    public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
+    public static void notifyBlocksOfNeighbors(final Level world, final BlockPos pos) {
         if (!world.isClientSide) {
             TickHandler.instance().addCallable(world, new BlockUpdate(pos));
         }

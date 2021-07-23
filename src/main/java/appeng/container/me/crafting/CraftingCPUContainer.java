@@ -18,11 +18,11 @@
 
 package appeng.container.me.crafting;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ContainerListener;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -48,7 +48,7 @@ import appeng.tile.crafting.CraftingTileEntity;
  */
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static final ContainerType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
             .create(CraftingCPUContainer::new, CraftingTileEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .withContainerTitle(craftingTileEntity -> {
@@ -57,7 +57,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
                 if (cluster != null && cluster.getName() != null) {
                     return cluster.getName();
                 }
-                return StringTextComponent.EMPTY;
+                return TextComponent.EMPTY;
             })
             .build("craftingcpu");
 
@@ -65,7 +65,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
 
-    public CraftingCPUContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
+    public CraftingCPUContainer(MenuType<?> containerType, int id, final Inventory ip, final Object te) {
         super(containerType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
@@ -121,7 +121,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeSlotListener(final IContainerListener c) {
+    public void removeSlotListener(final ContainerListener c) {
         super.removeSlotListener(c);
 
         if (this.containerListeners.isEmpty() && this.cpu != null) {
@@ -130,7 +130,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removed(final PlayerEntity player) {
+    public void removed(final Player player) {
         super.removed(player);
         if (this.cpu != null) {
             this.cpu.removeListener(this);

@@ -25,10 +25,10 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -53,35 +53,35 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
     // the current power buffer.
     private double internalCurrentPower = 0;
-    private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
-    private Set<Direction> internalPowerSides = ALL_SIDES;
+    private static final Set<net.minecraft.core.Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(net.minecraft.core.Direction.class));
+    private Set<net.minecraft.core.Direction> internalPowerSides = ALL_SIDES;
     private final IEnergyStorage forgeEnergyAdapter;
     // Cache the optional to not continuously re-allocate it or the supplier
     private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-    public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBasePoweredTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
 
-    protected final Set<Direction> getPowerSides() {
+    protected final Set<net.minecraft.core.Direction> getPowerSides() {
         return this.internalPowerSides;
     }
 
-    protected void setPowerSides(final Set<Direction> sides) {
+    protected void setPowerSides(final Set<net.minecraft.core.Direction> sides) {
         this.internalPowerSides = ImmutableSet.copyOf(sides);
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
         data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
         return data;
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
@@ -225,7 +225,7 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, net.minecraft.core.Direction facing) {
         if (capability == Capabilities.FORGE_ENERGY && this.getPowerSides().contains(facing)) {
             return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
         }

@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -46,7 +46,7 @@ import appeng.core.localization.GuiText;
  */
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
-    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title, ScreenStyle style) {
+    public UpgradeableScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.widgets.add("upgrades", new UpgradesPanel(
@@ -61,14 +61,14 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
      * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
      * compatible.
      */
-    protected List<ITextComponent> getCompatibleUpgrades() {
+    protected List<net.minecraft.network.chat.Component> getCompatibleUpgrades() {
         IUpgradeableHost host = menu.getUpgradeable();
 
-        Item item;
+        net.minecraft.world.item.Item item;
         if (host instanceof IPart) {
             item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
-        } else if (host instanceof TileEntity) {
-            TileEntity te = (TileEntity) host;
+        } else if (host instanceof BlockEntity) {
+            BlockEntity te = (BlockEntity) host;
             item = te.getBlockState().getBlock().asItem();
         } else {
             return Collections.emptyList();
@@ -77,15 +77,15 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         return getCompatibleUpgrades(item);
     }
 
-    protected List<ITextComponent> getCompatibleUpgrades(Item machineItem) {
-        List<ITextComponent> list = new ArrayList<>();
+    protected List<net.minecraft.network.chat.Component> getCompatibleUpgrades(net.minecraft.world.item.Item machineItem) {
+        List<net.minecraft.network.chat.Component> list = new ArrayList<>();
         list.add(GuiText.CompatibleUpgrades.text());
 
         for (Upgrades upgrade : Upgrades.values()) {
             for (Upgrades.Supported supported : upgrade.getSupported()) {
                 if (supported.isSupported(machineItem)) {
                     list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), supported.getMaxCount())
-                            .withStyle(TextFormatting.GRAY));
+                            .withStyle(ChatFormatting.GRAY));
                     break;
                 }
             }

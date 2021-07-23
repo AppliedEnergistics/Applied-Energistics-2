@@ -20,9 +20,9 @@ package appeng.util.helpers;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.FuzzyMode;
 
@@ -41,7 +41,7 @@ public class ItemComparisonHelper {
      *
      * @return true, if both are equal.
      */
-    public boolean isEqualItemType(@Nonnull final ItemStack that, @Nonnull final ItemStack other) {
+    public boolean isEqualItemType(@Nonnull final ItemStack that, @Nonnull final net.minecraft.world.item.ItemStack other) {
         return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
     }
 
@@ -58,13 +58,13 @@ public class ItemComparisonHelper {
     }
 
     /**
-     * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)}, but it can further check, if both
+     * Similar to {@link ItemComparisonHelper#isEqualItem(net.minecraft.world.item.ItemStack, net.minecraft.world.item.ItemStack)}, but it can further check, if both
      * match the same {@link FuzzyMode} or are considered equal by the {@link OreDictionary}
      *
-     * @param mode how to compare the two {@link ItemStack}s
+     * @param mode how to compare the two {@link net.minecraft.world.item.ItemStack}s
      * @return true, if both are matching the mode or considered equal by the {@link OreDictionary}
      */
-    public boolean isFuzzyEqualItem(final ItemStack a, final ItemStack b, final FuzzyMode mode) {
+    public boolean isFuzzyEqualItem(final ItemStack a, final net.minecraft.world.item.ItemStack b, final FuzzyMode mode) {
         if (a.isEmpty() && b.isEmpty()) {
             return true;
         }
@@ -95,7 +95,7 @@ public class ItemComparisonHelper {
      * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
      * performance wise, so try an use shared tag compounds as long as the system remains in AE.
      */
-    public boolean isNbtTagEqual(final CompoundNBT left, final CompoundNBT right) {
+    public boolean isNbtTagEqual(final CompoundTag left, final CompoundTag right) {
         if (left == right) {
             return true;
         }

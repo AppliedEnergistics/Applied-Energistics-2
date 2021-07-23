@@ -18,8 +18,8 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -30,7 +30,7 @@ import appeng.tile.grid.AENetworkTileEntity;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 
-    public CreativeEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CreativeEnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setIdlePowerUsage(0)

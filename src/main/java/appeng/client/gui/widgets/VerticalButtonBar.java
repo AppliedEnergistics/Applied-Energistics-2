@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -41,12 +41,12 @@ public class VerticalButtonBar implements ICompositeWidget {
     // The margin between the right side of the buttons and the GUI
     private static final int MARGIN = 2;
 
-    private final List<Button> buttons = new ArrayList<>();
+    private final List<net.minecraft.client.gui.components.Button> buttons = new ArrayList<>();
 
     // The origin of the last initialized screen in window coordinates
     private Point screenOrigin = Point.ZERO;
     // This bounding rectangle relative to the screens origin
-    private Rectangle2d bounds = new Rectangle2d(0, 0, 0, 0);
+    private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
     private Point position;
 
@@ -68,7 +68,7 @@ public class VerticalButtonBar implements ICompositeWidget {
     }
 
     @Override
-    public Rectangle2d getBounds() {
+    public Rect2i getBounds() {
         return bounds;
     }
 
@@ -81,7 +81,7 @@ public class VerticalButtonBar implements ICompositeWidget {
         int maxWidth = 0;
 
         // Align the button's right edge with the UI and account for margin
-        for (Button button : buttons) {
+        for (net.minecraft.client.gui.components.Button button : buttons) {
             if (!button.visible) {
                 continue;
             }
@@ -96,11 +96,11 @@ public class VerticalButtonBar implements ICompositeWidget {
 
         // Set up a bounding rectangle for JEI exclusion zones
         if (maxWidth == 0) {
-            bounds = new Rectangle2d(0, 0, 0, 0);
+            bounds = new Rect2i(0, 0, 0, 0);
         } else {
             int boundX = position.getX() - maxWidth - 2 * MARGIN;
             int boundY = position.getY();
-            bounds = new Rectangle2d(
+            bounds = new Rect2i(
                     boundX,
                     boundY,
                     maxWidth + 2 * MARGIN,
@@ -113,7 +113,7 @@ public class VerticalButtonBar implements ICompositeWidget {
      * widgets when this happens.
      */
     @Override
-    public void populateScreen(Consumer<Widget> addWidget, Rectangle2d bounds, AEBaseScreen<?> screen) {
+    public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         this.screenOrigin = Point.fromTopLeft(bounds);
         this.buttons.forEach(addWidget);
     }

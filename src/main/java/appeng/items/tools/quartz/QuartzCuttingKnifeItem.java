@@ -18,15 +18,14 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -36,43 +35,45 @@ import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.Properties;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;
 
-    public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
+    public QuartzCuttingKnifeItem(net.minecraft.world.item.Item.Properties props, final QuartzToolType type) {
         super(props);
         this.type = type;
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        World w = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        Level w = context.getLevel();
         if (!w.isClientSide() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
-        return ActionResultType.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(w.isClientSide());
     }
 
     @Override
-    public ActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
         if (!w.isClientSide()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swing(hand);
-        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final net.minecraft.world.item.ItemStack a, final net.minecraft.world.item.ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
-        ItemStack damagedStack = itemStack.copy();
+    public ItemStack getContainerItem(final net.minecraft.world.item.ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack damagedStack = itemStack.copy();
         if (damagedStack.hurt(1, random, null)) {
             return ItemStack.EMPTY;
         } else {
@@ -81,12 +82,12 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasContainerItem(final net.minecraft.world.item.ItemStack stack) {
         return true;
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level world,
             final BlockPos pos) {
         return new QuartzKnifeObj(is);
     }

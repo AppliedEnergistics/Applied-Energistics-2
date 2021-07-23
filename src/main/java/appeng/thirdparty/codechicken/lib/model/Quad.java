@@ -18,14 +18,14 @@
 
 package appeng.thirdparty.codechicken.lib.model;
 
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
@@ -42,7 +42,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     public CachedFormat format;
 
     public int tintIndex = -1;
-    public Direction orientation;
+    public net.minecraft.core.Direction orientation;
     public boolean diffuseLighting = true;
     public TextureAtlasSprite sprite;
 
@@ -53,8 +53,8 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     private int vertexIndex = 0;
     // Cache for normal computation.
     private Vector3f v1 = new Vector3f();
-    private Vector3f v2 = new Vector3f();
-    private Vector3f t = new Vector3f();
+    private Vector3f v2 = new com.mojang.math.Vector3f();
+    private Vector3f t = new com.mojang.math.Vector3f();
     private Vector3f normal = new Vector3f();
 
     /**
@@ -83,7 +83,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     @Override
-    public void setQuadOrientation(Direction orientation) {
+    public void setQuadOrientation(net.minecraft.core.Direction orientation) {
         this.orientation = orientation;
     }
 
@@ -163,12 +163,12 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      *
      * @param bb The box.
      */
-    public void clamp(AxisAlignedBB bb) {
+    public void clamp(AABB bb) {
         for (Vertex vertex : this.vertices) {
             float[] vec = vertex.vec;
-            vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);
-            vec[1] = (float) MathHelper.clamp(vec[1], bb.minY, bb.maxY);
-            vec[2] = (float) MathHelper.clamp(vec[2], bb.minZ, bb.maxZ);
+            vec[0] = (float) Mth.clamp(vec[0], bb.minX, bb.maxX);
+            vec[1] = (float) Mth.clamp(vec[1], bb.minY, bb.maxY);
+            vec[2] = (float) Mth.clamp(vec[2], bb.minZ, bb.maxZ);
         }
         this.calculateOrientation(true);
     }
@@ -199,7 +199,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = Direction.getNearest(this.normal.x(), this.normal.y(), this.normal.z());
+        this.orientation = net.minecraft.core.Direction.getNearest(this.normal.x(), this.normal.y(), this.normal.z());
     }
 
     /**
@@ -271,8 +271,8 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      *
      * @return The BakedQuad.
      */
-    public BakedQuad bake() {
-        if (format.format != DefaultVertexFormats.BLOCK) {
+    public net.minecraft.client.renderer.block.model.BakedQuad bake() {
+        if (format.format != DefaultVertexFormat.BLOCK) {
             throw new IllegalStateException("Unable to bake this quad to the specified format. " + format.format);
         }
         int[] packedData = new int[this.format.format.getVertexSize()];

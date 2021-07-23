@@ -24,10 +24,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -51,7 +51,7 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeEnum(MatcherType.MULTIPLE);
         buffer.writeUtf(property.getName());
         buffer.writeInt(propertyValues.size());
@@ -60,14 +60,14 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
         }
     }
 
-    public static MultipleValuesMatcher<?> create(StateContainer<?, ?> stateContainer, String propertyName,
-            List<String> values) {
+    public static MultipleValuesMatcher<?> create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName,
+                                                  List<String> values) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new MultipleValuesMatcher<>(property, values);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static MultipleValuesMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+    public static MultipleValuesMatcher<?> readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         int size = buffer.readInt();
         List<String> values = new ArrayList<>(size);

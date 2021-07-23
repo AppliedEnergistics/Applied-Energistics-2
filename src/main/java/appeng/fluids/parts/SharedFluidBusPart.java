@@ -18,17 +18,17 @@
 
 package appeng.fluids.parts;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
@@ -67,7 +67,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -88,7 +88,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(getContainerType(), player, ContainerLocator.forPart(this));
         }
@@ -96,7 +96,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
         return true;
     }
 
-    protected abstract ContainerType<?> getContainerType();
+    protected abstract MenuType<?> getContainerType();
 
     @Override
     public void getBoxes(IPartCollisionHelper bch) {
@@ -105,13 +105,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
         bch.addBox(4, 4, 14, 12, 12, 16);
     }
 
-    protected TileEntity getConnectedTE() {
-        TileEntity self = this.getHost().getTile();
+    protected BlockEntity getConnectedTE() {
+        BlockEntity self = this.getHost().getTile();
         return this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
     }
 
-    private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
-        final World w = self.getLevel();
+    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
+        final Level w = self.getLevel();
 
         if (w.getChunkSource().isTickingChunk(pos)) {
             return w.getBlockEntity(pos);
@@ -133,18 +133,18 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
                 amount = amount * 8;
             case 0:
             default:
-                return MathHelper.floor(amount);
+                return Mth.floor(amount);
         }
     }
 
     @Override
-    public void readFromNBT(CompoundNBT extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.config.readFromNBT(extra, "config");
     }
 
     @Override
-    public void writeToNBT(CompoundNBT extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.config.writeToNBT(extra, "config");
     }

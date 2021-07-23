@@ -20,7 +20,7 @@ package appeng.container.me.common;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -96,7 +96,7 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
     /**
      * Writes this entry to a packet buffer for shipping it to the client.
      */
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(serial);
         buffer.writeBoolean(stack != null);
         if (stack != null) {
@@ -112,7 +112,7 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
      * {@link #stack} field.
      */
     public static <T extends IAEStack<T>> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
-            PacketBuffer buffer) {
+            FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         T stack = null;
         if (buffer.readBoolean()) {

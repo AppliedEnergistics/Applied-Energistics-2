@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -46,7 +46,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         return MODELS.getModels();
     }
 
-    public ItemP2PTunnelPart(final ItemStack is) {
+    public ItemP2PTunnelPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
     }
 
@@ -76,8 +76,8 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
     private IItemHandler getAttachedItemHandler() {
         LazyOptional<IItemHandler> itemHandler = LazyOptional.empty();
         if (this.isActive()) {
-            final TileEntity self = this.getTile();
-            final TileEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+            final BlockEntity self = this.getTile();
+            final BlockEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
@@ -96,14 +96,14 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
 
         @Override
         @Nonnull
-        public ItemStack getStackInSlot(int slot) {
+        public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            final ItemStack remainder = stack.copy();
+        public net.minecraft.world.item.ItemStack insertItem(int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
+            final net.minecraft.world.item.ItemStack remainder = stack.copy();
 
             final int outputTunnels = ItemP2PTunnelPart.this.getOutputs().size();
             final int amount = stack.getCount();
@@ -118,10 +118,10 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
             for (ItemP2PTunnelPart target : ItemP2PTunnelPart.this.getOutputs()) {
                 final IItemHandler output = target.getAttachedItemHandler();
                 final int toSend = amountPerOutput + overflow;
-                final ItemStack fillWithItemStack = stack.copy();
+                final net.minecraft.world.item.ItemStack fillWithItemStack = stack.copy();
                 fillWithItemStack.setCount(toSend);
 
-                ItemStack received = ItemStack.EMPTY;
+                net.minecraft.world.item.ItemStack received = net.minecraft.world.item.ItemStack.EMPTY;
 
                 for (int i = 0; i < output.getSlots(); i++) {
                     received = output.insertItem(i, fillWithItemStack, simulate);
@@ -148,8 +148,8 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
 
         @Override
         @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+        public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override
@@ -158,7 +158,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
             return true;
         }
 
@@ -173,13 +173,13 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
 
         @Override
         @Nonnull
-        public ItemStack getStackInSlot(int slot) {
+        public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
             return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().getStackInSlot(slot);
         }
 
         @Override
         @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        public net.minecraft.world.item.ItemStack insertItem(int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
             return stack;
         }
 
@@ -195,7 +195,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
             return ItemP2PTunnelPart.this.getInput().getAttachedItemHandler().isItemValid(slot, stack);
         }
     }
@@ -209,20 +209,20 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
 
         @Override
         @Nonnull
-        public ItemStack getStackInSlot(int slot) {
-            return ItemStack.EMPTY;
+        public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        public net.minecraft.world.item.ItemStack insertItem(int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
         @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+        public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return net.minecraft.world.item.ItemStack.EMPTY;
         }
 
         @Override
@@ -231,7 +231,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
             return false;
         }
     }

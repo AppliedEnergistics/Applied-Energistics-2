@@ -23,10 +23,9 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Multiset;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.ChunkPos;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -35,13 +34,14 @@ import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
+import net.minecraft.world.level.LevelAccessor;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen
  */
 public class SpatialAnchorContainer extends AEBaseContainer {
 
-    public static final ContainerType<SpatialAnchorContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<SpatialAnchorContainer> TYPE = ContainerTypeBuilder
             .create(SpatialAnchorContainer::new, SpatialAnchorTileEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialanchor");
@@ -68,7 +68,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     @GuiSync(21)
     public int allChunks;
 
-    public SpatialAnchorContainer(int id, final PlayerInventory ip, final SpatialAnchorTileEntity spatialAnchor) {
+    public SpatialAnchorContainer(int id, final Inventory ip, final SpatialAnchorTileEntity spatialAnchor) {
         super(TYPE, id, ip, spatialAnchor);
     }
 
@@ -91,10 +91,10 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                 this.powerConsumption = (long) gridNode.getIdlePowerUsage();
                 this.loadedChunks = anchor.countLoadedChunks();
 
-                HashMap<IWorld, Integer> stats = new HashMap<>();
+                HashMap<LevelAccessor, Integer> stats = new HashMap<>();
 
                 for (var machine : grid.getMachines(SpatialAnchorTileEntity.class)) {
-                    IWorld world = machine.getLevel();
+                    LevelAccessor world = machine.getLevel();
                     stats.merge(world, machine.countLoadedChunks(), Math::max);
                 }
 
@@ -103,7 +103,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
 
                 this.allWorlds = statistics.getChunks().size();
                 this.allChunks = 0;
-                for (Entry<IWorld, Multiset<ChunkPos>> entry : statistics.getChunks().entrySet()) {
+                for (Entry<LevelAccessor, Multiset<ChunkPos>> entry : statistics.getChunks().entrySet()) {
                     this.allChunks += entry.getValue().elementSet().size();
                 }
 

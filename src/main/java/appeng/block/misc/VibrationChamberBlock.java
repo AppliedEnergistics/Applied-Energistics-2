@@ -22,20 +22,21 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -48,7 +49,7 @@ import appeng.util.InteractionUtil;
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
 
     // Indicates that the vibration chamber is currently working
-    private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    private static final net.minecraft.world.level.block.state.properties.BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VibrationChamberBlock() {
         super(defaultProps(Material.METAL).strength(4.2F));
@@ -61,16 +62,16 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (!w.isClientSide()) {
@@ -81,11 +82,11 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             }
         }
 
-        return ActionResultType.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(w.isClientSide());
     }
 
     @Override
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void animateTick(final net.minecraft.world.level.block.state.BlockState state, final Level w, final net.minecraft.core.BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -96,8 +97,8 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             double f2 = pos.getY() + 0.5F;
             double f3 = pos.getZ() + 0.5F;
 
-            final Direction forward = tc.getForward();
-            final Direction up = tc.getUp();
+            final net.minecraft.core.Direction forward = tc.getForward();
+            final net.minecraft.core.Direction up = tc.getUp();
 
             // Cross-Product of forward/up directional vector
             final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();

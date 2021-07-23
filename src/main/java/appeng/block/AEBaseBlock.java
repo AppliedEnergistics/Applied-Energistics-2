@@ -18,18 +18,19 @@
 
 package appeng.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.util.IOrientable;
@@ -41,36 +42,36 @@ public abstract class AEBaseBlock extends Block {
 
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final AbstractBlock.Properties props) {
+    protected AEBaseBlock(final net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
         super(props);
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static AbstractBlock.Properties defaultProps(Material material) {
+    public static net.minecraft.world.level.block.state.BlockBehaviour.Properties defaultProps(net.minecraft.world.level.material.Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static AbstractBlock.Properties defaultProps(Material material, MaterialColor color) {
-        return AbstractBlock.Properties.of(material, color)
+    public static net.minecraft.world.level.block.state.BlockBehaviour.Properties defaultProps(net.minecraft.world.level.material.Material material, MaterialColor color) {
+        return net.minecraft.world.level.block.state.BlockBehaviour.Properties.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .strength(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
                 .sound(getDefaultSoundByMaterial(material));
     }
 
-    private static SoundType getDefaultSoundByMaterial(Material mat) {
+    private static net.minecraft.world.level.block.SoundType getDefaultSoundByMaterial(net.minecraft.world.level.material.Material mat) {
         if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
             return SoundType.GLASS;
-        } else if (mat == Material.STONE) {
-            return SoundType.STONE;
-        } else if (mat == Material.WOOD) {
-            return SoundType.WOOD;
+        } else if (mat == net.minecraft.world.level.material.Material.STONE) {
+            return net.minecraft.world.level.block.SoundType.STONE;
+        } else if (mat == net.minecraft.world.level.material.Material.WOOD) {
+            return net.minecraft.world.level.block.SoundType.WOOD;
         } else {
-            return SoundType.METAL;
+            return net.minecraft.world.level.block.SoundType.METAL;
         }
     }
 
@@ -80,14 +81,14 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final World worldIn, final BlockPos pos) {
+    public int getAnalogOutputSignal(net.minecraft.world.level.block.state.BlockState state, final Level worldIn, final BlockPos pos) {
         return 0;
     }
 
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(IWorld w, BlockPos pos, Direction face) {
+    public boolean rotateAroundFaceAxis(LevelAccessor w, net.minecraft.core.BlockPos pos, Direction face) {
         final IOrientable rotatable = this.getOrientable(w, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
@@ -96,7 +97,7 @@ public abstract class AEBaseBlock extends Block {
                 return true;
             } else {
                 Direction forward = rotatable.getForward();
-                Direction up = rotatable.getUp();
+                net.minecraft.core.Direction up = rotatable.getUp();
 
                 for (int rs = 0; rs < 4; rs++) {
                     forward = Platform.rotateAround(forward, face);
@@ -121,7 +122,7 @@ public abstract class AEBaseBlock extends Block {
         // case WEST: return sideIcon;
         // case EAST: return sideIcon;
 
-        final Direction forward = ori.getForward();
+        final net.minecraft.core.Direction forward = ori.getForward();
         final Direction up = ori.getUp();
 
         if (forward == null || up == null) {
@@ -133,7 +134,7 @@ public abstract class AEBaseBlock extends Block {
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         Direction west = null;
-        for (final Direction dx : Direction.values()) {
+        for (final net.minecraft.core.Direction dx : Direction.values()) {
             if (dx.getStepX() == west_x && dx.getStepY() == west_y && dx.getStepZ() == west_z) {
                 west = dx;
             }
@@ -154,14 +155,14 @@ public abstract class AEBaseBlock extends Block {
             return Direction.UP;
         }
         if (dir == up.getOpposite()) {
-            return Direction.DOWN;
+            return net.minecraft.core.Direction.DOWN;
         }
 
         if (dir == west) {
             return Direction.WEST;
         }
         if (dir == west.getOpposite()) {
-            return Direction.EAST;
+            return net.minecraft.core.Direction.EAST;
         }
 
         return null;
@@ -181,11 +182,11 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
+    protected void customRotateBlock(final IOrientable rotatable, final net.minecraft.core.Direction axis) {
 
     }
 
-    protected IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    protected IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
         if (this instanceof IOrientableBlock) {
             IOrientableBlock orientable = (IOrientableBlock) this;
             return orientable.getOrientable(w, pos);
@@ -193,8 +194,8 @@ public abstract class AEBaseBlock extends Block {
         return null;
     }
 
-    protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    protected boolean isValidOrientation(final LevelAccessor w, final net.minecraft.core.BlockPos pos, final Direction forward,
+                                         final Direction up) {
         return true;
     }
 

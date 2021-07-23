@@ -20,10 +20,10 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -60,7 +60,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_on"));
@@ -80,7 +80,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    protected ContainerType<?> getContainerType() {
+    protected MenuType<?> getContainerType() {
         return FluidIOBusContainer.IMPORT_TYPE;
     }
 
@@ -101,7 +101,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        final TileEntity te = this.getConnectedTE();
+        final BlockEntity te = this.getConnectedTE();
         if (te != null) {
             LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
                     this.getSide().getDirection().getOpposite());

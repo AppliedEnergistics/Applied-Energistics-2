@@ -22,26 +22,27 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -51,17 +52,17 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.sync.packets.MockExplosionPacket;
 
-public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
+public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAdditionalSpawnData {
 
-    private LivingEntity placedBy;
+    private net.minecraft.world.entity.LivingEntity placedBy;
 
-    public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, World worldIn) {
+    public TinyTNTPrimedEntity(net.minecraft.world.entity.EntityType<? extends TinyTNTPrimedEntity> type, Level worldIn) {
         super(type, worldIn);
         this.blocksBuilding = true;
     }
 
-    public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
-            final LivingEntity igniter) {
+    public TinyTNTPrimedEntity(final Level w, final double x, final double y, final double z,
+                               final LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, w);
         this.setPos(x, y, z);
         double d0 = w.random.nextDouble() * ((float) Math.PI * 2F);
@@ -75,7 +76,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     @Nullable
     @Override
-    public LivingEntity getOwner() {
+    public net.minecraft.world.entity.LivingEntity getOwner() {
         return this.placedBy;
     }
 
@@ -130,7 +131,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     @Override
     protected void explode() {
         this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
-                SoundCategory.BLOCKS, 4.0F,
+                SoundSource.BLOCKS, 4.0F,
                 (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 32.9F);
 
         if (this.isInWater()) {
@@ -138,10 +139,10 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
         }
 
         final Explosion ex = new Explosion(this.level, this, null, null, this.getX(), this.getY(), this.getZ(),
-                0.2f, false, Explosion.Mode.BREAK);
-        final AxisAlignedBB area = new AxisAlignedBB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
+                0.2f, false, BlockInteraction.BREAK);
+        final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
-        final List<Entity> list = this.level.getEntities(this, area);
+        final List<net.minecraft.world.entity.Entity> list = this.level.getEntities(this, area);
 
         net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.level, ex, list, 0.2f * 2d);
 
@@ -186,17 +187,17 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeByte(this.getLife());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         this.setFuse(additionalData.readByte());
     }
 }

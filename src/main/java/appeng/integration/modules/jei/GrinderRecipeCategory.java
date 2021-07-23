@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -41,7 +41,7 @@ import appeng.recipes.handlers.GrinderRecipe;
 
 class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
+    public static final net.minecraft.resources.ResourceLocation UID = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "grinder");
 
     private final String localizedName;
 
@@ -59,7 +59,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public net.minecraft.resources.ResourceLocation getUid() {
         return GrinderRecipeCategory.UID;
     }
 

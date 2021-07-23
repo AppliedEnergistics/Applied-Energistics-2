@@ -18,9 +18,8 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -29,12 +28,13 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PowerStateInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+                             Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) tile;
 

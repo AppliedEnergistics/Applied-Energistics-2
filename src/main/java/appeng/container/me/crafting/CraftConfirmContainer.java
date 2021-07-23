@@ -22,15 +22,15 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -65,7 +65,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
     private static final String ACTION_BACK = "back";
 
-    public static final ContainerType<CraftConfirmContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftConfirmContainer> TYPE = ContainerTypeBuilder
             .create(CraftConfirmContainer::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftconfirm");
@@ -92,11 +92,11 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     @GuiSync(2)
     public int cpuCoProcessors;
     @GuiSync(7)
-    public ITextComponent cpuName;
+    public net.minecraft.network.chat.Component cpuName;
 
     private CraftingPlanSummary plan;
 
-    public CraftConfirmContainer(int id, PlayerInventory ip, ITerminalHost te) {
+    public CraftConfirmContainer(int id, Inventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
         this.cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);
         // A player can select no crafting CPU to use a suitable one automatically
@@ -133,7 +133,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (final Throwable e) {
-                this.getPlayerInventory().player.sendMessage(new StringTextComponent("Error: " + e.toString()),
+                this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e.toString()),
                         Util.NIL_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
@@ -158,7 +158,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public void startJob() {
-        ContainerType<?> originalGui = null;
+        MenuType<?> originalGui = null;
 
         final IActionHost ah = this.getActionHost();
         if (ah instanceof WirelessTerminalGuiObject) {
@@ -192,7 +192,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removeSlotListener(final IContainerListener c) {
+    public void removeSlotListener(final ContainerListener c) {
         super.removeSlotListener(c);
         if (this.job != null) {
             this.job.cancel(true);
@@ -201,7 +201,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removed(final PlayerEntity par1PlayerEntity) {
+    public void removed(final Player par1PlayerEntity) {
         super.removed(par1PlayerEntity);
         if (this.job != null) {
             this.job.cancel(true);
@@ -225,7 +225,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         }
     }
 
-    public World getWorld() {
+    public Level getWorld() {
         return this.getPlayerInventory().player.level;
     }
 
@@ -245,7 +245,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         return this.cpuCoProcessors;
     }
 
-    public ITextComponent getName() {
+    public net.minecraft.network.chat.Component getName() {
         return this.cpuName;
     }
 
@@ -275,9 +275,9 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     public void goBack() {
-        PlayerEntity player = getPlayerInventory().player;
-        if (player instanceof ServerPlayerEntity) {
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        Player player = getPlayerInventory().player;
+        if (player instanceof ServerPlayer) {
+            ServerPlayer serverPlayer = (ServerPlayer) player;
             if (itemToCreate != null) {
                 CraftAmountContainer.open(serverPlayer, getLocator(), itemToCreate, (int) itemToCreate.getStackSize());
             }

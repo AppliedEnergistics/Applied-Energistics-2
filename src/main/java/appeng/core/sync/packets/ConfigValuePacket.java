@@ -20,11 +20,9 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -46,13 +44,15 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.helpers.IMouseWheelItem;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class ConfigValuePacket extends BasePacket {
 
     private final String Name;
     private final String Value;
 
-    public ConfigValuePacket(final PacketBuffer stream) {
+    public ConfigValuePacket(final FriendlyByteBuf stream) {
         this.Name = stream.readUtf(MAX_STRING_LENGTH);
         this.Value = stream.readUtf(MAX_STRING_LENGTH);
     }
@@ -62,7 +62,7 @@ public class ConfigValuePacket extends BasePacket {
         this.Name = name;
         this.Value = value;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
@@ -73,20 +73,20 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        final Container c = player.containerMenu;
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
+        final AbstractContainerMenu c = player.containerMenu;
 
-        if (this.Name.equals("Item") && (!player.getItemInHand(Hand.MAIN_HAND).isEmpty()
-                && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem
-                || !player.getItemInHand(Hand.OFF_HAND).isEmpty()
-                        && player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem)) {
-            final Hand hand;
-            if (!player.getItemInHand(Hand.MAIN_HAND).isEmpty()
-                    && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
-                hand = Hand.MAIN_HAND;
-            } else if (!player.getItemInHand(Hand.OFF_HAND).isEmpty()
-                    && player.getItemInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
-                hand = Hand.OFF_HAND;
+        if (this.Name.equals("Item") && (!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()
+                && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof IMouseWheelItem
+                || !player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()
+                        && player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem)) {
+            final InteractionHand hand;
+            if (!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()
+                    && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = InteractionHand.MAIN_HAND;
+            } else if (!player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()
+                    && player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = InteractionHand.OFF_HAND;
             } else {
                 return;
             }
@@ -182,8 +182,8 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Container c = player.containerMenu;
+    public void clientPacketData(final INetworkInfo network, final Player player) {
+        final AbstractContainerMenu c = player.containerMenu;
 
         if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();

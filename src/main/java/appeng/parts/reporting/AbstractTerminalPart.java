@@ -20,12 +20,12 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
@@ -76,7 +76,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
         super.getDrops(drops, wrenched);
 
-        for (final ItemStack is : this.viewCell) {
+        for (final net.minecraft.world.item.ItemStack is : this.viewCell) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -94,28 +94,28 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
         this.viewCell.readFromNBT(data, "viewCell");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.cm.writeToNBT(data);
         this.viewCell.writeToNBT(data, "viewCell");
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !player.level.isClientSide) {
             ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
         }
         return true;
     }
 
-    public ContainerType<?> getContainerType(final PlayerEntity player) {
+    public MenuType<?> getContainerType(final Player player) {
         return ItemTerminalContainer.TYPE;
     }
 
@@ -140,7 +140,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+                                  final net.minecraft.world.item.ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

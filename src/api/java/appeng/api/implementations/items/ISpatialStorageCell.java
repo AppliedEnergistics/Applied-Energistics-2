@@ -23,13 +23,13 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 /**
- * Implemented on a {@link Item}
+ * Implemented on a {@link net.minecraft.world.item.Item}
  */
 public interface ISpatialStorageCell {
 
@@ -54,7 +54,7 @@ public interface ISpatialStorageCell {
      *
      * @return plot id or -1
      */
-    int getAllocatedPlotId(ItemStack is);
+    int getAllocatedPlotId(net.minecraft.world.item.ItemStack is);
 
     /**
      * Perform a spatial swap with the contents of the cell, and the world.
@@ -67,5 +67,5 @@ public interface ISpatialStorageCell {
      *
      * @return success of transition
      */
-    boolean doSpatialTransition(ItemStack is, ServerWorld w, BlockPos min, BlockPos max, int playerId);
+    boolean doSpatialTransition(net.minecraft.world.item.ItemStack is, ServerLevel w, BlockPos min, BlockPos max, int playerId);
 }

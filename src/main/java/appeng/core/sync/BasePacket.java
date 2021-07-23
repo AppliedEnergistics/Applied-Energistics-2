@@ -20,9 +20,9 @@ package appeng.core.sync;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.core.AEConfig;
@@ -33,15 +33,15 @@ import appeng.core.sync.network.NetworkHandler;
 public abstract class BasePacket {
 
     /**
-     * Sadly {@link PacketBuffer#readString()} gets inlined by Proguard which means it's not available on the Server.
+     * Sadly {@link FriendlyByteBuf#readString()} gets inlined by Proguard which means it's not available on the Server.
      * This field has the default string length that is used for writeString, which then also should be used for
      * readString when it has no special length requirements.
      */
     public static final int MAX_STRING_LENGTH = 32767;
 
-    private PacketBuffer p;
+    private FriendlyByteBuf p;
 
-    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+    public void serverPacketData(final INetworkInfo manager, final Player player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a server side handler.");
     }
@@ -50,17 +50,17 @@ public abstract class BasePacket {
         return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
     }
 
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(final INetworkInfo network, final Player player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
 
-    protected void configureWrite(final PacketBuffer data) {
+    protected void configureWrite(final FriendlyByteBuf data) {
         data.capacity(data.readableBytes());
         this.p = data;
     }
 
-    public IPacket<?> toPacket(NetworkDirection direction) {
+    public Packet<?> toPacket(NetworkDirection direction) {
         if (this.p.array().length > 2 * 1024 * 1024) // 2k walking room :)
         {
             throw new IllegalArgumentException(

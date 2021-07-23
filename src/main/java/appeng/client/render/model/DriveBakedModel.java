@@ -26,14 +26,14 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.Direction;
+import com.mojang.math.Matrix4f;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
@@ -41,10 +41,10 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
 
 public class DriveBakedModel extends DelegateBakedModel {
-    private final Map<Item, IBakedModel> bakedCells;
-    private final IBakedModel defaultCell;
+    private final Map<net.minecraft.world.item.Item, BakedModel> bakedCells;
+    private final BakedModel defaultCell;
 
-    public DriveBakedModel(IBakedModel bakedBase, Map<Item, IBakedModel> cellModels, IBakedModel defaultCell) {
+    public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, BakedModel defaultCell) {
         super(bakedBase);
         this.bakedCells = cellModels;
         this.defaultCell = defaultCell;
@@ -53,7 +53,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     /**
      * Calculates the origin of a drive slot for positioning a cell model into it.
      */
-    public static void getSlotOrigin(int row, int col, Vector3f translation) {
+    public static void getSlotOrigin(int row, int col, com.mojang.math.Vector3f translation) {
         // Position this drive model copy at the correct slot. The transform is based on
         // the cell-model being in slot 0,0,0 while the upper left slot's origin is at
         // 9,13,1
@@ -65,8 +65,8 @@ public class DriveBakedModel extends DelegateBakedModel {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-            @Nonnull IModelData extraData) {
+    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+                                                                              @Nonnull IModelData extraData) {
 
         List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
@@ -76,11 +76,11 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         DriveSlotsState slotsState = extraData.getData(DriveModelData.STATE);
 
-        Vector3f slotTranslation = new Vector3f();
+        Vector3f slotTranslation = new com.mojang.math.Vector3f();
         if (slotsState != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
-                    Matrix4f transform = new Matrix4f();
+                    com.mojang.math.Matrix4f transform = new Matrix4f();
 
                     getSlotOrigin(row, col, slotTranslation);
                     transform.setTranslation(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
@@ -88,8 +88,8 @@ public class DriveBakedModel extends DelegateBakedModel {
                     int slot = row * 2 + col;
 
                     // Add the drive chassis
-                    Item cell = slotsState.getCell(slot);
-                    IBakedModel cellChassisModel = getCellChassisModel(cell);
+                    net.minecraft.world.item.Item cell = slotsState.getCell(slot);
+                    BakedModel cellChassisModel = getCellChassisModel(cell);
                     addModel(state, rand, extraData, result, side, cellChassisModel, transform);
                 }
             }
@@ -107,17 +107,17 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     // Determine which drive chassis to show based on the used cell
-    public IBakedModel getCellChassisModel(Item cell) {
+    public BakedModel getCellChassisModel(Item cell) {
         if (cell == null) {
             return bakedCells.get(Items.AIR);
         }
-        final IBakedModel model = bakedCells.get(cell);
+        final BakedModel model = bakedCells.get(cell);
 
         return model != null ? model : defaultCell;
     }
 
-    private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
-            List<BakedQuad> result, Direction side, IBakedModel bakedCell, Matrix4f transform) {
+    private static void addModel(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
+                                 List<net.minecraft.client.renderer.block.model.BakedQuad> result, Direction side, BakedModel bakedCell, com.mojang.math.Matrix4f transform) {
         MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
         for (BakedQuad bakedQuad : bakedCell.getQuads(state, side, rand, extraData)) {
             BakedQuadBuilder builder = new BakedQuadBuilder();

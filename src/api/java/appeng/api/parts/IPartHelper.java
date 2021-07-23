@@ -23,13 +23,13 @@
 
 package appeng.api.parts;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public interface IPartHelper {
     /**
@@ -44,7 +44,7 @@ public interface IPartHelper {
      * @return true if placing was successful
      */
     // TODO, this should probably take ItemStack + ItemUseContext
-    ActionResultType placeBus(ItemStack is, BlockPos pos, Direction side, PlayerEntity player, Hand hand, World world);
+    InteractionResult placeBus(ItemStack is, net.minecraft.core.BlockPos pos, Direction side, Player player, InteractionHand hand, Level world);
 
     /**
      * @return the render mode

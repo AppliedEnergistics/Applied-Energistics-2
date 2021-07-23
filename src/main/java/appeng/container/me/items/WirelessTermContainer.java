@@ -18,9 +18,9 @@
 
 package appeng.container.me.items;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.Util;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.Util;
 
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.AEConfig;
@@ -32,13 +32,13 @@ import appeng.helpers.WirelessTerminalGuiObject;
  */
 public class WirelessTermContainer extends MEPortableCellContainer {
 
-    public static final ContainerType<WirelessTermContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<WirelessTermContainer> TYPE = ContainerTypeBuilder
             .create(WirelessTermContainer::new, WirelessTerminalGuiObject.class)
             .build("wirelessterm");
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-    public WirelessTermContainer(int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui) {
+    public WirelessTermContainer(int id, final Inventory ip, final WirelessTerminalGuiObject gui) {
         super(TYPE, id, ip, gui);
         this.wirelessTerminalGUIObject = gui;
     }

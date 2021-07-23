@@ -26,21 +26,22 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -93,7 +94,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private static String memoryText = "";
     private final TerminalStyle style;
     protected final Repo<T> repo;
-    private final List<ItemStack> currentViewCells = new ArrayList<>();
+    private final List<net.minecraft.world.item.ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;
     private TabButton craftingStatusBtn;
@@ -107,8 +108,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
 
-    public MEMonitorableScreen(C container, PlayerInventory playerInventory,
-            ITextComponent title, ScreenStyle style) {
+    public MEMonitorableScreen(C container, Inventory playerInventory,
+                               net.minecraft.network.chat.Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.style = style.getTerminalStyle();
@@ -132,7 +133,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         List<Slot> viewCellSlots = container.getSlots(SlotSemantic.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
         if (this.supportsViewCells) {
-            List<ITextComponent> tooltip = Collections.singletonList(GuiText.TerminalViewCellsTooltip.text());
+            List<net.minecraft.network.chat.Component> tooltip = Collections.singletonList(GuiText.TerminalViewCellsTooltip.text());
             this.widgets.add("viewCells", new UpgradesPanel(viewCellSlots, () -> tooltip));
         }
 
@@ -172,9 +173,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     protected abstract Repo<T> createRepo(IScrollSource scrollSource);
 
     @Nullable
-    protected abstract IPartitionList<T> createPartitionList(List<ItemStack> viewCells);
+    protected abstract IPartitionList<T> createPartitionList(List<net.minecraft.world.item.ItemStack> viewCells);
 
-    protected abstract void renderGridInventoryEntry(MatrixStack matrices, int x, int y, GridInventoryEntry<T> entry);
+    protected abstract void renderGridInventoryEntry(PoseStack matrices, int x, int y, GridInventoryEntry<T> entry);
 
     protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton,
             ClickType clickType);
@@ -197,13 +198,13 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     public void init() {
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
-        this.rows = MathHelper.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
+        this.rows = Mth.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
 
         // Size the container according to the number of rows we decided to have
         this.imageHeight = style.getScreenHeight(rows);
 
         // Re-create the ME slots since the number of rows could have changed
-        List<Slot> slots = this.menu.slots;
+        List<net.minecraft.world.inventory.Slot> slots = this.menu.slots;
         slots.removeIf(slot -> slot instanceof RepoSlot);
 
         int repoIndex = 0;
@@ -217,7 +218,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         super.init();
 
-        Rectangle2d searchFieldRect = style.getSearchFieldRect();
+        Rect2i searchFieldRect = style.getSearchFieldRect();
         this.searchField = new AETextField(this.font,
                 this.leftPos + searchFieldRect.getX(),
                 this.topPos + searchFieldRect.getY(),
@@ -271,8 +272,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
@@ -309,7 +310,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && hasShiftDown()) {
-            final Slot slot = this.getSlot((int) x, (int) y);
+            final net.minecraft.world.inventory.Slot slot = this.getSlot((int) x, (int) y);
             RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
             if (repoSlot != null) {
                 GridInventoryEntry<T> entry = repoSlot.getEntry();
@@ -329,7 +330,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(net.minecraft.world.inventory.Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
         if (repoSlot != null) {
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
@@ -347,8 +348,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+                       final int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
@@ -381,7 +382,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     // TODO This is incorrectly named in MCP, it's renderSlot, essentially
     @Override
-    protected void renderSlot(MatrixStack matrices, Slot s) {
+    protected void renderSlot(PoseStack matrices, net.minecraft.world.inventory.Slot s) {
         RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
         if (repoSlot != null) {
             if (!this.repo.hasPower()) {
@@ -422,7 +423,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack, int x, int y) {
+    protected void renderTooltip(PoseStack matrixStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
         if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getCarried().isEmpty()) {
             RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
@@ -439,19 +440,19 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         super.renderTooltip(matrixStack, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<T> entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(PoseStack matrices, GridInventoryEntry<T> entry, int x, int y) {
         final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
-        ItemStack stack = entry.getStack().asItemStackRepresentation();
+        net.minecraft.world.item.ItemStack stack = entry.getStack().asItemStackRepresentation();
 
-        final List<ITextComponent> currentToolTip = this.getTooltipFromItem(stack);
+        final List<net.minecraft.network.chat.Component> currentToolTip = this.getTooltipFromItem(stack);
 
         long storedAmount = entry.getStoredAmount();
         if (storedAmount > bigNumber || storedAmount > 1 && stack.isDamaged()) {
             final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                     .format(storedAmount);
             currentToolTip
-                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(TextFormatting.GRAY));
+                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(ChatFormatting.GRAY));
         }
 
         long requestableAmount = entry.getRequestableAmount();
@@ -464,7 +465,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         // TODO: Should also list craftable status
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
-                    .add(new StringTextComponent("Serial: " + entry.getSerial()).withStyle(TextFormatting.DARK_GRAY));
+                    .add(new TextComponent("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
         }
 
         this.renderWrappedToolTip(matrices, currentToolTip, x, y, this.font);
@@ -501,7 +502,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+        Key input = InputConstants.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {

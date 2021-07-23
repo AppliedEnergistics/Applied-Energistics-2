@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
@@ -57,7 +57,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     private boolean output;
     private short freq;
 
-    public P2PTunnelPart(final ItemStack is) {
+    public P2PTunnelPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
     }
@@ -109,7 +109,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public ItemStack getItemStack(final PartItemStack type) {
+    public net.minecraft.world.item.ItemStack getItemStack(final PartItemStack type) {
         if (type == PartItemStack.WORLD || type == PartItemStack.NETWORK || type == PartItemStack.WRENCH
                 || type == PartItemStack.PICK) {
             return super.getItemStack(type);
@@ -119,21 +119,21 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.setOutput(data.getBoolean("output"));
         this.freq = data.getShort("freq");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
     }
 
     @Override
-    public boolean readFromStream(PacketBuffer data) throws IOException {
+    public boolean readFromStream(FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -141,7 +141,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void writeToStream(PacketBuffer data) throws IOException {
+    public void writeToStream(FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }
@@ -157,23 +157,23 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (isRemote()) {
             return true;
         }
 
-        if (hand == Hand.OFF_HAND) {
+        if (hand == InteractionHand.OFF_HAND) {
             return false;
         }
 
-        final ItemStack is = player.getItemInHand(hand);
+        final net.minecraft.world.item.ItemStack is = player.getItemInHand(hand);
 
         final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundNBT data = mc.getData(is);
+            final CompoundTag data = mc.getData(is);
 
-            final ItemStack newType = ItemStack.of(data);
+            final net.minecraft.world.item.ItemStack newType = net.minecraft.world.item.ItemStack.of(data);
             final short freq = data.getShort("freq");
 
             if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
@@ -234,11 +234,11 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                  */
 
                 default:
-                    newType = ItemStack.EMPTY;
+                    newType = net.minecraft.world.item.ItemStack.EMPTY;
                     break;
             }
 
-            if (!newType.isEmpty() && !ItemStack.isSame(newType, this.getItemStack())) {
+            if (!newType.isEmpty() && !net.minecraft.world.item.ItemStack.isSame(newType, this.getItemStack())) {
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
@@ -265,15 +265,15 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
-        final ItemStack is = player.inventory.getSelected();
+    public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+        final net.minecraft.world.item.ItemStack is = player.inventory.getSelected();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             if (isRemote()) {
                 return true;
             }
 
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundNBT data = mc.getData(is);
+            final CompoundTag data = mc.getData(is);
             final short storedFrequency = data.getShort("freq");
 
             short newFreq = this.getFrequency();
@@ -294,7 +294,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             this.onTunnelConfigChange();
 
-            final ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
+            final net.minecraft.world.item.ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
             final String type = p2pItem.getDescriptionId();
 
             p2pItem.save(data);

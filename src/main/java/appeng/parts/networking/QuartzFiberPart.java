@@ -22,12 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -46,7 +45,7 @@ import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
-import appeng.parts.AEBasePart.NodeListener;
+import net.minecraft.world.item.ItemStack;
 
 public class QuartzFiberPart extends AEBasePart {
 
@@ -55,7 +54,7 @@ public class QuartzFiberPart extends AEBasePart {
 
     private final IManagedGridNode outerNode;
 
-    public QuartzFiberPart(final ItemStack is) {
+    public QuartzFiberPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         var energyBridge = new GridBridgeProvider();
         this.getMainNode()
@@ -76,13 +75,13 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
@@ -100,7 +99,7 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
@@ -116,8 +115,8 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
+                            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.outerNode.setOwningPlayer(player);
     }

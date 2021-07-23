@@ -18,8 +18,8 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -35,15 +35,15 @@ import appeng.parts.PartModel;
 public class StorageMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_storage_monitor_off");
     @PartModels
     public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_monitor_on");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final net.minecraft.resources.ResourceLocation MODEL_LOCKED_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_storage_monitor_locked_off");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_LOCKED_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
             "part/item_storage_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);

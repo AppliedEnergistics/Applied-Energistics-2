@@ -18,7 +18,7 @@
 
 package appeng.init;
 
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.container.implementations.CellWorkbenchContainer;
@@ -67,7 +67,7 @@ public final class InitContainerTypes {
     private InitContainerTypes() {
     }
 
-    public static void init(IForgeRegistry<ContainerType<?>> registry) {
+    public static void init(IForgeRegistry<MenuType<?>> registry) {
         registry.registerAll(
                 CellWorkbenchContainer.TYPE,
                 ChestContainer.TYPE,

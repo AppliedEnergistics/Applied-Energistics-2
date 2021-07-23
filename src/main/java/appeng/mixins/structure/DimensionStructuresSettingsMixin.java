@@ -27,9 +27,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
@@ -40,17 +40,17 @@ import appeng.worldgen.meteorite.MeteoriteStructure;
  * <p>
  * If this is not done, Meteorites spawn every chunk, since that is the default for missing entries.
  */
-@Mixin(DimensionStructuresSettings.class)
+@Mixin(StructureSettings.class)
 public class DimensionStructuresSettingsMixin {
 
     @Shadow
     @Mutable
-    private static ImmutableMap<Structure<?>, StructureSeparationSettings> DEFAULTS;
+    private static ImmutableMap<net.minecraft.world.level.levelgen.feature.StructureFeature<?>, StructureFeatureConfiguration> DEFAULTS;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void addMeteoriteSpreadConfig(CallbackInfo ci) {
-        DEFAULTS = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DEFAULTS)
-                .put(MeteoriteStructure.INSTANCE, new StructureSeparationSettings(32, 8, 124895654)).build();
+        DEFAULTS = ImmutableMap.<net.minecraft.world.level.levelgen.feature.StructureFeature<?>, StructureFeatureConfiguration>builder().putAll(DEFAULTS)
+                .put(MeteoriteStructure.INSTANCE, new StructureFeatureConfiguration(32, 8, 124895654)).build();
     }
 
 }

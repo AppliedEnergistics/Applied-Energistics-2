@@ -18,8 +18,8 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -37,7 +37,7 @@ import appeng.parts.automation.LevelEmitterPart;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
-    public static final ContainerType<LevelEmitterContainer> TYPE = ContainerTypeBuilder
+    public static final MenuType<LevelEmitterContainer> TYPE = ContainerTypeBuilder
             .create(LevelEmitterContainer::new, LevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
@@ -57,7 +57,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     // Only synced once on container-open, and only used on client
     private long reportingValue;
 
-    public LevelEmitterContainer(int id, final PlayerInventory ip, final LevelEmitterPart te) {
+    public LevelEmitterContainer(int id, final Inventory ip, final LevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }

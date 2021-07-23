@@ -29,18 +29,19 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.api.implementations.items.IBiometricCard;
@@ -48,9 +49,9 @@ import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
-class BiometricCardBakedModel implements IBakedModel {
+class BiometricCardBakedModel implements BakedModel {
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
     private final TextureAtlasSprite texture;
 
@@ -60,12 +61,12 @@ class BiometricCardBakedModel implements IBakedModel {
 
     private final ImmutableList<BakedQuad> generalQuads;
 
-    BiometricCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture) {
+    BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture) {
         this(baseModel, texture, 0, createCache());
     }
 
-    private BiometricCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture, int hash,
-            Cache<Integer, BiometricCardBakedModel> modelCache) {
+    private BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, int hash,
+                                    Cache<Integer, BiometricCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
         this.hash = hash;
@@ -78,9 +79,9 @@ class BiometricCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
 
-        List<BakedQuad> quads = this.baseModel.getQuads(state, side, rand, EmptyModelData.INSTANCE);
+        List<net.minecraft.client.renderer.block.model.BakedQuad> quads = this.baseModel.getQuads(state, side, rand, EmptyModelData.INSTANCE);
 
         if (side != null) {
             return quads;
@@ -153,16 +154,16 @@ class BiometricCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getTransforms() {
+    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return new ItemOverrideList() {
+    public ItemOverrides getOverrides() {
+        return new ItemOverrides() {
             @Override
-            public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, ClientWorld world,
-                    LivingEntity entity) {
+            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
+                                      LivingEntity entity) {
                 String username = "";
                 if (stack.getItem() instanceof IBiometricCard) {
                     final GameProfile gp = ((IBiometricCard) stack.getItem()).getProfile(stack);
@@ -200,7 +201,7 @@ class BiometricCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }

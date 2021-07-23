@@ -23,11 +23,10 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
@@ -48,6 +47,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
 import appeng.parts.AEBasePart;
+import net.minecraft.world.item.ItemStack;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -65,7 +65,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             .setTagName("outer")
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
-    public MEP2PTunnelPart(final ItemStack is) {
+    public MEP2PTunnelPart(final net.minecraft.world.item.ItemStack is) {
         super(is);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
@@ -78,13 +78,13 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
@@ -117,7 +117,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
@@ -128,8 +128,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
+                            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.outerNode.setOwningPlayer(player);
     }
@@ -191,8 +191,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                     connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
                             .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
                 } catch (final FailedConnectionException e) {
-                    final TileEntity start = this.getTile();
-                    final TileEntity end = me.getTile();
+                    final BlockEntity start = this.getTile();
+                    final BlockEntity end = me.getTile();
 
                     AELog.debug(e);
 

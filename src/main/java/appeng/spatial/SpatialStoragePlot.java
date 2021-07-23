@@ -22,10 +22,10 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -54,7 +54,7 @@ public class SpatialStoragePlot {
      * The storage size of this dimension. This is dictated by the pylon structure size used to perform the first
      * transfer into this dimension. Once it's set, it cannot be changed anymore.
      */
-    private final BlockPos size;
+    private final net.minecraft.core.BlockPos size;
 
     /**
      * AE2 player id of who primarily owned the network when the storage plot was allocated.
@@ -67,7 +67,7 @@ public class SpatialStoragePlot {
     @Nullable
     private TransitionInfo lastTransition;
 
-    public SpatialStoragePlot(int id, BlockPos size, int owner) {
+    public SpatialStoragePlot(int id, net.minecraft.core.BlockPos size, int owner) {
         this.id = id;
         this.size = size;
         this.owner = owner;
@@ -88,7 +88,7 @@ public class SpatialStoragePlot {
      *
      * @see #getOrigin()
      */
-    public BlockPos getSize() {
+    public net.minecraft.core.BlockPos getSize() {
         return size;
     }
 
@@ -163,23 +163,23 @@ public class SpatialStoragePlot {
         posx -= 64;
         posz -= 64;
 
-        return new BlockPos(posx, 64, posz);
+        return new net.minecraft.core.BlockPos(posx, 64, posz);
     }
 
     /**
      * Returns the filename of the region in the world save containing this plot.
      */
     public String getRegionFilename() {
-        BlockPos origin = this.getOrigin();
-        ChunkPos originChunk = new ChunkPos(origin);
+        net.minecraft.core.BlockPos origin = this.getOrigin();
+        net.minecraft.world.level.ChunkPos originChunk = new ChunkPos(origin);
 
         return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
     }
 
-    public CompoundNBT toTag() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
         tag.putInt(TAG_ID, id);
-        tag.put(TAG_SIZE, NBTUtil.writeBlockPos(size));
+        tag.put(TAG_SIZE, NbtUtils.writeBlockPos(size));
         tag.putInt(TAG_OWNER, owner);
         if (lastTransition != null) {
             tag.put(TAG_LAST_TRANSITION, lastTransition.toTag());
@@ -187,9 +187,9 @@ public class SpatialStoragePlot {
         return tag;
     }
 
-    public static SpatialStoragePlot fromTag(CompoundNBT tag) {
+    public static SpatialStoragePlot fromTag(CompoundTag tag) {
         int id = tag.getInt(TAG_ID);
-        BlockPos size = NBTUtil.readBlockPos(tag.getCompound(TAG_SIZE));
+        BlockPos size = NbtUtils.readBlockPos(tag.getCompound(TAG_SIZE));
         int ownerId = tag.getInt(TAG_OWNER);
         SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
 

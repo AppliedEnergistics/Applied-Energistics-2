@@ -20,9 +20,9 @@ package appeng.server.subcommands;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -66,15 +66,15 @@ public class ChunkLogger implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data, final CommandSourceStack sender) {
         this.enabled = !this.enabled;
 
         if (this.enabled) {
             MinecraftForge.EVENT_BUS.register(this);
-            sender.sendSuccess(new TranslationTextComponent("commands.ae2.ChunkLoggerOn"), true);
+            sender.sendSuccess(new TranslatableComponent("commands.ae2.ChunkLoggerOn"), true);
         } else {
             MinecraftForge.EVENT_BUS.unregister(this);
-            sender.sendSuccess(new TranslationTextComponent("commands.ae2.ChunkLoggerOff"), true);
+            sender.sendSuccess(new TranslatableComponent("commands.ae2.ChunkLoggerOff"), true);
         }
     }
 }

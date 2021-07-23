@@ -25,21 +25,21 @@ import java.util.Random;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -76,13 +76,11 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-import appeng.api.networking.IGridNodeListener.State;
-
 public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 
     private final IManagedGridNode mainNode;
-    private final ItemStack is;
-    private TileEntity tile = null;
+    private final net.minecraft.world.item.ItemStack is;
+    private BlockEntity tile = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
 
@@ -92,7 +90,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         this.is = is;
         this.mainNode = createMainNode()
                 .setVisualRepresentation(is)
-                .setExposedOnSides(EnumSet.noneOf(Direction.class));
+                .setExposedOnSides(EnumSet.noneOf(net.minecraft.core.Direction.class));
     }
 
     protected IManagedGridNode createMainNode() {
@@ -135,7 +133,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return this.tile;
     }
 
@@ -148,12 +146,12 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.mainNode.getNode();
     }
 
-    public World getWorld() {
+    public Level getWorld() {
         return this.tile.getLevel();
     }
 
     @Override
-    public ITextComponent getCustomInventoryName() {
+    public net.minecraft.network.chat.Component getCustomInventoryName() {
         return this.getItemStack().getHoverName();
     }
 
@@ -170,7 +168,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     @Override
     public ItemStack getItemStack(final PartItemStack type) {
         if (type == PartItemStack.NETWORK) {
-            final ItemStack copy = this.is.copy();
+            final net.minecraft.world.item.ItemStack copy = this.is.copy();
             copy.setTag(null);
             return copy;
         }
@@ -183,7 +181,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, net.minecraft.core.BlockPos neighbor) {
 
     }
 
@@ -193,12 +191,12 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.mainNode.loadFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         this.mainNode.saveToNBT(data);
     }
 
@@ -213,12 +211,12 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         return false;
     }
 
@@ -243,7 +241,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         this.setSide(side);
         this.tile = tile;
         this.host = host;
@@ -256,7 +254,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final BlockPos pos, final Random r) {
 
     }
 
@@ -296,7 +294,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
      * @param from     source of settings
      * @param compound compound of source
      */
-    private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         final IConfigManager cm = this.getConfigManager();
         if (cm != null) {
             cm.readFromNBT(compound);
@@ -344,8 +342,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
      * @param from source of settings
      * @return compound of source
      */
-    private CompoundNBT downloadSettings(final SettingsFrom from) {
-        final CompoundNBT output = new CompoundNBT();
+    private CompoundTag downloadSettings(final SettingsFrom from) {
+        final CompoundTag output = new CompoundTag();
 
         final IConfigManager cm = this.getConfigManager();
         if (cm != null) {
@@ -381,7 +379,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return true;
     }
 
-    private boolean useMemoryCard(final PlayerEntity player) {
+    private boolean useMemoryCard(final Player player) {
         final ItemStack memCardIS = player.inventory.getSelected();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
@@ -397,14 +395,14 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             final String name = is.getDescriptionId();
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
-                final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
+                final CompoundTag data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
                 final String storedName = memoryCard.getSettingsName(memCardIS);
-                final CompoundNBT data = memoryCard.getData(memCardIS);
+                final CompoundTag data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
                     this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
@@ -418,7 +416,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public final boolean onActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -427,7 +425,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public final boolean onShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -435,17 +433,17 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.onPartShiftActivate(player, hand, pos);
     }
 
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         return false;
     }
 
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         return false;
     }
 
     @Override
-    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
-            final AEPartLocation side) {
+    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
+                            final AEPartLocation side) {
         this.mainNode.setOwningPlayer(player);
     }
 

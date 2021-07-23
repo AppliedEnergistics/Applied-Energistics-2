@@ -20,10 +20,10 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
@@ -47,34 +47,34 @@ public final class PlaneConnectionHelper {
      * Gets on which sides this part has adjacent planes that it visually connects to
      */
     public PlaneConnections getConnections() {
-        TileEntity hostTileEntity = getHostTileEntity();
+        BlockEntity hostTileEntity = getHostTileEntity();
         AEPartLocation side = part.getSide();
 
-        final Direction facingRight, facingUp;
+        final net.minecraft.core.Direction facingRight, facingUp;
         switch (side) {
             case UP:
-                facingRight = Direction.EAST;
-                facingUp = Direction.NORTH;
+                facingRight = net.minecraft.core.Direction.EAST;
+                facingUp = net.minecraft.core.Direction.NORTH;
                 break;
             case DOWN:
-                facingRight = Direction.WEST;
-                facingUp = Direction.NORTH;
+                facingRight = net.minecraft.core.Direction.WEST;
+                facingUp = net.minecraft.core.Direction.NORTH;
                 break;
             case NORTH:
-                facingRight = Direction.WEST;
-                facingUp = Direction.UP;
+                facingRight = net.minecraft.core.Direction.WEST;
+                facingUp = net.minecraft.core.Direction.UP;
                 break;
             case SOUTH:
-                facingRight = Direction.EAST;
-                facingUp = Direction.UP;
+                facingRight = net.minecraft.core.Direction.EAST;
+                facingUp = net.minecraft.core.Direction.UP;
                 break;
             case WEST:
                 facingRight = Direction.SOUTH;
-                facingUp = Direction.UP;
+                facingUp = net.minecraft.core.Direction.UP;
                 break;
             case EAST:
-                facingRight = Direction.NORTH;
-                facingUp = Direction.UP;
+                facingRight = net.minecraft.core.Direction.NORTH;
+                facingUp = net.minecraft.core.Direction.UP;
                 break;
             default:
             case INTERNAL:
@@ -84,7 +84,7 @@ public final class PlaneConnectionHelper {
         boolean left = false, right = false, down = false, up = false;
 
         if (hostTileEntity != null) {
-            World world = hostTileEntity.getLevel();
+            Level world = hostTileEntity.getLevel();
             BlockPos pos = hostTileEntity.getBlockPos();
 
             if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight.getOpposite())))) {
@@ -116,13 +116,13 @@ public final class PlaneConnectionHelper {
         int maxX = 15;
         int maxY = 15;
 
-        TileEntity hostTile = getHostTileEntity();
+        BlockEntity hostTile = getHostTileEntity();
         if (hostTile != null) {
-            World world = hostTile.getLevel();
+            Level world = hostTile.getLevel();
 
-            final BlockPos pos = hostTile.getBlockPos();
+            final net.minecraft.core.BlockPos pos = hostTile.getBlockPos();
 
-            final Direction e = bch.getWorldX();
+            final net.minecraft.core.Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
             if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e.getOpposite())))) {
@@ -150,13 +150,13 @@ public final class PlaneConnectionHelper {
      * Call this when an adjacent block has changed since the connections need to be recalculated.
      */
     public void updateConnections() {
-        TileEntity hostTile = getHostTileEntity();
+        BlockEntity hostTile = getHostTileEntity();
         if (hostTile != null) {
             hostTile.requestModelDataUpdate();
         }
     }
 
-    private boolean isCompatiblePlaneAdjacent(@Nullable TileEntity adjacentTileEntity) {
+    private boolean isCompatiblePlaneAdjacent(@Nullable BlockEntity adjacentTileEntity) {
         if (adjacentTileEntity instanceof IPartHost) {
             final IPart p = ((IPartHost) adjacentTileEntity).getPart(part.getSide());
             return p != null && p.getClass() == part.getClass();
@@ -164,7 +164,7 @@ public final class PlaneConnectionHelper {
         return false;
     }
 
-    private TileEntity getHostTileEntity() {
+    private BlockEntity getHostTileEntity() {
         IPartHost host = part.getHost();
         if (host != null) {
             return host.getTile();

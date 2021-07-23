@@ -29,16 +29,16 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -49,19 +49,19 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
-    private static final RenderMaterial TEXTURE_LINK = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
-    private static final RenderMaterial TEXTURE_RING = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
+    private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final RenderMaterial TEXTURE_RING_LIGHT = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
-    private static final RenderMaterial TEXTURE_RING_LIGHT_CORNER = new RenderMaterial(
-            AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final RenderMaterial TEXTURE_CABLE_GLASS = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
+    private static final Material TEXTURE_RING_LIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(
+            TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+    private static final Material TEXTURE_CABLE_GLASS = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
-    private static final RenderMaterial TEXTURE_COVERED_CABLE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
+    private static final Material TEXTURE_COVERED_CABLE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -72,7 +72,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
     private final Block linkBlock;
 
@@ -83,7 +83,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private final TextureAtlasSprite lightTexture;
     private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedBakedModel(IBakedModel baseModel, Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         this.baseModel = baseModel;
         this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
         this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
@@ -95,8 +95,8 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData modelData) {
+    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
+                                                                              IModelData modelData) {
         QnbFormedState formedState = modelData.getData(QuantumBridgeTileEntity.FORMED_STATE);
 
         if (formedState == null) {
@@ -110,11 +110,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         return this.getQuads(formedState, state);
     }
 
-    private List<BakedQuad> getQuads(QnbFormedState formedState, BlockState state) {
+    private List<BakedQuad> getQuads(QnbFormedState formedState, net.minecraft.world.level.block.state.BlockState state) {
         CubeBuilder builder = new CubeBuilder();
 
         if (state.getBlock() == this.linkBlock) {
-            Set<Direction> sides = formedState.getAdjacentQuantumBridges();
+            Set<net.minecraft.core.Direction> sides = formedState.getAdjacentQuantumBridges();
 
             this.renderCableAt(builder, 0.11f * 16, this.glassCableTexture, 0.141f * 16, sides);
 
@@ -134,7 +134,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
             if (formedState.isPowered()) {
                 builder.setTexture(this.lightCornerTexture);
                 builder.setEmissiveMaterial(true);
-                for (Direction facing : Direction.values()) {
+                for (net.minecraft.core.Direction facing : Direction.values()) {
                     // Offset the face by a slight amount so that it is drawn over the already drawn
                     // ring texture
                     // (avoids z-fighting)
@@ -198,11 +198,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
             builder.addCube(8 - thickness, 8 - thickness, 8 + thickness + pull, 8 + thickness, 8 + thickness, 16);
         }
 
-        if (connections.contains(Direction.DOWN)) {
+        if (connections.contains(net.minecraft.core.Direction.DOWN)) {
             builder.addCube(8 - thickness, 0, 8 - thickness, 8 + thickness, 8 - thickness - pull, 8 + thickness);
         }
 
-        if (connections.contains(Direction.UP)) {
+        if (connections.contains(net.minecraft.core.Direction.UP)) {
             builder.addCube(8 - thickness, 8 + thickness + pull, 8 - thickness, 8 + thickness, 16, 8 + thickness);
         }
     }
@@ -233,11 +233,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return this.baseModel.getOverrides();
     }
 
-    public static List<RenderMaterial> getRequiredTextures() {
+    public static List<Material> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE,
                 TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER);
     }

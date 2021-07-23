@@ -18,16 +18,16 @@
 
 package appeng.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import com.mojang.math.Vector3f;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
@@ -44,7 +44,7 @@ public class TesrRenderHelper {
      * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
      * the given face as if it was a 2D canvas.
      */
-    public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
+    public static void rotateToFace(PoseStack mStack, net.minecraft.core.Direction face, byte spin) {
         switch (face) {
             case UP:
                 mStack.mulPose(Vector3f.XP.rotationDegrees(270));
@@ -52,16 +52,16 @@ public class TesrRenderHelper {
                 break;
 
             case DOWN:
-                mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                mStack.mulPose(Vector3f.ZP.rotationDegrees(spin * -90.0F));
+                mStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90.0F));
+                mStack.mulPose(com.mojang.math.Vector3f.ZP.rotationDegrees(spin * -90.0F));
                 break;
 
             case EAST:
-                mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+                mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(90.0F));
                 break;
 
             case WEST:
-                mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+                mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(-90.0F));
                 break;
 
             case NORTH:
@@ -82,8 +82,8 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D.
      */
-    public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack,
-            float scale, int combinedLightIn, int combinedOverlayIn) {
+    public static void renderItem2d(PoseStack matrixStack, MultiBufferSource buffers, ItemStack itemStack,
+                                    float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
             matrixStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
@@ -93,7 +93,7 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemCameraTransforms.TransformType.GUI,
+            Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
             matrixStack.popPose();
@@ -110,9 +110,9 @@ public class TesrRenderHelper {
      * @param combinedLightIn
      * @param combinedOverlayIn
      */
-    public static void renderItem2dWithAmount(MatrixStack matrixStack, IRenderTypeBuffer buffers,
-            IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
-        final ItemStack renderStack = itemStack.asItemStackRepresentation();
+    public static void renderItem2dWithAmount(PoseStack matrixStack, MultiBufferSource buffers,
+                                              IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
+        final net.minecraft.world.item.ItemStack renderStack = itemStack.asItemStackRepresentation();
 
         TesrRenderHelper.renderItem2d(matrixStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
 
@@ -120,7 +120,7 @@ public class TesrRenderHelper {
         final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
 
         // Render the item count
-        final FontRenderer fr = Minecraft.getInstance().font;
+        final Font fr = Minecraft.getInstance().font;
         final int width = fr.width(renderedStackSize);
         matrixStack.pushPose();
         matrixStack.translate(0.0f, spacing, 0.02f);

@@ -18,33 +18,33 @@
 
 package appeng.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.block.Blocks;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.TntMinecartRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
-    public TinyTNTPrimedRenderer(final EntityRendererManager manager) {
+    public TinyTNTPrimedRenderer(final EntityRenderDispatcher manager) {
         super(manager);
         this.shadowRadius = 0.25F;
     }
 
     @Override
-    public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
-            IRenderTypeBuffer buffers, int packedLight) {
-        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
+    public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, PoseStack mStack,
+                       MultiBufferSource buffers, int packedLight) {
+        final BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
         mStack.pushPose();
         mStack.translate(0, 0.25F, 0);
         float f2;
@@ -70,8 +70,8 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         f2 = (1.0F - (tnt.getLife() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-        TNTMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
+        mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(90.0F));
+        TntMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
                 tnt.getLife() / 5 % 2 == 0);
         mStack.popPose();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
@@ -79,6 +79,6 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(final TinyTNTPrimedEntity entity) {
-        return AtlasTexture.LOCATION_BLOCKS;
+        return TextureAtlas.LOCATION_BLOCKS;
     }
 }

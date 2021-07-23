@@ -32,13 +32,13 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -57,17 +57,17 @@ public class ManagedGridNode implements IManagedGridNode {
         private final T logicalHost;
         private final IGridNodeListener<T> listener;
         public ClassToInstanceMap<IGridNodeService> services;
-        private CompoundNBT data = null;
+        private CompoundTag data = null;
 
         // The following values are used until the node is constructed, and then are applied to the node
         private AEColor gridColor = AEColor.TRANSPARENT;
         private Set<Direction> exposedOnSides = EnumSet.allOf(Direction.class);
-        private ItemStack visualRepresentation = ItemStack.EMPTY;
+        private net.minecraft.world.item.ItemStack visualRepresentation = net.minecraft.world.item.ItemStack.EMPTY;
         private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
         private double idlePowerUsage = 1.0;
         private int owner = -1; // ME player id of owner
-        private World world;
-        private BlockPos pos;
+        private Level world;
+        private net.minecraft.core.BlockPos pos;
         private boolean inWorldNode;
 
         public InitData(T logicalHost, IGridNodeListener<T> listener) {
@@ -79,10 +79,10 @@ public class ManagedGridNode implements IManagedGridNode {
             GridNode node;
             if (inWorldNode) {
                 Preconditions.checkState(pos != null, "No position was set for an in-world node");
-                node = new InWorldGridNode((ServerWorld) world, pos, logicalHost, listener, flags);
+                node = new InWorldGridNode((ServerLevel) world, pos, logicalHost, listener, flags);
                 node.setExposedOnSides(exposedOnSides);
             } else {
-                node = new GridNode((ServerWorld) world, logicalHost, listener, flags);
+                node = new GridNode((ServerLevel) world, logicalHost, listener, flags);
             }
             node.setGridColor(gridColor);
             node.setOwningPlayerId(owner);
@@ -147,7 +147,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void create(World world, @Nullable BlockPos blockPos) {
+    public void create(Level world, @Nullable net.minecraft.core.BlockPos blockPos) {
         // We can only ready up if the init-data still exists
         var initData = getInitData();
         initData.world = world;
@@ -176,7 +176,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this.node;
     }
 
-    public void loadFromNBT(CompoundNBT tag) {
+    public void loadFromNBT(CompoundTag tag) {
         if (node == null) {
             getInitData().data = tag;
         } else {
@@ -185,7 +185,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void saveToNBT(CompoundNBT tag) {
+    public void saveToNBT(CompoundTag tag) {
         if (this.node != null) {
             this.node.saveToNBT(this.tagName, tag);
         }
@@ -226,7 +226,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void setOwningPlayer(@Nonnull PlayerEntity player) {
+    public void setOwningPlayer(@Nonnull Player player) {
         var playerId = WorldData.instance().playerData().getMePlayerId(player.getGameProfile());
         setOwningPlayerId(playerId);
     }
@@ -239,7 +239,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    public ManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions) {
+    public ManagedGridNode setExposedOnSides(@Nonnull Set<net.minecraft.core.Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
         } else {
@@ -281,7 +281,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Nonnull
-    public ItemStack getVisualRepresentation() {
+    public net.minecraft.world.item.ItemStack getVisualRepresentation() {
         return node != null ? node.getVisualRepresentation() : getInitData().visualRepresentation;
     }
 

@@ -20,10 +20,10 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.StateHolder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,10 +32,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
-    private final Property<T> property;
+    private final net.minecraft.world.level.block.state.properties.Property<T> property;
     private final T value;
 
-    private SingleValueMatcher(Property<T> property, String value) {
+    private SingleValueMatcher(net.minecraft.world.level.block.state.properties.Property<T> property, String value) {
         this.property = Objects.requireNonNull(property, "property must not be null");
         this.value = PropertyUtils.getRequiredPropertyValue(property, value);
     }
@@ -46,19 +46,19 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeEnum(MatcherType.SINGLE);
         buffer.writeUtf(property.getName());
         buffer.writeUtf(property.getName(value));
     }
 
-    public static SingleValueMatcher<?> create(StateContainer<?, ?> stateContainer, String propertyName, String value) {
+    public static SingleValueMatcher<?> create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName, String value) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new SingleValueMatcher<>(property, value);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static SingleValueMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
+    public static SingleValueMatcher<?> readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();
         return create(stateContainer, propertyName, value);

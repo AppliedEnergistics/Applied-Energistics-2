@@ -24,14 +24,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -52,13 +52,13 @@ public class ApiCrafting implements ICraftingHelper {
     }
 
     @Override
-    public boolean isEncodedPattern(ItemStack item) {
+    public boolean isEncodedPattern(net.minecraft.world.item.ItemStack item) {
         return !item.isEmpty() && item.getItem() instanceof EncodedPatternItem;
     }
 
     @Override
-    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in,
-            ItemStack out, boolean allowSubstitutes) {
+    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, net.minecraft.world.item.ItemStack[] in,
+                                           net.minecraft.world.item.ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
             stack = AEItems.ENCODED_PATTERN.stack();
         } else {
@@ -70,7 +70,7 @@ public class ApiCrafting implements ICraftingHelper {
     }
 
     @Override
-    public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out) {
+    public net.minecraft.world.item.ItemStack encodeProcessingPattern(@Nullable ItemStack stack, net.minecraft.world.item.ItemStack[] in, net.minecraft.world.item.ItemStack[] out) {
         if (stack == null) {
             stack = AEItems.ENCODED_PATTERN.stack();
         } else {
@@ -82,7 +82,7 @@ public class ApiCrafting implements ICraftingHelper {
     }
 
     @Override
-    public ICraftingPatternDetails decodePattern(final ItemStack is, final World world, boolean autoRecovery) {
+    public ICraftingPatternDetails decodePattern(final ItemStack is, final Level world, boolean autoRecovery) {
         if (is == null || world == null) {
             return null;
         }
@@ -97,8 +97,8 @@ public class ApiCrafting implements ICraftingHelper {
         // based on the stored inputs/outputs if that happens.
         ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
         if (recipeId != null) {
-            IRecipe<?> recipe = world.getRecipeManager().byType(IRecipeType.CRAFTING).get(recipeId);
-            if (!(recipe instanceof ICraftingRecipe) && (!autoRecovery || !attemptRecovery(patternItem, is, world))) {
+            Recipe<?> recipe = world.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+            if (!(recipe instanceof CraftingRecipe) && (!autoRecovery || !attemptRecovery(patternItem, is, world))) {
                 return null;
             }
         }
@@ -114,7 +114,7 @@ public class ApiCrafting implements ICraftingHelper {
         }
     }
 
-    private boolean attemptRecovery(EncodedPatternItem patternItem, ItemStack itemStack, World world) {
+    private boolean attemptRecovery(EncodedPatternItem patternItem, net.minecraft.world.item.ItemStack itemStack, Level world) {
 
         RecipeManager recipeManager = world.getRecipeManager();
 
@@ -124,26 +124,26 @@ public class ApiCrafting implements ICraftingHelper {
             return false;
         }
 
-        ResourceLocation currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
+        net.minecraft.resources.ResourceLocation currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
-        CraftingInventory testInventory = new CraftingInventory(new ContainerNull(), 3, 3);
+        CraftingContainer testInventory = new CraftingContainer(new ContainerNull(), 3, 3);
         for (int x = 0; x < 9; x++) {
             final IAEItemStack ais = ingredients.get(x);
-            final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
+            final net.minecraft.world.item.ItemStack gs = ais != null ? ais.createItemStack() : net.minecraft.world.item.ItemStack.EMPTY;
             testInventory.setItem(x, gs);
         }
 
-        ICraftingRecipe potentialRecipe = recipeManager.getRecipeFor(IRecipeType.CRAFTING, testInventory, world)
+        CraftingRecipe potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, world)
                 .orElse(null);
 
         // Check that it matches the expected output
         if (potentialRecipe != null && products.get(0).isSameType(potentialRecipe.assemble(testInventory))) {
             // Yay we found a match, reencode the pattern
             AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
-            ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)
-                    .toArray(ItemStack[]::new);
-            ItemStack out = products.get(0).createItemStack();
+            net.minecraft.world.item.ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)
+                    .toArray(net.minecraft.world.item.ItemStack[]::new);
+            net.minecraft.world.item.ItemStack out = products.get(0).createItemStack();
             encodeCraftingPattern(itemStack, potentialRecipe, in, out, patternItem.allowsSubstitution(itemStack));
         }
 
@@ -151,7 +151,7 @@ public class ApiCrafting implements ICraftingHelper {
         return false;
     }
 
-    private static EncodedPatternItem getPatternItem(ItemStack itemStack) {
+    private static EncodedPatternItem getPatternItem(net.minecraft.world.item.ItemStack itemStack) {
         if (itemStack.getItem() instanceof EncodedPatternItem) {
             return (EncodedPatternItem) itemStack.getItem();
         }

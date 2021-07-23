@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.theoneprobe.part;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -30,19 +28,21 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.parts.networking.IUsedChannelProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ChannelInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+                             BlockState blockState, IProbeHitData data) {
         if (part instanceof IUsedChannelProvider) {
             IUsedChannelProvider usedChannelProvider = (IUsedChannelProvider) part;
 
             final int usedChannels = usedChannelProvider.getUsedChannelsInfo();
             final int maxChannels = usedChannelProvider.getMaxChannelsInfo();
 
-            final ITextComponent formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
+            final net.minecraft.network.chat.Component formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
                     maxChannels);
 
             probeInfo.text(formattedChannelString);

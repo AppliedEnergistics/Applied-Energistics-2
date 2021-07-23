@@ -27,10 +27,10 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 /**
  * Represents a location in the Minecraft Universe
@@ -38,26 +38,26 @@ import net.minecraft.world.World;
 public final class DimensionalBlockPos {
 
     @Nonnull
-    private final World world;
+    private final Level world;
 
     @Nonnull
-    private final BlockPos pos;
+    private final net.minecraft.core.BlockPos pos;
 
     public DimensionalBlockPos(DimensionalBlockPos coordinate) {
         this(coordinate.getWorld(), coordinate.pos);
     }
 
-    public DimensionalBlockPos(TileEntity tileEntity) {
+    public DimensionalBlockPos(BlockEntity tileEntity) {
         this(tileEntity.getLevel(), tileEntity.getBlockPos());
     }
 
-    public DimensionalBlockPos(World world, BlockPos pos) {
+    public DimensionalBlockPos(Level world, net.minecraft.core.BlockPos pos) {
         this(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public DimensionalBlockPos(World world, int x, int y, int z) {
+    public DimensionalBlockPos(Level world, int x, int y, int z) {
         this.world = Objects.requireNonNull(world, "world");
-        this.pos = new BlockPos(x, y, z);
+        this.pos = new net.minecraft.core.BlockPos(x, y, z);
     }
 
     @Override
@@ -80,12 +80,12 @@ public final class DimensionalBlockPos {
         return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getWorld().dimension().location();
     }
 
-    public boolean isInWorld(final IWorld world) {
+    public boolean isInWorld(final LevelAccessor world) {
         return this.world == world;
     }
 
     @Nonnull
-    public World getWorld() {
+    public Level getWorld() {
         return this.world;
     }
 

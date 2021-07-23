@@ -20,15 +20,15 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -113,13 +113,13 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.duality.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.duality.writeToNBT(data);
     }
@@ -130,7 +130,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
             ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
@@ -144,12 +144,12 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public EnumSet<Direction> getTargets() {
+    public EnumSet<net.minecraft.core.Direction> getTargets() {
         return EnumSet.of(this.getSide().getDirection());
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return super.getHost().getTile();
     }
 
@@ -205,7 +205,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public MenuType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
     }
 

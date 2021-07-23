@@ -18,18 +18,18 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import com.mojang.math.Quaternion;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -41,15 +41,15 @@ import appeng.tile.grindstone.CrankTileEntity;
  * normal model.
  */
 @OnlyIn(Dist.CLIENT)
-public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
+public class CrankTESR extends BlockEntityRenderer<CrankTileEntity> {
 
-    public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CrankTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CrankTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation
@@ -60,9 +60,9 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
         ms.translate(-0.5, -0.5, -0.5);
 
         BlockState blockState = te.getBlockState();
-        BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-        IBakedModel model = dispatcher.getBlockModel(blockState);
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.cutoutBlockSheet());
+        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = dispatcher.getBlockModel(blockState);
+        VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
         dispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
         ms.popPose();

@@ -20,18 +20,18 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -39,6 +39,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.InteractionUtil;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
 
@@ -51,21 +52,21 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
+    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
         return currentState.setValue(POWERED, te.isActive());
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
@@ -75,8 +76,8 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
                         ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
 
-            return ActionResultType.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(w.isClientSide());
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

@@ -18,12 +18,12 @@
 
 package appeng.container.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -42,21 +42,21 @@ public class AppEngCraftingSlot extends AppEngSlot {
     /**
      * The player that is using the GUI where this slot resides.
      */
-    private final PlayerEntity player;
+    private final Player player;
 
     /**
      * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafting before being reset.
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(PlayerEntity player, IItemHandler craftingGrid) {
+    public AppEngCraftingSlot(Player player, IItemHandler craftingGrid) {
         super(new ItemStackHandler(1), 0);
         this.player = player;
         this.craftingGrid = craftingGrid;
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(final net.minecraft.world.item.ItemStack stack) {
         return false;
     }
 
@@ -65,7 +65,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * internal count then calls onCrafting(item).
      */
     @Override
-    protected void onQuickCraft(final ItemStack par1ItemStack, final int par2) {
+    protected void onQuickCraft(final net.minecraft.world.item.ItemStack par1ItemStack, final int par2) {
         this.amountCrafted += par2;
         this.checkTakeAchievements(par1ItemStack);
     }
@@ -74,17 +74,17 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
-    protected void checkTakeAchievements(final ItemStack par1ItemStack) {
+    protected void checkTakeAchievements(final net.minecraft.world.item.ItemStack par1ItemStack) {
         par1ItemStack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
-    public ItemStack onTake(final PlayerEntity playerIn, final ItemStack stack) {
+    public net.minecraft.world.item.ItemStack onTake(final Player playerIn, final net.minecraft.world.item.ItemStack stack) {
         BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
         this.checkTakeAchievements(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-        final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
+        final CraftingContainer ic = new CraftingContainer(this.getContainer(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.getSlots(); x++) {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));
@@ -119,7 +119,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     /**
      * Overrides what is being shown as the crafting output, but doesn't notify parent container.
      */
-    public void setDisplayedCraftingOutput(ItemStack stack) {
+    public void setDisplayedCraftingOutput(net.minecraft.world.item.ItemStack stack) {
         ((IItemHandlerModifiable) getItemHandler()).setStackInSlot(0, stack);
     }
 
@@ -138,9 +138,9 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world)
+    protected net.minecraft.core.NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level world) {
+        return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world)
                 .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
-                .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
+                .orElse(NonNullList.withSize(9, net.minecraft.world.item.ItemStack.EMPTY));
     }
 }

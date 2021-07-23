@@ -29,15 +29,15 @@ import javax.annotation.Nonnull;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.LightType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.LightLayer;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -57,7 +57,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public PaintSplotchesTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -67,9 +67,9 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public CompoundNBT save(final CompoundNBT data) {
+    public CompoundTag save(final CompoundTag data) {
         super.save(data);
-        final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
+        final FriendlyByteBuf myDat = new FriendlyByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
             data.putByteArray("dots", myDat.array());
@@ -77,7 +77,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         return data;
     }
 
-    private void writeBuffer(final PacketBuffer out) {
+    private void writeBuffer(final FriendlyByteBuf out) {
         if (this.dots == null) {
             out.writeByte(0);
             return;
@@ -91,14 +91,14 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void load(BlockState blockState, final CompoundNBT data) {
+    public void load(BlockState blockState, final CompoundTag data) {
         super.load(blockState, data);
         if (data.contains("dots")) {
-            this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
+            this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
     }
 
-    private void readBuffer(final PacketBuffer in) {
+    private void readBuffer(final FriendlyByteBuf in) {
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
@@ -128,18 +128,18 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         }
 
         if (this.level != null) {
-            this.level.getBrightness(LightType.BLOCK, this.worldPosition);
+            this.level.getBrightness(LightLayer.BLOCK, this.worldPosition);
         }
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;
@@ -150,7 +150,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
             return;
         }
 
-        for (final Direction side : Direction.values()) {
+        for (final net.minecraft.core.Direction side : net.minecraft.core.Direction.values()) {
             if (!this.isSideValid(side)) {
                 this.removeSide(side);
             }
@@ -159,13 +159,13 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         this.updateData();
     }
 
-    public boolean isSideValid(final Direction side) {
-        final BlockPos p = this.worldPosition.relative(side);
+    public boolean isSideValid(final net.minecraft.core.Direction side) {
+        final net.minecraft.core.BlockPos p = this.worldPosition.relative(side);
         final BlockState blk = this.level.getBlockState(p);
         return blk.isFaceSturdy(level, p, side.getOpposite());
     }
 
-    private void removeSide(final Direction side) {
+    private void removeSide(final net.minecraft.core.Direction side) {
         final Iterator<Splotch> i = this.dots.iterator();
         while (i.hasNext()) {
             final Splotch s = i.next();
@@ -197,7 +197,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         }
     }
 
-    public void cleanSide(final Direction side) {
+    public void cleanSide(final net.minecraft.core.Direction side) {
         if (this.dots == null) {
             return;
         }
@@ -211,8 +211,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         return this.isLit;
     }
 
-    public void addBlot(final ItemStack type, final Direction side, final Vector3d hitVec) {
-        final BlockPos p = this.worldPosition.relative(side);
+    public void addBlot(final ItemStack type, final Direction side, final Vec3 hitVec) {
+        final net.minecraft.core.BlockPos p = this.worldPosition.relative(side);
 
         final BlockState blk = this.level.getBlockState(p);
         if (blk.isFaceSturdy(this.level, p, side.getOpposite())) {

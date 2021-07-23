@@ -18,11 +18,8 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 
 import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -33,12 +30,15 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+                             Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof CraftingMonitorTileEntity) {
             final CraftingMonitorTileEntity monitor = (CraftingMonitorTileEntity) tile;
             final IAEItemStack displayStack = monitor.getJobProgress();
@@ -47,7 +47,7 @@ public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
                 // TODO: check if OK
                 final ItemStack itemStack = displayStack.asItemStackRepresentation();
                 final String itemName = itemStack.getHoverName().getString();
-                final ITextComponent formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
+                final net.minecraft.network.chat.Component formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
 
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));

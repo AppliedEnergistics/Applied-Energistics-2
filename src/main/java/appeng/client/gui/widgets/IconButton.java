@@ -21,20 +21,19 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
-
-import net.minecraft.client.gui.widget.button.Button.IPressable;
 
 public abstract class IconButton extends Button implements ITooltip {
 
@@ -44,8 +43,8 @@ public abstract class IconButton extends Button implements ITooltip {
 
     private boolean disableBackground = false;
 
-    public IconButton(IPressable onPress) {
-        super(0, 0, 16, 16, StringTextComponent.EMPTY, onPress);
+    public IconButton(OnPress onPress) {
+        super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
     }
 
     public void setVisibility(final boolean vis) {
@@ -54,14 +53,14 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void playDownSound(SoundHandler soundHandler) {
+    public void playDownSound(SoundManager soundHandler) {
         if (!disableClickSound) {
             super.playDownSound(soundHandler);
         }
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
+    public void renderButton(PoseStack matrixStack, final int mouseX, final int mouseY, float partial) {
 
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -107,7 +106,7 @@ public abstract class IconButton extends Button implements ITooltip {
     protected abstract Icon getIcon();
 
     @Override
-    public List<ITextComponent> getTooltipMessage() {
+    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
         return Collections.singletonList(getMessage());
     }
 

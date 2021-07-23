@@ -20,10 +20,10 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -175,7 +175,7 @@ public class DualityFluidInterface
             });
         }
 
-        final TileEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getTileEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
@@ -205,7 +205,7 @@ public class DualityFluidInterface
     }
 
     @SuppressWarnings("unchecked")
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, net.minecraft.core.Direction facing) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this.tanks);
         } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
@@ -399,17 +399,17 @@ public class DualityFluidInterface
 
     @Override
     public boolean isRemote() {
-        World world = this.iHost.getTileEntity().getLevel();
+        Level world = this.iHost.getTileEntity().getLevel();
         return world == null || world.isClientSide();
     }
 
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         data.putInt("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInt("priority");
@@ -510,8 +510,8 @@ public class DualityFluidInterface
     }
 
     @Override
-    public TileEntity getTile() {
-        return (TileEntity) (this.iHost instanceof TileEntity ? this.iHost : null);
+    public BlockEntity getTile() {
+        return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 
     @Override

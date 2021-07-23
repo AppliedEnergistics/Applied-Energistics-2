@@ -26,11 +26,11 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -67,7 +67,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     private SpatialPylonCluster cluster;
     private boolean didHaveLight = false;
 
-    public SpatialPylonTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SpatialPylonTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK)
                 .setIdlePowerUsage(0.5)
@@ -83,7 +83,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     @Override
     public void onReady() {
         super.onReady();
-        if (level instanceof ServerWorld serverWorld) {
+        if (level instanceof ServerLevel serverWorld) {
             this.calc.calculateMultiblock(serverWorld, worldPosition);
         }
     }
@@ -95,7 +95,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     public void neighborChanged(BlockPos changedPos) {
-        if (level instanceof ServerWorld serverWorld) {
+        if (level instanceof ServerLevel serverWorld) {
             this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, worldPosition, changedPos);
         }
     }
@@ -191,7 +191,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.displayBits;
         this.displayBits = data.readByte();
@@ -199,7 +199,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeByte(this.displayBits);
     }
