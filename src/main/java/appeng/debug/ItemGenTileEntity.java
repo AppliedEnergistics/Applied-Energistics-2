@@ -60,18 +60,18 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT data) {
+    public CompoundNBT save(CompoundNBT data) {
         data.putString("filter", filter.getRegistryName().toString());
-        return super.write(data);
+        return super.save(data);
     }
 
     @Override
-    public void read(BlockState blockState, CompoundNBT data) {
+    public void load(BlockState blockState, CompoundNBT data) {
         if (data.contains("filter")) {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
-        super.read(blockState, data);
+        super.load(blockState, data);
     }
 
     @SuppressWarnings("unchecked")
@@ -100,17 +100,17 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
             return;
         }
 
-        if (item.isDamageable()) {
+        if (item.canBeDepleted()) {
             ItemStack sampleStack = new ItemStack(item);
             int maxDamage = sampleStack.getMaxDamage();
             for (int dmg = 0; dmg < maxDamage; dmg++) {
                 ItemStack is = sampleStack.copy();
-                is.setDamage(dmg);
+                is.setDamageValue(dmg);
                 queue.add(is);
             }
-        } else if (item.getGroup() != null) {
+        } else if (item.getItemCategory() != null) {
             final NonNullList<ItemStack> list = NonNullList.create();
-            item.fillItemGroup(item.getGroup(), list);
+            item.fillItemCategory(item.getItemCategory(), list);
             queue.addAll(list);
         }
     }

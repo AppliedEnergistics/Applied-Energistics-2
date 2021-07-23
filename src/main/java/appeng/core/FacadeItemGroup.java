@@ -45,7 +45,7 @@ public final class FacadeItemGroup extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         this.calculateSubTypes();
         if (this.subTypes.isEmpty()) {
             return new ItemStack(Items.CAKE);
@@ -54,7 +54,7 @@ public final class FacadeItemGroup extends ItemGroup {
     }
 
     @Override
-    public void fill(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<ItemStack> items) {
         this.calculateSubTypes();
         items.addAll(subTypes);
     }
@@ -67,15 +67,15 @@ public final class FacadeItemGroup extends ItemGroup {
 
         for (final Block b : ForgeRegistries.BLOCKS) {
             try {
-                final Item item = Item.getItemFromBlock(b);
+                final Item item = Item.byBlock(b);
                 if (item == Items.AIR) {
                     continue;
                 }
 
                 Item blockItem = b.asItem();
-                if (blockItem != Items.AIR && blockItem.getGroup() != null) {
+                if (blockItem != Items.AIR && blockItem.getItemCategory() != null) {
                     final NonNullList<ItemStack> tmpList = NonNullList.create();
-                    b.fillItemGroup(blockItem.getGroup(), tmpList);
+                    b.fillItemCategory(blockItem.getItemCategory(), tmpList);
                     for (final ItemStack l : tmpList) {
                         final ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {

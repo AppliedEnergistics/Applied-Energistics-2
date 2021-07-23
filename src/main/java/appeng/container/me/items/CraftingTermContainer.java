@@ -81,7 +81,7 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
 
         this.createPlayerInventorySlots(ip);
 
-        this.onCraftMatrixChanged(new WrapperInvItemHandler(craftingGridInv));
+        this.slotsChanged(new WrapperInvItemHandler(craftingGridInv));
     }
 
     /**
@@ -89,23 +89,23 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
      */
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventory) {
+    public void slotsChanged(IInventory inventory) {
         final ContainerNull cn = new ContainerNull();
         final CraftingInventory ic = new CraftingInventory(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {
-            ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
+            ic.setItem(x, this.craftingSlots[x].getItem());
         }
 
-        World world = this.getPlayerInventory().player.world;
+        World world = this.getPlayerInventory().player.level;
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
-            this.outputSlot.putStack(ItemStack.EMPTY);
+            this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.putStack(this.currentRecipe.getCraftingResult(ic));
+            this.outputSlot.set(this.currentRecipe.assemble(ic));
         }
     }
 
@@ -132,7 +132,7 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
     public void clearCraftingGrid() {
         Preconditions.checkState(isClient());
         CraftingMatrixSlot slot = craftingSlots[0];
-        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.slotNumber, 0);
+        final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);
     }
 
@@ -141,7 +141,7 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
-            ItemStack stackInSlot = slot.getStack();
+            ItemStack stackInSlot = slot.getItem();
             if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {
                     return true;

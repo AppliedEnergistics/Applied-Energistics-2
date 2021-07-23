@@ -42,7 +42,7 @@ public class ColorableTileBlockColor implements IBlockColor {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
         if (worldIn != null && pos != null) {
-            TileEntity te = worldIn.getTileEntity(pos);
+            TileEntity te = worldIn.getBlockEntity(pos);
             if (te instanceof IColorableTile) {
                 color = ((IColorableTile) te).getColor();
             }

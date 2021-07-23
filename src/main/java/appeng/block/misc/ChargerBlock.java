@@ -53,11 +53,11 @@ import appeng.util.InteractionUtil;
 public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
     public ChargerBlock() {
-        super(defaultProps(Material.IRON).notSolid());
+        super(defaultProps(Material.METAL).noOcclusion());
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
@@ -68,14 +68,14 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             return ActionResultType.PASS;
         }
 
-        if (!w.isRemote()) {
+        if (!w.isClientSide()) {
             final ChargerTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
         }
 
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
             for (int bolts = 0; bolts < 3; bolts++) {
                 if (AppEngClient.instance().shouldAddParticles(r)) {
-                    Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                    Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
                             yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                 }
             }
@@ -116,15 +116,15 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
                     1.0 - twoPixels, 1.0 - twoPixels);
 
-            if (up.getXOffset() != 0) {
+            if (up.getStepX() != 0) {
                 bb.minX = 0;
                 bb.maxX = 1;
             }
-            if (up.getYOffset() != 0) {
+            if (up.getStepY() != 0) {
                 bb.minY = 0;
                 bb.maxY = 1;
             }
-            if (up.getZOffset() != 0) {
+            if (up.getStepZ() != 0) {
                 bb.minZ = 0;
                 bb.maxZ = 1;
             }

@@ -40,7 +40,7 @@ public class EncodedPatternModelLoader implements IModelLoader<EncodedPatternMod
     @Override
     public EncodedPatternModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         modelContents.remove("loader"); // Avoid recursion
-        ResourceLocation baseModel = new ResourceLocation(JSONUtils.getString(modelContents, "baseModel"));
+        ResourceLocation baseModel = new ResourceLocation(JSONUtils.getAsString(modelContents, "baseModel"));
         return new EncodedPatternModel(baseModel);
     }
 

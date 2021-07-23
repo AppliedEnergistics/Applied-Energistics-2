@@ -44,14 +44,14 @@ public final class AEEntities {
             "singularity",
             SingularityEntity::new,
             EntityClassification.MISC,
-            builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+            builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
     public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
             "charged_quartz",
             ChargedQuartzEntity::new,
             EntityClassification.MISC,
-            builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+            builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
     public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
@@ -64,14 +64,14 @@ public final class AEEntities {
             "growing_crystal",
             GrowingCrystalEntity::new,
             EntityClassification.MISC,
-            builder -> builder.size(0.25F, 0.4F));
+            builder -> builder.sized(0.25F, 0.4F));
 
     private static <T extends Entity> EntityType<T> create(String id,
             EntityType.IFactory<T> entityFactory,
             EntityClassification classification,
             Consumer<EntityType.Builder<T>> customizer) {
         String registryLoc = "appliedenergistics2:" + id;
-        EntityType.Builder<T> builder = EntityType.Builder.create(entityFactory, classification);
+        EntityType.Builder<T> builder = EntityType.Builder.of(entityFactory, classification);
         customizer.accept(builder);
         EntityType<T> result = builder.build(registryLoc);
         result.setRegistryName(registryLoc);

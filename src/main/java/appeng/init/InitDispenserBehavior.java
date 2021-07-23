@@ -35,10 +35,10 @@ public final class InitDispenserBehavior {
     }
 
     public static void init() {
-        DispenserBlock.registerDispenseBehavior(AEBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(AEItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(AEItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
-        DispenserBlock.registerDispenseBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerBehavior(AEBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
+        DispenserBlock.registerBehavior(AEItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
+        DispenserBlock.registerBehavior(AEItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
+        DispenserBlock.registerBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
     }
 
 }

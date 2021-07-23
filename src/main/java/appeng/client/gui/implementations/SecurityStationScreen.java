@@ -85,11 +85,11 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.inject.setState((container.getPermissionMode() & 1 << SecurityPermissions.INJECT.ordinal()) > 0);
-        this.extract.setState((container.getPermissionMode() & 1 << SecurityPermissions.EXTRACT.ordinal()) > 0);
-        this.craft.setState((container.getPermissionMode() & 1 << SecurityPermissions.CRAFT.ordinal()) > 0);
-        this.build.setState((container.getPermissionMode() & 1 << SecurityPermissions.BUILD.ordinal()) > 0);
-        this.security.setState((container.getPermissionMode() & 1 << SecurityPermissions.SECURITY.ordinal()) > 0);
+        this.inject.setState((menu.getPermissionMode() & 1 << SecurityPermissions.INJECT.ordinal()) > 0);
+        this.extract.setState((menu.getPermissionMode() & 1 << SecurityPermissions.EXTRACT.ordinal()) > 0);
+        this.craft.setState((menu.getPermissionMode() & 1 << SecurityPermissions.CRAFT.ordinal()) > 0);
+        this.build.setState((menu.getPermissionMode() & 1 << SecurityPermissions.BUILD.ordinal()) > 0);
+        this.security.setState((menu.getPermissionMode() & 1 << SecurityPermissions.SECURITY.ordinal()) > 0);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         // Draw the encoding-box on the right
-        encodingBg.dest(offsetX + xSize + 3, offsetY).blit(matrixStack, getBlitOffset());
+        encodingBg.dest(offsetX + imageWidth + 3, offsetY).blit(matrixStack, getBlitOffset());
     }
 
     @Override
@@ -109,8 +109,8 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     public List<Rectangle2d> getExclusionZones() {
         List<Rectangle2d> result = super.getExclusionZones();
         result.add(new Rectangle2d(
-                guiLeft + xSize + 3,
-                guiTop,
+                leftPos + imageWidth + 3,
+                topPos,
                 encodingBg.getSrcWidth(),
                 encodingBg.getSrcHeight()));
         return result;

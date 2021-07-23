@@ -57,8 +57,8 @@ public class ApiGrid implements IGridHelper {
     @Nullable
     @Override
     public IInWorldGridNodeHost getNodeHost(IWorld world, BlockPos pos) {
-        if (world.isBlockLoaded(pos)) {
-            final TileEntity te = world.getTileEntity(pos);
+        if (world.hasChunkAt(pos)) {
+            final TileEntity te = world.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {
                 return host;
             }

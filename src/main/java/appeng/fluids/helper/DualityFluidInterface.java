@@ -176,8 +176,8 @@ public class DualityFluidInterface
         }
 
         final TileEntity te = this.iHost.getTileEntity();
-        if (te != null && te.getWorld() != null) {
-            Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
+        if (te != null && te.getLevel() != null) {
+            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
     }
 
@@ -399,8 +399,8 @@ public class DualityFluidInterface
 
     @Override
     public boolean isRemote() {
-        World world = this.iHost.getTileEntity().getWorld();
-        return world == null || world.isRemote();
+        World world = this.iHost.getTileEntity().getLevel();
+        return world == null || world.isClientSide();
     }
 
     public void writeToNBT(final CompoundNBT data) {

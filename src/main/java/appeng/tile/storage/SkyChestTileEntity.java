@@ -95,8 +95,8 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     private void onOpenOrClose() {
         Block block = this.getBlockState().getBlock();
         if (block instanceof SkyChestBlock) {
-            this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
-            this.world.notifyNeighborsOfStateChange(this.pos, block);
+            this.level.blockEvent(this.worldPosition, block, 1, this.numPlayersUsing);
+            this.level.updateNeighborsAt(this.worldPosition, block);
         }
     }
 
@@ -105,14 +105,14 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
         this.prevLidAngle = this.lidAngle;
         // Play a sound on initial opening.
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
-            this.playSound(SoundEvents.BLOCK_CHEST_OPEN);
+            this.playSound(SoundEvents.CHEST_OPEN);
         }
 
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
             this.lidAngle = Math.max(this.lidAngle - 0.1f, 0);
             // Play a sound on the way down.
             if (this.lidAngle < 0.5f && this.prevLidAngle >= 0.5f) {
-                this.playSound(SoundEvents.BLOCK_CHEST_CLOSE);
+                this.playSound(SoundEvents.CHEST_CLOSE);
             }
         } else if (this.numPlayersUsing > 0 && this.lidAngle < 1.0f) {
             this.lidAngle = Math.min(this.lidAngle + 0.1f, 1);
@@ -120,20 +120,20 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     private void playSound(SoundEvent soundIn) {
-        double d0 = this.pos.getX() + 0.5d;
-        double d1 = this.pos.getY() + 0.5d;
-        double d2 = this.pos.getZ() + 0.5d;
-        this.world.playSound(null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
-                this.world.rand.nextFloat() * 0.1f + 0.9f);
+        double d0 = this.worldPosition.getX() + 0.5d;
+        double d1 = this.worldPosition.getY() + 0.5d;
+        double d2 = this.worldPosition.getZ() + 0.5d;
+        this.level.playSound(null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5f,
+                this.level.random.nextFloat() * 0.1f + 0.9f);
     }
 
     @Override
-    public boolean receiveClientEvent(int id, int type) {
+    public boolean triggerEvent(int id, int type) {
         if (id == 1) {
             this.numPlayersUsing = type;
             return true;
         }
-        return super.receiveClientEvent(id, type);
+        return super.triggerEvent(id, type);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     @Override
-    public float getLidAngle(float partialTicks) {
+    public float getOpenNess(float partialTicks) {
         return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 

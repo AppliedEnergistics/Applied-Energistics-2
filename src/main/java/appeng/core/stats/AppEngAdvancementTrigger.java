@@ -54,7 +54,7 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public void addListener(PlayerAdvancements playerAdvancementsIn,
+    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn,
             ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
@@ -67,7 +67,7 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public void removeListener(PlayerAdvancements playerAdvancementsIn,
+    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn,
             ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
@@ -81,12 +81,12 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public void removeAllListeners(PlayerAdvancements playerAdvancementsIn) {
+    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn) {
         this.listeners.remove(playerAdvancementsIn);
     }
 
     @Override
-    public Instance deserialize(JsonObject object, ConditionArrayParser conditions) {
+    public Instance createInstance(JsonObject object, ConditionArrayParser conditions) {
         return new AppEngAdvancementTrigger.Instance(this.getId());
     }
 
@@ -111,12 +111,12 @@ public class AppEngAdvancementTrigger
         }
 
         @Override
-        public ResourceLocation getId() {
+        public ResourceLocation getCriterion() {
             return id;
         }
 
         @Override
-        public JsonObject serialize(ConditionArraySerializer conditions) {
+        public JsonObject serializeToJson(ConditionArraySerializer conditions) {
             return new JsonObject();
         }
     }
@@ -145,7 +145,7 @@ public class AppEngAdvancementTrigger
             List<ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance>> list = null;
 
             for (ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> listener : this.listeners) {
-                if (listener.getCriterionInstance().test()) {
+                if (listener.getTriggerInstance().test()) {
                     if (list == null) {
                         list = new ArrayList<>();
                     }
@@ -156,7 +156,7 @@ public class AppEngAdvancementTrigger
 
             if (list != null) {
                 for (ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance> l : list) {
-                    l.grantCriterion(this.playerAdvancements);
+                    l.run(this.playerAdvancements);
                 }
             }
         }

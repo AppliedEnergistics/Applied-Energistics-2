@@ -40,7 +40,7 @@ public class MEInteractionPacket extends BasePacket {
     public MEInteractionPacket(PacketBuffer buffer) {
         this.windowId = buffer.readInt();
         this.serial = buffer.readVarLong();
-        this.action = buffer.readEnumValue(InventoryAction.class);
+        this.action = buffer.readEnum(InventoryAction.class);
     }
 
     public MEInteractionPacket(int windowId, long serial, InventoryAction action) {
@@ -52,19 +52,19 @@ public class MEInteractionPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         data.writeInt(windowId);
         data.writeVarLong(serial);
-        data.writeEnumValue(action);
+        data.writeEnum(action);
         this.configureWrite(data);
     }
 
     @Override
     public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
-        if (player.openContainer instanceof IMEInteractionHandler) {
+        if (player.containerMenu instanceof IMEInteractionHandler) {
             // The open screen has changed since the client sent the packet
-            if (player.openContainer.windowId != windowId) {
+            if (player.containerMenu.containerId != windowId) {
                 return;
             }
 
-            IMEInteractionHandler handler = (IMEInteractionHandler) player.openContainer;
+            IMEInteractionHandler handler = (IMEInteractionHandler) player.containerMenu;
             handler.handleInteraction(serial, action);
         }
     }

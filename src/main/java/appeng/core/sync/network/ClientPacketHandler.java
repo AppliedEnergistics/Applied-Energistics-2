@@ -27,6 +27,8 @@ import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 
+import appeng.core.sync.BasePacketHandler.PacketTypes;
+
 public class ClientPacketHandler extends BasePacketHandler implements IPacketHandler {
 
     @Override

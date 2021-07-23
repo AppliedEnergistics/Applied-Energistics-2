@@ -44,7 +44,7 @@ public final class InitBiomeModifications {
     private static void addMeteoriteWorldGen(BiomeLoadingEvent e) {
         if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateMeteorites(), IWorldGen.WorldGenType.METEORITES,
                 e.getCategory())) {
-            e.getGeneration().withStructure(MeteoriteStructure.CONFIGURED_INSTANCE);
+            e.getGeneration().addStructureStart(MeteoriteStructure.CONFIGURED_INSTANCE);
         }
     }
 
@@ -54,10 +54,10 @@ public final class InitBiomeModifications {
                 e.getCategory())) {
 
             ConfiguredFeature<?, ?> quartzOreFeature = getConfiguredFeature(WorldgenIds.QUARTZ_ORE);
-            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
+            e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, quartzOreFeature);
 
             ConfiguredFeature<?, ?> chargedQuartzOreFeature = getConfiguredFeature(WorldgenIds.CHARGED_QUARTZ_ORE);
-            e.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+            e.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
                     chargedQuartzOreFeature);
         }
     }

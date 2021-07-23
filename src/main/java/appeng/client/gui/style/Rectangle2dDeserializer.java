@@ -53,10 +53,10 @@ public enum Rectangle2dDeserializer implements JsonDeserializer<Rectangle2d> {
             return new Rectangle2d(x, y, width, height);
         } else {
             JsonObject obj = json.getAsJsonObject();
-            int x = JSONUtils.getInt(obj, "x", 0);
-            int y = JSONUtils.getInt(obj, "y", 0);
-            int width = JSONUtils.getInt(obj, "width");
-            int height = JSONUtils.getInt(obj, "height");
+            int x = JSONUtils.getAsInt(obj, "x", 0);
+            int y = JSONUtils.getAsInt(obj, "y", 0);
+            int width = JSONUtils.getAsInt(obj, "width");
+            int height = JSONUtils.getAsInt(obj, "height");
             return new Rectangle2d(x, y, width, height);
         }
     }

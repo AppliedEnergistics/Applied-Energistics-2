@@ -98,15 +98,15 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(CompoundNBT data) {
+        super.save(data);
         this.manager.writeToNBT(data);
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, CompoundNBT data) {
+        super.load(blockState, data);
         this.manager.readFromNBT(data);
     }
 
@@ -116,7 +116,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
         if (this.displayOverlay) {
-            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::asLong).toArray());
+            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::toLong).toArray());
         }
     }
 
@@ -202,8 +202,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         if (isRemote()) {
             OverlayManager.getInstance().removeHandlers(this);
         } else {
@@ -274,7 +274,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     public boolean isActive() {
-        if (world != null && !world.isRemote) {
+        if (level != null && !level.isClientSide) {
             return isPowered();
         } else {
             return this.isActive;
@@ -336,7 +336,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         }
 
         ServerWorld world = this.getServerWorld();
-        boolean forced = ChunkLoadingService.getInstance().forceChunk(world, this.getPos(), chunkPos, true);
+        boolean forced = ChunkLoadingService.getInstance().forceChunk(world, this.getBlockPos(), chunkPos, true);
 
         if (forced) {
             this.chunks.add(chunkPos);
@@ -350,7 +350,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
     private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerWorld world = this.getServerWorld();
-        boolean removed = ChunkLoadingService.getInstance().releaseChunk(world, this.getPos(), chunkPos, true);
+        boolean removed = ChunkLoadingService.getInstance().releaseChunk(world, this.getBlockPos(), chunkPos, true);
 
         if (removed && remove) {
             this.chunks.remove(chunkPos);
@@ -380,8 +380,8 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private ServerWorld getServerWorld() {
-        if (this.getWorld() instanceof ServerWorld) {
-            return (ServerWorld) this.getWorld();
+        if (this.getLevel() instanceof ServerWorld) {
+            return (ServerWorld) this.getLevel();
         }
         throw new IllegalStateException("Cannot be called on a client");
     }
@@ -401,7 +401,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
         // Temporarily load an area after a spatial transfer until the network is constructed and cleanup is performed.
         int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
-        ChunkPos center = new ChunkPos(this.getPos());
+        ChunkPos center = new ChunkPos(this.getBlockPos());
         for (int x = center.x - d; x <= center.x + d; x++) {
             for (int z = center.z - d; z <= center.z + d; z++) {
                 this.force(new ChunkPos(x, z));

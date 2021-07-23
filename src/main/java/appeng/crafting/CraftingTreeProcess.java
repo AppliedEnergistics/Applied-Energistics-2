@@ -68,15 +68,15 @@ public class CraftingTreeProcess {
 
             final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
             final IAEItemStack[] is = details.getSparseInputs();
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                ic.setInventorySlotContents(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
+            for (int x = 0; x < ic.getContainerSize(); x++) {
+                ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
             BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) world),
                     details.getOutput(ic, world), ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                final ItemStack g = ic.getStackInSlot(x);
+            for (int x = 0; x < ic.getContainerSize(); x++) {
+                final ItemStack g = ic.getItem(x);
                 if (!g.isEmpty() && g.getCount() > 1) {
                     this.fullSimulation = true;
                 }
@@ -170,14 +170,14 @@ public class CraftingTreeProcess {
                 final IAEItemStack item = entry.getKey().getStack(entry.getValue());
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize(), src);
 
-                ic.setInventorySlotContents(entry.getKey().getSlot(), stack.createItemStack());
+                ic.setItem(entry.getKey().getSlot(), stack.createItemStack());
             }
 
             BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.world),
                     this.details.getOutput(ic, this.world), ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                ItemStack is = ic.getStackInSlot(x);
+            for (int x = 0; x < ic.getContainerSize(); x++) {
+                ItemStack is = ic.getItem(x);
                 is = Platform.getContainerItem(is);
 
                 final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -238,7 +238,7 @@ public class CraftingTreeProcess {
         // more fuzzy!
         for (final IAEItemStack is : this.details.getOutputs()) {
             if (is.getItem() == what2.getItem()
-                    && (is.getItem().isDamageable() || is.getItemDamage() == what2.getItemDamage())) {
+                    && (is.getItem().canBeDepleted() || is.getItemDamage() == what2.getItemDamage())) {
                 what2 = is.copy();
                 what2.setStackSize(is.getStackSize());
                 return what2;

@@ -83,8 +83,8 @@ public final class DisassembleRecipe extends SpecialRecipe {
         int itemCount = 0;
         ItemStack output = MISMATCHED_STACK;
 
-        for (int slotIndex = 0; slotIndex < inventory.getSizeInventory(); slotIndex++) {
-            final ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
+        for (int slotIndex = 0; slotIndex < inventory.getContainerSize(); slotIndex++) {
+            final ItemStack stackInSlot = inventory.getItem(slotIndex);
             if (!stackInSlot.isEmpty()) {
                 // needs a single input in the recipe
                 itemCount++;
@@ -139,12 +139,12 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
+    public ItemStack assemble(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv);
     }
 
     @Override
-    public boolean canFit(int i, int i1) {
+    public boolean canCraftInDimensions(int i, int i1) {
         return false;
     }
 

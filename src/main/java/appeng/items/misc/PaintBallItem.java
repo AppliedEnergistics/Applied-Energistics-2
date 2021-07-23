@@ -21,6 +21,8 @@ package appeng.items.misc;
 import appeng.api.util.AEColor;
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 public class PaintBallItem extends AEBaseItem {
 
     private final AEColor color;

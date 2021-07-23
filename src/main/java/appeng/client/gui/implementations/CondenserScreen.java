@@ -40,9 +40,9 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.container.getOutput());
+        this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.menu.getOutput());
         widgets.add("mode", this.mode);
-        widgets.add("progressBar", new ProgressBar(this.container, style.getImage("progressBar"),
+        widgets.add("progressBar", new ProgressBar(this.menu, style.getImage("progressBar"),
                 Direction.VERTICAL, GuiText.StoredEnergy.text()));
     }
 
@@ -50,7 +50,7 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.mode.set(this.container.getOutput());
+        this.mode.set(this.menu.getOutput());
     }
 
 }

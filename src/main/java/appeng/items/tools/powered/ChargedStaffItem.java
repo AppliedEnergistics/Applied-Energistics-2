@@ -38,20 +38,20 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public boolean hurtEnemy(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 300) {
             this.extractAEPower(item, 300, Actionable.MODULATE);
-            if (!target.world.isRemote()) {
+            if (!target.level.isClientSide()) {
                 for (int x = 0; x < 2; x++) {
                     final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
-                    final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);
-                    final float dy = (float) (Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY);
-                    final float dz = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ);
-                    AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.world,
+                    final float dx = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minX);
+                    final float dy = (float) (Platform.getRandomFloat() * target.getBbHeight() + entityBoundingBox.minY);
+                    final float dz = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minZ);
+                    AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.level,
                             new LightningPacket(dx, dy, dz));
                 }
             }
-            target.attackEntityFrom(DamageSource.MAGIC, 6);
+            target.hurt(DamageSource.MAGIC, 6);
             return true;
         }
 

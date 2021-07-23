@@ -20,6 +20,8 @@ package appeng.block.crafting;
 
 import appeng.tile.crafting.CraftingTileEntity;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingTileEntity> {
 
     public CraftingUnitBlock(Properties props, CraftingUnitType type) {

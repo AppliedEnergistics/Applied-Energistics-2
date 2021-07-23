@@ -54,7 +54,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
@@ -64,59 +64,59 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player,
             Hand handIn, BlockRayTraceResult hit) {
-        ItemStack heldItem = player.getHeldItem(handIn);
+        ItemStack heldItem = player.getItemInHand(handIn);
         if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
             this.startFuse(world, pos, player);
             world.removeBlock(pos, false);
-            heldItem.damageItem(1, player, p -> {
-                p.sendBreakAnimation(handIn);
+            heldItem.hurtAndBreak(1, player, p -> {
+                p.broadcastBreakEvent(handIn);
             }); // FIXME Check if onBroken is equivalent
-            return ActionResultType.func_233537_a_(world.isRemote());
+            return ActionResultType.sidedSuccess(world.isClientSide());
         } else {
-            return super.onBlockActivated(state, world, pos, player, handIn, hit);
+            return super.use(state, world, pos, player, handIn, hit);
         }
     }
 
     public void startFuse(final World w, final BlockPos pos, final LivingEntity igniter) {
-        if (!w.isRemote) {
+        if (!w.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
-            w.addEntity(primedTinyTNTEntity);
-            w.playSound(null, primedTinyTNTEntity.getPosX(), primedTinyTNTEntity.getPosY(),
-                    primedTinyTNTEntity.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
+            w.addFreshEntity(primedTinyTNTEntity);
+            w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
+                    primedTinyTNTEntity.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
         }
     }
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (world.getBestNeighborSignal(pos) > 0) {
             this.startFuse(world, pos, null);
             world.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void onBlockAdded(BlockState state, World w, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onBlockAdded(state, w, pos, oldState, isMoving);
+    public void onPlace(BlockState state, World w, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, w, pos, oldState, isMoving);
 
-        if (w.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (w.getBestNeighborSignal(pos) > 0) {
             this.startFuse(w, pos, null);
             w.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void onEntityWalk(final World w, final BlockPos pos, final Entity entity) {
-        if (entity instanceof AbstractArrowEntity && !w.isRemote) {
+    public void stepOn(final World w, final BlockPos pos, final Entity entity) {
+        if (entity instanceof AbstractArrowEntity && !w.isClientSide) {
             final AbstractArrowEntity entityarrow = (AbstractArrowEntity) entity;
 
-            if (entityarrow.isBurning()) {
+            if (entityarrow.isOnFire()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                Entity shooter = entityarrow.getShooter();
+                Entity shooter = entityarrow.getOwner();
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }
@@ -127,19 +127,19 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean canDropFromExplosion(final Explosion exp) {
+    public boolean dropFromExplosion(final Explosion exp) {
         return false;
     }
 
     @Override
-    public void onExplosionDestroy(final World w, final BlockPos pos, final Explosion exp) {
-        super.onExplosionDestroy(w, pos, exp);
-        if (!w.isRemote) {
+    public void wasExploded(final World w, final BlockPos pos, final Explosion exp) {
+        super.wasExploded(w, pos, exp);
+        if (!w.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
-                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy());
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getSourceMob());
             primedTinyTNTEntity
-                    .setFuse(w.rand.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
-            w.addEntity(primedTinyTNTEntity);
+                    .setFuse(w.random.nextInt(primedTinyTNTEntity.getLife() / 4) + primedTinyTNTEntity.getLife() / 8);
+            w.addFreshEntity(primedTinyTNTEntity);
         }
     }
 

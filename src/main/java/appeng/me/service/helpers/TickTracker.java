@@ -67,11 +67,11 @@ public class TickTracker implements Comparable<TickTracker> {
             part.addEntityCrashInfo(crashreportcategory);
         }
 
-        crashreportcategory.addDetail("CurrentTickRate", this.getCurrentRate());
-        crashreportcategory.addDetail("MinTickRate", this.getRequest().minTickRate);
-        crashreportcategory.addDetail("MaxTickRate", this.getRequest().maxTickRate);
-        crashreportcategory.addDetail("Node", this.getNode());
-        crashreportcategory.addDetail("ConnectedSides", this.getNode().getConnectedSides());
+        crashreportcategory.setDetail("CurrentTickRate", this.getCurrentRate());
+        crashreportcategory.setDetail("MinTickRate", this.getRequest().minTickRate);
+        crashreportcategory.setDetail("MaxTickRate", this.getRequest().maxTickRate);
+        crashreportcategory.setDetail("Node", this.getNode());
+        crashreportcategory.setDetail("ConnectedSides", this.getNode().getConnectedSides());
     }
 
     public int getCurrentRate() {

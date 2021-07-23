@@ -25,6 +25,8 @@ import net.minecraft.world.World;
 
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * Used for items that use a different entity for when they're dropped.
  */
@@ -43,13 +45,13 @@ public class CustomEntityItem extends AEBaseItem {
 
     @Override
     public Entity createEntity(final World w, final Entity location, final ItemStack itemstack) {
-        ItemEntity eqi = factory.create(w, location.getPosX(), location.getPosY(), location.getPosZ(),
+        ItemEntity eqi = factory.create(w, location.getX(), location.getY(), location.getZ(),
                 itemstack);
 
-        eqi.setMotion(location.getMotion());
+        eqi.setDeltaMovement(location.getDeltaMovement());
 
         if (location instanceof ItemEntity) {
-            eqi.setDefaultPickupDelay();
+            eqi.setDefaultPickUpDelay();
         }
 
         return eqi;

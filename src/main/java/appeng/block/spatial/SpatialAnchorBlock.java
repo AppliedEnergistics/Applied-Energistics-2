@@ -48,19 +48,19 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SpatialAnchorBlock() {
-        super(defaultProps(Material.IRON));
-        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+        super(defaultProps(Material.METAL));
+        this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @Override
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
-        return currentState.with(POWERED, te.isActive());
+        return currentState.setValue(POWERED, te.isActive());
     }
 
     @Override
@@ -72,11 +72,11 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
 
         final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
         if (tg != null) {
-            if (!worldIn.isRemote()) {
+            if (!worldIn.isClientSide()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
             }
-            return ActionResultType.func_233537_a_(worldIn.isRemote());
+            return ActionResultType.sidedSuccess(worldIn.isClientSide());
         }
         return ActionResultType.PASS;
     }

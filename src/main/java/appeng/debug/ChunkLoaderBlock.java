@@ -25,7 +25,7 @@ import appeng.block.AEBaseTileBlock;
 public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderTileEntity> {
 
     public ChunkLoaderBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
 }

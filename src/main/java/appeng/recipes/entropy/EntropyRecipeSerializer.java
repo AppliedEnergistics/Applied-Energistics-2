@@ -56,73 +56,73 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public EntropyRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public EntropyRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
         // Set id and mode
         builder.setId(recipeId);
-        builder.setMode(EntropyMode.valueOf(JSONUtils.getString(json, "mode").toUpperCase(Locale.ROOT)));
+        builder.setMode(EntropyMode.valueOf(JSONUtils.getAsString(json, "mode").toUpperCase(Locale.ROOT)));
 
         //// Parse inputs
-        JsonObject inputJson = JSONUtils.getJsonObject(json, "input");
+        JsonObject inputJson = JSONUtils.getAsJsonObject(json, "input");
 
         // Input block
-        JsonObject inputBlockObject = JSONUtils.getJsonObject(inputJson, "block", new JsonObject());
-        String inputBlockId = JSONUtils.getString(inputBlockObject, "id", null);
+        JsonObject inputBlockObject = JSONUtils.getAsJsonObject(inputJson, "block", new JsonObject());
+        String inputBlockId = JSONUtils.getAsString(inputBlockObject, "id", null);
         if (inputBlockId != null) {
             Block block = getRequiredEntry(ForgeRegistries.BLOCKS, inputBlockId);
             builder.setInputBlock(block);
-            parseStateMatchers(block.getStateContainer(), inputBlockObject, builder::addBlockStateMatcher);
+            parseStateMatchers(block.getStateDefinition(), inputBlockObject, builder::addBlockStateMatcher);
         }
 
         // input fluid
-        JsonObject inputFluidObject = JSONUtils.getJsonObject(inputJson, "fluid", new JsonObject());
-        String inputFluidId = JSONUtils.getString(inputFluidObject, "id", null);
+        JsonObject inputFluidObject = JSONUtils.getAsJsonObject(inputJson, "fluid", new JsonObject());
+        String inputFluidId = JSONUtils.getAsString(inputFluidObject, "id", null);
         if (inputFluidId != null) {
             Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, inputFluidId);
             builder.setInputFluid(fluid);
-            parseStateMatchers(fluid.getStateContainer(), inputFluidObject, builder::addFluidStateMatcher);
+            parseStateMatchers(fluid.getStateDefinition(), inputFluidObject, builder::addFluidStateMatcher);
         }
 
         //// Parse outputs
-        JsonObject outputJson = JSONUtils.getJsonObject(json, "output");
+        JsonObject outputJson = JSONUtils.getAsJsonObject(json, "output");
 
         // Output block
-        JsonObject outputBlockObject = JSONUtils.getJsonObject(outputJson, "block", new JsonObject());
-        String outputBlockId = JSONUtils.getString(outputBlockObject, "id", null);
+        JsonObject outputBlockObject = JSONUtils.getAsJsonObject(outputJson, "block", new JsonObject());
+        String outputBlockId = JSONUtils.getAsString(outputBlockObject, "id", null);
         if (outputBlockId != null) {
             Block block = getRequiredEntry(ForgeRegistries.BLOCKS, outputBlockId);
             builder.setOutputBlock(block);
 
-            boolean outputBlockKeep = JSONUtils.getBoolean(outputBlockObject, "keep", false);
+            boolean outputBlockKeep = JSONUtils.getAsBoolean(outputBlockObject, "keep", false);
             builder.setOutputBlockKeep(outputBlockKeep);
 
-            parseStateAppliers(block.getStateContainer(), outputBlockObject, builder::addBlockStateAppliers);
+            parseStateAppliers(block.getStateDefinition(), outputBlockObject, builder::addBlockStateAppliers);
         }
 
         // Output fluid
-        JsonObject outputFluidObject = JSONUtils.getJsonObject(outputJson, "fluid", new JsonObject());
-        String outputFluidId = JSONUtils.getString(outputFluidObject, "id", null);
+        JsonObject outputFluidObject = JSONUtils.getAsJsonObject(outputJson, "fluid", new JsonObject());
+        String outputFluidId = JSONUtils.getAsString(outputFluidObject, "id", null);
         if (outputFluidId != null) {
             Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, outputFluidId);
             builder.setOutputFluid(fluid);
 
-            boolean outputFluidKeep = JSONUtils.getBoolean(outputFluidObject, "keep", false);
+            boolean outputFluidKeep = JSONUtils.getAsBoolean(outputFluidObject, "keep", false);
             builder.setOutputFluidKeep(outputFluidKeep);
 
-            parseStateAppliers(fluid.getStateContainer(), outputFluidObject, builder::addFluidStateAppliers);
+            parseStateAppliers(fluid.getStateDefinition(), outputFluidObject, builder::addFluidStateAppliers);
         }
 
         // Parse additional drops
         if (outputJson.has("drops")) {
-            JsonArray dropList = JSONUtils.getJsonArray(outputJson, "drops");
+            JsonArray dropList = JSONUtils.getAsJsonArray(outputJson, "drops");
             List<ItemStack> drops = new ArrayList<>(dropList.size());
 
             for (JsonElement jsonElement : dropList) {
                 JsonObject object = jsonElement.getAsJsonObject();
-                String itemid = JSONUtils.getString(object, "item");
+                String itemid = JSONUtils.getAsString(object, "item");
                 Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemid));
-                int count = JSONUtils.getInt(object, "count", 1);
+                int count = JSONUtils.getAsInt(object, "count", 1);
                 drops.add(new ItemStack(item, count));
             }
 
@@ -142,18 +142,18 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public EntropyRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public EntropyRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
         builder.setId(recipeId);
-        builder.setMode(buffer.readEnumValue(EntropyMode.class));
+        builder.setMode(buffer.readEnum(EntropyMode.class));
 
         if (buffer.readBoolean()) {
             Block inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             builder.setInputBlock(inputBlock);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
-                builder.addBlockStateMatcher(StateMatcher.read(inputBlock.getStateContainer(), buffer));
+                builder.addBlockStateMatcher(StateMatcher.read(inputBlock.getStateDefinition(), buffer));
             }
         }
 
@@ -162,7 +162,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             builder.setInputFluid(fluid);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
-                builder.addFluidStateMatcher(StateMatcher.read(fluid.getStateContainer(), buffer));
+                builder.addFluidStateMatcher(StateMatcher.read(fluid.getStateDefinition(), buffer));
             }
         }
 
@@ -172,7 +172,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             builder.setOutputBlockKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
             for (int i = 0; i < appliersSize; i++) {
-                builder.addBlockStateAppliers(StateApplier.readFromPacket(block.getStateContainer(), buffer));
+                builder.addBlockStateAppliers(StateApplier.readFromPacket(block.getStateDefinition(), buffer));
             }
         }
 
@@ -182,7 +182,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
             builder.setOutputFluidKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
             for (int i = 0; i < appliersSize; i++) {
-                builder.addFluidStateAppliers(StateApplier.readFromPacket(fluid.getStateContainer(), buffer));
+                builder.addFluidStateAppliers(StateApplier.readFromPacket(fluid.getStateDefinition(), buffer));
             }
         }
 
@@ -191,7 +191,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         if (dropSize > 0) {
             List<ItemStack> drops = new ArrayList<>(dropSize);
             for (int i = 0; i < dropSize; i++) {
-                drops.add(buffer.readItemStack());
+                drops.add(buffer.readItem());
             }
             builder.setDrops(drops);
         }
@@ -200,8 +200,8 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void write(PacketBuffer buffer, EntropyRecipe recipe) {
-        buffer.writeEnumValue(recipe.getMode());
+    public void toNetwork(PacketBuffer buffer, EntropyRecipe recipe) {
+        buffer.writeEnum(recipe.getMode());
 
         buffer.writeBoolean(recipe.getInputBlock() != null);
         if (recipe.getInputBlock() != null) {
@@ -251,13 +251,13 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
         buffer.writeInt(recipe.getDrops().size());
         for (ItemStack itemStack : recipe.getDrops()) {
-            buffer.writeItemStack(itemStack);
+            buffer.writeItem(itemStack);
         }
     }
 
     private static void parseStateMatchers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
             Consumer<StateMatcher> consumer) {
-        JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
+        JsonObject properties = JSONUtils.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
             String key = entry.getKey();
@@ -290,7 +290,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     private static void parseStateAppliers(StateContainer<?, ?> stateContainer, JsonObject propertiesContainer,
             Consumer<StateApplier<?>> consumer) {
-        JsonObject properties = JSONUtils.getJsonObject(propertiesContainer, "properties", new JsonObject());
+        JsonObject properties = JSONUtils.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
             String key = entry.getKey();

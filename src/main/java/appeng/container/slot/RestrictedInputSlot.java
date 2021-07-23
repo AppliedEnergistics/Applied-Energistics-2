@@ -74,11 +74,11 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         if (this.stackLimit != -1) {
             return this.stackLimit;
         }
-        return super.getSlotStackLimit();
+        return super.getMaxStackSize();
     }
 
     public Slot setStackLimit(final int i) {
@@ -87,11 +87,11 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     private World getWorld() {
-        return getContainer().getPlayerInventory().player.getEntityWorld();
+        return getContainer().getPlayerInventory().player.getCommandSenderWorld();
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         if (!this.getContainer().isValidForSlot(this, stack)) {
             return false;
         }
@@ -104,7 +104,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        if (!super.isItemValid(stack)) {
+        if (!super.mayPlace(stack)) {
             return false;
         }
 
@@ -196,7 +196,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return this.isAllowEdit();
     }
 
@@ -243,7 +243,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     protected boolean getCurrentValidationState() {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
-            ItemStack stack = getStack();
+            ItemStack stack = getItem();
             return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
         }
         return true;

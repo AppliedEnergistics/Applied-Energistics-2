@@ -49,7 +49,7 @@ public class EncodedPatternModel implements IModelGeometry<EncodedPatternModel> 
     @Override
     public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return modelGetter.apply(baseModel).getTextures(modelGetter, missingTextureErrors);
+        return modelGetter.apply(baseModel).getMaterials(modelGetter, missingTextureErrors);
     }
 
     @Override

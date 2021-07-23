@@ -65,7 +65,7 @@ public final class InitRenderTypes {
 
     public static void init() {
         for (BlockDefinition definition : CUTOUT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(definition.block(), RenderType.getCutout());
+            RenderTypeLookup.setRenderLayer(definition.block(), RenderType.cutout());
         }
 
         // Cable bus multiblock renders in all layers

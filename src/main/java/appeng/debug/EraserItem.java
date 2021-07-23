@@ -37,6 +37,8 @@ import appeng.core.AELog;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
+import net.minecraft.item.Item.Properties;
+
 public class EraserItem extends AEBaseItem {
 
     private static final int BOX_SIZE = 48;
@@ -49,13 +51,13 @@ public class EraserItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        if (context.getLevel().isClientSide()) {
             return ActionResultType.PASS;
         }
 
         final PlayerEntity player = context.getPlayer();
-        final World world = context.getWorld();
-        final BlockPos pos = context.getPos();
+        final World world = context.getLevel();
+        final BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return ActionResultType.PASS;
@@ -79,7 +81,7 @@ public class EraserItem extends AEBaseItem {
 
             if (contains) {
                 blocks++;
-                world.setBlockState(wc, Blocks.AIR.getDefaultState(), 2);
+                world.setBlock(wc, Blocks.AIR.defaultBlockState(), 2);
                 world.destroyBlock(wc, false);
 
                 if (isInsideBox(wc, pos)) {
@@ -89,7 +91,7 @@ public class EraserItem extends AEBaseItem {
                                 if (0 == x && 0 == y && 0 == z) {
                                     continue;
                                 }
-                                final BlockPos nextPos = wc.add(x, y, z);
+                                final BlockPos nextPos = wc.offset(x, y, z);
                                 if (!closed.contains(nextPos)) {
                                     next.add(nextPos);
                                 }
@@ -102,7 +104,7 @@ public class EraserItem extends AEBaseItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return ActionResultType.func_233537_a_(world.isRemote());
+        return ActionResultType.sidedSuccess(world.isClientSide());
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {
@@ -141,9 +143,9 @@ public class EraserItem extends AEBaseItem {
             COMMON_BLOCKS.add(Blocks.WATER);
             COMMON_BLOCKS.add(Blocks.LAVA);
 
-            COMMON_BLOCKS.addAll(BlockTags.LEAVES.getAllElements());
-            COMMON_BLOCKS.addAll(BlockTags.SAND.getAllElements());
-            COMMON_BLOCKS.addAll(BlockTags.LOGS.getAllElements());
+            COMMON_BLOCKS.addAll(BlockTags.LEAVES.getValues());
+            COMMON_BLOCKS.addAll(BlockTags.SAND.getValues());
+            COMMON_BLOCKS.addAll(BlockTags.LOGS.getValues());
         }
 
         return COMMON_BLOCKS;

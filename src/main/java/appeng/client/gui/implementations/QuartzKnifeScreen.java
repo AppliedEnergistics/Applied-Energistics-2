@@ -49,13 +49,13 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     public void init() {
         super.init();
 
-        this.name = new TextFieldWidget(this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT,
+        this.name = new TextFieldWidget(this.font, this.leftPos + 24, this.topPos + 32, 79, this.font.lineHeight,
                 StringTextComponent.EMPTY);
-        this.name.setEnableBackgroundDrawing(false);
-        this.name.setMaxStringLength(32);
+        this.name.setBordered(false);
+        this.name.setMaxLength(32);
         this.name.setTextColor(0xFFFFFF);
         this.name.setVisible(true);
-        this.name.setFocused2(true);
+        this.name.setFocus(true);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public boolean charTyped(char character, int key) {
         if (this.name.isFocused() && this.name.charTyped(character, key)) {
-            final String Out = this.name.getText();
-            container.setName(Out);
+            final String Out = this.name.getValue();
+            menu.setName(Out);
             NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
             return true;
         }
@@ -80,23 +80,23 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.name.setFocused2(!this.name.isFocused());
+                this.name.setFocus(!this.name.isFocused());
                 return true;
             }
 
             if (this.name.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.name.setFocused2(false);
+                    this.name.setFocus(false);
                     return true;
                 }
 
                 if (this.name.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    final String Out = this.name.getText();
-                    container.setName(Out);
+                    final String Out = this.name.getValue();
+                    menu.setName(Out);
                     NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
                 }
 

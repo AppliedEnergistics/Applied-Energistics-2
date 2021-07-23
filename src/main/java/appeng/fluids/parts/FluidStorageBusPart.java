@@ -265,7 +265,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getDirection()));
+        final TileEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {

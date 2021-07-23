@@ -54,14 +54,14 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private QuantumBridgeTileEntity center;
 
     public QuantumCluster(final BlockPos min, final BlockPos max) {
-        this.boundsMin = min.toImmutable();
-        this.boundsMax = max.toImmutable();
+        this.boundsMin = min.immutable();
+        this.boundsMax = max.immutable();
         this.setRing(new QuantumBridgeTileEntity[8]);
     }
 
     @SubscribeEvent
     public void onUnload(final WorldEvent.Unload e) {
-        if (this.center.getWorld() == e.getWorld()) {
+        if (this.center.getLevel() == e.getWorld()) {
             this.setUpdateStatus(false);
             this.destroy();
         }
@@ -148,15 +148,15 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private boolean canUseNode(final long qe) {
         final QuantumCluster qc = (QuantumCluster) Api.instance().registries().locatable().getLocatableBy(qe);
         if (qc != null) {
-            final World theWorld = qc.center.getWorld();
+            final World theWorld = qc.center.getLevel();
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // tile begins ticking normally.
-                if (theWorld.isBlockLoaded(qc.center.getPos())) {
-                    final World cur = theWorld.getServer().getWorld(theWorld.getDimensionKey());
+                if (theWorld.hasChunkAt(qc.center.getBlockPos())) {
+                    final World cur = theWorld.getServer().getLevel(theWorld.dimension());
 
-                    final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
+                    final TileEntity te = theWorld.getBlockEntity(qc.center.getBlockPos());
                     return te != qc.center || theWorld != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
@@ -277,8 +277,8 @@ public class QuantumCluster implements ILocatable, IAECluster {
             return "QuantumCluster{no-center}";
         }
 
-        World world = center.getWorld();
-        BlockPos pos = center.getPos();
+        World world = center.getLevel();
+        BlockPos pos = center.getBlockPos();
 
         return "QuantumCluster{" + world + "," + pos + "}";
     }

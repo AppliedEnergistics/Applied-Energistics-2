@@ -56,7 +56,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
@@ -65,32 +65,32 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * internal count then calls onCrafting(item).
      */
     @Override
-    protected void onCrafting(final ItemStack par1ItemStack, final int par2) {
+    protected void onQuickCraft(final ItemStack par1ItemStack, final int par2) {
         this.amountCrafted += par2;
-        this.onCrafting(par1ItemStack);
+        this.checkTakeAchievements(par1ItemStack);
     }
 
     /**
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
-    protected void onCrafting(final ItemStack par1ItemStack) {
-        par1ItemStack.onCrafting(this.player.world, this.player, this.amountCrafted);
+    protected void checkTakeAchievements(final ItemStack par1ItemStack) {
+        par1ItemStack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
     public ItemStack onTake(final PlayerEntity playerIn, final ItemStack stack) {
         BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
-        this.onCrafting(stack);
+        this.checkTakeAchievements(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.getSlots(); x++) {
-            ic.setInventorySlotContents(x, this.craftingGrid.getStackInSlot(x));
+            ic.setItem(x, this.craftingGrid.getStackInSlot(x));
         }
 
-        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
+        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.level);
 
         ItemHandlerUtil.copy(ic, this.craftingGrid, false);
 
@@ -107,8 +107,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
             if (!itemstack2.isEmpty()) {
                 if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
                     ItemHandlerUtil.setStackInSlot(this.craftingGrid, i, itemstack2);
-                } else if (!this.player.inventory.addItemStackToInventory(itemstack2)) {
-                    this.player.dropItem(itemstack2, false);
+                } else if (!this.player.inventory.add(itemstack2)) {
+                    this.player.drop(itemstack2, false);
                 }
             }
         }
@@ -128,18 +128,18 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * stack.
      */
     @Override
-    public ItemStack decrStackSize(final int par1) {
-        if (this.getHasStack()) {
-            this.amountCrafted += Math.min(par1, this.getStack().getCount());
+    public ItemStack remove(final int par1) {
+        if (this.hasItem()) {
+            this.amountCrafted += Math.min(par1, this.getItem().getCount());
         }
 
-        return super.decrStackSize(par1);
+        return super.remove(par1);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world)
+        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, ic, world)
                 .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }

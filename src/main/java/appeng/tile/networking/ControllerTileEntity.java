@@ -77,12 +77,12 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     }
 
     public void onNeighborChange(final boolean force) {
-        final boolean xx = this.checkController(this.pos.offset(Direction.EAST))
-                && this.checkController(this.pos.offset(Direction.WEST));
-        final boolean yy = this.checkController(this.pos.offset(Direction.UP))
-                && this.checkController(this.pos.offset(Direction.DOWN));
-        final boolean zz = this.checkController(this.pos.offset(Direction.NORTH))
-                && this.checkController(this.pos.offset(Direction.SOUTH));
+        final boolean xx = this.checkController(this.worldPosition.relative(Direction.EAST))
+                && this.checkController(this.worldPosition.relative(Direction.WEST));
+        final boolean yy = this.checkController(this.worldPosition.relative(Direction.UP))
+                && this.checkController(this.worldPosition.relative(Direction.DOWN));
+        final boolean zz = this.checkController(this.worldPosition.relative(Direction.NORTH))
+                && this.checkController(this.worldPosition.relative(Direction.SOUTH));
 
         // int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
         // boolean hasPower = meta > 0;
@@ -125,10 +125,10 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
             metaState = ControllerBlockState.offline;
         }
 
-        if (this.checkController(this.pos)
-                && this.world.getBlockState(this.pos).get(ControllerBlock.CONTROLLER_STATE) != metaState) {
-            this.world.setBlockState(this.pos,
-                    this.world.getBlockState(this.pos).with(ControllerBlock.CONTROLLER_STATE, metaState));
+        if (this.checkController(this.worldPosition)
+                && this.level.getBlockState(this.worldPosition).getValue(ControllerBlock.CONTROLLER_STATE) != metaState) {
+            this.level.setBlockAndUpdate(this.worldPosition,
+                    this.level.getBlockState(this.worldPosition).setValue(ControllerBlock.CONTROLLER_STATE, metaState));
         }
 
     }
@@ -176,8 +176,8 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
      * @return true if there is a loaded controller
      */
     private boolean checkController(final BlockPos pos) {
-        if (this.world.getChunkProvider().canTick(pos)) {
-            return this.world.getTileEntity(pos) instanceof ControllerTileEntity;
+        if (this.level.getChunkSource().isTickingChunk(pos)) {
+            return this.level.getBlockEntity(pos) instanceof ControllerTileEntity;
         }
 
         return false;

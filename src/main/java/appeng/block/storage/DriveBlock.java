@@ -39,7 +39,7 @@ import appeng.util.InteractionUtil;
 public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
     public DriveBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -51,10 +51,10 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
         final DriveTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
-            if (!w.isRemote()) {
+            if (!w.isClientSide()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
         return ActionResultType.PASS;
     }

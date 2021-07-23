@@ -56,16 +56,16 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
-        Api.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
-        return new ActionResult<>(ActionResultType.func_233537_a_(w.isRemote()), player.getHeldItem(hand));
+    public ActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
+        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), w, player, hand);
+        return new ActionResult<>(ActionResultType.sidedSuccess(w.isClientSide()), player.getItemInHand(hand));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, world, lines, advancedTooltips);
 
         if (getEncryptionKey(stack).isEmpty()) {
             lines.add(GuiText.Unlinked.text());

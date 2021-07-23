@@ -100,7 +100,7 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
                 new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 

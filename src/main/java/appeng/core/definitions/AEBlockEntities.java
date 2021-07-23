@@ -182,7 +182,7 @@ public final class AEBlockEntities {
 
         AtomicReference<TileEntityType<T>> typeHolder = new AtomicReference<>();
         Supplier<T> supplier = () -> factory.apply(typeHolder.get());
-        TileEntityType<T> type = TileEntityType.Builder.create(supplier, blocks).build(null);
+        TileEntityType<T> type = TileEntityType.Builder.of(supplier, blocks).build(null);
         type.setRegistryName(id);
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);

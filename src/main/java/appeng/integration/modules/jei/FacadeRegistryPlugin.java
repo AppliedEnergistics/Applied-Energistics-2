@@ -104,11 +104,11 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
                 "facade/" + textureItem.getItem().getRegistryName().toString().replace(':', '/'));
 
         NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
-        ingredients.set(1, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(3, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(5, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(7, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(4, Ingredient.fromStacks(textureItem));
+        ingredients.set(1, Ingredient.of(cableAnchor));
+        ingredients.set(3, Ingredient.of(cableAnchor));
+        ingredients.set(5, Ingredient.of(cableAnchor));
+        ingredients.set(7, Ingredient.of(cableAnchor));
+        ingredients.set(4, Ingredient.of(textureItem));
 
         result.setCount(4);
 

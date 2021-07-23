@@ -51,6 +51,8 @@ import appeng.items.contents.CellUpgrades;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-17
@@ -71,7 +73,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void appendHoverText(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
@@ -136,30 +138,30 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
-        this.disassembleDrive(player.getHeldItem(hand), world, player);
-        return new ActionResult<>(ActionResultType.func_233537_a_(world.isRemote()), player.getHeldItem(hand));
+    public ActionResult<ItemStack> use(final World world, final PlayerEntity player, final Hand hand) {
+        this.disassembleDrive(player.getItemInHand(hand), world, player);
+        return new ActionResult<>(ActionResultType.sidedSuccess(world.isClientSide()), player.getItemInHand(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (world.isRemote()) {
+            if (world.isClientSide()) {
                 return false;
             }
 
             final PlayerInventory playerInventory = player.inventory;
             final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());
-            if (inv != null && playerInventory.getCurrentItem() == stack) {
+            if (inv != null && playerInventory.getSelected() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
                 final IItemList<IAEItemStack> list = inv.getAvailableItems(this.getChannel().createList());
                 if (list.isEmpty() && ia != null) {
-                    playerInventory.setInventorySlotContents(playerInventory.currentItem, ItemStack.EMPTY);
+                    playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
                     // drop core
                     final ItemStack extraB = ia.addItems(new ItemStack(coreItem));
                     if (!extraB.isEmpty()) {
-                        player.dropItem(extraB, false);
+                        player.drop(extraB, false);
                     }
 
                     // drop upgrades
@@ -168,15 +170,15 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                         final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
                         final ItemStack leftStack = ia.addItems(upgradeStack);
                         if (!leftStack.isEmpty() && upgradeStack.getItem() instanceof IUpgradeModule) {
-                            player.dropItem(upgradeStack, false);
+                            player.drop(upgradeStack, false);
                         }
                     }
 
                     // drop empty storage cell case
                     this.dropEmptyStorageCellCase(ia, player);
 
-                    if (player.container != null) {
-                        player.container.detectAndSendChanges();
+                    if (player.inventoryMenu != null) {
+                        player.inventoryMenu.broadcastChanges();
                     }
 
                     return true;
@@ -190,8 +192,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer())
-                ? ActionResultType.func_233537_a_(context.getWorld().isRemote())
+        return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
+                ? ActionResultType.sidedSuccess(context.getLevel().isClientSide())
                 : ActionResultType.PASS;
     }
 

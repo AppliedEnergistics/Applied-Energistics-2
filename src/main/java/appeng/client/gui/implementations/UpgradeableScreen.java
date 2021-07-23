@@ -62,7 +62,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
      * compatible.
      */
     protected List<ITextComponent> getCompatibleUpgrades() {
-        IUpgradeableHost host = container.getUpgradeable();
+        IUpgradeableHost host = menu.getUpgradeable();
 
         Item item;
         if (host instanceof IPart) {
@@ -85,7 +85,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
             for (Upgrades.Supported supported : upgrade.getSupported()) {
                 if (supported.isSupported(machineItem)) {
                     list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), supported.getMaxCount())
-                            .mergeStyle(TextFormatting.GRAY));
+                            .withStyle(TextFormatting.GRAY));
                     break;
                 }
             }

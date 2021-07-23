@@ -34,6 +34,8 @@ import net.minecraft.util.text.StringTextComponent;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public abstract class IconButton extends Button implements ITooltip {
 
     private boolean halfSize = false;
@@ -59,7 +61,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderWidget(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
 
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -79,7 +81,7 @@ public abstract class IconButton extends Button implements ITooltip {
                 this.width = 8;
                 this.height = 8;
 
-                matrixStack.push();
+                matrixStack.pushPose();
                 matrixStack.translate(this.x, this.y, 0.0F);
                 matrixStack.scale(0.5f, 0.5f, 1.f);
 
@@ -87,7 +89,7 @@ public abstract class IconButton extends Button implements ITooltip {
                     Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(matrixStack, getBlitOffset());
                 }
                 blitter.dest(0, 0).blit(matrixStack, getBlitOffset());
-                matrixStack.pop();
+                matrixStack.popPose();
             } else {
                 if (!disableBackground) {
                     Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(matrixStack, getBlitOffset());

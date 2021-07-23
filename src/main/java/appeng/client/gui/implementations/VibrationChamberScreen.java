@@ -44,7 +44,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.generationRateBar = new ProgressBar(this.container, style.getImage("generationRateBar"),
+        this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
                 Direction.VERTICAL);
         widgets.add("generationRateBar", this.generationRateBar);
     }
@@ -54,15 +54,15 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
         super.updateBeforeRender();
 
         this.generationRateBar.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
-                * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
+                * this.menu.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
     }
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
-        if (this.container.getRemainingBurnTime() > 0) {
-            int f = this.container.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;
+        if (this.menu.getRemainingBurnTime() > 0) {
+            int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;
             BURN_PROGRESS.copy()
                     .src(
                             BURN_PROGRESS.getSrcX(),

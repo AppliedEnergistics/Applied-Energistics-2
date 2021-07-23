@@ -79,12 +79,12 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 

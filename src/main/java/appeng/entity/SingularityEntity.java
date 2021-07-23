@@ -50,17 +50,17 @@ public final class SingularityEntity extends AEBaseItemEntity {
     }
 
     @Override
-    public boolean attackEntityFrom(final DamageSource src, final float dmg) {
+    public boolean hurt(final DamageSource src, final float dmg) {
         if (src.isExplosion()) {
             this.doExplosion();
             return false;
         }
 
-        return super.attackEntityFrom(src, dmg);
+        return super.hurt(src, dmg);
     }
 
     private void doExplosion() {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -71,8 +71,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
         final ItemStack item = this.getItem();
 
         if (AEItems.SINGULARITY.isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
-                    this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
+            final AxisAlignedBB region = new AxisAlignedBB(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
+                    this.getX() + 4, this.getY() + 4, this.getZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
@@ -104,9 +104,9 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                 randTickSeed++;
                                 item.grow(-1);
 
-                                final SingularityEntity entity = new SingularityEntity(this.world, this.getPosX(),
-                                        this.getPosY(), this.getPosZ(), singularityStack);
-                                this.world.addEntity(entity);
+                                final SingularityEntity entity = new SingularityEntity(this.level, this.getX(),
+                                        this.getY(), this.getZ(), singularityStack);
+                                this.level.addFreshEntity(entity);
                             }
 
                             if (item.getCount() <= 0) {

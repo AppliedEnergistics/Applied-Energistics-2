@@ -64,7 +64,7 @@ public final class PartInfoProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        final TileEntity te = world.getTileEntity(data.getPos());
+        final TileEntity te = world.getBlockEntity(data.getPos());
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, data);
 
         if (maybePart.isPresent()) {

@@ -99,9 +99,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
             this.drawItem(itemX, itemY, entry.getDisplay());
 
             // Update the tooltip based on the calculated cell rectangle and mouse position
-            if (isPointInRegion(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
+            if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
                 tooltip = new ArrayList<>();
-                tooltip.add(entry.getDisplay().getDisplayName());
+                tooltip.add(entry.getDisplay().getHoverName());
 
                 tooltip.add(GuiText.Installed.text(entry.getCount()));
                 if (entry.getIdlePowerUsage() > 0) {
@@ -132,19 +132,19 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
         }
 
         // Keep in mind the text will be scaled down 50%
-        float textWidth = this.font.getStringWidth(str) / 2.0f;
-        float textHeight = this.font.FONT_HEIGHT / 2.0f;
+        float textWidth = this.font.width(str) / 2.0f;
+        float textHeight = this.font.lineHeight / 2.0f;
 
         // Draw the count at half-size
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(
                 x - 1 - textWidth,
                 y + (CELL_HEIGHT - textHeight) / 2.0f,
                 0);
         matrixStack.scale(0.5f, 0.5f, 0.5f);
-        this.font.drawString(matrixStack, str, 0, 0,
+        this.font.draw(matrixStack, str, 0, 0,
                 style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB());
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public void processServerUpdate(NetworkStatus status) {

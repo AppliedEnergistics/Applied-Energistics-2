@@ -52,7 +52,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        final IAEFluidTank config = this.container.getFluidConfigInventory();
+        final IAEFluidTank config = this.menu.getFluidConfigInventory();
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
@@ -81,8 +81,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.storageFilter.set(this.container.getStorageFilter());
-        this.rwMode.set(this.container.getReadWriteMode());
+        this.storageFilter.set(this.menu.getStorageFilter());
+        this.rwMode.set(this.menu.getReadWriteMode());
     }
 
     private void partition() {

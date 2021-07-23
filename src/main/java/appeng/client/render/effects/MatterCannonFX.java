@@ -35,20 +35,20 @@ public class MatterCannonFX extends SpriteTexturedParticle {
     public MatterCannonFX(final ClientWorld par1World, final double x, final double y, final double z,
             IAnimatedSprite sprite) {
         super(par1World, x, y, z);
-        this.particleGravity = 0;
-        this.particleBlue = 1;
-        this.particleGreen = 1;
-        this.particleRed = 1;
-        this.particleAlpha = 1.4f;
-        this.particleScale = 1.1f;
-        this.motionX = 0.0f;
-        this.motionY = 0.0f;
-        this.motionZ = 0.0f;
-        this.selectSpriteRandomly(sprite);
+        this.gravity = 0;
+        this.bCol = 1;
+        this.gCol = 1;
+        this.rCol = 1;
+        this.alpha = 1.4f;
+        this.quadSize = 1.1f;
+        this.xd = 0.0f;
+        this.yd = 0.0f;
+        this.zd = 0.0f;
+        this.pickSprite(sprite);
     }
 
     public void fromItem(final AEPartLocation d) {
-        this.particleScale *= 1.2f;
+        this.quadSize *= 1.2f;
     }
 
     @Override
@@ -58,22 +58,22 @@ public class MatterCannonFX extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
+        if (this.age++ >= this.lifetime) {
+            this.remove();
         }
 
-        this.motionY -= 0.04D * this.particleGravity;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.yd -= 0.04D * this.gravity;
+        this.move(this.xd, this.yd, this.zd);
+        this.xd *= 0.9800000190734863D;
+        this.yd *= 0.9800000190734863D;
+        this.zd *= 0.9800000190734863D;
 
-        this.particleScale *= 1.19f;
-        this.particleAlpha *= 0.59f;
+        this.quadSize *= 1.19f;
+        this.alpha *= 0.59f;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -85,7 +85,7 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
+        public Particle createParticle(BasicParticleType data, ClientWorld world, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }

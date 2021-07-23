@@ -119,7 +119,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     public boolean isRemote() {
-        return this.playerInventory.player.getEntityWorld().isRemote();
+        return this.playerInventory.player.getCommandSenderWorld().isClientSide();
     }
 
     public IActionSource getActionSource() {
@@ -171,7 +171,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     public void lockPlayerInventorySlot(final int invSlot) {
-        Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.mainInventory.size(),
+        Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.items.size(),
                 "cannot lock player inventory slot: %s", invSlot);
         this.lockedPlayerInventorySlots.add(invSlot);
     }
@@ -197,14 +197,14 @@ public abstract class AEBaseContainer extends Container {
 
         IItemHandler ih = new PlayerInvWrapper(playerInventory);
 
-        for (int i = 0; i < playerInventory.mainInventory.size(); i++) {
+        for (int i = 0; i < playerInventory.items.size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
                 slot = new DisabledSlot(ih, i);
             } else {
                 slot = new Slot(playerInventory, i, 0, 0);
             }
-            SlotSemantic s = i < PlayerInventory.getHotbarSize()
+            SlotSemantic s = i < PlayerInventory.getSelectionSize()
                     ? SlotSemantic.PLAYER_HOTBAR
                     : SlotSemantic.PLAYER_INVENTORY;
             addSlot(slot, s);
@@ -234,19 +234,19 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer()) {
             if (this.tileEntity != null
-                    && this.tileEntity.getWorld().getTileEntity(this.tileEntity.getPos()) != this.tileEntity) {
+                    && this.tileEntity.getLevel().getBlockEntity(this.tileEntity.getBlockPos()) != this.tileEntity) {
                 this.setValidContainer(false);
             }
 
             if (dataSync.hasChanges()) {
-                sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeUpdate));
+                sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeUpdate));
             }
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     /**
@@ -254,7 +254,7 @@ public abstract class AEBaseContainer extends Container {
      * forth between the opened container and the player's inventory.
      */
     private boolean isPlayerSideSlot(Slot slot) {
-        if (slot.inventory == playerInventory) {
+        if (slot.container == playerInventory) {
             return true;
         }
 
@@ -266,19 +266,19 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(final PlayerEntity p, final int idx) {
+    public ItemStack quickMoveStack(final PlayerEntity p, final int idx) {
         if (isRemote()) {
             return ItemStack.EMPTY;
         }
 
-        final Slot clickSlot = this.inventorySlots.get(idx);
+        final Slot clickSlot = this.slots.get(idx);
         boolean playerSide = isPlayerSideSlot(clickSlot);
 
         if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
             return ItemStack.EMPTY;
         }
-        if (clickSlot.getHasStack()) {
-            ItemStack tis = clickSlot.getStack();
+        if (clickSlot.hasItem()) {
+            ItemStack tis = clickSlot.getItem();
 
             if (tis.isEmpty()) {
                 return ItemStack.EMPTY;
@@ -292,9 +292,9 @@ public abstract class AEBaseContainer extends Container {
 
                 if (!tis.isEmpty()) {
                     // target slots in the container...
-                    for (final Slot cs : this.inventorySlots) {
+                    for (final Slot cs : this.slots) {
                         if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
-                                && cs.isItemValid(tis)) {
+                                && cs.mayPlace(tis)) {
                             selectedSlots.add(cs);
                         }
                     }
@@ -303,9 +303,9 @@ public abstract class AEBaseContainer extends Container {
                 tis = tis.copy();
 
                 // target slots in the container...
-                for (final Slot cs : this.inventorySlots) {
+                for (final Slot cs : this.slots) {
                     if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
-                            && cs.isItemValid(tis)) {
+                            && cs.mayPlace(tis)) {
                         selectedSlots.add(cs);
                     }
                 }
@@ -314,16 +314,16 @@ public abstract class AEBaseContainer extends Container {
             // Handle Fake Slot Shift clicking.
             if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
                 // target slots in the container...
-                for (final Slot cs : this.inventorySlots) {
-                    final ItemStack destination = cs.getStack();
+                for (final Slot cs : this.slots) {
+                    final ItemStack destination = cs.getItem();
 
                     if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
                         if (Platform.itemComparisons().isSameItem(destination, tis)) {
                             break;
                         } else if (destination.isEmpty()) {
-                            cs.putStack(tis.copy());
+                            cs.set(tis.copy());
                             // ???
-                            this.detectAndSendChanges();
+                            this.broadcastChanges();
                             break;
                         }
                     }
@@ -333,7 +333,7 @@ public abstract class AEBaseContainer extends Container {
             if (!tis.isEmpty()) {
                 // find slots to stack the item into
                 for (final Slot d : selectedSlots) {
-                    if (d.isItemValid(tis) && d.getHasStack() && x(clickSlot, tis, d)) {
+                    if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
                         return ItemStack.EMPTY;
                     }
                 }
@@ -341,15 +341,15 @@ public abstract class AEBaseContainer extends Container {
                 // FIXME figure out whats the difference between this and the one above ?!
                 // any match..
                 for (final Slot d : selectedSlots) {
-                    if (d.isItemValid(tis)) {
-                        if (d.getHasStack()) {
+                    if (d.mayPlace(tis)) {
+                        if (d.hasItem()) {
                             if (x(clickSlot, tis, d)) {
                                 return ItemStack.EMPTY;
                             }
                         } else {
                             int maxSize = tis.getMaxStackSize();
-                            if (maxSize > d.getSlotStackLimit()) {
-                                maxSize = d.getSlotStackLimit();
+                            if (maxSize > d.getMaxStackSize()) {
+                                maxSize = d.getMaxStackSize();
                             }
 
                             final ItemStack tmp = tis.copy();
@@ -358,37 +358,37 @@ public abstract class AEBaseContainer extends Container {
                             }
 
                             tis.setCount(tis.getCount() - tmp.getCount());
-                            d.putStack(tmp);
+                            d.set(tmp);
 
                             if (tis.getCount() <= 0) {
-                                clickSlot.putStack(ItemStack.EMPTY);
-                                d.onSlotChanged();
+                                clickSlot.set(ItemStack.EMPTY);
+                                d.setChanged();
 
-                                this.detectAndSendChanges();
+                                this.broadcastChanges();
                                 return ItemStack.EMPTY;
                             } else {
-                                this.detectAndSendChanges();
+                                this.broadcastChanges();
                             }
                         }
                     }
                 }
             }
 
-            clickSlot.putStack(!tis.isEmpty() ? tis : ItemStack.EMPTY);
+            clickSlot.set(!tis.isEmpty() ? tis : ItemStack.EMPTY);
         }
 
         // ???
-        this.detectAndSendChanges();
+        this.broadcastChanges();
         return ItemStack.EMPTY;
     }
 
     private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
-        final ItemStack t = d.getStack().copy();
+        final ItemStack t = d.getItem().copy();
 
         if (Platform.itemComparisons().isSameItem(t, tis)) {
             int maxSize = t.getMaxStackSize();
-            if (maxSize > d.getSlotStackLimit()) {
-                maxSize = d.getSlotStackLimit();
+            if (maxSize > d.getMaxStackSize()) {
+                maxSize = d.getMaxStackSize();
             }
 
             int placeable = maxSize - t.getCount();
@@ -400,20 +400,20 @@ public abstract class AEBaseContainer extends Container {
                 t.setCount(t.getCount() + placeable);
                 tis.setCount(tis.getCount() - placeable);
 
-                d.putStack(t);
+                d.set(t);
 
                 if (tis.getCount() <= 0) {
-                    clickSlot.putStack(ItemStack.EMPTY);
-                    d.onSlotChanged();
+                    clickSlot.set(ItemStack.EMPTY);
+                    d.setChanged();
 
                     // ???
-                    this.detectAndSendChanges();
+                    this.broadcastChanges();
                     // ???
-                    this.detectAndSendChanges();
+                    this.broadcastChanges();
                     return true;
                 } else {
                     // ???
-                    this.detectAndSendChanges();
+                    this.broadcastChanges();
                 }
             }
         }
@@ -421,10 +421,10 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(final PlayerEntity PlayerEntity) {
+    public boolean stillValid(final PlayerEntity PlayerEntity) {
         if (this.isValidContainer()) {
             if (this.tileEntity instanceof IInventory) {
-                return ((IInventory) this.tileEntity).isUsableByPlayer(PlayerEntity);
+                return ((IInventory) this.tileEntity).stillValid(PlayerEntity);
             }
             return true;
         }
@@ -432,11 +432,11 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public boolean canDragIntoSlot(final Slot s) {
+    public boolean canDragTo(final Slot s) {
         if (s instanceof AppEngSlot) {
             return ((AppEngSlot) s).isDraggable();
         } else {
-            return super.canDragIntoSlot(s);
+            return super.canDragTo(s);
         }
     }
 
@@ -444,7 +444,7 @@ public abstract class AEBaseContainer extends Container {
      * Sets a filter slot based on a <b>non-existent</b> item sent by the client.
      */
     public void setFilter(final int slotIndex, ItemStack item) {
-        if (slotIndex < 0 || slotIndex >= this.inventorySlots.size()) {
+        if (slotIndex < 0 || slotIndex >= this.slots.size()) {
             return;
         }
         final Slot s = this.getSlot(slotIndex);
@@ -457,12 +457,12 @@ public abstract class AEBaseContainer extends Container {
         }
 
         if (s instanceof FakeSlot) {
-            s.putStack(item);
+            s.set(item);
         }
     }
 
     public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
-        if (slot < 0 || slot >= this.inventorySlots.size()) {
+        if (slot < 0 || slot >= this.slots.size()) {
             return;
         }
         final Slot s = this.getSlot(slot);
@@ -479,15 +479,15 @@ public abstract class AEBaseContainer extends Container {
         }
 
         if (s instanceof FakeSlot) {
-            final ItemStack hand = player.inventory.getItemStack();
+            final ItemStack hand = player.inventory.getCarried();
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
 
                     if (hand.isEmpty()) {
-                        s.putStack(ItemStack.EMPTY);
+                        s.set(ItemStack.EMPTY);
                     } else {
-                        s.putStack(hand.copy());
+                        s.set(hand.copy());
                     }
 
                     break;
@@ -496,28 +496,28 @@ public abstract class AEBaseContainer extends Container {
                     if (!hand.isEmpty()) {
                         final ItemStack is = hand.copy();
                         is.setCount(1);
-                        s.putStack(is);
+                        s.set(is);
                     }
 
                     break;
                 case SPLIT_OR_PLACE_SINGLE:
 
-                    ItemStack is = s.getStack();
+                    ItemStack is = s.getItem();
                     if (!is.isEmpty()) {
                         if (hand.isEmpty()) {
                             is.setCount(Math.max(1, is.getCount() - 1));
-                        } else if (hand.isItemEqual(is)) {
+                        } else if (hand.sameItem(is)) {
                             is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
                         } else {
                             is = hand.copy();
                             is.setCount(1);
                         }
 
-                        s.putStack(is);
+                        s.set(is);
                     } else if (!hand.isEmpty()) {
                         is = hand.copy();
                         is.setCount(1);
-                        s.putStack(is);
+                        s.set(is);
                     }
 
                     break;
@@ -532,14 +532,14 @@ public abstract class AEBaseContainer extends Container {
         if (action == InventoryAction.MOVE_REGION) {
             final List<Slot> from = new ArrayList<>();
 
-            for (final Slot j : this.inventorySlots) {
+            for (final Slot j : this.slots) {
                 if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
                     from.add(j);
                 }
             }
 
             for (final Slot fr : from) {
-                this.transferStackInSlot(player, fr.slotNumber);
+                this.quickMoveStack(player, fr.index);
             }
         }
 
@@ -547,7 +547,7 @@ public abstract class AEBaseContainer extends Container {
 
     protected void updateHeld(final ServerPlayerEntity p) {
         NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                p.inventory.getItemStack()), p);
+                p.inventory.getCarried()), p);
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {
@@ -563,8 +563,8 @@ public abstract class AEBaseContainer extends Container {
             return;
         }
 
-        final ItemStack isA = a.getStack();
-        final ItemStack isB = b.getStack();
+        final ItemStack isA = a.getItem();
+        final ItemStack isB = b.getItem();
 
         // something to do?
         if (isA.isEmpty() && isB.isEmpty()) {
@@ -573,21 +573,21 @@ public abstract class AEBaseContainer extends Container {
 
         // can take?
 
-        if (!isA.isEmpty() && !a.canTakeStack(this.getPlayerInventory().player)) {
+        if (!isA.isEmpty() && !a.mayPickup(this.getPlayerInventory().player)) {
             return;
         }
 
-        if (!isB.isEmpty() && !b.canTakeStack(this.getPlayerInventory().player)) {
+        if (!isB.isEmpty() && !b.mayPickup(this.getPlayerInventory().player)) {
             return;
         }
 
         // swap valid?
 
-        if (!isB.isEmpty() && !a.isItemValid(isB)) {
+        if (!isB.isEmpty() && !a.mayPlace(isB)) {
             return;
         }
 
-        if (!isA.isEmpty() && !b.isItemValid(isA)) {
+        if (!isA.isEmpty() && !b.mayPlace(isA)) {
             return;
         }
 
@@ -595,32 +595,32 @@ public abstract class AEBaseContainer extends Container {
         ItemStack testB = isA.isEmpty() ? ItemStack.EMPTY : isA.copy();
 
         // can put some back?
-        if (!testA.isEmpty() && testA.getCount() > a.getSlotStackLimit()) {
+        if (!testA.isEmpty() && testA.getCount() > a.getMaxStackSize()) {
             if (!testB.isEmpty()) {
                 return;
             }
 
             final int totalA = testA.getCount();
-            testA.setCount(a.getSlotStackLimit());
+            testA.setCount(a.getMaxStackSize());
             testB = testA.copy();
 
             testB.setCount(totalA - testA.getCount());
         }
 
-        if (!testB.isEmpty() && testB.getCount() > b.getSlotStackLimit()) {
+        if (!testB.isEmpty() && testB.getCount() > b.getMaxStackSize()) {
             if (!testA.isEmpty()) {
                 return;
             }
 
             final int totalB = testB.getCount();
-            testB.setCount(b.getSlotStackLimit());
+            testB.setCount(b.getMaxStackSize());
             testA = testB.copy();
 
             testA.setCount(totalB - testA.getCount());
         }
 
-        a.putStack(testA);
-        b.putStack(testB);
+        a.set(testA);
+        b.set(testB);
     }
 
     /**
@@ -658,7 +658,7 @@ public abstract class AEBaseContainer extends Container {
      * Returns whether this container instance lives on the client.
      */
     protected boolean isClient() {
-        return playerInventory.player.getEntityWorld().isRemote();
+        return playerInventory.player.getCommandSenderWorld().isClientSide();
     }
 
     /**
@@ -669,7 +669,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected final void sendPacketToClient(BasePacket packet) {
-        for (IContainerListener c : this.listeners) {
+        for (IContainerListener c : this.containerListeners) {
             if (c instanceof ServerPlayerEntity) {
                 NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) c);
             }
@@ -686,14 +686,14 @@ public abstract class AEBaseContainer extends Container {
     protected final boolean ensureGuiItemIsInSlot(IGuiItemObject guiObject, int slot) {
         ItemStack expectedItem = guiObject.getItemStack();
 
-        ItemStack currentItem = this.getPlayerInventory().getStackInSlot(slot);
+        ItemStack currentItem = this.getPlayerInventory().getItem(slot);
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
             if (currentItem == expectedItem) {
                 return true;
-            } else if (ItemStack.areItemsEqual(expectedItem, currentItem)) {
+            } else if (ItemStack.isSame(expectedItem, currentItem)) {
                 // If the items are still equivalent, we just restore referential equality so that modifications
                 // to the GUI item are reflected in the slot
-                this.getPlayerInventory().setInventorySlotContents(slot, expectedItem);
+                this.getPlayerInventory().setItem(slot, expectedItem);
                 return true;
             }
         }
@@ -702,14 +702,14 @@ public abstract class AEBaseContainer extends Container {
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
+    public void addSlotListener(IContainerListener listener) {
+        super.addSlotListener(listener);
 
         // The first listener that is added is our opportunity to send the initial data packet, since
         // this happens after the OpenContainer packet has been sent to the client, but before any other
         // processing continues.
         if (listener instanceof ServerPlayerEntity && dataSync.hasFields()) {
-            sendPacketToClient(new GuiDataSyncPacket(windowId, dataSync::writeFull));
+            sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
         }
     }
 
@@ -726,7 +726,7 @@ public abstract class AEBaseContainer extends Container {
      */
     public final void receiveClientAction(GuiDataSyncPacket packet) {
         PacketBuffer data = packet.getData();
-        String name = data.readString(256);
+        String name = data.readUtf(256);
 
         ClientAction<?> action = clientActions.get(name);
         if (action == null) {
@@ -795,10 +795,10 @@ public abstract class AEBaseContainer extends Container {
                             + BasePacket.MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
         }
 
-        NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(windowId, writer -> {
-            writer.writeString(clientAction.name);
+        NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(containerId, writer -> {
+            writer.writeUtf(clientAction.name);
             if (jsonPayload != null) {
-                writer.writeString(jsonPayload);
+                writer.writeUtf(jsonPayload);
             }
         }));
     }
@@ -828,7 +828,7 @@ public abstract class AEBaseContainer extends Container {
         public void handle(PacketBuffer buffer) {
             T arg = null;
             if (argClass != Void.class) {
-                String payload = buffer.readString(BasePacket.MAX_STRING_LENGTH);
+                String payload = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
                 AELog.debug("Handling client action '%s' with payload %s", name, payload);
                 arg = gson.fromJson(payload, argClass);
             } else {

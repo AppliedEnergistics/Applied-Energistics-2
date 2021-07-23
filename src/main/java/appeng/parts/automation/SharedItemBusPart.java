@@ -81,16 +81,16 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected InventoryAdaptor getHandler() {
         final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getDirection()));
+        final TileEntity target = this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
     }
 
     private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
-        final World w = self.getWorld();
+        final World w = self.getLevel();
 
-        if (w.getChunkProvider().canTick(pos)) {
-            return w.getTileEntity(pos);
+        if (w.getChunkSource().isTickingChunk(pos)) {
+            return w.getBlockEntity(pos);
         }
 
         return null;
@@ -125,10 +125,10 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      */
     protected boolean canDoBusWork() {
         final TileEntity self = this.getHost().getTile();
-        final BlockPos selfPos = self.getPos().offset(this.getSide().getDirection());
-        final World world = self.getWorld();
+        final BlockPos selfPos = self.getBlockPos().relative(this.getSide().getDirection());
+        final World world = self.getLevel();
 
-        return world != null && world.getChunkProvider().canTick(selfPos);
+        return world != null && world.getChunkSource().isTickingChunk(selfPos);
     }
 
     private void updateState() {

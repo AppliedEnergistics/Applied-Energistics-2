@@ -29,12 +29,12 @@ public class DisabledSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return false;
     }
 }

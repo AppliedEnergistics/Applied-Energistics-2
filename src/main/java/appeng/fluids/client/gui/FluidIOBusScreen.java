@@ -46,7 +46,7 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        final IAEFluidTank inv = this.container.getFluidConfigInventory();
+        final IAEFluidTank inv = this.menu.getFluidConfigInventory();
 
         addSlot(new FluidSlotWidget(inv, 0), SlotSemantic.CONFIG);
         addSlot(new OptionalFluidSlotWidget(inv, container, 1, 1), SlotSemantic.CONFIG);
@@ -67,8 +67,8 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.redstoneMode.set(this.container.getRedStoneMode());
-        this.redstoneMode.setVisibility(container.hasUpgrade(Upgrades.REDSTONE));
+        this.redstoneMode.set(this.menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(menu.hasUpgrade(Upgrades.REDSTONE));
     }
 
 }

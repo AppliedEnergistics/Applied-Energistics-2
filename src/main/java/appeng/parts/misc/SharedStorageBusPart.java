@@ -124,7 +124,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.resetCache(false);
         }
     }

@@ -53,7 +53,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
         this.proxy = Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(getItemFromTile());
-        this.proxy.create(world, pos);
+        this.proxy.create(level, worldPosition);
         this.crashMode = true;
     }
 

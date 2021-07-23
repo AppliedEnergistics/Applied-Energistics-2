@@ -63,7 +63,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        TileEntity te = player.getEntityWorld().getTileEntity(pos);
+        TileEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
         if (te instanceof MolecularAssemblerTileEntity) {
             MolecularAssemblerTileEntity ma = (MolecularAssemblerTileEntity) te;
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));

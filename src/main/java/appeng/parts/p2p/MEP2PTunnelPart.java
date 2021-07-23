@@ -113,7 +113,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getTile().getPos());
+        this.outerNode.create(getWorld(), getTile().getBlockPos());
     }
 
     @Override
@@ -148,7 +148,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             } else {
                 this.connection.markCreate();
             }
-            TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
+            TickHandler.instance().addCallable(this.getTile().getLevel(), this.connection);
 
             return TickRateModulation.SLEEP;
         }
@@ -198,8 +198,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
                     AELog.warn(
                             "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",
-                            start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(),
-                            end.getPos().getX(), end.getPos().getY(), end.getPos().getZ());
+                            start.getBlockPos().getX(), start.getBlockPos().getY(), start.getBlockPos().getZ(),
+                            end.getBlockPos().getX(), end.getBlockPos().getY(), end.getBlockPos().getZ());
                     // :(
                 }
             }

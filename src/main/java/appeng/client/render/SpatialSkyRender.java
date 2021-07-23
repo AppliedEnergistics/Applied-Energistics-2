@@ -70,23 +70,23 @@ public class SpatialSkyRender {
         RenderSystem.depthMask(false);
         RenderSystem.color4f(0.0f, 0.0f, 0.0f, 1.0f);
         final Tessellator tessellator = Tessellator.getInstance();
-        final BufferBuilder VertexBuffer = tessellator.getBuffer();
+        final BufferBuilder VertexBuffer = tessellator.getBuilder();
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
-            matrixStack.push();
-            matrixStack.rotate(rotation);
+            matrixStack.pushPose();
+            matrixStack.mulPose(rotation);
 
             RenderSystem.disableTexture();
             VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-            VertexBuffer.pos(-100.0D, -100.0D, -100.0D).endVertex();
-            VertexBuffer.pos(-100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.pos(100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.pos(100.0D, -100.0D, -100.0D).endVertex();
-            tessellator.draw();
+            VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).endVertex();
+            VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).endVertex();
+            VertexBuffer.vertex(100.0D, -100.0D, 100.0D).endVertex();
+            VertexBuffer.vertex(100.0D, -100.0D, -100.0D).endVertex();
+            tessellator.end();
             RenderSystem.enableTexture();
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
         RenderSystem.depthMask(true);
@@ -99,7 +99,7 @@ public class SpatialSkyRender {
             RenderSystem.depthMask(false);
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            RenderHelper.disableStandardItemLighting();
+            RenderHelper.turnOff();
 
             RenderSystem.color4f(fade, fade, fade, 1.0f);
             GL11.glCallList(this.dspList);
@@ -116,7 +116,7 @@ public class SpatialSkyRender {
 
     private void renderTwinkles() {
         final Tessellator tessellator = Tessellator.getInstance();
-        final BufferBuilder vb = tessellator.getBuffer();
+        final BufferBuilder vb = tessellator.getBuilder();
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
         for (int i = 0; i < 50; ++i) {
@@ -154,11 +154,11 @@ public class SpatialSkyRender {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.pos(x + d24, y + d22, z + d25).endVertex();
+                    vb.vertex(x + d24, y + d22, z + d25).endVertex();
                 }
             }
         }
 
-        tessellator.draw();
+        tessellator.end();
     }
 }

@@ -37,6 +37,8 @@ import appeng.container.implementations.InscriberContainer;
 import appeng.tile.misc.InscriberTileEntity;
 import appeng.util.InteractionUtil;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
     public InscriberBlock(Properties props) {
@@ -44,7 +46,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
         // range. was 2 in 1.10
     }
@@ -55,11 +57,11 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
-                if (!w.isRemote()) {
+                if (!w.isClientSide()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                            ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
                 }
-                return ActionResultType.func_233537_a_(w.isRemote());
+                return ActionResultType.sidedSuccess(w.isClientSide());
             }
         }
         return ActionResultType.PASS;

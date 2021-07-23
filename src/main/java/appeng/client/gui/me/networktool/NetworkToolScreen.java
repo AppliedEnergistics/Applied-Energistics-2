@@ -53,7 +53,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.transparentFacadesButton.setState(container.isFacadeMode());
+        this.transparentFacadesButton.setState(menu.isFacadeMode());
     }
 
 }

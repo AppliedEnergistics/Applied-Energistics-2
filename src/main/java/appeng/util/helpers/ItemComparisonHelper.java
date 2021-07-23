@@ -54,7 +54,7 @@ public class ItemComparisonHelper {
      * @return true, if both are identical.
      */
     public boolean isSameItem(@Nonnull final ItemStack is, @Nonnull final ItemStack filter) {
-        return ItemStack.areItemsEqual(is, filter) && this.isNbtTagEqual(is.getTag(), filter.getTag());
+        return ItemStack.isSame(is, filter) && this.isNbtTagEqual(is.getTag(), filter.getTag());
     }
 
     /**
@@ -74,20 +74,20 @@ public class ItemComparisonHelper {
         }
 
         // test damageable items..
-        if (a.getItem() == b.getItem() && a.getItem().isDamageable()) {
+        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
             if (mode == FuzzyMode.IGNORE_ALL) {
                 return true;
             } else if (mode == FuzzyMode.PERCENT_99) {
-                return a.getDamage() > 1 == b.getDamage() > 1;
+                return a.getDamageValue() > 1 == b.getDamageValue() > 1;
             } else {
-                final float percentDamagedOfA = (float) a.getDamage() / a.getMaxDamage();
-                final float percentDamagedOfB = (float) b.getDamage() / b.getMaxDamage();
+                final float percentDamagedOfA = (float) a.getDamageValue() / a.getMaxDamage();
+                final float percentDamagedOfB = (float) b.getDamageValue() / b.getMaxDamage();
 
                 return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
             }
         }
 
-        return a.isItemEqual(b);
+        return a.sameItem(b);
     }
 
     /**

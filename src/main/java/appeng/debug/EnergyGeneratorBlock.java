@@ -25,7 +25,7 @@ import appeng.block.AEBaseTileBlock;
 public class EnergyGeneratorBlock extends AEBaseTileBlock<EnergyGeneratorTileEntity> {
 
     public EnergyGeneratorBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
 }

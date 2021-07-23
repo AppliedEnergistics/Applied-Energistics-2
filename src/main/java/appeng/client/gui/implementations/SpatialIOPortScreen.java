@@ -41,16 +41,16 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
         super.updateBeforeRender();
 
         setTextContent("stored_power",
-                GuiText.StoredPower.text(Platform.formatPowerLong(this.container.getCurrentPower(), false)));
+                GuiText.StoredPower.text(Platform.formatPowerLong(this.menu.getCurrentPower(), false)));
         setTextContent("max_power",
-                GuiText.MaxPower.text(Platform.formatPowerLong(this.container.getMaxPower(), false)));
+                GuiText.MaxPower.text(Platform.formatPowerLong(this.menu.getMaxPower(), false)));
         setTextContent("required_power",
-                GuiText.RequiredPower.text(Platform.formatPowerLong(this.container.getRequiredPower(), false)));
-        setTextContent("efficiency", GuiText.Efficiency.text((float) this.container.getEfficency() / 100));
+                GuiText.RequiredPower.text(Platform.formatPowerLong(this.menu.getRequiredPower(), false)));
+        setTextContent("efficiency", GuiText.Efficiency.text((float) this.menu.getEfficency() / 100));
 
         ITextComponent scsSizeText;
-        if (this.container.xSize != 0 && this.container.ySize != 0 && this.container.zSize != 0) {
-            scsSizeText = GuiText.SCSSize.text(this.container.xSize, this.container.ySize, this.container.zSize);
+        if (this.menu.xSize != 0 && this.menu.ySize != 0 && this.menu.zSize != 0) {
+            scsSizeText = GuiText.SCSSize.text(this.menu.xSize, this.menu.ySize, this.menu.zSize);
         } else {
             scsSizeText = GuiText.SCSInvalid.text();
         }

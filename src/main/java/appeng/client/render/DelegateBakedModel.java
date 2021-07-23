@@ -47,8 +47,8 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
-        return baseModel.isSideLit();
+    public boolean usesBlockLight() {
+        return baseModel.usesBlockLight();
     }
 
     @Override
@@ -63,18 +63,18 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return this.baseModel.getParticleIcon();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return this.baseModel.getTransforms();
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
@@ -83,8 +83,8 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return this.baseModel.isCustomRenderer();
     }
 
     public IBakedModel getBaseModel() {

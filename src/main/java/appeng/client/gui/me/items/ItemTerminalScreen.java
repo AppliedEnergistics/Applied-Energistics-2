@@ -69,7 +69,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         // Annoying but easier than trying to splice into render item
         ItemStack displayStack = entry.getStack().asItemStackRepresentation();
         Inventory displayInv = new Inventory(displayStack);
-        super.moveItems(matrices, new Slot(displayInv, 0, x, y));
+        super.renderSlot(matrices, new Slot(displayInv, 0, x, y));
     }
 
     @Override
@@ -77,10 +77,10 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
-            if (clickType == ClickType.PICKUP && !playerInventory.getItemStack().isEmpty()) {
+            if (clickType == ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
                 InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
-                container.handleInteraction(-1, action);
+                menu.handleInteraction(-1, action);
             }
             return;
         }
@@ -88,8 +88,8 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         long serial = entry.getSerial();
 
         // Move as many items of a single type as possible
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
-            container.handleInteraction(serial, InventoryAction.MOVE_REGION);
+        if (InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
             InventoryAction action = null;
 
@@ -100,8 +100,8 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
                     if (action == InventoryAction.PICKUP_OR_SET_DOWN
                             && shouldCraftOnClick(entry)
-                            && playerInventory.getItemStack().isEmpty()) {
-                        container.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                            && inventory.getCarried().isEmpty()) {
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
                     }
 
@@ -112,9 +112,9 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
                 case CLONE: // creative dupe:
                     if (entry.isCraftable()) {
-                        container.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
-                    } else if (playerInventory.player.abilities.isCreativeMode) {
+                    } else if (inventory.player.abilities.instabuild) {
                         action = InventoryAction.CREATIVE_DUPLICATE;
                     }
                     break;
@@ -124,7 +124,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
             }
 
             if (action != null) {
-                container.handleInteraction(serial, action);
+                menu.handleInteraction(serial, action);
             }
         }
     }

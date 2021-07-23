@@ -75,8 +75,8 @@ public class ClickPacket extends BasePacket {
 
     // API for when a block was right clicked
     public ClickPacket(ItemUseContext context) {
-        this(context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(),
-                context.getPos().getZ(), context.getHand());
+        this(context.getClickedPos(), context.getClickedFace(), context.getClickedPos().getX(), context.getClickedPos().getY(),
+                context.getClickedPos().getZ(), context.getHand());
     }
 
     // API for when an item in hand was right-clicked, with no block context
@@ -121,14 +121,14 @@ public class ClickPacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
-        final ItemStack is = player.getHeldItem(hand);
+        final ItemStack is = player.getItemInHand(hand);
         final ItemDefinition<?> maybeMemoryCard = AEItems.MEMORY_CARD;
         final ItemDefinition<?> maybeColorApplicator = AEItems.COLOR_APPLICATOR;
 
         if (this.leftClick) {
-            final Block block = player.world.getBlockState(pos).getBlock();
+            final Block block = player.level.getBlockState(pos).getBlock();
             if (block instanceof CableBusBlock) {
-                ((CableBusBlock) block).onBlockClickPacket(player.world, pos, player, this.hand,
+                ((CableBusBlock) block).onBlockClickPacket(player.level, pos, player, this.hand,
                         new Vector3d(this.hitX, this.hitY, this.hitZ));
             }
         } else if (!is.isEmpty()) {

@@ -35,7 +35,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        this.pb = new ProgressBar(this.container, style.getImage("progressBar"), Direction.VERTICAL);
+        this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);
     }
 
@@ -43,7 +43,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        int progress = this.container.getCurrentProgress() * 100 / this.container.getMaxProgress();
+        int progress = this.menu.getCurrentProgress() * 100 / this.menu.getMaxProgress();
         this.pb.setFullMsg(new StringTextComponent(progress + "%"));
     }
 

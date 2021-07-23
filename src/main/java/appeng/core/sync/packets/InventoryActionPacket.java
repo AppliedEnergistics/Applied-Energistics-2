@@ -42,7 +42,7 @@ public class InventoryActionPacket extends BasePacket {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
-        this.slotItem = stream.readItemStack();
+        this.slotItem = stream.readItem();
     }
 
     // api
@@ -63,7 +63,7 @@ public class InventoryActionPacket extends BasePacket {
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(this.id);
-        data.writeItemStack(this.slotItem);
+        data.writeItem(this.slotItem);
 
         this.configureWrite(data);
     }
@@ -81,7 +81,7 @@ public class InventoryActionPacket extends BasePacket {
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(id);
-        data.writeItemStack(ItemStack.EMPTY);
+        data.writeItem(ItemStack.EMPTY);
 
         this.configureWrite(data);
     }
@@ -89,8 +89,8 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.openContainer instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+        if (sender.containerMenu instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
 
             if (action == InventoryAction.SET_FILTER) {
                 baseContainer.setFilter(this.slot, this.slotItem);
@@ -103,7 +103,7 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
-            player.inventory.setItemStack(this.slotItem);
+            player.inventory.setCarried(this.slotItem);
         }
     }
 }

@@ -41,12 +41,12 @@ import appeng.tile.misc.PaintSplotchesTileEntity;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid());
+        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
 
@@ -66,8 +66,8 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public void fillWithRain(final World w, final BlockPos pos) {
-        if (!w.isRemote()) {
+    public void handleRain(final World w, final BlockPos pos) {
+        if (!w.isClientSide()) {
             w.removeBlock(pos, false);
         }
     }
@@ -89,12 +89,12 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
         return true;
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, Fluid fluid) {
+    public boolean canBeReplaced(BlockState state, Fluid fluid) {
         return true;
     }
 

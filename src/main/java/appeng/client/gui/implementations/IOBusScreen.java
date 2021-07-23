@@ -69,17 +69,17 @@ public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.redstoneMode.set(container.getRedStoneMode());
-        this.redstoneMode.setVisibility(container.hasUpgrade(Upgrades.REDSTONE));
-        this.fuzzyMode.set(container.getFuzzyMode());
-        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
+        this.redstoneMode.set(menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(menu.hasUpgrade(Upgrades.REDSTONE));
+        this.fuzzyMode.set(menu.getFuzzyMode());
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
         if (this.craftMode != null) {
-            this.craftMode.set(container.getCraftingMode());
-            this.craftMode.setVisibility(container.hasUpgrade(Upgrades.CRAFTING));
+            this.craftMode.set(menu.getCraftingMode());
+            this.craftMode.setVisibility(menu.hasUpgrade(Upgrades.CRAFTING));
         }
         if (this.schedulingMode != null) {
-            this.schedulingMode.set(container.getSchedulingMode());
-            this.schedulingMode.setVisibility(container.hasUpgrade(Upgrades.CAPACITY));
+            this.schedulingMode.set(menu.getSchedulingMode());
+            this.schedulingMode.setVisibility(menu.hasUpgrade(Upgrades.CAPACITY));
         }
     }
 

@@ -59,7 +59,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     @Override
     public void onReady() {
         super.onReady();
-        final int value = this.world.getBlockState(this.pos).get(EnergyCellBlock.ENERGY_STORAGE);
+        final int value = this.level.getBlockState(this.worldPosition).getValue(EnergyCellBlock.ENERGY_STORAGE);
         this.currentMeta = (byte) value;
         this.changePowerLevel();
     }
@@ -83,21 +83,21 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
         if (this.currentMeta != storageLevel) {
             this.currentMeta = (byte) storageLevel;
-            this.world.setBlockState(this.pos,
-                    this.world.getBlockState(this.pos).with(EnergyCellBlock.ENERGY_STORAGE, storageLevel));
+            this.level.setBlockAndUpdate(this.worldPosition,
+                    this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE, storageLevel));
         }
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putDouble("internalCurrentPower", this.internalCurrentPower);
         return data;
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
 

@@ -47,16 +47,16 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @Override
     public boolean matches(StateHolder<?, ?> state) {
-        return propertyValues.contains(state.get(property));
+        return propertyValues.contains(state.getValue(property));
     }
 
     @Override
     public void writeToPacket(PacketBuffer buffer) {
-        buffer.writeEnumValue(MatcherType.MULTIPLE);
-        buffer.writeString(property.getName());
+        buffer.writeEnum(MatcherType.MULTIPLE);
+        buffer.writeUtf(property.getName());
         buffer.writeInt(propertyValues.size());
         for (T value : propertyValues) {
-            buffer.writeString(property.getName(value));
+            buffer.writeUtf(property.getName(value));
         }
     }
 
@@ -68,11 +68,11 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @OnlyIn(Dist.CLIENT)
     public static MultipleValuesMatcher<?> readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
-        String propertyName = buffer.readString();
+        String propertyName = buffer.readUtf();
         int size = buffer.readInt();
         List<String> values = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            values.add(buffer.readString());
+            values.add(buffer.readUtf());
         }
 
         return create(stateContainer, propertyName, values);

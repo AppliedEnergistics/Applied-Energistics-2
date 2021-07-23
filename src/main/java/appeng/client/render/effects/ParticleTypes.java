@@ -35,14 +35,14 @@ public final class ParticleTypes {
     public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
         @Override
-        public Codec<EnergyParticleData> func_230522_e_() {
+        public Codec<EnergyParticleData> codec() {
             return null;
         }
     };
     public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<LightningArcParticleData>(
             false, LightningArcParticleData.DESERIALIZER) {
         @Override
-        public Codec<LightningArcParticleData> func_230522_e_() {
+        public Codec<LightningArcParticleData> codec() {
             return null;
         }
     };

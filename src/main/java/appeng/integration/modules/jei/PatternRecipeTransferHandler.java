@@ -45,7 +45,7 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
                             new TranslationTextComponent("jei.appliedenergistics2.requires_processing_mode"));
         }
 
-        if (recipe.getRecipeOutput().isEmpty()) {
+        if (recipe.getResultItem().isEmpty()) {
             return this.helper
                     .createUserErrorWithTooltip(new TranslationTextComponent("jei.appliedenergistics2.no_output"));
         }

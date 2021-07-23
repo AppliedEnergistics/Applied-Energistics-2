@@ -39,8 +39,8 @@ public class ChargedOreFX extends RedstoneParticle {
     }
 
     @Override
-    public int getBrightnessForRender(final float par1) {
-        int j1 = super.getBrightnessForRender(par1);
+    public int getLightColor(final float par1) {
+        int j1 = super.getLightColor(par1);
         j1 = Math.max(j1 >> 20, j1 >> 4);
         j1 += 3;
         if (j1 > 15) {
@@ -58,7 +58,7 @@ public class ChargedOreFX extends RedstoneParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
+        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }

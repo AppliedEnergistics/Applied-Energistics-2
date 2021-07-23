@@ -24,6 +24,8 @@ import net.minecraft.util.math.MathHelper;
 
 import appeng.block.AEBaseBlock;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class QuartzOreBlock extends AEBaseBlock {
     public QuartzOreBlock(Properties props) {
         super(props);

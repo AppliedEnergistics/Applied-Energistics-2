@@ -52,7 +52,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(p -> {
-                    p.sendMessage(new StringTextComponent("Spawning in... " + this.countdown / 20), Util.DUMMY_UUID);
+                    p.sendMessage(new StringTextComponent("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
                 });
             }
 
@@ -63,7 +63,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
     }
 
     private void spawn() {
-        this.world.removeBlock(this.pos, false);
+        this.level.removeBlock(this.worldPosition, false);
 
         final Item i = this.is.getItem();
         final Direction side = Direction.UP;
@@ -73,10 +73,10 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
         for (int y = 0; y < this.size; y++) {
             for (int x = -half; x < half; x++) {
                 for (int z = -half; z < half; z++) {
-                    final BlockPos p = this.pos.add(x, y - 1, z);
-                    ItemUseContext useContext = new DirectionalPlaceContext(this.world, p, side, this.is,
+                    final BlockPos p = this.worldPosition.offset(x, y - 1, z);
+                    ItemUseContext useContext = new DirectionalPlaceContext(this.level, p, side, this.is,
                             side.getOpposite());
-                    i.onItemUse(useContext);
+                    i.useOn(useContext);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
     void click(final PlayerEntity player) {
         if (!isRemote()) {
-            final ItemStack hand = player.inventory.getCurrentItem();
+            final ItemStack hand = player.inventory.getSelected();
             this.who = player;
 
             if (hand.isEmpty()) {
@@ -103,7 +103,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
                     this.size = 64;
                 }
 
-                player.sendMessage(new StringTextComponent("Size: " + this.size), Util.DUMMY_UUID);
+                player.sendMessage(new StringTextComponent("Size: " + this.size), Util.NIL_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

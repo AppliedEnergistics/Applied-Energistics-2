@@ -47,11 +47,11 @@ public class LightDetectorTileEntity extends AEBaseTileEntity implements ITickab
     }
 
     public void updateLight() {
-        final int val = this.world.getLight(this.pos);
+        final int val = this.level.getMaxLocalRawBrightness(this.worldPosition);
 
         if (this.lastLight != val) {
             this.lastLight = val;
-            Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+            Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
         }
     }
 

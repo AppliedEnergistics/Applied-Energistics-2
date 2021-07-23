@@ -71,9 +71,9 @@ final class VoxelShapeCache {
         VoxelShape shape = VoxelShapes.create(boxes.get(i));
         for (; i < boxes.size(); i++) {
             AxisAlignedBB box = boxes.get(i);
-            shape = VoxelShapes.combine(shape, VoxelShapes.create(box), IBooleanFunction.OR);
+            shape = VoxelShapes.joinUnoptimized(shape, VoxelShapes.create(box), IBooleanFunction.OR);
         }
-        return shape.simplify();
+        return shape.optimize();
     }
 
 }

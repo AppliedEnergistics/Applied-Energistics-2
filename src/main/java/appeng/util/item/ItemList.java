@@ -149,7 +149,7 @@ public final class ItemList implements IItemList<IAEItemStack> {
     }
 
     private ItemVariantList makeRecordMap(Item item) {
-        if (item.isDamageable()) {
+        if (item.canBeDepleted()) {
             return new FuzzyItemVariantList();
         } else {
             return new NormalItemVariantList();

@@ -64,7 +64,7 @@ public final class FluidSoundHelper {
      */
     private static void playSound(PlayerEntity player, SoundEvent fillSound) {
         // This should just play the sound for the player themselves
-        player.playSound(fillSound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        player.playNotifySound(fillSound, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
 }

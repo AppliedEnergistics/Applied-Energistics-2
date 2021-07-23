@@ -122,9 +122,9 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
 
         final TileEntity te = this.getHost().getTile();
-        final World w = te.getWorld();
+        final World w = te.getLevel();
         final AEPartLocation side = this.getSide();
-        final BlockPos pos = te.getPos().offset(side.getDirection());
+        final BlockPos pos = te.getBlockPos().relative(side.getDirection());
         final BlockState state = w.getBlockState(pos);
 
         if (this.canReplace(w, state, pos)) {

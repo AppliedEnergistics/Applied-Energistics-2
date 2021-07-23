@@ -28,11 +28,11 @@ public class WrapperCursorItemHandler extends ItemStackHandler {
         super(1);
 
         this.inv = PlayerInventory;
-        this.setStackInSlot(0, PlayerInventory.getItemStack());
+        this.setStackInSlot(0, PlayerInventory.getCarried());
     }
 
     @Override
     protected void onContentsChanged(int slot) {
-        this.inv.setItemStack(this.getStackInSlot(slot));
+        this.inv.setCarried(this.getStackInSlot(slot));
     }
 }

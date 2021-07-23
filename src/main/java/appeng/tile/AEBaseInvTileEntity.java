@@ -46,14 +46,14 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundNBT opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
                 final CompoundNBT item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.read(item));
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.of(item));
             }
         }
     }
@@ -61,8 +61,8 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     public abstract @Nonnull IItemHandler getInternalInventory();
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundNBT opt = new CompoundNBT();
@@ -70,7 +70,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
                 final CompoundNBT item = new CompoundNBT();
                 final ItemStack is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
-                    is.write(item);
+                    is.save(item);
                 }
                 opt.put("item" + x, item);
             }

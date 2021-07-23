@@ -50,10 +50,10 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
             if (displayed instanceof IAEItemStack) {
                 final IAEItemStack ais = (IAEItemStack) displayed;
                 probeInfo.text(TheOneProbeText.SHOWING
-                        .getTranslationComponent(ais.asItemStackRepresentation().getDisplayName()));
+                        .getTranslationComponent(ais.asItemStackRepresentation().getHoverName()));
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
-                final String fluidName = I18n.format(ais.getFluidStack().getTranslationKey());
+                final String fluidName = I18n.get(ais.getFluidStack().getTranslationKey());
                 final ITextComponent text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
 
                 probeInfo.text(text);

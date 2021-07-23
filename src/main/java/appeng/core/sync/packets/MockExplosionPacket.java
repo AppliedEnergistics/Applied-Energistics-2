@@ -61,7 +61,7 @@ public class MockExplosionPacket extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final World world = player.getEntityWorld();
+        final World world = player.getCommandSenderWorld();
         world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
     }
 }

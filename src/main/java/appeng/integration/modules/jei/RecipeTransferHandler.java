@@ -75,7 +75,7 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
         // Check that the recipe can actually be looked up via the manager, i.e. our facade recipes have an ID, but are
         // never registered with the recipe manager.
         boolean canSendReference = true;
-        if (!player.getEntityWorld().getRecipeManager().getRecipe(recipeId).isPresent()) {
+        if (!player.getCommandSenderWorld().getRecipeManager().byKey(recipeId).isPresent()) {
             // Validate that the recipe is a shapeless or shapedrecipe, since we can serialize those
             if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
                 return this.helper
@@ -84,7 +84,7 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
             canSendReference = false;
         }
 
-        if (!irecipe.canFit(3, 3)) {
+        if (!irecipe.canCraftInDimensions(3, 3)) {
             return this.helper.createUserErrorWithTooltip(
                     new TranslationTextComponent("jei.appliedenergistics2.recipe_too_large"));
         }
@@ -117,7 +117,7 @@ abstract class RecipeTransferHandler<T extends Container & IContainerCraftingPac
                     if (item.isInput() && inputIndex < flatIngredients.size()) {
                         ItemStack displayedIngredient = item.getDisplayedIngredient();
                         if (displayedIngredient != null) {
-                            flatIngredients.set(inputIndex, Ingredient.fromStacks(displayedIngredient));
+                            flatIngredients.set(inputIndex, Ingredient.of(displayedIngredient));
                         }
                     } else if (!item.isInput() && output.isEmpty()) {
                         output = item.getDisplayedIngredient();

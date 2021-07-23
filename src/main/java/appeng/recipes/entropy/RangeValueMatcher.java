@@ -43,16 +43,16 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @Override
     public boolean matches(StateHolder<?, ?> state) {
-        T value = state.get(property);
+        T value = state.getValue(property);
         return value.compareTo(minValue) >= 0 && value.compareTo(maxValue) <= 0;
     }
 
     @Override
     public void writeToPacket(PacketBuffer buffer) {
-        buffer.writeEnumValue(MatcherType.RANGE);
-        buffer.writeString(property.getName());
-        buffer.writeString(property.getName(minValue));
-        buffer.writeString(property.getName(maxValue));
+        buffer.writeEnum(MatcherType.RANGE);
+        buffer.writeUtf(property.getName());
+        buffer.writeUtf(property.getName(minValue));
+        buffer.writeUtf(property.getName(maxValue));
     }
 
     public static StateMatcher create(StateContainer<?, ?> stateContainer, String propertyName, String minValueName,
@@ -63,9 +63,9 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
 
     @OnlyIn(Dist.CLIENT)
     public static StateMatcher readFromPacket(StateContainer<?, ?> stateContainer, PacketBuffer buffer) {
-        String propertyName = buffer.readString();
-        String minName = buffer.readString();
-        String maxName = buffer.readString();
+        String propertyName = buffer.readUtf();
+        String minName = buffer.readUtf();
+        String maxName = buffer.readUtf();
         return create(stateContainer, propertyName, minName, maxName);
     }
 }

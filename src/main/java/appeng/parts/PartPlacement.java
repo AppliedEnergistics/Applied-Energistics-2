@@ -83,7 +83,7 @@ public class PartPlacement {
         final LookDirection dir = InteractionUtil.getPlayerRay(player);
         RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.BlockMode.OUTLINE,
                 RayTraceContext.FluidMode.NONE, player);
-        final BlockRayTraceResult mop = world.rayTraceBlocks(rtc);
+        final BlockRayTraceResult mop = world.clip(rtc);
         BlockItemUseContext useContext = new BlockItemUseContext(new ItemUseContext(player, hand, mop));
 
         if (!held.isEmpty() && InteractionUtil.isWrench(player, held, pos)
@@ -92,7 +92,7 @@ public class PartPlacement {
                 return ActionResultType.FAIL;
             }
 
-            final TileEntity tile = world.getTileEntity(pos);
+            final TileEntity tile = world.getBlockEntity(pos);
             IPartHost host = null;
 
             if (tile instanceof IPartHost) {
@@ -100,11 +100,11 @@ public class PartPlacement {
             }
 
             if (host != null) {
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     if (mop.getType() == RayTraceResult.Type.BLOCK) {
                         final List<ItemStack> is = new ArrayList<>();
                         final SelectedPart sp = selectPart(player, host,
-                                mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
+                                mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()));
 
                         // SelectedPart contains either a facade or a part. Never both.
                         if (sp.part != null) {
@@ -125,17 +125,17 @@ public class PartPlacement {
                         }
                     }
                 } else {
-                    player.swingArm(hand);
+                    player.swing(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
-                return ActionResultType.func_233537_a_(world.isRemote());
+                return ActionResultType.sidedSuccess(world.isClientSide());
             }
 
             return ActionResultType.FAIL;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         IPartHost host = null;
 
         if (tile instanceof IPartHost) {
@@ -146,7 +146,7 @@ public class PartPlacement {
             final IFacadePart fp = isFacade(held, AEPartLocation.fromFacing(side));
             if (fp != null) {
                 if (host != null) {
-                    if (!world.isRemote) {
+                    if (!world.isClientSide) {
                         if (host.getPart(AEPartLocation.INTERNAL) == null) {
                             return ActionResultType.FAIL;
                         }
@@ -159,7 +159,7 @@ public class PartPlacement {
                                 held.grow(-1);
 
                                 if (held.getCount() == 0) {
-                                    player.inventory.mainInventory.set(player.inventory.currentItem,
+                                    player.inventory.items.set(player.inventory.selected,
                                             ItemStack.EMPTY);
                                     MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                 }
@@ -167,27 +167,27 @@ public class PartPlacement {
                             return ActionResultType.CONSUME;
                         }
                     } else {
-                        player.swingArm(hand);
+                        player.swing(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                        return ActionResultType.func_233537_a_(world.isRemote());
+                        return ActionResultType.sidedSuccess(world.isClientSide());
                     }
                 }
                 return ActionResultType.FAIL;
             }
         }
 
-        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && world.isAirBlock(pos)) {
+        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && world.isEmptyBlock(pos)) {
             if (mop.getType() == RayTraceResult.Type.BLOCK) {
-                Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
-                        -mop.getPos().getZ());
+                Vector3d hitVec = mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
+                        -mop.getBlockPos().getZ());
                 final SelectedPart sPart = selectPart(player, host, hitVec);
                 if (sPart != null && sPart.part != null && sPart.part.onShiftActivate(player, hand, hitVec)) {
-                    if (world.isRemote()) {
+                    if (world.isClientSide()) {
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     }
-                    return ActionResultType.func_233537_a_(world.isRemote());
+                    return ActionResultType.sidedSuccess(world.isClientSide());
                 }
             }
         }
@@ -205,16 +205,16 @@ public class PartPlacement {
             BlockState blockState = world.getBlockState(pos);
             // FIXME isReplacable on the block state allows for more control, but requires
             // an item use context
-            if (!blockState.isAir(world, pos) && !blockState.isReplaceable(useContext)) {
+            if (!blockState.isAir(world, pos) && !blockState.canBeReplaced(useContext)) {
                 offset = side;
-                if (!world.isRemote()) {
+                if (!world.isClientSide()) {
                     side = side.getOpposite();
                 }
             }
 
-            te_pos = offset == null ? pos : pos.offset(offset);
+            te_pos = offset == null ? pos : pos.relative(offset);
 
-            tile = world.getTileEntity(te_pos);
+            tile = world.getBlockEntity(te_pos);
             if (tile instanceof IPartHost) {
                 host = (IPartHost) tile;
             }
@@ -224,8 +224,8 @@ public class PartPlacement {
             BlockItem multiPartBlockItem = (BlockItem) multiPart.asItem();
 
             boolean hostIsNotPresent = host == null;
-            BlockState multiPartBlockState = multiPartBlock.getDefaultState();
-            boolean canMultiPartBePlaced = multiPartBlockState.isValidPosition(world, te_pos);
+            BlockState multiPartBlockState = multiPartBlock.defaultBlockState();
+            boolean canMultiPartBePlaced = multiPartBlockState.canSurvive(world, te_pos);
 
             // We cannot override the item stack of normal use context, so we use this hack
             BlockItemUseContext mpUseCtx = new BlockItemUseContext(
@@ -234,9 +234,9 @@ public class PartPlacement {
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
             if (hostIsNotPresent && canMultiPartBePlaced
-                    && multiPartBlockItem.tryPlace(mpUseCtx).isSuccessOrConsume()) {
-                if (!world.isRemote) {
-                    tile = world.getTileEntity(te_pos);
+                    && multiPartBlockItem.place(mpUseCtx).consumesAction()) {
+                if (!world.isClientSide) {
+                    tile = world.getBlockEntity(te_pos);
 
                     if (tile instanceof IPartHost) {
                         host = (IPartHost) tile;
@@ -244,10 +244,10 @@ public class PartPlacement {
 
                     pass = PlaceType.INTERACT_SECOND_PASS;
                 } else {
-                    player.swingArm(hand);
+                    player.swing(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                    return ActionResultType.func_233537_a_(world.isRemote());
+                    return ActionResultType.sidedSuccess(world.isClientSide());
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
                 return ActionResultType.FAIL;
@@ -260,12 +260,12 @@ public class PartPlacement {
 
         if (!host.canAddPart(held, AEPartLocation.fromFacing(side))) {
             if (pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM) {
-                te_pos = pos.offset(side);
+                te_pos = pos.relative(side);
 
                 final BlockState blkState = world.getBlockState(te_pos);
 
                 // FIXME: this is always true (host was de-referenced above)
-                if (blkState.isAir(world, te_pos) || blkState.isReplaceable(useContext) || host != null) {
+                if (blkState.isAir(world, te_pos) || blkState.canBeReplaced(useContext) || host != null) {
                     return place(held, te_pos, side.getOpposite(), player, hand, world,
                             pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
                                     : PlaceType.PLACE_ITEM,
@@ -275,13 +275,13 @@ public class PartPlacement {
             return ActionResultType.PASS;
         }
 
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             if (mop.getType() != RayTraceResult.Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
-                        mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
+                        mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()));
 
                 if (sp.part != null && !InteractionUtil.isInAlternateUseMode(player)
-                        && sp.part.onActivate(player, hand, mop.getHitVec())) {
+                        && sp.part.onActivate(player, hand, mop.getLocation())) {
                     return ActionResultType.FAIL;
                 }
             }
@@ -302,19 +302,19 @@ public class PartPlacement {
                 if (!player.isCreative()) {
                     held.grow(-1);
                     if (held.getCount() == 0) {
-                        player.setHeldItem(hand, ItemStack.EMPTY);
+                        player.setItemInHand(hand, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                     }
                 }
             }
         } else {
-            player.swingArm(hand);
+            player.swing(hand);
         }
-        return ActionResultType.func_233537_a_(world.isRemote());
+        return ActionResultType.sidedSuccess(world.isClientSide());
     }
 
     private static float getEyeOffset(final PlayerEntity p) {
-        if (p.world.isRemote) {
+        if (p.level.isClientSide) {
             return InteractionUtil.getEyeOffset(p);
         }
 
@@ -350,26 +350,26 @@ public class PartPlacement {
             return;
         }
 
-        if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().world.isRemote) {
+        if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().level.isClientSide) {
             // re-check to see if this event was already channeled, cause these two events
             // are really stupid...
             final RayTraceResult mop = InteractionUtil.rayTrace(event.getPlayer(), true, false);
             final Minecraft mc = Minecraft.getInstance();
 
             final float f = 1.0F;
-            final double d0 = mc.playerController.getBlockReachDistance();
-            final Vector3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
+            final double d0 = mc.gameMode.getPickRange();
+            final Vector3d vec3 = mc.getCameraEntity().getEyePosition(f);
 
-            if (mop instanceof BlockRayTraceResult && mop.getHitVec().distanceTo(vec3) < d0) {
+            if (mop instanceof BlockRayTraceResult && mop.getLocation().distanceTo(vec3) < d0) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) mop;
 
-                final World w = event.getEntity().world;
-                final TileEntity te = w.getTileEntity(brtr.getPos());
+                final World w = event.getEntity().level;
+                final TileEntity te = w.getBlockEntity(brtr.getBlockPos());
                 if (te instanceof IPartHost && this.wasCanceled) {
                     event.setCanceled(true);
                 }
             } else {
-                final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
+                final ItemStack held = event.getPlayer().getItemInHand(event.getHand());
 
                 boolean supportedItem = AEItems.MEMORY_CARD.isSameAs(held);
                 supportedItem |= AEItems.COLOR_APPLICATOR.isSameAs(held);
@@ -378,17 +378,17 @@ public class PartPlacement {
                     NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
                 }
             }
-        } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().world.isRemote) {
+        } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().level.isClientSide) {
             if (this.placing.get() != null) {
                 return;
             }
 
             this.placing.set(event);
 
-            final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
+            final ItemStack held = event.getPlayer().getItemInHand(event.getHand());
             World w = event.getWorld();
             if (place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    w, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResultType.func_233537_a_(w.isRemote())) {
+                    w, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResultType.sidedSuccess(w.isClientSide())) {
                 event.setCanceled(true);
                 this.wasCanceled = true;
             }

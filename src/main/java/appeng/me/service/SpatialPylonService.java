@@ -96,7 +96,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
 
             // Expand the bounding box
             if (maxPoint == null) {
-                maxPoint = cl.getBoundsMax().toMutable();
+                maxPoint = cl.getBoundsMax().mutable();
             } else {
                 maxPoint.setX(Math.max(maxPoint.getX(), cl.getBoundsMax().getX()));
                 maxPoint.setY(Math.max(maxPoint.getY(), cl.getBoundsMax().getY()));
@@ -104,7 +104,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
             }
 
             if (minPoint == null) {
-                minPoint = cl.getBoundsMin().toMutable();
+                minPoint = cl.getBoundsMin().mutable();
             } else {
                 minPoint.setX(Math.min(minPoint.getX(), cl.getBoundsMin().getX()));
                 minPoint.setY(Math.min(minPoint.getY(), cl.getBoundsMin().getY()));
@@ -114,8 +114,8 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
             pylonBlocks += cl.tileCount();
         }
 
-        this.captureMin = minPoint != null ? minPoint.toImmutable() : null;
-        this.captureMax = maxPoint != null ? maxPoint.toImmutable() : null;
+        this.captureMin = minPoint != null ? minPoint.immutable() : null;
+        this.captureMax = maxPoint != null ? maxPoint.immutable() : null;
 
         double maxPower = 0;
         double minPower = 0;

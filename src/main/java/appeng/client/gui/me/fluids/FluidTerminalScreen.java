@@ -96,12 +96,12 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
             // TODO: Allow more options
             if (mouseButton == 0 && entry != null) {
                 AELog.debug("mouse0 GUI STACK SIZE %s", entry.getStoredAmount());
-                container.handleInteraction(entry.getSerial(), InventoryAction.FILL_ITEM);
+                menu.handleInteraction(entry.getSerial(), InventoryAction.FILL_ITEM);
             } else {
                 if (entry != null) {
                     AELog.debug("mouse1 GUI STACK SIZE %s", entry.getStoredAmount());
                 }
-                container.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
+                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
             }
         }
     }

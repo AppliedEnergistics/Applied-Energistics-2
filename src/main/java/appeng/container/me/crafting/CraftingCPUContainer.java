@@ -121,31 +121,31 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeListener(final IContainerListener c) {
-        super.removeListener(c);
+    public void removeSlotListener(final IContainerListener c) {
+        super.removeSlotListener(c);
 
-        if (this.listeners.isEmpty() && this.cpu != null) {
+        if (this.containerListeners.isEmpty() && this.cpu != null) {
             this.cpu.removeListener(this);
         }
     }
 
     @Override
-    public void onContainerClosed(final PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(final PlayerEntity player) {
+        super.removed(player);
         if (this.cpu != null) {
             this.cpu.removeListener(this);
         }
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isServer() && this.cpu != null && this.incrementalUpdateHelper.hasChanges()) {
             CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu);
             this.incrementalUpdateHelper.commitChanges();
 
             sendPacketToClient(new CraftingStatusPacket(status));
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override

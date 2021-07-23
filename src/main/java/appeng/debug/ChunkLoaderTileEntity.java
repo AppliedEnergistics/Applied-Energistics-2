@@ -37,35 +37,35 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
     public void onLoad() {
         super.onLoad();
 
-        World world = getWorld();
+        World world = getLevel();
         if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, true);
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, true);
         }
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
 
-        World world = getWorld();
+        World world = getLevel();
         if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, false);
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 
     @Override
     public void tick() {
         // Validate the force-status
-        World world = getWorld();
+        World world = getLevel();
         if (world instanceof ServerWorld) {
-            ChunkPos chunkPos = new ChunkPos(getPos());
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
             ServerWorld serverWorld = (ServerWorld) world;
 
-            if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.getDimensionKey());
-                serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
+            if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
+                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension());
+                serverWorld.setChunkForced(chunkPos.x, chunkPos.z, false);
             }
         }
     }

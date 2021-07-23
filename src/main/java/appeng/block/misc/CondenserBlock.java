@@ -39,7 +39,7 @@ import appeng.util.InteractionUtil;
 public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
     public CondenserBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -49,14 +49,14 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
             return ActionResultType.PASS;
         }
 
-        if (!w.isRemote()) {
+        if (!w.isClientSide()) {
             final CondenserTileEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
             }
         }
 
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 }

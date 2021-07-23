@@ -40,26 +40,26 @@ public class ClientReadOnlySlot extends Slot {
     }
 
     @Override
-    public final boolean isItemValid(final ItemStack stack) {
+    public final boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void putStack(final ItemStack stack) {
+    public final void set(final ItemStack stack) {
     }
 
     @Override
-    public final int getSlotStackLimit() {
+    public final int getMaxStackSize() {
         return 0;
     }
 
     @Override
-    public final ItemStack decrStackSize(int amount) {
+    public final ItemStack remove(int amount) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public final boolean canTakeStack(PlayerEntity player) {
+    public final boolean mayPickup(PlayerEntity player) {
         return false;
     }
 }

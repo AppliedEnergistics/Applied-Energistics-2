@@ -102,7 +102,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     @Override
     public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
-        if (pos.offset(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
             connectionHelper.updateConnections();
@@ -130,14 +130,14 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         }
 
         final TileEntity te = this.getTile();
-        final World w = te.getWorld();
-        final BlockPos pos = te.getPos().offset(this.getSide().getDirection());
+        final World w = te.getLevel();
+        final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
 
         BlockState blockstate = w.getBlockState(pos);
         if (blockstate.getBlock() instanceof IBucketPickupHandler) {
             FluidState fluidState = blockstate.getFluidState();
 
-            Fluid fluid = fluidState.getFluid();
+            Fluid fluid = fluidState.getType();
             if (isFluidBlacklisted(fluid)) {
                 return TickRateModulation.SLEEP;
             }
@@ -145,13 +145,13 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
-                        .fromFluidStack(new FluidStack(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
+                        .fromFluidStack(new FluidStack(fluidState.getType(), FluidAttributes.BUCKET_VOLUME));
                 if (this.storeFluid(grid, blockFluid, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
+                    fluid = ((IBucketPickupHandler) blockstate.getBlock()).takeLiquid(w, pos, blockstate);
                     this.storeFluid(grid,
                             AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);

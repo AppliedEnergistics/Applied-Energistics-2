@@ -46,14 +46,14 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
 
     @Override
     public void tick() {
-        World world = this.getWorld();
-        if (world == null || world.isRemote) {
+        World world = this.getLevel();
+        if (world == null || world.isClientSide) {
             return;
         }
 
         int tier = 1;
         for (Direction facing : Direction.values()) {
-            final TileEntity te = world.getTileEntity(this.getPos().offset(facing));
+            final TileEntity te = world.getBlockEntity(this.getBlockPos().relative(facing));
 
             if (te instanceof EnergyGeneratorTileEntity) {
                 tier++;
@@ -63,7 +63,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            final TileEntity te = this.getWorld().getTileEntity(this.getPos().offset(facing));
+            final TileEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
             if (te == null) {
                 continue;
             }

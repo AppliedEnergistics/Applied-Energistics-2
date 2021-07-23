@@ -52,6 +52,8 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 
+import net.minecraft.item.Item.Properties;
+
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
 
     /**
@@ -68,26 +70,26 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return Api.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
-                context.getHand(), context.getWorld());
+        return Api.instance().partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(), context.getPlayer(),
+                context.getHand(), context.getLevel());
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack is) {
+    public ITextComponent getName(ItemStack is) {
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getDisplayName(is).deepCopy().appendString(" - ").appendSibling(in.getDisplayName());
+                return super.getName(is).copy().append(" - ").append(in.getHoverName());
             }
         } catch (final Throwable ignored) {
 
         }
 
-        return super.getDisplayName(is);
+        return super.getName(is);
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
     }
 
     public ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
@@ -102,15 +104,15 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         }
 
         // We only support the default state for facades. Sorry.
-        BlockState blockState = block.getDefaultState();
+        BlockState blockState = block.defaultBlockState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
-        final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
+        final boolean isModel = blockState.getRenderShape() == BlockRenderType.MODEL;
 
-        final BlockState defaultState = block.getDefaultState();
+        final BlockState defaultState = block.defaultBlockState();
         final boolean isTileEntity = block.hasTileEntity(defaultState);
-        final boolean isFullCube = defaultState.isNormalCube(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
+        final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
 
         final boolean isTileEntityAllowed = !isTileEntity || areTileEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
@@ -162,23 +164,23 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         ItemStack baseItemStack = this.getTextureItem(is);
 
         if (baseItemStack.isEmpty()) {
-            return Blocks.GLASS.getDefaultState();
+            return Blocks.GLASS.defaultBlockState();
         }
 
-        Block block = Block.getBlockFromItem(baseItemStack.getItem());
+        Block block = Block.byItem(baseItemStack.getItem());
 
         if (block == Blocks.AIR) {
-            return Blocks.GLASS.getDefaultState();
+            return Blocks.GLASS.defaultBlockState();
         }
 
-        return block.getDefaultState();
+        return block.defaultBlockState();
     }
 
     public ItemStack createFromID(final int id) {
         ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...
-        Item item = Registry.ITEM.getByValue(id);
+        Item item = Registry.ITEM.byId(id);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
@@ -198,7 +200,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return false;
         }
 
-        return RenderTypeLookup.canRenderInLayer(blockState, RenderType.getTranslucent())
-                || RenderTypeLookup.canRenderInLayer(blockState, RenderType.getTranslucentNoCrumbling());
+        return RenderTypeLookup.canRenderInLayer(blockState, RenderType.translucent())
+                || RenderTypeLookup.canRenderInLayer(blockState, RenderType.translucentNoCrumbling());
     }
 }

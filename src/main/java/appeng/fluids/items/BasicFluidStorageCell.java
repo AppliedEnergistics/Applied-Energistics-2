@@ -32,6 +32,8 @@ import appeng.fluids.helper.FluidCellConfig;
 import appeng.items.storage.AbstractStorageCell;
 import appeng.util.InventoryAdaptor;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-17
@@ -78,7 +80,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
         final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
         if (!extraA.isEmpty()) {
-            player.dropItem(extraA, false);
+            player.drop(extraA, false);
         }
     }
 }

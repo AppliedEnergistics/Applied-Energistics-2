@@ -53,9 +53,9 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.fuzzyMode.set(this.container.getFuzzyMode());
-        this.fuzzyMode.setVisibility(container.hasUpgrade(Upgrades.FUZZY));
-        this.placeMode.set(this.container.getPlaceMode());
+        this.fuzzyMode.set(this.menu.getFuzzyMode());
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
+        this.placeMode.set(this.menu.getPlaceMode());
     }
 
 }

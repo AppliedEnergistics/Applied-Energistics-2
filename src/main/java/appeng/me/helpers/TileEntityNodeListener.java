@@ -21,6 +21,8 @@ package appeng.me.helpers;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 
+import appeng.api.networking.IGridNodeListener.State;
+
 /**
  * A simple node listener for {@link IGridConnectedTileEntity} that host nodes and don't have special requirements.
  */

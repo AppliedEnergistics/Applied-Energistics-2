@@ -62,7 +62,7 @@ public class DimensionTypeMixin {
                 false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, 1.0f);
 
-        Registry.register(registryTracker.func_230520_a_(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.getLocation(),
+        Registry.register(registryTracker.dimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
                 dimensionType);
     }
 

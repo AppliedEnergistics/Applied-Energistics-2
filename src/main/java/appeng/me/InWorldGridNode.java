@@ -66,7 +66,7 @@ public class InWorldGridNode extends GridNode {
         // Find adjacent nodes in the world based on the sides of the host this node is exposed on
         var pos = new BlockPos.Mutable();
         sides: for (var direction : exposedOnSides) {
-            pos.setAndMove(location, direction);
+            pos.setWithOffset(location, direction);
             var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;
@@ -106,7 +106,7 @@ public class InWorldGridNode extends GridNode {
         }
 
         for (var direction : newSecurityConnections) {
-            pos.setAndMove(location, direction);
+            pos.setWithOffset(location, direction);
             var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;

@@ -29,6 +29,8 @@ import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.util.InventoryAdaptor;
 
+import net.minecraft.item.Item.Properties;
+
 public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack> {
 
     protected final int bytesPerType;
@@ -60,7 +62,7 @@ public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack
     protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
         final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
         if (!extraA.isEmpty()) {
-            player.dropItem(extraA, false);
+            player.drop(extraA, false);
         }
     }
 }

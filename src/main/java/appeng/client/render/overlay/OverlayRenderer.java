@@ -52,11 +52,11 @@ public class OverlayRenderer {
     private void render(MatrixStack matrixStack, IVertexBuilder builder, boolean renderLines) {
         int[] cols = OverlayRenderType.decomposeColor(this.source.getOverlayColor());
         for (ChunkPos pos : this.source.getOverlayChunks()) {
-            matrixStack.push();
-            matrixStack.translate(pos.getXStart(), 0, pos.getZStart());
-            Matrix4f posMat = matrixStack.getLast().getMatrix();
+            matrixStack.pushPose();
+            matrixStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
+            Matrix4f posMat = matrixStack.last().pose();
             addVertices(builder, posMat, pos, cols, renderLines);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 
@@ -78,69 +78,69 @@ public class OverlayRenderer {
 
         if (noNorth) {
             // Face North, Edge Bottom
-            wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             // Face North, Edge Top
-            wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
         if (noSouth) {
             // Face South, Edge Bottom
-            wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             // Face South, Edge Top
-            wr.pos(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
         if (noWest) {
             // Face West, Edge Bottom
-            wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             // Face West, Edge Top
-            wr.pos(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
         if (noEast) {
             // Face East, Edge Bottom
-            wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             // Face East, Edge Top
-            wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
         if (renderLines) {
             if (noNorth || noWest) {
                 // Face North, Edge West
-                wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-                wr.pos(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x1, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             }
 
             if (noNorth || noEast) {
                 // Face North, Edge East
-                wr.pos(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-                wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x2, y2, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             }
 
             if (noSouth || noEast) {
                 // Face South, Edge East
-                wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-                wr.pos(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x2, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             }
             if (noSouth || noWest) {
                 // Face South, Edge West
-                wr.pos(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-                wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x1, y2, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+                wr.vertex(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
             }
         } else {
             // Bottom Face
-            wr.pos(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
-            wr.pos(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z1).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x2, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
+            wr.vertex(posMat, x1, y1, z2).color(cols[1], cols[2], cols[3], cols[0]).endVertex();
         }
 
     }

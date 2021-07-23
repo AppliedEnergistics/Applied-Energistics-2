@@ -76,6 +76,8 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
+import appeng.api.networking.IGridNodeListener.State;
+
 public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 
     private final IManagedGridNode mainNode;
@@ -107,8 +109,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     public final boolean isRemote() {
         return this.tile == null
-                || this.tile.getWorld() == null
-                || this.tile.getWorld().isRemote();
+                || this.tile.getLevel() == null
+                || this.tile.getLevel().isClientSide();
     }
 
     public IPartHost getHost() {
@@ -147,22 +149,22 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     public World getWorld() {
-        return this.tile.getWorld();
+        return this.tile.getLevel();
     }
 
     @Override
     public ITextComponent getCustomInventoryName() {
-        return this.getItemStack().getDisplayName();
+        return this.getItemStack().getHoverName();
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.getItemStack().hasDisplayName();
+        return this.getItemStack().hasCustomHoverName();
     }
 
     @Override
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        crashreportcategory.addDetail("Part Side", this.getSide());
+        crashreportcategory.setDetail("Part Side", this.getSide());
     }
 
     @Override
@@ -237,7 +239,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void addToWorld() {
-        this.mainNode.create(getWorld(), getTile().getPos());
+        this.mainNode.create(getWorld(), getTile().getBlockPos());
     }
 
     @Override
@@ -380,7 +382,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     private boolean useMemoryCard(final PlayerEntity player) {
-        final ItemStack memCardIS = player.inventory.getCurrentItem();
+        final ItemStack memCardIS = player.inventory.getSelected();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
             final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
@@ -392,7 +394,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
                 is = AEBlocks.INTERFACE.stack();
             }
 
-            final String name = is.getTranslationKey();
+            final String name = is.getDescriptionId();
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
                 final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
@@ -483,7 +485,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
                 var items = List.of(is.copy());
                 nodeOwner.getHost().removePart(nodeOwner.getSide(), false);
                 var tile = nodeOwner.getTile();
-                Platform.spawnDrops(tile.getWorld(), tile.getPos(), items);
+                Platform.spawnDrops(tile.getLevel(), tile.getBlockPos(), items);
                 is.setCount(0);
             }
         }

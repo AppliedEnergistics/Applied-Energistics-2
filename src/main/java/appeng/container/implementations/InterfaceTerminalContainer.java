@@ -86,12 +86,12 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (isClient()) {
             return;
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
 
         IGrid grid = getGrid();
 
@@ -163,7 +163,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         final ItemStack is = inv.server.getStackInSlot(slot);
-        final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
+        final boolean hasItemInHand = !player.inventory.getCarried().isEmpty();
 
         final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
 
@@ -177,20 +177,20 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 if (hasItemInHand) {
                     ItemStack inSlot = theSlot.getStackInSlot(0);
                     if (inSlot.isEmpty()) {
-                        player.inventory.setItemStack(interfaceSlot.addItems(player.inventory.getItemStack()));
+                        player.inventory.setCarried(interfaceSlot.addItems(player.inventory.getCarried()));
                     } else {
                         inSlot = inSlot.copy();
-                        final ItemStack inHand = player.inventory.getItemStack().copy();
+                        final ItemStack inHand = player.inventory.getCarried().copy();
 
                         ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
-                        player.inventory.setItemStack(ItemStack.EMPTY);
+                        player.inventory.setCarried(ItemStack.EMPTY);
 
-                        player.inventory.setItemStack(interfaceSlot.addItems(inHand.copy()));
+                        player.inventory.setCarried(interfaceSlot.addItems(inHand.copy()));
 
-                        if (player.inventory.getItemStack().isEmpty()) {
-                            player.inventory.setItemStack(inSlot);
+                        if (player.inventory.getCarried().isEmpty()) {
+                            player.inventory.setCarried(inSlot);
                         } else {
-                            player.inventory.setItemStack(inHand);
+                            player.inventory.setCarried(inHand);
                             ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
                         }
                     }
@@ -238,8 +238,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 break;
             case CREATIVE_DUPLICATE:
 
-                if (player.abilities.isCreativeMode && !hasItemInHand) {
-                    player.inventory.setItemStack(is.isEmpty() ? ItemStack.EMPTY : is.copy());
+                if (player.abilities.instabuild && !hasItemInHand) {
+                    player.inventory.setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                 }
 
                 break;
@@ -309,7 +309,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return true;
         }
 
-        return !ItemStack.areItemStacksEqual(a, b);
+        return !ItemStack.matches(a, b);
     }
 
     private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
@@ -330,7 +330,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
-                is.write(itemNBT);
+                is.save(itemNBT);
             }
 
             tag.put(Integer.toString(x + offset), itemNBT);

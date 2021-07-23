@@ -30,6 +30,8 @@ import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.IWorldGen;
 
+import appeng.api.features.IWorldGen.WorldGenType;
+
 public final class WorldGenRegistry implements IWorldGen {
 
     public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();

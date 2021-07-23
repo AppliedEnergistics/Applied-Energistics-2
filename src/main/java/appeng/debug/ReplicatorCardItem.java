@@ -46,6 +46,8 @@ import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
+import net.minecraft.item.Item.Properties;
+
 public class ReplicatorCardItem extends AEBaseItem {
 
     public ReplicatorCardItem(Properties properties) {
@@ -53,9 +55,9 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (!worldIn.isRemote()) {
-            final CompoundNBT tag = playerIn.getHeldItem(handIn).getOrCreateTag();
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (!worldIn.isClientSide()) {
+            final CompoundNBT tag = playerIn.getItemInHand(handIn).getOrCreateTag();
             final int replications;
 
             if (tag.contains("r")) {
@@ -66,24 +68,24 @@ public class ReplicatorCardItem extends AEBaseItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new StringTextComponent(replications + 1 + "³ Replications"), Util.DUMMY_UUID);
+            playerIn.sendMessage(new StringTextComponent(replications + 1 + "³ Replications"), Util.NIL_UUID);
         }
 
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World w = context.getWorld();
-        if (w.isRemote()) {
+        World w = context.getLevel();
+        if (w.isClientSide()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return ActionResultType.func_233537_a_(w.isRemote());
+            return ActionResultType.sidedSuccess(w.isClientSide());
         }
 
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
         Hand hand = context.getHand();
 
         if (player == null) {
@@ -98,12 +100,12 @@ public class ReplicatorCardItem extends AEBaseItem {
             var gridHost = Api.instance().grid().getNodeHost(world, pos);
 
             if (gridHost != null) {
-                final CompoundNBT tag = player.getHeldItem(hand).getOrCreateTag();
+                final CompoundNBT tag = player.getItemInHand(hand).getOrCreateTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
-                tag.putString("w", world.getDimensionKey().getLocation().toString());
+                tag.putString("w", world.dimension().location().toString());
                 tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
@@ -111,7 +113,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "This is not a Grid Tile.");
             }
         } else {
-            final CompoundNBT ish = player.getHeldItem(hand).getTag();
+            final CompoundNBT ish = player.getItemInHand(hand).getTag();
             if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
@@ -119,7 +121,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final World src_w = world.getServer()
-                        .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldId)));
+                        .getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 var gh = Api.instance().grid().getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
@@ -153,9 +155,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                 final int min_z = min.getZ();
 
                                 // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.rotationYaw));
+                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.yRot));
                                 // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.rotationYaw + 90));
+                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.yRot + 90));
 
                                 // Loops for replication in each direction
                                 for (int r_x = 0; r_x < replications; r_x++) {
@@ -181,16 +183,16 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                         final Block blk = state.getBlock();
                                                         final BlockState prev = world.getBlockState(d);
 
-                                                        world.setBlockState(d, state);
+                                                        world.setBlockAndUpdate(d, state);
                                                         if (blk != null && blk.hasTileEntity(state)) {
-                                                            final TileEntity ote = src_w.getTileEntity(p);
+                                                            final TileEntity ote = src_w.getBlockEntity(p);
                                                             final TileEntity nte = blk.createTileEntity(state, world);
                                                             final CompoundNBT data = new CompoundNBT();
-                                                            ote.write(data);
-                                                            nte.read(state, data.copy());
-                                                            world.setTileEntity(d, nte);
+                                                            ote.save(data);
+                                                            nte.load(state, data.copy());
+                                                            world.setBlockEntity(d, nte);
                                                         }
-                                                        world.notifyBlockUpdate(d, prev, state, 3);
+                                                        world.sendBlockUpdated(d, prev, state, 3);
                                                     }
                                                 }
                                             }
@@ -213,10 +215,10 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
+        player.sendMessage(new StringTextComponent(string), Util.NIL_UUID);
     }
 }

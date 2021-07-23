@@ -34,7 +34,7 @@ import appeng.block.AEBaseTileBlock;
 public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeTileEntity> {
 
     public PhantomNodeBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeTileEntity> {
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final PhantomNodeTileEntity tpn = this.getTileEntity(w, pos);
         tpn.triggerCrashMode();
-        return ActionResultType.func_233537_a_(w.isRemote());
+        return ActionResultType.sidedSuccess(w.isClientSide());
     }
 
 }

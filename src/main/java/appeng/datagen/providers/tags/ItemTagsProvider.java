@@ -36,6 +36,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
+import net.minecraft.data.TagsProvider.Builder;
+
 public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implements IAE2DataProvider {
 
     public ItemTagsProvider(GatherDataEvent dataEvent, BlockTagsProvider blockTagsProvider) {
@@ -43,7 +45,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     @Override
-    protected void registerTags() {
+    protected void addTags() {
         registerForgeTags();
 
         addAe2("blacklisted/annihilation_plane");
@@ -134,7 +136,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
 
     @SuppressWarnings("unchecked")
     private void add(ResourceLocation tagName, Object... itemSources) {
-        Builder<Item> builder = getOrCreateBuilder(net.minecraft.tags.ItemTags.createOptional(tagName));
+        Builder<Item> builder = tag(net.minecraft.tags.ItemTags.createOptional(tagName));
 
         for (Object itemSource : itemSources) {
             if (itemSource instanceof IItemProvider) {
@@ -169,7 +171,7 @@ public class ItemTagsProvider extends net.minecraft.data.ItemTagsProvider implem
     }
 
     @Override
-    protected Path makePath(ResourceLocation id) {
+    protected Path getPath(ResourceLocation id) {
         return this.generator.getOutputFolder()
                 .resolve("data/" + id.getNamespace() + "/tags/items/" + id.getPath() + ".json");
     }

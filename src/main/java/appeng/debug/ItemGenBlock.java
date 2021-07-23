@@ -33,19 +33,19 @@ import appeng.block.AEBaseTileBlock;
 public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
 
     public ItemGenBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
     public ActionResultType onActivated(World w, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItem,
             BlockRayTraceResult hit) {
 
-        TileEntity tileEntity = w.getTileEntity(pos);
+        TileEntity tileEntity = w.getBlockEntity(pos);
         if (tileEntity instanceof ItemGenTileEntity) {
             ItemGenTileEntity itemGen = (ItemGenTileEntity) tileEntity;
             itemGen.setItem(heldItem.getItem());
 
-            return ActionResultType.func_233537_a_(w.isRemote);
+            return ActionResultType.sidedSuccess(w.isClientSide);
         }
 
         return ActionResultType.PASS;

@@ -64,14 +64,14 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.tankSync.sendDiff(this.listeners);
+            this.tankSync.sendDiff(this.containerListeners);
         }
 
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override
@@ -83,8 +83,8 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
+    public void addSlotListener(IContainerListener listener) {
+        super.addSlotListener(listener);
         this.tankSync.sendFull(Collections.singleton(listener));
     }
 

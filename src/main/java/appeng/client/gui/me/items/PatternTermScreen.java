@@ -92,11 +92,11 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
         super.updateBeforeRender();
 
         // Update button visibility
-        if (this.container.isCraftingMode()) {
+        if (this.menu.isCraftingMode()) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
 
-            if (this.container.substitute) {
+            if (this.menu.substitute) {
                 this.substitutionsEnabledBtn.visible = true;
                 this.substitutionsDisabledBtn.visible = false;
             } else {
@@ -110,8 +110,8 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
             this.substitutionsDisabledBtn.visible = false;
         }
 
-        setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.container.isCraftingMode());
-        setSlotsHidden(SlotSemantic.PROCESSING_RESULT, this.container.isCraftingMode());
+        setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantic.PROCESSING_RESULT, this.menu.isCraftingMode());
     }
 
     private void toggleCraftMode(String mode) {
@@ -134,8 +134,8 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        Blitter modeBg = this.container.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
-        modeBg.dest(guiLeft + 9, guiTop + ySize - 164).blit(matrixStack, getBlitOffset());
+        Blitter modeBg = this.menu.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
+        modeBg.dest(leftPos + 9, topPos + imageHeight - 164).blit(matrixStack, getBlitOffset());
     }
 
 }

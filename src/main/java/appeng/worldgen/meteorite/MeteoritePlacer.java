@@ -88,7 +88,7 @@ public final class MeteoritePlacer {
         this.crater = this.realCrater * this.realCrater;
 
         this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
-        this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().getDefaultState();
+        this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
         this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.asItem();
 
         this.type = getFallout(world, settings.getPos(), settings.getFallout());
@@ -112,37 +112,37 @@ public final class MeteoritePlacer {
     }
 
     private int minX(int x) {
-        if (x < boundingBox.minX) {
-            return boundingBox.minX;
-        } else if (x > boundingBox.maxX) {
-            return boundingBox.maxX;
+        if (x < boundingBox.x0) {
+            return boundingBox.x0;
+        } else if (x > boundingBox.x1) {
+            return boundingBox.x1;
         }
         return x;
     }
 
     private int minZ(int x) {
-        if (x < boundingBox.minZ) {
-            return boundingBox.minZ;
-        } else if (x > boundingBox.maxZ) {
-            return boundingBox.maxZ;
+        if (x < boundingBox.z0) {
+            return boundingBox.z0;
+        } else if (x > boundingBox.z1) {
+            return boundingBox.z1;
         }
         return x;
     }
 
     private int maxX(int x) {
-        if (x < boundingBox.minX) {
-            return boundingBox.minX;
-        } else if (x > boundingBox.maxX) {
-            return boundingBox.maxX;
+        if (x < boundingBox.x0) {
+            return boundingBox.x0;
+        } else if (x > boundingBox.x1) {
+            return boundingBox.x1;
         }
         return x;
     }
 
     private int maxZ(int x) {
-        if (x < boundingBox.minZ) {
-            return boundingBox.minZ;
-        } else if (x > boundingBox.maxZ) {
-            return boundingBox.maxZ;
+        if (x < boundingBox.z0) {
+            return boundingBox.z0;
+        } else if (x > boundingBox.z1) {
+            return boundingBox.z1;
         }
         return x;
     }
@@ -150,15 +150,15 @@ public final class MeteoritePlacer {
     private void placeCrater() {
         final int maxY = 255;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
-        BlockState filler = craterType.getFiller().getDefaultState();
+        BlockState filler = craterType.getFiller().defaultBlockState();
 
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
 
-            for (int i = boundingBox.minX; i <= boundingBox.maxX; i++) {
+            for (int i = boundingBox.x0; i <= boundingBox.x1; i++) {
                 blockPos.setX(i);
 
-                for (int k = boundingBox.minZ; k <= boundingBox.maxZ; k++) {
+                for (int k = boundingBox.z0; k <= boundingBox.z1; k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
                     final double dz = k - z;
@@ -174,7 +174,7 @@ public final class MeteoritePlacer {
                                 this.putter.put(world, blockPos, filler);
                             }
                         } else {
-                            this.putter.put(world, blockPos, Blocks.AIR.getDefaultState());
+                            this.putter.put(world, blockPos, Blocks.AIR.defaultBlockState());
                         }
 
                     }
@@ -182,7 +182,7 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntitiesWithinAABB(ItemEntity.class,
+        for (final Object o : world.getEntitiesOfClass(ItemEntity.class,
                 new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
             final Entity e = (Entity) o;
             e.remove();
@@ -198,9 +198,9 @@ public final class MeteoritePlacer {
 
     private void placeChest() {
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
-            this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
+            this.putter.put(world, pos, this.skyChestDefinition.block().defaultBlockState());
 
-            final TileEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue
+            final TileEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
             final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {
@@ -334,9 +334,9 @@ public final class MeteoritePlacer {
 
                     // TODO reconsider
                     if (state.getMaterial().isReplaceable()) {
-                        if (!world.isAirBlock(blockPosUp)) {
+                        if (!world.isEmptyBlock(blockPosUp)) {
                             final BlockState stateUp = world.getBlockState(blockPosUp);
-                            world.setBlockState(blockPos, stateUp, 3);
+                            world.setBlock(blockPos, stateUp, 3);
                         } else if (randomShit < 100 * this.crater) {
                             final double dx = i - x;
                             final double dy = j - y;
@@ -356,7 +356,7 @@ public final class MeteoritePlacer {
                             }
                         }
                     } else // decay.
-                    if (world.isAirBlock(blockPosUp) && Math.random() > 0.4) {
+                    if (world.isEmptyBlock(blockPosUp) && Math.random() > 0.4) {
                         final double dx = i - x;
                         final double dy = j - y;
                         final double dz = k - z;
@@ -380,10 +380,10 @@ public final class MeteoritePlacer {
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
 
-            for (int i = boundingBox.minX; i <= boundingBox.maxX; i++) {
+            for (int i = boundingBox.x0; i <= boundingBox.x1; i++) {
                 blockPos.setX(i);
 
-                for (int k = boundingBox.minZ; k <= boundingBox.maxZ; k++) {
+                for (int k = boundingBox.z0; k <= boundingBox.z1; k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
                     final double dz = k - z;
@@ -394,7 +394,7 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = world.getBlockState(blockPos);
                         if (currentBlock.getBlock() == Blocks.AIR) {
-                            this.putter.put(world, blockPos, Blocks.WATER.getDefaultState());
+                            this.putter.put(world, blockPos, Blocks.WATER.defaultBlockState());
                         }
 
                     }

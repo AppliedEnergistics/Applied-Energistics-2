@@ -43,10 +43,10 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
         ITextComponent rangeText = StringTextComponent.EMPTY;
         ITextComponent energyUseText = StringTextComponent.EMPTY;
-        if (container.getRange() > 0) {
-            double rangeBlocks = container.getRange() / 10.0;
+        if (menu.getRange() > 0) {
+            double rangeBlocks = menu.getRange() / 10.0;
             rangeText = GuiText.WirelessRange.text(rangeBlocks);
-            energyUseText = GuiText.PowerUsageRate.text(Platform.formatPowerLong(container.getDrain(), true));
+            energyUseText = GuiText.PowerUsageRate.text(Platform.formatPowerLong(menu.getDrain(), true));
         }
 
         setTextContent("range", rangeText);

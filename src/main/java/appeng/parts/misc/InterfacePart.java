@@ -170,7 +170,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @Override
     public boolean onPartActivate(final PlayerEntity p, final Hand hand, final Vector3d pos) {
-        if (!p.getEntityWorld().isRemote()) {
+        if (!p.getCommandSenderWorld().isClientSide()) {
             ContainerOpener.openContainer(InterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
         }
         return true;

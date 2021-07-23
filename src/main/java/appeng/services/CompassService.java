@@ -99,7 +99,7 @@ public final class CompassService {
         // in question
         // though, since during worldgen, it's not comitted to the actual world yet.
         IChunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea(w.getWorld(), chunk);
+        updateArea(w.getLevel(), chunk);
     }
 
     public void updateArea(final ServerWorld w, IChunk chunk) {

@@ -90,7 +90,7 @@ public class JEIRecipePacket extends BasePacket {
 
     public JEIRecipePacket(final PacketBuffer stream) {
         this.crafting = stream.readBoolean();
-        final String id = stream.readString(Short.MAX_VALUE);
+        final String id = stream.readUtf(Short.MAX_VALUE);
         this.recipeId = new ResourceLocation(id);
 
         int inlineRecipeType = stream.readVarInt();
@@ -98,7 +98,7 @@ public class JEIRecipePacket extends BasePacket {
             case INLINE_RECIPE_NONE:
                 break;
             case INLINE_RECIPE_SHAPED:
-                recipe = IRecipeSerializer.CRAFTING_SHAPED.read(this.recipeId, stream);
+                recipe = IRecipeSerializer.SHAPED_RECIPE.fromNetwork(this.recipeId, stream);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid inline recipe type.");
@@ -120,7 +120,7 @@ public class JEIRecipePacket extends BasePacket {
      */
     public JEIRecipePacket(final ShapedRecipe recipe, final boolean crafting) {
         PacketBuffer data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
-        IRecipeSerializer.CRAFTING_SHAPED.write(data, recipe);
+        IRecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
         this.configureWrite(data);
     }
 
@@ -145,10 +145,10 @@ public class JEIRecipePacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         // Setup and verification
         final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
-        final Container con = pmp.openContainer;
+        final Container con = pmp.containerMenu;
         Preconditions.checkArgument(con instanceof IContainerCraftingPacket);
 
-        IRecipe<?> recipe = player.getEntityWorld().getRecipeManager().getRecipe(this.recipeId).orElse(null);
+        IRecipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
         if (recipe == null && this.recipe != null) {
             // Certain recipes (i.e. AE2 facades) are represented in JEI as ShapedRecipe's,
             // while in reality they
@@ -220,8 +220,8 @@ public class JEIRecipePacket extends BasePacket {
                     if (out == null) {
                         out = findBestMatchingItemStack(ingredient, filter, storage, cct);
                     }
-                    if (out == null && ingredient.getMatchingStacks().length > 0) {
-                        out = AEItemStack.fromItemStack(ingredient.getMatchingStacks()[0]);
+                    if (out == null && ingredient.getItems().length > 0) {
+                        out = AEItemStack.fromItemStack(ingredient.getItems()[0]);
                     }
                 }
 
@@ -232,7 +232,7 @@ public class JEIRecipePacket extends BasePacket {
 
             // If still nothing, search the player inventory.
             if (currentItem.isEmpty()) {
-                ItemStack[] matchingStacks = ingredient.getMatchingStacks();
+                ItemStack[] matchingStacks = ingredient.getItems();
                 for (ItemStack matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
                         AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
@@ -252,7 +252,7 @@ public class JEIRecipePacket extends BasePacket {
             this.handleProcessing(con, cct, recipe);
         }
 
-        con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
+        con.slotsChanged(new WrapperInvItemHandler(craftMatrix));
     }
 
     /**
@@ -299,7 +299,7 @@ public class JEIRecipePacket extends BasePacket {
      * @return is if it can be used, else EMPTY
      */
     private ItemStack canUseInSlot(Ingredient ingredient, ItemStack is) {
-        return Arrays.stream(ingredient.getMatchingStacks()).filter(p -> p.isItemEqual(is)).findFirst()
+        return Arrays.stream(ingredient.getItems()).filter(p -> p.sameItem(is)).findFirst()
                 .orElse(ItemStack.EMPTY);
     }
 
@@ -308,7 +308,7 @@ public class JEIRecipePacket extends BasePacket {
      */
     private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
-        Stream<AEItemStack> stacks = Arrays.stream(ingredients.getMatchingStacks())//
+        Stream<AEItemStack> stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
         return getMostStored(stacks, storage, cct);
@@ -321,7 +321,7 @@ public class JEIRecipePacket extends BasePacket {
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
-        Stream<IAEItemStack> stacks = Arrays.stream(ingredients.getMatchingStacks())//
+        Stream<IAEItemStack> stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
                 .map(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))//
@@ -352,7 +352,7 @@ public class JEIRecipePacket extends BasePacket {
             PatternTermContainer patternTerm = (PatternTermContainer) con;
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
-                ItemHandlerUtil.setStackInSlot(output, 0, recipe.getRecipeOutput());
+                ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());
                 ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
                 ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
             }

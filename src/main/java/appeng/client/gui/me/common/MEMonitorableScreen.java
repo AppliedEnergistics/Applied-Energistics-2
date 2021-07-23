@@ -123,11 +123,11 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
 
-        this.xSize = this.style.getScreenWidth();
-        this.ySize = this.style.getScreenHeight(0);
+        this.imageWidth = this.style.getScreenWidth();
+        this.imageHeight = this.style.getScreenHeight(0);
 
-        this.configSrc = ((IConfigurableObject) this.container).getConfigManager();
-        this.container.setGui(this);
+        this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
+        this.menu.setGui(this);
 
         List<Slot> viewCellSlots = container.getSlots(SlotSemantic.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
@@ -195,15 +195,15 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public void init() {
-        getMinecraft().keyboardListener.enableRepeatEvents(true);
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
         this.rows = MathHelper.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
 
         // Size the container according to the number of rows we decided to have
-        this.ySize = style.getScreenHeight(rows);
+        this.imageHeight = style.getScreenHeight(rows);
 
         // Re-create the ME slots since the number of rows could have changed
-        List<Slot> slots = this.container.inventorySlots;
+        List<Slot> slots = this.menu.slots;
         slots.removeIf(slot -> slot instanceof RepoSlot);
 
         int repoIndex = 0;
@@ -219,12 +219,12 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         Rectangle2d searchFieldRect = style.getSearchFieldRect();
         this.searchField = new AETextField(this.font,
-                this.guiLeft + searchFieldRect.getX(),
-                this.guiTop + searchFieldRect.getY(),
+                this.leftPos + searchFieldRect.getX(),
+                this.topPos + searchFieldRect.getY(),
                 searchFieldRect.getWidth(),
                 searchFieldRect.getHeight());
-        this.searchField.setEnableBackgroundDrawing(false);
-        this.searchField.setMaxStringLength(25);
+        this.searchField.setBordered(false);
+        this.searchField.setMaxLength(25);
         this.searchField.setTextColor(0xFFFFFF);
         this.searchField.setSelectionColor(0xFF008000);
         this.searchField.setVisible(true);
@@ -238,9 +238,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
-        this.searchField.setFocused2(this.isAutoFocus);
+        this.searchField.setFocus(this.isAutoFocus);
         if (this.searchField.isFocused()) {
-            this.setListener(this.searchField);
+            this.setFocused(this.searchField);
         }
 
         if (isJEIEnabled) {
@@ -248,7 +248,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         if (isKeepFilter && memoryText != null && !memoryText.isEmpty()) {
-            this.searchField.setText(memoryText);
+            this.searchField.setValue(memoryText);
             this.searchField.selectAll();
             this.repo.setSearchString(memoryText);
             this.repo.updateView();
@@ -264,7 +264,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         // Override the dialog title found in the screen JSON with the user-supplied name
         if (!this.title.getString().isEmpty()) {
             setTextContent(TEXT_ID_DIALOG_TITLE, this.title);
-        } else if (this.container.getTarget() instanceof IMEChest) {
+        } else if (this.menu.getTarget() instanceof IMEChest) {
             // ME Chest uses Item Terminals, but overrides the title
             setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.Chest.text());
         }
@@ -277,14 +277,14 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         this.currentMouseY = mouseY;
 
         // Show the number of active crafting jobs
-        if (this.craftingStatusBtn != null && container.activeCraftingJobs != -1) {
+        if (this.craftingStatusBtn != null && menu.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            style.getStackSizeRenderer().renderSizeLabel(font, x - this.guiLeft, y - this.guiTop,
-                    String.valueOf(container.activeCraftingJobs));
+            style.getStackSizeRenderer().renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+                    String.valueOf(menu.activeCraftingJobs));
         }
     }
 
@@ -296,7 +296,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         // Right-clicking on the search field should clear it
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
-            this.searchField.setText("");
+            this.searchField.setValue("");
             this.repo.setSearchString("");
             this.repo.updateView();
             this.updateScrollbar();
@@ -318,7 +318,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                         : InventoryAction.ROLL_UP;
                 int times = (int) Math.abs(wheelDelta);
                 for (int h = 0; h < times; h++) {
-                    final MEInteractionPacket p = new MEInteractionPacket(this.container.windowId, serial, direction);
+                    final MEInteractionPacket p = new MEInteractionPacket(this.menu.containerId, serial, direction);
                     NetworkHandler.instance().sendToServer(p);
                 }
 
@@ -329,21 +329,21 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    protected void handleMouseClick(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
         if (repoSlot != null) {
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
         }
 
-        super.handleMouseClick(slot, slotIdx, mouseButton, clickType);
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        getMinecraft().keyboardListener.enableRepeatEvents(false);
-        memoryText = this.searchField.getText();
+    public void removed() {
+        super.removed();
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
+        memoryText = this.searchField.getValue();
     }
 
     @Override
@@ -381,16 +381,16 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     // TODO This is incorrectly named in MCP, it's renderSlot, essentially
     @Override
-    protected void moveItems(MatrixStack matrices, Slot s) {
+    protected void renderSlot(MatrixStack matrices, Slot s) {
         RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
         if (repoSlot != null) {
             if (!this.repo.hasPower()) {
-                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                fill(matrices, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             } else {
                 GridInventoryEntry<T> entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        renderGridInventoryEntry(matrices, s.xPos, s.yPos, entry);
+                        renderGridInventoryEntry(matrices, s.x, s.y, entry);
                     } catch (final Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -400,10 +400,10 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
                     if (isViewOnlyCraftable() && craftable) {
-                        style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.xPos, s.yPos);
+                        style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.x, s.y);
                     } else {
-                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.xPos,
-                                s.yPos);
+                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.x,
+                                s.y);
                     }
                 }
             }
@@ -411,7 +411,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             return;
         }
 
-        super.moveItems(matrices, s);
+        super.renderSlot(matrices, s);
     }
 
     /**
@@ -422,9 +422,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack, int x, int y) {
+    protected void renderTooltip(MatrixStack matrixStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
-        if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getItemStack().isEmpty()) {
+        if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getCarried().isEmpty()) {
             RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
 
             if (repoSlot != null) {
@@ -436,7 +436,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             }
         }
 
-        super.renderHoveredTooltip(matrixStack, x, y);
+        super.renderTooltip(matrixStack, x, y);
     }
 
     protected void renderGridInventoryEntryTooltip(MatrixStack matrices, GridInventoryEntry<T> entry, int x, int y) {
@@ -451,7 +451,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                     .format(storedAmount);
             currentToolTip
-                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).mergeStyle(TextFormatting.GRAY));
+                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(TextFormatting.GRAY));
         }
 
         long requestableAmount = entry.getRequestableAmount();
@@ -462,9 +462,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         }
 
         // TODO: Should also list craftable status
-        if (Minecraft.getInstance().gameSettings.advancedItemTooltips) {
+        if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
-                    .add(new StringTextComponent("Serial: " + entry.getSerial()).mergeStyle(TextFormatting.DARK_GRAY));
+                    .add(new StringTextComponent("Serial: " + entry.getSerial()).withStyle(TextFormatting.DARK_GRAY));
         }
 
         this.renderWrappedToolTip(matrices, currentToolTip, x, y, this.font);
@@ -480,16 +480,16 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public boolean charTyped(char character, int p_charTyped_2_) {
-        if (character == ' ' && this.searchField.getText().isEmpty()) {
+        if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
 
         if (this.isAutoFocus && !this.searchField.isFocused() && isHovered()) {
-            this.setFocusedDefault(this.searchField);
+            this.setInitialFocus(this.searchField);
         }
 
         if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
-            this.repo.setSearchString(this.searchField.getText());
+            this.repo.setSearchString(this.searchField.getValue());
             this.repo.updateView();
             this.updateScrollbar();
             return true;
@@ -501,26 +501,26 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
             if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocused2(!this.searchField.isFocused());
+                this.searchField.setFocus(!this.searchField.isFocused());
                 if (this.searchField.isFocused()) {
-                    this.setListener(this.searchField);
+                    this.setFocused(this.searchField);
                 }
                 return true;
             }
 
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused2(false);
-                    this.setListener(null);
+                    this.searchField.setFocus(false);
+                    this.setFocused(null);
                     return true;
                 }
 
                 if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    this.repo.setSearchString(this.searchField.getText());
+                    this.repo.setSearchString(this.searchField.getValue());
                     this.repo.updateView();
                     this.updateScrollbar();
                 }
@@ -536,15 +536,15 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     private boolean isHovered() {
-        return isPointInRegion(0, 0, this.xSize, this.ySize, currentMouseX, currentMouseY);
+        return isHovering(0, 0, this.imageWidth, this.imageHeight, currentMouseX, currentMouseY);
     }
 
     @Override
     public void tick() {
-        this.repo.setPower(this.container.isPowered());
+        this.repo.setPower(this.menu.isPowered());
 
         if (this.supportsViewCells) {
-            List<ItemStack> viewCells = this.container.getViewCells();
+            List<ItemStack> viewCells = this.menu.getViewCells();
             if (!this.currentViewCells.equals(viewCells)) {
                 this.currentViewCells.clear();
                 this.currentViewCells.addAll(viewCells);

@@ -88,16 +88,16 @@ public class CraftAmountContainer extends AEBaseContainer {
             int initialAmount) {
         ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
-        if (player.openContainer instanceof CraftAmountContainer) {
-            CraftAmountContainer cca = (CraftAmountContainer) player.openContainer;
+        if (player.containerMenu instanceof CraftAmountContainer) {
+            CraftAmountContainer cca = (CraftAmountContainer) player.containerMenu;
             cca.setItemToCraft(itemToCraft, initialAmount);
-            cca.detectAndSendChanges();
+            cca.broadcastChanges();
         }
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
@@ -107,7 +107,7 @@ public class CraftAmountContainer extends AEBaseContainer {
     }
 
     public World getWorld() {
-        return this.getPlayerInventory().player.world;
+        return this.getPlayerInventory().player.level;
     }
 
     public IActionSource getActionSrc() {
@@ -118,7 +118,7 @@ public class CraftAmountContainer extends AEBaseContainer {
         // Make a copy because this stack will be modified with the requested amount
         this.itemToCreate = itemToCreate.copy();
         this.initialAmount = initialAmount;
-        this.craftingItem.putStack(itemToCreate.asItemStackRepresentation());
+        this.craftingItem.set(itemToCreate.asItemStackRepresentation());
     }
 
     /**
@@ -160,12 +160,12 @@ public class CraftAmountContainer extends AEBaseContainer {
                     PlayerEntity player = this.getPlayerInventory().player;
                     ContainerOpener.openContainer(CraftConfirmContainer.TYPE, player, locator);
 
-                    if (player.openContainer instanceof CraftConfirmContainer) {
-                        final CraftConfirmContainer ccc = (CraftConfirmContainer) player.openContainer;
+                    if (player.containerMenu instanceof CraftConfirmContainer) {
+                        final CraftConfirmContainer ccc = (CraftConfirmContainer) player.containerMenu;
                         ccc.setAutoStart(autoStart);
                         ccc.setItemToCreate(this.itemToCreate.copy());
                         ccc.setJob(futureJob);
-                        detectAndSendChanges();
+                        broadcastChanges();
                     }
                 }
             } catch (final Throwable e) {

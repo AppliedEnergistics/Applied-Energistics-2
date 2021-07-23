@@ -50,7 +50,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     private final IDrawable icon;
 
     public GrinderRecipeCategory(IGuiHelper guiHelper) {
-        this.localizedName = I18n.format("block.appliedenergistics2.grindstone");
+        this.localizedName = I18n.get("block.appliedenergistics2.grindstone");
 
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
         this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
@@ -99,7 +99,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     public void setIngredients(GrinderRecipe recipe, IIngredients ingredients) {
         ingredients.setInputIngredients(Collections.singletonList(recipe.getIngredient()));
         List<ItemStack> outputs = new ArrayList<>(3);
-        outputs.add(recipe.getRecipeOutput());
+        outputs.add(recipe.getResultItem());
         for (GrinderOptionalResult optionalResult : recipe.getOptionalResults()) {
             outputs.add(optionalResult.getResult());
         }

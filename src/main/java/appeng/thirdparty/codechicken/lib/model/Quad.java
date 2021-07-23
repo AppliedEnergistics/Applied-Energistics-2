@@ -187,19 +187,19 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         this.t.set(this.vertices[0].vec);
         this.v2.sub(this.t);
 
-        this.normal.set(this.v2.getX(), this.v2.getY(), this.v2.getZ());
+        this.normal.set(this.v2.x(), this.v2.y(), this.v2.z());
         this.normal.cross(this.v1);
         this.normal.normalize();
 
         if (this.format.hasNormal && setNormal) {
             for (Vertex vertex : this.vertices) {
-                vertex.normal[0] = this.normal.getX();
-                vertex.normal[1] = this.normal.getY();
-                vertex.normal[2] = this.normal.getZ();
+                vertex.normal[0] = this.normal.x();
+                vertex.normal[1] = this.normal.y();
+                vertex.normal[2] = this.normal.z();
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = Direction.getFacingFromVector(this.normal.getX(), this.normal.getY(), this.normal.getZ());
+        this.orientation = Direction.getNearest(this.normal.x(), this.normal.y(), this.normal.z());
     }
 
     /**
@@ -275,7 +275,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         if (format.format != DefaultVertexFormats.BLOCK) {
             throw new IllegalStateException("Unable to bake this quad to the specified format. " + format.format);
         }
-        int[] packedData = new int[this.format.format.getSize()];
+        int[] packedData = new int[this.format.format.getVertexSize()];
         for (int v = 0; v < 4; v++) {
             for (int e = 0; e < this.format.elementCount; e++) {
                 LightUtil.pack(this.vertices[v].raw[e], packedData, this.format.format, v, e);

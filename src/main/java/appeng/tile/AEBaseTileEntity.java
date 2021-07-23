@@ -93,7 +93,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     public boolean notLoaded() {
-        return !this.world.isBlockLoaded(this.pos);
+        return !this.level.hasChunkAt(this.worldPosition);
     }
 
     @Nonnull
@@ -111,8 +111,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -130,8 +130,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
 
         if (this.canBeRotated()) {
             data.putString("forward", this.getForward().name());
@@ -147,14 +147,14 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 64, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 64, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
         // / pkt.actionType
-        if (pkt.getTileEntityType() == 64) {
-            this.handleUpdateTag(null, pkt.getNbtCompound());
+        if (pkt.getType() == 64) {
+            this.handleUpdateTag(null, pkt.getTag());
         }
     }
 
@@ -218,9 +218,9 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
             return new CompoundNBT();
         }
 
-        data.putInt("x", this.pos.getX());
-        data.putInt("y", this.pos.getY());
-        data.putInt("z", this.pos.getZ());
+        data.putInt("x", this.worldPosition.getX());
+        data.putInt("y", this.worldPosition.getY());
+        data.putInt("z", this.worldPosition.getZ());
         return data;
     }
 
@@ -265,7 +265,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
             this.requestModelDataUpdate();
 
             // TODO: Optimize Network Load
-            if (this.world != null && !this.isRemoved() && !notLoaded()) {
+            if (this.level != null && !this.isRemoved() && !notLoaded()) {
 
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
@@ -274,14 +274,14 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
                     AEBaseTileBlock<?> tileBlock = (AEBaseTileBlock<?>) currentState.getBlock();
                     BlockState newState = tileBlock.getTileEntityBlockState(currentState, this);
                     if (currentState != newState) {
-                        AELog.blockUpdate(this.pos, currentState, newState, this);
-                        this.world.setBlockState(pos, newState);
+                        AELog.blockUpdate(this.worldPosition, currentState, newState, this);
+                        this.level.setBlockAndUpdate(worldPosition, newState);
                         alreadyUpdated = true;
                     }
                 }
 
                 if (!alreadyUpdated) {
-                    this.world.notifyBlockUpdate(this.pos, currentState, currentState, 1);
+                    this.level.sendBlockUpdated(this.worldPosition, currentState, currentState, 1);
                 }
             }
         }
@@ -312,12 +312,12 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         this.forward = inForward;
         this.up = inUp;
         this.markForUpdate();
-        Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+        Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
         this.saveChanges();
     }
 
     public void onPlacement(BlockItemUseContext context) {
-        ItemStack stack = context.getItem();
+        ItemStack stack = context.getItemInHand();
         if (stack.hasTag()) {
             this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTag());
         }
@@ -437,7 +437,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     public void securityBreak() {
-        this.world.destroyBlock(this.pos, true);
+        this.level.destroyBlock(this.worldPosition, true);
         this.disableDrops();
     }
 
@@ -445,8 +445,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * Checks if this tile entity is remote (we are running on the logical client side).
      */
     public boolean isRemote() {
-        World world = getWorld();
-        return world == null || world.isRemote();
+        World world = getLevel();
+        return world == null || world.isClientSide();
     }
 
     public void disableDrops() {
@@ -454,17 +454,17 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     public void saveChanges() {
-        if (this.world == null) {
+        if (this.level == null) {
             return;
         }
 
         // Clientside is marked immediately as dirty as there is no queue processing
         // Serverside is only queued once per tick to avoid costly operations
         // TODO: Evaluate if this is still necessary
-        if (this.world.isRemote) {
-            this.markDirty();
+        if (this.level.isClientSide) {
+            this.setChanged();
         } else {
-            this.world.markChunkDirty(this.pos, this);
+            this.level.blockEntityChanged(this.worldPosition, this);
             if (!this.markDirtyQueued) {
                 TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;
@@ -473,7 +473,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     private Object markDirtyAtEndOfTick(final World w) {
-        this.markDirty();
+        this.setChanged();
         this.markDirtyQueued = false;
         return null;
     }
@@ -495,7 +495,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
 }

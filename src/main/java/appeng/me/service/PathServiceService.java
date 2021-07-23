@@ -215,7 +215,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
                 return;
             }
 
-            final ControllerValidator cv = new ControllerValidator(startingController.getPos());
+            final ControllerValidator cv = new ControllerValidator(startingController.getBlockPos());
 
             startingNode.beginVisit(cv);
 

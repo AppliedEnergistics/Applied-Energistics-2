@@ -44,12 +44,12 @@ public class WirelessTermContainer extends MEPortableCellContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
             if (isServer() && this.isValidContainer()) {
-                this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.DUMMY_UUID);
+                this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
             }
 
             this.setValidContainer(false);

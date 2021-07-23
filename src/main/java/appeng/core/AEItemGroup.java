@@ -37,7 +37,7 @@ public class AEItemGroup extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return AEBlocks.CONTROLLER.stack();
     }
 
@@ -46,9 +46,9 @@ public class AEItemGroup extends ItemGroup {
     }
 
     @Override
-    public void fill(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<ItemStack> items) {
         for (ItemDefinition<?> itemDef : this.itemDefs) {
-            itemDef.asItem().fillItemGroup(this, items);
+            itemDef.asItem().fillItemCategory(this, items);
         }
     }
 

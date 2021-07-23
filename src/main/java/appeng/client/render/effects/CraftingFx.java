@@ -48,37 +48,37 @@ public class CraftingFx extends SpriteTexturedParticle {
         super(par1World, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
-        Vector3f off = new Vector3f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f);
+        Vector3f off = new Vector3f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f, random.nextFloat() - 0.5f);
         off.normalize();
         off.mul(0.35f);
-        offsetX = off.getX();
-        offsetY = off.getY();
-        offsetZ = off.getZ();
+        offsetX = off.x();
+        offsetY = off.y();
+        offsetZ = off.z();
 
-        this.particleGravity = 0;
-        this.particleBlue = 1;
-        this.particleGreen = 0.9f;
-        this.particleRed = 1;
-        this.selectSpriteRandomly(sprite);
-        this.maxAge /= 1.2;
-        this.canCollide = false; // we're INSIDE the block anyway
+        this.gravity = 0;
+        this.bCol = 1;
+        this.gCol = 0.9f;
+        this.rCol = 1;
+        this.pickSprite(sprite);
+        this.lifetime /= 1.2;
+        this.hasPhysics = false; // we're INSIDE the block anyway
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
 
-        float f = (this.age + partialTicks) / this.maxAge;
+        float f = (this.age + partialTicks) / this.lifetime;
 
-        float offX = (float) posX + MathHelper.lerp(f, offsetX, 0);
-        float offY = (float) posY + MathHelper.lerp(f, offsetY, 0);
-        float offZ = (float) posZ + MathHelper.lerp(f, offsetZ, 0);
+        float offX = (float) x + MathHelper.lerp(f, offsetX, 0);
+        float offY = (float) y + MathHelper.lerp(f, offsetY, 0);
+        float offZ = (float) z + MathHelper.lerp(f, offsetZ, 0);
         float alpha = MathHelper.lerp(easeOutCirc(f), 1.3f, 0.1f);
         float scale = MathHelper.lerp(easeOutCirc(f), 0.13f, 0.0f);
 
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vector3d Vector3d = renderInfo.getProjectedView();
+        Vector3d Vector3d = renderInfo.getPosition();
         offX -= Vector3d.x;
         offY -= Vector3d.y;
         offZ -= Vector3d.z;
@@ -88,24 +88,24 @@ public class CraftingFx extends SpriteTexturedParticle {
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(renderInfo.getRotation());
+            vector3f.transform(renderInfo.rotation());
             vector3f.mul(scale);
             vector3f.add(offX, offY, offZ);
         }
 
-        float minU = this.getMinU();
-        float maxU = this.getMaxU();
-        float minV = this.getMinV();
-        float maxV = this.getMaxV();
+        float minU = this.getU0();
+        float maxU = this.getU1();
+        float minV = this.getV0();
+        float maxV = this.getV1();
         int j = 15728880; // full brightness
-        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(maxU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(maxU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(minU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(minU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
+        buffer.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(maxU, maxV)
+                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(maxU, minV)
+                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(minU, minV)
+                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(minU, maxV)
+                .color(this.rCol, this.gCol, this.bCol, alpha).uv2(j).endVertex();
     }
 
     // https://easings.net/#easeOutCirc
@@ -120,8 +120,8 @@ public class CraftingFx extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
+        if (this.age++ >= this.lifetime) {
+            this.remove();
         }
     }
 
@@ -134,7 +134,7 @@ public class CraftingFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, ClientWorld worldIn, double x, double y, double z,
+        public Particle createParticle(BasicParticleType data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);
         }

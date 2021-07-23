@@ -33,7 +33,7 @@ final class AESharedItemStack {
     private final int hashCode;
 
     public AESharedItemStack(final ItemStack itemStack) {
-        this(itemStack, itemStack.getDamage());
+        this(itemStack, itemStack.getDamageValue());
     }
 
     /**
@@ -44,7 +44,7 @@ final class AESharedItemStack {
      */
     private AESharedItemStack(ItemStack itemStack, int damage) {
         this.itemStack = itemStack;
-        this.itemId = Item.getIdFromItem(itemStack.getItem());
+        this.itemId = Item.getId(itemStack.getItem());
         this.itemDamage = damage;
 
         // Ensure this is always called last.
@@ -80,7 +80,7 @@ final class AESharedItemStack {
         if (this.itemStack == other.itemStack) {
             return true;
         }
-        return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
+        return ItemStack.matches(this.itemStack, other.itemStack);
     }
 
     private int makeHashCode() {

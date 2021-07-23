@@ -45,13 +45,13 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
             ITextComponent title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
-        addSlot(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
+        addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
 
         this.level = new NumberEntryWidget(NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.setValue(container.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
-        this.level.setOnConfirm(this::closeScreen);
+        this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);
 
         this.redstoneMode = new ServerSettingToggleButton<>(
@@ -63,11 +63,11 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.redstoneMode.set(this.container.getRedStoneMode());
+        this.redstoneMode.set(this.menu.getRedStoneMode());
     }
 
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(container::setReportingValue);
+        this.level.getLongValue().ifPresent(menu::setReportingValue);
     }
 
     @Override

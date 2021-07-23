@@ -65,8 +65,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        if (this.container.getInitialAmount() != -1 && !this.initialAmountInitialized) {
-            this.amountToCraft.setValue(this.container.getInitialAmount());
+        if (this.menu.getInitialAmount() != -1 && !this.initialAmountInitialized) {
+            this.amountToCraft.setValue(this.menu.getInitialAmount());
             this.initialAmountInitialized = true;
         }
 
@@ -79,7 +79,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         if (amount <= 0) {
             return;
         }
-        container.confirm(amount, hasShiftDown());
+        menu.confirm(amount, hasShiftDown());
     }
 
     @Override

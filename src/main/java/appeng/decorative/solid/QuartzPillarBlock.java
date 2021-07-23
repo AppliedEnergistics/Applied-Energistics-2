@@ -32,6 +32,8 @@ import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.helpers.MetaRotation;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableBlock {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
@@ -39,12 +41,12 @@ public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableB
         super(props);
 
         // The upwards facing pillar is the default (i.e. for the item model)
-        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.Y));
+        this.registerDefaultState(this.defaultBlockState().setValue(AXIS, Direction.Axis.Y));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(AXIS);
     }
 

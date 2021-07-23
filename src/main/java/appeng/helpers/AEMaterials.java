@@ -24,10 +24,10 @@ import net.minecraft.block.material.PushReaction;
 
 public class AEMaterials {
 
-    public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, false, false,
+    public static final Material GLASS = make(MaterialColor.NONE, false, false, true, false, false, false,
             PushReaction.NORMAL);
 
-    public static final Material FIXTURE = make(MaterialColor.IRON, false, false, false, false, false, false,
+    public static final Material FIXTURE = make(MaterialColor.METAL, false, false, false, false, false, false,
             PushReaction.DESTROY);
 
     /**

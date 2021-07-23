@@ -38,6 +38,8 @@ import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 
+import mezz.jei.api.gui.handlers.IGhostIngredientHandler.Target;
+
 /**
  * JEI allows ingredients to be dragged from a JEI panel onto compatible slots to set filters and the like without
  * having the actual item in hand.
@@ -62,7 +64,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
      */
     @SuppressWarnings("unchecked")
     private static <I> void addItemStackTargets(AEBaseScreen<?> gui, List<Target<I>> targets) {
-        for (Slot slot : gui.getContainer().inventorySlots) {
+        for (Slot slot : gui.getMenu().slots) {
             if (!(slot instanceof AppEngSlot)) {
                 continue;
             }
@@ -105,7 +107,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
 
         public ItemSlotTarget(AEBaseScreen<?> screen, AppEngSlot slot) {
             this.slot = slot;
-            this.area = new Rectangle2d(screen.getGuiLeft() + slot.xPos, screen.getGuiTop() + slot.yPos, 16, 16);
+            this.area = new Rectangle2d(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
         }
 
         @Override
@@ -116,7 +118,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
         @Override
         public void accept(ItemStack ingredient) {
             NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                    slot.slotNumber, ingredient));
+                    slot.index, ingredient));
         }
     }
 

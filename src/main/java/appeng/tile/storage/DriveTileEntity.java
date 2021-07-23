@@ -182,7 +182,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
-            uniqueStrs[i] = data.readString(BasePacket.MAX_STRING_LENGTH);
+            uniqueStrs[i] = data.readUtf(BasePacket.MAX_STRING_LENGTH);
         }
 
         boolean changed = false;
@@ -214,7 +214,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     @Override
     public Item getCellItem(int slot) {
         // Client-side we'll need to actually use the synced state
-        if (world == null || world.isRemote) {
+        if (level == null || level.isClientSide) {
             return cellItems[slot];
         }
 
@@ -255,15 +255,15 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         this.isCached = false;
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putInt("priority", this.priority);
         return data;
     }
@@ -406,7 +406,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public void saveChanges(final ICellInventory<?> cellInventory) {
-        this.world.markChunkDirty(this.pos, this);
+        this.level.blockEntityChanged(this.worldPosition, this);
     }
 
     private class CellValidInventoryFilter implements IAEItemFilter {

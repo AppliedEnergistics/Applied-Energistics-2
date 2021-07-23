@@ -57,8 +57,8 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.blockMode.set(this.container.getBlockingMode());
-        this.interfaceMode.setState(this.container.getInterfaceTerminalMode() == YesNo.YES);
+        this.blockMode.set(this.menu.getBlockingMode());
+        this.interfaceMode.setState(this.menu.getInterfaceTerminalMode() == YesNo.YES);
     }
 
     private void selectNextInterfaceMode() {

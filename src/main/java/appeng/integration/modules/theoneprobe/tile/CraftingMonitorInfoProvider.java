@@ -46,7 +46,7 @@ public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
             if (displayStack != null) {
                 // TODO: check if OK
                 final ItemStack itemStack = displayStack.asItemStackRepresentation();
-                final String itemName = itemStack.getDisplayName().getString();
+                final String itemName = itemStack.getHoverName().getString();
                 final ITextComponent formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
 
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo

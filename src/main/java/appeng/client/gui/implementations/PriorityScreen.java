@@ -45,7 +45,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.priority = new NumberEntryWidget(NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        this.priority.setValue(this.container.getPriorityValue());
+        this.priority.setValue(this.menu.getPriorityValue());
         this.priority.setOnChange(this::savePriority);
         this.priority.setOnConfirm(() -> {
             savePriority();
@@ -57,7 +57,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private void savePriority() {
         OptionalInt priority = this.priority.getIntValue();
         if (priority.isPresent()) {
-            container.setPriority(priority.getAsInt());
+            menu.setPriority(priority.getAsInt());
         }
     }
 

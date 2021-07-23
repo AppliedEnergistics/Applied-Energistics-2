@@ -60,8 +60,8 @@ public final class ConfigButtonPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        if (sender.openContainer instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+        if (sender.containerMenu instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
             if (baseContainer.getTarget() instanceof IConfigurableObject) {
                 final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
                 Enum setting = cm.getSetting(this.option);

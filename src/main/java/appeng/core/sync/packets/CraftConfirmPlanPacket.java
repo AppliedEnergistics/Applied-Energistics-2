@@ -50,8 +50,8 @@ public class CraftConfirmPlanPacket extends BasePacket {
 
     @Override
     public void clientPacketData(INetworkInfo network, PlayerEntity player) {
-        if (player.openContainer instanceof CraftConfirmContainer) {
-            CraftConfirmContainer container = (CraftConfirmContainer) player.openContainer;
+        if (player.containerMenu instanceof CraftConfirmContainer) {
+            CraftConfirmContainer container = (CraftConfirmContainer) player.containerMenu;
             container.setPlan(plan);
         }
     }

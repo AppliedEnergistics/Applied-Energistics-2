@@ -31,18 +31,18 @@ public class InaccessibleSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean isItemValid(final ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public void onSlotChanged() {
-        super.onSlotChanged();
+    public void setChanged() {
+        super.setChanged();
         this.dspStack = ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canTakeStack(final PlayerEntity player) {
+    public boolean mayPickup(final PlayerEntity player) {
         return false;
     }
 

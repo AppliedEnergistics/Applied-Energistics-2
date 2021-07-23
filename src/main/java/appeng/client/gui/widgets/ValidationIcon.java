@@ -73,11 +73,11 @@ public class ValidationIcon extends IconButton {
         }
 
         Minecraft client = Minecraft.getInstance();
-        Screen screen = client.currentScreen;
+        Screen screen = client.screen;
         if (screen == null) {
             return;
         }
 
-        screen.func_243308_b(matrices, this.tooltip, x, y);
+        screen.renderComponentTooltip(matrices, this.tooltip, x, y);
     }
 }

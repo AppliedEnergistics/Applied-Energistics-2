@@ -61,16 +61,16 @@ public class GuiDataSyncPacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
-        Container c = player.openContainer;
-        if (c instanceof AEBaseContainer && c.windowId == this.windowId) {
+        Container c = player.containerMenu;
+        if (c instanceof AEBaseContainer && c.containerId == this.windowId) {
             ((AEBaseContainer) c).receiveServerSyncData(this);
         }
     }
 
     @Override
     public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
-        Container c = player.openContainer;
-        if (c instanceof AEBaseContainer && c.windowId == this.windowId) {
+        Container c = player.containerMenu;
+        if (c instanceof AEBaseContainer && c.containerId == this.windowId) {
             ((AEBaseContainer) c).receiveClientAction(this);
         }
     }

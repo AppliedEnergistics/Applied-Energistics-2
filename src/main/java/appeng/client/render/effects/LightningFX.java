@@ -59,10 +59,10 @@ public class LightningFX extends SpriteTexturedParticle {
             final double g, final double b, final int maxAge) {
         super(w, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
-        this.motionX = 0;
-        this.motionY = 0;
-        this.motionZ = 0;
-        this.maxAge = maxAge;
+        this.xd = 0;
+        this.yd = 0;
+        this.zd = 0;
+        this.lifetime = maxAge;
     }
 
     protected void regen() {
@@ -91,40 +91,40 @@ public class LightningFX extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
+        if (this.age++ >= this.lifetime) {
+            this.remove();
         }
 
-        this.motionY -= 0.04D * this.particleGravity;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.yd -= 0.04D * this.gravity;
+        this.move(this.xd, this.yd, this.zd);
+        this.xd *= 0.9800000190734863D;
+        this.yd *= 0.9800000190734863D;
+        this.zd *= 0.9800000190734863D;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vector3d Vector3d = renderInfo.getProjectedView();
-        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vector3d.getX());
-        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vector3d.getY());
-        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vector3d.getZ());
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        Vector3d Vector3d = renderInfo.getPosition();
+        float centerX = (float) (MathHelper.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
+        float centerY = (float) (MathHelper.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
+        float centerZ = (float) (MathHelper.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
 
         final float j = 1.0f;
-        float red = this.particleRed * j * 0.9f;
-        float green = this.particleGreen * j * 0.95f;
-        float blue = this.particleBlue * j;
-        final float alpha = this.particleAlpha;
+        float red = this.rCol * j * 0.9f;
+        float green = this.gCol * j * 0.95f;
+        float blue = this.bCol * j;
+        final float alpha = this.alpha;
 
         if (this.age == 3) {
             this.regen();
         }
 
-        float u = this.getMinU() + (this.getMaxU() - this.getMinU()) / 2;
-        float v = this.getMinV() + (this.getMaxV() - this.getMinV()) / 2;
+        float u = this.getU0() + (this.getU1() - this.getU0()) / 2;
+        float v = this.getV0() + (this.getV1() - this.getV0()) / 2;
 
         double scale = 0.02;// 0.02F * this.particleScale;
 
@@ -147,17 +147,17 @@ public class LightningFX extends SpriteTexturedParticle {
                 // FIXME offX *= 0.001;
                 // FIXME offY *= 0.001;
                 // FIXME offZ *= 0.001;
-                red = this.particleRed * j * 0.4f;
-                green = this.particleGreen * j * 0.25f;
-                blue = this.particleBlue * j * 0.45f;
+                red = this.rCol * j * 0.4f;
+                green = this.gCol * j * 0.25f;
+                blue = this.bCol * j * 0.45f;
             } else {
                 // FIXME offX = 0;
                 // FIXME offY = 0;
                 // FIXME offZ = 0;
                 scale = 0.02;
-                red = this.particleRed * j * 0.9f;
-                green = this.particleGreen * j * 0.65f;
-                blue = this.particleBlue * j * 0.85f;
+                red = this.rCol * j * 0.9f;
+                green = this.gCol * j * 0.65f;
+                blue = this.bCol * j * 0.85f;
             }
 
             for (int cycle = 0; cycle < 3; cycle++) {
@@ -224,14 +224,14 @@ public class LightningFX extends SpriteTexturedParticle {
     private void draw(float red, float green, float blue, final IVertexBuilder tess, final double[] a, final double[] b,
             final float u, final float v) {
         if (this.hasData) {
-            tess.pos(a[0], a[1], a[2]).tex(u, v).color(red, green, blue, this.particleAlpha)
-                    .lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(this.vertices[0], this.vertices[1], this.vertices[2]).tex(u, v)
-                    .color(red, green, blue, this.particleAlpha).lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).tex(u, v)
-                    .color(red, green, blue, this.particleAlpha).lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(b[0], b[1], b[2]).tex(u, v).color(red, green, blue, this.particleAlpha)
-                    .lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.vertex(a[0], a[1], a[2]).uv(u, v).color(red, green, blue, this.alpha)
+                    .uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.vertex(this.vertices[0], this.vertices[1], this.vertices[2]).uv(u, v)
+                    .color(red, green, blue, this.alpha).uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.vertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).uv(u, v)
+                    .color(red, green, blue, this.alpha).uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.vertex(b[0], b[1], b[2]).uv(u, v).color(red, green, blue, this.alpha)
+                    .uv2(BRIGHTNESS, BRIGHTNESS).endVertex();
         }
         this.hasData = true;
         for (int x = 0; x < 3; x++) {
@@ -253,10 +253,10 @@ public class LightningFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
+        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            lightningFX.selectSpriteRandomly(this.spriteSet);
+            lightningFX.pickSprite(this.spriteSet);
             return lightningFX;
         }
     }

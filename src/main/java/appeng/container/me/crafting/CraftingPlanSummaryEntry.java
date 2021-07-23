@@ -62,7 +62,7 @@ public class CraftingPlanSummaryEntry {
     }
 
     public static CraftingPlanSummaryEntry read(PacketBuffer buffer) {
-        ItemStack item = buffer.readItemStack();
+        ItemStack item = buffer.readItem();
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();

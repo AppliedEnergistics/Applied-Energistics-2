@@ -50,9 +50,9 @@ class ServerTileRepo {
      * Add a new tile to be initializes in a later tick.
      */
     synchronized void addTile(AEBaseTileEntity tile) {
-        final IWorld world = tile.getWorld();
-        final int x = tile.getPos().getX() >> 4;
-        final int z = tile.getPos().getZ() >> 4;
+        final IWorld world = tile.getLevel();
+        final int x = tile.getBlockPos().getX() >> 4;
+        final int z = tile.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
         Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = this.tiles.get(world);

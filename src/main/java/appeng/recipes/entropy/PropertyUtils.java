@@ -40,7 +40,7 @@ final class PropertyUtils {
     static <T extends Comparable<T>> T getRequiredPropertyValue(Property<T> property, String name) {
         Objects.requireNonNull(property, "property must be not null");
 
-        return property.parseValue(name)
+        return property.getValue(name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid value '" + name + "' for property "
                         + property.getName()));
     }

@@ -55,6 +55,8 @@ import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
 import appeng.util.InteractionUtil;
 
+import net.minecraft.item.Item.Properties;
+
 public class DebugCardItem extends AEBaseItem {
 
     public DebugCardItem(Properties properties) {
@@ -63,14 +65,14 @@ public class DebugCardItem extends AEBaseItem {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+        if (context.getLevel().isClientSide()) {
             return ActionResultType.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
 
         if (player == null) {
             return ActionResultType.PASS;
@@ -173,7 +175,7 @@ public class DebugCardItem extends AEBaseItem {
                 this.outputMsg(player, "Not Networked Block");
             }
 
-            var te = world.getTileEntity(pos);
+            var te = world.getBlockEntity(pos);
             if (te instanceof IPartHost partHost) {
                 final IPart center = partHost.getPart(AEPartLocation.INTERNAL);
                 partHost.markForUpdate();
@@ -199,18 +201,18 @@ public class DebugCardItem extends AEBaseItem {
                 }
             }
         }
-        return ActionResultType.func_233537_a_(world.isRemote());
+        return ActionResultType.sidedSuccess(world.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
+        player.sendMessage(new StringTextComponent(string), Util.NIL_UUID);
     }
 
     private void outputMsg(final Entity player, String label, String value) {
         player.sendMessage(new StringTextComponent("")
-                .appendSibling(
-                        new StringTextComponent(label).mergeStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
-                .appendString(value), Util.DUMMY_UUID);
+                .append(
+                        new StringTextComponent(label).withStyle(TextFormatting.BOLD, TextFormatting.LIGHT_PURPLE))
+                .append(value), Util.NIL_UUID);
     }
 
     private String timeMeasurement(final long nanos) {

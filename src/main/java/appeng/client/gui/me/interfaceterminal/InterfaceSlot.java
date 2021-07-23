@@ -34,8 +34,8 @@ public class InterfaceSlot extends AppEngSlot {
     public InterfaceSlot(InterfaceRecord machineInv, int machineInvSlot, int x, int y) {
         super(machineInv.getInventory(), machineInvSlot);
         this.machineInv = machineInv;
-        this.xPos = x;
-        this.yPos = y;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -54,8 +54,8 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean getHasStack() {
-        return !this.getStack().isEmpty();
+    public boolean hasItem() {
+        return !this.getItem().isEmpty();
     }
 
     public InterfaceRecord getMachineInv() {
@@ -65,26 +65,26 @@ public class InterfaceSlot extends AppEngSlot {
     // The following methods are overridden to prevent client-side code from messing with the stack in the slot
     // Any interaction with the real content of this slot must go via a custom packet
     @Override
-    public final boolean isItemValid(final ItemStack stack) {
+    public final boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void putStack(final ItemStack stack) {
+    public final void set(final ItemStack stack) {
     }
 
     @Override
-    public final int getSlotStackLimit() {
+    public final int getMaxStackSize() {
         return 0;
     }
 
     @Override
-    public final ItemStack decrStackSize(int amount) {
+    public final ItemStack remove(int amount) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public final boolean canTakeStack(PlayerEntity player) {
+    public final boolean mayPickup(PlayerEntity player) {
         return false;
     }
 }

@@ -257,12 +257,12 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerCommands(final FMLServerStartingEvent evt) {
-        CommandDispatcher<CommandSource> dispatcher = evt.getServer().getCommandManager().getDispatcher();
+        CommandDispatcher<CommandSource> dispatcher = evt.getServer().getCommands().getDispatcher();
         new AECommand().register(dispatcher);
     }
 
     public void registerDimension(RegistryEvent.NewRegistry e) {
-        Registry.register(Registry.CHUNK_GENERATOR_CODEC, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+        Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
     }
 
@@ -295,14 +295,14 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
             final double dist, final World w, final BasePacket packet) {
-        if (w.isRemote()) {
+        if (w.isClientSide()) {
             return;
         }
         for (final ServerPlayerEntity o : getPlayers()) {
-            if (o != p && o.world == w) {
-                final double dX = x - o.getPosX();
-                final double dY = y - o.getPosY();
-                final double dZ = z - o.getPosZ();
+            if (o != p && o.level == w) {
+                final double dX = x - o.getX();
+                final double dY = y - o.getY();
+                final double dZ = z - o.getZ();
                 if (dX * dX + dY * dY + dZ * dZ < dist * dist) {
                     NetworkHandler.instance().sendTo(packet, o);
                 }
@@ -322,8 +322,8 @@ public abstract class AppEngBase implements AppEng {
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final PlayerEntity player) {
         if (player != null) {
-            for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
-                final ItemStack is = player.inventory.getStackInSlot(x);
+            for (int x = 0; x < PlayerInventory.getSelectionSize(); x++) {
+                final ItemStack is = player.inventory.getItem(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
                     final CompoundNBT c = is.getTag();

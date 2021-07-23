@@ -60,8 +60,8 @@ public abstract class AbstractTableRenderer<T> {
         this.screen = screen;
         this.x = x;
         this.y = y;
-        this.fontRenderer = Minecraft.getInstance().fontRenderer;
-        this.lineHeight = this.fontRenderer.FONT_HEIGHT * TEXT_SCALE;
+        this.fontRenderer = Minecraft.getInstance().font;
+        this.lineHeight = this.fontRenderer.lineHeight * TEXT_SCALE;
     }
 
     public final void render(MatrixStack matrixStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
@@ -100,16 +100,16 @@ public abstract class AbstractTableRenderer<T> {
                 // Position the item at the right side of the cell with a 3px margin
                 int itemX = cellX + CELL_WIDTH - 19;
 
-                matrixStack.push();
+                matrixStack.pushPose();
                 matrixStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
                 for (ITextComponent line : lines) {
-                    final int w = fontRenderer.getStringPropertyWidth(line);
-                    fontRenderer.drawText(matrixStack, line,
+                    final int w = fontRenderer.width(line);
+                    fontRenderer.draw(matrixStack, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
                             textY * INV_TEXT_SCALE, textColor);
                     textY += lineHeight + LINE_SPACING;
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
 
                 ItemStack is = getEntryItem(entry);
 

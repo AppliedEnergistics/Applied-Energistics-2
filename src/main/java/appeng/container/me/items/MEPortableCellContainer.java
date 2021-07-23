@@ -50,7 +50,7 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
         if (monitorable instanceof IInventorySlotAware) {
             this.slot = ((IInventorySlotAware) monitorable).getInventorySlot();
         } else {
-            this.slot = ip.currentItem;
+            this.slot = ip.selected;
         }
         this.lockPlayerInventorySlot(this.slot);
         this.cell = Objects.requireNonNull(monitorable);
@@ -58,7 +58,7 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         if (!ensureGuiItemIsInSlot(this.cell, this.slot)) {
             this.setValidContainer(false);
             return;
@@ -71,7 +71,7 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
                     PowerMultiplier.CONFIG);
             this.ticks = 0;
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     private double getPowerMultiplier() {

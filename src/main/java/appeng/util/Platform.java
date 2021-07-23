@@ -171,9 +171,9 @@ public class Platform {
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {
-        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+        final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
+        final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
+        final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         switch (west_x + west_y * 2 + west_z * 3) {
             case 1:
@@ -211,10 +211,10 @@ public class Platform {
     }
 
     public static boolean hasPermissions(final DimensionalBlockPos dc, final PlayerEntity player) {
-        if (!dc.isInWorld(player.world)) {
+        if (!dc.isInWorld(player.level)) {
             return false;
         }
-        return player.world.isBlockModifiable(player, dc.getPos());
+        return player.level.mayInteract(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -237,7 +237,7 @@ public class Platform {
                     final ISecurityService sg = g.getService(ISecurityService.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
-                                .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                                .withStyle(TextFormatting.RED), Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -258,7 +258,7 @@ public class Platform {
         ServerWorld serverWorld = (ServerWorld) w;
 
         final BlockState state = w.getBlockState(pos);
-        final TileEntity tileEntity = w.getTileEntity(pos);
+        final TileEntity tileEntity = w.getBlockEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
@@ -269,7 +269,7 @@ public class Platform {
      * Generates Item entities in the world similar to how items are generally dropped.
      */
     public static void spawnDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        if (!w.isRemote()) {
+        if (!w.isClientSide()) {
             for (final ItemStack i : drops) {
                 if (!i.isEmpty() && i.getCount() > 0) {
                     final double offset_x = (getRandomInt() % 32 - 16) / 82;
@@ -277,7 +277,7 @@ public class Platform {
                     final double offset_z = (getRandomInt() % 32 - 16) / 82;
                     final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
                             0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                    w.addEntity(ei);
+                    w.addFreshEntity(ei);
                 }
             }
         }
@@ -321,10 +321,10 @@ public class Platform {
         }
 
         try {
-            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
+            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
                     ? ITooltipFlag.TooltipFlags.ADVANCED
                     : ITooltipFlag.TooltipFlags.NORMAL;
-            return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
+            return itemStack.getTooltipLines(Minecraft.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
         }
@@ -369,10 +369,10 @@ public class Platform {
         }
 
         try {
-            return itemStack.getDisplayName();
+            return itemStack.getHoverName();
         } catch (final Exception errA) {
             try {
-                return new TranslationTextComponent(itemStack.getTranslationKey());
+                return new TranslationTextComponent(itemStack.getDescriptionId());
             } catch (final Exception errB) {
                 return new StringTextComponent("** Exception");
             }
@@ -873,7 +873,7 @@ public class Platform {
                 break;
         }
 
-        player.setLocationAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5,
+        player.moveTo(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }
 
@@ -926,17 +926,17 @@ public class Platform {
             final boolean checkFuzzy = /*
                                         * FIXME ae_req.getOre().isPresent() || FIXME providedTemplate.getDamage() ==
                                         * OreDictionary.WILDCARD_VALUE ||
-                                        */ providedTemplate.hasTag() || providedTemplate.isDamageable();
+                                        */ providedTemplate.hasTag() || providedTemplate.isDamageableItem();
 
             if (items != null && checkFuzzy) {
                 for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getDefinition();
                     if (Platform.itemComparisons().isEqualItemType(providedTemplate, sh)
-                            && !ItemStack.areItemsEqual(sh, output)) {
+                            && !ItemStack.isSame(sh, output)) {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
-                        ci.setInventorySlotContents(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.areItemsEqual(r.getCraftingResult(ci), output)) {
+                        ci.setItem(slot, cp);
+                        if (r.matches(ci, w) && ItemStack.isSame(r.assemble(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
@@ -947,7 +947,7 @@ public class Platform {
                                 }
                             }
                         }
-                        ci.setInventorySlotContents(slot, providedTemplate);
+                        ci.setItem(slot, providedTemplate);
                     }
                 }
             }
@@ -974,7 +974,7 @@ public class Platform {
         }
 
         ItemStack ci = i.getContainerItem(stackInSlot.copy());
-        if (!ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage()) {
+        if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
             ci = ItemStack.EMPTY;
         }
 
@@ -982,7 +982,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             TickHandler.instance().addCallable(world, new BlockUpdate(pos));
         }
     }

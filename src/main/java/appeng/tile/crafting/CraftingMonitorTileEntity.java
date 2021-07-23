@@ -86,16 +86,16 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public void read(BlockState blockState, final CompoundNBT data) {
-        super.read(blockState, data);
+    public void load(BlockState blockState, final CompoundNBT data) {
+        super.load(blockState, data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
         }
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
-        super.write(data);
+    public CompoundNBT save(final CompoundNBT data) {
+        super.save(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
         return data;
     }
