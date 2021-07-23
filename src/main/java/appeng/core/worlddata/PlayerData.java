@@ -54,10 +54,6 @@ final class PlayerData extends SavedData implements IWorldPlayerData {
     // Caches the highest assigned player id + 1
     private int nextPlayerId = 0;
 
-    public PlayerData() {
-        super(NAME);
-    }
-
     @Nullable
     @Override
     public UUID getProfileId(final int playerId) {
@@ -83,8 +79,7 @@ final class PlayerData extends SavedData implements IWorldPlayerData {
         return playerId;
     }
 
-    @Override
-    public void load(CompoundTag nbt) {
+    public static PlayerData load(CompoundTag nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -93,16 +88,17 @@ final class PlayerData extends SavedData implements IWorldPlayerData {
                     + profileIds.length + " profile IDs (latter must be 2 * the former)");
         }
 
-        this.mapping.clear();
+        var result = new PlayerData();
         int highestPlayerId = -1;
         for (int i = 0; i < playerIds.length; i++) {
             int playerId = playerIds[i];
             UUID profileId = new UUID(profileIds[i * 2], profileIds[i * 2 + 1]);
             highestPlayerId = Math.max(playerId, highestPlayerId);
-            mapping.put(profileId, playerId);
+            result.mapping.put(profileId, playerId);
             AELog.debug("AE player ID %s is assigned to profile ID %s", playerId, profileId);
         }
-        this.nextPlayerId = highestPlayerId + 1;
+        result.nextPlayerId = highestPlayerId + 1;
+        return result;
     }
 
     @Override

@@ -54,10 +54,6 @@ final class StorageData extends SavedData implements IWorldGridStorageData {
     // spawned meteor
     private final Map<String, Integer> orderedValues = new HashMap<>();
 
-    public StorageData() {
-        super(NAME);
-    }
-
     /**
      * lazy loading, can load any id, even ones that don't exist anymore.
      *
@@ -95,10 +91,11 @@ final class StorageData extends SavedData implements IWorldGridStorageData {
         return orderedValues.merge(name, firstValue, (oldValue, value) -> oldValue + 1);
     }
 
-    @Override
-    public void load(CompoundTag tag) {
+    public static StorageData load(CompoundTag tag) {
 
-        nextGridId = tag.getLong(TAG_NEXT_ID);
+        var result = new StorageData();
+
+        result.nextGridId = tag.getLong(TAG_NEXT_ID);
 
         // Load serialized grid storage
         CompoundTag storageTag = tag.getCompound(TAG_STORAGE);
@@ -110,16 +107,16 @@ final class StorageData extends SavedData implements IWorldGridStorageData {
                 AELog.warn("Unable to load grid storage with malformed id: '{}'", storageIdStr);
                 continue;
             }
-            storage.put(storageId, new GridStorage(storageId, storageTag.getCompound(storageIdStr)));
+            result.storage.put(storageId, new GridStorage(storageId, storageTag.getCompound(storageIdStr)));
         }
 
         // Load ordered values map
         CompoundTag orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
-        this.orderedValues.clear();
         for (String key : orderedValuesTag.getAllKeys()) {
-            this.orderedValues.put(key, orderedValuesTag.getInt(key));
+            result.orderedValues.put(key, orderedValuesTag.getInt(key));
         }
 
+        return result;
     }
 
     @Override
