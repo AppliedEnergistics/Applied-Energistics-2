@@ -21,6 +21,7 @@ package appeng.items.tools;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -59,12 +60,12 @@ import net.minecraft.world.phys.HitResult.Type;
 
 public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
-    public NetworkToolItem(net.minecraft.world.item.Item.Properties properties) {
+    public NetworkToolItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public NetworkToolViewer getGuiObject(final net.minecraft.world.item.ItemStack is, int playerInventorySlot, final Level world,
+    public NetworkToolViewer getGuiObject(final ItemStack is, int playerInventorySlot, final Level world,
                                           final BlockPos pos) {
         if (pos == null) {
             return new NetworkToolViewer(is, null, world.isClientSide());
@@ -76,7 +77,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
         if (w.isClientSide()) {
-            final net.minecraft.world.phys.HitResult mop = AppEng.instance().getCurrentMouseOver();
+            final HitResult mop = AppEng.instance().getCurrentMouseOver();
 
             if (mop == null || mop.getType() == Type.MISS) {
                 NetworkHandler.instance().sendToServer(new ClickPacket(hand));
@@ -115,7 +116,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public boolean doesSneakBypassUse(net.minecraft.world.item.ItemStack stack, LevelReader world, BlockPos pos, Player player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
         return true;
     }
 
@@ -124,7 +125,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         Player p = useContext.getPlayer();
         Level w = p.level;
         InteractionHand hand = useContext.getHand();
-        net.minecraft.core.Direction side = useContext.getClickedFace();
+        Direction side = useContext.getClickedFace();
 
         if (!Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
             return false;

@@ -50,7 +50,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
         return SHAPE;
     }
 
-    private static net.minecraft.world.phys.shapes.VoxelShape createShape(double onePixel) {
+    private static VoxelShape createShape(double onePixel) {
         return Shapes.create(
                 new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }

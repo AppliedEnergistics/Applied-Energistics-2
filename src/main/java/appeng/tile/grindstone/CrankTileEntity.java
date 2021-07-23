@@ -41,7 +41,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEn
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CrankTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -67,7 +67,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEn
             return null;
         }
 
-        final net.minecraft.core.Direction grinder = this.getUp().getOpposite();
+        final Direction grinder = this.getUp().getOpposite();
         final BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(grinder));
         if (te instanceof ICrankable) {
             return (ICrankable) te;
@@ -89,7 +89,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements TickableBlockEn
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final net.minecraft.core.Direction inUp) {
+    public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.level.getBlockState(this.worldPosition);
         state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition, false);

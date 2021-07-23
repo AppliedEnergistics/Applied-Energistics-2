@@ -42,8 +42,8 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(net.minecraft.network.chat.Component.class, new Serializer())
-            .registerTypeHierarchyAdapter(Style.class, new net.minecraft.network.chat.Style.Serializer())
+            .registerTypeHierarchyAdapter(Component.class, new Serializer())
+            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)

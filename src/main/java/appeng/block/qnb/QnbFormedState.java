@@ -24,13 +24,13 @@ import net.minecraft.core.Direction;
 
 public class QnbFormedState {
 
-    private final Set<net.minecraft.core.Direction> adjacentQuantumBridges;
+    private final Set<Direction> adjacentQuantumBridges;
 
     private final boolean corner;
 
     private final boolean powered;
 
-    public QnbFormedState(Set<net.minecraft.core.Direction> adjacentQuantumBridges, boolean corner, boolean powered) {
+    public QnbFormedState(Set<Direction> adjacentQuantumBridges, boolean corner, boolean powered) {
         this.adjacentQuantumBridges = adjacentQuantumBridges;
         this.corner = corner;
         this.powered = powered;

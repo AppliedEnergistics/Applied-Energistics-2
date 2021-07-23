@@ -29,6 +29,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +50,7 @@ import appeng.util.InteractionUtil;
 import net.minecraft.world.item.Item.Properties;
 
 public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
-    public BiometricCardItem(net.minecraft.world.item.Item.Properties properties) {
+    public BiometricCardItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -79,7 +80,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public net.minecraft.network.chat.Component getName(final ItemStack is) {
+    public Component getName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
         return username != null ? super.getName(is).copy().append(" - " + username.getName())
                 : super.getName(is);
@@ -158,13 +159,13 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
             lines.add(new TranslatableComponent(GuiText.NoPermissions.getLocal()));
         } else {
-            net.minecraft.network.chat.Component msg = null;
+            Component msg = null;
 
             for (final SecurityPermissions sp : perms) {
                 if (msg == null) {

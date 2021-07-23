@@ -59,7 +59,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
-    public ChargerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public ChargerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
@@ -70,7 +70,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -82,7 +82,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
             final ItemStack is = item.createItemStack();
             this.inv.setStackInSlot(0, is);
         } catch (final Throwable t) {
-            this.inv.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
+            this.inv.setStackInSlot(0, ItemStack.EMPTY);
         }
         return c; // TESR doesn't need updates!
     }
@@ -112,13 +112,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     public void applyTurn() {
         this.injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
 
-        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getStackInSlot(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
 
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                net.minecraft.world.item.ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
             }
         }
@@ -136,7 +136,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });
@@ -149,9 +149,9 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
             return;
         }
 
-        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getStackInSlot(0);
         if (myItem.isEmpty()) {
-            net.minecraft.world.item.ItemStack held = player.inventory.getSelected();
+            ItemStack held = player.inventory.getSelected();
 
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
@@ -159,9 +159,9 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                 this.inv.setStackInSlot(0, held);
             }
         } else {
-            final List<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
+            final List<ItemStack> drops = new ArrayList<>();
             drops.add(myItem);
-            this.inv.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
+            this.inv.setStackInSlot(0, ItemStack.EMPTY);
             Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), drops);
         }
     }
@@ -177,7 +177,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     private boolean doWork() {
-        final net.minecraft.world.item.ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getStackInSlot(0);
         boolean changed = false;
 
         if (!myItem.isEmpty()) {
@@ -215,7 +215,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                net.minecraft.world.item.ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
                 this.inv.setStackInSlot(0, charged);
 
                 changed = true;
@@ -244,13 +244,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(IItemHandler inv, final int i, final net.minecraft.world.item.ItemStack itemstack) {
+        public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
             return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
         }
 
         @Override
         public boolean allowExtract(IItemHandler inv, final int slotIndex, int amount) {
-            net.minecraft.world.item.ItemStack extractedItem = inv.getStackInSlot(slotIndex);
+            ItemStack extractedItem = inv.getStackInSlot(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {
                 final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();

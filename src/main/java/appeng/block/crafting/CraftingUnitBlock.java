@@ -19,11 +19,12 @@
 package appeng.block.crafting;
 
 import appeng.tile.crafting.CraftingTileEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingTileEntity> {
 
-    public CraftingUnitBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props, CraftingUnitType type) {
+    public CraftingUnitBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
         super(props, type);
     }
 

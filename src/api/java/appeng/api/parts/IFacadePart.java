@@ -61,7 +61,7 @@ public interface IFacadePart {
     /**
      * The item that this facade masquerades as.
      */
-    net.minecraft.world.item.ItemStack getTextureItem();
+    ItemStack getTextureItem();
 
     /**
      * @return The block state used for rendering.

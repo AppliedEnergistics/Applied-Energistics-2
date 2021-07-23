@@ -39,35 +39,35 @@ public enum CraterType {
     /**
      * A crater lake filled with lava.
      */
-    LAVA(net.minecraft.world.level.block.Blocks.LAVA),
+    LAVA(Blocks.LAVA),
 
     /**
      * A lava crater lake cooled down to obsidian.
      */
-    OBSIDIAN(net.minecraft.world.level.block.Blocks.OBSIDIAN),
+    OBSIDIAN(Blocks.OBSIDIAN),
 
     /**
      * A crater filled with water by rain
      */
-    WATER(net.minecraft.world.level.block.Blocks.WATER),
+    WATER(Blocks.WATER),
 
     /**
      * A crater filled with snow by snowing.
      */
-    SNOW(net.minecraft.world.level.block.Blocks.SNOW_BLOCK),
+    SNOW(Blocks.SNOW_BLOCK),
 
     /**
      * A frozen water filled crater.
      */
-    ICE(net.minecraft.world.level.block.Blocks.ICE);
+    ICE(Blocks.ICE);
 
     private final Block filler;
 
-    CraterType(net.minecraft.world.level.block.Block filler) {
+    CraterType(Block filler) {
         this.filler = filler;
     }
 
-    public net.minecraft.world.level.block.Block getFiller() {
+    public Block getFiller() {
         return filler;
     }
 

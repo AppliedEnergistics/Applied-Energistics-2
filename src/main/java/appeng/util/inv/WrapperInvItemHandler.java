@@ -43,22 +43,22 @@ public class WrapperInvItemHandler implements Container {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItem(int index) {
+    public ItemStack getItem(int index) {
         return this.inv.getStackInSlot(index);
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack removeItem(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         return this.inv.extractItem(index, count, false);
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack removeItemNoUpdate(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         return this.inv.extractItem(index, this.inv.getSlotLimit(index), false);
     }
 
     @Override
-    public void setItem(int index, net.minecraft.world.item.ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         ItemHandlerUtil.setStackInSlot(this.inv, index, stack);
     }
 

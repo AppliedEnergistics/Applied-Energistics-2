@@ -27,9 +27,9 @@ import net.minecraft.core.Direction;
 final class AutoRotatingCacheKey {
     private final BlockState blockState;
     private final AEModelData modelData;
-    private final net.minecraft.core.Direction side;
+    private final Direction side;
 
-    AutoRotatingCacheKey(BlockState blockState, AEModelData modelData, net.minecraft.core.Direction side) {
+    AutoRotatingCacheKey(BlockState blockState, AEModelData modelData, Direction side) {
         this.blockState = blockState;
         this.modelData = modelData;
         this.side = side;
@@ -43,7 +43,7 @@ final class AutoRotatingCacheKey {
         return modelData;
     }
 
-    public net.minecraft.core.Direction getSide() {
+    public Direction getSide() {
         return this.side;
     }
 

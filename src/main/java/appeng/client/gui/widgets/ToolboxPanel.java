@@ -41,12 +41,12 @@ public class ToolboxPanel implements ICompositeWidget {
     // Backdrop for the 3x3 toolbox offered by the network-tool
     private final Blitter background;
 
-    private final net.minecraft.network.chat.Component toolbeltName;
+    private final Component toolbeltName;
 
     // Relative to the origin of the current screen (not window)
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
-    public ToolboxPanel(ScreenStyle style, net.minecraft.network.chat.Component toolbeltName) {
+    public ToolboxPanel(ScreenStyle style, Component toolbeltName) {
         this.background = style.getImage("toolbox");
         this.toolbeltName = toolbeltName;
     }

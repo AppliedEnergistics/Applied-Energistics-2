@@ -57,7 +57,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     private final StorageTier tier;
 
-    public PortableCellItem(StorageTier tier, net.minecraft.world.item.Item.Properties props) {
+    public PortableCellItem(StorageTier tier, Item.Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.tier = tier;
     }
@@ -70,8 +70,8 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
@@ -81,22 +81,22 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public int getBytes(final net.minecraft.world.item.ItemStack cellItem) {
+    public int getBytes(final ItemStack cellItem) {
         return this.tier.getBytes();
     }
 
     @Override
-    public int getBytesPerType(final net.minecraft.world.item.ItemStack cellItem) {
+    public int getBytesPerType(final ItemStack cellItem) {
         return this.tier.getBytesPerType();
     }
 
     @Override
-    public int getTotalTypes(final net.minecraft.world.item.ItemStack cellItem) {
+    public int getTotalTypes(final ItemStack cellItem) {
         return this.tier.getTypes();
     }
 
     @Override
-    public boolean isBlackListed(final net.minecraft.world.item.ItemStack cellItem, final IAEItemStack requestedAddition) {
+    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
         return false;
     }
 
@@ -106,7 +106,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public boolean isStorageCell(final net.minecraft.world.item.ItemStack i) {
+    public boolean isStorageCell(final ItemStack i) {
         return true;
     }
 
@@ -121,12 +121,12 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public boolean isEditable(final net.minecraft.world.item.ItemStack is) {
+    public boolean isEditable(final ItemStack is) {
         return true;
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final net.minecraft.world.item.ItemStack is) {
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
@@ -146,7 +146,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public void setFuzzyMode(final net.minecraft.world.item.ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 

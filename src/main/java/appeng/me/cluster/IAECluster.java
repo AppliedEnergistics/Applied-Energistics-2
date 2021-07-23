@@ -28,7 +28,7 @@ public interface IAECluster {
     /**
      * The minimum x,y,z position still within the bounds of the cluster.
      */
-    net.minecraft.core.BlockPos getBoundsMin();
+    BlockPos getBoundsMin();
 
     /**
      * The maximum x,y,z position still within the bounds of the cluster.

@@ -99,7 +99,7 @@ public interface IGridNode {
      * nodes.
      */
     @Nonnull
-    Map<net.minecraft.core.Direction, IGridConnection> getInWorldConnections();
+    Map<Direction, IGridConnection> getInWorldConnections();
 
     /**
      * lets you iterate all of a nodes connections that have been made either internally within the grid host, or to

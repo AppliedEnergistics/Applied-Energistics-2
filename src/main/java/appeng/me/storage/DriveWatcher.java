@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
     private final ICellHandler handler;
     private final IChestOrDrive cord;
 

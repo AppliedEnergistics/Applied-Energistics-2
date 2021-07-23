@@ -163,7 +163,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return;
         }
 
-        final net.minecraft.world.item.ItemStack is = inv.server.getStackInSlot(slot);
+        final ItemStack is = inv.server.getStackInSlot(slot);
         final boolean hasItemInHand = !player.inventory.getCarried().isEmpty();
 
         final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
@@ -211,7 +211,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                         playerHand.addItems(extra);
                     }
                 } else if (!is.isEmpty()) {
-                    net.minecraft.world.item.ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, net.minecraft.world.item.ItemStack.EMPTY, null);
+                    ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
                     if (!extra.isEmpty()) {
                         extra = playerHand.addItems(extra);
                     }
@@ -328,7 +328,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             final ItemStack is = inv.server.getStackInSlot(x + offset);
 
             // "update" client side.
-            ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : is.copy());
+            ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
                 is.save(itemNBT);
@@ -344,13 +344,13 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         private final long sortBy;
         private final long serverId = inventorySerial++;
-        private final net.minecraft.network.chat.Component name;
+        private final Component name;
         // This is used to track the inventory contents we sent to the client for change detection
         private final IItemHandler client;
         // This is a reference to the real inventory used by this machine
         private final IItemHandler server;
 
-        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final net.minecraft.network.chat.Component name) {
+        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlots());
             this.name = name;
@@ -365,7 +365,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, net.minecraft.world.item.ItemStack stack) {
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
     }

@@ -51,7 +51,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
             }
 
             if (destination != null) {
-                net.minecraft.world.item.ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
+                ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
                 if (extracted.isEmpty()) {
                     continue;
                 }
@@ -180,7 +180,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack simulateAdd(net.minecraft.world.item.ItemStack toBeSimulated) {
+    public ItemStack simulateAdd(ItemStack toBeSimulated) {
         return this.addItems(toBeSimulated, true);
     }
 

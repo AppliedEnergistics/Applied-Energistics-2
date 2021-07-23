@@ -34,7 +34,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
     private final ToggleButton transparentFacadesButton;
 
-    public NetworkToolScreen(NetworkToolContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public NetworkToolScreen(NetworkToolContainer container, Inventory playerInventory, Component title,
                              ScreenStyle style) {
         super(container, playerInventory, title, style);
 

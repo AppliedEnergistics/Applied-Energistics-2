@@ -33,7 +33,7 @@ public class DriveModelData extends AEModelData {
 
     private final DriveSlotsState slotsState;
 
-    public DriveModelData(net.minecraft.core.Direction up, net.minecraft.core.Direction forward, DriveSlotsState slotsState) {
+    public DriveModelData(Direction up, Direction forward, DriveSlotsState slotsState) {
         super(up, forward);
         this.slotsState = slotsState;
     }

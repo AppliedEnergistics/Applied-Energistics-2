@@ -26,19 +26,19 @@ import appeng.api.util.AEColor;
 
 public class Splotch {
 
-    private final net.minecraft.core.Direction side;
+    private final Direction side;
     private final boolean lumen;
     private final AEColor color;
     private final int pos;
 
-    public Splotch(final AEColor col, final boolean lit, final net.minecraft.core.Direction side, final Vec3 position) {
+    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vec3 position) {
         this.color = col;
         this.lumen = lit;
 
         final double x;
         final double y;
 
-        if (side == net.minecraft.core.Direction.SOUTH || side == net.minecraft.core.Direction.NORTH) {
+        if (side == Direction.SOUTH || side == Direction.NORTH) {
             x = position.x;
             y = position.y;
         } else {
@@ -86,7 +86,7 @@ public class Splotch {
         return Math.abs(this.pos + val);
     }
 
-    public net.minecraft.core.Direction getSide() {
+    public Direction getSide() {
         return this.side;
     }
 

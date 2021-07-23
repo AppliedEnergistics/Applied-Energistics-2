@@ -46,7 +46,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     // api
-    public InventoryActionPacket(final InventoryAction action, final int slot, final net.minecraft.world.item.ItemStack slotItem) {
+    public InventoryActionPacket(final InventoryAction action, final int slot, final ItemStack slotItem) {
 
         if (Platform.isClient() && action != InventoryAction.SET_FILTER) {
             throw new IllegalStateException("invalid packet, client cannot post inv actions with stacks.");
@@ -81,7 +81,7 @@ public class InventoryActionPacket extends BasePacket {
         data.writeInt(action.ordinal());
         data.writeInt(slot);
         data.writeLong(id);
-        data.writeItem(net.minecraft.world.item.ItemStack.EMPTY);
+        data.writeItem(ItemStack.EMPTY);
 
         this.configureWrite(data);
     }

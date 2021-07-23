@@ -52,13 +52,13 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
         return currentState.setValue(POWERED, te.isActive());
     }
 

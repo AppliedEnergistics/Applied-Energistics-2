@@ -144,7 +144,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public EnumSet<net.minecraft.core.Direction> getTargets() {
+    public EnumSet<Direction> getTargets() {
         return EnumSet.of(this.getSide().getDirection());
     }
 

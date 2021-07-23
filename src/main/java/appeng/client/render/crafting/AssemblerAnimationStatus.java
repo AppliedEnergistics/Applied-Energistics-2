@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class AssemblerAnimationStatus {
 
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
 
     private final byte speed;
 

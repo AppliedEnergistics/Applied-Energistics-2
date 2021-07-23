@@ -29,7 +29,7 @@ public class Text {
     /**
      * The text to display.
      */
-    private net.minecraft.network.chat.Component text = TextComponent.EMPTY;
+    private Component text = TextComponent.EMPTY;
 
     /**
      * The color to show the text in.
@@ -46,11 +46,11 @@ public class Text {
      */
     private boolean centerHorizontally;
 
-    public net.minecraft.network.chat.Component getText() {
+    public Component getText() {
         return text;
     }
 
-    public void setText(net.minecraft.network.chat.Component text) {
+    public void setText(Component text) {
         this.text = text;
     }
 

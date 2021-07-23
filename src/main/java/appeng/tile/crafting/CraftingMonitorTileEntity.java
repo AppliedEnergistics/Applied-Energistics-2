@@ -50,7 +50,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CraftingMonitorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -130,7 +130,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    public boolean recolourBlock(final net.minecraft.core.Direction side, final AEColor newPaintedColor, final Player who) {
+    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }

@@ -37,14 +37,14 @@ public enum AeStats {
     private final ResourceLocation registryName;
 
     AeStats(String id) {
-        this.registryName = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, id);
+        this.registryName = new ResourceLocation(AppEng.MOD_ID, id);
     }
 
     public void addToPlayer(final Player player, final int howMany) {
         player.awardStat(this.registryName, howMany);
     }
 
-    public net.minecraft.resources.ResourceLocation getRegistryName() {
+    public ResourceLocation getRegistryName() {
         return registryName;
     }
 

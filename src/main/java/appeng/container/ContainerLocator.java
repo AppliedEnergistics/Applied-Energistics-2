@@ -71,7 +71,7 @@ public final class ContainerLocator {
         this(type, itemIndex, world.dimension().location(), blockPos, side);
     }
 
-    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, net.minecraft.core.BlockPos blockPos,
+    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
             AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;

@@ -78,119 +78,119 @@ import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
 
-    private static final Map<net.minecraft.resources.ResourceLocation, net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
+    private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
 
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<GrinderTileEntity> GRINDSTONE = create("grindstone", GrinderTileEntity.class,
+    public static final BlockEntityType<GrinderTileEntity> GRINDSTONE = create("grindstone", GrinderTileEntity.class,
             GrinderTileEntity::new, AEBlocks.GRINDSTONE);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CrankTileEntity> CRANK = create("crank", CrankTileEntity.class,
+    public static final BlockEntityType<CrankTileEntity> CRANK = create("crank", CrankTileEntity.class,
             CrankTileEntity::new, AEBlocks.CRANK);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<InscriberTileEntity> INSCRIBER = create("inscriber", InscriberTileEntity.class,
+    public static final BlockEntityType<InscriberTileEntity> INSCRIBER = create("inscriber", InscriberTileEntity.class,
             InscriberTileEntity::new, AEBlocks.INSCRIBER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<WirelessTileEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
+    public static final BlockEntityType<WirelessTileEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
             WirelessTileEntity.class, WirelessTileEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<ChargerTileEntity> CHARGER = create("charger", ChargerTileEntity.class,
+    public static final BlockEntityType<ChargerTileEntity> CHARGER = create("charger", ChargerTileEntity.class,
             ChargerTileEntity::new, AEBlocks.CHARGER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SecurityStationTileEntity> SECURITY_STATION = create("security_station",
+    public static final BlockEntityType<SecurityStationTileEntity> SECURITY_STATION = create("security_station",
             SecurityStationTileEntity.class, SecurityStationTileEntity::new, AEBlocks.SECURITY_STATION);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<QuantumBridgeTileEntity> QUANTUM_BRIDGE = create("quantum_ring",
+    public static final BlockEntityType<QuantumBridgeTileEntity> QUANTUM_BRIDGE = create("quantum_ring",
             QuantumBridgeTileEntity.class, QuantumBridgeTileEntity::new, AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SpatialPylonTileEntity> SPATIAL_PYLON = create("spatial_pylon",
+    public static final BlockEntityType<SpatialPylonTileEntity> SPATIAL_PYLON = create("spatial_pylon",
             SpatialPylonTileEntity.class, SpatialPylonTileEntity::new, AEBlocks.SPATIAL_PYLON);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SpatialIOPortTileEntity> SPATIAL_IO_PORT = create("spatial_io_port",
+    public static final BlockEntityType<SpatialIOPortTileEntity> SPATIAL_IO_PORT = create("spatial_io_port",
             SpatialIOPortTileEntity.class, SpatialIOPortTileEntity::new, AEBlocks.SPATIAL_IO_PORT);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SpatialAnchorTileEntity> SPATIAL_ANCHOR = create("spatial_anchor",
+    public static final BlockEntityType<SpatialAnchorTileEntity> SPATIAL_ANCHOR = create("spatial_anchor",
             SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new, AEBlocks.SPATIAL_ANCHOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CableBusTileEntity> CABLE_BUS = create("cable_bus", CableBusTileEntity.class,
+    public static final BlockEntityType<CableBusTileEntity> CABLE_BUS = create("cable_bus", CableBusTileEntity.class,
             CableBusTileEntity::new, AEBlocks.MULTI_PART);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<ControllerTileEntity> CONTROLLER = create("controller",
+    public static final BlockEntityType<ControllerTileEntity> CONTROLLER = create("controller",
             ControllerTileEntity.class, ControllerTileEntity::new, AEBlocks.CONTROLLER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<DriveTileEntity> DRIVE = create("drive", DriveTileEntity.class,
+    public static final BlockEntityType<DriveTileEntity> DRIVE = create("drive", DriveTileEntity.class,
             DriveTileEntity::new, AEBlocks.DRIVE);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
+    public static final BlockEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
             ChestTileEntity::new, AEBlocks.CHEST);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<InterfaceTileEntity> INTERFACE = create("interface", InterfaceTileEntity.class,
+    public static final BlockEntityType<InterfaceTileEntity> INTERFACE = create("interface", InterfaceTileEntity.class,
             InterfaceTileEntity::new, AEBlocks.INTERFACE);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
+    public static final BlockEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
             FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new, AEBlocks.FLUID_INTERFACE);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",
+    public static final BlockEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",
             CellWorkbenchTileEntity.class, CellWorkbenchTileEntity::new, AEBlocks.CELL_WORKBENCH);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<IOPortTileEntity> IO_PORT = create("io_port", IOPortTileEntity.class,
+    public static final BlockEntityType<IOPortTileEntity> IO_PORT = create("io_port", IOPortTileEntity.class,
             IOPortTileEntity::new, AEBlocks.IO_PORT);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CondenserTileEntity> CONDENSER = create("condenser", CondenserTileEntity.class,
+    public static final BlockEntityType<CondenserTileEntity> CONDENSER = create("condenser", CondenserTileEntity.class,
             CondenserTileEntity::new, AEBlocks.CONDENSER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<EnergyAcceptorTileEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
+    public static final BlockEntityType<EnergyAcceptorTileEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorTileEntity.class, EnergyAcceptorTileEntity::new, AEBlocks.ENERGY_ACCEPTOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<VibrationChamberTileEntity> VIBRATION_CHAMBER = create("vibration_chamber",
+    public static final BlockEntityType<VibrationChamberTileEntity> VIBRATION_CHAMBER = create("vibration_chamber",
             VibrationChamberTileEntity.class, VibrationChamberTileEntity::new, AEBlocks.VIBRATION_CHAMBER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<QuartzGrowthAcceleratorTileEntity> QUARTZ_GROWTH_ACCELERATOR = create(
+    public static final BlockEntityType<QuartzGrowthAcceleratorTileEntity> QUARTZ_GROWTH_ACCELERATOR = create(
             "quartz_growth_accelerator", QuartzGrowthAcceleratorTileEntity.class,
             QuartzGrowthAcceleratorTileEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<EnergyCellTileEntity> ENERGY_CELL = create("energy_cell",
+    public static final BlockEntityType<EnergyCellTileEntity> ENERGY_CELL = create("energy_cell",
             EnergyCellTileEntity.class, EnergyCellTileEntity::new, AEBlocks.ENERGY_CELL);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<DenseEnergyCellTileEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
+    public static final BlockEntityType<DenseEnergyCellTileEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
             DenseEnergyCellTileEntity.class, DenseEnergyCellTileEntity::new, AEBlocks.DENSE_ENERGY_CELL);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CreativeEnergyCellTileEntity> CREATIVE_ENERGY_CELL = create(
+    public static final BlockEntityType<CreativeEnergyCellTileEntity> CREATIVE_ENERGY_CELL = create(
             "creative_energy_cell",
             CreativeEnergyCellTileEntity.class, CreativeEnergyCellTileEntity::new, AEBlocks.CREATIVE_ENERGY_CELL);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CraftingTileEntity> CRAFTING_UNIT = create("crafting_unit",
+    public static final BlockEntityType<CraftingTileEntity> CRAFTING_UNIT = create("crafting_unit",
             CraftingTileEntity.class, CraftingTileEntity::new, AEBlocks.CRAFTING_UNIT,
             AEBlocks.CRAFTING_ACCELERATOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CraftingStorageTileEntity> CRAFTING_STORAGE = create("crafting_storage",
+    public static final BlockEntityType<CraftingStorageTileEntity> CRAFTING_STORAGE = create("crafting_storage",
             CraftingStorageTileEntity.class, CraftingStorageTileEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CraftingMonitorTileEntity> CRAFTING_MONITOR = create("crafting_monitor",
+    public static final BlockEntityType<CraftingMonitorTileEntity> CRAFTING_MONITOR = create("crafting_monitor",
             CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new, AEBlocks.CRAFTING_MONITOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create("molecular_assembler",
+    public static final BlockEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create("molecular_assembler",
             MolecularAssemblerTileEntity.class, MolecularAssemblerTileEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<LightDetectorTileEntity> LIGHT_DETECTOR = create("light_detector",
+    public static final BlockEntityType<LightDetectorTileEntity> LIGHT_DETECTOR = create("light_detector",
             LightDetectorTileEntity.class, LightDetectorTileEntity::new, AEBlocks.LIGHT_DETECTOR);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<PaintSplotchesTileEntity> PAINT = create("paint", PaintSplotchesTileEntity.class,
+    public static final BlockEntityType<PaintSplotchesTileEntity> PAINT = create("paint", PaintSplotchesTileEntity.class,
             PaintSplotchesTileEntity::new, AEBlocks.PAINT);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SkyChestTileEntity> SKY_CHEST = create("sky_chest", SkyChestTileEntity.class,
+    public static final BlockEntityType<SkyChestTileEntity> SKY_CHEST = create("sky_chest", SkyChestTileEntity.class,
             SkyChestTileEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<SkyCompassTileEntity> SKY_COMPASS = create("sky_compass",
+    public static final BlockEntityType<SkyCompassTileEntity> SKY_COMPASS = create("sky_compass",
             SkyCompassTileEntity.class, SkyCompassTileEntity::new, AEBlocks.SKY_COMPASS);
 
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<ItemGenTileEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
+    public static final BlockEntityType<ItemGenTileEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
             ItemGenTileEntity.class, ItemGenTileEntity::new, AEBlocks.DEBUG_ITEM_GEN);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<ChunkLoaderTileEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
+    public static final BlockEntityType<ChunkLoaderTileEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
             ChunkLoaderTileEntity.class, ChunkLoaderTileEntity::new, AEBlocks.DEBUG_CHUNK_LOADER);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<PhantomNodeTileEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
+    public static final BlockEntityType<PhantomNodeTileEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
             PhantomNodeTileEntity.class, PhantomNodeTileEntity::new, AEBlocks.DEBUG_PHANTOM_NODE);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<CubeGeneratorTileEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
+    public static final BlockEntityType<CubeGeneratorTileEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
             CubeGeneratorTileEntity.class, CubeGeneratorTileEntity::new, AEBlocks.DEBUG_CUBE_GEN);
-    public static final net.minecraft.world.level.block.entity.BlockEntityType<EnergyGeneratorTileEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
+    public static final BlockEntityType<EnergyGeneratorTileEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
             EnergyGeneratorTileEntity.class, EnergyGeneratorTileEntity::new, AEBlocks.DEBUG_ENERGY_GEN);
 
     private AEBlockEntities() {
     }
 
-    public static Map<ResourceLocation, net.minecraft.world.level.block.entity.BlockEntityType<?>> getBlockEntityTypes() {
+    public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return ImmutableMap.copyOf(BLOCK_ENTITY_TYPES);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends AEBaseTileEntity> net.minecraft.world.level.block.entity.BlockEntityType<T> create(String shortId,
+    private static <T extends AEBaseTileEntity> BlockEntityType<T> create(String shortId,
                                                                                                                  Class<T> entityClass,
-                                                                                                                 Function<net.minecraft.world.level.block.entity.BlockEntityType<T>, T> factory,
+                                                                                                                 Function<BlockEntityType<T>, T> factory,
                                                                                                                  BlockDefinition... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
-        net.minecraft.resources.ResourceLocation id = AppEng.makeId(shortId);
+        ResourceLocation id = AppEng.makeId(shortId);
 
-        net.minecraft.world.level.block.Block[] blocks = Arrays.stream(blockDefinitions).map(BlockDefinition::block).toArray(Block[]::new);
+        Block[] blocks = Arrays.stream(blockDefinitions).map(BlockDefinition::block).toArray(Block[]::new);
 
-        AtomicReference<net.minecraft.world.level.block.entity.BlockEntityType<T>> typeHolder = new AtomicReference<>();
+        AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
         Supplier<T> supplier = () -> factory.apply(typeHolder.get());
-        net.minecraft.world.level.block.entity.BlockEntityType<T> type = Builder.of(supplier, blocks).build(null);
+        BlockEntityType<T> type = Builder.of(supplier, blocks).build(null);
         type.setRegistryName(id);
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
         AEBaseTileEntity.registerTileItem(type, blockDefinitions[0].asItem());
 
-        for (net.minecraft.world.level.block.Block block : blocks) {
+        for (Block block : blocks) {
             if (block instanceof AEBaseTileBlock) {
                 AEBaseTileBlock<T> baseTileBlock = (AEBaseTileBlock<T>) block;
                 baseTileBlock.setTileEntity(entityClass, supplier);

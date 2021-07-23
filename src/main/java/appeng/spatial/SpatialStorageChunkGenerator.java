@@ -50,7 +50,7 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
 /**
  * Chunk generator the spatial storage world.
  */
-public class SpatialStorageChunkGenerator extends net.minecraft.world.level.chunk.ChunkGenerator {
+public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     /**
      * This codec is necessary to restore the actual instance of the Biome we use, since it is sources from the dynamic
@@ -63,7 +63,7 @@ public class SpatialStorageChunkGenerator extends net.minecraft.world.level.chun
             .create(Registry.BIOME_REGISTRY)
             .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
 
-    private final net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> biomeRegistry;
+    private final Registry<Biome> biomeRegistry;
 
     private final NoiseColumn columnSample;
 
@@ -82,15 +82,15 @@ public class SpatialStorageChunkGenerator extends net.minecraft.world.level.chun
     }
 
     @Override
-    protected Codec<? extends net.minecraft.world.level.chunk.ChunkGenerator> codec() {
+    protected Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 
-    private static FixedBiomeSource createBiomeSource(net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> biomeRegistry) {
+    private static FixedBiomeSource createBiomeSource(Registry<Biome> biomeRegistry) {
         return new FixedBiomeSource(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
-    public Registry<net.minecraft.world.level.biome.Biome> getBiomeRegistry() {
+    public Registry<Biome> getBiomeRegistry() {
         return biomeRegistry;
     }
 
@@ -99,7 +99,7 @@ public class SpatialStorageChunkGenerator extends net.minecraft.world.level.chun
     }
 
     @Override
-    public void buildSurfaceAndBedrock(net.minecraft.server.level.WorldGenRegion region, ChunkAccess chunk) {
+    public void buildSurfaceAndBedrock(WorldGenRegion region, ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }

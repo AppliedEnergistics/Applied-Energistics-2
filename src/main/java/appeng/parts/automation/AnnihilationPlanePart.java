@@ -75,7 +75,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/item_annihilation_plane");
 
-    private static final Named<net.minecraft.world.level.block.Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
+    private static final Named<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
     private static final Named<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
@@ -93,7 +93,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
 
-    public AnnihilationPlanePart(final net.minecraft.world.item.ItemStack is) {
+    public AnnihilationPlanePart(final ItemStack is) {
         super(is);
         getMainNode()
                 .addService(IGridTickable.class, this);
@@ -126,7 +126,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -136,10 +136,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onEntityCollision(final Entity entity) {
-        if (this.isAccepting && entity instanceof net.minecraft.world.entity.item.ItemEntity && entity.isAlive() && !isRemote()
+        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && !isRemote()
                 && this.getMainNode().isActive()) {
 
-            net.minecraft.world.entity.item.ItemEntity itemEntity = (net.minecraft.world.entity.item.ItemEntity) entity;
+            ItemEntity itemEntity = (ItemEntity) entity;
             if (isItemBlacklisted(itemEntity.getItem().getItem())) {
                 return;
             }
@@ -204,11 +204,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     /**
-     * Stores an {@link net.minecraft.world.entity.item.ItemEntity} inside the network and either marks it as dead or sets it to the leftover stackSize.
+     * Stores an {@link ItemEntity} inside the network and either marks it as dead or sets it to the leftover stackSize.
      *
-     * @param entityItem {@link net.minecraft.world.entity.item.ItemEntity} to store
+     * @param entityItem {@link ItemEntity} to store
      */
-    private boolean storeEntityItem(final net.minecraft.world.entity.item.ItemEntity entityItem) {
+    private boolean storeEntityItem(final ItemEntity entityItem) {
         if (entityItem.isAlive()) {
             final IAEItemStack overflow = this.storeItemStack(entityItem.getItem());
 
@@ -219,12 +219,12 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     /**
-     * Stores an {@link net.minecraft.world.item.ItemStack} inside the network.
+     * Stores an {@link ItemStack} inside the network.
      *
-     * @param item {@link net.minecraft.world.item.ItemStack} to store
+     * @param item {@link ItemStack} to store
      * @return the leftover items, which could not be stored inside the network
      */
-    private IAEItemStack storeItemStack(final net.minecraft.world.item.ItemStack item) {
+    private IAEItemStack storeItemStack(final ItemStack item) {
         var grid = getMainNode().getGrid();
         if (grid == null) {
             return null;
@@ -250,7 +250,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * @param overflow   the leftover {@link IAEItemStack}
      * @return true, if the entity was changed otherwise false.
      */
-    private boolean handleOverflow(final net.minecraft.world.entity.item.ItemEntity entityItem, final IAEItemStack overflow) {
+    private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
         if (overflow == null || overflow.getStackSize() == 0) {
             entityItem.remove();
             return true;
@@ -284,7 +284,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 final BlockState blockState = w.getBlockState(pos);
                 if (this.canHandleBlock(w, pos, blockState)) {
                     // Query the loot-table and get a potential outcome of the loot-table evaluation
-                    final List<net.minecraft.world.item.ItemStack> items = this.obtainBlockDrops(w, pos);
+                    final List<ItemStack> items = this.obtainBlockDrops(w, pos);
                     final float requiredPower = this.calculateEnergyUsage(w, pos, items);
 
                     final boolean hasPower = energy.extractAEPower(requiredPower, Actionable.SIMULATE,
@@ -308,7 +308,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return TickRateModulation.IDLE;
     }
 
-    private void performBreakBlock(ServerLevel w, net.minecraft.core.BlockPos pos, BlockState blockState, IEnergyService energy,
+    private void performBreakBlock(ServerLevel w, BlockPos pos, BlockState blockState, IEnergyService energy,
                                    float requiredPower, List<ItemStack> items) {
 
         if (!this.breakBlockAndStoreExtraItems(w, pos)) {
@@ -316,7 +316,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return;
         }
 
-        for (net.minecraft.world.item.ItemStack item : items) {
+        for (ItemStack item : items) {
             IAEItemStack overflow = storeItemStack(item);
             // If inserting the item fully was not possible, drop it as an item entity instead if the storage clears up,
             // we'll pick it up that way
@@ -351,7 +351,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    private boolean canHandleBlock(final ServerLevel w, final net.minecraft.core.BlockPos pos, final net.minecraft.world.level.block.state.BlockState state) {
+    private boolean canHandleBlock(final ServerLevel w, final BlockPos pos, final BlockState state) {
         if (state.isAir(w, pos)) {
             return false;
         }
@@ -369,30 +369,30 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 && w.mayInteract(Platform.getPlayer(w), pos);
     }
 
-    protected List<net.minecraft.world.item.ItemStack> obtainBlockDrops(final ServerLevel w, final net.minecraft.core.BlockPos pos) {
+    protected List<ItemStack> obtainBlockDrops(final ServerLevel w, final BlockPos pos) {
         final Entity fakePlayer = FakePlayerFactory.getMinecraft(w);
         final BlockState state = w.getBlockState(pos);
         final BlockEntity te = w.getBlockEntity(pos);
 
-        net.minecraft.world.item.ItemStack harvestTool = createHarvestTool(state);
+        ItemStack harvestTool = createHarvestTool(state);
 
         if (!state.requiresCorrectToolForDrops() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
             // Do not use a tool when not required, no hints about it and not enchanted in cases like silk touch.
-            harvestTool = net.minecraft.world.item.ItemStack.EMPTY;
+            harvestTool = ItemStack.EMPTY;
         }
 
-        return net.minecraft.world.level.block.Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
+        return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    protected float calculateEnergyUsage(final ServerLevel w, final net.minecraft.core.BlockPos pos, final List<net.minecraft.world.item.ItemStack> items) {
+    protected float calculateEnergyUsage(final ServerLevel w, final BlockPos pos, final List<ItemStack> items) {
         final BlockState state = w.getBlockState(pos);
         final float hardness = state.getDestroySpeed(w, pos);
 
         float requiredEnergy = 1 + hardness;
-        for (final net.minecraft.world.item.ItemStack is : items) {
+        for (final ItemStack is : items) {
             requiredEnergy += is.getCount();
         }
 
@@ -407,14 +407,14 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * @param itemStacks an array of {@link ItemStack} to test
      * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
-    private boolean canStoreItemStacks(final List<net.minecraft.world.item.ItemStack> itemStacks) {
+    private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
         boolean canStore = itemStacks.isEmpty();
 
         var grid = getMainNode().getGrid();
         if (grid != null) {
             final IStorageService storage = grid.getStorageService();
 
-            for (final net.minecraft.world.item.ItemStack itemStack : itemStacks) {
+            for (final ItemStack itemStack : itemStacks) {
                 final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);
                 final IAEItemStack overflow = storage
                         .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
@@ -429,7 +429,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return canStore;
     }
 
-    private boolean breakBlockAndStoreExtraItems(final ServerLevel w, final net.minecraft.core.BlockPos pos) {
+    private boolean breakBlockAndStoreExtraItems(final ServerLevel w, final BlockPos pos) {
         // Kill the block, but signal no drops
         if (!w.destroyBlock(pos, false)) {
             // The block was no longer there
@@ -439,9 +439,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
         // this (bad practice, really)
         final AABB box = new AABB(pos).inflate(0.2);
-        for (final Object ei : w.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box)) {
-            if (ei instanceof net.minecraft.world.entity.item.ItemEntity) {
-                final ItemEntity entityItem = (net.minecraft.world.entity.item.ItemEntity) ei;
+        for (final Object ei : w.getEntitiesOfClass(ItemEntity.class, box)) {
+            if (ei instanceof ItemEntity) {
+                final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);
             }
         }
@@ -476,18 +476,18 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param state The block state of the block about to be broken.
      */
-    protected ItemStack createHarvestTool(net.minecraft.world.level.block.state.BlockState state) {
+    protected ItemStack createHarvestTool(BlockState state) {
         ToolType harvestToolType = state.getBlock().getHarvestTool(state);
 
         if (harvestToolType == ToolType.AXE) {
             return new ItemStack(Items.DIAMOND_AXE, 1);
         } else if (harvestToolType == ToolType.SHOVEL) {
-            return new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_SHOVEL, 1);
+            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
         } else if (harvestToolType == ToolType.HOE) {
             return new ItemStack(Items.DIAMOND_HOE, 1);
         } else {
             // Use a pickaxe for everything else. Mostly to allow silk touch enchants
-            return new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE, 1);
+            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
         }
     }
 
@@ -495,7 +495,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return BLOCK_BLACKLIST.contains(b);
     }
 
-    public static boolean isItemBlacklisted(net.minecraft.world.item.Item i) {
+    public static boolean isItemBlacklisted(Item i) {
         return ITEM_BLACKLIST.contains(i);
     }
 

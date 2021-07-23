@@ -55,9 +55,9 @@ public class ItemRepo extends Repo<IAEItemStack> {
         }
 
         if (searchMode == SearchMode.NAME_OR_TOOLTIP) {
-            List<net.minecraft.network.chat.Component> tooltip = aeStack.getToolTip();
+            List<Component> tooltip = aeStack.getToolTip();
 
-            for (net.minecraft.network.chat.Component line : tooltip) {
+            for (Component line : tooltip) {
                 if (searchPattern.matcher(line.getString()).find()) {
                     return true;
                 }

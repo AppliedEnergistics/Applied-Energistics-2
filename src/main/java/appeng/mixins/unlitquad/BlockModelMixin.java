@@ -35,16 +35,16 @@ import net.minecraft.core.Direction;
 import appeng.hooks.UnlitQuadHooks;
 
 /**
- * This mixin hooks into conversion from {@link net.minecraft.client.renderer.block.model.BlockElementFace} to {@link BakedQuad} to apply our unlit extensions if the
- * block part face is an instance of our marker class {@link appeng.hooks.UnlitQuadHooks.UnlitBlockPartFace}.
+ * This mixin hooks into conversion from {@link BlockElementFace} to {@link BakedQuad} to apply our unlit extensions if the
+ * block part face is an instance of our marker class {@link UnlitQuadHooks.UnlitBlockPartFace}.
  */
 @Mixin(BlockModel.class)
 public class BlockModelMixin {
 
     @Inject(method = "bakeFace", at = @At("RETURN"), cancellable = true, require = 1, allow = 1)
-    private static void onBakeFace(BlockElement partIn, net.minecraft.client.renderer.block.model.BlockElementFace partFaceIn, TextureAtlasSprite spriteIn,
-                                   net.minecraft.core.Direction directionIn, ModelState transformIn, ResourceLocation locationIn,
-                                   CallbackInfoReturnable<net.minecraft.client.renderer.block.model.BakedQuad> cri) {
+    private static void onBakeFace(BlockElement partIn, BlockElementFace partFaceIn, TextureAtlasSprite spriteIn,
+                                   Direction directionIn, ModelState transformIn, ResourceLocation locationIn,
+                                   CallbackInfoReturnable<BakedQuad> cri) {
         if (partFaceIn instanceof UnlitQuadHooks.UnlitBlockPartFace) {
             cri.setReturnValue(UnlitQuadHooks.makeUnlit(cri.getReturnValue()));
         }

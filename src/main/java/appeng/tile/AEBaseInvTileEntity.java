@@ -41,7 +41,7 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IAEAppEngInventory {
 
-    public AEBaseInvTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AEBaseInvTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -53,7 +53,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
             final CompoundTag opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
                 final CompoundTag item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.of(item));
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.of(item));
             }
         }
     }
@@ -68,7 +68,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.getSlots(); x++) {
                 final CompoundTag item = new CompoundTag();
-                final net.minecraft.world.item.ItemStack is = inv.getStackInSlot(x);
+                final ItemStack is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.save(item);
                 }
@@ -84,7 +84,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
         final IItemHandler inv = this.getInternalInventory();
 
         for (int l = 0; l < inv.getSlots(); l++) {
-            final net.minecraft.world.item.ItemStack is = inv.getStackInSlot(l);
+            final ItemStack is = inv.getStackInSlot(l);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -92,7 +92,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, net.minecraft.world.item.ItemStack removed,
+    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removed,
             ItemStack added);
 
     protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {

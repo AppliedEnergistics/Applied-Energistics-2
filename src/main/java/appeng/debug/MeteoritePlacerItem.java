@@ -21,6 +21,7 @@ package appeng.debug;
 import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +50,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(net.minecraft.world.item.Item.Properties properties) {
+    public MeteoritePlacerItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -72,7 +73,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new TextComponent(craterType.name()), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(new TextComponent(craterType.name()), Util.NIL_UUID);
 
             return InteractionResultHolder.success(itemStack);
         }
@@ -88,7 +89,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
         ServerPlayer player = (ServerPlayer) context.getPlayer();
         ServerLevel world = (ServerLevel) context.getLevel();
-        net.minecraft.core.BlockPos pos = context.getClickedPos();
+        BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return InteractionResult.PASS;
@@ -109,7 +110,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new TextComponent("Un-suitable Location."), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(new TextComponent("Un-suitable Location."), Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
 
@@ -129,7 +130,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.rangeClosed(new net.minecraft.world.level.ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+        ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             LevelChunk c = world.getChunk(cp.x, cp.z);
             player.connection.send(new ClientboundLevelChunkPacket(c, 65535)); // 65535 == full chunk
         });

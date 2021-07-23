@@ -49,7 +49,7 @@ public class ClickPacket extends BasePacket {
     private final int x;
     private final int y;
     private final int z;
-    private net.minecraft.core.Direction side;
+    private Direction side;
     private final float hitX;
     private final float hitY;
     private final float hitZ;
@@ -62,7 +62,7 @@ public class ClickPacket extends BasePacket {
         this.z = stream.readInt();
         byte side = stream.readByte();
         if (side != -1) {
-            this.side = net.minecraft.core.Direction.values()[side];
+            this.side = Direction.values()[side];
         } else {
             this.side = null;
         }
@@ -84,12 +84,12 @@ public class ClickPacket extends BasePacket {
         this(BlockPos.ZERO, null, 0, 0, 0, hand);
     }
 
-    private ClickPacket(final BlockPos pos, final net.minecraft.core.Direction side, final float hitX, final float hitY, final float hitZ,
+    private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
                         final InteractionHand hand) {
         this(pos, side, hitX, hitY, hitZ, hand, false);
     }
 
-    public ClickPacket(final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction side, final float hitX, final float hitY, final float hitZ,
+    public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
                        final InteractionHand hand, boolean leftClick) {
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
@@ -119,7 +119,7 @@ public class ClickPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
-        final net.minecraft.core.BlockPos pos = new net.minecraft.core.BlockPos(this.x, this.y, this.z);
+        final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
         final ItemStack is = player.getItemInHand(hand);
         final ItemDefinition<?> maybeMemoryCard = AEItems.MEMORY_CARD;

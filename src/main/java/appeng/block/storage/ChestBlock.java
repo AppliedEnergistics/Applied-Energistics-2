@@ -45,7 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
-    private final static BooleanProperty LIGHTS_ON = net.minecraft.world.level.block.state.properties.BooleanProperty.create("lights_on");
+    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
         super(defaultProps(Material.METAL));
@@ -59,7 +59,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, ChestTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestTileEntity te) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
         if (te.getCellCount() >= 1) {
@@ -74,7 +74,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
                                          final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {

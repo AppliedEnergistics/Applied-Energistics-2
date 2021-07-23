@@ -41,7 +41,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     private final SettingToggleButton<StorageFilter> storageFilter;
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public StorageBusScreen(StorageBusContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public StorageBusScreen(StorageBusContainer container, Inventory playerInventory, Component title,
                             ScreenStyle style) {
         super(container, playerInventory, title, style);
 

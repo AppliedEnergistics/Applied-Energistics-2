@@ -70,14 +70,14 @@ public class SpatialStorageCommand implements ISubCommand {
         builder.then(literal("info").executes(ctx -> {
             showPlotInfo(ctx.getSource(), getCurrentPlot(ctx.getSource()));
             return 1;
-        }).then(net.minecraft.commands.Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        }).then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
             int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
             showPlotInfo(ctx.getSource(), getPlot(plotId));
             return 1;
         })));
 
         // Teleport into the plot
-        builder.then(literal("tp").then(net.minecraft.commands.Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        builder.then(literal("tp").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
             int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
             teleportToPlot(ctx.getSource(), plotId);
             return 1;
@@ -88,7 +88,7 @@ public class SpatialStorageCommand implements ISubCommand {
         builder.then(literal("tpback").executes(ctx -> {
             teleportBack(ctx.getSource());
             return 1;
-        }).then(net.minecraft.commands.Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+        }).then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
             int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
             teleportBack(ctx.getSource(), getPlot(plotId));
             return 1;
@@ -96,7 +96,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         // Creates a storage cell for the given plot id and gives it to the player
         builder.then(
-                literal("givecell").then(net.minecraft.commands.Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
+                literal("givecell").then(Commands.argument("plotId", IntegerArgumentType.integer(1)).executes(ctx -> {
                     int plotId = IntegerArgumentType.getInteger(ctx, "plotId");
                     giveCell(ctx.getSource(), plotId);
                     return 1;
@@ -112,14 +112,14 @@ public class SpatialStorageCommand implements ISubCommand {
             throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage world."));
         }
 
-        net.minecraft.core.BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = new BlockPos(source.getPosition());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 
         // This is slow, but for an admin-command it's acceptable
 
         for (SpatialStoragePlot plot : SpatialStoragePlotManager.INSTANCE.getPlots()) {
-            net.minecraft.core.BlockPos origin = plot.getOrigin();
+            BlockPos origin = plot.getOrigin();
             BlockPos size = plot.getSize();
             if (x >= origin.getX() && x <= origin.getX() + size.getX() && z >= origin.getZ()
                     && z <= origin.getZ() + size.getZ()) {
@@ -238,7 +238,7 @@ public class SpatialStorageCommand implements ISubCommand {
         player.addItem(cell);
     }
 
-    private static int getLongestSide(net.minecraft.core.BlockPos size) {
+    private static int getLongestSide(BlockPos size) {
         return Math.max(size.getX(), Math.max(size.getY(), size.getZ()));
     }
 
@@ -263,9 +263,9 @@ public class SpatialStorageCommand implements ISubCommand {
             BlockPos originPos = plot.getOrigin();
             String origin = formatBlockPos(originPos, ",");
 
-            net.minecraft.network.chat.Component infoLink = new TextComponent("Plot #" + plot.getId())
+            Component infoLink = new TextComponent("Plot #" + plot.getId())
                     .withStyle(makeCommandLink("/ae2 spatial info " + plot.getId(), "Click to show details"));
-            net.minecraft.network.chat.Component tpLink = new TextComponent("Origin: " + origin)
+            Component tpLink = new TextComponent("Origin: " + origin)
                     .withStyle(makeCommandLink("/ae2 spatial tp " + plot.getId(), "Click to teleport into plot"));
 
             MutableComponent message = new TextComponent("").append(infoLink)
@@ -284,7 +284,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
         return style -> style.applyFormat(ChatFormatting.UNDERLINE)
                 .withClickEvent(new ClickEvent(Action.RUN_COMMAND, command))
-                .withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, new TextComponent(tooltip)));
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(tooltip)));
 
     }
 
@@ -305,7 +305,7 @@ public class SpatialStorageCommand implements ISubCommand {
         return plot;
     }
 
-    private static void sendKeyValuePair(CommandSourceStack source, String label, net.minecraft.network.chat.Component value) {
+    private static void sendKeyValuePair(CommandSourceStack source, String label, Component value) {
         source.sendSuccess(
                 new TextComponent("")
                         .append(new TextComponent(label + ": ").withStyle(ChatFormatting.BOLD))
@@ -325,14 +325,14 @@ public class SpatialStorageCommand implements ISubCommand {
             throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage world."));
         }
 
-        net.minecraft.core.BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = new BlockPos(source.getPosition());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 
         // This is slow, but for an admin-command it's acceptable
         for (SpatialStoragePlot plot : SpatialStoragePlotManager.INSTANCE.getPlots()) {
             BlockPos origin = plot.getOrigin();
-            net.minecraft.core.BlockPos size = plot.getSize();
+            BlockPos size = plot.getSize();
             if (x >= origin.getX() && x <= origin.getX() + size.getX() && z >= origin.getZ()
                     && z <= origin.getZ() + size.getZ()) {
                 return plot;

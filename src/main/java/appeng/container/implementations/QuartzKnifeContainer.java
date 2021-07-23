@@ -84,7 +84,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void removed(final Player player) {
-        net.minecraft.world.item.ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
+        ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
         if (!item.isEmpty()) {
             player.drop(item, false);
         }
@@ -96,27 +96,27 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public net.minecraft.world.item.ItemStack getItem() {
+        public ItemStack getItem() {
             final IItemHandler baseInv = this.getItemHandler();
-            final net.minecraft.world.item.ItemStack input = baseInv.getStackInSlot(0);
-            if (input == net.minecraft.world.item.ItemStack.EMPTY) {
-                return net.minecraft.world.item.ItemStack.EMPTY;
+            final ItemStack input = baseInv.getStackInSlot(0);
+            if (input == ItemStack.EMPTY) {
+                return ItemStack.EMPTY;
             }
 
             if (RestrictedInputSlot.isMetalIngot(input) && QuartzKnifeContainer.this.currentName.length() > 0) {
-                net.minecraft.world.item.ItemStack namePressStack = AEItems.NAME_PRESS.stack();
+                ItemStack namePressStack = AEItems.NAME_PRESS.stack();
                 final CompoundTag compound = namePressStack.getOrCreateTag();
                 compound.putString(NamePressItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.currentName);
 
                 return namePressStack;
             }
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public net.minecraft.world.item.ItemStack remove(int amount) {
-            net.minecraft.world.item.ItemStack ret = this.getItem();
+        public ItemStack remove(int amount) {
+            ItemStack ret = this.getItem();
             if (!ret.isEmpty()) {
                 this.makePlate();
             }
@@ -124,7 +124,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         }
 
         @Override
-        public void set(final net.minecraft.world.item.ItemStack stack) {
+        public void set(final ItemStack stack) {
             if (stack.isEmpty()) {
                 this.makePlate();
             }
@@ -132,8 +132,8 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
         private void makePlate() {
             if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
-                final net.minecraft.world.item.ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
-                final net.minecraft.world.item.ItemStack before = item.copy();
+                final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
+                final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeContainer.this.getPlayerInventory();
                 item.hurtAndBreak(1, playerInv.player, p -> {
                     playerInv.setItem(playerInv.selected, ItemStack.EMPTY);

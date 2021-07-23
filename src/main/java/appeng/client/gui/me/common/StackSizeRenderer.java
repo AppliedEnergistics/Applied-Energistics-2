@@ -62,7 +62,7 @@ public class StackSizeRenderer {
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
-        Transformation tm = new Transformation(new com.mojang.math.Vector3f(0, 0, 300), // Taken from
+        Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 

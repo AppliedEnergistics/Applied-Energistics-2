@@ -31,7 +31,7 @@ import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {
 
-    public EnergyAcceptorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyAcceptorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setIdlePowerUsage(0.0);
         this.setInternalMaxPower(0);

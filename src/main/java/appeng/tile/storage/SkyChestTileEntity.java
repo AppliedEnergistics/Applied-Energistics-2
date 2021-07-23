@@ -49,7 +49,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableB
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<? extends SkyChestTileEntity> type) {
+    public SkyChestTileEntity(BlockEntityType<? extends SkyChestTileEntity> type) {
         super(type);
     }
 
@@ -105,7 +105,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableB
         this.prevLidAngle = this.lidAngle;
         // Play a sound on initial opening.
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
-            this.playSound(net.minecraft.sounds.SoundEvents.CHEST_OPEN);
+            this.playSound(SoundEvents.CHEST_OPEN);
         }
 
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
@@ -138,7 +138,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements TickableB
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 

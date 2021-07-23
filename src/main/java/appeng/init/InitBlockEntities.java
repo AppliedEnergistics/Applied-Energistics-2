@@ -30,8 +30,8 @@ public final class InitBlockEntities {
     private InitBlockEntities() {
     }
 
-    public static void init(IForgeRegistry<net.minecraft.world.level.block.entity.BlockEntityType<?>> registry) {
-        for (Map.Entry<ResourceLocation, net.minecraft.world.level.block.entity.BlockEntityType<?>> entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
+    public static void init(IForgeRegistry<BlockEntityType<?>> registry) {
+        for (Map.Entry<ResourceLocation, BlockEntityType<?>> entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
             registry.register(entry.getValue());
         }
     }

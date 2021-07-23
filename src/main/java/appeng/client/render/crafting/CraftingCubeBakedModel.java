@@ -69,7 +69,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
         EnumSet<Direction> connections = getConnections(extraData);
 
-        List<net.minecraft.client.renderer.block.model.BakedQuad> quads = new ArrayList<>();
+        List<BakedQuad> quads = new ArrayList<>();
         CubeBuilder builder = new CubeBuilder(quads);
 
         builder.setDrawFaces(EnumSet.of(side));
@@ -82,11 +82,11 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         float x2 = connections.contains(Direction.EAST) ? 16 : 13.01f;
         float x1 = connections.contains(Direction.WEST) ? 0 : 2.99f;
 
-        float y2 = connections.contains(net.minecraft.core.Direction.UP) ? 16 : 13.01f;
-        float y1 = connections.contains(net.minecraft.core.Direction.DOWN) ? 0 : 2.99f;
+        float y2 = connections.contains(Direction.UP) ? 16 : 13.01f;
+        float y1 = connections.contains(Direction.DOWN) ? 0 : 2.99f;
 
         float z2 = connections.contains(Direction.SOUTH) ? 16 : 13.01f;
-        float z1 = connections.contains(net.minecraft.core.Direction.NORTH) ? 0 : 2.99f;
+        float z1 = connections.contains(Direction.NORTH) ? 0 : 2.99f;
 
         // On the axis of the side that we're currently drawing, extend the dimensions
         // out to the outer face of the block
@@ -117,13 +117,13 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         // Fill in the corners
         builder.setTexture(this.ringCorner);
         this.addCornerCap(builder, connections, side, Direction.UP, Direction.EAST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.UP, net.minecraft.core.Direction.EAST, Direction.SOUTH);
+        this.addCornerCap(builder, connections, side, Direction.UP, Direction.EAST, Direction.SOUTH);
         this.addCornerCap(builder, connections, side, Direction.UP, Direction.WEST, Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.UP, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.SOUTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, net.minecraft.core.Direction.EAST, Direction.SOUTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.NORTH);
-        this.addCornerCap(builder, connections, side, Direction.DOWN, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.SOUTH);
+        this.addCornerCap(builder, connections, side, Direction.UP, Direction.WEST, Direction.SOUTH);
+        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.EAST, Direction.NORTH);
+        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.EAST, Direction.SOUTH);
+        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.WEST, Direction.NORTH);
+        this.addCornerCap(builder, connections, side, Direction.DOWN, Direction.WEST, Direction.SOUTH);
 
         // Fill in the remaining stripes of the face
         for (Direction a : Direction.values()) {
@@ -134,9 +134,9 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
             // Select the horizontal or vertical ring texture depending on which side we're
             // filling in
             if (side.getAxis() != Axis.Y
-                    && (a == Direction.NORTH || a == net.minecraft.core.Direction.EAST || a == Direction.WEST || a == Direction.SOUTH)) {
+                    && (a == Direction.NORTH || a == Direction.EAST || a == Direction.WEST || a == Direction.SOUTH)) {
                 builder.setTexture(this.ringVer);
-            } else if (side.getAxis() == Axis.Y && (a == net.minecraft.core.Direction.EAST || a == Direction.WEST)) {
+            } else if (side.getAxis() == Axis.Y && (a == Direction.EAST || a == Direction.WEST)) {
                 builder.setTexture(this.ringVer);
             } else {
                 builder.setTexture(this.ringHor);
@@ -186,7 +186,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
                 // direction. But in this
                 // block, we've already checked for side (due to face culling) and a (see
                 // above).
-                net.minecraft.core.Direction perpendicular = Platform.rotateAround(a, side);
+                Direction perpendicular = Platform.rotateAround(a, side);
                 for (Direction cornerCandidate : EnumSet.of(perpendicular, perpendicular.getOpposite())) {
                     if (!connections.contains(cornerCandidate)) {
                         // There's a cap in this direction
@@ -222,7 +222,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
      * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting cubes on that corner.
      */
     private void addCornerCap(CubeBuilder builder, EnumSet<Direction> connections, Direction side, Direction down,
-                              net.minecraft.core.Direction west, Direction north) {
+                              Direction west, Direction north) {
         if (connections.contains(down) || connections.contains(west) || connections.contains(north)) {
             return;
         }
@@ -237,7 +237,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         float z1 = north == Direction.NORTH ? 0 : 13;
         float x2 = west == Direction.WEST ? 3 : 16;
         float y2 = down == Direction.DOWN ? 3 : 16;
-        float z2 = north == net.minecraft.core.Direction.NORTH ? 3 : 16;
+        float z2 = north == Direction.NORTH ? 3 : 16;
         builder.addCube(x1, y1, z1, x2, y2, z2);
     }
 

@@ -43,12 +43,12 @@ import appeng.core.AppEng;
  */
 public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
 
-    private static final net.minecraft.resources.ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
     @Override
-    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 
@@ -56,7 +56,7 @@ public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
 
         BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);

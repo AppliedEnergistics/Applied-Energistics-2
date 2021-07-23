@@ -50,31 +50,31 @@ public final class PlaneConnectionHelper {
         BlockEntity hostTileEntity = getHostTileEntity();
         AEPartLocation side = part.getSide();
 
-        final net.minecraft.core.Direction facingRight, facingUp;
+        final Direction facingRight, facingUp;
         switch (side) {
             case UP:
-                facingRight = net.minecraft.core.Direction.EAST;
-                facingUp = net.minecraft.core.Direction.NORTH;
+                facingRight = Direction.EAST;
+                facingUp = Direction.NORTH;
                 break;
             case DOWN:
-                facingRight = net.minecraft.core.Direction.WEST;
-                facingUp = net.minecraft.core.Direction.NORTH;
+                facingRight = Direction.WEST;
+                facingUp = Direction.NORTH;
                 break;
             case NORTH:
-                facingRight = net.minecraft.core.Direction.WEST;
-                facingUp = net.minecraft.core.Direction.UP;
+                facingRight = Direction.WEST;
+                facingUp = Direction.UP;
                 break;
             case SOUTH:
-                facingRight = net.minecraft.core.Direction.EAST;
-                facingUp = net.minecraft.core.Direction.UP;
+                facingRight = Direction.EAST;
+                facingUp = Direction.UP;
                 break;
             case WEST:
                 facingRight = Direction.SOUTH;
-                facingUp = net.minecraft.core.Direction.UP;
+                facingUp = Direction.UP;
                 break;
             case EAST:
-                facingRight = net.minecraft.core.Direction.NORTH;
-                facingUp = net.minecraft.core.Direction.UP;
+                facingRight = Direction.NORTH;
+                facingUp = Direction.UP;
                 break;
             default:
             case INTERNAL:
@@ -120,9 +120,9 @@ public final class PlaneConnectionHelper {
         if (hostTile != null) {
             Level world = hostTile.getLevel();
 
-            final net.minecraft.core.BlockPos pos = hostTile.getBlockPos();
+            final BlockPos pos = hostTile.getBlockPos();
 
-            final net.minecraft.core.Direction e = bch.getWorldX();
+            final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
             if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e.getOpposite())))) {

@@ -51,13 +51,13 @@ public class ToggleBusPart extends BasicStatePart {
     @PartModels
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_off");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_on");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
@@ -154,7 +154,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final net.minecraft.world.item.ItemStack held,
+    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
                             final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.getOuterNode().setOwningPlayer(player);

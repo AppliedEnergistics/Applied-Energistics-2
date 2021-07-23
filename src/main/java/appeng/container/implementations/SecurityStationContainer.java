@@ -80,7 +80,7 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
         try {
             final SecurityPermissions permission = SecurityPermissions.valueOf(value);
 
-            final net.minecraft.world.item.ItemStack a = this.configSlot.getItem();
+            final ItemStack a = this.configSlot.getItem();
             if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
                 final IBiometricCard bc = (IBiometricCard) a.getItem();
                 if (bc.hasPermission(a, permission)) {

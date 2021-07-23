@@ -65,7 +65,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
-    public AEBaseTileBlock(final net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public AEBaseTileBlock(final BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -115,14 +115,14 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public void onRemove(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
         final AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null) {
-            final ArrayList<net.minecraft.world.item.ItemStack> drops = new ArrayList<>();
+            final ArrayList<ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
                 te.getDrops(w, pos, drops);
             } else {
@@ -159,7 +159,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Override
     public void setPlacedBy(final Level w, final BlockPos pos, final BlockState state, final LivingEntity placer,
-                            final net.minecraft.world.item.ItemStack is) {
+                            final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
         // than a translation component, since our custom naming cannot handle
@@ -167,7 +167,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         // I18N strings and we would translate it using the server's locale :-(
         AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null && is.hasCustomHoverName()) {
-            net.minecraft.network.chat.Component displayName = is.getHoverName();
+            Component displayName = is.getHoverName();
             if (displayName instanceof TextComponent) {
                 te.setName(((TextComponent) displayName).getText());
             }
@@ -177,7 +177,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hit) {
-        net.minecraft.world.item.ItemStack heldItem;
+        ItemStack heldItem;
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
 
@@ -195,10 +195,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     return InteractionResult.FAIL;
                 }
 
-                final net.minecraft.world.item.ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
-                final net.minecraft.world.item.ItemStack op = new ItemStack(this);
+                final ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
+                final ItemStack op = new ItemStack(this);
 
-                for (final net.minecraft.world.item.ItemStack ol : itemDropCandidates) {
+                for (final ItemStack ol : itemDropCandidates) {
                     if (Platform.itemComparisons().isEqualItemType(ol, op)) {
                         final CompoundTag tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
                         if (tag != null) {
@@ -208,7 +208,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 }
 
                 if (block.removedByPlayer(blockState, world, pos, player, false, world.getFluidState(pos))) {
-                    final List<net.minecraft.world.item.ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
+                    final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
                     Platform.spawnDrops(world, pos, itemsToDrop);
                     world.removeBlock(pos, false);
                 }
@@ -252,7 +252,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable net.minecraft.world.item.ItemStack heldItem, final BlockHitResult hit) {
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 
@@ -281,7 +281,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
      * <p>
      * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
      */
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, T te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
         return currentState;
     }
 

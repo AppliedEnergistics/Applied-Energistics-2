@@ -48,12 +48,12 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
     private int points;
 
-    public GrinderTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public GrinderTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public void setOrientation(final net.minecraft.core.Direction inForward, final net.minecraft.core.Direction inUp) {
+    public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.level.getBlockState(this.worldPosition);
         state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition, false);
@@ -65,13 +65,13 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(net.minecraft.core.Direction side) {
+    protected IItemHandler getItemHandlerForSide(Direction side) {
         return this.invExt;
     }
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 
@@ -91,7 +91,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
                 GrinderRecipe r = GrinderRecipes.findForInput(level, item);
                 if (r != null) {
-                    final net.minecraft.world.item.ItemStack ais = item.copy();
+                    final ItemStack ais = item.copy();
                     ais.setCount(r.getIngredientCount());
                     item.shrink(r.getIngredientCount());
 
@@ -117,7 +117,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
         this.points++;
 
-        final net.minecraft.world.item.ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
+        final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
         GrinderRecipe r = GrinderRecipes.findForInput(level, processing);
         if (r != null) {
             if (r.getTurns() > this.points) {
@@ -141,14 +141,14 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
         }
     }
 
-    private void addItem(final InventoryAdaptor sia, final net.minecraft.world.item.ItemStack output) {
+    private void addItem(final InventoryAdaptor sia, final ItemStack output) {
         if (output.isEmpty()) {
             return;
         }
 
-        final net.minecraft.world.item.ItemStack notAdded = sia.addItems(output);
+        final ItemStack notAdded = sia.addItems(output);
         if (!notAdded.isEmpty()) {
-            final List<net.minecraft.world.item.ItemStack> out = new ArrayList<>();
+            final List<ItemStack> out = new ArrayList<>();
             out.add(notAdded);
 
             Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), out);
@@ -156,7 +156,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     }
 
     @Override
-    public boolean canCrankAttach(final net.minecraft.core.Direction directionToCrank) {
+    public boolean canCrankAttach(final Direction directionToCrank) {
         return this.getUp() == directionToCrank;
     }
 
@@ -167,7 +167,7 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slotIndex, net.minecraft.world.item.ItemStack stack) {
+        public boolean allowInsert(IItemHandler inv, int slotIndex, ItemStack stack) {
             if (!GrinderRecipes.isValidIngredient(level, stack)) {
                 return false;
             }

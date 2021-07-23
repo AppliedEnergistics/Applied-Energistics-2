@@ -35,7 +35,7 @@ public class AEItemFilters {
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, net.minecraft.world.item.ItemStack stack) {
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
             return true;
         }
     }

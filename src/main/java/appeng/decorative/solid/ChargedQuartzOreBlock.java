@@ -20,6 +20,7 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -34,13 +35,13 @@ import appeng.core.AppEngClient;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class ChargedQuartzOreBlock extends QuartzOreBlock {
-    public ChargedQuartzOreBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public ChargedQuartzOreBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final net.minecraft.core.BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

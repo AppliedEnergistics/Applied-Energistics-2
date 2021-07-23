@@ -46,31 +46,31 @@ public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, net.minecraft.world.item.Item.Properties props) {
+    public AEBaseBlockItem(final Block id, Item.Properties props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(final ItemStack itemStack, final Level world, final List<net.minecraft.network.chat.Component> toolTip,
-                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public final void appendHoverText(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+                                      final TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final net.minecraft.world.item.ItemStack itemStack, final Level world, final List<net.minecraft.network.chat.Component> toolTip,
-                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void addCheckedInformation(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+                                      final TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override
-    public boolean isBookEnchantable(final net.minecraft.world.item.ItemStack itemstack1, final net.minecraft.world.item.ItemStack itemstack2) {
+    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
         return false;
     }
 
     @Override
-    public String getDescriptionId(final net.minecraft.world.item.ItemStack is) {
+    public String getDescriptionId(final ItemStack is) {
         return this.blockType.getDescriptionId();
     }
 
@@ -86,7 +86,7 @@ public class AEBaseBlockItem extends BlockItem {
         if (this.blockType instanceof AEBaseTileBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
-                if (up == net.minecraft.core.Direction.UP || up == net.minecraft.core.Direction.DOWN) {
+                if (up == Direction.UP || up == Direction.DOWN) {
                     forward = Direction.SOUTH;
                 } else {
                     forward = Direction.UP;
@@ -94,12 +94,12 @@ public class AEBaseBlockItem extends BlockItem {
             } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
-                    up = net.minecraft.core.Direction.SOUTH;
+                    up = Direction.SOUTH;
                 } else {
                     up = Direction.UP;
                 }
             } else {
-                up = net.minecraft.core.Direction.UP;
+                up = Direction.UP;
                 forward = context.getHorizontalDirection().getOpposite();
 
                 if (player != null) {

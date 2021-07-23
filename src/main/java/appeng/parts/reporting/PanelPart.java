@@ -29,9 +29,9 @@ import net.minecraft.world.item.ItemStack;
 public class PanelPart extends AbstractPanelPart {
 
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/monitor_bright_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/monitor_bright_off");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/monitor_bright_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/monitor_bright_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);

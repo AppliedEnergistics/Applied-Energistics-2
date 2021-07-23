@@ -29,15 +29,15 @@ public class ItemSlot {
     private boolean isExtractable;
     // one or the other..
     private IAEItemStack aeItemStack;
-    private net.minecraft.world.item.ItemStack itemStack;
+    private ItemStack itemStack;
 
-    public net.minecraft.world.item.ItemStack getItemStack() {
+    public ItemStack getItemStack() {
         return this.itemStack.isEmpty()
                 ? this.aeItemStack == null ? ItemStack.EMPTY : (this.itemStack = this.aeItemStack.createItemStack())
                 : this.itemStack;
     }
 
-    public void setItemStack(final net.minecraft.world.item.ItemStack is) {
+    public void setItemStack(final ItemStack is) {
         this.aeItemStack = null;
         this.itemStack = is;
     }
@@ -50,7 +50,7 @@ public class ItemSlot {
 
     void setAEItemStack(final IAEItemStack is) {
         this.aeItemStack = is;
-        this.itemStack = net.minecraft.world.item.ItemStack.EMPTY;
+        this.itemStack = ItemStack.EMPTY;
     }
 
     public boolean isExtractable() {

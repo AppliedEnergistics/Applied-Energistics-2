@@ -95,7 +95,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public IOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -211,14 +211,14 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(final net.minecraft.core.Direction facing) {
+    protected IItemHandler getItemHandlerForSide(final Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {
@@ -426,7 +426,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
      * @param drops drops of tile entity
      */
     @Override
-    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {

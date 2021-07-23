@@ -47,7 +47,7 @@ public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
                 // TODO: check if OK
                 final ItemStack itemStack = displayStack.asItemStackRepresentation();
                 final String itemName = itemStack.getHoverName().getString();
-                final net.minecraft.network.chat.Component formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
+                final Component formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
 
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));

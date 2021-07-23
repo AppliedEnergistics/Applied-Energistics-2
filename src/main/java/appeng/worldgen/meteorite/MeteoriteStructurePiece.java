@@ -46,7 +46,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
 
     private PlacedMeteoriteSettings settings;
 
-    protected MeteoriteStructurePiece(net.minecraft.core.BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
+    protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
                                       boolean pureCrater, boolean craterLake) {
         super(TYPE, 0);
         this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
@@ -55,7 +55,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // meteors spawned at about y64 are 9x9 chunks large at most.
         int range = 4 * 16;
 
-        net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(center);
+        ChunkPos chunkPos = new ChunkPos(center);
         this.boundingBox = new BoundingBox(chunkPos.getMinBlockX() - range, center.getY(),
                 chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, center.getY(), chunkPos.getMaxBlockZ() + range);
     }
@@ -63,7 +63,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     public MeteoriteStructurePiece(StructureManager templateManager, CompoundTag tag) {
         super(TYPE, tag);
 
-        net.minecraft.core.BlockPos center = net.minecraft.core.BlockPos.of(tag.getLong(Constants.TAG_POS));
+        BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
         float coreRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
@@ -93,7 +93,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
 
     @Override
     public boolean postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
-                               Random rand, BoundingBox bounds, net.minecraft.world.level.ChunkPos chunkPos, net.minecraft.core.BlockPos p_230383_7_) {
+                               Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 

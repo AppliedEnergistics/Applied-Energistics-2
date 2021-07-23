@@ -27,7 +27,7 @@ import appeng.container.implementations.SkyChestContainer;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    public SkyChestScreen(SkyChestContainer container, Inventory playerInv, net.minecraft.network.chat.Component title,
+    public SkyChestScreen(SkyChestContainer container, Inventory playerInv, Component title,
                           ScreenStyle style) {
         super(container, playerInv, title, style);
     }

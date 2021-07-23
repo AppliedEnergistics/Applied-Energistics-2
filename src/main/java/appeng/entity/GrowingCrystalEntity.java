@@ -57,7 +57,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
      */
     private int progress_1000 = 0;
 
-    public GrowingCrystalEntity(net.minecraft.world.entity.EntityType<? extends GrowingCrystalEntity> type, Level world) {
+    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level world) {
         super(type, world);
     }
 
@@ -89,7 +89,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         final int y = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
         final int z = Mth.floor(this.getZ());
 
-        BlockPos pos = new net.minecraft.core.BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y, z);
         final BlockState state = this.level.getBlockState(pos);
 
         final float multiplier = cry.getMultiplier(state, level, pos);
@@ -177,7 +177,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         int count = 0;
 
         MutableBlockPos testPos = new MutableBlockPos();
-        for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+        for (Direction direction : Direction.values()) {
             if (this.isPoweredAccelerator(testPos.setWithOffset(pos, direction))) {
                 count++;
             }
@@ -186,7 +186,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         return count;
     }
 
-    private boolean isPoweredAccelerator(net.minecraft.core.BlockPos pos) {
+    private boolean isPoweredAccelerator(BlockPos pos) {
         final BlockEntity te = this.level.getBlockEntity(pos);
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
@@ -194,7 +194,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     @Override
     protected void setUnderwaterMovement() {
-        net.minecraft.world.item.ItemStack item = getItem();
+        ItemStack item = getItem();
 
         // Make ungrown seeds sink, and fully grown seeds bouyant allowing for
         // automation based around dropping seeds between 5 CGAs, then catchiung

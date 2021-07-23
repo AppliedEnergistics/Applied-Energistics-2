@@ -53,7 +53,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static final ResourceLocation TEXTURE = new net.minecraft.resources.ResourceLocation("minecraft",
+    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**

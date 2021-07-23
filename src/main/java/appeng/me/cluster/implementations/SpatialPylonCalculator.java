@@ -33,21 +33,21 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public boolean checkMultiblockScale(final net.minecraft.core.BlockPos min, final net.minecraft.core.BlockPos max) {
+    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
         return min.getX() == max.getX() && min.getY() == max.getY() && min.getZ() != max.getZ()
                 || min.getX() == max.getX() && min.getY() != max.getY() && min.getZ() == max.getZ()
                 || min.getX() != max.getX() && min.getY() == max.getY() && min.getZ() == max.getZ();
     }
 
     @Override
-    public SpatialPylonCluster createCluster(ServerLevel w, final BlockPos min, final net.minecraft.core.BlockPos max) {
+    public SpatialPylonCluster createCluster(ServerLevel w, final BlockPos min, final BlockPos max) {
         return new SpatialPylonCluster(w, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(ServerLevel w, final net.minecraft.core.BlockPos min, final net.minecraft.core.BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel w, final BlockPos min, final BlockPos max) {
 
-        for (net.minecraft.core.BlockPos p : net.minecraft.core.BlockPos.betweenClosed(min, max)) {
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
@@ -59,8 +59,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public void updateTiles(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final net.minecraft.core.BlockPos max) {
-        for (net.minecraft.core.BlockPos p : net.minecraft.core.BlockPos.betweenClosed(min, max)) {
+    public void updateTiles(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getBlockEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);

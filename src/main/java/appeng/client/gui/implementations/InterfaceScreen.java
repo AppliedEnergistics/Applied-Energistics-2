@@ -38,7 +38,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     private final SettingToggleButton<YesNo> blockMode;
     private final ToggleButton interfaceMode;
 
-    public InterfaceScreen(InterfaceContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public InterfaceScreen(InterfaceContainer container, Inventory playerInventory, Component title,
                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 

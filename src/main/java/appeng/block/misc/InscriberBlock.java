@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.BlockGetter;
@@ -40,7 +41,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
 
-    public InscriberBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public InscriberBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -51,7 +52,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
                                          final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberTileEntity tg = this.getTileEntity(w, pos);

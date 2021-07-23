@@ -43,7 +43,7 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
                                          final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;

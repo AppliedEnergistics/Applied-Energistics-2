@@ -94,14 +94,14 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
      */
     private static final int ENERGY_PER_SHOT = 1600;
 
-    public MatterCannonItem(net.minecraft.world.item.Item.Properties props) {
+    public MatterCannonItem(Item.Properties props) {
         super(AEConfig.instance().getMatterCannonBattery(), props);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
@@ -163,7 +163,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                         final float penetration = Api.instance().registries().matterCannon().getPenetration(ammo); // 196.96655f;
                         if (penetration <= 0) {
-                            final net.minecraft.world.item.ItemStack type = aeAmmo.asItemStackRepresentation();
+                            final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof PaintBallItem) {
                                 this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
@@ -219,7 +219,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         ClipContext rayTraceContext = new ClipContext(Vector3d, Vector3d1, Block.COLLIDER,
                 Fluid.NONE, p);
-        net.minecraft.world.phys.HitResult pos = w.clip(rayTraceContext);
+        HitResult pos = w.clip(rayTraceContext);
 
         final Vec3 vec = new Vec3(d0, d1, d2);
         if (entity != null && pos.getType() != Type.MISS
@@ -246,7 +246,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
             if (pos instanceof EntityHitResult) {
                 EntityHitResult entityResult = (EntityHitResult) pos;
-                net.minecraft.world.entity.Entity entityHit = entityResult.getEntity();
+                Entity entityHit = entityResult.getEntity();
 
                 final int id = entityHit.getId();
                 final PlayerColor marker = new PlayerColor(id, col, 20 * 30);
@@ -262,7 +262,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             } else if (pos instanceof BlockHitResult) {
                 BlockHitResult blockResult = (BlockHitResult) pos;
                 final Direction side = blockResult.getDirection();
-                final net.minecraft.core.BlockPos hitPos = blockResult.getBlockPos().relative(side);
+                final BlockPos hitPos = blockResult.getBlockPos().relative(side);
 
                 if (!Platform.hasPermissions(new DimensionalBlockPos(w, hitPos), p)) {
                     return;
@@ -295,7 +295,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
             Entity entity = null;
             Vec3 entityIntersection = null;
-            final List<net.minecraft.world.entity.Entity> list = w.getEntities(p, bb,
+            final List<Entity> list = w.getEntities(p, bb,
                     e -> !(e instanceof ItemEntity) && e.isAlive());
             double closest = 9999999.0D;
 
@@ -323,7 +323,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             ClipContext rayTraceContext = new ClipContext(Vector3d, Vector3d1,
                     Block.COLLIDER, Fluid.NONE, p);
             final Vec3 vec = new Vec3(d0, d1, d2);
-            net.minecraft.world.phys.HitResult pos = w.clip(rayTraceContext);
+            HitResult pos = w.clip(rayTraceContext);
             if (entity != null && pos.getType() != Type.MISS
                     && pos.getLocation().distanceToSqr(vec) > closest) {
                 pos = new EntityHitResult(entity, entityIntersection);
@@ -349,7 +349,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                     final int dmg = (int) Math.ceil(penetration / 20.0f);
                     if (entityHit instanceof LivingEntity) {
-                        final net.minecraft.world.entity.LivingEntity el = (LivingEntity) entityHit;
+                        final LivingEntity el = (LivingEntity) entityHit;
                         penetration -= dmg;
                         el.knockback(0, -direction.x, -direction.z);
                         // el.knockBack( p, 0, Vector3d.x,
@@ -371,7 +371,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         penetration = 0;
                     } else {
                         BlockPos blockPos = blockResult.getBlockPos();
-                        final net.minecraft.world.level.block.state.BlockState bs = w.getBlockState(blockPos);
+                        final BlockState bs = w.getBlockState(blockPos);
 
                         final float hardness = bs.getDestroySpeed(w, blockPos) * 9.0f;
                         if (hardness >= 0.0 && penetration > hardness

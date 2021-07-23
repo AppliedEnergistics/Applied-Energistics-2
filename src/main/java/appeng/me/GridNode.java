@@ -79,7 +79,7 @@ public class GridNode implements IGridNode, IPathItem {
     // idle power usage per tick in AE
     private double idlePowerUsage = 1.0;
     @Nonnull
-    private net.minecraft.world.item.ItemStack visualRepresentation = net.minecraft.world.item.ItemStack.EMPTY;
+    private ItemStack visualRepresentation = ItemStack.EMPTY;
     @Nonnull
     private AEColor gridColor = AEColor.TRANSPARENT;
     private long lastSecurityKey = -1;
@@ -91,7 +91,7 @@ public class GridNode implements IGridNode, IPathItem {
     private int usedChannels = 0;
     private int lastUsedChannels = 0;
     private final EnumSet<GridFlags> flags;
-    protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(net.minecraft.core.Direction.class);
+    protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
     private ClassToInstanceMap<IGridNodeService> services;
 
     public <T> GridNode(@Nonnull ServerLevel world,
@@ -254,7 +254,7 @@ public class GridNode implements IGridNode, IPathItem {
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
      * {@link ItemStack#EMPTY} to hide the node from UIs.
      */
-    public void setVisualRepresentation(@Nonnull net.minecraft.world.item.ItemStack visualRepresentation) {
+    public void setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
         this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
     }
 
@@ -323,7 +323,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public EnumSet<Direction> getConnectedSides() {
-        var result = EnumSet.noneOf(net.minecraft.core.Direction.class);
+        var result = EnumSet.noneOf(Direction.class);
         for (IGridConnection connection : this.connections) {
             if (connection.isInWorld()) {
                 result.add(connection.getDirection(this));
@@ -335,7 +335,7 @@ public class GridNode implements IGridNode, IPathItem {
     @Nonnull
     @Override
     public Map<Direction, IGridConnection> getInWorldConnections() {
-        var result = new EnumMap<net.minecraft.core.Direction, IGridConnection>(Direction.class);
+        var result = new EnumMap<Direction, IGridConnection>(Direction.class);
         for (IGridConnection connection : this.connections) {
             var direction = connection.getDirection(this);
             if (direction != null) {
@@ -412,7 +412,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Nonnull
     @Override
-    public net.minecraft.world.item.ItemStack getVisualRepresentation() {
+    public ItemStack getVisualRepresentation() {
         return visualRepresentation;
     }
 

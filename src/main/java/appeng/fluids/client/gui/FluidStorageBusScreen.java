@@ -49,7 +49,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private final SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, Inventory playerInventory,
-                                 net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                 Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = this.menu.getFluidConfigInventory();

@@ -94,7 +94,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
 
-    public static final net.minecraft.resources.ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -106,7 +106,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
 
     private final IActionSource mySrc;
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
@@ -118,7 +118,7 @@ public class StorageBusPart extends UpgradeablePart
     private boolean wasActive = false;
     private byte resetCacheLogic = 0;
 
-    public StorageBusPart(final net.minecraft.world.item.ItemStack is) {
+    public StorageBusPart(final ItemStack is) {
         super(is);
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
@@ -312,7 +312,7 @@ public class StorageBusPart extends UpgradeablePart
 
     private IMEInventory<IAEItemStack> getInventoryWrapper(BlockEntity target) {
 
-        net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
 
         // Prioritize a handler to directly link to another ME network
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
@@ -356,7 +356,7 @@ public class StorageBusPart extends UpgradeablePart
             return 0;
         }
 
-        final net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
@@ -537,7 +537,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStackRepresentation() {
+    public ItemStack getItemStackRepresentation() {
         return AEParts.STORAGE_BUS.stack();
     }
 

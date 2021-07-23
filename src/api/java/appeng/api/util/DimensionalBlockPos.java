@@ -41,7 +41,7 @@ public final class DimensionalBlockPos {
     private final Level world;
 
     @Nonnull
-    private final net.minecraft.core.BlockPos pos;
+    private final BlockPos pos;
 
     public DimensionalBlockPos(DimensionalBlockPos coordinate) {
         this(coordinate.getWorld(), coordinate.pos);
@@ -51,13 +51,13 @@ public final class DimensionalBlockPos {
         this(tileEntity.getLevel(), tileEntity.getBlockPos());
     }
 
-    public DimensionalBlockPos(Level world, net.minecraft.core.BlockPos pos) {
+    public DimensionalBlockPos(Level world, BlockPos pos) {
         this(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public DimensionalBlockPos(Level world, int x, int y, int z) {
         this.world = Objects.requireNonNull(world, "world");
-        this.pos = new net.minecraft.core.BlockPos(x, y, z);
+        this.pos = new BlockPos(x, y, z);
     }
 
     @Override

@@ -266,7 +266,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
     }
 
-    private static void onPress(net.minecraft.client.gui.components.Button btn) {
+    private static void onPress(Button btn) {
         if (btn instanceof SettingToggleButton) {
             ((SettingToggleButton<?>) btn).triggerPress();
         }
@@ -284,7 +284,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
-            final ButtonToolTips title, final net.minecraft.network.chat.Component hint) {
+            final ButtonToolTips title, final Component hint) {
         appearances.put(
                 new EnumPair(setting, val),
                 new ButtonAppearance(
@@ -328,7 +328,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
 
         if (this.buttonSetting == null || this.currentValue == null) {
             return Collections.emptyList();
@@ -375,11 +375,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         @Nonnull
         public final Icon icon;
         @Nonnull
-        public final net.minecraft.network.chat.Component displayName;
+        public final Component displayName;
         @Nonnull
-        public final net.minecraft.network.chat.Component hint;
+        public final Component hint;
 
-        public ButtonAppearance(Icon icon, net.minecraft.network.chat.Component displayName, net.minecraft.network.chat.Component hint) {
+        public ButtonAppearance(Icon icon, Component displayName, Component hint) {
             this.icon = Objects.requireNonNull(icon);
             this.displayName = Objects.requireNonNull(displayName);
             this.hint = Objects.requireNonNull(hint);

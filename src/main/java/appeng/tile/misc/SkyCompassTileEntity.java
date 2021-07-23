@@ -24,7 +24,7 @@ import appeng.tile.AEBaseTileEntity;
 
 public class SkyCompassTileEntity extends AEBaseTileEntity {
 
-    public SkyCompassTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public SkyCompassTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

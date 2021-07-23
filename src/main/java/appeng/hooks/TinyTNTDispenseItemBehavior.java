@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final BlockSource dispenser, final net.minecraft.world.item.ItemStack dispensedItem) {
+    protected ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
         final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
         final Level world = dispenser.getLevel();
         final int i = dispenser.getPos().getX() + Direction.getStepX();

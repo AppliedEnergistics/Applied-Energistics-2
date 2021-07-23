@@ -102,18 +102,18 @@ public class SpatialStorageHelper {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayer) entity);
         }
 
-        net.minecraft.world.level.portal.PortalInfo portalInfo = new net.minecraft.world.level.portal.PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.yRot,
+        PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.yRot,
                 entity.xRot);
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw,
-                                      Function<Boolean, net.minecraft.world.entity.Entity> repositionEntity) {
+                                      Function<Boolean, Entity> repositionEntity) {
                 return repositionEntity.apply(false);
             }
 
             @Override
             public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld,
-                    Function<ServerLevel, net.minecraft.world.level.portal.PortalInfo> defaultPortalInfo) {
+                    Function<ServerLevel, PortalInfo> defaultPortalInfo) {
                 return portalInfo;
             }
         });
@@ -131,22 +131,22 @@ public class SpatialStorageHelper {
             final int maxZ, final ISpatialVisitor visitor) {
         for (int y = minY; y < maxY; y++) {
             for (int z = minZ; z < maxZ; z++) {
-                visitor.visit(new net.minecraft.core.BlockPos(minX, y, z));
+                visitor.visit(new BlockPos(minX, y, z));
                 visitor.visit(new BlockPos(maxX, y, z));
             }
         }
 
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
-                visitor.visit(new net.minecraft.core.BlockPos(x, minY, z));
-                visitor.visit(new net.minecraft.core.BlockPos(x, maxY, z));
+                visitor.visit(new BlockPos(x, minY, z));
+                visitor.visit(new BlockPos(x, maxY, z));
             }
         }
 
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
-                visitor.visit(new net.minecraft.core.BlockPos(x, y, minZ));
-                visitor.visit(new net.minecraft.core.BlockPos(x, y, maxZ));
+                visitor.visit(new BlockPos(x, y, minZ));
+                visitor.visit(new BlockPos(x, y, maxZ));
             }
         }
     }
@@ -173,8 +173,8 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesOfClass(net.minecraft.world.entity.Entity.class, srcBox);
-        final List<net.minecraft.world.entity.Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesOfClass(Entity.class, srcBox);
+        final List<Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
             this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
@@ -187,7 +187,7 @@ public class SpatialStorageHelper {
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAt(wc.getPos(), net.minecraft.world.level.block.Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
@@ -214,7 +214,7 @@ public class SpatialStorageHelper {
         }
 
         @Override
-        public void visit(final net.minecraft.core.BlockPos pos) {
+        public void visit(final BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
             final Block blk = state.getBlock();
             blk.neighborChanged(state, this.dst, pos, blk, pos, false);

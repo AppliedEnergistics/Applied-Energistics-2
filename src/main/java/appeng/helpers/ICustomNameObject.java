@@ -22,7 +22,7 @@ import net.minecraft.network.chat.Component;
 
 public interface ICustomNameObject {
 
-    net.minecraft.network.chat.Component getCustomInventoryName();
+    Component getCustomInventoryName();
 
     boolean hasCustomInventoryName();
 }

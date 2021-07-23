@@ -44,7 +44,7 @@ public interface AppEng {
     }
 
     static ResourceLocation makeId(String id) {
-        return new net.minecraft.resources.ResourceLocation(MOD_ID, id);
+        return new ResourceLocation(MOD_ID, id);
     }
 
     @Nonnull
@@ -53,7 +53,7 @@ public interface AppEng {
     /**
      * Allows common item use methods to get the current mouse over without relying on client-only methods.
      */
-    default net.minecraft.world.phys.HitResult getCurrentMouseOver() {
+    default HitResult getCurrentMouseOver() {
         return null;
     }
 

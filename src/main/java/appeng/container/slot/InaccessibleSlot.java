@@ -24,7 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class InaccessibleSlot extends AppEngSlot {
 
-    private net.minecraft.world.item.ItemStack dspStack = ItemStack.EMPTY;
+    private ItemStack dspStack = ItemStack.EMPTY;
 
     public InaccessibleSlot(final IItemHandler i, final int invSlot) {
         super(i, invSlot);

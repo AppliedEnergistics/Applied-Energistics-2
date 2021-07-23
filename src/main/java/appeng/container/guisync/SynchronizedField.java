@@ -84,7 +84,7 @@ public abstract class SynchronizedField<T> {
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
 
-        if (fieldType.isAssignableFrom(net.minecraft.network.chat.Component.class)) {
+        if (fieldType.isAssignableFrom(Component.class)) {
             return new TextComponentField(source, field);
         } else if (fieldType == String.class) {
             return new StringField(source, field);
@@ -189,13 +189,13 @@ public abstract class SynchronizedField<T> {
         }
     }
 
-    private static class TextComponentField extends SynchronizedField<net.minecraft.network.chat.Component> {
+    private static class TextComponentField extends SynchronizedField<Component> {
         private TextComponentField(Object source, Field field) {
             super(source, field);
         }
 
         @Override
-        protected void writeValue(FriendlyByteBuf data, net.minecraft.network.chat.Component value) {
+        protected void writeValue(FriendlyByteBuf data, Component value) {
             if (value == null) {
                 data.writeBoolean(false);
             } else {
@@ -205,7 +205,7 @@ public abstract class SynchronizedField<T> {
         }
 
         @Override
-        protected net.minecraft.network.chat.Component readValue(FriendlyByteBuf data) {
+        protected Component readValue(FriendlyByteBuf data) {
             if (data.readBoolean()) {
                 return data.readComponent();
             } else {

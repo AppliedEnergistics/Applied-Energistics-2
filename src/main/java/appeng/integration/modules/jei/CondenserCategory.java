@@ -53,7 +53,7 @@ import net.minecraft.world.item.ItemStack;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
-    public static final net.minecraft.resources.ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
     private final String localizedName;
 
@@ -100,7 +100,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
             case SINGULARITY:
                 return AEItems.SINGULARITY.stack();
             default:
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
         }
     }
 
@@ -159,8 +159,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         itemStacks.set(ingredients);
     }
 
-    private List<net.minecraft.world.item.ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        List<net.minecraft.world.item.ItemStack> viableComponents = new ArrayList<>();
+    private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
+        List<ItemStack> viableComponents = new ArrayList<>();
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_1K_CELL_COMPONENT.stack());
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_4K_CELL_COMPONENT.stack());
         this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_16K_CELL_COMPONENT.stack());
@@ -168,8 +168,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         return viableComponents;
     }
 
-    private void addViableComponent(CondenserOutput condenserOutput, List<net.minecraft.world.item.ItemStack> viableComponents,
-            net.minecraft.world.item.ItemStack itemStack) {
+    private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents,
+            ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
         int storage = comp.getBytes(itemStack) * CondenserTileEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {
@@ -178,7 +178,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
 
         if (mouseX >= 28 && mouseX < 28 + 16 && mouseY >= 78 && mouseY < 78 + 16) {
             String key;

@@ -39,12 +39,12 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getDisplayStack() {
+    public ItemStack getDisplayStack() {
         if (isRemote()) {
             final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final net.minecraft.world.item.ItemStack out = iep.getOutput(is);
+                final ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;
                 }
@@ -65,12 +65,12 @@ public class InterfaceSlot extends AppEngSlot {
     // The following methods are overridden to prevent client-side code from messing with the stack in the slot
     // Any interaction with the real content of this slot must go via a custom packet
     @Override
-    public final boolean mayPlace(final net.minecraft.world.item.ItemStack stack) {
+    public final boolean mayPlace(final ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void set(final net.minecraft.world.item.ItemStack stack) {
+    public final void set(final ItemStack stack) {
     }
 
     @Override
@@ -79,8 +79,8 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
-    public final net.minecraft.world.item.ItemStack remove(int amount) {
-        return net.minecraft.world.item.ItemStack.EMPTY;
+    public final ItemStack remove(int amount) {
+        return ItemStack.EMPTY;
     }
 
     @Override

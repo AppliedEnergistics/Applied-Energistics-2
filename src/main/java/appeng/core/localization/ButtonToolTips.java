@@ -79,7 +79,7 @@ public enum ButtonToolTips {
         this.text = new TranslatableComponent("gui.tooltips.appliedenergistics2." + this.name());
     }
 
-    public net.minecraft.network.chat.Component text() {
+    public Component text() {
         return text;
     }
 

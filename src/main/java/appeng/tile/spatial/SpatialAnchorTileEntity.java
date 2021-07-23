@@ -84,13 +84,13 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     private static final int SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE = 4;
 
     private final ConfigManager manager = new ConfigManager(this);
-    private final Set<net.minecraft.world.level.ChunkPos> chunks = new HashSet<>();
+    private final Set<ChunkPos> chunks = new HashSet<>();
     private int powerlessTicks = 0;
     private boolean initialized = false;
     private boolean displayOverlay = false;
     private boolean isActive = false;
 
-    public SpatialAnchorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public SpatialAnchorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
@@ -116,7 +116,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
         if (this.displayOverlay) {
-            data.writeLongArray(chunks.stream().mapToLong(net.minecraft.world.level.ChunkPos::toLong).toArray());
+            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::toLong).toArray());
         }
     }
 
@@ -137,7 +137,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         OverlayManager.getInstance().removeHandlers(this);
 
         if (this.displayOverlay) {
-            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(net.minecraft.world.level.ChunkPos::new)
+            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::new)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
             OverlayManager.getInstance().showArea(this);
@@ -147,12 +147,12 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    public Set<net.minecraft.world.level.ChunkPos> getOverlayChunks() {
+    public Set<ChunkPos> getOverlayChunks() {
         return this.chunks;
     }
 
@@ -261,7 +261,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         return TickRateModulation.SLEEP;
     }
 
-    public Set<net.minecraft.world.level.ChunkPos> getLoadedChunks() {
+    public Set<ChunkPos> getLoadedChunks() {
         return this.chunks;
     }
 
@@ -304,11 +304,11 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
             return;
         }
 
-        Multiset<net.minecraft.world.level.ChunkPos> requiredChunks = grid.getService(StatisticsService.class).getChunks()
+        Multiset<ChunkPos> requiredChunks = grid.getService(StatisticsService.class).getChunks()
                 .get(this.getServerWorld());
 
         // Release all chunks, which are no longer part of the network.s
-        for (Iterator<net.minecraft.world.level.ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
+        for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
             ChunkPos chunkPos = iterator.next();
 
             if (!requiredChunks.contains(chunkPos)) {
@@ -318,7 +318,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         }
 
         // Force missing chunks
-        for (net.minecraft.world.level.ChunkPos chunkPos : requiredChunks) {
+        for (ChunkPos chunkPos : requiredChunks) {
             if (!this.chunks.contains(chunkPos)) {
                 this.force(chunkPos);
             }
@@ -329,7 +329,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     /**
      * Adds the chunk to the current loaded list.
      */
-    private boolean force(net.minecraft.world.level.ChunkPos chunkPos) {
+    private boolean force(ChunkPos chunkPos) {
         // Avoid loading chunks after the anchor is destroyed
         if (this.isRemoved()) {
             return false;
@@ -348,7 +348,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
         return forced;
     }
 
-    private boolean release(net.minecraft.world.level.ChunkPos chunkPos, boolean remove) {
+    private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerLevel world = this.getServerWorld();
         boolean removed = ChunkLoadingService.getInstance().releaseChunk(world, this.getBlockPos(), chunkPos, true);
 
@@ -365,7 +365,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     private void forceAll() {
         getMainNode().ifPresent(grid -> {
             var statistics = grid.getService(StatisticsService.class);
-            for (net.minecraft.world.level.ChunkPos chunkPos : statistics.getChunks().get(this.getServerWorld())
+            for (ChunkPos chunkPos : statistics.getChunks().get(this.getServerWorld())
                     .elementSet()) {
                 this.force(chunkPos);
             }
@@ -373,7 +373,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
     }
 
     private void releaseAll() {
-        for (net.minecraft.world.level.ChunkPos chunk : this.chunks) {
+        for (ChunkPos chunk : this.chunks) {
             this.release(chunk, false);
         }
         this.chunks.clear();
@@ -401,10 +401,10 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
 
         // Temporarily load an area after a spatial transfer until the network is constructed and cleanup is performed.
         int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
-        net.minecraft.world.level.ChunkPos center = new net.minecraft.world.level.ChunkPos(this.getBlockPos());
+        ChunkPos center = new ChunkPos(this.getBlockPos());
         for (int x = center.x - d; x <= center.x + d; x++) {
             for (int z = center.z - d; z <= center.z + d; z++) {
-                this.force(new net.minecraft.world.level.ChunkPos(x, z));
+                this.force(new ChunkPos(x, z));
             }
         }
 

@@ -23,6 +23,7 @@ import java.util.List;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -56,14 +57,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, };
 
-    public MemoryCardItem(net.minecraft.world.item.Item.Properties properties) {
+    public MemoryCardItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
         lines.add(new TranslatableComponent(firstLineKey));
@@ -148,7 +149,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get(), net.minecraft.Util.NIL_UUID);
+                player.sendMessage(PlayerMessages.SettingCleared.get(), Util.NIL_UUID);
                 break;
             case INVALID_MACHINE:
                 player.sendMessage(PlayerMessages.InvalidMachine.get(), Util.NIL_UUID);

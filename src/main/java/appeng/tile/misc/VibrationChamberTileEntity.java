@@ -61,7 +61,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     // client side..
     public boolean isOn;
 
-    public VibrationChamberTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public VibrationChamberTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setIdlePowerUsage(0)
@@ -70,7 +70,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -119,7 +119,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);

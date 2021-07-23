@@ -81,7 +81,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
         if (entry != null) {
             return entry.getStack().asItemStackRepresentation();
         }
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override

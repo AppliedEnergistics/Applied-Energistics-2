@@ -24,7 +24,7 @@ import net.minecraft.world.item.Item.Properties;
 
 public abstract class AEBaseItem extends Item {
 
-    public AEBaseItem(net.minecraft.world.item.Item.Properties properties) {
+    public AEBaseItem(Item.Properties properties) {
         super(properties.setNoRepair());
     }
 

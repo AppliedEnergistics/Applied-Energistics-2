@@ -116,7 +116,7 @@ public class QuadCornerKicker extends QuadTransformer {
                         float z = vertex.vec[2];
                         if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
                                 && epsComp(z, corner.pZ(this.box))) {
-                            Vec3i vec = net.minecraft.core.Direction.values()[hoz].getNormal();
+                            Vec3i vec = Direction.values()[hoz].getNormal();
                             x -= vec.getX() * this.thickness;
                             y -= vec.getY() * this.thickness;
                             z -= vec.getZ() * this.thickness;
@@ -142,11 +142,11 @@ public class QuadCornerKicker extends QuadTransformer {
 
         private AxisDirection xAxis;
         private AxisDirection yAxis;
-        private net.minecraft.core.Direction.AxisDirection zAxis;
+        private Direction.AxisDirection zAxis;
 
         private static final int[] sideMask = { 0, 2, 0, 1, 0, 4 };
 
-        Corner(AxisDirection xAxis, net.minecraft.core.Direction.AxisDirection yAxis, AxisDirection zAxis) {
+        Corner(AxisDirection xAxis, Direction.AxisDirection yAxis, AxisDirection zAxis) {
             this.xAxis = xAxis;
             this.yAxis = yAxis;
             this.zAxis = zAxis;

@@ -27,7 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Implemented on a {@link net.minecraft.world.item.Item}
+ * Implemented on a {@link Item}
  */
 public interface IStorageComponent {
 

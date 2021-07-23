@@ -37,7 +37,7 @@ class EntropyRecipeBuilder {
     private Block inputBlock;
     private List<StateMatcher> inputBlockMatchers = Collections.emptyList();
 
-    private net.minecraft.world.level.material.Fluid inputFluid;
+    private Fluid inputFluid;
     private List<StateMatcher> inputFluidMatchers = Collections.emptyList();
 
     private Block outputBlock;
@@ -61,7 +61,7 @@ class EntropyRecipeBuilder {
         this.inputBlock = Objects.requireNonNull(inputBlock, "inputBlock must not be null");
     }
 
-    void setInputFluid(net.minecraft.world.level.material.Fluid inputFluid) {
+    void setInputFluid(Fluid inputFluid) {
         this.inputFluid = Objects.requireNonNull(inputFluid, "inputFluid must not be null");
     }
 
@@ -81,7 +81,7 @@ class EntropyRecipeBuilder {
         this.outputFluidKeep = outputFluidKeep;
     }
 
-    void setDrops(List<net.minecraft.world.item.ItemStack> drops) {
+    void setDrops(List<ItemStack> drops) {
         Preconditions.checkArgument(!drops.isEmpty(), "drops needs to be a non empty list when set");
 
         this.drops = drops;

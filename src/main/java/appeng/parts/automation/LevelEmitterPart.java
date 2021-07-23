@@ -82,13 +82,13 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         ICraftingWatcherNode, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_BASE_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_on");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_status_off");
     @PartModels
     public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
@@ -361,7 +361,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void animateTick(final Level world, final net.minecraft.core.BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
             final AEPartLocation d = this.getSide();
 

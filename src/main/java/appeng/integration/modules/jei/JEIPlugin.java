@@ -72,7 +72,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    private static final net.minecraft.resources.ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
+    private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -118,25 +118,25 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        net.minecraft.world.item.ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
+        ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-        net.minecraft.world.item.ItemStack condenser = AEBlocks.CONDENSER.stack();
+        ItemStack condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        net.minecraft.world.item.ItemStack inscriber = AEBlocks.INSCRIBER.stack();
+        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
 
-        final net.minecraft.network.chat.Component[] message;
+        final Component[] message;
         if (AEConfig.instance().isGenerateQuartzOre()) {
             // " " Used to enforce a new paragraph
-            message = new net.minecraft.network.chat.Component[] { GuiText.ChargedQuartz.text(), new TextComponent(" "),
+            message = new Component[] { GuiText.ChargedQuartz.text(), new TextComponent(" "),
                     GuiText.ChargedQuartzFind.text() };
         } else {
-            message = new net.minecraft.network.chat.Component[] { GuiText.ChargedQuartz.text() };
+            message = new Component[] { GuiText.ChargedQuartz.text() };
         }
         this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
 
@@ -169,7 +169,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
-            net.minecraft.network.chat.Component... message) {
+            Component... message) {
         registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM, message);
     }
 
@@ -178,7 +178,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (AEConfig.instance().isShowFacadesInJEIEnabled()) {
             FacadeItem itemFacade = AEItems.FACADE.asItem();
-            net.minecraft.world.item.ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
+            ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
 
@@ -251,7 +251,7 @@ public class JEIPlugin implements IModPlugin {
             toRemove.add(AEItems.DEBUG_REPLICATOR_CARD.stack());
             toRemove.add(AEItems.DEBUG_PART_PLACER.stack());
 
-            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM,
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM,
                     toRemove);
         }
 

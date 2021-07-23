@@ -41,7 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class MovableTileRegistry implements IMovableRegistry {
 
     private static final ResourceLocation TAG_WHITELIST = new ResourceLocation(AppEng.MOD_ID, "spatial/whitelist");
-    private static final net.minecraft.resources.ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "spatial/blacklist");
+    private static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "spatial/blacklist");
 
     private final Set<Block> blacklisted = new HashSet<>();
 
@@ -59,7 +59,7 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void blacklistBlock(final net.minecraft.world.level.block.Block blk) {
+    public void blacklistBlock(final Block blk) {
         this.blacklisted.add(blk);
     }
 

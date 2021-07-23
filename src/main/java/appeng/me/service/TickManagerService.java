@@ -108,7 +108,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 }
             }
         } catch (final Throwable t) {
-            final CrashReport crashreport = net.minecraft.CrashReport.forThrowable(t, "Ticking GridNode");
+            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
             final CrashReportCategory crashreportcategory = crashreport
                     .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
             tt.addEntityCrashInfo(crashreportcategory);

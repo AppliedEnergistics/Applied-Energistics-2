@@ -32,13 +32,13 @@ import appeng.client.gui.Icon;
 
 import net.minecraft.world.item.ItemStack;
 
-public class TabButton extends net.minecraft.client.gui.components.Button implements ITooltip {
+public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
     private boolean hideEdge;
     private Icon icon = null;
     private ItemStack item;
 
-    public TabButton(final Icon ico, final net.minecraft.network.chat.Component message, final ItemRenderer ir,
+    public TabButton(final Icon ico, final Component message, final ItemRenderer ir,
                      OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
 
@@ -53,7 +53,7 @@ public class TabButton extends net.minecraft.client.gui.components.Button implem
      * @param message mouse over message
      * @param ir      renderer
      */
-    public TabButton(final net.minecraft.world.item.ItemStack ico, final net.minecraft.network.chat.Component message, final ItemRenderer ir,
+    public TabButton(final ItemStack ico, final Component message, final ItemRenderer ir,
                      OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
         this.item = ico;
@@ -89,7 +89,7 @@ public class TabButton extends net.minecraft.client.gui.components.Button implem
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         return Collections.singletonList(getMessage());
     }
 

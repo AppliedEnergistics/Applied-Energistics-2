@@ -33,21 +33,21 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class InscriberRecipe implements Recipe<Container> {
 
-    public static final net.minecraft.resources.ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
+    public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
     public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     private final String group;
 
-    private final net.minecraft.world.item.crafting.Ingredient middleInput;
-    private final net.minecraft.world.item.crafting.Ingredient topOptional;
-    private final net.minecraft.world.item.crafting.Ingredient bottomOptional;
+    private final Ingredient middleInput;
+    private final Ingredient topOptional;
+    private final Ingredient bottomOptional;
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, net.minecraft.world.item.crafting.Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, net.minecraft.world.item.crafting.Ingredient bottomOptional, InscriberProcessType processType) {
+    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
+                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;
@@ -63,7 +63,7 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack assemble(Container inv) {
+    public ItemStack assemble(Container inv) {
         return this.output.copy();
     }
 
@@ -93,8 +93,8 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
-    public NonNullList<net.minecraft.world.item.crafting.Ingredient> getIngredients() {
-        NonNullList<net.minecraft.world.item.crafting.Ingredient> nonnulllist = net.minecraft.core.NonNullList.create();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
         nonnulllist.add(this.topOptional);
         nonnulllist.add(this.middleInput);
         nonnulllist.add(this.bottomOptional);
@@ -109,11 +109,11 @@ public class InscriberRecipe implements Recipe<Container> {
         return output;
     }
 
-    public net.minecraft.world.item.crafting.Ingredient getTopOptional() {
+    public Ingredient getTopOptional() {
         return topOptional;
     }
 
-    public net.minecraft.world.item.crafting.Ingredient getBottomOptional() {
+    public Ingredient getBottomOptional() {
         return bottomOptional;
     }
 

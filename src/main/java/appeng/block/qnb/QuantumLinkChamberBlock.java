@@ -73,7 +73,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
                                          final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
@@ -91,7 +91,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 

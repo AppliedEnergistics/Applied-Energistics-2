@@ -62,15 +62,15 @@ public enum SecurityPermissions {
 
     private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase(Locale.ROOT);
 
-    private final net.minecraft.network.chat.Component displayName = new TranslatableComponent(this.translationKey + ".name");
+    private final Component displayName = new TranslatableComponent(this.translationKey + ".name");
 
-    private final net.minecraft.network.chat.Component displayHint = new TranslatableComponent(this.translationKey + ".tip");
+    private final Component displayHint = new TranslatableComponent(this.translationKey + ".tip");
 
-    public net.minecraft.network.chat.Component getDisplayName() {
+    public Component getDisplayName() {
         return this.displayName;
     }
 
-    public net.minecraft.network.chat.Component getDisplayHint() {
+    public Component getDisplayHint() {
         return this.displayHint;
     }
 }

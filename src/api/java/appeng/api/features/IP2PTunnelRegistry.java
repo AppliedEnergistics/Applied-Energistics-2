@@ -56,5 +56,5 @@ public interface IP2PTunnelRegistry {
      * @return null if no attunement can be found or attunement
      */
     @Nullable
-    TunnelType getTunnelTypeByItem(net.minecraft.world.item.ItemStack trigger);
+    TunnelType getTunnelTypeByItem(ItemStack trigger);
 }

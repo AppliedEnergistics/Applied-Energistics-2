@@ -60,7 +60,7 @@ public enum AEColor {
 
     BLUE("gui.appliedenergistics2.Blue", "blue", DyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF),
 
-    BROWN("gui.appliedenergistics2.Brown", "brown", net.minecraft.world.item.DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8),
+    BROWN("gui.appliedenergistics2.Brown", "brown", DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8),
 
     GREEN("gui.appliedenergistics2.Green", "green", DyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3),
 

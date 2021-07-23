@@ -57,7 +57,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     private boolean output;
     private short freq;
 
-    public P2PTunnelPart(final net.minecraft.world.item.ItemStack is) {
+    public P2PTunnelPart(final ItemStack is) {
         super(is);
         this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
     }
@@ -109,7 +109,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStack(final PartItemStack type) {
+    public ItemStack getItemStack(final PartItemStack type) {
         if (type == PartItemStack.WORLD || type == PartItemStack.NETWORK || type == PartItemStack.WRENCH
                 || type == PartItemStack.PICK) {
             return super.getItemStack(type);
@@ -166,14 +166,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return false;
         }
 
-        final net.minecraft.world.item.ItemStack is = player.getItemInHand(hand);
+        final ItemStack is = player.getItemInHand(hand);
 
         final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
             final CompoundTag data = mc.getData(is);
 
-            final net.minecraft.world.item.ItemStack newType = net.minecraft.world.item.ItemStack.of(data);
+            final ItemStack newType = ItemStack.of(data);
             final short freq = data.getShort("freq");
 
             if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
@@ -234,11 +234,11 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                  */
 
                 default:
-                    newType = net.minecraft.world.item.ItemStack.EMPTY;
+                    newType = ItemStack.EMPTY;
                     break;
             }
 
-            if (!newType.isEmpty() && !net.minecraft.world.item.ItemStack.isSame(newType, this.getItemStack())) {
+            if (!newType.isEmpty() && !ItemStack.isSame(newType, this.getItemStack())) {
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
@@ -266,7 +266,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     @Override
     public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        final net.minecraft.world.item.ItemStack is = player.inventory.getSelected();
+        final ItemStack is = player.inventory.getSelected();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             if (isRemote()) {
                 return true;
@@ -294,7 +294,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             this.onTunnelConfigChange();
 
-            final net.minecraft.world.item.ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
+            final ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
             final String type = p2pItem.getDescriptionId();
 
             p2pItem.save(data);

@@ -29,7 +29,7 @@ public final class InitEntityTypes {
     }
 
     public static void init(IForgeRegistry<EntityType<?>> registry) {
-        for (net.minecraft.world.entity.EntityType<?> entityType : AEEntities.getEntityTypes()) {
+        for (EntityType<?> entityType : AEEntities.getEntityTypes()) {
             registry.register(entityType);
         }
     }

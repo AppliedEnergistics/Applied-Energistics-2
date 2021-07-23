@@ -49,12 +49,12 @@ public interface ISpatialService extends IGridService {
     /**
      * @return the minimum anchor point for the spatial region.
      */
-    net.minecraft.core.BlockPos getMin();
+    BlockPos getMin();
 
     /**
      * @return the maximum anchor point for the spatial region.
      */
-    net.minecraft.core.BlockPos getMax();
+    BlockPos getMax();
 
     /**
      * @return how many AE units are required to preform the activation

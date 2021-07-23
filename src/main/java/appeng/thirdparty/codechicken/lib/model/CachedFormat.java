@@ -66,7 +66,7 @@ public class CachedFormat {
      *
      * @param format The format.
      */
-    public CachedFormat(com.mojang.blaze3d.vertex.VertexFormat format) {
+    public CachedFormat(VertexFormat format) {
         this.format = format;
         this.elementCount = format.getElements().size();
         for (int i = 0; i < this.elementCount; i++) {

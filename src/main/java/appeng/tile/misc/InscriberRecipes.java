@@ -45,7 +45,7 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
-    public static final net.minecraft.resources.ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
+    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
 
     private InscriberRecipes() {
     }
@@ -60,7 +60,7 @@ public final class InscriberRecipes {
     }
 
     @Nullable
-    public static InscriberRecipe findRecipe(Level world, ItemStack input, net.minecraft.world.item.ItemStack plateA, ItemStack plateB,
+    public static InscriberRecipe findRecipe(Level world, ItemStack input, ItemStack plateA, ItemStack plateB,
                                              boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
@@ -119,7 +119,7 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses. Both the given
      * combination and the reverse will be searched.
      */
-    public static boolean isValidOptionalIngredientCombination(Level world, net.minecraft.world.item.ItemStack pressA, ItemStack pressB) {
+    public static boolean isValidOptionalIngredientCombination(Level world, ItemStack pressA, ItemStack pressB) {
         for (InscriberRecipe recipe : getRecipes(world)) {
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
                     || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
@@ -134,7 +134,7 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient. Bottom and
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
-    public static boolean isValidOptionalIngredient(Level world, net.minecraft.world.item.ItemStack is) {
+    public static boolean isValidOptionalIngredient(Level world, ItemStack is) {
         for (InscriberRecipe recipe : getRecipes(world)) {
             if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;

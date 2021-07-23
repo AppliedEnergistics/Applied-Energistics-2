@@ -50,7 +50,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     private double efficiency = 0.0;
     private ServerLevel captureWorld;
     private BlockPos captureMin;
-    private net.minecraft.core.BlockPos captureMax;
+    private BlockPos captureMax;
     private boolean isValid = false;
     private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
@@ -209,7 +209,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     }
 
     @Override
-    public net.minecraft.core.BlockPos getMax() {
+    public BlockPos getMax() {
         return this.captureMax;
     }
 

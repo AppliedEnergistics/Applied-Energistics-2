@@ -22,6 +22,7 @@ import java.util.List;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +48,7 @@ import appeng.util.inv.AdaptorItemHandler;
 public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     private final Upgrades cardType;
 
-    public UpgradeCardItem(net.minecraft.world.item.Item.Properties properties, Upgrades cardType) {
+    public UpgradeCardItem(Item.Properties properties, Upgrades cardType) {
         super(properties);
         this.cardType = cardType;
     }
@@ -59,8 +60,8 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<net.minecraft.network.chat.Component> lines,
-                                net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> lines,
+                                TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final Upgrades u = this.getType(stack);
@@ -70,7 +71,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     }
 
     @Override
-    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
         InteractionHand hand = context.getHand();
         if (player != null && InteractionUtil.isInAlternateUseMode(player)) {

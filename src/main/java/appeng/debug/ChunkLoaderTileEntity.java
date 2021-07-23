@@ -29,7 +29,7 @@ import appeng.tile.AEBaseTileEntity;
 
 public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableBlockEntity {
 
-    public ChunkLoaderTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public ChunkLoaderTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -39,7 +39,7 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableB
 
         Level world = getLevel();
         if (world instanceof ServerLevel) {
-            net.minecraft.world.level.ChunkPos chunkPos = new net.minecraft.world.level.ChunkPos(getBlockPos());
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
             ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, true);
         }
     }
@@ -50,7 +50,7 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableB
 
         Level world = getLevel();
         if (world instanceof ServerLevel) {
-            net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
             ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
@@ -60,7 +60,7 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements TickableB
         // Validate the force-status
         Level world = getLevel();
         if (world instanceof ServerLevel) {
-            net.minecraft.world.level.ChunkPos chunkPos = new net.minecraft.world.level.ChunkPos(getBlockPos());
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
             ServerLevel serverWorld = (ServerLevel) world;
 
             if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {

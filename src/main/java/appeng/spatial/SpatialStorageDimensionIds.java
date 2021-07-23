@@ -36,12 +36,12 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 public final class SpatialStorageDimensionIds {
 
     /**
-     * ID of the {@link net.minecraft.world.level.dimension.DimensionType} used for the spatial storage world.
+     * ID of the {@link DimensionType} used for the spatial storage world.
      * <p>
      * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
     public static final ResourceKey<DimensionType> DIMENSION_TYPE_ID = ResourceKey
-            .create(net.minecraft.core.Registry.DIMENSION_TYPE_REGISTRY, AppEng.makeId("spatial_storage"));
+            .create(Registry.DIMENSION_TYPE_REGISTRY, AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link ChunkGenerator} used for the spatial storage world.
@@ -49,7 +49,7 @@ public final class SpatialStorageDimensionIds {
     public static final ResourceLocation CHUNK_GENERATOR_ID = AppEng.makeId("spatial_storage");
 
     /**
-     * ID of the {@link net.minecraft.world.level.biome.Biome} used for the spatial storage world.
+     * ID of the {@link Biome} used for the spatial storage world.
      */
     public static final ResourceKey<Biome> BIOME_KEY = ResourceKey.create(Registry.BIOME_REGISTRY,
             AppEng.makeId("spatial_storage"));
@@ -59,13 +59,13 @@ public final class SpatialStorageDimensionIds {
      * <p>
      * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
      */
-    public static final ResourceKey<LevelStem> DIMENSION_ID = ResourceKey.create(net.minecraft.core.Registry.LEVEL_STEM_REGISTRY,
+    public static final ResourceKey<LevelStem> DIMENSION_ID = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY,
             AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link Level} that is instantiated from the dimension/dimension type.
      */
-    public static final ResourceKey<Level> WORLD_ID = ResourceKey.create(net.minecraft.core.Registry.DIMENSION_REGISTRY,
+    public static final ResourceKey<Level> WORLD_ID = ResourceKey.create(Registry.DIMENSION_REGISTRY,
             AppEng.makeId("spatial_storage"));
 
     /**

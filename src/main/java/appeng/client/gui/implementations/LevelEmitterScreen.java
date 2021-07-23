@@ -43,7 +43,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public LevelEmitterScreen(LevelEmitterContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public LevelEmitterScreen(LevelEmitterContainer container, Inventory playerInventory, Component title,
                               ScreenStyle style) {
         super(container, playerInventory, title, style);
 

@@ -24,7 +24,7 @@ import appeng.api.implementations.guiobjects.IGuiItemObject;
 
 public class QuartzKnifeObj implements IGuiItemObject {
 
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
 
     public QuartzKnifeObj(final ItemStack o) {
         this.is = o;

@@ -46,7 +46,7 @@ public class AppEngAdvancementTrigger
 
     public AppEngAdvancementTrigger(String parString) {
         super();
-        this.ID = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, parString);
+        this.ID = new ResourceLocation(AppEng.MOD_ID, parString);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void addPlayerListener(PlayerAdvancements playerAdvancementsIn,
-            net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
+            CriterionTrigger.Listener<Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l == null) {
@@ -69,7 +69,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void removePlayerListener(PlayerAdvancements playerAdvancementsIn,
-            net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
+            CriterionTrigger.Listener<Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l != null) {
@@ -101,7 +101,7 @@ public class AppEngAdvancementTrigger
     }
 
     public static class Instance implements CriterionTriggerInstance {
-        private final net.minecraft.resources.ResourceLocation id;
+        private final ResourceLocation id;
 
         public Instance(ResourceLocation id) {
             this.id = id;
@@ -112,7 +112,7 @@ public class AppEngAdvancementTrigger
         }
 
         @Override
-        public net.minecraft.resources.ResourceLocation getCriterion() {
+        public ResourceLocation getCriterion() {
             return id;
         }
 
@@ -124,7 +124,7 @@ public class AppEngAdvancementTrigger
 
     static class Listeners {
         private final PlayerAdvancements playerAdvancements;
-        private final Set<net.minecraft.advancements.CriterionTrigger.Listener<Instance>> listeners = new HashSet<>();
+        private final Set<CriterionTrigger.Listener<Instance>> listeners = new HashSet<>();
 
         Listeners(PlayerAdvancements playerAdvancementsIn) {
             this.playerAdvancements = playerAdvancementsIn;
@@ -134,18 +134,18 @@ public class AppEngAdvancementTrigger
             return this.listeners.isEmpty();
         }
 
-        public void add(net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
+        public void add(CriterionTrigger.Listener<Instance> listener) {
             this.listeners.add(listener);
         }
 
-        public void remove(net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener) {
+        public void remove(CriterionTrigger.Listener<Instance> listener) {
             this.listeners.remove(listener);
         }
 
         public void trigger(Player player) {
-            List<net.minecraft.advancements.CriterionTrigger.Listener<Instance>> list = null;
+            List<CriterionTrigger.Listener<Instance>> list = null;
 
-            for (net.minecraft.advancements.CriterionTrigger.Listener<Instance> listener : this.listeners) {
+            for (CriterionTrigger.Listener<Instance> listener : this.listeners) {
                 if (listener.getTriggerInstance().test()) {
                     if (list == null) {
                         list = new ArrayList<>();
@@ -156,7 +156,7 @@ public class AppEngAdvancementTrigger
             }
 
             if (list != null) {
-                for (net.minecraft.advancements.CriterionTrigger.Listener<Instance> l : list) {
+                for (CriterionTrigger.Listener<Instance> l : list) {
                     l.run(this.playerAdvancements);
                 }
             }

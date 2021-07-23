@@ -50,7 +50,7 @@ public interface IMemoryCard {
      * @param settingsName unlocalized string that represents the tile entity.
      * @param data         the NBT tag, refer to the normal comment for special keys.
      */
-    void setMemoryCardContents(net.minecraft.world.item.ItemStack is, String settingsName, CompoundTag data);
+    void setMemoryCardContents(ItemStack is, String settingsName, CompoundTag data);
 
     /**
      * returns the settings name provided by a previous call to setMemoryCardContents, or "AppEng.GuiITooltip.Blank" if
@@ -67,7 +67,7 @@ public interface IMemoryCard {
      *
      * @return the NBT Data previously saved by setMemoryCardContents, or an empty NBTCompound
      */
-    CompoundTag getData(net.minecraft.world.item.ItemStack is);
+    CompoundTag getData(ItemStack is);
 
     /**
      * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
@@ -78,7 +78,7 @@ public interface IMemoryCard {
      *
      * @return a hash representation of the memory card content
      */
-    AEColor[] getColorCode(net.minecraft.world.item.ItemStack is);
+    AEColor[] getColorCode(ItemStack is);
 
     /**
      * notify the user of a outcome related to the memory card.

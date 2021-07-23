@@ -41,7 +41,7 @@ import appeng.recipes.handlers.GrinderRecipe;
 
 class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
-    public static final net.minecraft.resources.ResourceLocation UID = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "grinder");
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
 
     private final String localizedName;
 
@@ -59,7 +59,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     }
 
     @Override
-    public net.minecraft.resources.ResourceLocation getUid() {
+    public ResourceLocation getUid() {
         return GrinderRecipeCategory.UID;
     }
 

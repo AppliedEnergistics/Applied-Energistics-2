@@ -41,7 +41,7 @@ public class VerticalButtonBar implements ICompositeWidget {
     // The margin between the right side of the buttons and the GUI
     private static final int MARGIN = 2;
 
-    private final List<net.minecraft.client.gui.components.Button> buttons = new ArrayList<>();
+    private final List<Button> buttons = new ArrayList<>();
 
     // The origin of the last initialized screen in window coordinates
     private Point screenOrigin = Point.ZERO;
@@ -81,7 +81,7 @@ public class VerticalButtonBar implements ICompositeWidget {
         int maxWidth = 0;
 
         // Align the button's right edge with the UI and account for margin
-        for (net.minecraft.client.gui.components.Button button : buttons) {
+        for (Button button : buttons) {
             if (!button.visible) {
                 continue;
             }

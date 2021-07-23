@@ -62,7 +62,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -87,7 +87,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void animateTick(final Level world, final net.minecraft.core.BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final BlockPos pos, final Random r) {
 
     }
 

@@ -32,7 +32,7 @@ import appeng.fluids.util.IAEFluidTank;
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
 
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, Inventory playerInventory,
-                                     net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                     Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = container.getFluidConfigInventory();

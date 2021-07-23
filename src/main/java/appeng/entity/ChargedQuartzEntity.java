@@ -46,11 +46,11 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     private int delay = 0;
     private int transformTime = 0;
 
-    public ChargedQuartzEntity(net.minecraft.world.entity.EntityType<? extends ChargedQuartzEntity> entityType, Level world) {
+    public ChargedQuartzEntity(EntityType<? extends ChargedQuartzEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public ChargedQuartzEntity(final Level w, final double x, final double y, final double z, final net.minecraft.world.item.ItemStack is) {
+    public ChargedQuartzEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
         super(AEEntities.CHARGED_QUARTZ, w, x, y, z, is);
     }
 
@@ -75,7 +75,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final int i = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
         final int k = Mth.floor(this.getZ());
 
-        BlockState state = this.level.getBlockState(new net.minecraft.core.BlockPos(j, i, k));
+        BlockState state = this.level.getBlockState(new BlockPos(j, i, k));
         final Material mat = state.getMaterial();
 
         if (!level.isClientSide() && mat.isLiquid()) {
@@ -97,17 +97,17 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             ItemEntity redstone = null;
-            net.minecraft.world.entity.item.ItemEntity netherQuartz = null;
+            ItemEntity netherQuartz = null;
 
             for (final Entity e : l) {
                 if (e instanceof ItemEntity && !e.removed) {
-                    final ItemStack other = ((net.minecraft.world.entity.item.ItemEntity) e).getItem();
+                    final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         if (ItemStack.isSame(other, new ItemStack(Items.REDSTONE))) {
                             redstone = (ItemEntity) e;
                         }
 
-                        if (ItemStack.isSame(other, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.QUARTZ))) {
+                        if (ItemStack.isSame(other, new ItemStack(Items.QUARTZ))) {
                             netherQuartz = (ItemEntity) e;
                         }
                     }

@@ -62,7 +62,7 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack removeItems(final int amount, final net.minecraft.world.item.ItemStack filter, final IInventoryDestination destination) {
+    public ItemStack removeItems(final int amount, final ItemStack filter, final IInventoryDestination destination) {
         return this.doRemoveItems(amount, filter, destination, Actionable.MODULATE);
     }
 
@@ -94,12 +94,12 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack simulateRemove(final int amount, final net.minecraft.world.item.ItemStack filter, final IInventoryDestination destination) {
+    public ItemStack simulateRemove(final int amount, final ItemStack filter, final IInventoryDestination destination) {
         return this.doRemoveItems(amount, filter, destination, Actionable.SIMULATE);
     }
 
     @Override
-    public ItemStack removeSimilarItems(final int amount, final net.minecraft.world.item.ItemStack filter, final FuzzyMode fuzzyMode,
+    public ItemStack removeSimilarItems(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
                                         final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, null, destination, Actionable.MODULATE);
@@ -107,11 +107,11 @@ public class IMEAdaptor extends InventoryAdaptor {
         return this.doRemoveItemsFuzzy(amount, filter, destination, Actionable.MODULATE, fuzzyMode);
     }
 
-    private ItemStack doRemoveItemsFuzzy(final int amount, final net.minecraft.world.item.ItemStack filter,
+    private ItemStack doRemoveItemsFuzzy(final int amount, final ItemStack filter,
             final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode) {
         final IAEItemStack reqFilter = AEItemStack.fromItemStack(filter);
         if (reqFilter == null) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         IAEItemStack out = null;
@@ -126,11 +126,11 @@ public class IMEAdaptor extends InventoryAdaptor {
             }
         }
 
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack simulateSimilarRemove(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
+    public ItemStack simulateSimilarRemove(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
                                                                     final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, ItemStack.EMPTY, destination, Actionable.SIMULATE);
@@ -139,7 +139,7 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack addItems(final ItemStack toBeAdded) {
+    public ItemStack addItems(final ItemStack toBeAdded) {
         final IAEItemStack in = AEItemStack.fromItemStack(toBeAdded);
         if (in != null) {
             final IAEItemStack out = this.target.injectItems(in, Actionable.MODULATE, this.src);
@@ -147,11 +147,11 @@ public class IMEAdaptor extends InventoryAdaptor {
                 return out.createItemStack();
             }
         }
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack simulateAdd(final ItemStack toBeSimulated) {
+    public ItemStack simulateAdd(final ItemStack toBeSimulated) {
         final IAEItemStack in = AEItemStack.fromItemStack(toBeSimulated);
         if (in != null) {
             final IAEItemStack out = this.target.injectItems(in, Actionable.SIMULATE, this.src);
@@ -159,7 +159,7 @@ public class IMEAdaptor extends InventoryAdaptor {
                 return out.createItemStack();
             }
         }
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override

@@ -33,7 +33,7 @@ import appeng.container.me.items.CraftingTermContainer;
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
     public CraftingTermScreen(CraftingTermContainer container, Inventory playerInventory,
-                              net.minecraft.network.chat.Component title, ScreenStyle style) {
+                              Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());

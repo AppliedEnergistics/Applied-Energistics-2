@@ -77,12 +77,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      */
     private static final int ENERGY_PER_USE = 1600;
 
-    public EntropyManipulatorItem(net.minecraft.world.item.Item.Properties props) {
+    public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
     @Override
-    public boolean hurtEnemy(final net.minecraft.world.item.ItemStack item, final LivingEntity target, final net.minecraft.world.entity.LivingEntity hitter) {
+    public boolean hurtEnemy(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             target.setSecondsOnFire(8);
@@ -113,9 +113,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level w = context.getLevel();
-        net.minecraft.world.item.ItemStack item = context.getItemInHand();
+        ItemStack item = context.getItemInHand();
         BlockPos pos = context.getClickedPos();
-        net.minecraft.core.Direction side = context.getClickedFace();
+        Direction side = context.getClickedFace();
         Player p = context.getPlayer();
 
         boolean tryBoth = false;
@@ -150,11 +150,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return InteractionResult.PASS;
     }
 
-    private boolean tryApplyEffect(Level w, net.minecraft.world.item.ItemStack item, BlockPos pos, net.minecraft.core.Direction side, Player p,
+    private boolean tryApplyEffect(Level w, ItemStack item, BlockPos pos, Direction side, Player p,
                                    boolean tryBoth) {
         final BlockState blockState = w.getBlockState(pos);
-        final net.minecraft.world.level.block.Block block = blockState.getBlock();
-        final net.minecraft.world.level.material.FluidState fluidState = w.getFluidState(pos);
+        final Block block = blockState.getBlock();
+        final FluidState fluidState = w.getFluidState(pos);
 
         if (tryBoth || InteractionUtil.isInAlternateUseMode(p)) {
             EntropyRecipe coolRecipe = findRecipe(w, EntropyMode.COOL, blockState, fluidState);
@@ -197,7 +197,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         return false;
     }
 
-    private boolean applyFlintAndSteelEffect(Level w, net.minecraft.world.item.ItemStack item, BlockPos pos, net.minecraft.core.Direction side, Player p) {
+    private boolean applyFlintAndSteelEffect(Level w, ItemStack item, BlockPos pos, Direction side, Player p) {
         final BlockPos offsetPos = pos.relative(side);
         if (!p.mayUseItemAt(offsetPos, side, item)) {
             return false;
@@ -208,7 +208,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
                     SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                     random.nextFloat() * 0.4F + 0.8F);
-            w.setBlockAndUpdate(offsetPos, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState());
+            w.setBlockAndUpdate(offsetPos, Blocks.FIRE.defaultBlockState());
         }
         return true;
     }
@@ -217,15 +217,15 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      * The entropy manipulator in heat-mode can directly smelt in-world blocks and drop the smelted results, but only if
      * all drops of the block have smelting recipes.
      */
-    private boolean performInWorldSmelting(net.minecraft.world.item.ItemStack item, Level w, Player p, net.minecraft.core.BlockPos pos, net.minecraft.world.level.block.Block block) {
-        net.minecraft.world.item.ItemStack[] stack = Platform.getBlockDrops(w, pos);
+    private boolean performInWorldSmelting(ItemStack item, Level w, Player p, BlockPos pos, Block block) {
+        ItemStack[] stack = Platform.getBlockDrops(w, pos);
 
         // Results of the operation
         BlockState smeltedBlockState = null;
-        List<net.minecraft.world.item.ItemStack> smeltedDrops = new ArrayList<>();
+        List<ItemStack> smeltedDrops = new ArrayList<>();
 
         CraftingContainer tempInv = new CraftingContainer(new ContainerNull(), 1, 1);
-        for (final net.minecraft.world.item.ItemStack i : stack) {
+        for (final ItemStack i : stack) {
             tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = w.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv, w);
 
@@ -235,7 +235,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
             ItemStack result = recipe.get().assemble(tempInv);
             if (result.getItem() instanceof BlockItem) {
-                Block smeltedBlock = net.minecraft.world.level.block.Block.byItem(result.getItem());
+                Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
                     // Prevent auto-smelting if we wouldn't actually change the blockstate of the block at all,
                     // but still could drop additional items
@@ -244,7 +244,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 // The first smelted drop that could be placed as a block itself will not be dropped, but
                 // rather replace the current block.
                 if (smeltedBlockState == null
-                        && smeltedBlock != net.minecraft.world.level.block.Blocks.AIR
+                        && smeltedBlock != Blocks.AIR
                         && smeltedBlock.defaultBlockState().getMaterial() != Material.AIR) {
                     smeltedBlockState = smeltedBlock.defaultBlockState();
                     continue;
@@ -261,11 +261,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
 
         w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-                net.minecraft.sounds.SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                 random.nextFloat() * 0.4F + 0.8F);
 
         if (smeltedBlockState == null) {
-            w.setBlock(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+            w.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         } else {
             w.setBlock(pos, smeltedBlockState, 3);
         }
@@ -293,7 +293,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         if (outputBlockState != null) {
             w.setBlock(pos, outputBlockState, 3);
         } else {
-            net.minecraft.world.level.material.FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
+            FluidState outputFluidState = recipe.getOutputFluidState(fluidState);
             if (outputFluidState != null) {
                 w.setBlock(pos, outputFluidState.createLegacyBlock(), 3);
             } else {

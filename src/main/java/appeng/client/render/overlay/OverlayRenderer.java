@@ -54,7 +54,7 @@ public class OverlayRenderer {
         for (ChunkPos pos : this.source.getOverlayChunks()) {
             matrixStack.pushPose();
             matrixStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
-            com.mojang.math.Matrix4f posMat = matrixStack.last().pose();
+            Matrix4f posMat = matrixStack.last().pose();
             addVertices(builder, posMat, pos, cols, renderLines);
             matrixStack.popPose();
         }
@@ -72,7 +72,7 @@ public class OverlayRenderer {
         float z2 = 16f;
 
         boolean noNorth = !chunks.contains(new ChunkPos(pos.x, pos.z - 1));
-        boolean noSouth = !chunks.contains(new net.minecraft.world.level.ChunkPos(pos.x, pos.z + 1));
+        boolean noSouth = !chunks.contains(new ChunkPos(pos.x, pos.z + 1));
         boolean noWest = !chunks.contains(new ChunkPos(pos.x - 1, pos.z));
         boolean noEast = !chunks.contains(new ChunkPos(pos.x + 1, pos.z));
 

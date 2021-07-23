@@ -39,10 +39,10 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
 
     private final BlockAndTintGetter world;
     private final BlockPos pos;
-    private final net.minecraft.core.Direction side;
+    private final Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(BlockAndTintGetter world, BlockPos pos, net.minecraft.core.Direction side, net.minecraft.world.level.block.state.BlockState state) {
+    public FacadeBlockAccess(BlockAndTintGetter world, BlockPos pos, Direction side, BlockState state) {
         this.world = world;
         this.pos = pos;
         this.side = side;
@@ -64,13 +64,13 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
     }
 
     @Override
-    public FluidState getFluidState(net.minecraft.core.BlockPos pos) {
+    public FluidState getFluidState(BlockPos pos) {
         return world.getFluidState(pos);
     }
 
     // This is for diffuse lighting
     @Override
-    public float getShade(net.minecraft.core.Direction p_230487_1_, boolean p_230487_2_) {
+    public float getShade(Direction p_230487_1_, boolean p_230487_2_) {
         return world.getShade(p_230487_1_, p_230487_2_);
     }
 

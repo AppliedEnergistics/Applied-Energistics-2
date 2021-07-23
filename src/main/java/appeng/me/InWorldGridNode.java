@@ -57,7 +57,7 @@ public class InWorldGridNode extends GridNode {
 
     @Override
     protected void findInWorldConnections() {
-        final EnumSet<net.minecraft.core.Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
+        final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
 
         var gridApi = Api.INSTANCE.grid();
 
@@ -154,7 +154,7 @@ public class InWorldGridNode extends GridNode {
     }
 
     // construct a new connection between this and another nodes.
-    private boolean connectTo(net.minecraft.core.Direction direction, IGridNode adjacentNode) {
+    private boolean connectTo(Direction direction, IGridNode adjacentNode) {
         try {
             GridConnection.create(adjacentNode, this, direction.getOpposite());
             return true;

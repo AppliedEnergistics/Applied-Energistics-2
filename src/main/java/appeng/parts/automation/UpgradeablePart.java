@@ -38,7 +38,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     private final IConfigManager manager;
     private final UpgradeInventory upgrades;
 
-    public UpgradeablePart(final net.minecraft.world.item.ItemStack is) {
+    public UpgradeablePart(final ItemStack is) {
         super(is);
         this.upgrades = new StackUpgradeInventory(this.getItemStack(), this, this.getUpgradeSlots());
         this.manager = new ConfigManager(this);
@@ -60,7 +60,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
+                                  final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
         }
@@ -127,7 +127,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
 
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
-        for (final net.minecraft.world.item.ItemStack is : this.upgrades) {
+        for (final ItemStack is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }

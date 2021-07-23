@@ -104,7 +104,7 @@ public class InvalidPatternHelper {
             return !this.stack.isEmpty();
         }
 
-        public net.minecraft.network.chat.Component getName() {
+        public Component getName() {
             return this.isValid() ? Platform.getItemDisplayName(this.stack)
                     : new TextComponent(this.id + '@' + this.getDamage());
         }
@@ -125,7 +125,7 @@ public class InvalidPatternHelper {
             return this.stack;
         }
 
-        public net.minecraft.network.chat.Component getFormattedToolTip() {
+        public Component getFormattedToolTip() {
             MutableComponent result = new TextComponent(this.getCount() + " ")
                     .append(this.getName());
 

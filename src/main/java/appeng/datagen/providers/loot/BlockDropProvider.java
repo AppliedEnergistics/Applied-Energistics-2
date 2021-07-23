@@ -58,7 +58,7 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
-    private Map<Block, Function<net.minecraft.world.level.block.Block, net.minecraft.world.level.storage.loot.LootTable.Builder>> overrides = ImmutableMap.<Block, Function<net.minecraft.world.level.block.Block, net.minecraft.world.level.storage.loot.LootTable.Builder>>builder()
+    private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
@@ -84,8 +84,8 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
 
     @Override
     public void run(@Nonnull HashCache cache) throws IOException {
-        for (Map.Entry<ResourceKey<Block>, net.minecraft.world.level.block.Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
-            net.minecraft.world.level.storage.loot.LootTable.Builder builder;
+        for (Map.Entry<ResourceKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+            LootTable.Builder builder;
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
@@ -94,24 +94,24 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
         }
     }
 
-    private net.minecraft.world.level.storage.loot.LootTable.Builder defaultBuilder(Block block) {
+    private LootTable.Builder defaultBuilder(Block block) {
         Builder<?> entry = LootItem.lootTableItem(block);
-        net.minecraft.world.level.storage.loot.LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantIntValue.exactly(1)).add(entry)
+        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantIntValue.exactly(1)).add(entry)
                 .when(ExplosionCondition.survivesExplosion());
 
-        return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(pool);
+        return LootTable.lootTable().withPool(pool);
     }
 
     private Path getPath(Path root, ResourceLocation id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 
-    public JsonElement toJson(net.minecraft.world.level.storage.loot.LootTable.Builder builder) {
+    public JsonElement toJson(LootTable.Builder builder) {
         return LootTables.serialize(finishBuilding(builder));
     }
 
     @Nonnull
-    public net.minecraft.world.level.storage.loot.LootTable finishBuilding(net.minecraft.world.level.storage.loot.LootTable.Builder builder) {
+    public LootTable finishBuilding(LootTable.Builder builder) {
         return builder.setParamSet(LootContextParamSets.BLOCK).build();
     }
 

@@ -35,7 +35,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     private final NumberEntryWidget priority;
 
-    public PriorityScreen(PriorityContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public PriorityScreen(PriorityContainer container, Inventory playerInventory, Component title,
                           ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(container.getPriorityHost());

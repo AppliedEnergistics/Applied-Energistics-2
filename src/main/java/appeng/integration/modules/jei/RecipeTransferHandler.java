@@ -106,7 +106,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContaine
                         .filter(e -> e.getValue().isInput()).mapToInt(Map.Entry::getKey).min().orElse(0);
 
                 // Now map the actual ingredients into the output/input
-                for (Map.Entry<Integer, ? extends IGuiIngredient<net.minecraft.world.item.ItemStack>> entry : recipeLayout.getItemStacks()
+                for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
                         .getGuiIngredients().entrySet()) {
                     IGuiIngredient<ItemStack> item = entry.getValue();
                     if (item.getDisplayedIngredient() == null) {

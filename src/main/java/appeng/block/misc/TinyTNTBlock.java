@@ -50,22 +50,22 @@ public class TinyTNTBlock extends AEBaseBlock {
     private static final VoxelShape SHAPE = Shapes
             .create(new AABB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
-    public TinyTNTBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public TinyTNTBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
     @Override
-    public VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public InteractionResult use(net.minecraft.world.level.block.state.BlockState state, Level world, BlockPos pos, Player player,
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
                                  InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
         if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
@@ -80,7 +80,7 @@ public class TinyTNTBlock extends AEBaseBlock {
         }
     }
 
-    public void startFuse(final Level w, final net.minecraft.core.BlockPos pos, final net.minecraft.world.entity.LivingEntity igniter) {
+    public void startFuse(final Level w, final BlockPos pos, final LivingEntity igniter) {
         if (!w.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
@@ -91,7 +91,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         if (world.getBestNeighborSignal(pos) > 0) {
             this.startFuse(world, pos, null);
@@ -110,16 +110,16 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void stepOn(final Level w, final BlockPos pos, final net.minecraft.world.entity.Entity entity) {
+    public void stepOn(final Level w, final BlockPos pos, final Entity entity) {
         if (entity instanceof AbstractArrow && !w.isClientSide) {
             final AbstractArrow entityarrow = (AbstractArrow) entity;
 
             if (entityarrow.isOnFire()) {
-                net.minecraft.world.entity.LivingEntity igniter = null;
+                LivingEntity igniter = null;
                 // Check if the shooter still exists
                 Entity shooter = entityarrow.getOwner();
                 if (shooter instanceof LivingEntity) {
-                    igniter = (net.minecraft.world.entity.LivingEntity) shooter;
+                    igniter = (LivingEntity) shooter;
                 }
                 this.startFuse(w, pos, igniter);
                 w.removeBlock(pos, false);
@@ -133,7 +133,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(final Level w, final net.minecraft.core.BlockPos pos, final Explosion exp) {
+    public void wasExploded(final Level w, final BlockPos pos, final Explosion exp) {
         super.wasExploded(w, pos, exp);
         if (!w.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,

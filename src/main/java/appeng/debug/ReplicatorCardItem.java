@@ -21,6 +21,7 @@ package appeng.debug;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,7 +51,7 @@ import net.minecraft.world.item.Item.Properties;
 
 public class ReplicatorCardItem extends AEBaseItem {
 
-    public ReplicatorCardItem(net.minecraft.world.item.Item.Properties properties) {
+    public ReplicatorCardItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -68,7 +69,7 @@ public class ReplicatorCardItem extends AEBaseItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new TextComponent(replications + 1 + "³ Replications"), net.minecraft.Util.NIL_UUID);
+            playerIn.sendMessage(new TextComponent(replications + 1 + "³ Replications"), Util.NIL_UUID);
         }
 
         return super.use(worldIn, playerIn, handIn);
@@ -85,7 +86,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         Player player = context.getPlayer();
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        net.minecraft.core.Direction side = context.getClickedFace();
+        Direction side = context.getClickedFace();
         InteractionHand hand = context.getHand();
 
         if (player == null) {
@@ -174,9 +175,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                             for (int i = 1; i < sc_size_x; i++) {
                                                 for (int j = 1; j < sc_size_y; j++) {
                                                     for (int k = 1; k < sc_size_z; k++) {
-                                                        final net.minecraft.core.BlockPos p = new net.minecraft.core.BlockPos(min_x + i, min_y + j,
+                                                        final BlockPos p = new BlockPos(min_x + i, min_y + j,
                                                                 min_z + k);
-                                                        final BlockPos d = new net.minecraft.core.BlockPos(i + rel_x, j + rel_y,
+                                                        final BlockPos d = new BlockPos(i + rel_x, j + rel_y,
                                                                 k + rel_z);
 
                                                         final BlockState state = src_w.getBlockState(p);

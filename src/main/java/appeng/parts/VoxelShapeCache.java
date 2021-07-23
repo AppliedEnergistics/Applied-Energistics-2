@@ -46,11 +46,11 @@ final class VoxelShapeCache {
     // are iterated over in a fixed order, meaning the order of bounding boxes
     // should
     // be the same for a same set of parts.
-    private static final LoadingCache<List<AABB>, net.minecraft.world.phys.shapes.VoxelShape> CACHE = CacheBuilder.newBuilder()//
+    private static final LoadingCache<List<AABB>, VoxelShape> CACHE = CacheBuilder.newBuilder()//
             .maximumSize(10000L)//
-            .build(new CacheLoader<List<AABB>, net.minecraft.world.phys.shapes.VoxelShape>() {
+            .build(new CacheLoader<List<AABB>, VoxelShape>() {
                 @Override
-                public net.minecraft.world.phys.shapes.VoxelShape load(List<AABB> key) {
+                public VoxelShape load(List<AABB> key) {
                     return create(key);
                 }
             });

@@ -42,12 +42,12 @@ public interface IOrientable {
     /**
      * @return the direction the tile is facing
      */
-    net.minecraft.core.Direction getForward();
+    Direction getForward();
 
     /**
      * @return the direction top of the tile
      */
-    net.minecraft.core.Direction getUp();
+    Direction getUp();
 
     /**
      * Update the orientation
@@ -55,5 +55,5 @@ public interface IOrientable {
      * @param Forward new forward direction
      * @param Up      new upwards direction
      */
-    void setOrientation(net.minecraft.core.Direction Forward, net.minecraft.core.Direction Up);
+    void setOrientation(Direction Forward, Direction Up);
 }

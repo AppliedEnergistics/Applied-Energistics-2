@@ -81,7 +81,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     private double storedPower = 0;
 
-    public CondenserTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CondenserTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
@@ -137,7 +137,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
      *
      * @param output to be added output
      */
-    private void addOutput(final net.minecraft.world.item.ItemStack output) {
+    private void addOutput(final ItemStack output) {
         this.outputSlot.insertItem(0, output, false);
     }
 
@@ -156,7 +156,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
             case TRASH:
             default:
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
         }
     }
 
@@ -171,7 +171,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
         }
@@ -217,14 +217,14 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull net.minecraft.world.item.ItemStack stack) {
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             return slot == 0;
         }
 
         @Override
         public ItemStack getStackInSlot(int slot) {
             // The void slot never has any content
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         @Override
@@ -235,12 +235,12 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
             if (!simulate && !stack.isEmpty()) {
                 CondenserTileEntity.this.addPower(stack.getCount());
             }
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         @Override

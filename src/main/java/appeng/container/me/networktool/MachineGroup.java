@@ -42,7 +42,7 @@ public class MachineGroup {
      */
     private int count;
 
-    MachineGroup(net.minecraft.world.item.ItemStack display) {
+    MachineGroup(ItemStack display) {
         this.display = display;
     }
 
@@ -50,7 +50,7 @@ public class MachineGroup {
      * Reads back a machine group previously {@link #write(FriendlyByteBuf) written}.
      */
     static MachineGroup read(FriendlyByteBuf data) {
-        net.minecraft.world.item.ItemStack stack = data.readItem();
+        ItemStack stack = data.readItem();
         MachineGroup entry = new MachineGroup(stack);
         entry.idlePowerUsage = data.readDouble();
         entry.count = data.readVarInt();
@@ -63,7 +63,7 @@ public class MachineGroup {
         data.writeVarInt(count);
     }
 
-    public net.minecraft.world.item.ItemStack getDisplay() {
+    public ItemStack getDisplay() {
         return display;
     }
 

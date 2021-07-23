@@ -262,7 +262,7 @@ public final class AELog {
      * @param aeBaseTile
      * @see AELog#log(Level, String, Object...)
      */
-    public static void blockUpdate(@Nonnull final net.minecraft.core.BlockPos pos, @Nonnull BlockState currentState,
+    public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState,
                                    @Nonnull BlockState newState, @Nonnull final AEBaseTileEntity aeBaseTile) {
         if (AEConfig.instance().isBlockUpdateLogEnabled()) {
             info(BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState);

@@ -44,7 +44,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     private Object visitorIterationNumber = null;
     private GridNode sideA;
     @Nullable
-    private net.minecraft.core.Direction fromAtoB;
+    private Direction fromAtoB;
     private GridNode sideB;
 
     private GridConnection(final GridNode aNode, final GridNode bNode, @Nullable Direction fromAtoB) {

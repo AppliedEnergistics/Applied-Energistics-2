@@ -43,7 +43,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
      *
      * @return new ItemStack
      */
-    net.minecraft.world.item.ItemStack createItemStack();
+    ItemStack createItemStack();
 
     /**
      * is there NBT Data for this item?

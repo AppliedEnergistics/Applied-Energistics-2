@@ -43,7 +43,7 @@ public class LocationRotation implements IOrientable {
     }
 
     @Override
-    public net.minecraft.core.Direction getForward() {
+    public Direction getForward() {
         if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }

@@ -20,6 +20,7 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -76,7 +77,7 @@ public class QuadFaceStripper extends QuadTransformer {
         }
         // If the bit for this quad is set, then check if we should strip.
         if ((this.mask & 1 << this.quad.orientation.ordinal()) != 0) {
-            net.minecraft.core.Direction.AxisDirection dir = this.quad.orientation.getAxisDirection();
+            Direction.AxisDirection dir = this.quad.orientation.getAxisDirection();
             Vertex[] vertices = this.quad.vertices;
             switch (this.quad.orientation.getAxis()) {
                 case X: {

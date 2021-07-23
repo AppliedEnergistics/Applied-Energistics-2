@@ -42,7 +42,7 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public FluidIOBusScreen(FluidIOBusContainer container, Inventory playerInventory, Component title,
                             ScreenStyle style) {
         super(container, playerInventory, title, style);
 

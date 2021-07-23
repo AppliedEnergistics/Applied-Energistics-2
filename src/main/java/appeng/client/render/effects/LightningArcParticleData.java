@@ -33,7 +33,7 @@ import net.minecraft.core.particles.ParticleOptions.Deserializer;
 /**
  * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
  */
-public class LightningArcParticleData implements net.minecraft.core.particles.ParticleOptions {
+public class LightningArcParticleData implements ParticleOptions {
 
     public final Vec3 target;
 
@@ -55,7 +55,7 @@ public class LightningArcParticleData implements net.minecraft.core.particles.Pa
         }
 
         @Override
-        public LightningArcParticleData fromNetwork(net.minecraft.core.particles.ParticleType<LightningArcParticleData> particleTypeIn,
+        public LightningArcParticleData fromNetwork(ParticleType<LightningArcParticleData> particleTypeIn,
                                                     FriendlyByteBuf buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();

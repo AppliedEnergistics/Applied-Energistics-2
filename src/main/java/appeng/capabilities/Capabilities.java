@@ -61,12 +61,12 @@ public final class Capabilities {
     private static <T> Capability.IStorage<T> createNullStorage() {
         return new Capability.IStorage<T>() {
             @Override
-            public Tag writeNBT(Capability<T> capability, T instance, net.minecraft.core.Direction side) {
+            public Tag writeNBT(Capability<T> capability, T instance, Direction side) {
                 return null;
             }
 
             @Override
-            public void readNBT(Capability<T> capability, T instance, net.minecraft.core.Direction side, Tag nbt) {
+            public void readNBT(Capability<T> capability, T instance, Direction side, Tag nbt) {
 
             }
         };

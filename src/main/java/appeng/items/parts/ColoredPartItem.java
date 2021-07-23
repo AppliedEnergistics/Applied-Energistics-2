@@ -20,6 +20,7 @@ package appeng.items.parts;
 
 import java.util.function.Function;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPart;
@@ -30,7 +31,7 @@ public class ColoredPartItem<T extends IPart> extends PartItem<T> {
 
     private final AEColor color;
 
-    public ColoredPartItem(net.minecraft.world.item.Item.Properties properties, Function<ItemStack, T> factory, AEColor color) {
+    public ColoredPartItem(Item.Properties properties, Function<ItemStack, T> factory, AEColor color) {
         super(properties, factory);
         this.color = color;
     }

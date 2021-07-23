@@ -29,7 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 /**
- * Implemented on a {@link net.minecraft.world.item.Item}
+ * Implemented on a {@link Item}
  */
 public interface ISpatialStorageCell {
 
@@ -54,7 +54,7 @@ public interface ISpatialStorageCell {
      *
      * @return plot id or -1
      */
-    int getAllocatedPlotId(net.minecraft.world.item.ItemStack is);
+    int getAllocatedPlotId(ItemStack is);
 
     /**
      * Perform a spatial swap with the contents of the cell, and the world.
@@ -67,5 +67,5 @@ public interface ISpatialStorageCell {
      *
      * @return success of transition
      */
-    boolean doSpatialTransition(net.minecraft.world.item.ItemStack is, ServerLevel w, BlockPos min, BlockPos max, int playerId);
+    boolean doSpatialTransition(ItemStack is, ServerLevel w, BlockPos min, BlockPos max, int playerId);
 }

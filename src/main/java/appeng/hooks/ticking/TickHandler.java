@@ -351,7 +351,7 @@ public class TickHandler {
         long[] workSet = worldQueue.keySet().toLongArray();
 
         for (long packedChunkPos : workSet) {
-            net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(packedChunkPos);
+            ChunkPos chunkPos = new ChunkPos(packedChunkPos);
 
             // Using the blockpos of the chunk start to test if it can tick.
             // Relies on the world to test the chunkpos and not the explicit blockpos.

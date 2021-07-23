@@ -79,7 +79,7 @@ import appeng.util.SettingsFrom;
 public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 
     private final IManagedGridNode mainNode;
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
     private BlockEntity tile = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
@@ -90,7 +90,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         this.is = is;
         this.mainNode = createMainNode()
                 .setVisualRepresentation(is)
-                .setExposedOnSides(EnumSet.noneOf(net.minecraft.core.Direction.class));
+                .setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     protected IManagedGridNode createMainNode() {
@@ -151,7 +151,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public net.minecraft.network.chat.Component getCustomInventoryName() {
+    public Component getCustomInventoryName() {
         return this.getItemStack().getHoverName();
     }
 
@@ -168,7 +168,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     @Override
     public ItemStack getItemStack(final PartItemStack type) {
         if (type == PartItemStack.NETWORK) {
-            final net.minecraft.world.item.ItemStack copy = this.is.copy();
+            final ItemStack copy = this.is.copy();
             copy.setTag(null);
             return copy;
         }
@@ -181,7 +181,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
 
     }
 

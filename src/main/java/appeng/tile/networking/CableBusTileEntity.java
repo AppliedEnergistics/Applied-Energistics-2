@@ -64,7 +64,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
 
     private int oldLV = -1; // on re-calculate light when it changes
 
-    public CableBusTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CableBusTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -212,7 +212,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public IPart getPart(final net.minecraft.core.Direction side) {
+    public IPart getPart(final Direction side) {
         return this.getCableBus().getPart(side);
     }
 
@@ -237,7 +237,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public boolean isBlocked(final net.minecraft.core.Direction side) {
+    public boolean isBlocked(final Direction side) {
         // TODO 1.10.2-R - Stuff.
         return false;
     }

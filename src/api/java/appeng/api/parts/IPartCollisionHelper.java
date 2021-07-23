@@ -44,12 +44,12 @@ public interface IPartCollisionHelper {
     /**
      * @return east in world space.
      */
-    net.minecraft.core.Direction getWorldX();
+    Direction getWorldX();
 
     /**
      * @return up in world space.
      */
-    net.minecraft.core.Direction getWorldY();
+    Direction getWorldY();
 
     /**
      * @return forward in world space.

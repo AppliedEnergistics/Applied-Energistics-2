@@ -58,9 +58,9 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(net.minecraft.core.Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
+    protected void addInnerCube(Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
                                 float y1, float z1, float x2, float y2, float z2) {
-        net.minecraft.core.Direction forward = getForward(modelData);
+        Direction forward = getForward(modelData);
 
         // For sides other than the front, use the chassis texture
         if (side != forward) {
@@ -101,10 +101,10 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
         return AEColor.TRANSPARENT;
     }
 
-    private static net.minecraft.core.Direction getForward(IModelData modelData) {
+    private static Direction getForward(IModelData modelData) {
         if (modelData.hasProperty(AEModelData.FORWARD)) {
             return modelData.getData(AEModelData.FORWARD);
         }
-        return net.minecraft.core.Direction.NORTH;
+        return Direction.NORTH;
     }
 }

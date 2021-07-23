@@ -74,7 +74,7 @@ import appeng.util.inv.InvOperation;
 public class InterfacePart extends BasicStatePart implements IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
-    public static final net.minecraft.resources.ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
 
     private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
         @Override
@@ -86,11 +86,11 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
@@ -98,7 +98,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     private final DualityInterface duality;
 
-    public InterfacePart(final net.minecraft.world.item.ItemStack is) {
+    public InterfacePart(final ItemStack is) {
         super(is);
         this.duality = new DualityInterface(this.getMainNode(), this, is);
     }
@@ -188,7 +188,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removedStack, final ItemStack newStack) {
+                                  final ItemStack removedStack, final ItemStack newStack) {
         this.duality.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
@@ -198,7 +198,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
     }
 
     @Override
-    public EnumSet<net.minecraft.core.Direction> getTargets() {
+    public EnumSet<Direction> getTargets() {
         return EnumSet.of(this.getSide().getDirection());
     }
 

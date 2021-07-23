@@ -37,7 +37,7 @@ public class GridSpatialEvent extends GridEvent {
     /**
      * The block position at which the Spatial I/O tile entity triggering this transition is located.
      */
-    public final net.minecraft.core.BlockPos spatialIoPos;
+    public final BlockPos spatialIoPos;
     /**
      * The energy in AE units needed to perform this transition.
      */
@@ -49,7 +49,7 @@ public class GridSpatialEvent extends GridEvent {
      * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
      */
     public GridSpatialEvent(Level spatialIoWorld,
-                            net.minecraft.core.BlockPos spatialIoPos,
+                            BlockPos spatialIoPos,
                             double EnergyUsage) {
         this.spatialIoWorld = spatialIoWorld;
         this.spatialIoPos = spatialIoPos;

@@ -36,7 +36,7 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
 
     private final AEColor color;
 
-    public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<net.minecraft.core.Direction> connections, AEColor color) {
+    public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
         super(up, forward, connections);
         this.color = Preconditions.checkNotNull(color);
     }

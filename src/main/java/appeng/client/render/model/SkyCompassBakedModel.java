@@ -67,8 +67,8 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
-                                                                              IModelData extraData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData extraData) {
         float rotation = 0;
         // Get rotation from the special block state
         Float rotationFromData = extraData.getData(ROTATION);
@@ -85,7 +85,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         // We'll add the pointer as "sideless"
         if (side == null) {
             // Set up the rotation around the Y-axis for the pointer
-            Matrix4f matrix = new com.mojang.math.Matrix4f();
+            Matrix4f matrix = new Matrix4f();
             matrix.setIdentity();
             matrix.multiply(new Quaternion(0, rotation, 0, false));
 
@@ -100,7 +100,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
                 // FIXME builder.setQuadOrientation( null ); // After rotation, facing a
                 // specific side cannot be guaranteed
                 // anymore
-                net.minecraft.client.renderer.block.model.BakedQuad q = builder.build();
+                BakedQuad q = builder.build();
                 quads.add(q);
             }
         }
@@ -134,7 +134,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return this.base.getTransforms();
     }
 
@@ -169,7 +169,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     /**
      * Gets the effective, animated rotation for the compass given the current position of the compass.
      */
-    public static float getAnimatedRotation(@Nullable net.minecraft.core.BlockPos pos, boolean prefetch) {
+    public static float getAnimatedRotation(@Nullable BlockPos pos, boolean prefetch) {
 
         // Only query for a meteor position if we know our own position
         if (pos != null) {

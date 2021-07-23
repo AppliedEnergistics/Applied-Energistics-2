@@ -54,7 +54,7 @@ public class QuartzFiberPart extends AEBasePart {
 
     private final IManagedGridNode outerNode;
 
-    public QuartzFiberPart(final net.minecraft.world.item.ItemStack is) {
+    public QuartzFiberPart(final ItemStack is) {
         super(is);
         var energyBridge = new GridBridgeProvider();
         this.getMainNode()

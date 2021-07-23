@@ -77,21 +77,21 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (!this.isWirelessTerminal(item)) {
-            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.NIL_UUID);
             return;
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
-            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), Util.NIL_UUID);
             return;
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
         final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
-            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
             return;
         }
 

@@ -40,7 +40,7 @@ public interface IPartModels {
     /**
      * Convenience overload of {@link #registerModels(Collection)}
      */
-    default void registerModels(net.minecraft.resources.ResourceLocation... partModels) {
+    default void registerModels(ResourceLocation... partModels) {
         registerModels(Arrays.asList(partModels));
     }
 }

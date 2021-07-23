@@ -31,7 +31,7 @@ import appeng.util.Platform;
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
     public SpatialIOPortScreen(SpatialIOPortContainer container, Inventory playerInventory,
-                               net.minecraft.network.chat.Component title, ScreenStyle style) {
+                               Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
@@ -48,7 +48,7 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
                 GuiText.RequiredPower.text(Platform.formatPowerLong(this.menu.getRequiredPower(), false)));
         setTextContent("efficiency", GuiText.Efficiency.text((float) this.menu.getEfficency() / 100));
 
-        net.minecraft.network.chat.Component scsSizeText;
+        Component scsSizeText;
         if (this.menu.xSize != 0 && this.menu.ySize != 0 && this.menu.zSize != 0) {
             scsSizeText = GuiText.SCSSize.text(this.menu.xSize, this.menu.ySize, this.menu.zSize);
         } else {

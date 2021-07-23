@@ -21,6 +21,7 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemStack;
@@ -42,14 +43,14 @@ import net.minecraft.world.item.Item.Properties;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block id, net.minecraft.world.item.Item.Properties props) {
+    public AEBaseBlockItemChargeable(Block id, Item.Properties props) {
         super(id, props);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                      final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void addCheckedInformation(final ItemStack stack, final Level world, final List<Component> lines,
+                                      final TooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
@@ -86,7 +87,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double extractAEPower(final net.minecraft.world.item.ItemStack is, double amount, Actionable mode) {
+    public double extractAEPower(final ItemStack is, double amount, Actionable mode) {
         final double internalCurrentPower = this.getInternal(is);
         final double fulfillable = Math.min(amount, internalCurrentPower);
 
@@ -110,12 +111,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public AccessRestriction getPowerFlow(final net.minecraft.world.item.ItemStack is) {
+    public AccessRestriction getPowerFlow(final ItemStack is) {
         return AccessRestriction.WRITE;
     }
 
     private double getMaxEnergyCapacity() {
-        if (net.minecraft.world.level.block.Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
+        if (Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
             return 200000;
         } else {
             return 8 * 200000;
@@ -127,7 +128,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
         return nbt.getDouble("internalCurrentPower");
     }
 
-    private void setInternal(final net.minecraft.world.item.ItemStack is, final double amt) {
+    private void setInternal(final ItemStack is, final double amt) {
         final CompoundTag nbt = is.getOrCreateTag();
         nbt.putDouble("internalCurrentPower", amt);
     }

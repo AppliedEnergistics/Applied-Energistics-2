@@ -46,7 +46,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {

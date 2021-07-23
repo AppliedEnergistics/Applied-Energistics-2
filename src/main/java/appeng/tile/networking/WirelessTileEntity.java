@@ -50,7 +50,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     private int clientFlags = 0;
 
-    public WirelessTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public WirelessTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -58,7 +58,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public void setOrientation(final net.minecraft.core.Direction inForward, final net.minecraft.core.Direction inUp) {
+    public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
     }
@@ -96,7 +96,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
@@ -112,7 +112,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         // :P
     }
 
@@ -128,7 +128,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     private int getBoosters() {
-        final net.minecraft.world.item.ItemStack boosters = this.inv.getStackInSlot(0);
+        final ItemStack boosters = this.inv.getStackInSlot(0);
         return boosters == null ? 0 : boosters.getCount();
     }
 

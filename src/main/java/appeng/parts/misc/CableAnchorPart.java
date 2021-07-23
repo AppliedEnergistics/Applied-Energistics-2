@@ -53,7 +53,7 @@ public class CableAnchorPart implements IPart {
 
     @PartModels
     public static final PartModel DEFAULT_MODELS = new PartModel(false,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
 
     @PartModels
     public static final PartModel FACADE_MODELS = new PartModel(false,
@@ -77,7 +77,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStack(final PartItemStack wrenched) {
+    public ItemStack getItemStack(final PartItemStack wrenched) {
         return this.is;
     }
 
@@ -117,7 +117,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -193,12 +193,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void animateTick(final Level world, final net.minecraft.core.BlockPos pos, final Random r) {
+    public void animateTick(final Level world, final BlockPos pos, final Random r) {
 
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final net.minecraft.world.item.ItemStack held,
+    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
                             final AEPartLocation side) {
 
     }

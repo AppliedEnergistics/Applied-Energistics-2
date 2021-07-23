@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +45,7 @@ public class EraserItem extends AEBaseItem {
     private static final int BLOCK_ERASE_LIMIT = BOX_SIZE * BOX_SIZE * BOX_SIZE;
     final static Set<Block> COMMON_BLOCKS = new HashSet<>();
 
-    public EraserItem(net.minecraft.world.item.Item.Properties properties) {
+    public EraserItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -56,15 +57,15 @@ public class EraserItem extends AEBaseItem {
 
         final Player player = context.getPlayer();
         final Level world = context.getLevel();
-        final net.minecraft.core.BlockPos pos = context.getClickedPos();
+        final BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return InteractionResult.PASS;
         }
 
-        final net.minecraft.world.level.block.Block state = world.getBlockState(pos).getBlock();
+        final Block state = world.getBlockState(pos).getBlock();
         final boolean bulk = InteractionUtil.isInAlternateUseMode(player);
-        final Queue<net.minecraft.core.BlockPos> next = new ArrayDeque<>();
+        final Queue<BlockPos> next = new ArrayDeque<>();
         final Set<BlockPos> closed = new HashSet<>();
         final Set<Block> commonBlocks = this.getCommonBlocks();
 
@@ -72,7 +73,7 @@ public class EraserItem extends AEBaseItem {
         int blocks = 0;
 
         while (blocks < BLOCK_ERASE_LIMIT && next.peek() != null) {
-            final net.minecraft.core.BlockPos wc = next.poll();
+            final BlockPos wc = next.poll();
             final Block c_state = world.getBlockState(wc).getBlock();
             final boolean contains = state == c_state || bulk && commonBlocks.contains(c_state);
 
@@ -80,7 +81,7 @@ public class EraserItem extends AEBaseItem {
 
             if (contains) {
                 blocks++;
-                world.setBlock(wc, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                world.setBlock(wc, Blocks.AIR.defaultBlockState(), 2);
                 world.destroyBlock(wc, false);
 
                 if (isInsideBox(wc, pos)) {
@@ -90,7 +91,7 @@ public class EraserItem extends AEBaseItem {
                                 if (0 == x && 0 == y && 0 == z) {
                                     continue;
                                 }
-                                final net.minecraft.core.BlockPos nextPos = wc.offset(x, y, z);
+                                final BlockPos nextPos = wc.offset(x, y, z);
                                 if (!closed.contains(nextPos)) {
                                     next.add(nextPos);
                                 }
@@ -106,7 +107,7 @@ public class EraserItem extends AEBaseItem {
         return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
-    private boolean isInsideBox(net.minecraft.core.BlockPos pos, BlockPos origin) {
+    private boolean isInsideBox(BlockPos pos, BlockPos origin) {
         boolean ret = true;
 
         if (pos.getX() > origin.getX() + BOX_SIZE || pos.getX() < origin.getX() - BOX_SIZE) {
@@ -129,17 +130,17 @@ public class EraserItem extends AEBaseItem {
      */
     private Set<Block> getCommonBlocks() {
         if (COMMON_BLOCKS.isEmpty()) {
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.STONE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.DIRT);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.COBBLESTONE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.ANDESITE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.GRANITE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.DIORITE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.GRAVEL);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.SANDSTONE);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.NETHERRACK);
-            COMMON_BLOCKS.add(net.minecraft.world.level.block.Blocks.WATER);
+            COMMON_BLOCKS.add(Blocks.STONE);
+            COMMON_BLOCKS.add(Blocks.DIRT);
+            COMMON_BLOCKS.add(Blocks.GRASS_BLOCK);
+            COMMON_BLOCKS.add(Blocks.COBBLESTONE);
+            COMMON_BLOCKS.add(Blocks.ANDESITE);
+            COMMON_BLOCKS.add(Blocks.GRANITE);
+            COMMON_BLOCKS.add(Blocks.DIORITE);
+            COMMON_BLOCKS.add(Blocks.GRAVEL);
+            COMMON_BLOCKS.add(Blocks.SANDSTONE);
+            COMMON_BLOCKS.add(Blocks.NETHERRACK);
+            COMMON_BLOCKS.add(Blocks.WATER);
             COMMON_BLOCKS.add(Blocks.LAVA);
 
             COMMON_BLOCKS.addAll(BlockTags.LEAVES.getValues());

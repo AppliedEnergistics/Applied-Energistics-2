@@ -49,7 +49,7 @@ import appeng.server.ISubCommand;
  */
 public class TestOreGenCommand implements ISubCommand {
 
-    private final net.minecraft.world.level.block.state.BlockState quartzOre;
+    private final BlockState quartzOre;
     private final BlockState chargedQuartzOre;
 
     public TestOreGenCommand() {
@@ -73,13 +73,13 @@ public class TestOreGenCommand implements ISubCommand {
             center = world.getSharedSpawnPos();
         }
 
-        net.minecraft.world.level.ChunkPos tl = new ChunkPos(center.offset(-radius, 0, -radius));
-        net.minecraft.world.level.ChunkPos br = new ChunkPos(center.offset(radius, 0, radius));
+        ChunkPos tl = new ChunkPos(center.offset(-radius, 0, -radius));
+        ChunkPos br = new ChunkPos(center.offset(radius, 0, radius));
 
         Stats stats = new Stats();
         for (int cx = tl.x; cx <= br.x; cx++) {
             for (int cz = tl.z; cz <= br.z; cz++) {
-                net.minecraft.world.level.ChunkPos cp = new net.minecraft.world.level.ChunkPos(cx, cz);
+                ChunkPos cp = new ChunkPos(cx, cz);
                 checkChunk(sender, world, cp, stats);
             }
         }
@@ -98,7 +98,7 @@ public class TestOreGenCommand implements ISubCommand {
         sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
-    private void checkChunk(CommandSourceStack sender, ServerLevel world, net.minecraft.world.level.ChunkPos cp, Stats stats) {
+    private void checkChunk(CommandSourceStack sender, ServerLevel world, ChunkPos cp, Stats stats) {
         ChunkAccess chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
         if (chunk == null) {
             sendLine(sender, "Skipping chunk %s", cp);

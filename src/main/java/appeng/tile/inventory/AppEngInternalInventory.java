@@ -32,11 +32,11 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class AppEngInternalInventory extends ItemStackHandler implements Iterable<net.minecraft.world.item.ItemStack> {
+public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack> {
     private boolean enableClientEvents = false;
     private IAEAppEngInventory te;
     private final int[] maxStack;
-    private net.minecraft.world.item.ItemStack previousStack = net.minecraft.world.item.ItemStack.EMPTY;
+    private ItemStack previousStack = ItemStack.EMPTY;
     private IAEItemFilter filter;
     private boolean dirtyFlag = false;
 
@@ -74,7 +74,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 
     @Override
     @Nonnull
-    public net.minecraft.world.item.ItemStack insertItem(int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         if (this.filter != null && !this.filter.allowInsert(this, slot, stack)) {
             return stack;
         }
@@ -89,7 +89,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (this.filter != null && !this.filter.allowExtract(this, slot, amount)) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         if (!simulate) {
@@ -102,18 +102,18 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     protected void onContentsChanged(int slot) {
         if (this.te != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
-            net.minecraft.world.item.ItemStack newStack = this.getStackInSlot(slot).copy();
-            net.minecraft.world.item.ItemStack oldStack = this.previousStack;
+            ItemStack newStack = this.getStackInSlot(slot).copy();
+            ItemStack oldStack = this.previousStack;
             InvOperation op = InvOperation.SET;
 
-            if (newStack.isEmpty() || oldStack.isEmpty() || net.minecraft.world.item.ItemStack.isSame(newStack, oldStack)) {
+            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.isSame(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
-                    oldStack = net.minecraft.world.item.ItemStack.EMPTY;
+                    oldStack = ItemStack.EMPTY;
                     op = InvOperation.INSERT;
                 } else {
                     oldStack.shrink(newStack.getCount());
-                    newStack = net.minecraft.world.item.ItemStack.EMPTY;
+                    newStack = ItemStack.EMPTY;
                     op = InvOperation.EXTRACT;
                 }
             }
@@ -161,7 +161,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     @Override
-    public Iterator<net.minecraft.world.item.ItemStack> iterator() {
+    public Iterator<ItemStack> iterator() {
         return Collections.unmodifiableList(super.stacks).iterator();
     }
 

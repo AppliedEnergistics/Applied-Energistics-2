@@ -58,7 +58,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
         }
     }
 
-    public static final net.minecraft.world.level.block.state.properties.EnumProperty<State> STATE = EnumProperty.create("state", State.class);
+    public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
         super(defaultProps(AEMaterials.GLASS).noOcclusion());
@@ -66,7 +66,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, WirelessTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, WirelessTileEntity te) {
         State teState = State.OFF;
 
         if (te.isActive()) {
@@ -79,13 +79,13 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(STATE);
     }
 
     @Override
-    public InteractionResult use(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, Player player, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
         final WirelessTileEntity tg = this.getTileEntity(w, pos);
 
@@ -101,10 +101,10 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    public net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
         final WirelessTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
-            final net.minecraft.core.Direction forward = tile.getForward();
+            final Direction forward = tile.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -160,11 +160,11 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
         final WirelessTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
-            final net.minecraft.core.Direction forward = tile.getForward();
+            final Direction forward = tile.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -221,7 +221,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, net.minecraft.core.BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 

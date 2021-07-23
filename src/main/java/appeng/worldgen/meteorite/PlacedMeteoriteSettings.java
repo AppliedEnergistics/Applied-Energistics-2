@@ -25,14 +25,14 @@ import net.minecraft.nbt.CompoundTag;
 
 public final class PlacedMeteoriteSettings {
 
-    private final net.minecraft.core.BlockPos pos;
+    private final BlockPos pos;
     private final float meteoriteRadius;
     private final CraterType craterType;
     private final FalloutMode fallout;
     private final boolean pureCrater;
     private final boolean craterLake;
 
-    public PlacedMeteoriteSettings(net.minecraft.core.BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
+    public PlacedMeteoriteSettings(BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
                                    boolean pureCrater, boolean craterLake) {
         this.pos = pos;
         this.craterType = craterType;
@@ -82,7 +82,7 @@ public final class PlacedMeteoriteSettings {
     }
 
     public static PlacedMeteoriteSettings read(CompoundTag tag) {
-        net.minecraft.core.BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
+        BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
         float meteoriteRadius = tag.getFloat(Constants.TAG_RADIUS);
         CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];

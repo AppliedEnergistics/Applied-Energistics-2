@@ -31,11 +31,11 @@ import appeng.decorative.solid.QuartzPillarBlock;
 
 public class MetaRotation implements IOrientable {
 
-    private final Property<net.minecraft.core.Direction> facingProp;
+    private final Property<Direction> facingProp;
     private final BlockGetter w;
-    private final net.minecraft.core.BlockPos pos;
+    private final BlockPos pos;
 
-    public MetaRotation(final BlockGetter world, final BlockPos pos, final net.minecraft.world.level.block.state.properties.Property<net.minecraft.core.Direction> facingProp) {
+    public MetaRotation(final BlockGetter world, final BlockPos pos, final Property<Direction> facingProp) {
         this.w = world;
         this.pos = pos;
         this.facingProp = facingProp;
@@ -51,11 +51,11 @@ public class MetaRotation implements IOrientable {
         if (this.getUp().getStepY() == 0) {
             return Direction.UP;
         }
-        return net.minecraft.core.Direction.SOUTH;
+        return Direction.SOUTH;
     }
 
     @Override
-    public net.minecraft.core.Direction getUp() {
+    public Direction getUp() {
         final BlockState state = this.w.getBlockState(this.pos);
 
         if (this.facingProp != null && state.hasProperty(this.facingProp)) {
@@ -67,7 +67,7 @@ public class MetaRotation implements IOrientable {
             Axis a = state.getValue(QuartzPillarBlock.AXIS);
             switch (a) {
                 case X:
-                    return net.minecraft.core.Direction.EAST;
+                    return Direction.EAST;
                 case Z:
                     return Direction.SOUTH;
                 default:
@@ -80,7 +80,7 @@ public class MetaRotation implements IOrientable {
     }
 
     @Override
-    public void setOrientation(final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
+    public void setOrientation(final Direction forward, final Direction up) {
         if (this.w instanceof Level) {
             if (this.facingProp != null) {
                 ((Level) this.w).setBlockAndUpdate(this.pos, this.w.getBlockState(this.pos).setValue(this.facingProp, up));

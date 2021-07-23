@@ -119,7 +119,7 @@ public class PartModelsHelper {
         }
 
         if (value instanceof ResourceLocation) {
-            locations.add((net.minecraft.resources.ResourceLocation) value);
+            locations.add((ResourceLocation) value);
         } else if (value instanceof IPartModel) {
             locations.addAll(((IPartModel) value).getModels());
         } else if (value instanceof Collection) {

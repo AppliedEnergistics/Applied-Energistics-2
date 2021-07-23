@@ -51,7 +51,7 @@ import appeng.util.Platform;
  */
 public class BlockTransitionEffectPacket extends BasePacket {
 
-    private final net.minecraft.core.BlockPos pos;
+    private final BlockPos pos;
     private final BlockState blockState;
     private final AEPartLocation direction;
     private final SoundMode soundMode;
@@ -85,7 +85,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
-        net.minecraft.world.level.block.state.BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
+        BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
         if (blockState == null) {
             AELog.warn("Received invalid blockstate id %d from server", blockStateId);
             blockState = Blocks.AIR.defaultBlockState();
@@ -134,7 +134,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             soundEvent = fluid.getAttributes().getFillSound();
             if (soundEvent == null) {
                 if (fluid.is(FluidTags.LAVA)) {
-                    soundEvent = net.minecraft.sounds.SoundEvents.BUCKET_FILL_LAVA;
+                    soundEvent = SoundEvents.BUCKET_FILL_LAVA;
                 } else {
                     soundEvent = SoundEvents.BUCKET_FILL;
                 }

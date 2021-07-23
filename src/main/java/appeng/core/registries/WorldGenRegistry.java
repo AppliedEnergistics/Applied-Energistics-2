@@ -48,7 +48,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public void disableWorldGenForBiome(final WorldGenType type, final net.minecraft.resources.ResourceLocation biomeId) {
+    public void disableWorldGenForBiome(final WorldGenType type, final ResourceLocation biomeId) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(biomeId);
 
@@ -77,10 +77,10 @@ public final class WorldGenRegistry implements IWorldGen {
         /**
          * Biomes blacklisted by other mods.
          */
-        final Set<net.minecraft.resources.ResourceLocation> modBiomeBlacklist = new HashSet<>();
+        final Set<ResourceLocation> modBiomeBlacklist = new HashSet<>();
         /**
          * Biomes blacklisted in the user's config.
          */
-        final Set<net.minecraft.resources.ResourceLocation> configBiomeBlacklist = new HashSet<>();
+        final Set<ResourceLocation> configBiomeBlacklist = new HashSet<>();
     }
 }

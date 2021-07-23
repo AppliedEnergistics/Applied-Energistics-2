@@ -55,11 +55,11 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private final ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(PatternTermContainer container, Inventory playerInventory,
-                             net.minecraft.network.chat.Component title, ScreenStyle style) {
+                             Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(
-                new ItemStack(net.minecraft.world.level.block.Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
+                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
         widgets.add("craftingPatternMode", this.tabCraftButton);
 

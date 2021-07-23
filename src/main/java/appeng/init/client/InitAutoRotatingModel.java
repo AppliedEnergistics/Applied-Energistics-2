@@ -97,10 +97,10 @@ public final class InitAutoRotatingModel {
 
     private static void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, BakedModel> modelRegistry = event.getModelRegistry();
-        Set<net.minecraft.resources.ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
+        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
         BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 
-        for (net.minecraft.resources.ResourceLocation location : keys) {
+        for (ResourceLocation location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }

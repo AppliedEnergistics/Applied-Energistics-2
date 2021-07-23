@@ -28,7 +28,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     private final ICraftingCPU cpu;
     private final long size;
     private final int processors;
-    private net.minecraft.network.chat.Component name;
+    private Component name;
 
     public CraftingCPURecord(final long size, final int coProcessors, final ICraftingCPU server) {
         this.size = size;
@@ -58,11 +58,11 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
         return this.size;
     }
 
-    public net.minecraft.network.chat.Component getName() {
+    public Component getName() {
         return name;
     }
 
-    public void setName(net.minecraft.network.chat.Component name) {
+    public void setName(Component name) {
         this.name = name;
     }
 

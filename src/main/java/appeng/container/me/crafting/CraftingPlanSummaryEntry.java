@@ -26,19 +26,19 @@ import net.minecraft.world.item.ItemStack;
  * network, or have to be crafted.
  */
 public class CraftingPlanSummaryEntry {
-    private final net.minecraft.world.item.ItemStack item;
+    private final ItemStack item;
     private final long missingAmount;
     private final long storedAmount;
     private final long craftAmount;
 
-    public CraftingPlanSummaryEntry(net.minecraft.world.item.ItemStack item, long missingAmount, long storedAmount, long craftAmount) {
+    public CraftingPlanSummaryEntry(ItemStack item, long missingAmount, long storedAmount, long craftAmount) {
         this.item = item;
         this.missingAmount = missingAmount;
         this.storedAmount = storedAmount;
         this.craftAmount = craftAmount;
     }
 
-    public net.minecraft.world.item.ItemStack getItem() {
+    public ItemStack getItem() {
         return item;
     }
 

@@ -41,7 +41,7 @@ public class ItemComparisonHelper {
      *
      * @return true, if both are equal.
      */
-    public boolean isEqualItemType(@Nonnull final ItemStack that, @Nonnull final net.minecraft.world.item.ItemStack other) {
+    public boolean isEqualItemType(@Nonnull final ItemStack that, @Nonnull final ItemStack other) {
         return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
     }
 
@@ -58,13 +58,13 @@ public class ItemComparisonHelper {
     }
 
     /**
-     * Similar to {@link ItemComparisonHelper#isEqualItem(net.minecraft.world.item.ItemStack, net.minecraft.world.item.ItemStack)}, but it can further check, if both
+     * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)}, but it can further check, if both
      * match the same {@link FuzzyMode} or are considered equal by the {@link OreDictionary}
      *
-     * @param mode how to compare the two {@link net.minecraft.world.item.ItemStack}s
+     * @param mode how to compare the two {@link ItemStack}s
      * @return true, if both are matching the mode or considered equal by the {@link OreDictionary}
      */
-    public boolean isFuzzyEqualItem(final ItemStack a, final net.minecraft.world.item.ItemStack b, final FuzzyMode mode) {
+    public boolean isFuzzyEqualItem(final ItemStack a, final ItemStack b, final FuzzyMode mode) {
         if (a.isEmpty() && b.isEmpty()) {
             return true;
         }

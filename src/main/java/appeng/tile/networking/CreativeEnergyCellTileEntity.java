@@ -30,7 +30,7 @@ import appeng.tile.grid.AENetworkTileEntity;
 
 public class CreativeEnergyCellTileEntity extends AENetworkTileEntity implements IAEPowerStorage {
 
-    public CreativeEnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CreativeEnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setIdlePowerUsage(0)

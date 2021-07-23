@@ -42,36 +42,36 @@ public abstract class AEBaseBlock extends Block {
 
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    protected AEBaseBlock(final BlockBehaviour.Properties props) {
         super(props);
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static net.minecraft.world.level.block.state.BlockBehaviour.Properties defaultProps(net.minecraft.world.level.material.Material material) {
+    public static BlockBehaviour.Properties defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static net.minecraft.world.level.block.state.BlockBehaviour.Properties defaultProps(net.minecraft.world.level.material.Material material, MaterialColor color) {
-        return net.minecraft.world.level.block.state.BlockBehaviour.Properties.of(material, color)
+    public static BlockBehaviour.Properties defaultProps(Material material, MaterialColor color) {
+        return BlockBehaviour.Properties.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .strength(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
                 .sound(getDefaultSoundByMaterial(material));
     }
 
-    private static net.minecraft.world.level.block.SoundType getDefaultSoundByMaterial(net.minecraft.world.level.material.Material mat) {
+    private static SoundType getDefaultSoundByMaterial(Material mat) {
         if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
             return SoundType.GLASS;
-        } else if (mat == net.minecraft.world.level.material.Material.STONE) {
-            return net.minecraft.world.level.block.SoundType.STONE;
-        } else if (mat == net.minecraft.world.level.material.Material.WOOD) {
-            return net.minecraft.world.level.block.SoundType.WOOD;
+        } else if (mat == Material.STONE) {
+            return SoundType.STONE;
+        } else if (mat == Material.WOOD) {
+            return SoundType.WOOD;
         } else {
-            return net.minecraft.world.level.block.SoundType.METAL;
+            return SoundType.METAL;
         }
     }
 
@@ -81,14 +81,14 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(net.minecraft.world.level.block.state.BlockState state, final Level worldIn, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, final Level worldIn, final BlockPos pos) {
         return 0;
     }
 
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(LevelAccessor w, net.minecraft.core.BlockPos pos, Direction face) {
+    public boolean rotateAroundFaceAxis(LevelAccessor w, BlockPos pos, Direction face) {
         final IOrientable rotatable = this.getOrientable(w, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
@@ -97,7 +97,7 @@ public abstract class AEBaseBlock extends Block {
                 return true;
             } else {
                 Direction forward = rotatable.getForward();
-                net.minecraft.core.Direction up = rotatable.getUp();
+                Direction up = rotatable.getUp();
 
                 for (int rs = 0; rs < 4; rs++) {
                     forward = Platform.rotateAround(forward, face);
@@ -122,7 +122,7 @@ public abstract class AEBaseBlock extends Block {
         // case WEST: return sideIcon;
         // case EAST: return sideIcon;
 
-        final net.minecraft.core.Direction forward = ori.getForward();
+        final Direction forward = ori.getForward();
         final Direction up = ori.getUp();
 
         if (forward == null || up == null) {
@@ -134,7 +134,7 @@ public abstract class AEBaseBlock extends Block {
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         Direction west = null;
-        for (final net.minecraft.core.Direction dx : Direction.values()) {
+        for (final Direction dx : Direction.values()) {
             if (dx.getStepX() == west_x && dx.getStepY() == west_y && dx.getStepZ() == west_z) {
                 west = dx;
             }
@@ -155,14 +155,14 @@ public abstract class AEBaseBlock extends Block {
             return Direction.UP;
         }
         if (dir == up.getOpposite()) {
-            return net.minecraft.core.Direction.DOWN;
+            return Direction.DOWN;
         }
 
         if (dir == west) {
             return Direction.WEST;
         }
         if (dir == west.getOpposite()) {
-            return net.minecraft.core.Direction.EAST;
+            return Direction.EAST;
         }
 
         return null;
@@ -182,7 +182,7 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    protected void customRotateBlock(final IOrientable rotatable, final net.minecraft.core.Direction axis) {
+    protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
 
     }
 
@@ -194,7 +194,7 @@ public abstract class AEBaseBlock extends Block {
         return null;
     }
 
-    protected boolean isValidOrientation(final LevelAccessor w, final net.minecraft.core.BlockPos pos, final Direction forward,
+    protected boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
                                          final Direction up) {
         return true;
     }

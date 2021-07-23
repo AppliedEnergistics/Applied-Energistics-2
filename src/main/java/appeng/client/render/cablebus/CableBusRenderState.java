@@ -55,7 +55,7 @@ public class CableBusRenderState {
 
     // Describes the outgoing connections of this cable bus to other blocks, and how
     // they should be rendered
-    private EnumMap<net.minecraft.core.Direction, AECableType> connectionTypes = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, AECableType> connectionTypes = new EnumMap<>(Direction.class);
 
     // Indicate on which sides signified by connectionTypes above, there is another
     // cable bus. If a side is connected,
@@ -63,21 +63,21 @@ public class CableBusRenderState {
     // set, then it means that there is a Grid host, but not a cable bus on that
     // side (i.e. an interface, a controller,
     // etc.)
-    private EnumSet<net.minecraft.core.Direction> cableBusAdjacent = EnumSet.noneOf(net.minecraft.core.Direction.class);
+    private EnumSet<Direction> cableBusAdjacent = EnumSet.noneOf(Direction.class);
 
     // Specifies the number of channels used for the connection to a given side.
     // Only contains entries if
     // connections contains a corresponding entry.
-    private EnumMap<net.minecraft.core.Direction, Integer> channelsOnSide = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, Integer> channelsOnSide = new EnumMap<>(Direction.class);
 
-    private EnumMap<net.minecraft.core.Direction, IPartModel> attachments = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, IPartModel> attachments = new EnumMap<>(Direction.class);
 
     // For each attachment, this contains the distance from the edge until which a
     // cable connection should be drawn
-    private EnumMap<net.minecraft.core.Direction, Integer> attachmentConnections = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, Integer> attachmentConnections = new EnumMap<>(Direction.class);
 
     // Contains the facade to use for each side that has a facade attached
-    private EnumMap<net.minecraft.core.Direction, FacadeRenderState> facades = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
     private WeakReference<BlockAndTintGetter> world;
@@ -90,7 +90,7 @@ public class CableBusRenderState {
     private List<AABB> boundingBoxes = new ArrayList<>();
 
     // Additional model data passed to the part models
-    private EnumMap<net.minecraft.core.Direction, IModelData> partModelData = new EnumMap<>(net.minecraft.core.Direction.class);
+    private EnumMap<Direction, IModelData> partModelData = new EnumMap<>(Direction.class);
 
     public CableCoreType getCoreType() {
         return this.coreType;
@@ -116,39 +116,39 @@ public class CableBusRenderState {
         this.cableColor = cableColor;
     }
 
-    public EnumMap<net.minecraft.core.Direction, Integer> getChannelsOnSide() {
+    public EnumMap<Direction, Integer> getChannelsOnSide() {
         return this.channelsOnSide;
     }
 
-    public EnumMap<net.minecraft.core.Direction, AECableType> getConnectionTypes() {
+    public EnumMap<Direction, AECableType> getConnectionTypes() {
         return this.connectionTypes;
     }
 
-    public void setConnectionTypes(EnumMap<net.minecraft.core.Direction, AECableType> connectionTypes) {
+    public void setConnectionTypes(EnumMap<Direction, AECableType> connectionTypes) {
         this.connectionTypes = connectionTypes;
     }
 
-    public void setChannelsOnSide(EnumMap<net.minecraft.core.Direction, Integer> channelsOnSide) {
+    public void setChannelsOnSide(EnumMap<Direction, Integer> channelsOnSide) {
         this.channelsOnSide = channelsOnSide;
     }
 
-    public EnumSet<net.minecraft.core.Direction> getCableBusAdjacent() {
+    public EnumSet<Direction> getCableBusAdjacent() {
         return this.cableBusAdjacent;
     }
 
-    public void setCableBusAdjacent(EnumSet<net.minecraft.core.Direction> cableBusAdjacent) {
+    public void setCableBusAdjacent(EnumSet<Direction> cableBusAdjacent) {
         this.cableBusAdjacent = cableBusAdjacent;
     }
 
-    public EnumMap<net.minecraft.core.Direction, IPartModel> getAttachments() {
+    public EnumMap<Direction, IPartModel> getAttachments() {
         return this.attachments;
     }
 
-    public EnumMap<net.minecraft.core.Direction, Integer> getAttachmentConnections() {
+    public EnumMap<Direction, Integer> getAttachmentConnections() {
         return this.attachmentConnections;
     }
 
-    public EnumMap<net.minecraft.core.Direction, FacadeRenderState> getFacades() {
+    public EnumMap<Direction, FacadeRenderState> getFacades() {
         return this.facades;
     }
 
@@ -160,11 +160,11 @@ public class CableBusRenderState {
         this.world = new WeakReference<>(world);
     }
 
-    public net.minecraft.core.BlockPos getPos() {
+    public BlockPos getPos() {
         return this.pos;
     }
 
-    public void setPos(net.minecraft.core.BlockPos pos) {
+    public void setPos(BlockPos pos) {
         this.pos = pos;
     }
 
@@ -172,7 +172,7 @@ public class CableBusRenderState {
         return this.boundingBoxes;
     }
 
-    public EnumMap<net.minecraft.core.Direction, IModelData> getPartModelData() {
+    public EnumMap<Direction, IModelData> getPartModelData() {
         return this.partModelData;
     }
 

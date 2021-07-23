@@ -48,23 +48,23 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
 
     private final Tag<Block> sandTag = BlockTags.getAllTags().getTagOrEmpty(new ResourceLocation("minecraft:sand"));
     private final Tag<Block> terracottaTag = BlockTags.getAllTags()
-            .getTagOrEmpty(new net.minecraft.resources.ResourceLocation("forge:terracotta"));
+            .getTagOrEmpty(new ResourceLocation("forge:terracotta"));
 
-    public MeteoriteStructureStart(net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> feature, int chunkX, int chunkZ, BoundingBox box,
+    public MeteoriteStructureStart(StructureFeature<NoneFeatureConfiguration> feature, int chunkX, int chunkZ, BoundingBox box,
                                    int references, long seed) {
         super(feature, chunkX, chunkZ, box, references, seed);
     }
 
     @Override
-    public void generatePieces(net.minecraft.core.RegistryAccess dynamicRegistryManager, ChunkGenerator generator,
-                               StructureManager templateManager, int chunkX, int chunkZ, net.minecraft.world.level.biome.Biome biome, NoneFeatureConfiguration config) {
+    public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator generator,
+                               StructureManager templateManager, int chunkX, int chunkZ, Biome biome, NoneFeatureConfiguration config) {
         final int centerX = chunkX * 16 + this.random.nextInt(16);
         final int centerZ = chunkZ * 16 + this.random.nextInt(16);
         final float meteoriteRadius = this.random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        final Set<net.minecraft.world.level.biome.Biome> t2 = generator.getBiomeSource().getBiomesWithin(centerX, 0, centerZ, 0);
-        final net.minecraft.world.level.biome.Biome spawnBiome = t2.stream().findFirst().orElse(biome);
+        final Set<Biome> t2 = generator.getBiomeSource().getBiomesWithin(centerX, 0, centerZ, 0);
+        final Biome spawnBiome = t2.stream().findFirst().orElse(biome);
 
         final boolean isOcean = spawnBiome.getBiomeCategory() == BiomeCategory.OCEAN;
         final Types heightmapType = isOcean ? Types.OCEAN_FLOOR_WG : Types.WORLD_SURFACE_WG;
@@ -90,7 +90,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
         // Limit to not spawn below y32
         centerY = Math.max(32, centerY);
 
-        net.minecraft.core.BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
+        BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
 
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
@@ -109,7 +109,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
      *
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, net.minecraft.core.BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         MutableBlockPos blockPos = new MutableBlockPos();
@@ -138,7 +138,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
         return false;
     }
 
-    private CraterType determineCraterType(net.minecraft.world.level.biome.Biome biome) {
+    private CraterType determineCraterType(Biome biome) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         final float temp = biome.getBaseTemperature();
@@ -240,7 +240,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
             return FalloutMode.SAND;
         } else if (block.is(terracottaTag)) {
             return FalloutMode.TERRACOTTA;
-        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == net.minecraft.world.level.block.Blocks.SNOW_BLOCK || block == Blocks.ICE
+        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
                 || block == Blocks.PACKED_ICE) {
             return FalloutMode.ICE_SNOW;
         } else {

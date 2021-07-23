@@ -29,7 +29,7 @@ public class LightDetectorTileEntity extends AEBaseTileEntity implements Tickabl
     private int lastCheck = 30;
     private int lastLight = 0;
 
-    public LightDetectorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public LightDetectorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

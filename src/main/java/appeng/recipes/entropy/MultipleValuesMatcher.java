@@ -60,14 +60,14 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
         }
     }
 
-    public static MultipleValuesMatcher<?> create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName,
+    public static MultipleValuesMatcher<?> create(StateDefinition<?, ?> stateContainer, String propertyName,
                                                   List<String> values) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new MultipleValuesMatcher<>(property, values);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static MultipleValuesMatcher<?> readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    public static MultipleValuesMatcher<?> readFromPacket(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         int size = buffer.readInt();
         List<String> values = new ArrayList<>(size);

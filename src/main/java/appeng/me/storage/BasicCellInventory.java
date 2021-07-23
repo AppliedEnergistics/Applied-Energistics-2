@@ -43,7 +43,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
         this.channel = cellType.getChannel();
     }
 
-    public static <T extends IAEStack<T>> ICellInventory<T> createInventory(final net.minecraft.world.item.ItemStack o,
+    public static <T extends IAEStack<T>> ICellInventory<T> createInventory(final ItemStack o,
             final ISaveProvider container) {
         try {
             if (o == null) {

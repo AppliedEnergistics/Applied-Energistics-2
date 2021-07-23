@@ -92,7 +92,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
 
-    public FormationPlanePart(final net.minecraft.world.item.ItemStack is) {
+    public FormationPlanePart(final ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
@@ -130,7 +130,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
         if (inv == this.Config) {
@@ -197,7 +197,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final Level w = te.getLevel();
         final AEPartLocation side = this.getSide();
 
-        final net.minecraft.core.BlockPos placePos = te.getBlockPos().relative(side.getDirection());
+        final BlockPos placePos = te.getBlockPos().relative(side.getDirection());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
@@ -212,7 +212,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (type == Actionable.MODULATE) {
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
-                    net.minecraft.core.Direction lookDirection = side.getDirection();
+                    Direction lookDirection = side.getDirection();
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
@@ -258,7 +258,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return input;
     }
 
-    private static boolean spawnItemEntity(Level w, BlockEntity te, AEPartLocation side, net.minecraft.world.item.ItemStack is) {
+    private static boolean spawnItemEntity(Level w, BlockEntity te, AEPartLocation side, ItemStack is) {
         // The center of the block the plane is located in
         final double centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -270,7 +270,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Replace it if there is a custom entity
         if (is.getItem().hasCustomEntity(is)) {
-            net.minecraft.world.entity.Entity result = is.getItem().createEntity(w, entity, is);
+            Entity result = is.getItem().createEntity(w, entity, is);
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != null) {
@@ -337,7 +337,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStackRepresentation() {
+    public ItemStack getItemStackRepresentation() {
         return AEParts.FORMATION_PLANE.stack();
     }
 
@@ -360,17 +360,17 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
      * {@link StackOverflowError} for certain replaceable blocks.
      */
     private static class PlaneDirectionalPlaceContext extends BlockPlaceContext {
-        private final net.minecraft.core.Direction lookDirection;
+        private final Direction lookDirection;
 
-        public PlaneDirectionalPlaceContext(Level world, Player player, BlockPos pos, net.minecraft.core.Direction lookDirection,
-                                            ItemStack itemStack, net.minecraft.core.Direction facing) {
+        public PlaneDirectionalPlaceContext(Level world, Player player, BlockPos pos, Direction lookDirection,
+                                            ItemStack itemStack, Direction facing) {
             super(world, player, InteractionHand.MAIN_HAND, itemStack,
                     new BlockHitResult(Vec3.atBottomCenterOf(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }
 
         @Override
-        public net.minecraft.core.BlockPos getClickedPos() {
+        public BlockPos getClickedPos() {
             return this.getHitResult().getBlockPos();
         }
 
@@ -380,38 +380,38 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         @Override
-        public net.minecraft.core.Direction getNearestLookingDirection() {
-            return net.minecraft.core.Direction.DOWN;
+        public Direction getNearestLookingDirection() {
+            return Direction.DOWN;
         }
 
         @Override
-        public net.minecraft.core.Direction[] getNearestLookingDirections() {
+        public Direction[] getNearestLookingDirections() {
             switch (this.lookDirection) {
                 case DOWN:
                 default:
-                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.SOUTH,
-                            net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.UP };
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH,
+                            Direction.WEST, Direction.UP };
                 case UP:
-                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.UP, Direction.NORTH, net.minecraft.core.Direction.EAST,
-                            net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST };
+                    return new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST,
+                            Direction.SOUTH, Direction.WEST };
                 case NORTH:
-                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.WEST,
-                            net.minecraft.core.Direction.UP, net.minecraft.core.Direction.SOUTH };
+                    return new Direction[] { Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.WEST,
+                            Direction.UP, Direction.SOUTH };
                 case SOUTH:
-                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.WEST,
-                            net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH };
+                    return new Direction[] { Direction.DOWN, Direction.SOUTH, Direction.EAST, Direction.WEST,
+                            Direction.UP, Direction.NORTH };
                 case WEST:
-                    return new Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.WEST, Direction.SOUTH, Direction.UP,
-                            net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST };
+                    return new Direction[] { Direction.DOWN, Direction.WEST, Direction.SOUTH, Direction.UP,
+                            Direction.NORTH, Direction.EAST };
                 case EAST:
-                    return new net.minecraft.core.Direction[] { net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.UP,
-                            net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.WEST };
+                    return new Direction[] { Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.UP,
+                            Direction.NORTH, Direction.WEST };
             }
         }
 
         @Override
-        public net.minecraft.core.Direction getHorizontalDirection() {
-            return this.lookDirection.getAxis() == Axis.Y ? net.minecraft.core.Direction.NORTH : this.lookDirection;
+        public Direction getHorizontalDirection() {
+            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override

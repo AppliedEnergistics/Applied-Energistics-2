@@ -36,7 +36,7 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     private final SettingToggleButton<CondenserOutput> mode;
 
-    public CondenserScreen(CondenserContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public CondenserScreen(CondenserContainer container, Inventory playerInventory, Component title,
                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 

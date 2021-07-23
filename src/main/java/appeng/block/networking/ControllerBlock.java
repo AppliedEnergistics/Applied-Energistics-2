@@ -60,10 +60,10 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
 
     }
 
-    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = net.minecraft.world.level.block.state.properties.EnumProperty.create("state",
+    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.create("state",
             ControllerBlockState.class);
 
-    public static final net.minecraft.world.level.block.state.properties.EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
+    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
             ControllerRenderType.class);
 
     public ControllerBlock() {
@@ -73,7 +73,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(CONTROLLER_STATE);
         builder.add(CONTROLLER_TYPE);
@@ -85,8 +85,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updateShape(BlockState state, net.minecraft.core.Direction facing, BlockState facingState, LevelAccessor world,
-                                  BlockPos pos, net.minecraft.core.BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world,
+                                  BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 
@@ -129,7 +129,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final ControllerTileEntity tc = this.getTileEntity(world, pos);
         if (tc != null) {

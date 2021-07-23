@@ -28,7 +28,7 @@ public class ConfirmableTextField extends EditBox {
 
     private Runnable onConfirm;
 
-    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height, net.minecraft.network.chat.Component text) {
+    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height, Component text) {
         super(fontRenderer, x, y, width, height, text);
     }
 

@@ -23,7 +23,7 @@ import java.util.Iterator;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public final class InvIterator implements Iterator<net.minecraft.world.item.ItemStack> {
+public final class InvIterator implements Iterator<ItemStack> {
     private final IItemHandler inventory;
     private final int size;
 
@@ -41,7 +41,7 @@ public final class InvIterator implements Iterator<net.minecraft.world.item.Item
 
     @Override
     public ItemStack next() {
-        final net.minecraft.world.item.ItemStack result = this.inventory.getStackInSlot(this.counter);
+        final ItemStack result = this.inventory.getStackInSlot(this.counter);
         this.counter++;
 
         return result;

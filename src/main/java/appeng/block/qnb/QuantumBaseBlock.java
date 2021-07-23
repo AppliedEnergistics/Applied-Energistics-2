@@ -47,29 +47,29 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
         SHAPE = Shapes.create(new AABB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
-    public QuantumBaseBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public QuantumBaseBlock(BlockBehaviour.Properties props) {
         super(props);
         this.registerDefaultState(this.defaultBlockState().setValue(FORMED, false));
     }
 
     @Override
-    public net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, net.minecraft.world.level.block.state.BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FORMED);
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(net.minecraft.world.level.block.state.BlockState currentState, QuantumBridgeTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
         return currentState.setValue(FORMED, te.isFormed());
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
         if (bridge != null) {
@@ -78,7 +78,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    public void onRemove(net.minecraft.world.level.block.state.BlockState state, Level w, BlockPos pos, net.minecraft.world.level.block.state.BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }

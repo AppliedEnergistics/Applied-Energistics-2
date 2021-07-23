@@ -46,7 +46,7 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
     protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/display_status_off");
     @PartModels
-    protected static final net.minecraft.resources.ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+    protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/display_status_on");
     @PartModels
     protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,

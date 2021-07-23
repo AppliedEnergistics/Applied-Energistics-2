@@ -29,17 +29,17 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack onTake(final Player player, final ItemStack stack) {
+    public ItemStack onTake(final Player player, final ItemStack stack) {
         return stack;
     }
 
     @Override
     public ItemStack remove(final int par1) {
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean mayPlace(final net.minecraft.world.item.ItemStack stack) {
+    public boolean mayPlace(final ItemStack stack) {
         return false;
     }
 

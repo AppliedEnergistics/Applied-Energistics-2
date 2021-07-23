@@ -34,7 +34,7 @@ import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
  */
 final class MatrixVertexTransformer extends QuadGatheringTransformer {
 
-    private final com.mojang.math.Matrix4f transform;
+    private final Matrix4f transform;
 
     public MatrixVertexTransformer(Matrix4f transform) {
         this.transform = transform;
@@ -48,7 +48,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
 
         for (int v = 0; v < 4; v++) {
             for (int e = 0; e < count; e++) {
-                com.mojang.blaze3d.vertex.VertexFormatElement element = elements.get(e);
+                VertexFormatElement element = elements.get(e);
                 if (element.getUsage() == Usage.POSITION) {
                     this.parent.put(e, this.transform(this.quadData[e][v], element.getElementCount()));
                 } else if (element.getUsage() == Usage.NORMAL) {
@@ -66,7 +66,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
     }
 
     @Override
-    public void setQuadOrientation(net.minecraft.core.Direction orientation) {
+    public void setQuadOrientation(Direction orientation) {
         this.parent.setQuadOrientation(orientation);
     }
 
@@ -83,7 +83,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
     private float[] transform(float[] fs, int elemCount) {
         switch (fs.length) {
             case 3:
-                com.mojang.math.Vector4f vec = new com.mojang.math.Vector4f(fs[0], fs[1], fs[2], 1);
+                Vector4f vec = new Vector4f(fs[0], fs[1], fs[2], 1);
                 vec.setX(vec.x() - 0.5f);
                 vec.setY(vec.y() - 0.5f);
                 vec.setZ(vec.z() - 0.5f);
@@ -93,7 +93,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
                 vec.setZ(vec.z() + 0.5f);
                 return new float[] { vec.x(), vec.y(), vec.z() };
             case 4:
-                com.mojang.math.Vector4f vecc = new com.mojang.math.Vector4f(fs[0], fs[1], fs[2], fs[3]);
+                Vector4f vecc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
                 // Otherwise all translation is lost
                 if (elemCount == 3) {
                     vecc.setW(1);
@@ -113,11 +113,11 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
     }
 
     private float[] transformNormal(float[] fs) {
-        com.mojang.math.Vector4f normal;
+        Vector4f normal;
 
         switch (fs.length) {
             case 3:
-                normal = new com.mojang.math.Vector4f(fs[0], fs[1], fs[2], 0);
+                normal = new Vector4f(fs[0], fs[1], fs[2], 0);
                 normal.transform(this.transform);
                 normal.normalize();
                 return new float[] { normal.x(), normal.y(), normal.z() };

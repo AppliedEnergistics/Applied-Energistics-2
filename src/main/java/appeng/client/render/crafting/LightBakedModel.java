@@ -44,7 +44,7 @@ class LightBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(net.minecraft.core.Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
+    protected void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
                                 float y1, float z1, float x2, float y2, float z2) {
         builder.setTexture(this.baseTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);

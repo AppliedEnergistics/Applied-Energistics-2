@@ -36,7 +36,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
@@ -45,7 +45,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     }
 
     @Override
-    public int getLightValue(final BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockGetter w, final BlockPos pos) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(w, pos);
         if (tsp != null) {
             return tsp.getLightValue();

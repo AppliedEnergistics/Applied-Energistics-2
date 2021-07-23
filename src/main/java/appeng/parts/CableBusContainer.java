@@ -87,10 +87,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     private boolean requiresDynamicRender = false;
     private boolean inWorld = false;
     // Cached collision shape for living entities
-    private net.minecraft.world.phys.shapes.VoxelShape cachedCollisionShapeLiving;
+    private VoxelShape cachedCollisionShapeLiving;
     // Cached collision shape for anything but living entities
-    private net.minecraft.world.phys.shapes.VoxelShape cachedCollisionShape;
-    private net.minecraft.world.phys.shapes.VoxelShape cachedShape;
+    private VoxelShape cachedCollisionShape;
+    private VoxelShape cachedShape;
 
     public CableBusContainer(final IPartHost host) {
         this.tcb = host;
@@ -130,7 +130,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean canAddPart(net.minecraft.world.item.ItemStack is, final AEPartLocation side) {
+    public boolean canAddPart(ItemStack is, final AEPartLocation side) {
         if (PartPlacement.isFacade(is, side) != null) {
             return true;
         }
@@ -290,7 +290,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public IPart getPart(final net.minecraft.core.Direction side) {
+    public IPart getPart(final Direction side) {
         return this.getSide(AEPartLocation.fromFacing(side));
     }
 
@@ -354,7 +354,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean isBlocked(final net.minecraft.core.Direction side) {
+    public boolean isBlocked(final Direction side) {
         return this.tcb.isBlocked(side);
     }
 
@@ -424,7 +424,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
 
         // Update the exposed sides of exposed nodes
-        for (var direction : net.minecraft.core.Direction.values()) {
+        for (var direction : Direction.values()) {
             var part = getPart(direction);
             if (part != null) {
                 var node = part.getExternalFacingNode();
@@ -502,9 +502,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     public void updateConnections() {
         if (this.getCenter() != null) {
-            var sides = EnumSet.allOf(net.minecraft.core.Direction.class);
+            var sides = EnumSet.allOf(Direction.class);
 
-            for (final net.minecraft.core.Direction s : net.minecraft.core.Direction.values()) {
+            for (final Direction s : Direction.values()) {
                 if (this.getPart(s) != null || this.isBlocked(s)) {
                     sides.remove(s);
                 }
@@ -598,7 +598,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         final IPart part = this.getPart(dir);
 
         if (part != null && part.getExternalFacingNode() != null) {
@@ -620,7 +620,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public int isProvidingStrongPower(final net.minecraft.core.Direction side) {
+    public int isProvidingStrongPower(final Direction side) {
         final IPart part = this.getPart(side);
         return part != null ? part.isProvidingStrongPower() : 0;
     }
@@ -638,7 +638,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void onEntityCollision(final net.minecraft.world.entity.Entity entity) {
+    public void onEntityCollision(final Entity entity) {
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
@@ -739,7 +739,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (int x = 0; x < 7; x++) {
             final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
             if (p != null) {
-                final net.minecraft.world.item.ItemStack is = p.getItemStack(PartItemStack.NETWORK);
+                final ItemStack is = p.getItemStack(PartItemStack.NETWORK);
 
                 data.writeVarInt(Item.getId(is.getItem()));
 
@@ -849,7 +849,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                     continue;
                 }
 
-                final ItemStack current = p == null ? net.minecraft.world.item.ItemStack.EMPTY : p.getItemStack(PartItemStack.WORLD);
+                final ItemStack current = p == null ? ItemStack.EMPTY : p.getItemStack(PartItemStack.WORLD);
 
                 if (Platform.itemComparisons().isEqualItemType(iss, current)) {
                     p.readFromNBT(extra);
@@ -872,7 +872,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.getFacadeContainer().readFromNBT(data);
     }
 
-    public List<ItemStack> getDrops(final List<net.minecraft.world.item.ItemStack> drops) {
+    public List<ItemStack> getDrops(final List<ItemStack> drops) {
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
@@ -891,7 +891,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return drops;
     }
 
-    public List<ItemStack> getNoDrops(final List<net.minecraft.world.item.ItemStack> drops) {
+    public List<ItemStack> getNoDrops(final List<ItemStack> drops) {
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
@@ -932,7 +932,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             renderState.setCoreType(CableCoreType.fromCableType(cable.getCableConnectionType()));
 
             // Check each outgoing connection for the desired characteristics
-            for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+            for (Direction facing : Direction.values()) {
                 // Is there a connection?
                 if (!cable.isConnected(facing)) {
                     continue;
@@ -1011,12 +1011,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return renderState;
     }
 
-    private FacadeRenderState getFacadeRenderState(net.minecraft.core.Direction side) {
+    private FacadeRenderState getFacadeRenderState(Direction side) {
         // Store the "masqueraded" itemstack for the given side, if there is a facade
         final IFacadePart facade = this.getFacade(side.ordinal());
 
         if (facade != null) {
-            final net.minecraft.world.item.ItemStack textureItem = facade.getTextureItem();
+            final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
             Level world = getTile().getLevel();
@@ -1032,7 +1032,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     /**
      * See {@link Block#getShape}
      */
-    public net.minecraft.world.phys.shapes.VoxelShape getShape() {
+    public VoxelShape getShape() {
         if (cachedShape == null) {
             cachedShape = createShape(false, false);
         }
@@ -1060,7 +1060,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
     }
 
-    private net.minecraft.world.phys.shapes.VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
+    private VoxelShape createShape(boolean forCollision, boolean forItemEntity) {
         final List<AABB> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();

@@ -44,7 +44,7 @@ public interface ICraftingHelper {
     /**
      * Checks that the given item stack is an encoded pattern.
      */
-    boolean isEncodedPattern(net.minecraft.world.item.ItemStack item);
+    boolean isEncodedPattern(ItemStack item);
 
     /**
      * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
@@ -55,7 +55,7 @@ public interface ICraftingHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      * @return A new encoded pattern, or the given stack with the pattern encoded in it.
      */
-    net.minecraft.world.item.ItemStack encodeProcessingPattern(@Nullable net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.ItemStack[] in, net.minecraft.world.item.ItemStack[] out);
+    ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out);
 
     /**
      * Encodes a crafting pattern which represents a Vanilla crafting recipe.
@@ -70,21 +70,21 @@ public interface ICraftingHelper {
      *                         recipe.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
-    net.minecraft.world.item.ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, net.minecraft.world.item.ItemStack[] in, net.minecraft.world.item.ItemStack out,
+    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
                                                              boolean allowSubstitutes);
 
     /**
      * Same as {@link #decodePattern(ItemStack, Level, boolean)} with no auto recovery of changed recipe ids.
      */
     @Nullable
-    default ICraftingPatternDetails decodePattern(@Nonnull net.minecraft.world.item.ItemStack itemStack, @Nonnull Level world) {
+    default ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level world) {
         return decodePattern(itemStack, world, false);
     }
 
     /**
      * Decodes an encoded crafting pattern and returns the pattern details.
      * <p>
-     * The item backing the {@link net.minecraft.world.item.ItemStack} needs to be an item returned by the encode methods of this class.
+     * The item backing the {@link ItemStack} needs to be an item returned by the encode methods of this class.
      *
      * @param itemStack    pattern
      * @param world        world used to access the {@link RecipeManager}.
@@ -94,6 +94,6 @@ public interface ICraftingHelper {
      * @return The pattern details if the pattern could be decoded. Otherwise null.
      */
     @Nullable
-    ICraftingPatternDetails decodePattern(@Nonnull net.minecraft.world.item.ItemStack itemStack, @Nonnull Level world, boolean autoRecovery);
+    ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level world, boolean autoRecovery);
 
 }

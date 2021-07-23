@@ -48,7 +48,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationContainer container,
-                                 Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                 Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");

@@ -40,7 +40,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     @Override
     protected boolean getCurrentValidationState() {
-        net.minecraft.world.item.ItemStack stack = getItem();
+        ItemStack stack = getItem();
         return stack.isEmpty() || mayPlace(stack);
     }
 

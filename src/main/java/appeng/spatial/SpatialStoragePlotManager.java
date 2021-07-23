@@ -94,15 +94,15 @@ public final class SpatialStoragePlotManager {
         }
 
         if (resetBlocks) {
-            net.minecraft.core.BlockPos from = plot.getOrigin();
-            net.minecraft.core.BlockPos to = from.offset(plot.getSize()).offset(-1, -1, -1);
+            BlockPos from = plot.getOrigin();
+            BlockPos to = from.offset(plot.getSize()).offset(-1, -1, -1);
 
             AELog.info("Clearing spatial storage plot %s (%s -> %s)", plotId, from, to);
 
             // This is slow, but it should usually be just an admin-command
             ServerLevel world = getWorld();
             BlockState matrixFrame = AEBlocks.MATRIX_FRAME.block().defaultBlockState();
-            for (net.minecraft.core.BlockPos blockPos : net.minecraft.core.BlockPos.betweenClosed(from, to)) {
+            for (BlockPos blockPos : BlockPos.betweenClosed(from, to)) {
                 world.setBlockAndUpdate(blockPos, matrixFrame);
             }
         }

@@ -41,26 +41,26 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
 
-    public static final net.minecraft.world.level.block.state.properties.BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public MolecularAssemblerBlock(BlockBehaviour.Properties props) {
         super(props);
         registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
         return currentState.setValue(POWERED, te.isPowered());
     }
 
     @Override
-    public InteractionResult use(net.minecraft.world.level.block.state.BlockState state, Level w, net.minecraft.core.BlockPos pos, Player p, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
                                  BlockHitResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {

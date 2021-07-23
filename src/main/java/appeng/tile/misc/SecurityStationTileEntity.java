@@ -87,7 +87,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
 
-    public SecurityStationTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public SecurityStationTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -107,12 +107,12 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removedStack, final net.minecraft.world.item.ItemStack newStack) {
+                                  final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
     @Override
-    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
@@ -183,7 +183,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         for (final Object key : storedItems.getAllKeys()) {
             final Tag obj = storedItems.get((String) key);
             if (obj instanceof CompoundTag) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(net.minecraft.world.item.ItemStack.of((CompoundTag) obj)));
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.of((CompoundTag) obj)));
             }
         }
     }
@@ -273,7 +273,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
         // read permissions
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final net.minecraft.world.item.ItemStack is = ais.createItemStack();
+            final ItemStack is = ais.createItemStack();
             final Item i = is.getItem();
             if (i instanceof IBiometricCard bc) {
                 bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);

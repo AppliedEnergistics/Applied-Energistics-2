@@ -81,7 +81,7 @@ public class UnlitQuadHooks {
         return b != null && b;
     }
 
-    public static net.minecraft.client.renderer.block.model.BlockElementFace enhanceModelElementFace(net.minecraft.client.renderer.block.model.BlockElementFace modelElement, JsonElement jsonElement) {
+    public static BlockElementFace enhanceModelElementFace(BlockElementFace modelElement, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (GsonHelper.getAsBoolean(jsonObject, "unlit", false)) {
             return new UnlitBlockPartFace(modelElement.cullForDirection, modelElement.tintIndex, modelElement.texture,
@@ -95,7 +95,7 @@ public class UnlitQuadHooks {
      * nor the prebaked lightmap). This works on the assumption that Vanilla will not modify a quad's lightmap data if
      * it's not zero.
      */
-    public static net.minecraft.client.renderer.block.model.BakedQuad makeUnlit(net.minecraft.client.renderer.block.model.BakedQuad quad) {
+    public static BakedQuad makeUnlit(BakedQuad quad) {
         int[] vertexData = quad.getVertices().clone();
         int stride = DefaultVertexFormat.BLOCK.getIntegerSize();
         // Set the pre-baked texture coords for the lightmap.
@@ -110,9 +110,9 @@ public class UnlitQuadHooks {
 
     /**
      * This subclass is used as a marker to indicate this face deserialized from JSON is supposed to be unlit, which
-     * translates to processing by {@link #makeUnlit(net.minecraft.client.renderer.block.model.BakedQuad)}.
+     * translates to processing by {@link #makeUnlit(BakedQuad)}.
      */
-    public static class UnlitBlockPartFace extends net.minecraft.client.renderer.block.model.BlockElementFace {
+    public static class UnlitBlockPartFace extends BlockElementFace {
         public UnlitBlockPartFace(Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
         }

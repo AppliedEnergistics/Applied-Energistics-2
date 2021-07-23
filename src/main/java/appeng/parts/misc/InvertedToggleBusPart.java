@@ -28,7 +28,7 @@ import appeng.parts.PartModel;
 
 public class InvertedToggleBusPart extends ToggleBusPart {
     @PartModels
-    public static final ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/inverted_toggle_bus_base");
 
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);

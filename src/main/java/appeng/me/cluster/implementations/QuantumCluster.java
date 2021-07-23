@@ -42,7 +42,7 @@ import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
 
-    private final net.minecraft.core.BlockPos boundsMin;
+    private final BlockPos boundsMin;
     private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
@@ -183,12 +183,12 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
-    public net.minecraft.core.BlockPos getBoundsMin() {
+    public BlockPos getBoundsMin() {
         return boundsMin;
     }
 
     @Override
-    public net.minecraft.core.BlockPos getBoundsMax() {
+    public BlockPos getBoundsMax() {
         return boundsMax;
     }
 

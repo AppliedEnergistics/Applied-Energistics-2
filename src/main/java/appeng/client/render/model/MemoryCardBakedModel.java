@@ -82,9 +82,9 @@ class MemoryCardBakedModel implements BakedModel {
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
 
-        List<net.minecraft.client.renderer.block.model.BakedQuad> quads = this.baseModel.getQuads(state, side, rand, EmptyModelData.INSTANCE);
+        List<BakedQuad> quads = this.baseModel.getQuads(state, side, rand, EmptyModelData.INSTANCE);
 
         if (side != null) {
             return quads;
@@ -139,7 +139,7 @@ class MemoryCardBakedModel implements BakedModel {
     }
 
     @Override
-    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 

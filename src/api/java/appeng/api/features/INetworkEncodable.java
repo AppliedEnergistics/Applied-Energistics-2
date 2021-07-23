@@ -34,7 +34,7 @@ public interface INetworkEncodable {
      *
      * @return the encoded encryption key or an empty string if none is encoded
      */
-    String getEncryptionKey(net.minecraft.world.item.ItemStack item);
+    String getEncryptionKey(ItemStack item);
 
     /**
      * Encode the wireless frequency via the Controller.

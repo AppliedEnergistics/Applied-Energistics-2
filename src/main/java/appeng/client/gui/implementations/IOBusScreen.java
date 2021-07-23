@@ -40,7 +40,7 @@ public class IOBusScreen extends UpgradeableScreen<IOBusContainer> {
     private final SettingToggleButton<YesNo> craftMode;
     private final SettingToggleButton<SchedulingMode> schedulingMode;
 
-    public IOBusScreen(IOBusContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public IOBusScreen(IOBusContainer container, Inventory playerInventory, Component title,
                        ScreenStyle style) {
         super(container, playerInventory, title, style);
 

@@ -38,15 +38,15 @@ class CellLedRenderer {
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
     // Color used for the cell indicator for blinking during recent activity
-    private static final com.mojang.math.Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
+    private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
 
     static {
         STATE_COLORS = new EnumMap<>(DriveSlotState.class);
         STATE_COLORS.put(DriveSlotState.OFFLINE, new Vector3f(0, 0, 0));
-        STATE_COLORS.put(DriveSlotState.ONLINE, new com.mojang.math.Vector3f(0, 1, 0));
+        STATE_COLORS.put(DriveSlotState.ONLINE, new Vector3f(0, 1, 0));
         STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vector3f(0f, 0.667f, 1));
         STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(1, 0.667f, 0));
-        STATE_COLORS.put(DriveSlotState.FULL, new com.mojang.math.Vector3f(1, 0, 0));
+        STATE_COLORS.put(DriveSlotState.FULL, new Vector3f(1, 0, 0));
     }
 
     // The positions are based on the upper left slot in a drive
@@ -77,7 +77,7 @@ class CellLedRenderer {
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,
                                  float partialTicks) {
 
-        com.mojang.math.Vector3f color = getColorForSlot(drive, slot, partialTicks);
+        Vector3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {
             return;
         }
@@ -101,7 +101,7 @@ class CellLedRenderer {
             return STATE_COLORS.get(DriveSlotState.OFFLINE);
         }
 
-        com.mojang.math.Vector3f col = STATE_COLORS.get(state);
+        Vector3f col = STATE_COLORS.get(state);
         if (drive.isCellBlinking(slot)) {
             // 200 ms interval (100ms to get to red, then 100ms back)
             long t = System.currentTimeMillis() % 200;

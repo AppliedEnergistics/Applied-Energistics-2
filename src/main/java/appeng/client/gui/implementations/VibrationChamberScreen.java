@@ -41,7 +41,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     private final ProgressBar generationRateBar;
 
     public VibrationChamberScreen(VibrationChamberContainer container, Inventory playerInventory,
-                                  net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                  Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),

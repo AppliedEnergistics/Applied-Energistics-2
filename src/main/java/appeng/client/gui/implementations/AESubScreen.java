@@ -91,7 +91,7 @@ public final class AESubScreen {
         return addBackButton(id, widgets, null);
     }
 
-    public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable net.minecraft.network.chat.Component label) {
+    public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable Component label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
                 label = previousContainerIcon.getHoverName();

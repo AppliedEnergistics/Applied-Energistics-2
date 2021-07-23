@@ -65,7 +65,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             .setTagName("outer")
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
-    public MEP2PTunnelPart(final net.minecraft.world.item.ItemStack is) {
+    public MEP2PTunnelPart(final ItemStack is) {
         super(is);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)

@@ -48,7 +48,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     @Override
     public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
                          ChargedQuartzOreConfig config) {
-        net.minecraft.world.level.ChunkPos chunkPos = new ChunkPos(pos);
+        ChunkPos chunkPos = new ChunkPos(pos);
 
         MutableBlockPos bpos = new MutableBlockPos();
         int height = worldIn.getHeight(Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());

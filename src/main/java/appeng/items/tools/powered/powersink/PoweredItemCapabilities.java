@@ -37,7 +37,7 @@ import appeng.capabilities.Capabilities;
  */
 class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage {
 
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
 
     private final IAEItemPowerStorage item;
 

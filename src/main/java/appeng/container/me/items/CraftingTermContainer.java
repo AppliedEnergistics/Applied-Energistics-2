@@ -137,11 +137,11 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
     }
 
     @Override
-    public boolean hasItemType(net.minecraft.world.item.ItemStack itemStack, int amount) {
+    public boolean hasItemType(ItemStack itemStack, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
-            net.minecraft.world.item.ItemStack stackInSlot = slot.getItem();
+            ItemStack stackInSlot = slot.getItem();
             if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {
                     return true;

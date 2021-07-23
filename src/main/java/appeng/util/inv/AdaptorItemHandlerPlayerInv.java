@@ -33,12 +33,12 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
      * Tries to fill existing stacks first
      */
     @Override
-    protected net.minecraft.world.item.ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
+    protected ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
         if (itemsToAdd.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
-        net.minecraft.world.item.ItemStack left = itemsToAdd.copy();
+        ItemStack left = itemsToAdd.copy();
 
         for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
             ItemStack is = this.itemHandler.getStackInSlot(slot);
@@ -47,14 +47,14 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
                 left = this.itemHandler.insertItem(slot, left, simulate);
             }
             if (left.isEmpty()) {
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             }
         }
 
         for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
             left = this.itemHandler.insertItem(slot, left, simulate);
             if (left.isEmpty()) {
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             }
         }
 

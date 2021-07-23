@@ -31,7 +31,7 @@ public final class InitItems {
     private InitItems() {
     }
 
-    public static void init(IForgeRegistry<net.minecraft.world.item.Item> registry) {
+    public static void init(IForgeRegistry<Item> registry) {
         for (BlockDefinition<?> definition : AEBlocks.getBlocks()) {
             registry.register(definition.asItem());
         }

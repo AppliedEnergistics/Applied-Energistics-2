@@ -48,7 +48,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
         var host = te.getGridHost();
 
         if (host != null) {
-            for (var d : net.minecraft.core.Direction.values()) {
+            for (var d : Direction.values()) {
                 this.findNode(host, d);
             }
         }
@@ -58,7 +58,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
         }
     }
 
-    private void findNode(final IInWorldGridNodeHost host, final net.minecraft.core.Direction d) {
+    private void findNode(final IInWorldGridNodeHost host, final Direction d) {
         if (this.grid == null) {
             final IGridNode node = host.getGridNode(d);
             if (node != null) {

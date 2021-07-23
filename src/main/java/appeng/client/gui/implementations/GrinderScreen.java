@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
 
-    public GrinderScreen(GrinderContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public GrinderScreen(GrinderContainer container, Inventory playerInventory, Component title,
                          ScreenStyle style) {
         super(container, playerInventory, title, style);
     }

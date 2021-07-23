@@ -205,7 +205,7 @@ public class DualityFluidInterface
     }
 
     @SuppressWarnings("unchecked")
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, net.minecraft.core.Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this.tanks);
         } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {

@@ -31,7 +31,7 @@ import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.SharedItemBusPart;
 
 /**
- * Used for {@link appeng.parts.automation.ImportBusPart} and {@link appeng.parts.automation.ExportBusPart}
+ * Used for {@link ImportBusPart} and {@link ExportBusPart}
  *
  * @see appeng.client.gui.implementations.IOBusScreen
  */

@@ -46,7 +46,7 @@ public final class InteractionUtil {
     private InteractionUtil() {
     }
 
-    public static boolean isWrench(final Player player, final ItemStack eq, final net.minecraft.core.BlockPos pos) {
+    public static boolean isWrench(final Player player, final ItemStack eq, final BlockPos pos) {
         if (!eq.isEmpty()) {
             try {
                 // TODO: Build Craft Wrench?
@@ -114,7 +114,7 @@ public final class InteractionUtil {
         return new LookDirection(from, to);
     }
 
-    public static net.minecraft.world.phys.HitResult rayTrace(final Player p, final boolean hitBlocks, final boolean hitEntities) {
+    public static HitResult rayTrace(final Player p, final boolean hitBlocks, final boolean hitEntities) {
         final Level w = p.getCommandSenderWorld();
 
         final float f = 1.0F;
@@ -167,7 +167,7 @@ public final class InteractionUtil {
             }
         }
 
-        net.minecraft.world.phys.HitResult pos = null;
+        HitResult pos = null;
         Vec3 vec = null;
 
         if (hitBlocks) {

@@ -44,7 +44,7 @@ public class TesrRenderHelper {
      * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
      * the given face as if it was a 2D canvas.
      */
-    public static void rotateToFace(PoseStack mStack, net.minecraft.core.Direction face, byte spin) {
+    public static void rotateToFace(PoseStack mStack, Direction face, byte spin) {
         switch (face) {
             case UP:
                 mStack.mulPose(Vector3f.XP.rotationDegrees(270));
@@ -52,16 +52,16 @@ public class TesrRenderHelper {
                 break;
 
             case DOWN:
-                mStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90.0F));
-                mStack.mulPose(com.mojang.math.Vector3f.ZP.rotationDegrees(spin * -90.0F));
+                mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                mStack.mulPose(Vector3f.ZP.rotationDegrees(spin * -90.0F));
                 break;
 
             case EAST:
-                mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(90.0F));
+                mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
                 break;
 
             case WEST:
-                mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(-90.0F));
+                mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
                 break;
 
             case NORTH:
@@ -112,7 +112,7 @@ public class TesrRenderHelper {
      */
     public static void renderItem2dWithAmount(PoseStack matrixStack, MultiBufferSource buffers,
                                               IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
-        final net.minecraft.world.item.ItemStack renderStack = itemStack.asItemStackRepresentation();
+        final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
         TesrRenderHelper.renderItem2d(matrixStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
 

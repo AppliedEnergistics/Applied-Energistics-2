@@ -31,7 +31,7 @@ public class TextOverride {
      * If this is not-null, this overrides the content to be displayed.
      */
     @Nullable
-    private net.minecraft.network.chat.Component content;
+    private Component content;
 
     /**
      * If true, the text will not be drawn.
@@ -39,11 +39,11 @@ public class TextOverride {
     private boolean hidden;
 
     @Nullable
-    public net.minecraft.network.chat.Component getContent() {
+    public Component getContent() {
         return content;
     }
 
-    public void setContent(@Nullable net.minecraft.network.chat.Component content) {
+    public void setContent(@Nullable Component content) {
         this.content = content;
     }
 

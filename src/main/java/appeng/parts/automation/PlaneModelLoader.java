@@ -39,7 +39,7 @@ public class PlaneModelLoader implements IModelLoader<PlaneModel> {
         String sidesTexture = modelContents.get("sides").getAsString();
         String backTexture = modelContents.get("back").getAsString();
 
-        return new PlaneModel(new net.minecraft.resources.ResourceLocation(frontTexture), new ResourceLocation(sidesTexture),
+        return new PlaneModel(new ResourceLocation(frontTexture), new ResourceLocation(sidesTexture),
                 new ResourceLocation(backTexture));
     }
 

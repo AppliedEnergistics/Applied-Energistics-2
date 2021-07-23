@@ -64,7 +64,7 @@ public final class InitBiomeModifications {
         }
     }
 
-    private static ConfiguredFeature<?, ?> getConfiguredFeature(net.minecraft.resources.ResourceLocation id) {
+    private static ConfiguredFeature<?, ?> getConfiguredFeature(ResourceLocation id) {
         return BuiltinRegistries.CONFIGURED_FEATURE.getOptional(id)
                 .orElseThrow(() -> new RuntimeException("Configured feature " + id + " is not registered"));
     }

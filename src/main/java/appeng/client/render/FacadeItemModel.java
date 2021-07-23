@@ -46,7 +46,7 @@ public class FacadeItemModel implements BasicUnbakedModel<FacadeItemModel> {
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 
@@ -54,7 +54,7 @@ public class FacadeItemModel implements BasicUnbakedModel<FacadeItemModel> {
     }
 
     @Override
-    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 }

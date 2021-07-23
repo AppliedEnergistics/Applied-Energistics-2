@@ -65,10 +65,10 @@ public class CraftingTileEntity extends AENetworkTileEntity
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CraftingTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
-                .setExposedOnSides(EnumSet.noneOf(net.minecraft.core.Direction.class))
+                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
@@ -115,7 +115,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
         }
     }
 
-    public void updateMultiBlock(net.minecraft.core.BlockPos changedPos) {
+    public void updateMultiBlock(BlockPos changedPos) {
         if (level instanceof ServerLevel serverWorld) {
             this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, worldPosition, changedPos);
         }
@@ -146,7 +146,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
         // The tile might try to update while being destroyed
         if (current.getBlock() instanceof AbstractCraftingUnitBlock) {
-            final net.minecraft.world.level.block.state.BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
+            final BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
                     .setValue(AbstractCraftingUnitBlock.FORMED, formed);
 
             if (current != newState) {
@@ -159,7 +159,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
 
         if (updateFormed) {
             if (formed) {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
+                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
             } else {
                 this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
             }
@@ -251,8 +251,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
                 if (h == this) {
                     places.add(worldPosition);
                 } else {
-                    for (Direction d : net.minecraft.core.Direction.values()) {
-                        net.minecraft.core.BlockPos p = h.worldPosition.relative(d);
+                    for (Direction d : Direction.values()) {
+                        BlockPos p = h.worldPosition.relative(d);
                         if (this.level.isEmptyBlock(p)) {
                             places.add(p);
                         }
@@ -332,7 +332,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
             return EnumSet.noneOf(Direction.class);
         }
 
-        EnumSet<net.minecraft.core.Direction> connections = EnumSet.noneOf(net.minecraft.core.Direction.class);
+        EnumSet<Direction> connections = EnumSet.noneOf(Direction.class);
 
         for (Direction facing : Direction.values()) {
             if (this.isConnected(level, worldPosition, facing)) {
@@ -343,8 +343,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
         return connections;
     }
 
-    private boolean isConnected(BlockGetter world, BlockPos pos, net.minecraft.core.Direction side) {
-        net.minecraft.core.BlockPos adjacentPos = pos.relative(side);
+    private boolean isConnected(BlockGetter world, BlockPos pos, Direction side) {
+        BlockPos adjacentPos = pos.relative(side);
         return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }
 

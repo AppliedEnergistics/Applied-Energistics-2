@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -55,16 +56,16 @@ public enum Upgrades {
     INVERTER("item.appliedenergistics2.inverter_card", 1);
 
     private final int tier;
-    private final net.minecraft.network.chat.Component displayName;
+    private final Component displayName;
     private final List<Supported> supported = new ArrayList<>();
-    private List<net.minecraft.network.chat.Component> supportedTooltipLines;
+    private List<Component> supportedTooltipLines;
 
     Upgrades(final String translationKey, final int tier) {
         this.tier = tier;
         this.displayName = new TranslatableComponent(translationKey);
     }
 
-    public net.minecraft.network.chat.Component getDisplayName() {
+    public Component getDisplayName() {
         return displayName;
     }
 
@@ -93,17 +94,17 @@ public enum Upgrades {
         supportedTooltipLines = null; // Reset tooltip
     }
 
-    public List<net.minecraft.network.chat.Component> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         if (supportedTooltipLines == null) {
             supported.sort(Comparator.comparingInt(o -> o.maxCount));
             supportedTooltipLines = new ArrayList<>(supported.size());
 
             // Use a separate set because the final text will include numbers
-            Set<net.minecraft.network.chat.Component> namesAdded = new HashSet<>();
+            Set<Component> namesAdded = new HashSet<>();
 
             for (int i = 0; i < supported.size(); i++) {
                 Supported supported = this.supported.get(i);
-                net.minecraft.network.chat.Component name = supported.item.getDescription();
+                Component name = supported.item.getDescription();
 
                 // If the group was already added by a previous item, skip this
                 if (supported.getTooltipGroup() != null && namesAdded.contains(supported.getTooltipGroup())) {
@@ -114,7 +115,7 @@ public enum Upgrades {
                 // instead
                 if (supported.getTooltipGroup() != null) {
                     for (int j = i + 1; j < this.supported.size(); j++) {
-                        net.minecraft.network.chat.Component otherGroup = this.supported.get(j).getTooltipGroup();
+                        Component otherGroup = this.supported.get(j).getTooltipGroup();
                         if (supported.getTooltipGroup().equals(otherGroup)) {
                             name = supported.getTooltipGroup();
                             break;
@@ -147,7 +148,7 @@ public enum Upgrades {
         @Nullable
         private final String tooltipGroup;
 
-        public Supported(net.minecraft.world.item.Item item, int maxCount, @Nullable String tooltipGroup) {
+        public Supported(Item item, int maxCount, @Nullable String tooltipGroup) {
             this.item = item;
             if (item instanceof BlockItem blockItem) {
                 this.block = blockItem.getBlock();
@@ -162,15 +163,15 @@ public enum Upgrades {
             return maxCount;
         }
 
-        public boolean isSupported(net.minecraft.world.level.block.Block block) {
+        public boolean isSupported(Block block) {
             return block != null && this.block == block;
         }
 
-        public boolean isSupported(net.minecraft.world.item.Item item) {
+        public boolean isSupported(Item item) {
             return item != null && this.item == item;
         }
 
-        public net.minecraft.network.chat.Component getTooltipGroup() {
+        public Component getTooltipGroup() {
             return this.tooltipGroup != null ? new TranslatableComponent(this.tooltipGroup) : null;
         }
 

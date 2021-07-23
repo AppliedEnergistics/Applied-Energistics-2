@@ -18,6 +18,7 @@
 
 package appeng.items.materials;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.items.IStorageComponent;
@@ -28,7 +29,7 @@ import net.minecraft.world.item.Item.Properties;
 public class StorageComponentItem extends AEBaseItem implements IStorageComponent {
     private final int storageInKb;
 
-    public StorageComponentItem(net.minecraft.world.item.Item.Properties properties, int storageInKb) {
+    public StorageComponentItem(Item.Properties properties, int storageInKb) {
         super(properties);
         this.storageInKb = storageInKb;
     }
@@ -39,7 +40,7 @@ public class StorageComponentItem extends AEBaseItem implements IStorageComponen
     }
 
     @Override
-    public boolean isStorageComponent(final net.minecraft.world.item.ItemStack is) {
+    public boolean isStorageComponent(final ItemStack is) {
         return true;
     }
 }

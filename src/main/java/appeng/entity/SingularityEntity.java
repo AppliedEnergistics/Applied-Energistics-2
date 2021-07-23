@@ -37,15 +37,15 @@ import net.minecraft.world.phys.AABB;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 
-    private static final ResourceLocation TAG_ENDER_PEARL = new net.minecraft.resources.ResourceLocation("forge:ender_pearls");
+    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
 
     private static int randTickSeed = 0;
 
-    public SingularityEntity(net.minecraft.world.entity.EntityType<? extends SingularityEntity> entityType, final Level w) {
+    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, final Level w) {
         super(entityType, w);
     }
 
-    public SingularityEntity(final Level w, final double x, final double y, final double z, final net.minecraft.world.item.ItemStack is) {
+    public SingularityEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
         super(AEEntities.SINGULARITY, w, x, y, z, is);
     }
 
@@ -68,15 +68,15 @@ public final class SingularityEntity extends AEBaseItemEntity {
             return;
         }
 
-        final net.minecraft.world.item.ItemStack item = this.getItem();
+        final ItemStack item = this.getItem();
 
         if (AEItems.SINGULARITY.isSameAs(item)) {
             final AABB region = new AABB(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
                     this.getX() + 4, this.getY() + 4, this.getZ() + 4);
-            final List<net.minecraft.world.entity.Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
+            final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
-                if (e instanceof net.minecraft.world.entity.item.ItemEntity) {
+                if (e instanceof ItemEntity) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         boolean matches = false;
@@ -98,7 +98,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     e.remove();
                                 }
 
-                                net.minecraft.world.item.ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
+                                ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
                                 final CompoundTag cmp = singularityStack.getOrCreateTag();
                                 cmp.putLong("freq", new Date().getTime() * 100 + randTickSeed % 100);
                                 randTickSeed++;

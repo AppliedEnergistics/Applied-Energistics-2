@@ -55,7 +55,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private final Scrollbar scrollbar;
 
     public NetworkStatusScreen(NetworkStatusContainer container, Inventory playerInventory,
-                               net.minecraft.network.chat.Component title, ScreenStyle style) {
+                               Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -82,7 +82,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
         final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;
         final int viewEnd = viewStart + COLUMNS * ROWS;
 
-        List<net.minecraft.network.chat.Component> tooltip = null;
+        List<Component> tooltip = null;
         List<MachineGroup> machines = status.getGroupedMachines();
         for (int i = viewStart; i < Math.min(viewEnd, machines.size()); i++) {
             MachineGroup entry = machines.get(i);

@@ -52,7 +52,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
 
     private final IWorldRunnable transitionCallback = world -> transition();
 
-    public SpatialIOPortTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public SpatialIOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
@@ -153,12 +153,12 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity {
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
     @Override
-    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull net.minecraft.core.Direction side) {
+    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
         return this.invExt;
     }
 

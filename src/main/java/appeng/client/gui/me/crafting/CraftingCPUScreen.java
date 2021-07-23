@@ -49,13 +49,13 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
 
     private final CraftingStatusTableRenderer table;
 
-    private final net.minecraft.client.gui.components.Button cancel;
+    private final Button cancel;
 
     private final Scrollbar scrollbar;
 
     private CraftingStatus status;
 
-    public CraftingCPUScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
+    public CraftingCPUScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
@@ -74,7 +74,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         super.updateBeforeRender();
 
         // Update the dialog title with an ETA if possible
-        net.minecraft.network.chat.Component title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
+        Component title = this.getGuiDisplayName(GuiText.CraftingStatus.text());
         if (status != null) {
             final long elapsedTime = status.getElapsedTime();
             final double remainingItems = status.getRemainingItemCount();

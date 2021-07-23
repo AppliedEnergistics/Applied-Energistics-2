@@ -184,7 +184,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     if (ais != null) {
                         player.inventory.setCarried(ais.createItemStack());
                     } else {
-                        player.inventory.setCarried(net.minecraft.world.item.ItemStack.EMPTY);
+                        player.inventory.setCarried(ItemStack.EMPTY);
                     }
                     this.updateHeld(player);
                 }

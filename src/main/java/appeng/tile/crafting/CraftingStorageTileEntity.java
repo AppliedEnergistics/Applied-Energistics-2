@@ -27,7 +27,7 @@ import appeng.core.definitions.AEBlocks;
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
 
-    public CraftingStorageTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CraftingStorageTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

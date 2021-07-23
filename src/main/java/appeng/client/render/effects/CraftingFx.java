@@ -83,7 +83,7 @@ public class CraftingFx extends TextureSheetParticle {
         offY -= Vector3d.y;
         offZ -= Vector3d.z;
 
-        Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new com.mojang.math.Vector3f(-1.0F, 1.0F, 0.0F),
+        Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
                 new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F) };
 
         for (int i = 0; i < 4; ++i) {

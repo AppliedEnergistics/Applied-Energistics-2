@@ -171,7 +171,7 @@ public interface IGrid {
     }
 
     /**
-     * Get this grids {@link appeng.api.networking.pathing.IPathingService}.
+     * Get this grids {@link IPathingService}.
      *
      * @see #getService(Class)
      */

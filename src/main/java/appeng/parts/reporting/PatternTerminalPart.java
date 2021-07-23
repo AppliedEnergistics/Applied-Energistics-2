@@ -113,7 +113,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
                 for (int x = 0; x < this.crafting.getSlots() && x < details.getSparseInputs().length; x++) {
                     final IAEItemStack item = details.getSparseInputs()[x];
-                    this.crafting.setStackInSlot(x, item == null ? net.minecraft.world.item.ItemStack.EMPTY : item.createItemStack());
+                    this.crafting.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
 
                 for (int x = 0; x < this.output.getSlots() && x < details.getSparseOutputs().length; x++) {
@@ -131,7 +131,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     private void fixCraftingRecipes() {
         if (this.craftingMode) {
             for (int x = 0; x < this.crafting.getSlots(); x++) {
-                final net.minecraft.world.item.ItemStack is = this.crafting.getStackInSlot(x);
+                final ItemStack is = this.crafting.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.setCount(1);
                 }

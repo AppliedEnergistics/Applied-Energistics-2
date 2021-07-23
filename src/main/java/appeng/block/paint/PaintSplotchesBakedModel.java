@@ -56,7 +56,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/paint3"));
+            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
 
     private final TextureAtlasSprite[] textures;
 
@@ -79,7 +79,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
         if (splotchesState == null) {
             // This is the inventory model which should usually not be used other than in
             // special cases
-            List<net.minecraft.client.renderer.block.model.BakedQuad> quads = new ArrayList<>(1);
+            List<BakedQuad> quads = new ArrayList<>(1);
             CubeBuilder builder = new CubeBuilder(quads);
             builder.setTexture(this.textures[0]);
             builder.addCube(0, 0, 0, 16, 16, 16);

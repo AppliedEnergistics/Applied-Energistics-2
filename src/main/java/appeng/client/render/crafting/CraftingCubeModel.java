@@ -71,7 +71,7 @@ class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);

@@ -42,7 +42,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private boolean initialAmountInitialized;
 
-    public CraftAmountScreen(CraftAmountContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public CraftAmountScreen(CraftAmountContainer container, Inventory playerInventory, Component title,
                              ScreenStyle style) {
         super(container, playerInventory, title, style);
 

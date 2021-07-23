@@ -32,17 +32,17 @@ import appeng.client.gui.Icon;
 
 import net.minecraft.client.gui.components.Button.OnPress;
 
-public class ToggleButton extends net.minecraft.client.gui.components.Button implements ITooltip {
+public class ToggleButton extends Button implements ITooltip {
     private final Icon icon;
     private final Icon iconDisabled;
 
-    private final net.minecraft.network.chat.Component displayName;
-    private final net.minecraft.network.chat.Component displayHint;
+    private final Component displayName;
+    private final Component displayHint;
 
     private boolean isActive;
 
-    public ToggleButton(final Icon on, final Icon off, final net.minecraft.network.chat.Component displayName,
-                        final net.minecraft.network.chat.Component displayHint, OnPress onPress) {
+    public ToggleButton(final Icon on, final Icon off, final Component displayName,
+                        final Component displayHint, OnPress onPress) {
         super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
         this.icon = on;
         this.iconDisabled = off;
@@ -67,7 +67,7 @@ public class ToggleButton extends net.minecraft.client.gui.components.Button imp
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         return Arrays.asList(
                 displayName,
                 displayHint);

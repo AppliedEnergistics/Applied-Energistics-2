@@ -42,7 +42,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkInvTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AENetworkInvTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -73,7 +73,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public IGridNode getGridNode(final net.minecraft.core.Direction dir) {
+    public IGridNode getGridNode(final Direction dir) {
         var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side

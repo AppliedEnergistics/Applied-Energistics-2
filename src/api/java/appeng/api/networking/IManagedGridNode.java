@@ -55,13 +55,13 @@ public interface IManagedGridNode {
      * Finish creation of the node, which means it'll try to make a connection to adjacent nodes if it's exposed on the
      * host, and it'll be available for connections from other nodes.
      */
-    void create(Level world, @Nullable net.minecraft.core.BlockPos blockPos);
+    void create(Level world, @Nullable BlockPos blockPos);
 
     /**
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all
      * your nods on a single compound using name.
      * <p>
-     * Important: You must call this before {@link #create(Level, net.minecraft.core.BlockPos)}.
+     * Important: You must call this before {@link #create(Level, BlockPos)}.
      *
      * @param nodeData to be loaded data
      */
@@ -137,7 +137,7 @@ public interface IManagedGridNode {
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
      * {@link ItemStack#EMPTY} to hide the node from UIs.
      */
-    IManagedGridNode setVisualRepresentation(@Nonnull net.minecraft.world.item.ItemStack visualRepresentation);
+    IManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation);
 
     IManagedGridNode setInWorldNode(boolean accessible);
 
@@ -153,7 +153,7 @@ public interface IManagedGridNode {
 
     /**
      * @return True if the node and its grid are available. This will never be the case on the client-side. Server-side,
-     *         it'll be true after {@link #create(Level, net.minecraft.core.BlockPos)} and before {@link #destroy()} are called.
+     *         it'll be true after {@link #create(Level, BlockPos)} and before {@link #destroy()} are called.
      */
     boolean isReady();
 

@@ -59,16 +59,16 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
-    private Set<net.minecraft.core.Direction> connections = Collections.emptySet();
+    private Set<Direction> connections = Collections.emptySet();
     private boolean powered = false;
 
-    public CablePart(final net.minecraft.world.item.ItemStack is) {
+    public CablePart(final ItemStack is) {
         super(is);
         this.getMainNode()
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0)
                 .setInWorldNode(true)
-                .setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
+                .setExposedOnSides(EnumSet.allOf(Direction.class));
         if (is.getItem() instanceof ColoredPartItem<?>coloredPartItem) {
             this.getMainNode().setGridColor(coloredPartItem.getColor());
         }
@@ -146,12 +146,12 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void setExposedOnSides(final EnumSet<net.minecraft.core.Direction> sides) {
+    public void setExposedOnSides(final EnumSet<Direction> sides) {
         this.getMainNode().setExposedOnSides(sides);
     }
 
     @Override
-    public boolean isConnected(final net.minecraft.core.Direction side) {
+    public boolean isConnected(final Direction side) {
         return this.getConnections().contains(side);
     }
 
@@ -201,7 +201,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
         }
 
-        for (final net.minecraft.core.Direction of : this.getConnections()) {
+        for (final Direction of : this.getConnections()) {
             switch (of) {
                 case DOWN:
                     bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
@@ -240,10 +240,10 @@ public class CablePart extends AEBasePart implements ICablePart {
     @Override
     public void writeToStream(final FriendlyByteBuf data) throws IOException {
         int flags = 0;
-        boolean[] writeSide = new boolean[net.minecraft.core.Direction.values().length];
-        int[] channelsPerSide = new int[net.minecraft.core.Direction.values().length];
+        boolean[] writeSide = new boolean[Direction.values().length];
+        int[] channelsPerSide = new int[Direction.values().length];
 
-        for (net.minecraft.core.Direction thisSide : net.minecraft.core.Direction.values()) {
+        for (Direction thisSide : Direction.values()) {
             final IPart part = this.getHost().getPart(thisSide);
             if (part != null) {
                 writeSide[thisSide.ordinal()] = true;
@@ -291,8 +291,8 @@ public class CablePart extends AEBasePart implements ICablePart {
 
         this.powered = (cs & (1 << AEPartLocation.INTERNAL.ordinal())) != 0;
 
-        var connections = EnumSet.noneOf(net.minecraft.core.Direction.class);
-        for (var d : net.minecraft.core.Direction.values()) {
+        var connections = EnumSet.noneOf(Direction.class);
+        for (var d : Direction.values()) {
             boolean conOnSide = (cs & 1 << d.ordinal()) != 0;
             if (conOnSide) {
                 connections.add(d);
@@ -322,7 +322,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         return this.channelsOnSide[i];
     }
 
-    public int getChannelsOnSide(net.minecraft.core.Direction side) {
+    public int getChannelsOnSide(Direction side) {
         if (!this.powered) {
             return 0;
         }
@@ -333,11 +333,11 @@ public class CablePart extends AEBasePart implements ICablePart {
         this.channelsOnSide[i] = channels;
     }
 
-    Set<net.minecraft.core.Direction> getConnections() {
+    Set<Direction> getConnections() {
         return this.connections;
     }
 
-    void setConnections(final Set<net.minecraft.core.Direction> connections) {
+    void setConnections(final Set<Direction> connections) {
         this.connections = connections;
     }
 

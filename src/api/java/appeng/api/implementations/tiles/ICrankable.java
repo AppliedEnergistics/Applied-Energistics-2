@@ -51,5 +51,5 @@ public interface ICrankable {
     /**
      * @return true if the crank can attach on the given side.
      */
-    boolean canCrankAttach(net.minecraft.core.Direction directionToCrank);
+    boolean canCrankAttach(Direction directionToCrank);
 }

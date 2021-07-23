@@ -41,7 +41,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite texture;
 
-    private final static Cache<Long, List<net.minecraft.client.renderer.block.model.BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
+    private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
@@ -58,7 +58,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         return this.getPartQuads(modelData.getData(P2PTunnelFrequencyModelData.FREQUENCY));
     }
 
-    private List<net.minecraft.client.renderer.block.model.BakedQuad> getQuadsForFrequency(final short frequency, final boolean active) {
+    private List<BakedQuad> getQuadsForFrequency(final short frequency, final boolean active) {
         final AEColor[] colors = Platform.p2p().toColors(frequency);
         final CubeBuilder cb = new CubeBuilder();
 
@@ -92,7 +92,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         return cb.getOutput();
     }
 
-    private List<net.minecraft.client.renderer.block.model.BakedQuad> getPartQuads(long partFlags) {
+    private List<BakedQuad> getPartQuads(long partFlags) {
         try {
             return modelCache.get(partFlags, () -> {
                 short frequency = (short) (partFlags & 0xffffL);

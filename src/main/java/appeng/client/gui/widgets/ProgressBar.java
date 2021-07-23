@@ -38,15 +38,15 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     private final Blitter blitter;
     private final Direction layout;
     private final Rect2i sourceRect;
-    private final net.minecraft.network.chat.Component titleName;
-    private net.minecraft.network.chat.Component fullMsg;
+    private final Component titleName;
+    private Component fullMsg;
 
     public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
         this(source, blitter, dir, null);
     }
 
     public ProgressBar(final IProgressProvider source, Blitter blitter,
-            final Direction dir, final net.minecraft.network.chat.Component title) {
+            final Direction dir, final Component title) {
         super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), TextComponent.EMPTY);
         this.source = source;
         this.blitter = blitter.copy();
@@ -87,17 +87,17 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
         }
     }
 
-    public void setFullMsg(final net.minecraft.network.chat.Component msg) {
+    public void setFullMsg(final Component msg) {
         this.fullMsg = msg;
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         if (this.fullMsg != null) {
             return Collections.singletonList(this.fullMsg);
         }
 
-        net.minecraft.network.chat.Component result = this.titleName != null ? this.titleName : TextComponent.EMPTY;
+        Component result = this.titleName != null ? this.titleName : TextComponent.EMPTY;
         return Arrays.asList(
                 result,
                 new TextComponent(this.source.getCurrentProgress() + " ")

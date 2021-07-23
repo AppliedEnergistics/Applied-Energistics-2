@@ -80,7 +80,7 @@ public class ActionButton extends IconButton {
         return icon;
     }
 
-    private net.minecraft.network.chat.Component buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+    private Component buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
         String name = displayName.text().getString();
         String value = displayValue.text().getString();
 

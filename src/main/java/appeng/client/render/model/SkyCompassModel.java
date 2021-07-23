@@ -42,20 +42,20 @@ public class SkyCompassModel implements BasicUnbakedModel<SkyCompassModel> {
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/sky_compass_base");
 
-    private static final net.minecraft.resources.ResourceLocation MODEL_POINTER = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
             "appliedenergistics2:block/sky_compass_pointer");
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         BakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
         return new SkyCompassBakedModel(baseModel, pointerModel);
     }
 
     @Override
-    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
     }
 

@@ -34,15 +34,15 @@ import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
  */
 public class SpatialStorageBiome {
 
-    public static final net.minecraft.world.level.biome.Biome INSTANCE = new BiomeBuilder()
-            .generationSettings(new net.minecraft.world.level.biome.BiomeGenerationSettings.Builder().surfaceBuilder(
-                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder.CONFIG_STONE))
+    public static final Biome INSTANCE = new BiomeBuilder()
+            .generationSettings(new BiomeGenerationSettings.Builder().surfaceBuilder(
+                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.CONFIG_STONE))
                     .build())
             .precipitation(Precipitation.NONE).biomeCategory(BiomeCategory.NONE).depth(0).scale(1)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
             .specialEffects(new Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)
                     .skyColor(0x111111).build())
-            .mobSpawnSettings(new net.minecraft.world.level.biome.MobSpawnSettings.Builder().creatureGenerationProbability(0).build()).build();
+            .mobSpawnSettings(new MobSpawnSettings.Builder().creatureGenerationProbability(0).build()).build();
 
 }

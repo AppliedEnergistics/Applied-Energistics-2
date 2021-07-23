@@ -49,7 +49,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, Inventory playerInventory,
-                               net.minecraft.network.chat.Component title, ScreenStyle style) {
+                               Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.fuzzyMode = addToLeftToolbar(
@@ -64,8 +64,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
      * For cell workbenches it is the item currently in the slot that determines which upgrades are compatible.
      */
     @Override
-    protected List<net.minecraft.network.chat.Component> getCompatibleUpgrades() {
-        net.minecraft.world.item.ItemStack workbenchItem = menu.getWorkbenchItem();
+    protected List<Component> getCompatibleUpgrades() {
+        ItemStack workbenchItem = menu.getWorkbenchItem();
         if (workbenchItem.isEmpty()) {
             return Collections.emptyList();
         }

@@ -36,7 +36,7 @@ import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequencyModel> {
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
+            new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,

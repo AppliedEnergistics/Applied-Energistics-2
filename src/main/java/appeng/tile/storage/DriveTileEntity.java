@@ -89,7 +89,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     private int priority = 0;
     private boolean wasActive = false;
     // This is only used on the client
-    private final net.minecraft.world.item.Item[] cellItems = new Item[10];
+    private final Item[] cellItems = new Item[10];
 
     /**
      * The state of all cells inside a drive as bitset, using the following format.
@@ -106,7 +106,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
      */
     private int state = 0;
 
-    public DriveTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public DriveTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.mySrc = new MachineSource(this);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -115,7 +115,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public void setOrientation(Direction inForward, net.minecraft.core.Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
@@ -143,9 +143,9 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
-            net.minecraft.world.item.Item item = getCellItem(x);
+            Item item = getCellItem(x);
             if (item != null && item.getRegistryName() != null) {
-                net.minecraft.resources.ResourceLocation itemId = item.getRegistryName();
+                ResourceLocation itemId = item.getRegistryName();
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -190,11 +190,11 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             byte idx = data.readByte();
 
             // an index of 0 indicates the slot is empty
-            net.minecraft.world.item.Item item = null;
+            Item item = null;
             if (idx > 0) {
                 --idx;
                 String itemId = uniqueStrs[idx];
-                item = ForgeRegistries.ITEMS.getValue(new net.minecraft.resources.ResourceLocation(itemId));
+                item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -218,7 +218,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             return cellItems[slot];
         }
 
-        net.minecraft.world.item.ItemStack stackInSlot = inv.getStackInSlot(slot);
+        ItemStack stackInSlot = inv.getStackInSlot(slot);
         if (!stackInSlot.isEmpty()) {
             return stackInSlot.getItem();
         }
@@ -297,7 +297,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 

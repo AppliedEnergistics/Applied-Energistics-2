@@ -139,7 +139,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private int isWorking = -1;
     private final Accessor accessor = new Accessor();
 
-    public DualityInterface(final IManagedGridNode gridNode, final IInterfaceHost ih, net.minecraft.world.item.ItemStack is) {
+    public DualityInterface(final IManagedGridNode gridNode, final IInterfaceHost ih, ItemStack is) {
         this.gridProxy = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
@@ -166,7 +166,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (this.isWorking == slot) {
             return;
         }
@@ -211,7 +211,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         final ListTag waitingToSend = new ListTag();
         if (this.waitingToSend != null) {
-            for (final net.minecraft.world.item.ItemStack is : this.waitingToSend) {
+            for (final ItemStack is : this.waitingToSend) {
                 final CompoundTag item = new CompoundTag();
                 is.save(item);
                 waitingToSend.add(item);
@@ -227,7 +227,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             for (int x = 0; x < waitingList.size(); x++) {
                 final CompoundTag c = waitingList.getCompound(x);
                 if (c != null) {
-                    final ItemStack is = net.minecraft.world.item.ItemStack.of(c);
+                    final ItemStack is = ItemStack.of(c);
                     this.addToSendList(is);
                 }
             }
@@ -307,7 +307,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 boolean found = false;
 
                 for (int x = 0; x < accountedFor.length; x++) {
-                    final net.minecraft.world.item.ItemStack is = this.patterns.getStackInSlot(x);
+                    final ItemStack is = this.patterns.getStackInSlot(x);
                     if (details.getPattern() == is) {
                         accountedFor[x] = found = true;
                     }
@@ -452,7 +452,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.notifyNeighbors();
     }
 
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 
@@ -485,7 +485,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 : TickRateModulation.SLEEP;
     }
 
-    private void pushItemsOut(final EnumSet<net.minecraft.core.Direction> possibleDirections) {
+    private void pushItemsOut(final EnumSet<Direction> possibleDirections) {
         if (!this.hasItemsToSend()) {
             return;
         }
@@ -495,9 +495,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
-            net.minecraft.world.item.ItemStack whatToSend = i.next();
+            ItemStack whatToSend = i.next();
 
-            for (final net.minecraft.core.Direction s : possibleDirections) {
+            for (final Direction s : possibleDirections) {
                 final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
                 if (te == null) {
                     continue;
@@ -505,7 +505,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
                 if (ad != null) {
-                    final net.minecraft.world.item.ItemStack result = ad.addItems(whatToSend);
+                    final ItemStack result = ad.addItems(whatToSend);
 
                     if (result.isEmpty()) {
                         whatToSend = ItemStack.EMPTY;
@@ -576,7 +576,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
                     this.interfaceRequestSource);
             if (acquired != null) {
-                final net.minecraft.world.item.ItemStack issue = adaptor.addItems(acquired.createItemStack());
+                final ItemStack issue = adaptor.addItems(acquired.createItemStack());
                 if (!issue.isEmpty()) {
                     throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
                 }
@@ -605,7 +605,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
             if (diff != 0) {
                 // extract items!
-                final ItemStack removed = adaptor.removeItems((int) diff, net.minecraft.world.item.ItemStack.EMPTY, null);
+                final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
                 if (removed.isEmpty() || removed.getCount() != diff) {
                     throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                 }
@@ -695,7 +695,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     @Override
-    public appeng.api.util.IConfigManager getConfigManager() {
+    public IConfigManager getConfigManager() {
         return this.cm;
     }
 
@@ -739,8 +739,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         final BlockEntity tile = this.iHost.getTileEntity();
         final Level w = tile.getLevel();
 
-        final EnumSet<net.minecraft.core.Direction> possibleDirections = this.iHost.getTargets();
-        for (final net.minecraft.core.Direction s : possibleDirections) {
+        final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
+        for (final Direction s : possibleDirections) {
             var te = w.getBlockEntity(tile.getBlockPos().relative(s));
             if (te instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
@@ -790,17 +790,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         boolean busy = false;
 
         if (this.isBlocking()) {
-            final EnumSet<net.minecraft.core.Direction> possibleDirections = this.iHost.getTargets();
+            final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
             final BlockEntity tile = this.iHost.getTileEntity();
             final Level w = tile.getLevel();
 
             boolean allAreBusy = true;
 
-            for (final net.minecraft.core.Direction s : possibleDirections) {
+            for (final Direction s : possibleDirections) {
                 final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
-                if (ad != null && ad.simulateRemove(1, net.minecraft.world.item.ItemStack.EMPTY, null).isEmpty()) {
+                if (ad != null && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
                     allAreBusy = false;
                     break;
                 }
@@ -866,7 +866,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             }
         }
 
-        for (final net.minecraft.world.item.ItemStack is : this.patterns) {
+        for (final ItemStack is : this.patterns) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -914,7 +914,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.craftingTracker.jobStateChange(link);
     }
 
-    public net.minecraft.network.chat.Component getTermName() {
+    public Component getTermName() {
         final BlockEntity hostTile = this.iHost.getTileEntity();
         final Level hostWorld = hostTile.getLevel();
 
@@ -922,9 +922,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             return ((ICustomNameObject) this.iHost).getCustomInventoryName();
         }
 
-        final EnumSet<net.minecraft.core.Direction> possibleDirections = this.iHost.getTargets();
-        for (final net.minecraft.core.Direction direction : possibleDirections) {
-            final net.minecraft.core.BlockPos targ = hostTile.getBlockPos().relative(direction);
+        final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
+        for (final Direction direction : possibleDirections) {
+            final BlockPos targ = hostTile.getBlockPos().relative(direction);
             final BlockEntity directedTile = hostWorld.getBlockEntity(targ);
 
             if (directedTile == null) {
@@ -971,8 +971,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     return new TranslatableComponent(what.getDescriptionId());
                 }
 
-                final net.minecraft.world.item.Item item = Item.byBlock(directedBlock);
-                if (item == net.minecraft.world.item.Items.AIR) {
+                final Item item = Item.byBlock(directedBlock);
+                if (item == Items.AIR) {
                     return new TranslatableComponent(directedBlock.getDescriptionId());
                 }
             }
