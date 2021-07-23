@@ -21,7 +21,6 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,6 +57,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityInterface;

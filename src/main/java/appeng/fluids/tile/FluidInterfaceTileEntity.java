@@ -22,8 +22,6 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IManagedGridNode;
-import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -39,8 +37,10 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;

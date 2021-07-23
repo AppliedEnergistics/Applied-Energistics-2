@@ -20,12 +20,12 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import appeng.core.Api;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 

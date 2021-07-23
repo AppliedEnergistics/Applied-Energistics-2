@@ -20,7 +20,6 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -49,6 +48,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.fluids.container.FluidInterfaceContainer;

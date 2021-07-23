@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -63,6 +62,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.fluids.helper.IConfigurableFluidInventory;

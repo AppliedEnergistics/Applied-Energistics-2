@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import appeng.api.networking.IManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,6 +32,7 @@ import net.minecraft.world.IBlockReader;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
@@ -66,7 +66,8 @@ public class ToggleBusPart extends BasicStatePart {
 
     private static final int REDSTONE_FLAG = 4;
 
-    private final IManagedGridNode outerNode = Api.instance().grid().createManagedNode(this, AEBasePart.NodeListener.INSTANCE)
+    private final IManagedGridNode outerNode = Api.instance().grid()
+            .createManagedNode(this, AEBasePart.NodeListener.INSTANCE)
             .setTagName("outer")
             .setIdlePowerUsage(0.0)
             .setFlags();

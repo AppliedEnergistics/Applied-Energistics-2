@@ -24,8 +24,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IManagedGridNode;
-import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
@@ -47,6 +45,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -54,6 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
+import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;

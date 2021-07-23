@@ -325,7 +325,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         var grid = getMainNode().getGrid();
         if (grid != null) {
             if (!grid.getEnergyService().isNetworkPowered()) {
-                final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
+                final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE,
+                        PowerMultiplier.CONFIG); // drain
                 if (powerUsed + 0.1 >= idlePowerUsage != (this.state & BIT_POWER_MASK) > 0) {
                     this.recalculateDisplay();
                 }

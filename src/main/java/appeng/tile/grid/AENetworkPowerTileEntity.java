@@ -20,8 +20,6 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.IManagedGridNode;
-import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -29,8 +27,10 @@ import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
+import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
