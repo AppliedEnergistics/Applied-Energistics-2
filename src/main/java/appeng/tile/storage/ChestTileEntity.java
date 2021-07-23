@@ -562,7 +562,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (cellInventory != null) {
             cellInventory.persist();
         }
-        this.level.blockEntityChanged(this.worldPosition, this);
+        this.level.blockEntityChanged(this.worldPosition);
     }
 
     private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T> {

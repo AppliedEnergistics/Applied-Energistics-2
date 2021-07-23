@@ -100,10 +100,6 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        // if the cached block state is not current, the following method may call
-        // markForUpdate
-        // and cause the block state to be changed back to non-air
-        clearCache();
         this.getMainNode().destroy();
     }
 
