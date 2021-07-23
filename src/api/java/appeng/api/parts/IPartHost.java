@@ -147,9 +147,6 @@ public interface IPartHost extends ICustomCableConnection {
      */
     void markForSave();
 
-    /**
-     * part of the {@link LayerBase}
-     */
     void partChanged();
 
     /**

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.crafting.CraftingEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -384,8 +384,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             this.progress = 0;
             final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getLevel());
             if (!output.isEmpty()) {
-                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) this.getLevel()), output,
-                        this.craftingInv);
+                CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
 
                 this.pushOut(output.copy());
 

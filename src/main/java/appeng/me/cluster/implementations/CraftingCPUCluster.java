@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.crafting.CraftingEvent;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -37,7 +38,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -732,8 +732,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             }
 
                             if (details.isCraftable()) {
-                                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) getWorld()),
-                                        details.getOutput(ic, this.getWorld()), ic);
+                                CraftingEvent.fireAutoCraftingEvent(getWorld(), details, ic);
 
                                 for (int x = 0; x < ic.getContainerSize(); x++) {
                                     final net.minecraft.world.item.ItemStack output = Platform.getContainerItem(ic.getItem(x));

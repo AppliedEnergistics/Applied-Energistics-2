@@ -26,7 +26,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -72,8 +71,7 @@ public class CraftingTreeProcess {
                 ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) world),
-                    details.getOutput(ic, world), ic);
+            CraftingEvent.fireAutoCraftingEvent(world, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 final net.minecraft.world.item.ItemStack g = ic.getItem(x);
@@ -173,8 +171,7 @@ public class CraftingTreeProcess {
                 ic.setItem(entry.getKey().getSlot(), stack.createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerLevel) this.world),
-                    this.details.getOutput(ic, this.world), ic);
+            CraftingEvent.fireAutoCraftingEvent(world, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 net.minecraft.world.item.ItemStack is = ic.getItem(x);
