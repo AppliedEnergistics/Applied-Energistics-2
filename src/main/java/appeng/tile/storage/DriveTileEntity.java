@@ -407,7 +407,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     @Override
     public void saveChanges(final ICellInventory<?> cellInventory) {
-        this.level.blockEntityChanged(this.worldPosition, this);
+        this.level.blockEntityChanged(this.worldPosition);
     }
 
     private class CellValidInventoryFilter implements IAEItemFilter {

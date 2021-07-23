@@ -234,11 +234,6 @@ public class CraftingTileEntity extends AENetworkTileEntity
     }
 
     public void breakCluster() {
-        // Since breaking the cluster will most likely also update the TE's state,
-        // it's essential that we're not working with outdated block-state information,
-        // since this particular TE's block might already have been removed (state=air)
-        clearCache();
-
         if (this.cluster != null) {
             this.cluster.cancel();
             final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
@@ -353,8 +348,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
      * contains connections to neighboring tiles.
      */
     @Override
-    public void clearCache() {
-        super.clearCache();
+    public void setBlockState(BlockState p_155251_) {
+        super.setBlockState(p_155251_);
         requestModelDataUpdate();
     }
 
