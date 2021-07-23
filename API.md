@@ -1,6 +1,6 @@
 ## Grids and Nodes
 
-AE2's core systems work by building grids from grid nodes that are created and owned by ingame objects such as tile
+AE2's core systems work by building grids from grid nodes that are created and owned by ingame objects such as block
 entities or parts. Grids are never created directly. They form and disband automatically by creating grid nodes, and
 connecting or disconnecting them.
 
@@ -18,11 +18,11 @@ owner.
 **Example:**
 
 ```java
-class MyTileEntityListener implements IGridNodeListener<MyTileEntity> {
-    public static final MyTileEntityListener INSTANCE = new MyTileEntityListener();
+class MyBlockEntityListener implements IGridNodeListener<MyBlockEntity> {
+    public static final MyBlockEntityListener INSTANCE = new MyBlockEntityListener();
 
     @Override
-    public void onActiveChanged(MyTileEntity nodeOwner, IGridNode node, ActiveChangeReason reason) {
+    public void onStateChanged(MyBlockEntity nodeOwner, IGridNode node, StateChangeReason reason) {
         [...]
         // for example: change block state of nodeOwner to indicate state
         // send node owner to clients
@@ -31,21 +31,20 @@ class MyTileEntityListener implements IGridNodeListener<MyTileEntity> {
 ```
 
 ```java
-MyTileEntity te=[...]; // Grab from world or similar
+MyBlockEntity te=[...]; // Grab from world or similar, might not be a block entity
 
-// Create node owned by te
-        api.createInternalGridNode(
+// Create node with owner and listener
+        api.createManagedNode(
         te,
-        MyTileEntityListener.INSTANCE,
+        MyBlockEntityListener.INSTANCE,
         [...]
         );
 ```
 
-### Configurable Grid Nodes
+### Managed Grid Nodes
 
-The node creation APIs return an `IConfigurableGridNode`, which extends `IGridNode`
-with functionality to set up and configure the node, and notify it of events. This functionality should only be used by
-the node owner.
+The node creation APIs return an `IManagedGridNode`, which allows configuring the underlying `IGridNode`.
+This functionality should only be used by the node owner.
 
 Your game object should notify the nodes it owns about the following events:
 
@@ -57,9 +56,25 @@ Your game object should notify the nodes it owns about the following events:
 
 ### In-World Nodes
 
-A special type of grid node is an in-world grid node. They need to know their location and world, and will automatically
-attempt to connect with adjacent in-world grid nodes. In-world nodes can be selectively exposed on specific sides, or on
-all sides. The exposed sides can be changed after node creation.
+The main type of grid node are in-world grid nodes. They need to know their location and world when being created with
+`IManagedGridNode.create(World, BlockPos)`. External connections are automatically attempt to connect with adjacent
+in-world grid nodes by AE2 itself and do not need further handling.
+
+In-world nodes can be selectively exposed on specific sides, or on all sides.
+The exposed sides can be changed after node creation and will automatically trigger a repathing.
+
+To expose the actual `IGridNode`, it needs to be exposed by `IManagedGridNode.getNode()` through an appropriate way
+like capabilities.
+
+### Virtual Nodes
+
+A special case are virtual nodes, which will not automatically form connection with other nodes.
+These allow addons to build ME networks outside the normal world for various reasons.
+
+As these do not automatically establish connections, these have to be manually created with by using
+`IGridHelper.createGridConnection(IGridNode, IGridNode)`.
+Removing a connection requires destroying the `IGridNode`, which also handles chunk unloading and ensures it leaving no
+old connections behind. 
 
 ### Node Services
 
@@ -93,7 +108,7 @@ grid's internal storage, etc.).
 
 AE2 offers its grid connected machines an advanced ticking system with the following features:
 
-* Ticking without being a tickable tile entity
+* Ticking without being a tickable block entity
 * Variable tick rates
 * Putting devices to sleep if they run out of work
 * Waking sleeping devices in reaction to some event (i.e. neighbors changed)
