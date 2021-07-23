@@ -18,8 +18,6 @@
 
 package appeng.capabilities;
 
-import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -43,8 +41,7 @@ public final class Capabilities {
      * Register AE2 provided capabilities.
      */
     public static void register() {
-        CapabilityManager.INSTANCE.register(IStorageMonitorableAccessor.class, createNullStorage(),
-                NullMENetworkAccessor::new);
+        CapabilityManager.INSTANCE.register(IStorageMonitorableAccessor.class);
     }
 
     @CapabilityInject(IStorageMonitorableAccessor.class)
@@ -57,18 +54,4 @@ public final class Capabilities {
         FORGE_ENERGY = cap;
     }
 
-    // Create a storage implementation that does not do anything
-    private static <T> Capability.IStorage<T> createNullStorage() {
-        return new Capability.IStorage<T>() {
-            @Override
-            public Tag writeNBT(Capability<T> capability, T instance, Direction side) {
-                return null;
-            }
-
-            @Override
-            public void readNBT(Capability<T> capability, T instance, Direction side, Tag nbt) {
-
-            }
-        };
-    }
 }
