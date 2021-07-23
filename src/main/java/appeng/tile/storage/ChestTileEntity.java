@@ -137,6 +137,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     // synchronizing the entire
     // cell's inventory when a chest comes into view.
     private Item cellItem = Items.AIR;
+    private double idlePowerUsage;
 
     public ChestTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -208,19 +209,19 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                 this.isCached = true;
                 ICellHandler cellHandler = Api.instance().registries().cell().getHandler(is);
                 if (cellHandler != null) {
-                    double power = 1.0;
+                    idlePowerUsage = 1.0;
 
                     for (IStorageChannel channel : Api.instance().storage().storageChannels()) {
                         final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is, this,
                                 channel);
                         if (newCell != null) {
-                            power += cellHandler.cellIdleDrain(is, newCell);
+                            idlePowerUsage += cellHandler.cellIdleDrain(is, newCell);
                             this.cellHandler = this.wrap(newCell);
                             break;
                         }
                     }
 
-                    this.getMainNode().setIdlePowerUsage(power);
+                    this.getMainNode().setIdlePowerUsage(idlePowerUsage);
                     this.accessor = new Accessor();
 
                     if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
@@ -321,19 +322,17 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             return;
         }
 
-        final double idleUsage = this.getMainNode().getIdlePowerUsage();
-
         var grid = getMainNode().getGrid();
         if (grid != null) {
             if (!grid.getEnergyService().isNetworkPowered()) {
-                final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
-                if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
+                final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
+                if (powerUsed + 0.1 >= idlePowerUsage != (this.state & BIT_POWER_MASK) > 0) {
                     this.recalculateDisplay();
                 }
             }
         } else {
-            final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
-            if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
+            final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
+            if (powerUsed + 0.1 >= idlePowerUsage != (this.state & BIT_POWER_MASK) > 0) {
                 this.recalculateDisplay();
             }
         }

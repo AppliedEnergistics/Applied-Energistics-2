@@ -20,6 +20,7 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
+import appeng.api.networking.IManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,7 +42,6 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -66,7 +66,7 @@ public class ToggleBusPart extends BasicStatePart {
 
     private static final int REDSTONE_FLAG = 4;
 
-    private final ManagedGridNode outerNode = new ManagedGridNode(this, AEBasePart.NodeListener.INSTANCE)
+    private final IManagedGridNode outerNode = Api.instance().grid().createManagedNode(this, AEBasePart.NodeListener.INSTANCE)
             .setTagName("outer")
             .setIdlePowerUsage(0.0)
             .setFlags();
@@ -178,7 +178,7 @@ public class ToggleBusPart extends BasicStatePart {
         }
     }
 
-    ManagedGridNode getOuterNode() {
+    IManagedGridNode getOuterNode() {
         return this.outerNode;
     }
 

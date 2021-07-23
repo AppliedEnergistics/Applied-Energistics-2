@@ -20,12 +20,12 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import appeng.core.Api;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
@@ -50,7 +50,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     @Override
     public void onReady() {
         super.onReady();
-        this.proxy = new ManagedGridNode(this, TileEntityNodeListener.INSTANCE)
+        this.proxy = Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(getItemFromTile());
         this.proxy.create(world, pos);

@@ -20,6 +20,7 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -29,7 +30,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.ManagedGridNode;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.AEBaseInvTileEntity;
@@ -46,8 +46,8 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
         super(tileEntityTypeIn);
     }
 
-    protected ManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, TileEntityNodeListener.INSTANCE);
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE);
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        this.getMainNode().onChunkUnloaded();
+        this.getMainNode().destroy();
     }
 
     @Override

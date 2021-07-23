@@ -76,15 +76,10 @@ public interface IGridNode {
     /**
      * get the grid for the node, this can change at a moments notice.
      *
-     * @return grid or null if the node is still initializing
+     * @return The grid this node is a part of.
+     * @throws IllegalStateException If the node is being used after being destroyed.
      */
-    @Nullable
     IGrid getGrid();
-
-    /**
-     * @return True if the node has initialized and a grid is available.
-     */
-    boolean isReady();
 
     /**
      * @return the world the node is located in

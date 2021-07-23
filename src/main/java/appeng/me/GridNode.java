@@ -269,6 +269,9 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public IGrid getGrid() {
+        if (this.myGrid == null) {
+            throw new IllegalStateException("A node is being used after it has been destroyed.");
+        }
         return this.myGrid;
     }
 
@@ -312,15 +315,10 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public void markReady() {
+    void markReady() {
         Preconditions.checkState(!ready);
         ready = true;
         updateState();
-    }
-
-    @Override
-    public boolean isReady() {
-        return ready && myGrid != null;
     }
 
     @Override

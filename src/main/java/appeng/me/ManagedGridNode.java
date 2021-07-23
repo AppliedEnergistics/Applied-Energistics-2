@@ -139,11 +139,6 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void onChunkUnloaded() {
-        this.destroy();
-    }
-
-    @Override
     public void destroy() {
         if (this.node != null) {
             this.node.destroy();

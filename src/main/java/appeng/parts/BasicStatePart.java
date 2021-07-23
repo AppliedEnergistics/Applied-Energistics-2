@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
@@ -30,7 +31,6 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
-import appeng.me.ManagedGridNode;
 
 /**
  * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and
@@ -51,7 +51,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NodeListener.INSTANCE);
+        return Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE);
     }
 
     @Override

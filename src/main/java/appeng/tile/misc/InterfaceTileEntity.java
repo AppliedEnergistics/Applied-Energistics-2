@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
@@ -56,7 +58,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.util.Platform;
@@ -83,8 +84,8 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NODE_LISTENER);
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

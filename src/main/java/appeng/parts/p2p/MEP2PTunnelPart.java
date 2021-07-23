@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.api.networking.IManagedGridNode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,7 +45,6 @@ import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
-import appeng.me.ManagedGridNode;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
 import appeng.parts.AEBasePart;
@@ -60,7 +60,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     private final Connections connection = new Connections(this);
 
-    private final ManagedGridNode outerNode = new ManagedGridNode(this, AEBasePart.NodeListener.INSTANCE)
+    private final IManagedGridNode outerNode = Api.instance().grid().createManagedNode(this, AEBasePart.NodeListener.INSTANCE)
             .setTagName("outer")
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 

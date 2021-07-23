@@ -31,27 +31,29 @@ class MyBlockEntityListener implements IGridNodeListener<MyBlockEntity> {
 ```
 
 ```java
-MyBlockEntity te=[...]; // Grab from world or similar, might not be a block entity
-
-// Create node with owner and listener
-        api.createManagedNode(
-        te,
-        MyBlockEntityListener.INSTANCE,
-        [...]
-        );
+class MyBlockEntity {
+    // Create node with owner and listener
+    private final IManagedNode mainNode = api.createManagedNode(
+        this,
+        MyBlockEntityListener.INSTANCE
+    );
+}
 ```
 
 ### Managed Grid Nodes
 
-The node creation APIs return an `IManagedGridNode`, which allows configuring the underlying `IGridNode`.
-This functionality should only be used by the node owner.
+The `IGridHelper` API offers a `createManagedNode` method to create an `IManagedGridNode`. Managed grid nodes
+simplify the lifecycle of creating and destroying grid nodes, and can be used to simplify the distinction
+between server and client, since they are available on the client-side as well. They will just not
+create the underlying node if they're being used on the client.
 
-Your game object should notify the nodes it owns about the following events:
+Your game object should notify the managed node about the following events:
 
 - Call `destroy` on the node when your game object is destroyed or its chunk unloaded. 
-- Call `markReady` when the node can assume the owner is now in-world and ready to make
+- Call `create` when the node can assume the owner is now in-world and ready to make
   outgoing connections (i.e. on its first tick).
-- When your game object loads from NBT data, load the node's stored data using `loadFromNBT`.
+- When your game object loads from NBT data, load the node's stored data using `loadFromNBT`. This has
+  to occur before you call `create`.
 - When your game object saves to NBT data, save the node's data using `saveToNBT`.
 
 ### In-World Nodes

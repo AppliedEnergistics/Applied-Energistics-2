@@ -28,7 +28,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.block.IOwnerAwareTile;
-import appeng.me.ManagedGridNode;
 import appeng.tile.AEBaseTileEntity;
 
 /**
@@ -43,7 +42,7 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
     IManagedGridNode getMainNode();
 
     /**
-     * @see ManagedGridNode#ifPresent(Consumer)
+     * @see IManagedGridNode#ifPresent(Consumer)
      */
     default boolean ifGridPresent(Consumer<IGrid> action) {
         return getMainNode().ifPresent(action);

@@ -45,11 +45,9 @@ import appeng.api.util.AEColor;
  */
 public interface IManagedGridNode {
 
-    void onChunkUnloaded();
-
     /**
      * By destroying your node, you destroy any connections, and its existence in the grid, use in invalidate, or
-     * onChunkUnload. The node is marked as not ready. It should not be reused.
+     * onChunkUnload. After calling this method, {@link #isReady()} will return false. The node cannot be reused.
      */
     void destroy();
 

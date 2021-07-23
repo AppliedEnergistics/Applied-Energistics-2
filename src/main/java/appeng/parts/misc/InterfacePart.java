@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,7 +64,6 @@ import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
-import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -110,7 +110,7 @@ public class InterfacePart extends BasicStatePart implements IStorageMonitorable
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NODE_LISTENER);
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

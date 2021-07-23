@@ -22,6 +22,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -45,7 +47,6 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.me.ManagedGridNode;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
 
@@ -66,8 +67,8 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NODE_LISTENER);
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,7 +42,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.ManagedGridNode;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
@@ -50,7 +51,7 @@ public class QuartzFiberPart extends AEBasePart {
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
-    private final ManagedGridNode outerNode;
+    private final IManagedGridNode outerNode;
 
     public QuartzFiberPart(final ItemStack is) {
         super(is);
@@ -59,7 +60,7 @@ public class QuartzFiberPart extends AEBasePart {
                 .setIdlePowerUsage(0)
                 .setFlags(GridFlags.CANNOT_CARRY)
                 .addService(IEnergyGridProvider.class, energyBridge);
-        this.outerNode = new ManagedGridNode(this, NodeListener.INSTANCE)
+        this.outerNode = Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE)
                 .setTagName("outer")
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(is)

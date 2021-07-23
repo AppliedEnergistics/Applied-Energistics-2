@@ -20,6 +20,8 @@ package appeng.tile.grid;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -30,7 +32,6 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.ManagedGridNode;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.powersink.AEBasePoweredTileEntity;
@@ -38,7 +39,7 @@ import appeng.tile.powersink.AEBasePoweredTileEntity;
 public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
         implements IInWorldGridNodeHost, IGridConnectedTileEntity {
 
-    private final ManagedGridNode mainNode = createMainNode()
+    private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(getItemFromTile())
             .addService(IAEPowerStorage.class, this)
             .setInWorldNode(true)
@@ -48,8 +49,8 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
         super(tileEntityTypeIn);
     }
 
-    protected ManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, TileEntityNodeListener.INSTANCE);
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE);
     }
 
     @Override
@@ -65,7 +66,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
         return data;
     }
 
-    public final ManagedGridNode getMainNode() {
+    public final IManagedGridNode getMainNode() {
         return this.mainNode;
     }
 
@@ -106,7 +107,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        this.getMainNode().onChunkUnloaded();
+        this.getMainNode().destroy();
     }
 
     @Override

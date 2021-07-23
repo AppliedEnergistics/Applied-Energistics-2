@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import appeng.api.networking.IManagedGridNode;
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +44,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
-import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 
 public class CablePart extends AEBasePart implements ICablePart {
@@ -73,8 +74,8 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    protected ManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NODE_LISTENER);
+    protected IManagedGridNode createMainNode() {
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

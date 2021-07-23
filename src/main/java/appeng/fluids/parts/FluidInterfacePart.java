@@ -20,6 +20,7 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -56,7 +57,6 @@ import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
-import appeng.me.ManagedGridNode;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -93,7 +93,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NODE_LISTENER);
+        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

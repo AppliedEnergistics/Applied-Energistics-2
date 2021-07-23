@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -69,7 +70,6 @@ import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.me.ManagedGridNode;
 import appeng.parts.automation.LevelEmitterPart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
@@ -94,7 +94,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     protected IManagedGridNode createMainNode() {
-        return new ManagedGridNode(this, NodeListener.INSTANCE);
+        return Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE);
     }
 
     /**
