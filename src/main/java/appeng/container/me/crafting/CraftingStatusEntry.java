@@ -27,12 +27,12 @@ import net.minecraft.world.item.ItemStack;
  */
 public class CraftingStatusEntry {
     private final long serial;
-    private final net.minecraft.world.item.ItemStack item;
+    private final ItemStack item;
     private final long storedAmount;
     private final long activeAmount;
     private final long pendingAmount;
 
-    public CraftingStatusEntry(long serial, net.minecraft.world.item.ItemStack item, long storedAmount, long activeAmount, long pendingAmount) {
+    public CraftingStatusEntry(long serial, ItemStack item, long storedAmount, long activeAmount, long pendingAmount) {
         this.serial = serial;
         this.item = item;
         this.storedAmount = storedAmount;
@@ -56,7 +56,7 @@ public class CraftingStatusEntry {
         return pendingAmount;
     }
 
-    public net.minecraft.world.item.ItemStack getItem() {
+    public ItemStack getItem() {
         return item;
     }
 

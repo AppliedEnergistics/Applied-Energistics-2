@@ -79,7 +79,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public void updateTiles(final QuantumCluster c, final ServerLevel w, final net.minecraft.core.BlockPos min, final BlockPos max) {
+    public void updateTiles(final QuantumCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 

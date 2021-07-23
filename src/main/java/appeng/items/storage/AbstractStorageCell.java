@@ -20,6 +20,7 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -65,7 +66,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     protected final ItemLike coreItem;
     protected final int totalBytes;
 
-    public AbstractStorageCell(net.minecraft.world.item.Item.Properties properties, final ItemLike coreItem, final int kilobytes) {
+    public AbstractStorageCell(Item.Properties properties, final ItemLike coreItem, final int kilobytes) {
         super(properties);
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
@@ -73,14 +74,14 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final net.minecraft.world.item.ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
 
     @Override
-    public int getBytes(final net.minecraft.world.item.ItemStack cellItem) {
+    public int getBytes(final ItemStack cellItem) {
         return this.totalBytes;
     }
 
@@ -100,17 +101,17 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public boolean isStorageCell(final net.minecraft.world.item.ItemStack i) {
+    public boolean isStorageCell(final ItemStack i) {
         return true;
     }
 
     @Override
-    public boolean isEditable(final net.minecraft.world.item.ItemStack is) {
+    public boolean isEditable(final ItemStack is) {
         return true;
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final net.minecraft.world.item.ItemStack is) {
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
@@ -120,7 +121,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final net.minecraft.world.item.ItemStack is) {
+    public FuzzyMode getFuzzyMode(final ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         if (fz.isEmpty()) {
             return FuzzyMode.IGNORE_ALL;
@@ -133,7 +134,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public void setFuzzyMode(final net.minecraft.world.item.ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
@@ -159,7 +160,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
                     // drop core
-                    final net.minecraft.world.item.ItemStack extraB = ia.addItems(new ItemStack(coreItem));
+                    final ItemStack extraB = ia.addItems(new ItemStack(coreItem));
                     if (!extraB.isEmpty()) {
                         player.drop(extraB, false);
                     }
@@ -167,8 +168,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     // drop upgrades
                     final IItemHandler upgradesInventory = this.getUpgradesInventory(stack);
                     for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++) {
-                        final net.minecraft.world.item.ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
-                        final net.minecraft.world.item.ItemStack leftStack = ia.addItems(upgradeStack);
+                        final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
+                        final ItemStack leftStack = ia.addItems(upgradeStack);
                         if (!leftStack.isEmpty() && upgradeStack.getItem() instanceof IUpgradeModule) {
                             player.drop(upgradeStack, false);
                         }
@@ -191,19 +192,19 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player);
 
     @Override
-    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
                 ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
                 : InteractionResult.PASS;
     }
 
     @Override
-    public ItemStack getContainerItem(final net.minecraft.world.item.ItemStack itemStack) {
+    public ItemStack getContainerItem(final ItemStack itemStack) {
         return AEItems.EMPTY_STORAGE_CELL.stack();
     }
 
     @Override
-    public boolean hasContainerItem(final net.minecraft.world.item.ItemStack stack) {
+    public boolean hasContainerItem(final ItemStack stack) {
         return AEConfig.instance().isDisassemblyCraftingEnabled();
     }
 

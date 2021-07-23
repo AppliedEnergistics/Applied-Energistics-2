@@ -53,23 +53,23 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
     // the current power buffer.
     private double internalCurrentPower = 0;
-    private static final Set<net.minecraft.core.Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(net.minecraft.core.Direction.class));
-    private Set<net.minecraft.core.Direction> internalPowerSides = ALL_SIDES;
+    private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
+    private Set<Direction> internalPowerSides = ALL_SIDES;
     private final IEnergyStorage forgeEnergyAdapter;
     // Cache the optional to not continuously re-allocate it or the supplier
     private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-    public AEBasePoweredTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AEBasePoweredTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }
 
-    protected final Set<net.minecraft.core.Direction> getPowerSides() {
+    protected final Set<Direction> getPowerSides() {
         return this.internalPowerSides;
     }
 
-    protected void setPowerSides(final Set<net.minecraft.core.Direction> sides) {
+    protected void setPowerSides(final Set<Direction> sides) {
         this.internalPowerSides = ImmutableSet.copyOf(sides);
     }
 
@@ -225,7 +225,7 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, net.minecraft.core.Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == Capabilities.FORGE_ENERGY && this.getPowerSides().contains(facing)) {
             return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
         }

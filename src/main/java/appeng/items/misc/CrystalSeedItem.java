@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item.Properties;
@@ -74,7 +75,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
      */
     private final ItemLike grownItem;
 
-    public CrystalSeedItem(net.minecraft.world.item.Item.Properties properties, ItemLike grownItem) {
+    public CrystalSeedItem(Item.Properties properties, ItemLike grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
     }
@@ -102,7 +103,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public float getMultiplier(BlockState state, @Nullable Level world, @Nullable net.minecraft.core.BlockPos pos) {
+    public float getMultiplier(BlockState state, @Nullable Level world, @Nullable BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
@@ -124,15 +125,15 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
         super.appendHoverText(stack, world, lines, advancedTooltips);
     }
 
-    public net.minecraft.network.chat.Component getGrowthTooltipItem(ItemStack stack) {
+    public Component getGrowthTooltipItem(ItemStack stack) {
         final int progress = getGrowthTicks(stack);
         return new TextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
@@ -148,7 +149,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public net.minecraft.world.entity.Entity createEntity(final Level world, final Entity location, final ItemStack itemstack) {
+    public Entity createEntity(final Level world, final Entity location, final ItemStack itemstack) {
         final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
                 location.getZ(), itemstack);
 

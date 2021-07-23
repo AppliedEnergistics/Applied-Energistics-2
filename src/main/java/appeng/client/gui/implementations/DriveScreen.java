@@ -27,7 +27,7 @@ import appeng.container.implementations.DriveContainer;
 
 public class DriveScreen extends AEBaseScreen<DriveContainer> {
 
-    public DriveScreen(DriveContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public DriveScreen(DriveContainer container, Inventory playerInventory, Component title,
                        ScreenStyle style) {
         super(container, playerInventory, title, style);
 

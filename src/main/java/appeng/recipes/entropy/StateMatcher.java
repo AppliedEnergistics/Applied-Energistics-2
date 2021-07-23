@@ -27,7 +27,7 @@ public interface StateMatcher {
 
     void writeToPacket(FriendlyByteBuf buffer);
 
-    static StateMatcher read(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    static StateMatcher read(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         MatcherType type = buffer.readEnum(MatcherType.class);
 
         switch (type) {

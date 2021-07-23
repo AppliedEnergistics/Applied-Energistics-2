@@ -40,7 +40,7 @@ public class PaintSplotchesModel implements IModelGeometry<PaintSplotchesModel> 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         return new PaintSplotchesBakedModel(spriteGetter);
     }
 

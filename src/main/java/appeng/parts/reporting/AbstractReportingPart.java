@@ -69,7 +69,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
-    public AbstractReportingPart(final net.minecraft.world.item.ItemStack is) {
+    public AbstractReportingPart(final ItemStack is) {
         this(is, false);
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();

@@ -43,5 +43,5 @@ public interface IGuiItem {
      * @return Null if no GUI object is available.
      */
     @Nullable
-    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level world, @Nullable net.minecraft.core.BlockPos pos);
+    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level world, @Nullable BlockPos pos);
 }

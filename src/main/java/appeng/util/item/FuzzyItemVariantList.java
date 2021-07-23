@@ -108,7 +108,7 @@ class FuzzyItemVariantList extends ItemVariantList {
                 return Integer.compare(itemDamageB, itemDamageA);
             }
 
-            net.minecraft.world.item.ItemStack itemStackA = stackA.getDefinition();
+            ItemStack itemStackA = stackA.getDefinition();
             ItemStack itemStackB = stackB.getDefinition();
             Preconditions.checkState(itemStackA.getCount() == 1, "ItemStack#getCount() has to be 1");
             Preconditions.checkArgument(itemStackB.getCount() == 1, "ItemStack#getCount() has to be 1");

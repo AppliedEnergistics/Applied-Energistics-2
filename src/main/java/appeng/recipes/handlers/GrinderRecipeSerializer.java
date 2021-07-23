@@ -56,14 +56,14 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     public GrinderRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         String group = GsonHelper.getAsString(json, "group", "");
         JsonObject inputObj = GsonHelper.getAsJsonObject(json, "input");
-        net.minecraft.world.item.crafting.Ingredient ingredient = Ingredient.fromJson(inputObj);
+        Ingredient ingredient = Ingredient.fromJson(inputObj);
         int ingredientCount = 1;
         if (inputObj.has("count")) {
             ingredientCount = inputObj.get("count").getAsInt();
         }
 
         JsonObject result = GsonHelper.getAsJsonObject(json, "result");
-        net.minecraft.world.item.ItemStack primaryResult = net.minecraft.world.item.crafting.ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(result, "primary"));
+        ItemStack primaryResult = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(result, "primary"));
         JsonArray optionalResultsJson = GsonHelper.getAsJsonArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
@@ -89,15 +89,15 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     public GrinderRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 
         String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
-        net.minecraft.world.item.crafting.Ingredient ingredient = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
+        Ingredient ingredient = Ingredient.fromNetwork(buffer);
         int ingredientCount = buffer.readVarInt();
-        net.minecraft.world.item.ItemStack result = buffer.readItem();
+        ItemStack result = buffer.readItem();
         int turns = buffer.readVarInt();
         int optionalResultsCount = buffer.readVarInt();
         List<GrinderOptionalResult> optionalResults = new ArrayList<>(optionalResultsCount);
         for (int i = 0; i < optionalResultsCount; i++) {
             float chance = buffer.readFloat();
-            net.minecraft.world.item.ItemStack optionalResult = buffer.readItem();
+            ItemStack optionalResult = buffer.readItem();
             optionalResults.add(new GrinderOptionalResult(chance, optionalResult));
         }
 

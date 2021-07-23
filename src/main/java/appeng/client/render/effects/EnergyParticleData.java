@@ -31,7 +31,7 @@ import appeng.api.util.AEPartLocation;
 
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
-public class EnergyParticleData implements net.minecraft.core.particles.ParticleOptions {
+public class EnergyParticleData implements ParticleOptions {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
 
@@ -64,7 +64,7 @@ public class EnergyParticleData implements net.minecraft.core.particles.Particle
     };
 
     @Override
-    public net.minecraft.core.particles.ParticleType<?> getType() {
+    public ParticleType<?> getType() {
         return ParticleTypes.ENERGY;
     }
 

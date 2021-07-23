@@ -36,7 +36,7 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
  * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
  * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
  * the packet size for updates, the {@link CraftingStatusEntry#getItem() display item} for entries that were previously
- * sent to the client are set to {@link net.minecraft.world.item.ItemStack#EMPTY}.
+ * sent to the client are set to {@link ItemStack#EMPTY}.
  */
 public class CraftingStatus {
 
@@ -135,7 +135,7 @@ public class CraftingStatus {
             long activeCount = active != null ? active.getStackSize() : 0;
             long pendingCount = pending != null ? pending.getStackSize() : 0;
 
-            net.minecraft.world.item.ItemStack item = stack.getDefinition();
+            ItemStack item = stack.getDefinition();
             if (!full && changes.getSerial(stack) != null) {
                 // The item was already sent to the client, so we can skip the item stack
                 item = ItemStack.EMPTY;

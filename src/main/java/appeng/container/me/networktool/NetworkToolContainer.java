@@ -66,7 +66,7 @@ public class NetworkToolContainer extends AEBaseContainer {
 
     @Override
     public void broadcastChanges() {
-        final net.minecraft.world.item.ItemStack currentItem = this.getPlayerInventory().getSelected();
+        final ItemStack currentItem = this.getPlayerInventory().getSelected();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {

@@ -38,15 +38,15 @@ public class PowerStateInfoProvider implements IPartProbInfoProvider {
                              BlockState blockState, IProbeHitData data) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;
-            final net.minecraft.network.chat.Component tooltip = this.getToolTip(state.isActive(), state.isPowered());
+            final Component tooltip = this.getToolTip(state.isActive(), state.isPowered());
 
             probeInfo.text(tooltip);
         }
 
     }
 
-    private net.minecraft.network.chat.Component getToolTip(final boolean isActive, final boolean isPowered) {
-        final net.minecraft.network.chat.Component result;
+    private Component getToolTip(final boolean isActive, final boolean isPowered) {
+        final Component result;
 
         if (isActive && isPowered) {
             result = TheOneProbeText.DEVICE_ONLINE.getTranslationComponent();

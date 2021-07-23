@@ -56,16 +56,16 @@ class ColorApplicatorBakedModel implements BakedModel {
         // Put the tint indices in... Since this is an item model, we are ignoring rand
         this.generalQuads = this.fixQuadTint(null, texDark, texMedium, texBright);
         this.quadsBySide = new EnumMap<>(Direction.class);
-        for (Direction facing : net.minecraft.core.Direction.values()) {
+        for (Direction facing : Direction.values()) {
             this.quadsBySide.put(facing, this.fixQuadTint(facing, texDark, texMedium, texBright));
         }
     }
 
-    private List<net.minecraft.client.renderer.block.model.BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
-                                                                                  TextureAtlasSprite texBright) {
+    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
+                                        TextureAtlasSprite texBright) {
         List<BakedQuad> quads = this.baseModel.getQuads(null, facing, new Random(0), EmptyModelData.INSTANCE);
         List<BakedQuad> result = new ArrayList<>(quads.size());
-        for (net.minecraft.client.renderer.block.model.BakedQuad quad : quads) {
+        for (BakedQuad quad : quads) {
             int tint;
 
             if (quad.getSprite() == texDark) {
@@ -88,7 +88,7 @@ class ColorApplicatorBakedModel implements BakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         if (side == null) {
             return this.generalQuads;
         }
@@ -121,7 +121,7 @@ class ColorApplicatorBakedModel implements BakedModel {
     }
 
     @Override
-    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 

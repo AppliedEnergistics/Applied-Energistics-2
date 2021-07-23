@@ -45,20 +45,20 @@ import net.minecraft.world.level.material.Material;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
-    private static final net.minecraft.world.level.block.state.properties.BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
+    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public InterfaceBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, net.minecraft.world.level.block.state.BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
         return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 

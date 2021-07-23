@@ -137,8 +137,8 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestTileEntity
 
         @Nonnull
         @Override
-        public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, @Nonnull Random rand,
-                                                                                  @Nonnull IModelData extraData) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+                                        @Nonnull IModelData extraData) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }

@@ -124,7 +124,7 @@ public final class AEItems {
     ///
     /// PORTABLE CELLS
     ///
-    private static ItemDefinition<PortableCellItem> makePortableCell(net.minecraft.resources.ResourceLocation id, StorageTier tier) {
+    private static ItemDefinition<PortableCellItem> makePortableCell(ResourceLocation id, StorageTier tier) {
         return item(id, p -> new PortableCellItem(tier, p.stacksTo(1)));
     }
 
@@ -261,10 +261,10 @@ public final class AEItems {
         return Collections.unmodifiableList(ITEMS);
     }
 
-    private static ColoredItemDefinition createPaintBalls(Map<AEColor, net.minecraft.resources.ResourceLocation> ids, boolean lumen) {
+    private static ColoredItemDefinition createPaintBalls(Map<AEColor, ResourceLocation> ids, boolean lumen) {
         ColoredItemDefinition colors = new ColoredItemDefinition();
         for (AEColor color : AEColor.values()) {
-            net.minecraft.resources.ResourceLocation id = ids.get(color);
+            ResourceLocation id = ids.get(color);
             if (id == null) {
                 continue;
             }
@@ -274,12 +274,12 @@ public final class AEItems {
         return colors;
     }
 
-    static <T extends net.minecraft.world.item.Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory) {
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory) {
         return item(id, factory, CreativeTab.INSTANCE);
     }
 
-    static <T extends net.minecraft.world.item.Item> ItemDefinition<T> item(net.minecraft.resources.ResourceLocation id, Function<Properties, T> factory,
-                                                                            CreativeModeTab group) {
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory,
+                                                   CreativeModeTab group) {
 
         Properties p = new Properties().tab(group);
 

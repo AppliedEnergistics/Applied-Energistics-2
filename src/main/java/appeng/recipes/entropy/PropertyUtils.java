@@ -27,7 +27,7 @@ final class PropertyUtils {
     private PropertyUtils() {
     }
 
-    static net.minecraft.world.level.block.state.properties.Property<?> getRequiredProperty(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String name) {
+    static Property<?> getRequiredProperty(StateDefinition<?, ?> stateContainer, String name) {
         Objects.requireNonNull(stateContainer, "stateContainer must not be null");
 
         Property<?> property = stateContainer.getProperty(name);

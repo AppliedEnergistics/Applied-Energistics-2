@@ -108,7 +108,7 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
-    public JEIRecipePacket(final net.minecraft.resources.ResourceLocation recipeId, final boolean crafting) {
+    public JEIRecipePacket(final ResourceLocation recipeId, final boolean crafting) {
         FriendlyByteBuf data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
         this.configureWrite(data);
     }
@@ -184,12 +184,12 @@ public class JEIRecipePacket extends BasePacket {
         // Handle each slot
         for (int x = 0; x < craftMatrix.getSlots(); x++) {
             ItemStack currentItem = craftMatrix.getStackInSlot(x);
-            net.minecraft.world.item.crafting.Ingredient ingredient = ingredients.get(x);
+            Ingredient ingredient = ingredients.get(x);
 
             // prepare slots
             if (!currentItem.isEmpty()) {
                 // already the correct item? True, skip everything else
-                net.minecraft.world.item.ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
+                ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
 
                 // put away old item, if not correct
                 if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
@@ -200,7 +200,7 @@ public class JEIRecipePacket extends BasePacket {
                     if (out != null) {
                         currentItem = out.createItemStack();
                     } else {
-                        currentItem = net.minecraft.world.item.ItemStack.EMPTY;
+                        currentItem = ItemStack.EMPTY;
                     }
                 }
             }
@@ -233,7 +233,7 @@ public class JEIRecipePacket extends BasePacket {
             // If still nothing, search the player inventory.
             if (currentItem.isEmpty()) {
                 ItemStack[] matchingStacks = ingredient.getItems();
-                for (net.minecraft.world.item.ItemStack matchingStack : matchingStacks) {
+                for (ItemStack matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
                         AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
 
@@ -261,9 +261,9 @@ public class JEIRecipePacket extends BasePacket {
      * Will throw an {@link IllegalArgumentException} in case it has more than 9 or a shaped recipe is either wider or
      * higher than 3. ingredients.
      */
-    private net.minecraft.core.NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
+    private NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        net.minecraft.core.NonNullList<Ingredient> expandedIngredients = net.minecraft.core.NonNullList.withSize(9, Ingredient.EMPTY);
+        NonNullList<Ingredient> expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
@@ -298,9 +298,9 @@ public class JEIRecipePacket extends BasePacket {
      * @param is itemstack
      * @return is if it can be used, else EMPTY
      */
-    private ItemStack canUseInSlot(Ingredient ingredient, net.minecraft.world.item.ItemStack is) {
+    private ItemStack canUseInSlot(Ingredient ingredient, ItemStack is) {
         return Arrays.stream(ingredient.getItems()).filter(p -> p.sameItem(is)).findFirst()
-                .orElse(net.minecraft.world.item.ItemStack.EMPTY);
+                .orElse(ItemStack.EMPTY);
     }
 
     /**
@@ -353,8 +353,8 @@ public class JEIRecipePacket extends BasePacket {
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());
-                ItemHandlerUtil.setStackInSlot(output, 1, net.minecraft.world.item.ItemStack.EMPTY);
-                ItemHandlerUtil.setStackInSlot(output, 2, net.minecraft.world.item.ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
             }
         }
     }

@@ -36,7 +36,7 @@ public class MeteoriteSpawner {
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, net.minecraft.core.BlockPos startPos,
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, BlockPos startPos,
                                                                      float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
@@ -57,7 +57,7 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, net.minecraft.core.BlockPos pos, float coreRadius,
+    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, BlockPos pos, float coreRadius,
                                                      CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
@@ -91,7 +91,7 @@ public class MeteoriteSpawner {
         return false;
     }
 
-    private int countBlockWithSkyLight(LevelReader w, net.minecraft.core.BlockPos pos) {
+    private int countBlockWithSkyLight(LevelReader w, BlockPos pos) {
         int skyMode = 0;
 
         MutableBlockPos testPos = new MutableBlockPos();
@@ -120,7 +120,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
-                    net.minecraft.world.level.block.Block block = w.getBlockState(testPos).getBlock();
+                    Block block = w.getBlockState(testPos).getBlock();
                     realValidBlocks++;
                 }
             }

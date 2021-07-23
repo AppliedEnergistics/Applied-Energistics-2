@@ -70,11 +70,11 @@ public class AppEngSlot extends Slot {
     }
 
     public void clearStack() {
-        ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, net.minecraft.world.item.ItemStack.EMPTY);
+        ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, ItemStack.EMPTY);
     }
 
     @Override
-    public boolean mayPlace(@Nonnull final net.minecraft.world.item.ItemStack stack) {
+    public boolean mayPlace(@Nonnull final ItemStack stack) {
         if (this.isSlotEnabled()) {
             return this.itemHandler.isItemValid(this.invSlot, stack);
         }
@@ -85,11 +85,11 @@ public class AppEngSlot extends Slot {
     @Nonnull
     public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         if (this.itemHandler.getSlots() <= this.getSlotIndex()) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         // Some slots may want to display a different stack in the GUI, which we solve by
@@ -133,7 +133,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public int getMaxStackSize(@Nonnull net.minecraft.world.item.ItemStack stack) {
+    public int getMaxStackSize(@Nonnull ItemStack stack) {
         return Math.min(this.getMaxStackSize(), stack.getMaxStackSize());
     }
 
@@ -170,7 +170,7 @@ public class AppEngSlot extends Slot {
      * This method can be overridden in a subclass to show a specific item stack in the UI when this slot is being
      * rendered.
      */
-    public net.minecraft.world.item.ItemStack getDisplayStack() {
+    public ItemStack getDisplayStack() {
         return this.itemHandler.getStackInSlot(this.invSlot);
     }
 

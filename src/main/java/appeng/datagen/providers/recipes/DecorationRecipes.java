@@ -70,7 +70,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     private void slabRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition slabs) {
         Block inputBlock = block.block();
-        net.minecraft.world.level.block.Block outputBlock = slabs.block();
+        Block outputBlock = slabs.block();
 
         ShapedRecipeBuilder.shaped(slabs.block(), 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
@@ -82,22 +82,22 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
     }
 
     private void stairRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
-        net.minecraft.world.level.block.Block inputBlock = block.block();
+        Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        net.minecraft.data.recipes.ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+        ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/stairs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(net.minecraft.world.item.crafting.Ingredient.of(inputBlock), outputBlock)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
                 .unlocks(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
     private void wallRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition wall) {
-        net.minecraft.world.level.block.Block inputBlock = block.block();
-        net.minecraft.world.level.block.Block outputBlock = wall.block();
+        Block inputBlock = block.block();
+        Block outputBlock = wall.block();
 
         ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
@@ -109,7 +109,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
 
     }
 
-    private net.minecraft.resources.ResourceLocation prefix(String prefix, net.minecraft.resources.ResourceLocation id) {
+    private ResourceLocation prefix(String prefix, ResourceLocation id) {
         return new ResourceLocation(
                 id.getNamespace(),
                 prefix + id.getPath());

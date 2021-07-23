@@ -39,7 +39,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         identity.setIdentity();
     }
 
-    private final com.mojang.math.Vector4f storage = new Vector4f();
+    private final Vector4f storage = new Vector4f();
     private Matrix4f matrix;
     private boolean identityMatrix;
 
@@ -47,7 +47,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         super();
     }
 
-    public QuadMatrixTransformer(IVertexConsumer parent, com.mojang.math.Matrix4f matrix) {
+    public QuadMatrixTransformer(IVertexConsumer parent, Matrix4f matrix) {
         super(parent);
         this.matrix = matrix;
         this.identityMatrix = matrix.equals(identity);

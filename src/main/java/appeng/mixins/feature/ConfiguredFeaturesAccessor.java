@@ -30,7 +30,7 @@ public interface ConfiguredFeaturesAccessor {
 
     @Invoker("register")
     static <FC extends FeatureConfiguration> ConfiguredFeature<FC, ?> register(String id,
-                                                                               net.minecraft.world.level.levelgen.feature.ConfiguredFeature<FC, ?> configuredFeature) {
+                                                                               ConfiguredFeature<FC, ?> configuredFeature) {
         throw new AssertionError();
     }
 

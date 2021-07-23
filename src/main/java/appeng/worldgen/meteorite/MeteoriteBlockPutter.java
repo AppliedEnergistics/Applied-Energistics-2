@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 
 public class MeteoriteBlockPutter {
-    public boolean put(final LevelAccessor w, net.minecraft.core.BlockPos pos, final net.minecraft.world.level.block.state.BlockState blk) {
+    public boolean put(final LevelAccessor w, BlockPos pos, final BlockState blk) {
         final BlockState original = w.getBlockState(pos);
 
         if (original.getBlock() == Blocks.BEDROCK || original == blk) {

@@ -30,5 +30,5 @@ import net.minecraft.world.phys.HitResult;
  */
 public interface INetworkToolAgent {
 
-    boolean showNetworkInfo(net.minecraft.world.phys.HitResult where);
+    boolean showNetworkInfo(HitResult where);
 }

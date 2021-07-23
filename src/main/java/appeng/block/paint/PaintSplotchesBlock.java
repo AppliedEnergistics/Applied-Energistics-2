@@ -51,12 +51,12 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return Shapes.empty();
     }
 
     @Override
-    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
 
@@ -66,14 +66,14 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public void handleRain(final Level w, final net.minecraft.core.BlockPos pos) {
+    public void handleRain(final Level w, final BlockPos pos) {
         if (!w.isClientSide()) {
             w.removeBlock(pos, false);
         }
     }
 
     @Override
-    public int getLightValue(final net.minecraft.world.level.block.state.BlockState state, final BlockGetter w, final net.minecraft.core.BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockGetter w, final BlockPos pos) {
         final PaintSplotchesTileEntity tp = this.getTileEntity(w, pos);
 
         if (tp != null) {
@@ -84,17 +84,17 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isAir(final BlockState state, final BlockGetter world, final net.minecraft.core.BlockPos pos) {
+    public boolean isAir(final BlockState state, final BlockGetter world, final BlockPos pos) {
         return true;
     }
 
     @Override
-    public boolean canBeReplaced(net.minecraft.world.level.block.state.BlockState state, BlockPlaceContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         return true;
     }
 
     @Override
-    public boolean canBeReplaced(net.minecraft.world.level.block.state.BlockState state, Fluid fluid) {
+    public boolean canBeReplaced(BlockState state, Fluid fluid) {
         return true;
     }
 

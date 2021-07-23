@@ -65,7 +65,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
 
     @Override
     public boolean canClick(final Player player) {
-        final net.minecraft.world.item.ItemStack mouseStack = player.inventory.getCarried();
+        final ItemStack mouseStack = player.inventory.getCarried();
         return mouseStack.isEmpty()
                 || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
     }
@@ -83,7 +83,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return Collections.singletonList(new TranslatableComponent(fluid.getFluidStack().getTranslationKey()));

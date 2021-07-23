@@ -37,7 +37,7 @@ public interface IClientHelper {
      * @param handler Cell handler.
      * @param lines   List of lines to add to.
      */
-    <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<net.minecraft.network.chat.Component> lines);
+    <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<Component> lines);
 
     /**
      * A helper to work with clientside related tasks for cells.

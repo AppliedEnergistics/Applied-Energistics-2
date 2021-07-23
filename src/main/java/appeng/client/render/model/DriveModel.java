@@ -44,20 +44,20 @@ import appeng.core.api.client.ApiCellModelRegistry;
 
 public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
-    private static final net.minecraft.resources.ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_base");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_EMPTY = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         final ICellModelRegistry cellRegistry = Api.instance().client().cells();
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
-        for (Entry<net.minecraft.world.item.Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
+        for (Entry<Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
             BakedModel cellModel = bakery.getBakedModel(entry.getValue(), modelTransform, spriteGetter);
             cellModels.put(entry.getKey(), cellModel);
         }
@@ -71,9 +71,9 @@ public class DriveModel implements BasicUnbakedModel<DriveModel> {
     }
 
     @Override
-    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         ICellModelRegistry cells = Api.instance().client().cells();
-        return ImmutableSet.<net.minecraft.resources.ResourceLocation>builder().add(cells.getDefaultModel())
+        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel())
                 .addAll(ApiCellModelRegistry.getModels()).addAll(cells.models().values()).build();
     }
 

@@ -40,12 +40,12 @@ import net.minecraft.core.Direction;
 public class DummyFluidBakedModel implements BakedModel {
     private final ImmutableList<BakedQuad> quads;
 
-    public DummyFluidBakedModel(ImmutableList<net.minecraft.client.renderer.block.model.BakedQuad> quads) {
+    public DummyFluidBakedModel(ImmutableList<BakedQuad> quads) {
         this.quads = quads;
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         return this.quads;
     }
 

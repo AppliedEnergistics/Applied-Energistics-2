@@ -94,7 +94,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
         return this.chunks.get(world).elementSet();
     }
 
-    public Map<LevelAccessor, Multiset<net.minecraft.world.level.ChunkPos>> getChunks() {
+    public Map<LevelAccessor, Multiset<ChunkPos>> getChunks() {
         return this.chunks;
     }
 
@@ -106,7 +106,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * @return
      */
     private boolean addChunk(LevelAccessor world, BlockPos pos) {
-        final net.minecraft.world.level.ChunkPos position = new ChunkPos(pos);
+        final ChunkPos position = new ChunkPos(pos);
 
         if (!this.getChunks(world).contains(position)) {
             this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerLevel) world, position));
@@ -126,7 +126,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * @return
      */
     private boolean removeChunk(LevelAccessor world, BlockPos pos) {
-        final net.minecraft.world.level.ChunkPos position = new net.minecraft.world.level.ChunkPos(pos);
+        final ChunkPos position = new ChunkPos(pos);
         boolean ret = this.getChunks(world).remove(position);
 
         if (ret && !this.getChunks(world).contains(position)) {
@@ -138,7 +138,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
         return ret;
     }
 
-    private Multiset<net.minecraft.world.level.ChunkPos> getChunks(LevelAccessor world) {
+    private Multiset<ChunkPos> getChunks(LevelAccessor world) {
         return this.chunks.computeIfAbsent(world, w -> HashMultiset.create());
     }
 

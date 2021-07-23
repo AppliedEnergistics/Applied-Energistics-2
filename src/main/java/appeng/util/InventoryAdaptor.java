@@ -38,7 +38,7 @@ import appeng.util.inv.ItemSlot;
  * import/export buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
-    public static InventoryAdaptor getAdaptor(final BlockEntity te, final net.minecraft.core.Direction d) {
+    public static InventoryAdaptor getAdaptor(final BlockEntity te, final Direction d) {
         if (te != null) {
             LazyOptional<IItemHandler> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
 
@@ -60,17 +60,17 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
     // return what was extracted.
     public abstract ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination);
 
-    public abstract net.minecraft.world.item.ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
+    public abstract ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
 
     // return what was extracted.
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
             IInventoryDestination destination);
 
-    public abstract net.minecraft.world.item.ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
+    public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
                                                                              IInventoryDestination destination);
 
     // return what isn't used...
-    public abstract net.minecraft.world.item.ItemStack addItems(ItemStack toBeAdded);
+    public abstract ItemStack addItems(ItemStack toBeAdded);
 
     public abstract ItemStack simulateAdd(ItemStack toBeSimulated);
 

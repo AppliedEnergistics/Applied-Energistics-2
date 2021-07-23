@@ -178,7 +178,7 @@ public class ApiStorage implements IStorageHelper {
                 return AEFluidStack.fromFluidStack((FluidStack) input);
             }
             if (input instanceof ItemStack) {
-                final net.minecraft.world.item.ItemStack is = (net.minecraft.world.item.ItemStack) input;
+                final ItemStack is = (ItemStack) input;
                 if (is.getItem() instanceof FluidDummyItem) {
                     return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
                 } else {

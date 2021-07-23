@@ -31,7 +31,7 @@ import appeng.util.Platform;
 
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
-    public WirelessScreen(WirelessContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public WirelessScreen(WirelessContainer container, Inventory playerInventory, Component title,
                           ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
@@ -41,8 +41,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        net.minecraft.network.chat.Component rangeText = TextComponent.EMPTY;
-        net.minecraft.network.chat.Component energyUseText = TextComponent.EMPTY;
+        Component rangeText = TextComponent.EMPTY;
+        Component energyUseText = TextComponent.EMPTY;
         if (menu.getRange() > 0) {
             double rangeBlocks = menu.getRange() / 10.0;
             rangeText = GuiText.WirelessRange.text(rangeBlocks);

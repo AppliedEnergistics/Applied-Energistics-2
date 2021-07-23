@@ -51,7 +51,7 @@ public interface ICraftingPatternDetails {
      *
      * @return if an item can be used in the specific slot for this pattern.
      */
-    boolean isValidItemForSlot(int slotIndex, net.minecraft.world.item.ItemStack itemStack, Level world);
+    boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, Level world);
 
     /**
      * @return if this pattern is for a Vanilla {@link RecipeType#CRAFTING crafting
@@ -132,7 +132,7 @@ public interface ICraftingPatternDetails {
      *
      * @return the crafted ( work bench ) item.
      */
-    net.minecraft.world.item.ItemStack getOutput(CraftingContainer craftingInv, Level world);
+    ItemStack getOutput(CraftingContainer craftingInv, Level world);
 
     /**
      * Get the priority of this pattern

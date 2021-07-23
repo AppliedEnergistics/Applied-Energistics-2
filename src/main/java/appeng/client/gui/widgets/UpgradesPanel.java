@@ -52,7 +52,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     private static final Blitter BACKGROUND = Blitter.texture("guis/extra_panels.png", 128, 128);
     private static final Blitter INNER_CORNER = BACKGROUND.copy().src(12, 33, SLOT_SIZE, SLOT_SIZE);
 
-    private final List<net.minecraft.world.inventory.Slot> slots;
+    private final List<Slot> slots;
 
     // The screen origin in window space (used to layout slots)
     private Point screenOrigin = Point.ZERO;
@@ -61,13 +61,13 @@ public final class UpgradesPanel implements ICompositeWidget {
     private int x;
     private int y;
 
-    private final Supplier<List<net.minecraft.network.chat.Component>> tooltipSupplier;
+    private final Supplier<List<Component>> tooltipSupplier;
 
-    public UpgradesPanel(List<net.minecraft.world.inventory.Slot> slots) {
+    public UpgradesPanel(List<Slot> slots) {
         this(slots, Collections::emptyList);
     }
 
-    public UpgradesPanel(List<net.minecraft.world.inventory.Slot> slots, Supplier<List<net.minecraft.network.chat.Component>> tooltipSupplier) {
+    public UpgradesPanel(List<Slot> slots, Supplier<List<Component>> tooltipSupplier) {
         this.slots = slots;
         this.tooltipSupplier = tooltipSupplier;
     }
@@ -108,7 +108,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         int slotOriginX = this.x + PADDING;
         int slotOriginY = this.y + PADDING;
 
-        for (net.minecraft.world.inventory.Slot slot : slots) {
+        for (Slot slot : slots) {
             if (!slot.isActive()) {
                 continue;
             }
@@ -198,7 +198,7 @@ public final class UpgradesPanel implements ICompositeWidget {
             return null;
         }
 
-        List<net.minecraft.network.chat.Component> tooltip = this.tooltipSupplier.get();
+        List<Component> tooltip = this.tooltipSupplier.get();
         if (tooltip.isEmpty()) {
             return null;
         }

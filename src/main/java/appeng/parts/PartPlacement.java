@@ -75,7 +75,7 @@ public class PartPlacement {
     private final ThreadLocal<Object> placing = new ThreadLocal<>();
     private boolean wasCanceled = false;
 
-    public static InteractionResult place(final net.minecraft.world.item.ItemStack held, final net.minecraft.core.BlockPos pos, Direction side,
+    public static InteractionResult place(final ItemStack held, final BlockPos pos, Direction side,
                                           final Player player, final InteractionHand hand, final Level world, PlaceType pass, final int depth) {
         if (depth > 3) {
             return InteractionResult.FAIL;
@@ -83,7 +83,7 @@ public class PartPlacement {
 
         // FIXME: This was changed alot.
         final LookDirection dir = InteractionUtil.getPlayerRay(player);
-        ClipContext rtc = new ClipContext(dir.getA(), dir.getB(), net.minecraft.world.level.ClipContext.Block.OUTLINE,
+        ClipContext rtc = new ClipContext(dir.getA(), dir.getB(), ClipContext.Block.OUTLINE,
                 Fluid.NONE, player);
         final BlockHitResult mop = world.clip(rtc);
         BlockPlaceContext useContext = new BlockPlaceContext(new UseOnContext(player, hand, mop));
@@ -202,7 +202,7 @@ public class PartPlacement {
 
         final BlockDefinition multiPart = AEBlocks.MULTI_PART;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
-            net.minecraft.core.Direction offset = null;
+            Direction offset = null;
 
             BlockState blockState = world.getBlockState(pos);
             // FIXME isReplacable on the block state allows for more control, but requires
@@ -223,7 +223,7 @@ public class PartPlacement {
 
             ItemStack multiPartStack = multiPart.stack();
             Block multiPartBlock = multiPart.block();
-            BlockItem multiPartBlockItem = (net.minecraft.world.item.BlockItem) multiPart.asItem();
+            BlockItem multiPartBlockItem = (BlockItem) multiPart.asItem();
 
             boolean hostIsNotPresent = host == null;
             BlockState multiPartBlockState = multiPartBlock.defaultBlockState();
@@ -264,7 +264,7 @@ public class PartPlacement {
             if (pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM) {
                 te_pos = pos.relative(side);
 
-                final net.minecraft.world.level.block.state.BlockState blkState = world.getBlockState(te_pos);
+                final BlockState blkState = world.getBlockState(te_pos);
 
                 // FIXME: this is always true (host was de-referenced above)
                 if (blkState.isAir(world, te_pos) || blkState.canBeReplaced(useContext) || host != null) {
@@ -332,7 +332,7 @@ public class PartPlacement {
         }
     }
 
-    public static IFacadePart isFacade(final net.minecraft.world.item.ItemStack held, final AEPartLocation side) {
+    public static IFacadePart isFacade(final ItemStack held, final AEPartLocation side) {
         if (held.getItem() instanceof IFacadeItem) {
             return ((IFacadeItem) held.getItem()).createPartFromItemStack(held, side);
         }
@@ -355,7 +355,7 @@ public class PartPlacement {
         if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().level.isClientSide) {
             // re-check to see if this event was already channeled, cause these two events
             // are really stupid...
-            final net.minecraft.world.phys.HitResult mop = InteractionUtil.rayTrace(event.getPlayer(), true, false);
+            final HitResult mop = InteractionUtil.rayTrace(event.getPlayer(), true, false);
             final Minecraft mc = Minecraft.getInstance();
 
             final float f = 1.0F;

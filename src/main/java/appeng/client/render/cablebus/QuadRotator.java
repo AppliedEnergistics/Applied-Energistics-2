@@ -46,7 +46,7 @@ public class QuadRotator {
     private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
     public List<BakedQuad> rotateQuads(List<BakedQuad> quads, Direction newForward, Direction newUp) {
-        if (newForward == net.minecraft.core.Direction.NORTH && newUp == Direction.UP) {
+        if (newForward == Direction.NORTH && newUp == Direction.UP) {
             return quads; // This is the default orientation
         }
         FacingToRotation rotation = getRotation(newForward, newUp);
@@ -54,7 +54,7 @@ public class QuadRotator {
             return quads;
         }
 
-        List<net.minecraft.client.renderer.block.model.BakedQuad> result = new ArrayList<>(quads.size());
+        List<BakedQuad> result = new ArrayList<>(quads.size());
 
         CachedFormat format = CachedFormat.lookup(DefaultVertexFormat.BLOCK);
         BakedPipeline pipeline = pipelines.get();
@@ -80,13 +80,13 @@ public class QuadRotator {
         return result;
     }
 
-    private FacingToRotation getRotation(net.minecraft.core.Direction forward, Direction up) {
+    private FacingToRotation getRotation(Direction forward, Direction up) {
         // Sanitize forward/up
         if (forward.getAxis() == up.getAxis()) {
             if (up.getAxis() == Axis.Y) {
-                up = net.minecraft.core.Direction.NORTH;
+                up = Direction.NORTH;
             } else {
-                up = net.minecraft.core.Direction.UP;
+                up = Direction.UP;
             }
         }
 

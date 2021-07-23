@@ -40,12 +40,12 @@ import appeng.core.sync.BasePacket;
 public class NetworkHandler {
     private static NetworkHandler instance;
 
-    private final net.minecraft.resources.ResourceLocation myChannelName;
+    private final ResourceLocation myChannelName;
 
     private final IPacketHandler clientHandler;
     private final IPacketHandler serverHandler;
 
-    public NetworkHandler(final net.minecraft.resources.ResourceLocation channelName) {
+    public NetworkHandler(final ResourceLocation channelName) {
         EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
                 .networkProtocolVersion(() -> "1").clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true)
                 .eventNetworkChannel();
@@ -104,7 +104,7 @@ public class NetworkHandler {
         }
     }
 
-    public net.minecraft.resources.ResourceLocation getChannel() {
+    public ResourceLocation getChannel() {
         return this.myChannelName;
     }
 

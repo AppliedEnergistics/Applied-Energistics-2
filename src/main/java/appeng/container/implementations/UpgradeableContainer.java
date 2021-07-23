@@ -97,7 +97,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     }
 
     @Nonnull
-    public net.minecraft.network.chat.Component getToolboxName() {
+    public Component getToolboxName() {
         return this.tbInventory != null ? this.tbInventory.getItemStack().getHoverName()
                 : TextComponent.EMPTY;
     }
@@ -164,7 +164,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (net.minecraft.world.item.ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
+                    if (ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
                         this.getPlayerInventory().setItem(this.tbSlot,
                                 this.tbInventory.getItemStack());
                     } else {

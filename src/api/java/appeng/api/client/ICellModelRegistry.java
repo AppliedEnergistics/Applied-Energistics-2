@@ -45,7 +45,7 @@ public interface ICellModelRegistry {
      * You are responsible for ensuring that the given model is actually loaded by the game. See
      * {@link net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
-     * This method only maps an {@link Item} to a {@link net.minecraft.resources.ResourceLocation} which can be looked up from the
+     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.
      * 
      * Will throw an exception in case a model is already registered for an item.
@@ -53,19 +53,19 @@ public interface ICellModelRegistry {
      * For examples look at our cell part models within the drive model directory.
      * 
      * @param item  The cell item
-     * @param model The {@link net.minecraft.resources.ResourceLocation} representing the model.
+     * @param model The {@link ResourceLocation} representing the model.
      */
     void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
 
     /**
-     * The {@link net.minecraft.resources.ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
+     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
      * drive or similar.
      * 
      * @param item
      * @return null, if no model is registered.
      */
     @Nullable
-    net.minecraft.resources.ResourceLocation model(@Nonnull Item item);
+    ResourceLocation model(@Nonnull Item item);
 
     /**
      * An unmodifiable map of all registered mappings.
@@ -73,12 +73,12 @@ public interface ICellModelRegistry {
      * @return
      */
     @Nonnull
-    Map<net.minecraft.world.item.Item, net.minecraft.resources.ResourceLocation> models();
+    Map<Item, ResourceLocation> models();
 
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
     @Nonnull
-    net.minecraft.resources.ResourceLocation getDefaultModel();
+    ResourceLocation getDefaultModel();
 
 }

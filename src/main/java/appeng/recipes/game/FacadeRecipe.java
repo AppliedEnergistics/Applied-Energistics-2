@@ -56,7 +56,7 @@ public final class FacadeRecipe extends CustomRecipe {
                 && inv.getItem(8).isEmpty()) {
             if (this.anchor.isSameAs(inv.getItem(1)) && this.anchor.isSameAs(inv.getItem(3))
                     && this.anchor.isSameAs(inv.getItem(5)) && this.anchor.isSameAs(inv.getItem(7))) {
-                final net.minecraft.world.item.ItemStack facades = this.facade.createFacadeForItem(inv.getItem(4), !createFacade);
+                final ItemStack facades = this.facade.createFacadeForItem(inv.getItem(4), !createFacade);
                 if (!facades.isEmpty() && createFacade) {
                     facades.setCount(4);
                 }
@@ -86,7 +86,7 @@ public final class FacadeRecipe extends CustomRecipe {
     public static RecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
             SERIALIZER = new SimpleRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
-            SERIALIZER.setRegistryName(new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "facade"));
+            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade"));
         }
         return SERIALIZER;
     }

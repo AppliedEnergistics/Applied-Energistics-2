@@ -67,7 +67,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
     private final CraftingContainer crafting = new CraftingContainer(new ContainerNull(), 3, 3);
     private final CraftingContainer testFrame = new CraftingContainer(new ContainerNull(), 3, 3);
-    private final net.minecraft.world.item.ItemStack correctOutput;
+    private final ItemStack correctOutput;
     private final CraftingRecipe standardRecipe;
     private final List<IAEItemStack> inputs;
     private final List<IAEItemStack> outputs;
@@ -86,7 +86,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
                 "itemStack is not a ICraftingPatternItem");
 
         final EncodedPatternItem templateItem = (EncodedPatternItem) is.getItem();
-        final net.minecraft.world.item.ItemStack itemStack = is.createItemStack();
+        final ItemStack itemStack = is.createItemStack();
 
         final List<IAEItemStack> ingredients = templateItem.getIngredients(itemStack);
         final List<IAEItemStack> products = templateItem.getProducts(itemStack);
@@ -127,7 +127,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
                     .createStack(this.correctOutput));
         } else {
             this.standardRecipe = null;
-            this.correctOutput = net.minecraft.world.item.ItemStack.EMPTY;
+            this.correctOutput = ItemStack.EMPTY;
 
             for (int x = 0; x < PROCESSING_OUTPUT_LIMIT; x++) {
                 final IAEItemStack ais = products.get(x);
@@ -145,7 +145,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         this.outputs = this.condenseStacks(out);
     }
 
-    private void markItemAs(final int slotIndex, final net.minecraft.world.item.ItemStack i, final TestStatus b) {
+    private void markItemAs(final int slotIndex, final ItemStack i, final TestStatus b) {
         if (b == TestStatus.TEST || i.hasTag()) {
             return;
         }
@@ -239,7 +239,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         return this.substituteInputs.computeIfAbsent(slot, value -> {
-            net.minecraft.world.item.ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
+            ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
             List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
             for (ItemStack matchingStack : matchingStacks) {
                 itemList.add(AEItemStack.fromItemStack(matchingStack));
@@ -253,13 +253,13 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     /**
-     * Gets the {@link net.minecraft.world.item.crafting.Ingredient} from the actual used recipe for a given slot-index into {@link #getSparseInputs()}.
+     * Gets the {@link Ingredient} from the actual used recipe for a given slot-index into {@link #getSparseInputs()}.
      * <p/>
      * Conversion is needed for two reasons: our sparse ingredients are always organized in a 3x3 grid, while Vanilla's
      * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
      * shift the actual recipe input to the right and down.
      */
-    private net.minecraft.world.item.crafting.Ingredient getRecipeIngredient(int slot) {
+    private Ingredient getRecipeIngredient(int slot) {
 
         if (standardRecipe instanceof IShapedRecipe) {
             IShapedRecipe<?> shapedRecipe = (IShapedRecipe<?>) standardRecipe;
@@ -270,7 +270,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
     }
 
-    private net.minecraft.world.item.crafting.Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+    private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
         // Compute the offset of the user's input vs. crafting grid origin
         // Which is >0 if they have empty rows above or to the left of their input
         int topOffset = 0;
@@ -315,7 +315,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             }
         }
 
-        net.minecraft.core.NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
+        NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
         if (ingredientIndex < ingredients.size()) {
             return ingredients.get(ingredientIndex);
         }
@@ -331,7 +331,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         for (int x = 0; x < craftingInv.getContainerSize(); x++) {
             if (!this.isValidItemForSlot(x, craftingInv.getItem(x), w)) {
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             }
         }
 
@@ -339,10 +339,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             return this.sparseOutputs[0].createItemStack();
         }
 
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
-    private TestStatus getStatus(final int slotIndex, final net.minecraft.world.item.ItemStack i) {
+    private TestStatus getStatus(final int slotIndex, final ItemStack i) {
         if (this.crafting.getItem(slotIndex).isEmpty()) {
             return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
         }
@@ -437,9 +437,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this(slot, i.getItem(), i.getDamageValue());
         }
 
-        public TestLookup(final int slot, final net.minecraft.world.item.Item item, final int dmg) {
+        public TestLookup(final int slot, final Item item, final int dmg) {
             this.slot = slot;
-            this.ref = dmg << Platform.DEF_OFFSET | net.minecraft.world.item.Item.getId(item) & 0xffff;
+            this.ref = dmg << Platform.DEF_OFFSET | Item.getId(item) & 0xffff;
             final int offset = 3 * slot;
             this.hash = this.ref << offset | this.ref >> offset + 32;
         }

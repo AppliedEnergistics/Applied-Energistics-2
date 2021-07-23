@@ -49,7 +49,7 @@ public final class InitP2PAttunements {
         /*
          * light!
          */
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.TORCH), TunnelType.LIGHT);
+        p2p.addNewAttunement(new ItemStack(Blocks.TORCH), TunnelType.LIGHT);
         p2p.addNewAttunement(new ItemStack(Blocks.GLOWSTONE), TunnelType.LIGHT);
 
         /*
@@ -82,14 +82,14 @@ public final class InitP2PAttunements {
         /*
          * attune based on most redstone base items.
          */
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.REDSTONE), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.REPEATER), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Items.REDSTONE), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Items.REPEATER), TunnelType.REDSTONE);
         p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_LAMP), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.COMPARATOR), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.DAYLIGHT_DETECTOR), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.level.block.Blocks.REDSTONE_WIRE), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.REDSTONE_BLOCK), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.LEVER), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Blocks.COMPARATOR), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Blocks.DAYLIGHT_DETECTOR), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_WIRE), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_BLOCK), TunnelType.REDSTONE);
+        p2p.addNewAttunement(new ItemStack(Blocks.LEVER), TunnelType.REDSTONE);
 
         /*
          * attune based on lots of random item related stuff
@@ -101,9 +101,9 @@ public final class InitP2PAttunements {
         addNewAttunement(p2p, AEParts.IMPORT_BUS, TunnelType.ITEM);
         addNewAttunement(p2p, AEParts.EXPORT_BUS, TunnelType.ITEM);
 
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.HOPPER), TunnelType.ITEM);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Blocks.CHEST), TunnelType.ITEM);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.level.block.Blocks.TRAPPED_CHEST), TunnelType.ITEM);
+        p2p.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
+        p2p.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
+        p2p.addNewAttunement(new ItemStack(Blocks.TRAPPED_CHEST), TunnelType.ITEM);
         // FIXME p2p.addNewAttunement( p2p.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
         // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
         // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); //
@@ -122,10 +122,10 @@ public final class InitP2PAttunements {
         /*
          * attune based on lots of random item related stuff
          */
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.LAVA_BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(Items.MILK_BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WATER_BUCKET), TunnelType.FLUID);
+        p2p.addNewAttunement(new ItemStack(Items.BUCKET), TunnelType.FLUID);
+        p2p.addNewAttunement(new ItemStack(Items.LAVA_BUCKET), TunnelType.FLUID);
+        p2p.addNewAttunement(new ItemStack(Items.MILK_BUCKET), TunnelType.FLUID);
+        p2p.addNewAttunement(new ItemStack(Items.WATER_BUCKET), TunnelType.FLUID);
         // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
         // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
         // FIXME p2p.addNewAttunement( p2p.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
@@ -174,7 +174,7 @@ public final class InitP2PAttunements {
     }
 
     @Nonnull
-    private net.minecraft.world.item.ItemStack getModItem(final String modID, final String name) {
+    private ItemStack getModItem(final String modID, final String name) {
 
         final Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(modID + ":" + name));
 

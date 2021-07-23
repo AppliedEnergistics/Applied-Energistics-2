@@ -54,5 +54,5 @@ public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
     /**
      * @return a null or the name of the cpu.
      */
-    net.minecraft.network.chat.Component getName();
+    Component getName();
 }

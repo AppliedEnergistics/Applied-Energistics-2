@@ -27,7 +27,7 @@ import appeng.container.implementations.ChestContainer;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
-    public ChestScreen(ChestContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public ChestScreen(ChestContainer container, Inventory playerInventory, Component title,
                        ScreenStyle style) {
         super(container, playerInventory, title, style);
 

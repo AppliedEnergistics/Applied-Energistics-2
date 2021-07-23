@@ -40,7 +40,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     private EditBox name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public QuartzKnifeScreen(QuartzKnifeContainer container, Inventory playerInventory, Component title,
                              ScreenStyle style) {
         super(container, playerInventory, title, style);
     }

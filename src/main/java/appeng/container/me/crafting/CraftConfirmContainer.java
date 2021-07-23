@@ -92,7 +92,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     @GuiSync(2)
     public int cpuCoProcessors;
     @GuiSync(7)
-    public net.minecraft.network.chat.Component cpuName;
+    public Component cpuName;
 
     private CraftingPlanSummary plan;
 
@@ -245,7 +245,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         return this.cpuCoProcessors;
     }
 
-    public net.minecraft.network.chat.Component getName() {
+    public Component getName() {
         return this.cpuName;
     }
 

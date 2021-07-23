@@ -43,7 +43,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        ItemProperties.register(colorApplicatorItem, new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "colored"),
+        ItemProperties.register(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
                 (itemStack, world, entity) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to

@@ -49,7 +49,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     private short storedItems;
     private int storedItemCount;
     protected IItemList<T> cellItems;
-    private final net.minecraft.world.item.ItemStack i;
+    private final ItemStack i;
     protected final IStorageCell<T> cellType;
     protected final int itemsPerByte;
     private boolean isPersisted = true;
@@ -191,7 +191,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStack() {
+    public ItemStack getItemStack() {
         return this.i;
     }
 

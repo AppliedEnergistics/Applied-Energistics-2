@@ -37,7 +37,7 @@ public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level w, net.minecraft.core.BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
+    public InteractionResult onActivated(Level w, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
                                          BlockHitResult hit) {
 
         BlockEntity tileEntity = w.getBlockEntity(pos);

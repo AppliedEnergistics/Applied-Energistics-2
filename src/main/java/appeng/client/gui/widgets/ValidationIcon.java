@@ -34,7 +34,7 @@ import appeng.client.gui.Icon;
  */
 public class ValidationIcon extends IconButton {
 
-    private final List<net.minecraft.network.chat.Component> tooltip = new ArrayList<>();
+    private final List<Component> tooltip = new ArrayList<>();
 
     public ValidationIcon() {
         super(btn -> {
@@ -51,7 +51,7 @@ public class ValidationIcon extends IconButton {
         }
     }
 
-    public void setTooltip(List<net.minecraft.network.chat.Component> lines) {
+    public void setTooltip(List<Component> lines) {
         this.tooltip.clear();
         this.tooltip.addAll(lines);
     }

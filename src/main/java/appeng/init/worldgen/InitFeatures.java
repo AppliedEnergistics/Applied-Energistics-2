@@ -38,7 +38,7 @@ public final class InitFeatures {
     private InitFeatures() {
     }
 
-    public static void init(IForgeRegistry<net.minecraft.world.level.levelgen.feature.Feature<?>> registry) {
+    public static void init(IForgeRegistry<Feature<?>> registry) {
         // Tell Minecraft about our charged quartz ore feature
         ChargedQuartzOreFeature.INSTANCE.setRegistryName(WorldgenIds.CHARGED_QUARTZ_ORE);
         registry.register(ChargedQuartzOreFeature.INSTANCE);
@@ -53,7 +53,7 @@ public final class InitFeatures {
         BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.QUARTZ_ORE.toString(), Feature.ORE
                 .configured(
-                        new net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration(Predicates.NATURAL_STONE, quartzOreState,
+                        new OreConfiguration(Predicates.NATURAL_STONE, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
                 .decorated(FeatureDecorator.RANGE/* RANGE */.configured(new RangeDecoratorConfiguration(12, 12, 72)))
                 .squared/* spreadHorizontally */()
@@ -61,8 +61,8 @@ public final class InitFeatures {
     }
 
     private static void registerChargedQuartzOreFeature() {
-        net.minecraft.world.level.block.state.BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
-        net.minecraft.world.level.block.state.BlockState chargedQuartzOreState = AEBlocks.QUARTZ_ORE_CHARGED.block()
+        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
+        BlockState chargedQuartzOreState = AEBlocks.QUARTZ_ORE_CHARGED.block()
                 .defaultBlockState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.CHARGED_QUARTZ_ORE.toString(),
                 ChargedQuartzOreFeature.INSTANCE

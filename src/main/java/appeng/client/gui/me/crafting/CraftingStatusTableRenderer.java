@@ -40,8 +40,8 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     }
 
     @Override
-    protected List<net.minecraft.network.chat.Component> getEntryDescription(CraftingStatusEntry entry) {
-        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(3);
+    protected List<Component> getEntryDescription(CraftingStatusEntry entry) {
+        List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
             String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
             lines.add(GuiText.FromStorage.text(amount));
@@ -65,8 +65,8 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     }
 
     @Override
-    protected List<net.minecraft.network.chat.Component> getEntryTooltip(CraftingStatusEntry entry) {
-        List<net.minecraft.network.chat.Component> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
+    protected List<Component> getEntryTooltip(CraftingStatusEntry entry) {
+        List<Component> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {

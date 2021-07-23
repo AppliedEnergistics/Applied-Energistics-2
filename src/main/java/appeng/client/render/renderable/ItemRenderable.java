@@ -33,9 +33,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
 
-    private final Function<T, Pair<net.minecraft.world.item.ItemStack, Transformation>> f;
+    private final Function<T, Pair<ItemStack, Transformation>> f;
 
-    public ItemRenderable(Function<T, Pair<net.minecraft.world.item.ItemStack, Transformation>> f) {
+    public ItemRenderable(Function<T, Pair<ItemStack, Transformation>> f) {
         this.f = f;
     }
 

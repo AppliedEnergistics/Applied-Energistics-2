@@ -94,7 +94,7 @@ public enum GuiText {
 
     private final String root;
 
-    private final net.minecraft.network.chat.Component text;
+    private final Component text;
 
     GuiText() {
         this.root = "gui.appliedenergistics2";
@@ -114,7 +114,7 @@ public enum GuiText {
         return this.root + '.' + this.toString();
     }
 
-    public net.minecraft.network.chat.Component text() {
+    public Component text() {
         return text;
     }
 
@@ -122,7 +122,7 @@ public enum GuiText {
         return text().copy().append(text);
     }
 
-    public MutableComponent withSuffix(net.minecraft.network.chat.Component text) {
+    public MutableComponent withSuffix(Component text) {
         return text().copy().append(text);
     }
 

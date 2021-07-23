@@ -49,9 +49,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     private final AESharedItemStack sharedStack;
 
     @OnlyIn(Dist.CLIENT)
-    private net.minecraft.network.chat.Component displayName;
+    private Component displayName;
     @OnlyIn(Dist.CLIENT)
-    private List<net.minecraft.network.chat.Component> tooltip;
+    private List<Component> tooltip;
 
     private AEItemStack(final AEItemStack is) {
         this.setStackSize(is.getStackSize());
@@ -158,7 +158,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack createItemStack() {
+    public ItemStack createItemStack() {
         return ItemHandlerHelper.copyStackWithSize(this.getDefinition(),
                 (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
     }
@@ -205,7 +205,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     public boolean equals(final Object ia) {
         if (ia instanceof AEItemStack) {
             return this.isSameType((AEItemStack) ia);
-        } else if (ia instanceof net.minecraft.world.item.ItemStack) {
+        } else if (ia instanceof ItemStack) {
             // this actually breaks the equals contract (being equals to unrelated classes)
             return equals((ItemStack) ia);
         }
@@ -223,7 +223,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<net.minecraft.network.chat.Component> getToolTip() {
+    public List<Component> getToolTip() {
         if (this.tooltip == null) {
             this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
         }
@@ -231,7 +231,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @OnlyIn(Dist.CLIENT)
-    public net.minecraft.network.chat.Component getDisplayName() {
+    public Component getDisplayName() {
         if (this.displayName == null) {
             this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
         }

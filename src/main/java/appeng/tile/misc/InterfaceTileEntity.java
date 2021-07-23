@@ -79,7 +79,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public InterfaceTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public InterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -93,12 +93,12 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         this.duality.notifyNeighbors();
     }
 
-    public void setSide(final net.minecraft.core.Direction facing) {
+    public void setSide(final Direction facing) {
         if (isRemote()) {
             return;
         }
 
-        net.minecraft.core.Direction newForward = facing;
+        Direction newForward = facing;
 
         if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
             newForward = facing;
@@ -113,11 +113,11 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
         }
 
         if (this.omniDirectional) {
-            this.setOrientation(net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.UP);
+            this.setOrientation(Direction.NORTH, Direction.UP);
         } else {
-            Direction newUp = net.minecraft.core.Direction.UP;
-            if (newForward == net.minecraft.core.Direction.UP || newForward == net.minecraft.core.Direction.DOWN) {
-                newUp = net.minecraft.core.Direction.NORTH;
+            Direction newUp = Direction.UP;
+            if (newForward == Direction.UP || newForward == Direction.DOWN) {
+                newUp = Direction.NORTH;
             }
             this.setOrientation(newForward, newUp);
         }
@@ -129,7 +129,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     private void configureNodeSides() {
         if (this.omniDirectional) {
-            this.getMainNode().setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
+            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
         } else {
             this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         }
@@ -184,7 +184,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public boolean canInsert(final net.minecraft.world.item.ItemStack stack) {
+    public boolean canInsert(final ItemStack stack) {
         return this.duality.canInsert(stack);
     }
 
@@ -200,7 +200,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }
 
@@ -210,9 +210,9 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public EnumSet<net.minecraft.core.Direction> getTargets() {
+    public EnumSet<Direction> getTargets() {
         if (this.omniDirectional) {
-            return EnumSet.allOf(net.minecraft.core.Direction.class);
+            return EnumSet.allOf(Direction.class);
         }
         return EnumSet.of(this.getForward());
     }
@@ -280,7 +280,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         LazyOptional<T> result = this.duality.getCapability(capability, facing);
         if (result.isPresent()) {
             return result;
@@ -289,7 +289,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStackRepresentation() {
+    public ItemStack getItemStackRepresentation() {
         return AEBlocks.INTERFACE.stack();
     }
 

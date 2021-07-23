@@ -53,7 +53,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
+            new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
@@ -104,9 +104,9 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity
         VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
 
         // Bottom of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, net.minecraft.core.Direction.DOWN);
+        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 13, combinedOverlay, combinedLight,
-                net.minecraft.core.Direction.DOWN);
+                Direction.DOWN);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
                 Direction.DOWN);
         addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
@@ -118,26 +118,26 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14, 3, combinedOverlay, combinedLight,
-                net.minecraft.core.Direction.NORTH);
+                Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 3, combinedOverlay, combinedLight, Direction.NORTH);
 
         // Top of Bottom Stamp
         middle -= 2.0f * 0.02f;
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 13, combinedOverlay, combinedLight,
                 Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 13, combinedOverlay, combinedLight, net.minecraft.core.Direction.UP);
+        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 13, combinedOverlay, combinedLight, Direction.UP);
         addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14, 2, combinedOverlay, combinedLight,
                 Direction.UP);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2, 2, combinedOverlay, combinedLight,
-                net.minecraft.core.Direction.UP);
+                Direction.UP);
 
         // Front of Bottom Stamp
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + -base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
-                combinedLight, net.minecraft.core.Direction.NORTH);
+                combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 14, 3, combinedOverlay, combinedLight,
-                net.minecraft.core.Direction.NORTH);
+                Direction.NORTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 3, combinedOverlay, combinedLight,
                 Direction.NORTH);
 

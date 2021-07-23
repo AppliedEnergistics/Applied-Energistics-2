@@ -39,7 +39,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     private final Button selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, Inventory playerInventory,
-                                net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
@@ -54,13 +54,13 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         this.selectCPU.setMessage(getNextCpuButtonLabel());
     }
 
-    private net.minecraft.network.chat.Component getNextCpuButtonLabel() {
+    private Component getNextCpuButtonLabel() {
         if (this.menu.noCPU) {
             return GuiText.NoCraftingJobs.text();
         }
         // it's possible that the cpu name has not synchronized from server->client yet, since fields are synced
         // individually.
-        net.minecraft.network.chat.Component name = menu.cpuName;
+        Component name = menu.cpuName;
         if (name == null) {
             name = TextComponent.EMPTY;
         }
@@ -68,7 +68,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     @Override
-    protected net.minecraft.network.chat.Component getGuiDisplayName(final net.minecraft.network.chat.Component in) {
+    protected Component getGuiDisplayName(final Component in) {
         return in; // the cpu name is on the button
     }
 

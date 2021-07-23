@@ -23,11 +23,12 @@ import net.minecraft.util.Mth;
 
 import appeng.block.AEBaseBlock;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QuartzOreBlock extends AEBaseBlock {
-    public QuartzOreBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public QuartzOreBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 

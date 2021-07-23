@@ -32,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
 // TODO: Investigate use of CubeBuilder instead
 final class RenderHelper {
 
-    private static EnumMap<net.minecraft.core.Direction, List<Vec3>> cornersForFacing = generateCornersForFacings();
+    private static EnumMap<Direction, List<Vec3>> cornersForFacing = generateCornersForFacings();
 
     private RenderHelper() {
 
@@ -45,7 +45,7 @@ final class RenderHelper {
     private static EnumMap<Direction, List<Vec3>> generateCornersForFacings() {
         EnumMap<Direction, List<Vec3>> result = new EnumMap<>(Direction.class);
 
-        for (net.minecraft.core.Direction facing : Direction.values()) {
+        for (Direction facing : Direction.values()) {
             List<Vec3> corners;
 
             float offset = facing.getAxisDirection() == AxisDirection.NEGATIVE ? 0 : 1;

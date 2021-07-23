@@ -103,7 +103,7 @@ public interface IGridHelper {
      * @see #getNodeHost(LevelAccessor, BlockPos)
      */
     @Nullable
-    default IGridNode getExposedNode(@Nonnull LevelAccessor world, @Nonnull net.minecraft.core.BlockPos pos, @Nonnull Direction side) {
+    default IGridNode getExposedNode(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull Direction side) {
         var host = getNodeHost(world, pos);
         if (host == null) {
             return null;

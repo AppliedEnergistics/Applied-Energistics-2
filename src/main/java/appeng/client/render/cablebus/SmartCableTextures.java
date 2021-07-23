@@ -34,16 +34,16 @@ import appeng.core.AppEng;
 public class SmartCableTextures {
 
     public static final Material[] SMART_CHANNELS_TEXTURES = Arrays
-            .stream(new ResourceLocation[] { new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_00"), //
-                    new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_01"), //
+            .stream(new ResourceLocation[] { new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_00"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_01"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_02"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_03"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_04"), //
-                    new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_10"), //
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_10"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_11"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
                     new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
-                    new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_14")//
+                    new ResourceLocation(AppEng.MOD_ID, "part/cable/smart/channels_14")//
             }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5

@@ -187,9 +187,9 @@ public final class AEConfig {
         this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
 
         WorldGenRegistry.INSTANCE.setConfigBlacklists(
-                COMMON.quartzOresBiomeBlacklist.get().stream().map(net.minecraft.resources.ResourceLocation::new)
+                COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()),
-                COMMON.meteoriteBiomeBlacklist.get().stream().map(net.minecraft.resources.ResourceLocation::new)
+                COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()));
     }
 
@@ -671,7 +671,7 @@ public final class AEConfig {
             this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
                     Collections.emptyList(),
-                    obj -> obj instanceof String && net.minecraft.resources.ResourceLocation.isValidResourceLocation((String) obj));
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
 
             builder.pop();
 

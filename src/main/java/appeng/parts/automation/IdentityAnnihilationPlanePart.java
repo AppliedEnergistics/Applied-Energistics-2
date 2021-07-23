@@ -52,7 +52,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected float calculateEnergyUsage(final ServerLevel w, final net.minecraft.core.BlockPos pos, final List<net.minecraft.world.item.ItemStack> items) {
+    protected float calculateEnergyUsage(final ServerLevel w, final BlockPos pos, final List<ItemStack> items) {
         final float requiredEnergy = super.calculateEnergyUsage(w, pos, items);
 
         return requiredEnergy * SILK_TOUCH_FACTOR;
@@ -60,7 +60,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
     @Override
     protected ItemStack createHarvestTool(BlockState state) {
-        net.minecraft.world.item.ItemStack harvestTool = super.createHarvestTool(state);
+        ItemStack harvestTool = super.createHarvestTool(state);
 
         // For silk touch purposes, enchant the fake tool
         if (harvestTool != null) {

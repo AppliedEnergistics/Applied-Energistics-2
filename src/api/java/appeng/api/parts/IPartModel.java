@@ -53,7 +53,7 @@ public interface IPartModel {
      * @return a collection of models, never null.
      */
     @Nonnull
-    default List<net.minecraft.resources.ResourceLocation> getModels() {
+    default List<ResourceLocation> getModels() {
         return Collections.emptyList();
     }
 

@@ -44,12 +44,12 @@ public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public ItemStack insertItem(int slot, net.minecraft.world.item.ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return this.sourceHandler.get().insertItem(slot, stack, simulate);
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return this.sourceHandler.get().extractItem(slot, amount, simulate);
     }
 

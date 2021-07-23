@@ -29,7 +29,7 @@ public class FalloutSand extends FalloutCopy {
     private static final double GLASS_THRESHOLD = 0.66;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSand(final LevelAccessor w, net.minecraft.core.BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+    public FalloutSand(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
         super(w, pos, putter, skyStone);
         this.putter = putter;
     }
@@ -40,7 +40,7 @@ public class FalloutSand extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor w, net.minecraft.core.BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor w, BlockPos pos, final double a) {
         if (a > GLASS_THRESHOLD) {
             this.putter.put(w, pos, Blocks.GLASS.defaultBlockState());
         }

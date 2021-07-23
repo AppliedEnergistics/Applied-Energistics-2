@@ -34,7 +34,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     private IManagedGridNode proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public PhantomNodeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -60,7 +60,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     void triggerCrashMode() {
         if (this.proxy != null) {
             this.crashMode = true;
-            this.proxy.setExposedOnSides(EnumSet.allOf(net.minecraft.core.Direction.class));
+            this.proxy.setExposedOnSides(EnumSet.allOf(Direction.class));
         }
     }
 }

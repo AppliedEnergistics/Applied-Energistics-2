@@ -40,10 +40,10 @@ public class AEModelData implements IModelData {
     public static final ModelProperty<Boolean> CACHEABLE = new ModelProperty<>();
     public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
 
-    private final net.minecraft.core.Direction up;
+    private final Direction up;
     private final Direction forward;
 
-    public AEModelData(net.minecraft.core.Direction up, Direction forward) {
+    public AEModelData(Direction up, Direction forward) {
         this.up = Preconditions.checkNotNull(up);
         this.forward = Preconditions.checkNotNull(forward);
     }

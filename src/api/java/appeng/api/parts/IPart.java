@@ -75,7 +75,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return item of part
      */
-    net.minecraft.world.item.ItemStack getItemStack(PartItemStack type);
+    ItemStack getItemStack(PartItemStack type);
 
     /**
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
@@ -206,7 +206,7 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is returned
-     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(net.minecraft.core.Direction)} by the part host for the
+     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the part host for the
      * side this part is on.
      */
     default AECableType getExternalCableConnectionType() {
@@ -276,7 +276,7 @@ public interface IPart extends ICustomCableConnection {
      * @param drops    item drops if wrenched
      * @param wrenched control flag for wrenched vs broken
      */
-    void getDrops(List<net.minecraft.world.item.ItemStack> drops, boolean wrenched);
+    void getDrops(List<ItemStack> drops, boolean wrenched);
 
     /**
      * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
@@ -343,7 +343,7 @@ public interface IPart extends ICustomCableConnection {
      * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
      * forwarded to parts on the appropriate side.
      *
-     * @see CapabilityProvider#getCapability(Capability, net.minecraft.core.Direction)
+     * @see CapabilityProvider#getCapability(Capability, Direction)
      *
      * @return The capability
      */

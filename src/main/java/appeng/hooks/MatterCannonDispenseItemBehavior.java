@@ -35,10 +35,10 @@ import net.minecraft.world.level.block.DispenserBlock;
 public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected net.minecraft.world.item.ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
-        final net.minecraft.world.item.Item i = dispensedItem.getItem();
+    protected ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
+        final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem) {
-            final net.minecraft.core.Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
+            final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                 if (Direction.getStepX() == d.xOffset && Direction.getStepY() == d.yOffset

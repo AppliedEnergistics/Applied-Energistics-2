@@ -36,7 +36,7 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     private final SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, Inventory playerInventory,
-                                net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.placeMode = new ServerSettingToggleButton<>(Settings.PLACE_BLOCK,

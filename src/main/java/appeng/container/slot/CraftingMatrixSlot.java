@@ -48,8 +48,8 @@ public class CraftingMatrixSlot extends AppEngSlot {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack remove(final int par1) {
-        final net.minecraft.world.item.ItemStack is = super.remove(par1);
+    public ItemStack remove(final int par1) {
+        final ItemStack is = super.remove(par1);
         this.c.slotsChanged(this.wrappedInventory);
         return is;
     }

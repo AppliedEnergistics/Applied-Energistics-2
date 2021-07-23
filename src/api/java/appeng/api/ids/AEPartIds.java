@@ -46,7 +46,7 @@ public final class AEPartIds {
     public static final ResourceLocation CABLE_GLASS_MAGENTA = id("magenta_glass_cable");
     public static final ResourceLocation CABLE_GLASS_LIGHT_BLUE = id("light_blue_glass_cable");
     public static final ResourceLocation CABLE_GLASS_YELLOW = id("yellow_glass_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_GLASS_LIME = id("lime_glass_cable");
+    public static final ResourceLocation CABLE_GLASS_LIME = id("lime_glass_cable");
     public static final ResourceLocation CABLE_GLASS_PINK = id("pink_glass_cable");
     public static final ResourceLocation CABLE_GLASS_GRAY = id("gray_glass_cable");
     public static final ResourceLocation CABLE_GLASS_LIGHT_GRAY = id("light_gray_glass_cable");
@@ -87,7 +87,7 @@ public final class AEPartIds {
     public static final ResourceLocation CABLE_COVERED_PINK = id("pink_covered_cable");
     public static final ResourceLocation CABLE_COVERED_GRAY = id("gray_covered_cable");
     public static final ResourceLocation CABLE_COVERED_LIGHT_GRAY = id("light_gray_covered_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_COVERED_CYAN = id("cyan_covered_cable");
+    public static final ResourceLocation CABLE_COVERED_CYAN = id("cyan_covered_cable");
     public static final ResourceLocation CABLE_COVERED_PURPLE = id("purple_covered_cable");
     public static final ResourceLocation CABLE_COVERED_BLUE = id("blue_covered_cable");
     public static final ResourceLocation CABLE_COVERED_BROWN = id("brown_covered_cable");
@@ -123,10 +123,10 @@ public final class AEPartIds {
     public static final ResourceLocation CABLE_SMART_LIME = id("lime_smart_cable");
     public static final ResourceLocation CABLE_SMART_PINK = id("pink_smart_cable");
     public static final ResourceLocation CABLE_SMART_GRAY = id("gray_smart_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_SMART_LIGHT_GRAY = id("light_gray_smart_cable");
+    public static final ResourceLocation CABLE_SMART_LIGHT_GRAY = id("light_gray_smart_cable");
     public static final ResourceLocation CABLE_SMART_CYAN = id("cyan_smart_cable");
     public static final ResourceLocation CABLE_SMART_PURPLE = id("purple_smart_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_SMART_BLUE = id("blue_smart_cable");
+    public static final ResourceLocation CABLE_SMART_BLUE = id("blue_smart_cable");
     public static final ResourceLocation CABLE_SMART_BROWN = id("brown_smart_cable");
     public static final ResourceLocation CABLE_SMART_GREEN = id("green_smart_cable");
     public static final ResourceLocation CABLE_SMART_RED = id("red_smart_cable");
@@ -152,12 +152,12 @@ public final class AEPartIds {
             .put(AEColor.TRANSPARENT, CABLE_SMART_TRANSPARENT)
             .build();
 
-    public static final net.minecraft.resources.ResourceLocation CABLE_DENSE_COVERED_WHITE = id("white_covered_dense_cable");
+    public static final ResourceLocation CABLE_DENSE_COVERED_WHITE = id("white_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_ORANGE = id("orange_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_MAGENTA = id("magenta_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_LIGHT_BLUE = id("light_blue_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_YELLOW = id("yellow_covered_dense_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_DENSE_COVERED_LIME = id("lime_covered_dense_cable");
+    public static final ResourceLocation CABLE_DENSE_COVERED_LIME = id("lime_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_PINK = id("pink_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_GRAY = id("gray_covered_dense_cable");
     public static final ResourceLocation CABLE_DENSE_COVERED_LIGHT_GRAY = id("light_gray_covered_dense_cable");
@@ -193,20 +193,20 @@ public final class AEPartIds {
     public static final ResourceLocation CABLE_DENSE_SMART_ORANGE = id("orange_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_MAGENTA = id("magenta_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_LIGHT_BLUE = id("light_blue_smart_dense_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_DENSE_SMART_YELLOW = id("yellow_smart_dense_cable");
+    public static final ResourceLocation CABLE_DENSE_SMART_YELLOW = id("yellow_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_LIME = id("lime_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_PINK = id("pink_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_GRAY = id("gray_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_LIGHT_GRAY = id("light_gray_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_CYAN = id("cyan_smart_dense_cable");
-    public static final net.minecraft.resources.ResourceLocation CABLE_DENSE_SMART_PURPLE = id("purple_smart_dense_cable");
+    public static final ResourceLocation CABLE_DENSE_SMART_PURPLE = id("purple_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_BLUE = id("blue_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_BROWN = id("brown_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_GREEN = id("green_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_RED = id("red_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_BLACK = id("black_smart_dense_cable");
     public static final ResourceLocation CABLE_DENSE_SMART_TRANSPARENT = id("fluix_smart_dense_cable");
-    public static final Map<AEColor, net.minecraft.resources.ResourceLocation> CABLE_DENSE_SMART = ImmutableMap
+    public static final Map<AEColor, ResourceLocation> CABLE_DENSE_SMART = ImmutableMap
             .<AEColor, ResourceLocation>builder().put(AEColor.WHITE, CABLE_DENSE_SMART_WHITE)
             .put(AEColor.ORANGE, CABLE_DENSE_SMART_ORANGE)
             .put(AEColor.MAGENTA, CABLE_DENSE_SMART_MAGENTA)
@@ -274,9 +274,9 @@ public final class AEPartIds {
     public static final ResourceLocation ME_P2P_TUNNEL = id("me_p2p_tunnel");
     public static final ResourceLocation REDSTONE_P2P_TUNNEL = id("redstone_p2p_tunnel");
     public static final ResourceLocation ITEM_P2P_TUNNEL = id("item_p2p_tunnel");
-    public static final net.minecraft.resources.ResourceLocation FLUID_P2P_TUNNEL = id("fluid_p2p_tunnel");
+    public static final ResourceLocation FLUID_P2P_TUNNEL = id("fluid_p2p_tunnel");
     public static final ResourceLocation FE_P2P_TUNNEL = id("fe_p2p_tunnel");
-    public static final net.minecraft.resources.ResourceLocation LIGHT_P2P_TUNNEL = id("light_p2p_tunnel");
+    public static final ResourceLocation LIGHT_P2P_TUNNEL = id("light_p2p_tunnel");
 
     private static ResourceLocation id(String id) {
         return new ResourceLocation(AEConstants.MOD_ID, id);

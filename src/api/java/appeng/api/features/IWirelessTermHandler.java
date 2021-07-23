@@ -38,7 +38,7 @@ public interface IWirelessTermHandler extends INetworkEncodable {
      *
      * @return true, if usePower, hasPower, etc... can be called for the provided item
      */
-    boolean canHandle(net.minecraft.world.item.ItemStack is);
+    boolean canHandle(ItemStack is);
 
     /**
      * use an amount of power, in AE units
@@ -49,7 +49,7 @@ public interface IWirelessTermHandler extends INetworkEncodable {
      *
      * @return true if wireless terminal uses power
      */
-    boolean usePower(Player player, double amount, net.minecraft.world.item.ItemStack is);
+    boolean usePower(Player player, double amount, ItemStack is);
 
     /**
      * gets the power status of the item.
@@ -58,7 +58,7 @@ public interface IWirelessTermHandler extends INetworkEncodable {
      *
      * @return returns true if there is any power left.
      */
-    boolean hasPower(Player player, double amount, net.minecraft.world.item.ItemStack is);
+    boolean hasPower(Player player, double amount, ItemStack is);
 
     /**
      * Return the config manager for the wireless terminal.

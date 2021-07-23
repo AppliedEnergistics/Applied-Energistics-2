@@ -45,11 +45,11 @@ public class DimensionStructuresSettingsMixin {
 
     @Shadow
     @Mutable
-    private static ImmutableMap<net.minecraft.world.level.levelgen.feature.StructureFeature<?>, StructureFeatureConfiguration> DEFAULTS;
+    private static ImmutableMap<StructureFeature<?>, StructureFeatureConfiguration> DEFAULTS;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void addMeteoriteSpreadConfig(CallbackInfo ci) {
-        DEFAULTS = ImmutableMap.<net.minecraft.world.level.levelgen.feature.StructureFeature<?>, StructureFeatureConfiguration>builder().putAll(DEFAULTS)
+        DEFAULTS = ImmutableMap.<StructureFeature<?>, StructureFeatureConfiguration>builder().putAll(DEFAULTS)
                 .put(MeteoriteStructure.INSTANCE, new StructureFeatureConfiguration(32, 8, 124895654)).build();
     }
 

@@ -44,7 +44,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
     private byte currentMeta = -1;
 
-    public EnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode()
                 .setIdlePowerUsage(0)

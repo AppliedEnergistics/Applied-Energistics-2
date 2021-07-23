@@ -43,7 +43,7 @@ public abstract class DelegateBakedModel implements BakedModel {
 
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         return baseModel.getQuads(state, side, rand);
     }
 
@@ -69,7 +69,7 @@ public abstract class DelegateBakedModel implements BakedModel {
     }
 
     @Override
-    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return this.baseModel.getTransforms();
     }
 

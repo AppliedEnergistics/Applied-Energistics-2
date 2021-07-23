@@ -31,7 +31,7 @@ public interface IInterfaceHost extends ICraftingProvider, IUpgradeableHost, ICr
 
     DualityInterface getInterfaceDuality();
 
-    EnumSet<net.minecraft.core.Direction> getTargets();
+    EnumSet<Direction> getTargets();
 
     BlockEntity getTileEntity();
 

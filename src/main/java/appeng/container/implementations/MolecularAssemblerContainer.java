@@ -62,7 +62,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
         final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
-        final net.minecraft.world.item.ItemStack is = mac.getStackInSlot(10);
+        final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
             return false;
         }

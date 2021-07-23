@@ -180,7 +180,7 @@ public class BakedPipeline implements ISmartVertexConsumer {
     }
 
     @Override
-    public com.mojang.blaze3d.vertex.VertexFormat getVertexFormat() {
+    public VertexFormat getVertexFormat() {
         this.check();
         return this.first.getVertexFormat();
     }
@@ -192,7 +192,7 @@ public class BakedPipeline implements ISmartVertexConsumer {
     }
 
     @Override
-    public void setQuadOrientation(net.minecraft.core.Direction orientation) {
+    public void setQuadOrientation(Direction orientation) {
         this.check();
         this.unpacker.setQuadOrientation(orientation);
     }

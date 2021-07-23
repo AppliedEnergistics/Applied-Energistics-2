@@ -45,7 +45,7 @@ public class CraftingStatusContainer extends CraftingCPUContainer implements Cra
     public boolean noCPU = true;
 
     @GuiSync(7)
-    public net.minecraft.network.chat.Component cpuName;
+    public Component cpuName;
 
     public CraftingStatusContainer(int id, final Inventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);

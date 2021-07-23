@@ -47,7 +47,7 @@ public final class GrinderRecipes {
     /**
      * Checks if the given item stack is an ingredient in any grinder recipe, disregarding its current size.
      */
-    public static boolean isValidIngredient(Level world, net.minecraft.world.item.ItemStack stack) {
+    public static boolean isValidIngredient(Level world, ItemStack stack) {
         for (Recipe<Container> recipe : world.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(stack)) {

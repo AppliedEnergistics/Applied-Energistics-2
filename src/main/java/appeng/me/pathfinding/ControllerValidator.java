@@ -35,7 +35,7 @@ public class ControllerValidator implements IGridVisitor {
     private int maxY;
     private int maxZ;
 
-    public ControllerValidator(net.minecraft.core.BlockPos pos) {
+    public ControllerValidator(BlockPos pos) {
         this.minX = pos.getX();
         this.maxX = pos.getX();
         this.minY = pos.getY();

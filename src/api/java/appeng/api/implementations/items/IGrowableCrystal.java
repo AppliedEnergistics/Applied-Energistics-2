@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface IGrowableCrystal {
 
-    ItemStack triggerGrowth(net.minecraft.world.item.ItemStack is);
+    ItemStack triggerGrowth(ItemStack is);
 
     /**
      * Gets the crystal growth multiplier based on the material it is submerged in.
@@ -40,5 +40,5 @@ public interface IGrowableCrystal {
      * @param state The blockstate of the block the crystal is currently in.
      * @return The multiplier for the growth tick progress. Zero if the crystal cannot grow in the current material.
      */
-    float getMultiplier(BlockState state, @Nullable Level world, @Nullable net.minecraft.core.BlockPos pos);
+    float getMultiplier(BlockState state, @Nullable Level world, @Nullable BlockPos pos);
 }

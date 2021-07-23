@@ -34,7 +34,7 @@ class StateApplier<T extends Comparable<T>> {
     private final Property<T> property;
     private final T value;
 
-    private StateApplier(net.minecraft.world.level.block.state.properties.Property<T> property, String valueName) {
+    private StateApplier(Property<T> property, String valueName) {
         this.property = Objects.requireNonNull(property, "property must not be null");
         this.value = PropertyUtils.getRequiredPropertyValue(property, valueName);
     }
@@ -48,13 +48,13 @@ class StateApplier<T extends Comparable<T>> {
         buffer.writeUtf(property.getName(value));
     }
 
-    static StateApplier<?> create(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, String propertyName, String value) {
+    static StateApplier<?> create(StateDefinition<?, ?> stateContainer, String propertyName, String value) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new StateApplier<>(property, value);
     }
 
     @OnlyIn(Dist.CLIENT)
-    static StateApplier<?> readFromPacket(net.minecraft.world.level.block.state.StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    static StateApplier<?> readFromPacket(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();
         return create(stateContainer, propertyName, value);

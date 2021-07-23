@@ -39,7 +39,7 @@ public class StaticBlockColor implements BlockColor {
     }
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable net.minecraft.core.BlockPos pos,
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos,
                         int tintIndex) {
         return this.color.getVariantByTintIndex(tintIndex);
     }

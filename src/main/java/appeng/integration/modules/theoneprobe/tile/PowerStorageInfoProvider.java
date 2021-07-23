@@ -49,7 +49,7 @@ public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
                     final String formatCurrentPower = Platform.formatPowerLong(internalCurrentPower, false);
                     final String formatMaxPower = Platform.formatPowerLong(internalMaxPower, false);
-                    final net.minecraft.network.chat.Component formattedString = TheOneProbeText.STORED_ENERGY
+                    final Component formattedString = TheOneProbeText.STORED_ENERGY
                             .getTranslationComponent(formatCurrentPower, formatMaxPower);
 
                     probeInfo.text(formattedString);

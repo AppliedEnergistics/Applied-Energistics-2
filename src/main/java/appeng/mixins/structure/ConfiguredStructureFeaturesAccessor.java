@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 public interface ConfiguredStructureFeaturesAccessor {
 
     @Invoker("register")
-    static <FC extends FeatureConfiguration, F extends net.minecraft.world.level.levelgen.feature.StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register(String id,
+    static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register(String id,
                                                                                                                                                                    ConfiguredStructureFeature<FC, F> configuredStructureFeature) {
         throw new AssertionError();
     }

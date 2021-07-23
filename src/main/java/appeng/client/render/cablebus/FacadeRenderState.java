@@ -30,12 +30,12 @@ public class FacadeRenderState {
 
     private final boolean transparent;
 
-    public FacadeRenderState(net.minecraft.world.level.block.state.BlockState sourceBlock, boolean transparent) {
+    public FacadeRenderState(BlockState sourceBlock, boolean transparent) {
         this.sourceBlock = sourceBlock;
         this.transparent = transparent;
     }
 
-    public net.minecraft.world.level.block.state.BlockState getSourceBlock() {
+    public BlockState getSourceBlock() {
         return this.sourceBlock;
     }
 

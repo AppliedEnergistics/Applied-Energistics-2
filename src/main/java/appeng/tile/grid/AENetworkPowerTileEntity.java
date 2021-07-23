@@ -45,7 +45,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkPowerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AENetworkPowerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -76,7 +76,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public IGridNode getGridNode(net.minecraft.core.Direction dir) {
+    public IGridNode getGridNode(Direction dir) {
         var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side
@@ -88,7 +88,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
 

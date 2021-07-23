@@ -81,7 +81,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
             }
 
             final short freq = tunnel.getFrequency();
-            final net.minecraft.network.chat.Component freqTooltip = new TextComponent(Platform.p2p().toHexString(freq));
+            final Component freqTooltip = new TextComponent(Platform.p2p().toHexString(freq));
 
             probeInfo.text(freqTooltip);
         }
@@ -91,7 +91,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
         return Iterators.size(tunnel.getOutputs().iterator());
     }
 
-    private static net.minecraft.network.chat.Component getOutputText(int outputs) {
+    private static Component getOutputText(int outputs) {
         if (outputs <= 1) {
             return TheOneProbeText.P2P_INPUT_ONE_OUTPUT.getTranslationComponent();
         } else {

@@ -37,5 +37,5 @@ public interface IOrientableBlock {
      *
      * @return a IOrientable if applicable
      */
-    IOrientable getOrientable(BlockGetter world, net.minecraft.core.BlockPos pos);
+    IOrientable getOrientable(BlockGetter world, BlockPos pos);
 }

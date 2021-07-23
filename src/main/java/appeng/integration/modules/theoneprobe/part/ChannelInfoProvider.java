@@ -42,7 +42,7 @@ public class ChannelInfoProvider implements IPartProbInfoProvider {
             final int usedChannels = usedChannelProvider.getUsedChannelsInfo();
             final int maxChannels = usedChannelProvider.getMaxChannelsInfo();
 
-            final net.minecraft.network.chat.Component formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
+            final Component formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
                     maxChannels);
 
             probeInfo.text(formattedChannelString);

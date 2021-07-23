@@ -15,11 +15,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface IFacade {
 
     /**
-     * @deprecated Use {@link #getFacade(BlockGetter, BlockPos, net.minecraft.core.Direction, BlockPos)}
+     * @deprecated Use {@link #getFacade(BlockGetter, BlockPos, Direction, BlockPos)}
      */
     @Nonnull
     @Deprecated
-    net.minecraft.world.level.block.state.BlockState getFacade(@Nonnull BlockGetter world, @Nonnull net.minecraft.core.BlockPos pos, @Nullable net.minecraft.core.Direction side);
+    BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side);
 
     /**
      * Gets the blockstate this facade appears as.
@@ -33,7 +33,7 @@ public interface IFacade {
      * @return The blockstate which your block appears as.
      */
     @Nonnull
-    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull net.minecraft.core.BlockPos pos, @Nullable Direction side,
+    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side,
                                  @Nonnull BlockPos connection) {
         return getFacade(world, pos, side);
     }

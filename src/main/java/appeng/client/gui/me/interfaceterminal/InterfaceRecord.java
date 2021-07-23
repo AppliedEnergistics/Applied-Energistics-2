@@ -48,7 +48,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
      */
     private final long order;
 
-    public InterfaceRecord(long serverId, int slots, long order, net.minecraft.network.chat.Component name) {
+    public InterfaceRecord(long serverId, int slots, long order, Component name) {
         this.inventory = new AppEngInternalInventory(null, slots);
         this.displayName = name.getString();
         this.searchName = this.displayName.toLowerCase();

@@ -43,6 +43,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -54,9 +55,9 @@ import appeng.core.sync.packets.MockExplosionPacket;
 
 public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAdditionalSpawnData {
 
-    private net.minecraft.world.entity.LivingEntity placedBy;
+    private LivingEntity placedBy;
 
-    public TinyTNTPrimedEntity(net.minecraft.world.entity.EntityType<? extends TinyTNTPrimedEntity> type, Level worldIn) {
+    public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, Level worldIn) {
         super(type, worldIn);
         this.blocksBuilding = true;
     }
@@ -76,7 +77,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
 
     @Nullable
     @Override
-    public net.minecraft.world.entity.LivingEntity getOwner() {
+    public LivingEntity getOwner() {
         return this.placedBy;
     }
 
@@ -142,9 +143,9 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
                 0.2f, false, BlockInteraction.BREAK);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
-        final List<net.minecraft.world.entity.Entity> list = this.level.getEntities(this, area);
+        final List<Entity> list = this.level.getEntities(this, area);
 
-        net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.level, ex, list, 0.2f * 2d);
+        ForgeEventFactory.onExplosionDetonate(this.level, ex, list, 0.2f * 2d);
 
         for (final Entity e : list) {
             e.hurt(DamageSource.explosion(ex), 6);

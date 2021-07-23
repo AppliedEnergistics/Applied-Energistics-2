@@ -60,7 +60,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_on"));

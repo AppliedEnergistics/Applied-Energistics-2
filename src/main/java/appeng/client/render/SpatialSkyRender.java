@@ -47,9 +47,9 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { com.mojang.math.Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
-            new Quaternion(-90.0F, 0.0F, 0.0F, true), new com.mojang.math.Quaternion(180.0F, 0.0F, 0.0F, true),
-            new Quaternion(0.0F, 0.0F, 90.0F, true), new com.mojang.math.Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
+            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
+            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
     public void render(PoseStack matrixStack) {
         final long now = System.currentTimeMillis();
@@ -74,7 +74,7 @@ public class SpatialSkyRender {
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
-        for (com.mojang.math.Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
+        for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.pushPose();
             matrixStack.mulPose(rotation);
 

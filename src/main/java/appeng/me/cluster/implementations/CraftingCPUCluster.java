@@ -93,7 +93,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final List<CraftingMonitorTileEntity> status = new ArrayList<>();
     private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private ICraftingLink myLastLink;
-    private net.minecraft.network.chat.Component myName = null;
+    private Component myName = null;
     private boolean isDestroyed = false;
     /**
      * crafting job info
@@ -115,7 +115,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private long startItemCount;
     private long remainingItemCount;
 
-    public CraftingCPUCluster(final BlockPos boundsMin, final net.minecraft.core.BlockPos boundsMax) {
+    public CraftingCPUCluster(final BlockPos boundsMin, final BlockPos boundsMax) {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
     }
@@ -130,12 +130,12 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public net.minecraft.core.BlockPos getBoundsMin() {
+    public BlockPos getBoundsMin() {
         return boundsMin;
     }
 
     @Override
-    public net.minecraft.core.BlockPos getBoundsMax() {
+    public BlockPos getBoundsMax() {
         return boundsMax;
     }
 
@@ -675,7 +675,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                                     this.getWorld())) {
                                                 final IAEItemStack ais = this.inventory.extractItems(fuzz,
                                                         Actionable.MODULATE, this.machineSrc);
-                                                final net.minecraft.world.item.ItemStack is = ais == null ? net.minecraft.world.item.ItemStack.EMPTY
+                                                final ItemStack is = ais == null ? ItemStack.EMPTY
                                                         : ais.createItemStack();
 
                                                 if (!is.isEmpty()) {
@@ -689,7 +689,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                     } else {
                                         final IAEItemStack ais = this.inventory.extractItems(input[x].copy(),
                                                 Actionable.MODULATE, this.machineSrc);
-                                        final net.minecraft.world.item.ItemStack is = ais == null ? net.minecraft.world.item.ItemStack.EMPTY : ais.createItemStack();
+                                        final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
                                         if (!is.isEmpty()) {
                                             this.postChange(input[x], this.machineSrc);
@@ -710,7 +710,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             if (!found) {
                                 // put stuff back..
                                 for (int x = 0; x < ic.getContainerSize(); x++) {
-                                    final net.minecraft.world.item.ItemStack is = ic.getItem(x);
+                                    final ItemStack is = ic.getItem(x);
                                     if (!is.isEmpty()) {
                                         this.inventory.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE,
                                                 this.machineSrc);
@@ -735,7 +735,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                 CraftingEvent.fireAutoCraftingEvent(getWorld(), details, ic);
 
                                 for (int x = 0; x < ic.getContainerSize(); x++) {
-                                    final net.minecraft.world.item.ItemStack output = Platform.getContainerItem(ic.getItem(x));
+                                    final ItemStack output = Platform.getContainerItem(ic.getItem(x));
                                     if (!output.isEmpty()) {
                                         final IAEItemStack cItem = AEItemStack.fromItemStack(output);
                                         this.postChange(cItem, this.machineSrc);
@@ -906,7 +906,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public net.minecraft.network.chat.Component getName() {
+    public Component getName() {
         return this.myName;
     }
 

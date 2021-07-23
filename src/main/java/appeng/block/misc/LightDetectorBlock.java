@@ -52,9 +52,9 @@ import appeng.tile.misc.LightDetectorTileEntity;
 public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity> implements IOrientableBlock {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
-    public static final net.minecraft.world.level.block.state.properties.BooleanProperty ODD = BooleanProperty.create("odd");
+    public static final BooleanProperty ODD = BooleanProperty.create("odd");
 
-    public static final net.minecraft.world.level.block.state.properties.BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public LightDetectorBlock() {
         super(defaultProps(AEMaterials.FIXTURE).noCollission().noOcclusion());
@@ -64,7 +64,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.FACING);
         builder.add(ODD);
@@ -72,7 +72,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public int getSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final net.minecraft.core.Direction side) {
+    public int getSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final Direction side) {
         if (w instanceof Level && this.getTileEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((Level) w).getMaxLocalRawBrightness(pos) - 6;
@@ -82,7 +82,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public void onNeighborChange(net.minecraft.world.level.block.state.BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, world, pos, neighbor);
 
         final LightDetectorTileEntity tld = this.getTileEntity(world, pos);
@@ -97,23 +97,23 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final net.minecraft.core.Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockGetter w, final BlockPos pos, final net.minecraft.core.Direction dir) {
-        final net.minecraft.core.BlockPos test = pos.relative(dir);
+    private boolean canPlaceAt(final BlockGetter w, final BlockPos pos, final Direction dir) {
+        final BlockPos test = pos.relative(dir);
         BlockState blockstate = w.getBlockState(test);
         return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
-    public net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
         // FIXME: We should / rather MUST use state here because at startup, this gets
         // called without a world
 
-        final net.minecraft.core.Direction up = this.getOrientable(w, pos).getUp();
+        final Direction up = this.getOrientable(w, pos).getUp();
         final double xOff = -0.3 * up.getStepX();
         final double yOff = -0.3 * up.getStepY();
         final double zOff = -0.3 * up.getStepZ();
@@ -128,9 +128,9 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
-        final net.minecraft.core.Direction up = this.getOrientable(world, pos).getUp();
+        final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {
             this.dropTorch(world, pos);
         }
@@ -143,8 +143,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public boolean canSurvive(net.minecraft.world.level.block.state.BlockState state, LevelReader w, BlockPos pos) {
-        for (final net.minecraft.core.Direction dir : net.minecraft.core.Direction.values()) {
+    public boolean canSurvive(BlockState state, LevelReader w, BlockPos pos) {
+        for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
             }
@@ -159,7 +159,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     @Override
     @Nullable
-    public net.minecraft.world.level.block.state.BlockState getStateForPlacement(BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
         FluidState fluidState = context.getLevel().getFluidState(pos);
         BlockState blockState = this.defaultBlockState()
@@ -169,14 +169,14 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public net.minecraft.world.level.material.FluidState getFluidState(net.minecraft.world.level.block.state.BlockState blockState) {
+    public FluidState getFluidState(BlockState blockState) {
         return blockState.getValue(WATERLOGGED).booleanValue()
                 ? Fluids.WATER.getSource(false)
                 : super.getFluidState(blockState);
     }
 
     @Override
-    public net.minecraft.world.level.block.state.BlockState updateShape(BlockState blockState, net.minecraft.core.Direction facing, net.minecraft.world.level.block.state.BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
                                                                         BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,

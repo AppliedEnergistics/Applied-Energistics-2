@@ -26,7 +26,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
 
 /**
- * Creates {@link IDrawable} from {@link appeng.client.gui.Icon}
+ * Creates {@link IDrawable} from {@link Icon}
  */
 final class IconDrawable implements IDrawable {
     private final Blitter blitter;

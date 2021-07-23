@@ -60,7 +60,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_on"));
@@ -72,7 +72,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private int itemsToSend; // used in tickingRequest
     private boolean worked; // used in tickingRequest
 
-    public ImportBusPart(final net.minecraft.world.item.ItemStack is) {
+    public ImportBusPart(final ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -81,7 +81,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     }
 
     @Override
-    public boolean canInsert(final net.minecraft.world.item.ItemStack stack) {
+    public boolean canInsert(final ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() == Items.AIR) {
             return false;
         }
@@ -183,14 +183,14 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private boolean importStuff(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode) {
         final int toSend = this.calculateMaximumAmountToImport(myAdaptor, whatToImport, inv, fzMode);
-        final net.minecraft.world.item.ItemStack newItems;
+        final ItemStack newItems;
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             newItems = myAdaptor.removeSimilarItems(toSend,
-                    whatToImport == null ? net.minecraft.world.item.ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this);
+                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this);
         } else {
             newItems = myAdaptor.removeItems(toSend,
-                    whatToImport == null ? net.minecraft.world.item.ItemStack.EMPTY : whatToImport.getDefinition(), this);
+                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this);
         }
 
         if (!newItems.isEmpty()) {
@@ -220,10 +220,10 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private int calculateMaximumAmountToImport(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode) {
         final int toSend = Math.min(this.itemsToSend, 64);
-        final net.minecraft.world.item.ItemStack itemStackToImport;
+        final ItemStack itemStackToImport;
 
         if (whatToImport == null) {
-            itemStackToImport = net.minecraft.world.item.ItemStack.EMPTY;
+            itemStackToImport = ItemStack.EMPTY;
         } else {
             itemStackToImport = whatToImport.getDefinition();
         }

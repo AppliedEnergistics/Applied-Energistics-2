@@ -21,6 +21,7 @@ package appeng.fluids.items;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
@@ -38,12 +39,12 @@ import appeng.items.AEBaseItem;
  */
 public class FluidDummyItem extends AEBaseItem {
 
-    public FluidDummyItem(net.minecraft.world.item.Item.Properties properties) {
+    public FluidDummyItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public String getDescriptionId(net.minecraft.world.item.ItemStack stack) {
+    public String getDescriptionId(ItemStack stack) {
         FluidStack fluidStack = this.getFluidStack(stack);
         if (fluidStack.isEmpty()) {
             fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
@@ -59,7 +60,7 @@ public class FluidDummyItem extends AEBaseItem {
         return FluidStack.EMPTY;
     }
 
-    public void setFluidStack(net.minecraft.world.item.ItemStack is, FluidStack fs) {
+    public void setFluidStack(ItemStack is, FluidStack fs) {
         if (fs.isEmpty()) {
             is.setTag(null);
         } else {
@@ -70,7 +71,7 @@ public class FluidDummyItem extends AEBaseItem {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<net.minecraft.world.item.ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         // Don't show this item in CreativeTabs
     }
 }

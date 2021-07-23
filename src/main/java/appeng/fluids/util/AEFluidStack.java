@@ -96,9 +96,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     public static IAEFluidStack fromNBT(final CompoundTag data) {
-        ResourceLocation fluidId = new net.minecraft.resources.ResourceLocation(data.getString(NBT_FLUID_ID));
+        ResourceLocation fluidId = new ResourceLocation(data.getString(NBT_FLUID_ID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
-        if (fluid == null || fluid == net.minecraft.world.level.material.Fluids.EMPTY) {
+        if (fluid == null || fluid == Fluids.EMPTY) {
             return null;
         }
 

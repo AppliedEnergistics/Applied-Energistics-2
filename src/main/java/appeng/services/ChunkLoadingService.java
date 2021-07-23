@@ -65,7 +65,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
             if (tileEntity instanceof SpatialAnchorTileEntity) {
                 SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) tileEntity;
                 for (Long chunk : chunks.getSecond()) {
-                    anchor.registerChunk(new net.minecraft.world.level.ChunkPos(chunk.longValue()));
+                    anchor.registerChunk(new ChunkPos(chunk.longValue()));
                 }
             } else {
                 ticketHelper.removeAllTickets(blockPos);
@@ -73,7 +73,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         });
     }
 
-    public boolean forceChunk(ServerLevel world, net.minecraft.core.BlockPos owner, ChunkPos position, boolean ticking) {
+    public boolean forceChunk(ServerLevel world, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
             return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, true, true);
         }
@@ -81,7 +81,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         return false;
     }
 
-    public boolean releaseChunk(ServerLevel world, BlockPos owner, net.minecraft.world.level.ChunkPos position, boolean ticking) {
+    public boolean releaseChunk(ServerLevel world, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
             return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, false, true);
         }

@@ -39,7 +39,7 @@ public interface ICraftingMachine {
      *
      * @return if it was accepted, all or nothing.
      */
-    boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingContainer table, net.minecraft.core.Direction ejectionDirection);
+    boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingContainer table, Direction ejectionDirection);
 
     /**
      * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,

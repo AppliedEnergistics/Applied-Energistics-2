@@ -234,7 +234,7 @@ public class PatternTermContainer extends ItemTerminalContainer
             final ItemStack[] list = new ItemStack[3];
 
             for (int i = 0; i < this.processingOutputSlots.length; i++) {
-                final net.minecraft.world.item.ItemStack out = this.processingOutputSlots[i].getItem();
+                final ItemStack out = this.processingOutputSlots[i].getItem();
                 list[i] = out;
                 if (!out.isEmpty()) {
                     hasValue = true;
@@ -384,10 +384,10 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     @Override
-    public void onSlotChange(final net.minecraft.world.inventory.Slot s) {
+    public void onSlotChange(final Slot s) {
         if (s == this.encodedPatternSlot && isServer()) {
             for (final ContainerListener listener : this.containerListeners) {
-                for (final net.minecraft.world.inventory.Slot slot : this.slots) {
+                for (final Slot slot : this.slots) {
                     if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
                         listener.slotChanged(this, slot.index, slot.getItem());
                     }
@@ -406,10 +406,10 @@ public class PatternTermContainer extends ItemTerminalContainer
 
     public void clear() {
         for (final Slot s : this.craftingGridSlots) {
-            s.set(net.minecraft.world.item.ItemStack.EMPTY);
+            s.set(ItemStack.EMPTY);
         }
 
-        for (final net.minecraft.world.inventory.Slot s : this.processingOutputSlots) {
+        for (final Slot s : this.processingOutputSlots) {
             s.set(ItemStack.EMPTY);
         }
 

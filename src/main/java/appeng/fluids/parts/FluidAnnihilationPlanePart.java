@@ -100,7 +100,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -130,7 +130,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         final BlockEntity te = this.getTile();
         final Level w = te.getLevel();
-        final net.minecraft.core.BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
+        final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
 
         BlockState blockstate = w.getBlockState(pos);
         if (blockstate.getBlock() instanceof BucketPickup) {
@@ -211,7 +211,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         return new PlaneModelData(getConnections());
     }
 
-    private boolean isFluidBlacklisted(net.minecraft.world.level.material.Fluid fluid) {
+    private boolean isFluidBlacklisted(Fluid fluid) {
         return TAG_BLACKLIST.contains(fluid);
     }
 

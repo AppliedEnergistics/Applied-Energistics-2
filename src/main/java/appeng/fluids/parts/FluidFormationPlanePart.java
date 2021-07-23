@@ -87,7 +87,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
-    public FluidFormationPlanePart(final net.minecraft.world.item.ItemStack is) {
+    public FluidFormationPlanePart(final ItemStack is) {
         super(is);
         this.updateHandler();
     }

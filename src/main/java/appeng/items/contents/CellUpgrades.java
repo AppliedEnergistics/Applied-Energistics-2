@@ -22,7 +22,7 @@ import appeng.parts.automation.StackUpgradeInventory;
 import net.minecraft.world.item.ItemStack;
 
 public final class CellUpgrades extends StackUpgradeInventory {
-    private final net.minecraft.world.item.ItemStack is;
+    private final ItemStack is;
 
     public CellUpgrades(final ItemStack is, final int upgrades) {
         super(is, null, upgrades);

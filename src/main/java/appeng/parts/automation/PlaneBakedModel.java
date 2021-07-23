@@ -77,8 +77,8 @@ public class PlaneBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
-                                                                              IModelData modelData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData modelData) {
         if (side == null) {
             PlaneConnections connections = DEFAULT_PERMUTATION;
             if (modelData.hasProperty(PlaneModelData.CONNECTIONS)) {

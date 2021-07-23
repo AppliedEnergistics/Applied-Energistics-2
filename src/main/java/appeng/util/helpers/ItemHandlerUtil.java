@@ -38,7 +38,7 @@ public class ItemHandlerUtil {
 
     public static void clear(final IItemHandler inv) {
         for (int x = 0; x < inv.getSlots(); x++) {
-            setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.EMPTY);
+            setStackInSlot(inv, x, ItemStack.EMPTY);
         }
     }
 

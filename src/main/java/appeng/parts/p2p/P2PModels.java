@@ -32,13 +32,13 @@ import appeng.parts.PartModel;
  */
 class P2PModels {
 
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_status_off");
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_status_on");
-    public static final net.minecraft.resources.ResourceLocation MODEL_STATUS_HAS_CHANNEL = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_status_has_channel");
-    public static final net.minecraft.resources.ResourceLocation MODEL_FREQUENCY = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_FREQUENCY = new ResourceLocation(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_frequency");
 
     private final IPartModel modelsOff;
@@ -46,7 +46,7 @@ class P2PModels {
     private final IPartModel modelsHasChannel;
 
     public P2PModels(String frontModelPath) {
-        ResourceLocation frontModel = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, frontModelPath);
+        ResourceLocation frontModel = new ResourceLocation(AppEng.MOD_ID, frontModelPath);
 
         this.modelsOff = new PartModel(MODEL_STATUS_OFF, MODEL_FREQUENCY, frontModel);
         this.modelsOn = new PartModel(MODEL_STATUS_ON, MODEL_FREQUENCY, frontModel);

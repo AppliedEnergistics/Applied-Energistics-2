@@ -32,7 +32,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     private final ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, Inventory playerInventory,
-                                    net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                    Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);

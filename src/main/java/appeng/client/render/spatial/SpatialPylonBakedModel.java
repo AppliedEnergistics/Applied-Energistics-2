@@ -73,17 +73,17 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                         builder.setUvRotation(Direction.SOUTH, 2);
                         builder.setUvRotation(Direction.NORTH, 2);
                     } else {
-                        builder.setUvRotation(net.minecraft.core.Direction.SOUTH, 1);
+                        builder.setUvRotation(Direction.SOUTH, 1);
                         builder.setUvRotation(Direction.NORTH, 1);
                     }
-                    builder.setUvRotation(net.minecraft.core.Direction.UP, 1);
-                    builder.setUvRotation(net.minecraft.core.Direction.DOWN, 1);
+                    builder.setUvRotation(Direction.UP, 1);
+                    builder.setUvRotation(Direction.DOWN, 1);
                 }
             } else if (displayAxis == SpatialPylonTileEntity.DISPLAY_Y) {
                 ori = Direction.UP;
                 if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.NORTH, 3);
-                    builder.setUvRotation(net.minecraft.core.Direction.SOUTH, 3);
+                    builder.setUvRotation(Direction.SOUTH, 3);
                     builder.setUvRotation(Direction.EAST, 3);
                     builder.setUvRotation(Direction.WEST, 3);
                 }
@@ -95,18 +95,18 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                 } else if ((flags & SpatialPylonTileEntity.DISPLAY_MIDDLE) == SpatialPylonTileEntity.DISPLAY_END_MIN) {
                     builder.setUvRotation(Direction.EAST, 1);
                     builder.setUvRotation(Direction.WEST, 2);
-                    builder.setUvRotation(net.minecraft.core.Direction.UP, 3);
-                    builder.setUvRotation(net.minecraft.core.Direction.DOWN, 3);
+                    builder.setUvRotation(Direction.UP, 3);
+                    builder.setUvRotation(Direction.DOWN, 3);
                 } else {
                     builder.setUvRotation(Direction.EAST, 1);
-                    builder.setUvRotation(net.minecraft.core.Direction.WEST, 2);
+                    builder.setUvRotation(Direction.WEST, 2);
                 }
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, net.minecraft.core.Direction.UP)),
+            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.UP)),
                     this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.DOWN)),
                     this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, net.minecraft.core.Direction.SOUTH)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.SOUTH)),
                     this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.EAST)),
                     this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
@@ -121,7 +121,7 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.NORTH)),
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.SOUTH)),
                     this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideInside(flags, ori, net.minecraft.core.Direction.WEST)));
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.WEST)));
         } else {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
             builder.addCube(0, 0, 0, 16, 16, 16);

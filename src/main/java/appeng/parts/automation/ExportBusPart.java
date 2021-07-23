@@ -67,11 +67,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class ExportBusPart extends SharedItemBusPart implements ICraftingRequester {
 
-    public static final net.minecraft.resources.ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
@@ -87,7 +87,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     private boolean didSomething = false;
     private int nextSlot = 0;
 
-    public ExportBusPart(final net.minecraft.world.item.ItemStack is) {
+    public ExportBusPart(final ItemStack is) {
         super(is);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -262,7 +262,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
-        final net.minecraft.world.item.ItemStack is = ais.createItemStack();
+        final ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);
 
         final ItemStack o = d.simulateAdd(is);
@@ -276,7 +276,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
             if (itemsToAdd != null) {
                 this.itemToSend -= itemsToAdd.getStackSize();
 
-                final net.minecraft.world.item.ItemStack failed = d.addItems(itemsToAdd.createItemStack());
+                final ItemStack failed = d.addItems(itemsToAdd.createItemStack());
                 if (!failed.isEmpty()) {
                     ais.setStackSize(failed.getCount());
                     inv.injectItems(ais, Actionable.MODULATE, this.mySrc);

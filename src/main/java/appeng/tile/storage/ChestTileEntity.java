@@ -136,10 +136,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     // This is only used on the client to display the right cell model without
     // synchronizing the entire
     // cell's inventory when a chest comes into view.
-    private net.minecraft.world.item.Item cellItem = Items.AIR;
+    private Item cellItem = Items.AIR;
     private double idlePowerUsage;
 
-    public ChestTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public ChestTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -267,7 +267,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
     @Nullable
     @Override
-    public net.minecraft.world.item.Item getCellItem(int slot) {
+    public Item getCellItem(int slot) {
         if (slot != 0) {
             return null;
         }
@@ -467,7 +467,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
                 if (returns == null) {
-                    this.inputInventory.setStackInSlot(0, net.minecraft.world.item.ItemStack.EMPTY);
+                    this.inputInventory.setStackInSlot(0, ItemStack.EMPTY);
                 } else {
                     this.inputInventory.setStackInSlot(0, returns.createItemStack());
                 }

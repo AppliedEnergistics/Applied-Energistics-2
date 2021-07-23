@@ -39,12 +39,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
-    public SkyCompassBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public SkyCompassBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final net.minecraft.core.Direction forward, final Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
         final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
@@ -85,7 +85,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, BlockGetter w, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
         // TODO: This definitely needs to be memoized
 

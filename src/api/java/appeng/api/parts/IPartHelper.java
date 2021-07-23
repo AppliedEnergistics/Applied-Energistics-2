@@ -44,7 +44,7 @@ public interface IPartHelper {
      * @return true if placing was successful
      */
     // TODO, this should probably take ItemStack + ItemUseContext
-    InteractionResult placeBus(ItemStack is, net.minecraft.core.BlockPos pos, Direction side, Player player, InteractionHand hand, Level world);
+    InteractionResult placeBus(ItemStack is, BlockPos pos, Direction side, Player player, InteractionHand hand, Level world);
 
     /**
      * @return the render mode

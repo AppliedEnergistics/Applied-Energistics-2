@@ -71,7 +71,7 @@ import appeng.util.SettingsFrom;
 public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject {
 
     private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
-    private static final Map<net.minecraft.world.level.block.entity.BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
+    private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
     private String customName;
@@ -79,11 +79,11 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AEBaseTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
-    public static void registerTileItem(net.minecraft.world.level.block.entity.BlockEntityType<?> type, final Item wat) {
+    public static void registerTileItem(BlockEntityType<?> type, final Item wat) {
         REPRESENTATIVE_ITEMS.put(type, wat);
     }
 
@@ -239,7 +239,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
-            final net.minecraft.core.Direction old_Up = this.up;
+            final Direction old_Up = this.up;
 
             final byte orientation = data.readByte();
             this.forward = Direction.values()[orientation & 0x7];
@@ -303,12 +303,12 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     @Override
-    public net.minecraft.core.Direction getUp() {
+    public Direction getUp() {
         return this.up;
     }
 
     @Override
-    public void setOrientation(final net.minecraft.core.Direction inForward, final Direction inUp) {
+    public void setOrientation(final Direction inForward, final Direction inUp) {
         this.forward = inForward;
         this.up = inUp;
         this.markForUpdate();
@@ -375,7 +375,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
      * @param drops drops of tile entity
      */
     @Override
-    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
 
     }
 
@@ -426,7 +426,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     @Override
-    public net.minecraft.network.chat.Component getCustomInventoryName() {
+    public Component getCustomInventoryName() {
         return new TextComponent(
                 this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }

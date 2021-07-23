@@ -91,17 +91,17 @@ import appeng.util.prioritylist.PrecisePriorityList;
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
         implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory, IConfigurableFluidInventory {
-    public static final ResourceLocation MODEL_BASE = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
 
     private final IActionSource source;
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
@@ -120,7 +120,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     private IMEInventory<IAEFluidStack> getInventoryWrapper(BlockEntity target) {
-        net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
+        Direction targetSide = this.getSide().getDirection().getOpposite();
         // Prioritize a handler to directly link to another ME network
         IStorageMonitorableAccessor accessor = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
@@ -375,7 +375,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             return 0;
         }
 
-        final net.minecraft.core.Direction targetSide = this.getSide().getDirection().getOpposite();
+        final Direction targetSide = this.getSide().getDirection().getOpposite();
 
         LazyOptional<IStorageMonitorableAccessor> accessorOpt = target
                 .getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);

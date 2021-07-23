@@ -49,7 +49,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrides getOverrides() {
         return new ItemOverrides() {
             @Override
-            public BakedModel resolve(BakedModel originalModel, net.minecraft.world.item.ItemStack stack, ClientLevel world,
+            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
                                       LivingEntity entity) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;

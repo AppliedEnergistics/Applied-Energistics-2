@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot. Used to prevent
  * the default item count from rendering.
  */
-class Size1Slot extends net.minecraft.world.inventory.Slot {
+class Size1Slot extends Slot {
 
     private final Slot delegate;
 
@@ -41,15 +41,15 @@ class Size1Slot extends net.minecraft.world.inventory.Slot {
 
     @Override
     @Nonnull
-    public net.minecraft.world.item.ItemStack getItem() {
-        net.minecraft.world.item.ItemStack orgStack = this.delegate.getItem();
+    public ItemStack getItem() {
+        ItemStack orgStack = this.delegate.getItem();
         if (!orgStack.isEmpty()) {
-            net.minecraft.world.item.ItemStack modifiedStack = orgStack.copy();
+            ItemStack modifiedStack = orgStack.copy();
             modifiedStack.setCount(1);
             return modifiedStack;
         }
 
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -84,7 +84,7 @@ class Size1Slot extends net.minecraft.world.inventory.Slot {
     }
 
     @Override
-    public boolean isSameInventory(net.minecraft.world.inventory.Slot other) {
+    public boolean isSameInventory(Slot other) {
         return this.delegate.isSameInventory(other);
     }
 }

@@ -47,7 +47,7 @@ public interface IWorldGen {
      * <p>
      * This also takes AE2's configuration file into account.
      */
-    boolean isWorldGenDisabledForBiome(WorldGenType type, net.minecraft.resources.ResourceLocation biomeId);
+    boolean isWorldGenDisabledForBiome(WorldGenType type, ResourceLocation biomeId);
 
     enum WorldGenType {
         CERTUS_QUARTZ,

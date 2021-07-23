@@ -49,7 +49,7 @@ import net.minecraft.world.item.ItemStack;
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
 
     public FluidTerminalScreen(FluidTerminalContainer container, Inventory playerInventory,
-                               net.minecraft.network.chat.Component title, ScreenStyle style) {
+                               Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -81,7 +81,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
 
         String modName = Platform.getModName(Platform.getModId(fluidStack));
 
-        List<net.minecraft.network.chat.Component> list = new ArrayList<>();
+        List<Component> list = new ArrayList<>();
         list.add(fluidStack.getFluidStack().getDisplayName());
         list.add(new TextComponent(formattedAmount));
         list.add(new TextComponent(modName));
@@ -92,7 +92,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     @Override
     protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEFluidStack> entry,
             int mouseButton, ClickType clickType) {
-        if (clickType == net.minecraft.world.inventory.ClickType.PICKUP) {
+        if (clickType == ClickType.PICKUP) {
             // TODO: Allow more options
             if (mouseButton == 0 && entry != null) {
                 AELog.debug("mouse0 GUI STACK SIZE %s", entry.getStoredAmount());

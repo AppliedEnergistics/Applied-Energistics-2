@@ -50,18 +50,18 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
     private static final Material TEXTURE_RING_LIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
     private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(
             TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
     private static final Material TEXTURE_CABLE_GLASS = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
     private static final Material TEXTURE_COVERED_CABLE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -95,8 +95,8 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
-                                                                              IModelData modelData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData modelData) {
         QnbFormedState formedState = modelData.getData(QuantumBridgeTileEntity.FORMED_STATE);
 
         if (formedState == null) {
@@ -110,11 +110,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         return this.getQuads(formedState, state);
     }
 
-    private List<BakedQuad> getQuads(QnbFormedState formedState, net.minecraft.world.level.block.state.BlockState state) {
+    private List<BakedQuad> getQuads(QnbFormedState formedState, BlockState state) {
         CubeBuilder builder = new CubeBuilder();
 
         if (state.getBlock() == this.linkBlock) {
-            Set<net.minecraft.core.Direction> sides = formedState.getAdjacentQuantumBridges();
+            Set<Direction> sides = formedState.getAdjacentQuantumBridges();
 
             this.renderCableAt(builder, 0.11f * 16, this.glassCableTexture, 0.141f * 16, sides);
 
@@ -134,7 +134,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
             if (formedState.isPowered()) {
                 builder.setTexture(this.lightCornerTexture);
                 builder.setEmissiveMaterial(true);
-                for (net.minecraft.core.Direction facing : Direction.values()) {
+                for (Direction facing : Direction.values()) {
                     // Offset the face by a slight amount so that it is drawn over the already drawn
                     // ring texture
                     // (avoids z-fighting)
@@ -198,11 +198,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
             builder.addCube(8 - thickness, 8 - thickness, 8 + thickness + pull, 8 + thickness, 8 + thickness, 16);
         }
 
-        if (connections.contains(net.minecraft.core.Direction.DOWN)) {
+        if (connections.contains(Direction.DOWN)) {
             builder.addCube(8 - thickness, 0, 8 - thickness, 8 + thickness, 8 - thickness - pull, 8 + thickness);
         }
 
-        if (connections.contains(net.minecraft.core.Direction.UP)) {
+        if (connections.contains(Direction.UP)) {
             builder.addCube(8 - thickness, 8 + thickness + pull, 8 - thickness, 8 + thickness, 16, 8 + thickness);
         }
     }

@@ -38,7 +38,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
 
     public static final int MAX_FULLNESS = 4;
 
-    public static final IntegerProperty ENERGY_STORAGE = net.minecraft.world.level.block.state.properties.IntegerProperty.create("fullness", 0, MAX_FULLNESS);
+    public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, MAX_FULLNESS);
 
     public EnergyCellBlock() {
         super(defaultProps(AEMaterials.GLASS));
@@ -49,7 +49,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         super.fillItemCategory(group, itemStacks);
 
-        final net.minecraft.world.item.ItemStack charged = new ItemStack(this, 1);
+        final ItemStack charged = new ItemStack(this, 1);
         final CompoundTag tag = charged.getOrCreateTag();
         tag.putDouble("internalCurrentPower", this.getMaxPower());
         tag.putDouble("internalMaxPower", this.getMaxPower());

@@ -44,16 +44,16 @@ public class ItemDefinition<T extends Item> implements ItemLike {
         return this.id;
     }
 
-    public net.minecraft.world.item.ItemStack stack() {
+    public ItemStack stack() {
         return stack(1);
     }
 
-    public net.minecraft.world.item.ItemStack stack(final int stackSize) {
-        return new net.minecraft.world.item.ItemStack(item, stackSize);
+    public ItemStack stack(final int stackSize) {
+        return new ItemStack(item, stackSize);
     }
 
     /**
-     * Compare {@link net.minecraft.world.item.ItemStack} with this
+     * Compare {@link ItemStack} with this
      *
      * @param comparableStack compared item
      *

@@ -62,10 +62,10 @@ public class FluidExportBusPart extends SharedFluidBusPart {
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
 
     private final IActionSource source;
 

@@ -27,7 +27,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
-public class BlockDefinition<T extends Block> extends ItemDefinition<net.minecraft.world.item.BlockItem> {
+public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> {
     private final T block;
 
     public BlockDefinition(ResourceLocation id, T block, BlockItem item) {
@@ -43,7 +43,7 @@ public class BlockDefinition<T extends Block> extends ItemDefinition<net.minecra
     public final ItemStack stack(int stackSize) {
         Preconditions.checkArgument(stackSize > 0);
 
-        return new net.minecraft.world.item.ItemStack(block, stackSize);
+        return new ItemStack(block, stackSize);
     }
 
 }

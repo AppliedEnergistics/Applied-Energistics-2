@@ -51,7 +51,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private final Button selectCPU;
     private final Scrollbar scrollbar;
 
-    public CraftConfirmScreen(CraftConfirmContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public CraftConfirmScreen(CraftConfirmContainer container, Inventory playerInventory, Component title,
                               ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
@@ -79,8 +79,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU.active = planIsStartable;
 
         // Show additional status about the selected CPU and plan when the planning is done
-        net.minecraft.network.chat.Component planDetails = GuiText.CalculatingWait.text();
-        net.minecraft.network.chat.Component cpuDetails = TextComponent.EMPTY;
+        Component planDetails = GuiText.CalculatingWait.text();
+        Component cpuDetails = TextComponent.EMPTY;
         if (plan != null) {
             String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
             planDetails = GuiText.BytesUsed.text(byteUsed);
@@ -103,12 +103,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         scrollbar.setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
     }
 
-    private net.minecraft.network.chat.Component getNextCpuButtonLabel() {
+    private Component getNextCpuButtonLabel() {
         if (this.menu.hasNoCPU()) {
             return GuiText.NoCraftingCPUs.text();
         }
 
-        net.minecraft.network.chat.Component cpuName;
+        Component cpuName;
         if (this.menu.cpuName == null) {
             cpuName = GuiText.Automatic.text();
         } else {

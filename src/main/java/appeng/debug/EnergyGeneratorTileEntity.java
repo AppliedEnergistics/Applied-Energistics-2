@@ -40,7 +40,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements Ticka
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public EnergyGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -52,7 +52,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements Ticka
         }
 
         int tier = 1;
-        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+        for (Direction facing : Direction.values()) {
             final BlockEntity te = world.getBlockEntity(this.getBlockPos().relative(facing));
 
             if (te instanceof EnergyGeneratorTileEntity) {
@@ -62,7 +62,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements Ticka
 
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
-        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+        for (Direction facing : Direction.values()) {
             final BlockEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
             if (te == null) {
                 continue;
@@ -80,7 +80,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements Ticka
     @SuppressWarnings("unchecked")
     @Override
     @Nullable
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == CapabilityEnergy.ENERGY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this);
         }

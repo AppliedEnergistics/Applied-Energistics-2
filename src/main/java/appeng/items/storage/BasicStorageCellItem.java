@@ -19,6 +19,7 @@
 package appeng.items.storage;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
@@ -36,7 +37,7 @@ public final class BasicStorageCellItem extends AbstractStorageCell<IAEItemStack
     protected final int bytesPerType;
     protected final double idleDrain;
 
-    public BasicStorageCellItem(net.minecraft.world.item.Item.Properties props, ItemLike whichCell, int kilobytes, float idleDrain,
+    public BasicStorageCellItem(Item.Properties props, ItemLike whichCell, int kilobytes, float idleDrain,
                                 int bytesPerType) {
         super(props, whichCell, kilobytes);
         this.idleDrain = idleDrain;

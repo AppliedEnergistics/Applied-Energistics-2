@@ -56,7 +56,7 @@ public class ApiGrid implements IGridHelper {
 
     @Nullable
     @Override
-    public IInWorldGridNodeHost getNodeHost(LevelAccessor world, net.minecraft.core.BlockPos pos) {
+    public IInWorldGridNodeHost getNodeHost(LevelAccessor world, BlockPos pos) {
         if (world.hasChunkAt(pos)) {
             final BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {

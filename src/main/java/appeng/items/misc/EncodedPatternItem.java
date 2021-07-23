@@ -32,6 +32,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +71,7 @@ public class EncodedPatternItem extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-    public EncodedPatternItem(net.minecraft.world.item.Item.Properties properties) {
+    public EncodedPatternItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -112,8 +113,8 @@ public class EncodedPatternItem extends AEBaseItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<net.minecraft.network.chat.Component> lines,
-                                final net.minecraft.world.item.TooltipFlag advancedTooltips) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+                                final TooltipFlag advancedTooltips) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
 
         if (details == null) {
@@ -125,12 +126,12 @@ public class EncodedPatternItem extends AEBaseItem {
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final net.minecraft.network.chat.Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
+            final Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
                     .copy().append(": ");
-            final net.minecraft.network.chat.Component and = new TextComponent(" ").copy().append(GuiText.And.text())
+            final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                     .copy()
                     .append(" ");
-            final net.minecraft.network.chat.Component with = GuiText.With.text().copy().append(": ");
+            final Component with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
@@ -145,8 +146,8 @@ public class EncodedPatternItem extends AEBaseItem {
             }
 
             if (invalid.isCraftable()) {
-                final net.minecraft.network.chat.Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-                final net.minecraft.network.chat.Component canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
+                final Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                final Component canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
                 lines.add(substitutionLabel.copy().append(canSubstitute));
             }
@@ -164,11 +165,11 @@ public class EncodedPatternItem extends AEBaseItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final net.minecraft.network.chat.Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+        final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
                 .append(": ");
-        final net.minecraft.network.chat.Component and = new TextComponent(" ").copy().append(GuiText.And.text())
+        final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                 .append(" ");
-        final net.minecraft.network.chat.Component with = GuiText.With.text().copy().append(": ");
+        final Component with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -193,14 +194,14 @@ public class EncodedPatternItem extends AEBaseItem {
         }
 
         if (isCrafting) {
-            final net.minecraft.network.chat.Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-            final net.minecraft.network.chat.Component canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
+            final Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+            final Component canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
             lines.add(substitutionLabel.copy().append(canSubstitute));
         }
     }
 
-    public net.minecraft.world.item.ItemStack getOutput(final ItemStack item) {
+    public ItemStack getOutput(final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
         if (out != null) {
@@ -209,12 +210,12 @@ public class EncodedPatternItem extends AEBaseItem {
 
         final Level w = AppEng.instance().getClientWorld();
         if (w == null) {
-            return net.minecraft.world.item.ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
 
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
 
-        out = details != null ? details.getOutputs().get(0).createItemStack() : net.minecraft.world.item.ItemStack.EMPTY;
+        out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
@@ -237,7 +238,7 @@ public class EncodedPatternItem extends AEBaseItem {
                 : null;
     }
 
-    public List<IAEItemStack> getIngredients(net.minecraft.world.item.ItemStack itemStack) {
+    public List<IAEItemStack> getIngredients(ItemStack itemStack) {
         Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
                 itemStack);
         final CompoundTag tag = itemStack.getTag();
@@ -249,7 +250,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final List<IAEItemStack> in = new ArrayList<>(inTag.size());
         for (int x = 0; x < inTag.size(); x++) {
             CompoundTag ingredient = inTag.getCompound(x);
-            final ItemStack gs = net.minecraft.world.item.ItemStack.of(ingredient);
+            final ItemStack gs = ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -259,7 +260,7 @@ public class EncodedPatternItem extends AEBaseItem {
         return in;
     }
 
-    public List<IAEItemStack> getProducts(net.minecraft.world.item.ItemStack itemStack) {
+    public List<IAEItemStack> getProducts(ItemStack itemStack) {
         Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
                 itemStack);
         final CompoundTag tag = itemStack.getTag();
@@ -271,7 +272,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final List<IAEItemStack> out = new ArrayList<>(outTag.size());
         for (int x = 0; x < outTag.size(); x++) {
             CompoundTag ingredient = outTag.getCompound(x);
-            final ItemStack gs = net.minecraft.world.item.ItemStack.of(ingredient);
+            final ItemStack gs = ItemStack.of(ingredient);
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
@@ -293,7 +294,7 @@ public class EncodedPatternItem extends AEBaseItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, net.minecraft.world.item.ItemStack[] out,
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
             ResourceLocation recipeId, boolean allowSubstitutes) {
         CompoundTag encodedValue = encodeInputsAndOutputs(in, out);
         encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
@@ -304,18 +305,18 @@ public class EncodedPatternItem extends AEBaseItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeProcessingPattern(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.ItemStack[] in, ItemStack[] out) {
+    public static void encodeProcessingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out) {
         stack.setTag(encodeInputsAndOutputs(in, out));
     }
 
-    private static CompoundTag encodeInputsAndOutputs(net.minecraft.world.item.ItemStack[] in, net.minecraft.world.item.ItemStack[] out) {
+    private static CompoundTag encodeInputsAndOutputs(ItemStack[] in, ItemStack[] out) {
         final CompoundTag encodedValue = new CompoundTag();
 
         final ListTag tagIn = new ListTag();
         final ListTag tagOut = new ListTag();
 
         boolean hasInput = false;
-        for (final net.minecraft.world.item.ItemStack i : in) {
+        for (final ItemStack i : in) {
             tagIn.add(createItemTag(i));
             if (!i.isEmpty()) {
                 hasInput = true;
@@ -325,7 +326,7 @@ public class EncodedPatternItem extends AEBaseItem {
         Preconditions.checkArgument(hasInput, "cannot encode a pattern that has no inputs.");
 
         boolean hasNonEmptyOutput = false;
-        for (final net.minecraft.world.item.ItemStack i : out) {
+        for (final ItemStack i : out) {
             tagOut.add(createItemTag(i));
             if (!i.isEmpty()) {
                 hasNonEmptyOutput = true;
@@ -340,7 +341,7 @@ public class EncodedPatternItem extends AEBaseItem {
         return encodedValue;
     }
 
-    private static Tag createItemTag(final net.minecraft.world.item.ItemStack i) {
+    private static Tag createItemTag(final ItemStack i) {
         final CompoundTag c = new CompoundTag();
 
         if (!i.isEmpty()) {

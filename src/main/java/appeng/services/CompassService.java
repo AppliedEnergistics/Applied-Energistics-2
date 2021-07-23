@@ -118,7 +118,7 @@ public final class CompassService {
     /**
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
-    public void notifyBlockChange(final ServerLevel w, net.minecraft.core.BlockPos pos) {
+    public void notifyBlockChange(final ServerLevel w, BlockPos pos) {
         ChunkAccess chunk = w.getChunk(pos);
         updateArea(w, chunk, pos.getY());
     }
@@ -142,7 +142,7 @@ public final class CompassService {
                 pos.setZ(j);
                 for (int k = low_y; k < hi_y; k++) {
                     pos.setY(k);
-                    final net.minecraft.world.level.block.Block blk = c.getBlockState(pos).getBlock();
+                    final Block blk = c.getBlockState(pos).getBlock();
                     if (blk == skyStoneBlock) {
                         return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, true));
                     }

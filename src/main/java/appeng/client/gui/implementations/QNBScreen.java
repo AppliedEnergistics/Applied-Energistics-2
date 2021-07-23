@@ -27,7 +27,7 @@ import appeng.container.implementations.QNBContainer;
 
 public class QNBScreen extends AEBaseScreen<QNBContainer> {
 
-    public QNBScreen(QNBContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
+    public QNBScreen(QNBContainer container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 

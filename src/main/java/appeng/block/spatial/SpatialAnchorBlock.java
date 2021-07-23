@@ -46,7 +46,7 @@ import appeng.util.InteractionUtil;
  */
 public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity> {
 
-    private static final BooleanProperty POWERED = net.minecraft.world.level.block.state.properties.BooleanProperty.create("powered");
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SpatialAnchorBlock() {
         super(defaultProps(Material.METAL));
@@ -60,7 +60,7 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     }
 
     @Override
-    protected net.minecraft.world.level.block.state.BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
         return currentState.setValue(POWERED, te.isActive());
     }
 

@@ -54,7 +54,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
                 final String fluidName = I18n.get(ais.getFluidStack().getTranslationKey());
-                final net.minecraft.network.chat.Component text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
+                final Component text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
 
                 probeInfo.text(text);
             }

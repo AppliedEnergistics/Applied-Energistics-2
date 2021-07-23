@@ -199,14 +199,14 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
                 final ItemStack g = i.next().asItemStackRepresentation();
                 ItemHandlerUtil.setStackInSlot(inv, x, g);
             } else {
-                ItemHandlerUtil.setStackInSlot(inv, x, net.minecraft.world.item.ItemStack.EMPTY);
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.EMPTY);
             }
         }
 
         this.broadcastChanges();
     }
 
-    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(net.minecraft.world.item.ItemStack is,
+    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
                                                                                      IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
         if (cellInv != null) {

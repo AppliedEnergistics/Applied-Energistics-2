@@ -99,7 +99,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     @OnlyIn(Dist.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public MolecularAssemblerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         this.getMainNode()
@@ -116,7 +116,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     @Override
     public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table,
-            final net.minecraft.core.Direction where) {
+            final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
 
@@ -253,7 +253,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             this.progress = 0;
             this.forcePlan = false;
             this.myPlan = null;
-            this.myPattern = net.minecraft.world.item.ItemStack.EMPTY;
+            this.myPattern = ItemStack.EMPTY;
             this.pushDirection = AEPartLocation.INTERNAL;
         }
 
@@ -261,7 +261,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public AECableType getCableConnectionType(net.minecraft.core.Direction dir) {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
@@ -295,7 +295,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -306,11 +306,11 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final net.minecraft.world.item.ItemStack is = this.upgrades.getStackInSlot(h);
+            final ItemStack is = this.upgrades.getStackInSlot(h);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -441,9 +441,9 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
     }
 
-    private void pushOut(net.minecraft.world.item.ItemStack output) {
+    private void pushOut(ItemStack output) {
         if (this.pushDirection == AEPartLocation.INTERNAL) {
-            for (final Direction d : net.minecraft.core.Direction.values()) {
+            for (final Direction d : Direction.values()) {
                 output = this.pushTo(output, d);
             }
         } else {
@@ -458,7 +458,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         this.gridInv.setStackInSlot(9, output);
     }
 
-    private net.minecraft.world.item.ItemStack pushTo(ItemStack output, final Direction d) {
+    private ItemStack pushTo(ItemStack output, final Direction d) {
         if (output.isEmpty()) {
             return output;
         }

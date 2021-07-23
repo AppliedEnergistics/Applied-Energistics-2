@@ -31,6 +31,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridNode;
@@ -59,7 +60,7 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public class DebugCardItem extends AEBaseItem {
 
-    public DebugCardItem(net.minecraft.world.item.Item.Properties properties) {
+    public DebugCardItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -72,7 +73,7 @@ public class DebugCardItem extends AEBaseItem {
         Player player = context.getPlayer();
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        net.minecraft.core.Direction side = context.getClickedFace();
+        Direction side = context.getClickedFace();
 
         if (player == null) {
             return InteractionResult.PASS;
@@ -208,7 +209,7 @@ public class DebugCardItem extends AEBaseItem {
         player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 
-    private void outputMsg(final net.minecraft.world.entity.Entity player, String label, String value) {
+    private void outputMsg(final Entity player, String label, String value) {
         player.sendMessage(new TextComponent("")
                 .append(
                         new TextComponent(label).withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE))

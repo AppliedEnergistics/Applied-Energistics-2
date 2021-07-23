@@ -60,7 +60,7 @@ public class SpatialPylonModel implements BasicUnbakedModel<SpatialPylonModel> {
 
     private static Material getTexturePath(SpatialPylonTextureType type) {
         return new Material(TextureAtlas.LOCATION_BLOCKS,
-                new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+                new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
     }
 
 }

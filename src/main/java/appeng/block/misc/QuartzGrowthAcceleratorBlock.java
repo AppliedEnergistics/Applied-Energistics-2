@@ -45,7 +45,7 @@ import appeng.util.Platform;
 public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>
         implements IOrientableBlock {
 
-    private static final BooleanProperty POWERED = net.minecraft.world.level.block.state.properties.BooleanProperty.create("powered");
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public QuartzGrowthAcceleratorBlock() {
         super(defaultProps(Material.STONE).sound(SoundType.METAL));
@@ -65,7 +65,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(final net.minecraft.world.level.block.state.BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -77,8 +77,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             final double d1 = r.nextFloat() - 0.5F;
 
             final Direction up = cga.getUp();
-            final net.minecraft.core.Direction forward = cga.getForward();
-            final net.minecraft.core.Direction west = Platform.crossProduct(forward, up);
+            final Direction forward = cga.getForward();
+            final Direction west = Platform.crossProduct(forward, up);
 
             double rx = 0.5 + pos.getX();
             double ry = 0.5 + pos.getY();
@@ -112,7 +112,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                 case 2:
                     dx = d1;
                     dz = -0.6;
-                    pt = new net.minecraft.core.BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
+                    pt = new BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
 
                     break;
                 case 3:

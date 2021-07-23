@@ -113,8 +113,8 @@ public class FacadeBuilder {
     public FacadeBuilder() {
         // This constructor is used for item models where transparent facades are not a
         // concern
-        this.transparentFacadeQuads = new EnumMap<>(net.minecraft.core.Direction.class);
-        for (Direction facing : net.minecraft.core.Direction.values()) {
+        this.transparentFacadeQuads = new EnumMap<>(Direction.class);
+        for (Direction facing : Direction.values()) {
             this.transparentFacadeQuads.put(facing, Collections.emptyList());
         }
     }
@@ -122,27 +122,27 @@ public class FacadeBuilder {
     public FacadeBuilder(BakedModel transparentFacadeModel) {
         // Pre-rotate the transparent facade model to all possible sides so that we can
         // add it quicker later
-        List<net.minecraft.client.renderer.block.model.BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random(), EmptyModelData.INSTANCE);
+        List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random(), EmptyModelData.INSTANCE);
         this.transparentFacadeQuads = new EnumMap<>(Direction.class);
 
         for (Direction facing : Direction.values()) {
             // Rotate quads accordingly
             QuadRotator rotator = new QuadRotator();
-            List<net.minecraft.client.renderer.block.model.BakedQuad> rotated = rotator.rotateQuads(partQuads, facing, Direction.UP);
+            List<BakedQuad> rotated = rotator.rotateQuads(partQuads, facing, Direction.UP);
             this.transparentFacadeQuads.put(facing, ImmutableList.copyOf(rotated));
         }
     }
 
-    public void buildFacadeQuads(RenderType layer, CableBusRenderState renderState, Random rand, List<net.minecraft.client.renderer.block.model.BakedQuad> quads,
-            Function<net.minecraft.resources.ResourceLocation, BakedModel> modelLookup) {
+    public void buildFacadeQuads(RenderType layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads,
+            Function<ResourceLocation, BakedModel> modelLookup) {
         BakedPipeline pipeline = this.pipelines.get();
         Quad collectorQuad = this.collectors.get();
         boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
-        Set<net.minecraft.core.Direction> sidesWithParts = renderState.getAttachments().keySet();
+        Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
         BlockAndTintGetter parentWorld = renderState.getWorld();
-        net.minecraft.core.BlockPos pos = renderState.getPos();
+        BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
 
@@ -228,7 +228,7 @@ public class FacadeBuilder {
             BakedModel model = dispatcher.getBlockModel(blockState);
             IModelData modelData = model.getModelData(facadeAccess, pos, blockState, EmptyModelData.INSTANCE);
 
-            List<net.minecraft.client.renderer.block.model.BakedQuad> modelQuads = new ArrayList<>();
+            List<BakedQuad> modelQuads = new ArrayList<>();
             // If we are forcing transparent facades, fake the render layer, and grab all
             // quads.
             if (layer == null) {
@@ -281,7 +281,7 @@ public class FacadeBuilder {
             kicker.setBox(fullBounds);
             kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
 
-            for (net.minecraft.client.renderer.block.model.BakedQuad quad : modelQuads) {
+            for (BakedQuad quad : modelQuads) {
                 // lookup the format in CachedFormat.
                 CachedFormat format = CachedFormat.lookup(DefaultVertexFormat.BLOCK);
                 // If this quad has a tint index, setup the tinter.
@@ -318,11 +318,11 @@ public class FacadeBuilder {
      *
      * @return The model.
      */
-    public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, net.minecraft.core.Direction side) {
-        List<net.minecraft.client.renderer.block.model.BakedQuad> facadeQuads = new ArrayList<>();
+    public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, Direction side) {
+        List<BakedQuad> facadeQuads = new ArrayList<>();
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(textureItem, null,
                 null);
-        List<net.minecraft.client.renderer.block.model.BakedQuad> modelQuads = gatherQuads(model, null, new Random(), EmptyModelData.INSTANCE);
+        List<BakedQuad> modelQuads = gatherQuads(model, null, new Random(), EmptyModelData.INSTANCE);
 
         BakedPipeline pipeline = this.pipelines.get();
         Quad collectorQuad = this.collectors.get();
@@ -361,8 +361,8 @@ public class FacadeBuilder {
     }
 
     // Helper to gather all quads from a model into a list.
-    private static List<net.minecraft.client.renderer.block.model.BakedQuad> gatherQuads(BakedModel model, BlockState state, Random rand, IModelData data) {
-        List<net.minecraft.client.renderer.block.model.BakedQuad> modelQuads = new ArrayList<>();
+    private static List<BakedQuad> gatherQuads(BakedModel model, BlockState state, Random rand, IModelData data) {
+        List<BakedQuad> modelQuads = new ArrayList<>();
         for (Direction face : Direction.values()) {
             modelQuads.addAll(model.getQuads(state, face, rand, data));
         }

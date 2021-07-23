@@ -47,7 +47,7 @@ import appeng.core.registries.PartModels;
  */
 public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
 
-    public static final net.minecraft.resources.ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
+    public static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     private final PartModels partModels;
 
@@ -56,9 +56,9 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
     }
 
     @Override
-    public Collection<net.minecraft.resources.ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         partModels.setInitialized(true);
-        List<net.minecraft.resources.ResourceLocation> models = new ArrayList<>(partModels.getModels());
+        List<ResourceLocation> models = new ArrayList<>(partModels.getModels());
         models.add(TRANSLUCENT_FACADE_MODEL);
         return models;
     }
@@ -89,11 +89,11 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }
 
-    private Map<ResourceLocation, BakedModel> loadPartModels(net.minecraft.client.resources.model.ModelBakery bakery,
+    private Map<ResourceLocation, BakedModel> loadPartModels(ModelBakery bakery,
                                                              Function<Material, TextureAtlasSprite> spriteGetterIn, ModelState transformIn) {
         ImmutableMap.Builder<ResourceLocation, BakedModel> result = ImmutableMap.builder();
 
-        for (net.minecraft.resources.ResourceLocation location : this.partModels.getModels()) {
+        for (ResourceLocation location : this.partModels.getModels()) {
             BakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);

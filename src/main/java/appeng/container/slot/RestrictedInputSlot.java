@@ -56,12 +56,12 @@ import appeng.util.Platform;
  */
 public class RestrictedInputSlot extends AppEngSlot {
 
-    private static final List<net.minecraft.resources.ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
+    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
             new ResourceLocation("forge:ingots/copper"), new ResourceLocation("forge:ingots/tin"),
-            new net.minecraft.resources.ResourceLocation("forge:ingots/iron"), new net.minecraft.resources.ResourceLocation("forge:ingots/gold"),
-            new net.minecraft.resources.ResourceLocation("forge:ingots/lead"), new net.minecraft.resources.ResourceLocation("forge:ingots/bronze"),
-            new ResourceLocation("forge:ingots/brass"), new net.minecraft.resources.ResourceLocation("forge:ingots/nickel"),
-            new net.minecraft.resources.ResourceLocation("forge:ingots/aluminium"));
+            new ResourceLocation("forge:ingots/iron"), new ResourceLocation("forge:ingots/gold"),
+            new ResourceLocation("forge:ingots/lead"), new ResourceLocation("forge:ingots/bronze"),
+            new ResourceLocation("forge:ingots/brass"), new ResourceLocation("forge:ingots/nickel"),
+            new ResourceLocation("forge:ingots/aluminium"));
 
     private final PlacableItemType which;
     private boolean allowEdit = true;
@@ -204,10 +204,10 @@ public class RestrictedInputSlot extends AppEngSlot {
     public ItemStack getDisplayStack() {
         // If the slot only takes encoded patterns, show the encoded item instead
         if (isRemote() && this.which == PlacableItemType.ENCODED_PATTERN) {
-            final net.minecraft.world.item.ItemStack is = super.getDisplayStack();
+            final ItemStack is = super.getDisplayStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final net.minecraft.world.item.ItemStack out = iep.getOutput(is);
+                final ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;
                 }
@@ -217,12 +217,12 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     public static boolean isMetalIngot(final ItemStack i) {
-        if (Platform.itemComparisons().isSameItem(i, new ItemStack(net.minecraft.world.item.Items.IRON_INGOT))) {
+        if (Platform.itemComparisons().isSameItem(i, new ItemStack(Items.IRON_INGOT))) {
             return true;
         }
 
-        Set<net.minecraft.resources.ResourceLocation> itemTags = i.getItem().getTags();
-        for (net.minecraft.resources.ResourceLocation tagName : METAL_INGOT_TAGS) {
+        Set<ResourceLocation> itemTags = i.getItem().getTags();
+        for (ResourceLocation tagName : METAL_INGOT_TAGS) {
             if (itemTags.contains(tagName)) {
                 return true;
             }
@@ -243,7 +243,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     protected boolean getCurrentValidationState() {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
-            net.minecraft.world.item.ItemStack stack = getItem();
+            ItemStack stack = getItem();
             return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
         }
         return true;

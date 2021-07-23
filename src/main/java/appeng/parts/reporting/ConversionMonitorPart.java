@@ -48,16 +48,16 @@ import appeng.util.item.AEItemStack;
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_off");
     @PartModels
     public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_on");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_OFF = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_locked_off");
     @PartModels
-    public static final net.minecraft.resources.ResourceLocation MODEL_LOCKED_ON = new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID,
+    public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
             "part/item_conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
@@ -68,7 +68,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    public ConversionMonitorPart(final net.minecraft.world.item.ItemStack is) {
+    public ConversionMonitorPart(final ItemStack is) {
         super(is);
     }
 
@@ -86,7 +86,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        final net.minecraft.world.item.ItemStack eq = player.getItemInHand(hand);
+        final ItemStack eq = player.getItemInHand(hand);
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
@@ -202,7 +202,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
                     new PlayerSource(player, this));
             if (retrieved != null) {
-                net.minecraft.world.item.ItemStack newItems = retrieved.createItemStack();
+                ItemStack newItems = retrieved.createItemStack();
                 final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
                 newItems = adaptor.addItems(newItems);
                 if (!newItems.isEmpty()) {

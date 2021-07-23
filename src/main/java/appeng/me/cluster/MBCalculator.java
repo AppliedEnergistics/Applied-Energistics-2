@@ -58,7 +58,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final ServerLevel world, final net.minecraft.core.BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(final ServerLevel world, final BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();
@@ -83,7 +83,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         }
     }
 
-    public void calculateMultiblock(final ServerLevel world, final net.minecraft.core.BlockPos loc) {
+    public void calculateMultiblock(final ServerLevel world, final BlockPos loc) {
         if (isModificationInProgress()) {
             return;
         }
@@ -154,7 +154,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         this.disconnect();
     }
 
-    private static boolean isWithinBounds(BlockPos pos, BlockPos boundsMin, net.minecraft.core.BlockPos boundsMax) {
+    private static boolean isWithinBounds(BlockPos pos, BlockPos boundsMin, BlockPos boundsMax) {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -163,7 +163,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     }
 
     private boolean isValidTileAt(final Level w, final int x, final int y, final int z) {
-        return this.isValidTile(w.getBlockEntity(new net.minecraft.core.BlockPos(x, y, z)));
+        return this.isValidTile(w.getBlockEntity(new BlockPos(x, y, z)));
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final ServerLevel w, final net.minecraft.core.BlockPos min, final net.minecraft.core.BlockPos max) {
+    private boolean verifyUnownedRegion(final ServerLevel w, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
             if (this.verifyUnownedRegionInner(w, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
                     side)) {
@@ -194,9 +194,9 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param max max world coord
      * @return created cluster
      */
-    public abstract TCluster createCluster(ServerLevel w, net.minecraft.core.BlockPos min, net.minecraft.core.BlockPos max);
+    public abstract TCluster createCluster(ServerLevel w, BlockPos min, BlockPos max);
 
-    public abstract boolean verifyInternalStructure(ServerLevel world, net.minecraft.core.BlockPos min, net.minecraft.core.BlockPos max);
+    public abstract boolean verifyInternalStructure(ServerLevel world, BlockPos min, BlockPos max);
 
     /**
      * disassembles the multi-block.
@@ -213,7 +213,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      * @param min min world coord
      * @param max max world coord
      */
-    public abstract void updateTiles(TCluster c, ServerLevel w, net.minecraft.core.BlockPos min, BlockPos max);
+    public abstract void updateTiles(TCluster c, ServerLevel w, BlockPos min, BlockPos max);
 
     /**
      * check if the tile entities are correct for the structure.
@@ -255,7 +255,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 return false;
         }
 
-        for (net.minecraft.core.BlockPos p : net.minecraft.core.BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
+        for (BlockPos p : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
             final BlockEntity te = w.getBlockEntity(p);
             if (this.isValidTile(te)) {
                 return true;

@@ -49,23 +49,23 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
         addForge("storage_blocks/certus_quartz", AEBlocks.QUARTZ_BLOCK);
         addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
 
-        addForge("terracotta", net.minecraft.world.level.block.Blocks.TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.WHITE_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.ORANGE_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.MAGENTA_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.LIGHT_BLUE_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.YELLOW_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.LIME_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.PINK_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.GRAY_TERRACOTTA,
+        addForge("terracotta", Blocks.TERRACOTTA,
+                Blocks.WHITE_TERRACOTTA,
+                Blocks.ORANGE_TERRACOTTA,
+                Blocks.MAGENTA_TERRACOTTA,
+                Blocks.LIGHT_BLUE_TERRACOTTA,
+                Blocks.YELLOW_TERRACOTTA,
+                Blocks.LIME_TERRACOTTA,
+                Blocks.PINK_TERRACOTTA,
+                Blocks.GRAY_TERRACOTTA,
                 Blocks.LIGHT_GRAY_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.CYAN_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.PURPLE_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.BLUE_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.BROWN_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.GREEN_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.RED_TERRACOTTA,
-                net.minecraft.world.level.block.Blocks.BLACK_TERRACOTTA);
+                Blocks.CYAN_TERRACOTTA,
+                Blocks.PURPLE_TERRACOTTA,
+                Blocks.BLUE_TERRACOTTA,
+                Blocks.BROWN_TERRACOTTA,
+                Blocks.GREEN_TERRACOTTA,
+                Blocks.RED_TERRACOTTA,
+                Blocks.BLACK_TERRACOTTA);
 
         addAe2("blacklisted/annihilation_plane");
 
@@ -73,7 +73,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
         addAe2("spatial/whitelist");
 
         addAe2("whitelisted/facades",
-                net.minecraft.world.level.block.Blocks.GLASS,
+                Blocks.GLASS,
                 Tags.Blocks.STAINED_GLASS,
                 AEBlocks.QUARTZ_GLASS,
                 AEBlocks.QUARTZ_VIBRANT_GLASS);
@@ -104,7 +104,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
         for (Object blockSource : blockSources) {
             if (blockSource instanceof Block) {
-                builder.add((net.minecraft.world.level.block.Block) blockSource);
+                builder.add((Block) blockSource);
             } else if (blockSource instanceof BlockDefinition) {
                 builder.add(((BlockDefinition) blockSource).block());
             } else if (blockSource instanceof Named) {

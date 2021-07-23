@@ -39,14 +39,14 @@ public interface IAEFacade extends IFacade {
 
     @Nonnull
     @Override
-    default net.minecraft.world.level.block.state.BlockState getFacade(@Nonnull BlockGetter world, @Nonnull net.minecraft.core.BlockPos pos, @Nullable Direction side) {
+    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side) {
         return getFacadeState(world, pos, side);
     }
 
     @Nonnull
     @Override
-    default net.minecraft.world.level.block.state.BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable net.minecraft.core.Direction side,
-                                                                       @Nonnull net.minecraft.core.BlockPos connection) {
+    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side,
+                                                                       @Nonnull BlockPos connection) {
         return getFacadeState(world, pos, side);
     }
 

@@ -157,7 +157,7 @@ public class WorldCoord {
     }
 
     public BlockPos getPos() {
-        return new net.minecraft.core.BlockPos(this.x, this.y, this.z);
+        return new BlockPos(this.x, this.y, this.z);
     }
 
     @Override

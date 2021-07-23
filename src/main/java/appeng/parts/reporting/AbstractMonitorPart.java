@@ -72,7 +72,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private boolean isLocked;
     private IStackWatcher myWatcher;
 
-    public AbstractMonitorPart(final net.minecraft.world.item.ItemStack is) {
+    public AbstractMonitorPart(final ItemStack is) {
         super(is);
 
         getMainNode().addService(IStackWatcherHost.class, this);
@@ -286,7 +286,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean showNetworkInfo(final net.minecraft.world.phys.HitResult where) {
+    public boolean showNetworkInfo(final HitResult where) {
         return false;
     }
 

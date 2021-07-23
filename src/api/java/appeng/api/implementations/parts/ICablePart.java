@@ -72,7 +72,7 @@ public interface ICablePart extends IPart {
      *
      * @param sides sides of cable
      */
-    void setExposedOnSides(EnumSet<net.minecraft.core.Direction> sides);
+    void setExposedOnSides(EnumSet<Direction> sides);
 
     /**
      * used to tests if a cable connects to neighbors visually.
@@ -81,6 +81,6 @@ public interface ICablePart extends IPart {
      *
      * @return true if this side is currently connects to an external block.
      */
-    boolean isConnected(net.minecraft.core.Direction side);
+    boolean isConnected(Direction side);
 
 }

@@ -37,7 +37,7 @@ import net.minecraft.world.level.block.Block;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
-    public QuartzWrenchItem(net.minecraft.world.item.Item.Properties props) {
+    public QuartzWrenchItem(Item.Properties props) {
         super(props);
     }
 
@@ -69,7 +69,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
     }
 
     @Override
-    public boolean canWrench(final net.minecraft.world.item.ItemStack wrench, final Player player, final BlockPos pos) {
+    public boolean canWrench(final ItemStack wrench, final Player player, final BlockPos pos) {
         return true;
     }
 }

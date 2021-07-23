@@ -98,11 +98,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     private final VerticalButtonBar verticalToolbar;
 
     // drag y
-    private final Set<net.minecraft.world.inventory.Slot> drag_click = new HashSet<>();
+    private final Set<Slot> drag_click = new HashSet<>();
     private boolean disableShiftClick = false;
     private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
-    private net.minecraft.world.inventory.Slot bl_clicked;
+    private Slot bl_clicked;
     private boolean handlingRightClick;
     private final List<CustomSlotWidget> guiSlots = new ArrayList<>();
     private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
@@ -111,7 +111,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
-    public AEBaseScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
+    public AEBaseScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title);
 
         // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
@@ -146,7 +146,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
                 continue;
             }
 
-            List<net.minecraft.world.inventory.Slot> slots = menu.getSlots(entry.getKey());
+            List<Slot> slots = menu.getSlots(entry.getKey());
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
 
@@ -297,17 +297,17 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     // FIXME FABRIC: move out to json (?)
-    private static final net.minecraft.network.chat.Style TOOLTIP_HEADER = net.minecraft.network.chat.Style.EMPTY.applyFormat(ChatFormatting.WHITE);
-    private static final net.minecraft.network.chat.Style TOOLTIP_BODY = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
+    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormat(ChatFormatting.WHITE);
+    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 
-    public void drawTooltip(PoseStack matrices, int x, int y, List<net.minecraft.network.chat.Component> lines) {
+    public void drawTooltip(PoseStack matrices, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
 
         // Make the first line white
         // All lines after the first are colored gray
-        List<net.minecraft.network.chat.Component> styledLines = new ArrayList<>(lines.size());
+        List<Component> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
             styledLines.add(lines.get(i).copy().withStyle(s -> style));
@@ -344,7 +344,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
         int color = style.getColor(text.getColor()).toARGB();
 
         // Allow overrides for which content is shown
-        net.minecraft.network.chat.Component content = text.getText();
+        Component content = text.getText();
         if (override != null && override.getContent() != null) {
             content = override.getContent();
         }
@@ -375,7 +375,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
         widgets.drawBackgroundLayer(matrixStack, getBlitOffset(), getBounds(true), new Point(x - leftPos, y - topPos));
 
-        for (final net.minecraft.world.inventory.Slot slot : this.getInventorySlots()) {
+        for (final Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
                 drawOptionalSlotBackground(matrixStack, (IOptionalSlot) slot, false);
             }
@@ -458,7 +458,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final net.minecraft.world.inventory.Slot slot = this.getSlot((int) mouseX, (int) mouseY);
+        final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
         final ItemStack itemstack = getPlayer().inventory.getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
@@ -484,7 +484,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     @Override
-    protected void slotClicked(@Nullable net.minecraft.world.inventory.Slot slot, final int slotIdx, final int mouseButton,
+    protected void slotClicked(@Nullable Slot slot, final int slotIdx, final int mouseButton,
                                final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
@@ -547,19 +547,19 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
                 // some simple double click logic.
                 this.bl_clicked = slot;
                 this.dbl_clickTimer = Stopwatch.createStarted();
-                this.dbl_whichItem = slot.hasItem() ? slot.getItem().copy() : net.minecraft.world.item.ItemStack.EMPTY;
+                this.dbl_whichItem = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
             } else if (!this.dbl_whichItem.isEmpty()) {
                 // a replica of the weird broken vanilla feature.
 
                 final List<Slot> slots = this.getInventorySlots();
-                for (final net.minecraft.world.inventory.Slot inventorySlot : slots) {
+                for (final Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
                             && inventorySlot.isSameInventory(slot)
                             && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
                         this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
                     }
                 }
-                this.dbl_whichItem = net.minecraft.world.item.ItemStack.EMPTY;
+                this.dbl_whichItem = ItemStack.EMPTY;
             }
 
             this.disableShiftClick = false;
@@ -580,12 +580,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     protected boolean checkHotbarKeys(final Key input) {
-        final net.minecraft.world.inventory.Slot theSlot = this.getSlotUnderMouse();
+        final Slot theSlot = this.getSlotUnderMouse();
 
         if (getPlayer().inventory.getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
                 if (getMinecraft().options.keyHotbarSlots[j].isActiveAndMatches(input)) {
-                    final List<net.minecraft.world.inventory.Slot> slots = this.getInventorySlots();
+                    final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
                         if (s.getSlotIndex() == j && s.container == this.menu.getPlayerInventory()
                                 && !s.mayPickup(this.menu.getPlayerInventory().player)) {
@@ -597,7 +597,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
                         this.slotClicked(theSlot, theSlot.index, j, ClickType.SWAP);
                         return true;
                     } else {
-                        for (final net.minecraft.world.inventory.Slot s : slots) {
+                        for (final Slot s : slots) {
                             if (s.getSlotIndex() == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 NetworkHandler.instance()
@@ -613,9 +613,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
         return false;
     }
 
-    protected net.minecraft.world.inventory.Slot getSlot(final int mouseX, final int mouseY) {
-        final List<net.minecraft.world.inventory.Slot> slots = this.getInventorySlots();
-        for (final net.minecraft.world.inventory.Slot slot : slots) {
+    protected Slot getSlot(final int mouseX, final int mouseY) {
+        final List<Slot> slots = this.getInventorySlots();
+        for (final Slot slot : slots) {
             if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 return slot;
             }
@@ -642,7 +642,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
         this.itemRenderer.blitOffset = 0.0F;
     }
 
-    protected net.minecraft.network.chat.Component getGuiDisplayName(final net.minecraft.network.chat.Component in) {
+    protected Component getGuiDisplayName(final Component in) {
         return title.getString().isEmpty() ? in : title;
     }
 
@@ -690,7 +690,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     public void bindTexture(final String file) {
-        final net.minecraft.resources.ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
+        final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
         getMinecraft().getTextureManager().bind(loc);
     }
 
@@ -718,7 +718,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
      * Adds a button to the vertical toolbar to the left of the screen and returns that button to the caller. The button
      * will automatically be positioned. This button will automatically be re-added to the screen when it's resized.
      */
-    protected final <B extends net.minecraft.client.gui.components.Button> B addToLeftToolbar(B button) {
+    protected final <B extends Button> B addToLeftToolbar(B button) {
         verticalToolbar.add(button);
         return button;
     }
@@ -792,7 +792,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     /**
      * Changes the text that will be displayed for a text defined in this screen's style file.
      */
-    protected final void setTextContent(String id, net.minecraft.network.chat.Component content) {
+    protected final void setTextContent(String id, Component content) {
         getOrCreateTextOverride(id).setContent(content);
     }
 

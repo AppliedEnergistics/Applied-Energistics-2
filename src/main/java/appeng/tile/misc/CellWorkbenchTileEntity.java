@@ -54,7 +54,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     private IItemHandler cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CellWorkbenchTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
@@ -199,7 +199,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void getDrops(final Level w, final net.minecraft.core.BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
         if (this.cell.getStackInSlot(0) != null) {

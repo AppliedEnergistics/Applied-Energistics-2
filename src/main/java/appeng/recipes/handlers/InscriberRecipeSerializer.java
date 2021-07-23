@@ -65,18 +65,18 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         InscriberProcessType mode = getMode(json);
 
         String group = GsonHelper.getAsString(json, "group", "");
-        net.minecraft.world.item.ItemStack result = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(json, "result"));
+        ItemStack result = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
         JsonObject ingredients = GsonHelper.getAsJsonObject(json, "ingredients");
-        net.minecraft.world.item.crafting.Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
-        net.minecraft.world.item.crafting.Ingredient top = Ingredient.EMPTY;
+        Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
+        Ingredient top = Ingredient.EMPTY;
         if (ingredients.has("top")) {
-            top = net.minecraft.world.item.crafting.Ingredient.fromJson(ingredients.get("top"));
+            top = Ingredient.fromJson(ingredients.get("top"));
         }
-        net.minecraft.world.item.crafting.Ingredient bottom = Ingredient.EMPTY;
+        Ingredient bottom = Ingredient.EMPTY;
         if (ingredients.has("bottom")) {
-            bottom = net.minecraft.world.item.crafting.Ingredient.fromJson(ingredients.get("bottom"));
+            bottom = Ingredient.fromJson(ingredients.get("bottom"));
         }
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
@@ -86,10 +86,10 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     @Override
     public InscriberRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
-        net.minecraft.world.item.crafting.Ingredient middle = Ingredient.fromNetwork(buffer);
+        Ingredient middle = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
-        net.minecraft.world.item.crafting.Ingredient top = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
-        Ingredient bottom = net.minecraft.world.item.crafting.Ingredient.fromNetwork(buffer);
+        Ingredient top = Ingredient.fromNetwork(buffer);
+        Ingredient bottom = Ingredient.fromNetwork(buffer);
         InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);

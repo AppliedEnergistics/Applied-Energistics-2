@@ -34,13 +34,13 @@ import appeng.core.AppEng;
 
 import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
 
-public class MeteoriteStructure extends net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> {
+public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
-    public static final net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(NoneFeatureConfiguration.CODEC);
+    public static final StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(NoneFeatureConfiguration.CODEC);
 
-    public static final ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends net.minecraft.world.level.levelgen.feature.StructureFeature<NoneFeatureConfiguration>> CONFIGURED_INSTANCE = INSTANCE
+    public static final ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> CONFIGURED_INSTANCE = INSTANCE
             .configured(NoneFeatureConfiguration.INSTANCE);
 
     public MeteoriteStructure(Codec<NoneFeatureConfiguration> configCodec) {
@@ -49,7 +49,7 @@ public class MeteoriteStructure extends net.minecraft.world.level.levelgen.featu
 
     @Override
     protected boolean isFeatureChunk(ChunkGenerator generator, BiomeSource biomeSource, long seed,
-                                     WorldgenRandom randIn, int chunkX, int chunkZ, net.minecraft.world.level.biome.Biome biome, ChunkPos chunkPos2,
+                                     WorldgenRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
                                      NoneFeatureConfiguration featureConfig) {
         return randIn.nextBoolean();
     }

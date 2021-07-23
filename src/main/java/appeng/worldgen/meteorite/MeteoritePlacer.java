@@ -55,7 +55,7 @@ public final class MeteoritePlacer {
     private static final int SKYSTONE_SPAWN_LIMIT = 12;
     private final BlockDefinition skyChestDefinition;
     private final BlockState skyStone;
-    private final net.minecraft.world.item.Item skyStoneItem;
+    private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
     private final LevelAccessor world;
     private final Fallout type;
@@ -227,7 +227,7 @@ public final class MeteoritePlacer {
                             r = (int) (Math.random() * 1000);
                         }
 
-                        ItemStack toAdd = net.minecraft.world.item.ItemStack.EMPTY;
+                        ItemStack toAdd = ItemStack.EMPTY;
 
                         switch (r % 4) {
                             case 0:
@@ -260,13 +260,13 @@ public final class MeteoritePlacer {
                     switch ((int) (Math.random() * 1000) % 3) {
                         case 0:
                             final int amount = (int) (Math.random() * SKYSTONE_SPAWN_LIMIT + 1);
-                            ap.addItems(new net.minecraft.world.item.ItemStack(skyStoneItem, amount));
+                            ap.addItems(new ItemStack(skyStoneItem, amount));
                             break;
                         case 1:
                             final List<ItemStack> possibles = new ArrayList<>();
                             possibles.add(new ItemStack(Items.GOLD_NUGGET));
 
-                            net.minecraft.world.item.ItemStack nugget = Platform.pickRandom(possibles);
+                            ItemStack nugget = Platform.pickRandom(possibles);
                             if (nugget != null && !nugget.isEmpty()) {
                                 nugget = nugget.copy();
                                 nugget.setCount((int) (Math.random() * 12) + 1);
@@ -396,7 +396,7 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = world.getBlockState(blockPos);
                         if (currentBlock.getBlock() == Blocks.AIR) {
-                            this.putter.put(world, blockPos, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+                            this.putter.put(world, blockPos, Blocks.WATER.defaultBlockState());
                         }
 
                     }

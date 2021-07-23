@@ -31,7 +31,7 @@ import net.minecraft.core.BlockPos;
  * This fixes a bug in the Minecraft light-update code that runs after world-generation for
  * {@link ProtoChunk}. If a chunk-section contains a light-emitting block, and we clear the
  * entire chunk-section (i.e. as part of meteorite worldgen), the lighting-update will assume that the chunk section
- * exists when it runs through {@link LevelLightEngine#onBlockEmissionIncrease(net.minecraft.core.BlockPos, int)},
+ * exists when it runs through {@link LevelLightEngine#onBlockEmissionIncrease(BlockPos, int)},
  * even though the light-level is now 0 for the block.
  * <p/>
  * This mixin will cancel the now useless block-update and prevent the crash from occurring.
@@ -41,7 +41,7 @@ import net.minecraft.core.BlockPos;
 @Mixin(LevelLightEngine.class)
 public class WorldLightManagerMixin {
     @Inject(method = "onBlockEmissionIncrease", at = @At("HEAD"), cancellable = true)
-    public void onBlockEmissionIncrease(net.minecraft.core.BlockPos blockPos, int lightLevel, CallbackInfo ci) {
+    public void onBlockEmissionIncrease(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
         if (lightLevel == 0) {
             ci.cancel();
         }

@@ -67,7 +67,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     private final ContainerFactory<C, I> factory;
 
-    private Function<I, net.minecraft.network.chat.Component> containerTitleStrategy = this::getDefaultContainerTitle;
+    private Function<I, Component> containerTitleStrategy = this::getDefaultContainerTitle;
 
     @Nullable
     private SecurityPermissions requiredPermission;
@@ -114,7 +114,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
      * <p>
      * The stratgy should return {@link TextComponent#EMPTY} if there's no custom name.
      */
-    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, net.minecraft.network.chat.Component> containerTitleStrategy) {
+    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, Component> containerTitleStrategy) {
         this.containerTitleStrategy = containerTitleStrategy;
         return this;
     }
@@ -163,7 +163,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
             return false;
         }
 
-        net.minecraft.network.chat.Component title = containerTitleStrategy.apply(accessInterface);
+        Component title = containerTitleStrategy.apply(accessInterface);
 
         MenuProvider container = new SimpleMenuProvider((wnd, p, pl) -> {
             C c = factory.create(wnd, p, accessInterface);
@@ -236,7 +236,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         if (it.getItem() instanceof IGuiItem) {
             IGuiItem guiItem = (IGuiItem) it.getItem();
             // Optionally contains the block the item was used on to open the container
-            net.minecraft.core.BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
+            BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
             IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.level, blockPos);
             if (hostInterface.isInstance(guiObject)) {
                 return hostInterface.cast(guiObject);
@@ -303,7 +303,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     }
 
-    private net.minecraft.network.chat.Component getDefaultContainerTitle(I accessInterface) {
+    private Component getDefaultContainerTitle(I accessInterface) {
         if (accessInterface instanceof ICustomNameObject) {
             ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
             if (customNameObject.hasCustomInventoryName()) {

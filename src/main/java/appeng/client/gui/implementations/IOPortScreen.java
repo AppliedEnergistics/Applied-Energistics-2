@@ -40,7 +40,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     private final SettingToggleButton<OperationMode> operationMode;
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public IOPortScreen(IOPortContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public IOPortScreen(IOPortContainer container, Inventory playerInventory, Component title,
                         ScreenStyle style) {
         super(container, playerInventory, title, style);
 

@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 public class ApiPart implements IPartHelper {
 
     @Override
-    public InteractionResult placeBus(final ItemStack is, final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction side,
+    public InteractionResult placeBus(final ItemStack is, final BlockPos pos, final Direction side,
                                       final Player player, final InteractionHand hand, final Level w) {
         return PartPlacement.place(is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0);
     }

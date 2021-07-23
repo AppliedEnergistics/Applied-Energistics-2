@@ -28,7 +28,7 @@ public enum PlayerMessages {
     DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated, SettingCleared,
     ;
 
-    public net.minecraft.network.chat.Component get() {
+    public Component get() {
         return new TranslatableComponent(this.getTranslationKey());
     }
 

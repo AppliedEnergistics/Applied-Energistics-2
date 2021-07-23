@@ -46,7 +46,7 @@ import appeng.core.localization.GuiText;
  */
 public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
 
-    public UpgradeableScreen(T container, Inventory playerInventory, net.minecraft.network.chat.Component title, ScreenStyle style) {
+    public UpgradeableScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.widgets.add("upgrades", new UpgradesPanel(
@@ -61,10 +61,10 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
      * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
      * compatible.
      */
-    protected List<net.minecraft.network.chat.Component> getCompatibleUpgrades() {
+    protected List<Component> getCompatibleUpgrades() {
         IUpgradeableHost host = menu.getUpgradeable();
 
-        net.minecraft.world.item.Item item;
+        Item item;
         if (host instanceof IPart) {
             item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
         } else if (host instanceof BlockEntity) {
@@ -77,8 +77,8 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         return getCompatibleUpgrades(item);
     }
 
-    protected List<net.minecraft.network.chat.Component> getCompatibleUpgrades(net.minecraft.world.item.Item machineItem) {
-        List<net.minecraft.network.chat.Component> list = new ArrayList<>();
+    protected List<Component> getCompatibleUpgrades(Item machineItem) {
+        List<Component> list = new ArrayList<>();
         list.add(GuiText.CompatibleUpgrades.text());
 
         for (Upgrades upgrade : Upgrades.values()) {

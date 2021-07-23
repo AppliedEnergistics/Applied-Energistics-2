@@ -43,14 +43,14 @@ import appeng.tile.AEBaseTileEntity;
 
 public class ItemGenTileEntity extends AEBaseTileEntity {
 
-    private static final Queue<net.minecraft.world.item.ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
+    private static final Queue<ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
 
     private final IItemHandler handler = new QueuedItemHandler();
 
-    private net.minecraft.world.item.Item filter = net.minecraft.world.item.Items.AIR;
-    private final Queue<net.minecraft.world.item.ItemStack> possibleItems = new ArrayDeque<>();
+    private Item filter = Items.AIR;
+    private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
 
-    public ItemGenTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public ItemGenTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             for (final Item item : ForgeRegistries.ITEMS) {
@@ -68,7 +68,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
     @Override
     public void load(BlockState blockState, CompoundTag data) {
         if (data.contains("filter")) {
-            net.minecraft.world.item.Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
         super.load(blockState, data);
@@ -84,7 +84,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         return super.getCapability(capability, facing);
     }
 
-    public void setItem(net.minecraft.world.item.Item item) {
+    public void setItem(Item item) {
         this.filter = item;
         this.possibleItems.clear();
 
@@ -95,13 +95,13 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         return this.filter != Items.AIR ? this.possibleItems : SHARED_POSSIBLE_ITEMS;
     }
 
-    private static void addPossibleItem(net.minecraft.world.item.Item item, Queue<net.minecraft.world.item.ItemStack> queue) {
-        if (item == null || item == net.minecraft.world.item.Items.AIR) {
+    private static void addPossibleItem(Item item, Queue<ItemStack> queue) {
+        if (item == null || item == Items.AIR) {
             return;
         }
 
         if (item.canBeDepleted()) {
-            ItemStack sampleStack = new net.minecraft.world.item.ItemStack(item);
+            ItemStack sampleStack = new ItemStack(item);
             int maxDamage = sampleStack.getMaxDamage();
             for (int dmg = 0; dmg < maxDamage; dmg++) {
                 ItemStack is = sampleStack.copy();
@@ -109,7 +109,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
                 queue.add(is);
             }
         } else if (item.getItemCategory() != null) {
-            final NonNullList<ItemStack> list = net.minecraft.core.NonNullList.create();
+            final NonNullList<ItemStack> list = NonNullList.create();
             item.fillItemCategory(item.getItemCategory(), list);
             queue.addAll(list);
         }
@@ -146,11 +146,11 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
 
         @Override
         @Nonnull
-        public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
-            final net.minecraft.world.item.ItemStack is = getPossibleItems().peek();
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            final ItemStack is = getPossibleItems().peek();
 
             if (is == null) {
-                return net.minecraft.world.item.ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             }
 
             return simulate ? is.copy() : this.getNextItem();

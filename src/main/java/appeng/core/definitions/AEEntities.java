@@ -36,46 +36,46 @@ import net.minecraft.world.entity.EntityType.EntityFactory;
 
 public final class AEEntities {
 
-    private static final List<net.minecraft.world.entity.EntityType<?>> ENTITY_TYPES = new ArrayList<>();
+    private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
 
-    public static List<net.minecraft.world.entity.EntityType<?>> getEntityTypes() {
+    public static List<EntityType<?>> getEntityTypes() {
         return Collections.unmodifiableList(ENTITY_TYPES);
     }
 
-    public static final net.minecraft.world.entity.EntityType<SingularityEntity> SINGULARITY = create(
+    public static final EntityType<SingularityEntity> SINGULARITY = create(
             "singularity",
             SingularityEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
-    public static final net.minecraft.world.entity.EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
+    public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
             "charged_quartz",
             ChargedQuartzEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                     .setShouldReceiveVelocityUpdates(true));
 
-    public static final net.minecraft.world.entity.EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
+    public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
             TinyTNTPrimedEntity::new,
             MobCategory.MISC,
             builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true));
 
-    public static net.minecraft.world.entity.EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
+    public static EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
             "growing_crystal",
             GrowingCrystalEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.25F, 0.4F));
 
-    private static <T extends Entity> net.minecraft.world.entity.EntityType<T> create(String id,
+    private static <T extends Entity> EntityType<T> create(String id,
                                                                                       EntityFactory<T> entityFactory,
                                                                                       MobCategory classification,
                                                                                       Consumer<Builder<T>> customizer) {
         String registryLoc = "appliedenergistics2:" + id;
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
-        net.minecraft.world.entity.EntityType<T> result = builder.build(registryLoc);
+        EntityType<T> result = builder.build(registryLoc);
         result.setRegistryName(registryLoc);
         ENTITY_TYPES.add(result);
         return result;

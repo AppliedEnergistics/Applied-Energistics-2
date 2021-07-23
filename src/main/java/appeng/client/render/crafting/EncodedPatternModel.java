@@ -42,20 +42,20 @@ public class EncodedPatternModel implements IModelGeometry<EncodedPatternModel> 
 
     private final ResourceLocation baseModel;
 
-    public EncodedPatternModel(net.minecraft.resources.ResourceLocation baseModel) {
+    public EncodedPatternModel(ResourceLocation baseModel) {
         this.baseModel = baseModel;
     }
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<net.minecraft.resources.ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return modelGetter.apply(baseModel).getMaterials(modelGetter, missingTextureErrors);
     }
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, net.minecraft.resources.ResourceLocation modelLocation) {
+                           ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel baseModel = bakery.getBakedModel(this.baseModel, modelTransform, spriteGetter);
         return new EncodedPatternBakedModel(baseModel);
     }

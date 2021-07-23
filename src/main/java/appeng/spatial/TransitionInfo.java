@@ -35,30 +35,30 @@ public final class TransitionInfo {
     public static final String TAG_MAX = "max";
     public static final String TAG_TIMESTAMP = "timestamp";
 
-    private final net.minecraft.resources.ResourceLocation worldId;
+    private final ResourceLocation worldId;
 
-    private final net.minecraft.core.BlockPos min;
+    private final BlockPos min;
 
-    private final net.minecraft.core.BlockPos max;
+    private final BlockPos max;
 
     private final Instant timestamp;
 
-    public TransitionInfo(net.minecraft.resources.ResourceLocation worldId, BlockPos min, net.minecraft.core.BlockPos max, Instant timestamp) {
+    public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;
         this.min = min.immutable();
         this.max = max.immutable();
         this.timestamp = timestamp;
     }
 
-    public net.minecraft.resources.ResourceLocation getWorldId() {
+    public ResourceLocation getWorldId() {
         return worldId;
     }
 
-    public net.minecraft.core.BlockPos getMin() {
+    public BlockPos getMin() {
         return min;
     }
 
-    public net.minecraft.core.BlockPos getMax() {
+    public BlockPos getMax() {
         return max;
     }
 
@@ -76,8 +76,8 @@ public final class TransitionInfo {
     }
 
     public static TransitionInfo fromTag(CompoundTag tag) {
-        net.minecraft.resources.ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
-        net.minecraft.core.BlockPos min = NbtUtils.readBlockPos(tag.getCompound(TAG_MIN));
+        ResourceLocation worldId = new ResourceLocation(tag.getString(TAG_WORLD_ID));
+        BlockPos min = NbtUtils.readBlockPos(tag.getCompound(TAG_MIN));
         BlockPos max = NbtUtils.readBlockPos(tag.getCompound(TAG_MAX));
         Instant timestamp = Instant.ofEpochMilli(tag.getLong(TAG_TIMESTAMP));
         return new TransitionInfo(worldId, min, max, timestamp);

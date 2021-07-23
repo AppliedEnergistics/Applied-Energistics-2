@@ -54,7 +54,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
     }
 
     @Override
-    protected net.minecraft.world.item.ItemStack transferStackToContainer(ItemStack input) {
+    protected ItemStack transferStackToContainer(ItemStack input) {
         Optional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
         if (fsOpt.isPresent()) {
             final IAEFluidTank t = this.getFluidConfigInventory();

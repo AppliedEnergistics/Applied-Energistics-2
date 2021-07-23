@@ -71,7 +71,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
     static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
-            new net.minecraft.resources.ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
+            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
@@ -163,26 +163,26 @@ class GlassBakedModel implements IDynamicBakedModel {
     /**
      * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
      */
-    private static int makeBitmask(GlassState state, net.minecraft.core.Direction side) {
+    private static int makeBitmask(GlassState state, Direction side) {
         switch (side) {
             case DOWN:
-                return makeBitmask(state, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.EAST, Direction.NORTH, net.minecraft.core.Direction.WEST);
+                return makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
             case UP:
-                return makeBitmask(state, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.EAST);
+                return makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
             case NORTH:
-                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.WEST, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.EAST);
+                return makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
             case SOUTH:
-                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.EAST, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.WEST);
+                return makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
             case WEST:
-                return makeBitmask(state, Direction.UP, net.minecraft.core.Direction.SOUTH, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.NORTH);
+                return makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
             case EAST:
-                return makeBitmask(state, net.minecraft.core.Direction.UP, net.minecraft.core.Direction.NORTH, net.minecraft.core.Direction.DOWN, net.minecraft.core.Direction.SOUTH);
+                return makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
             default:
                 throw new IllegalArgumentException("Unsupported side!");
         }
     }
 
-    private static int makeBitmask(GlassState state, net.minecraft.core.Direction up, net.minecraft.core.Direction right, net.minecraft.core.Direction down, net.minecraft.core.Direction left) {
+    private static int makeBitmask(GlassState state, Direction up, Direction right, Direction down, Direction left) {
 
         int bitmask = 0;
 
@@ -201,13 +201,13 @@ class GlassBakedModel implements IDynamicBakedModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(net.minecraft.core.Direction side, List<Vec3> corners, TextureAtlasSprite sprite, float uOffset,
+    private BakedQuad createQuad(Direction side, List<Vec3> corners, TextureAtlasSprite sprite, float uOffset,
                                  float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private BakedQuad createQuad(net.minecraft.core.Direction side, Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4,
+    private BakedQuad createQuad(Direction side, Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4,
                                  TextureAtlasSprite sprite, float uOffset, float vOffset) {
         Vec3 normal = new Vec3(side.getNormal().getX(), side.getNormal().getY(),
                 side.getNormal().getZ());
@@ -302,12 +302,12 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull net.minecraft.core.BlockPos pos, @Nonnull net.minecraft.world.level.block.state.BlockState state,
+    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
                                    @Nonnull IModelData tileData) {
 
-        EnumSet<net.minecraft.core.Direction> flushWith = EnumSet.noneOf(net.minecraft.core.Direction.class);
+        EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block
-        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.values()) {
+        for (Direction facing : Direction.values()) {
             if (isGlassBlock(world, pos, facing)) {
                 flushWith.add(facing);
             }
@@ -318,7 +318,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     }
 
-    private static boolean isGlassBlock(BlockGetter world, net.minecraft.core.BlockPos pos, net.minecraft.core.Direction facing) {
+    private static boolean isGlassBlock(BlockGetter world, BlockPos pos, Direction facing) {
         return world.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 

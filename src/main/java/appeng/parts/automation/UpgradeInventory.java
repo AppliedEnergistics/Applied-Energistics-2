@@ -88,7 +88,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         this.cached = true;
         this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
-        for (final net.minecraft.world.item.ItemStack is : this) {
+        for (final ItemStack is : this) {
             if (is == null || is.getItem() == Items.AIR || !(is.getItem() instanceof IUpgradeModule)) {
                 continue;
             }

@@ -146,14 +146,14 @@ public abstract class AppEngBase implements AppEng {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerDimension);
         modEventBus.addGenericListener(Biome.class, this::registerBiomes);
-        modEventBus.addGenericListener(net.minecraft.world.level.block.Block.class, this::registerBlocks);
-        modEventBus.addGenericListener(net.minecraft.world.item.Item.class, this::registerItems);
-        modEventBus.addGenericListener(net.minecraft.world.entity.EntityType.class, this::registerEntities);
+        modEventBus.addGenericListener(Block.class, this::registerBlocks);
+        modEventBus.addGenericListener(Item.class, this::registerItems);
+        modEventBus.addGenericListener(EntityType.class, this::registerEntities);
         modEventBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
-        modEventBus.addGenericListener(net.minecraft.world.level.block.entity.BlockEntityType.class, this::registerTileEntities);
+        modEventBus.addGenericListener(BlockEntityType.class, this::registerTileEntities);
         modEventBus.addGenericListener(MenuType.class, this::registerContainerTypes);
         modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
-        modEventBus.addGenericListener(net.minecraft.world.level.levelgen.feature.StructureFeature.class, this::registerStructures);
+        modEventBus.addGenericListener(StructureFeature.class, this::registerStructures);
         modEventBus.addGenericListener(Feature.class, this::registerFeatures);
 
         modEventBus.addListener(Integrations::enqueueIMC);
@@ -228,7 +228,7 @@ public abstract class AppEngBase implements AppEng {
         InitItems.init(event.getRegistry());
     }
 
-    public void registerTileEntities(RegistryEvent.Register<net.minecraft.world.level.block.entity.BlockEntityType<?>> event) {
+    public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
         InitBlockEntities.init(event.getRegistry());
     }
 
@@ -244,15 +244,15 @@ public abstract class AppEngBase implements AppEng {
         InitEntityTypes.init(event.getRegistry());
     }
 
-    public void registerParticleTypes(RegistryEvent.Register<net.minecraft.core.particles.ParticleType<?>> event) {
+    public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
         InitParticleTypes.init(event.getRegistry());
     }
 
-    public void registerStructures(RegistryEvent.Register<net.minecraft.world.level.levelgen.feature.StructureFeature<?>> event) {
+    public void registerStructures(RegistryEvent.Register<StructureFeature<?>> event) {
         InitStructures.init(event.getRegistry());
     }
 
-    public void registerFeatures(RegistryEvent.Register<net.minecraft.world.level.levelgen.feature.Feature<?>> event) {
+    public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
         InitFeatures.init(event.getRegistry());
     }
 

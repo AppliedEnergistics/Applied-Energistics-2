@@ -34,7 +34,7 @@ import net.minecraft.world.item.Item.Properties;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
-    public ChargedStaffItem(net.minecraft.world.item.Item.Properties props) {
+    public ChargedStaffItem(Item.Properties props) {
         super(AEConfig.instance().getChargedStaffBattery(), props);
     }
 

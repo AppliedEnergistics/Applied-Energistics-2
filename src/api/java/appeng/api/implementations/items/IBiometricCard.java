@@ -43,7 +43,7 @@ public interface IBiometricCard {
     /**
      * @return {@link GameProfile} of the player encoded on this card, or a blank string.
      */
-    GameProfile getProfile(net.minecraft.world.item.ItemStack is);
+    GameProfile getProfile(ItemStack is);
 
     /**
      * @param itemStack card
@@ -59,7 +59,7 @@ public interface IBiometricCard {
      *
      * @return true if this permission is set on the card.
      */
-    boolean hasPermission(net.minecraft.world.item.ItemStack is, SecurityPermissions permission);
+    boolean hasPermission(ItemStack is, SecurityPermissions permission);
 
     /**
      * remove a permission from the item stack.

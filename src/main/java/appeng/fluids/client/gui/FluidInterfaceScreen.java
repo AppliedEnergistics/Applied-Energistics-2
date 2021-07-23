@@ -33,7 +33,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
 
     public FluidInterfaceScreen(FluidInterfaceContainer container, Inventory playerInventory,
-                                net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();

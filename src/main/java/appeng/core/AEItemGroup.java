@@ -46,7 +46,7 @@ public class AEItemGroup extends CreativeModeTab {
     }
 
     @Override
-    public void fillItemList(NonNullList<net.minecraft.world.item.ItemStack> items) {
+    public void fillItemList(NonNullList<ItemStack> items) {
         for (ItemDefinition<?> itemDef : this.itemDefs) {
             itemDef.asItem().fillItemCategory(this, items);
         }

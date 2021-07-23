@@ -25,7 +25,7 @@ import appeng.util.inv.IAEAppEngInventory;
 import net.minecraft.world.level.ItemLike;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
-    private final net.minecraft.world.item.Item item;
+    private final Item item;
 
     public DefinitionUpgradeInventory(final ItemLike item, final IAEAppEngInventory parent, final int s) {
         super(parent, s);

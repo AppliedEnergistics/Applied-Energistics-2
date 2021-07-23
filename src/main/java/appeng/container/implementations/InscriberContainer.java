@@ -45,9 +45,9 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
     private final InscriberTileEntity ti;
 
-    private final net.minecraft.world.inventory.Slot top;
+    private final Slot top;
     private final Slot middle;
-    private final net.minecraft.world.inventory.Slot bottom;
+    private final Slot bottom;
 
     @GuiSync(2)
     public int maxProcessingTime = -1;
@@ -102,8 +102,8 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     }
 
     @Override
-    public boolean isValidForSlot(final net.minecraft.world.inventory.Slot s, final ItemStack is) {
-        final net.minecraft.world.item.ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
+    public boolean isValidForSlot(final Slot s, final ItemStack is) {
+        final ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
         final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
@@ -114,7 +114,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
             return InscriberRecipes.findRecipe(ti.getLevel(), is, top, bot, false) != null;
         } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
-            net.minecraft.world.item.ItemStack otherSlot;
+            ItemStack otherSlot;
             if (s == this.top) {
                 otherSlot = this.bottom.getItem();
             } else {

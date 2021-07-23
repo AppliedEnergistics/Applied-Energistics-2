@@ -87,7 +87,7 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
     }
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             return Arrays.asList(

@@ -37,7 +37,7 @@ public class ColorableTileBlockColor implements BlockColor {
     public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable net.minecraft.core.BlockPos pos,
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos,
                         int tintIndex) {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 

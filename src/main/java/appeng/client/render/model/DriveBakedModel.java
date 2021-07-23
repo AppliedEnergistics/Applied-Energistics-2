@@ -41,7 +41,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
 
 public class DriveBakedModel extends DelegateBakedModel {
-    private final Map<net.minecraft.world.item.Item, BakedModel> bakedCells;
+    private final Map<Item, BakedModel> bakedCells;
     private final BakedModel defaultCell;
 
     public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, BakedModel defaultCell) {
@@ -53,7 +53,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     /**
      * Calculates the origin of a drive slot for positioning a cell model into it.
      */
-    public static void getSlotOrigin(int row, int col, com.mojang.math.Vector3f translation) {
+    public static void getSlotOrigin(int row, int col, Vector3f translation) {
         // Position this drive model copy at the correct slot. The transform is based on
         // the cell-model being in slot 0,0,0 while the upper left slot's origin is at
         // 9,13,1
@@ -65,8 +65,8 @@ public class DriveBakedModel extends DelegateBakedModel {
 
     @Nonnull
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                                                              @Nonnull IModelData extraData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+                                    @Nonnull IModelData extraData) {
 
         List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
@@ -76,11 +76,11 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         DriveSlotsState slotsState = extraData.getData(DriveModelData.STATE);
 
-        Vector3f slotTranslation = new com.mojang.math.Vector3f();
+        Vector3f slotTranslation = new Vector3f();
         if (slotsState != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
-                    com.mojang.math.Matrix4f transform = new Matrix4f();
+                    Matrix4f transform = new Matrix4f();
 
                     getSlotOrigin(row, col, slotTranslation);
                     transform.setTranslation(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
@@ -88,7 +88,7 @@ public class DriveBakedModel extends DelegateBakedModel {
                     int slot = row * 2 + col;
 
                     // Add the drive chassis
-                    net.minecraft.world.item.Item cell = slotsState.getCell(slot);
+                    Item cell = slotsState.getCell(slot);
                     BakedModel cellChassisModel = getCellChassisModel(cell);
                     addModel(state, rand, extraData, result, side, cellChassisModel, transform);
                 }
@@ -116,8 +116,8 @@ public class DriveBakedModel extends DelegateBakedModel {
         return model != null ? model : defaultCell;
     }
 
-    private static void addModel(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
-                                 List<net.minecraft.client.renderer.block.model.BakedQuad> result, Direction side, BakedModel bakedCell, com.mojang.math.Matrix4f transform) {
+    private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
+                                 List<BakedQuad> result, Direction side, BakedModel bakedCell, Matrix4f transform) {
         MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
         for (BakedQuad bakedQuad : bakedCell.getQuads(state, side, rand, extraData)) {
             BakedQuadBuilder builder = new BakedQuadBuilder();

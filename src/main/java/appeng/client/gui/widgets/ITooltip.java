@@ -39,7 +39,7 @@ public interface ITooltip {
      * @return tooltip message or an empty list to not show a tooltip
      */
     @Nonnull
-    default List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    default List<Component> getTooltipMessage() {
         return Collections.emptyList();
     }
 
@@ -88,7 +88,7 @@ public interface ITooltip {
         if (x < mouseX && x + getTooltipAreaWidth() > mouseX
                 && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
 
-            List<net.minecraft.network.chat.Component> lines = getTooltipMessage();
+            List<Component> lines = getTooltipMessage();
 
             // Don't show empty tooltips
             if (lines.isEmpty()) {

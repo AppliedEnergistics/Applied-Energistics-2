@@ -54,7 +54,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     private final IDrawable icon;
 
     public InscriberRecipeCategory(IGuiHelper guiHelper) {
-        net.minecraft.resources.ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
         this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
         this.localizedName = I18n.get("block.appliedenergistics2.inscriber");
 

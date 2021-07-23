@@ -123,8 +123,8 @@ public class CachedPlane {
                 this.myChunks[cx][cz] = c;
 
                 final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
-                for (final Entry<net.minecraft.core.BlockPos, BlockEntity> tx : rawTiles) {
-                    final net.minecraft.core.BlockPos cp = tx.getKey();
+                for (final Entry<BlockPos, BlockEntity> tx : rawTiles) {
+                    final BlockPos cp = tx.getKey();
                     final BlockEntity te = tx.getValue();
 
                     final BlockPos tePOS = te.getBlockPos();
@@ -154,10 +154,10 @@ public class CachedPlane {
                 final long gameTime = this.getWorld().getGameTime();
                 final TickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
                 if (pendingBlockTicks instanceof ServerTickList) {
-                    List<TickNextTickData<Block>> pending = ((net.minecraft.world.level.ServerTickList<Block>) pendingBlockTicks)
+                    List<TickNextTickData<Block>> pending = ((ServerTickList<Block>) pendingBlockTicks)
                             .fetchTicksInChunk(c.getPos(), false, true);
                     for (final TickNextTickData<Block> entry : pending) {
-                        final net.minecraft.core.BlockPos tePOS = entry.pos;
+                        final BlockPos tePOS = entry.pos;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
                             this.ticks.add(new TickNextTickData<>(tePOS, entry.getType(),
@@ -223,19 +223,19 @@ public class CachedPlane {
             AELog.info("Block Copy Time: " + duration);
 
             for (final BlockEntity te : this.tiles) {
-                final net.minecraft.core.BlockPos tePOS = te.getBlockPos();
+                final BlockPos tePOS = te.getBlockPos();
                 dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
             for (final BlockEntity te : dst.tiles) {
-                final net.minecraft.core.BlockPos tePOS = te.getBlockPos();
+                final BlockPos tePOS = te.getBlockPos();
                 this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
             for (final TickNextTickData<Block> entry : this.ticks) {
-                final net.minecraft.core.BlockPos tePOS = entry.pos;
+                final BlockPos tePOS = entry.pos;
                 dst.addTick(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         entry);
             }
@@ -264,7 +264,7 @@ public class CachedPlane {
     }
 
     private void addTick(final int x, final int y, final int z, final TickNextTickData<Block> entry) {
-        net.minecraft.core.BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
+        BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
         this.world.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
                 entry.priority);
     }
@@ -279,11 +279,11 @@ public class CachedPlane {
 
                 try {
                     handler.moveTile(te, this.world,
-                            new net.minecraft.core.BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
+                            new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
                 } catch (final Throwable e) {
                     AELog.debug(e);
 
-                    final BlockPos pos = new net.minecraft.core.BlockPos(x, y, z);
+                    final BlockPos pos = new BlockPos(x, y, z);
 
                     // attempt recovery...
                     c.c.addBlockEntity(te);
@@ -343,7 +343,7 @@ public class CachedPlane {
     }
 
     private static class BlockStorageData {
-        public net.minecraft.world.level.block.state.BlockState state;
+        public BlockState state;
     }
 
     private class Column {

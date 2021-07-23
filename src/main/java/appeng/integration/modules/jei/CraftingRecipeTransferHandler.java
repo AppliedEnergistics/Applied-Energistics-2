@@ -59,16 +59,16 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         // the grid.
         Map<IAEItemStack, Integer> reservedGridAmounts = new HashMap<>();
 
-        for (Map.Entry<Integer, ? extends IGuiIngredient<net.minecraft.world.item.ItemStack>> entry : recipeLayout.getItemStacks()
+        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
                 .getGuiIngredients().entrySet()) {
-            IGuiIngredient<net.minecraft.world.item.ItemStack> ingredient = entry.getValue();
-            List<net.minecraft.world.item.ItemStack> ingredients = ingredient.getAllIngredients();
+            IGuiIngredient<ItemStack> ingredient = entry.getValue();
+            List<ItemStack> ingredients = ingredient.getAllIngredients();
             if (!ingredient.isInput() || ingredients.isEmpty()) {
                 continue;
             }
             boolean found = false;
             // Player inventory is cheaper to check
-            for (net.minecraft.world.item.ItemStack itemStack : ingredients) {
+            for (ItemStack itemStack : ingredients) {
                 if (itemStack != null && player.inventory.findSlotMatchingItem(itemStack) != -1) {
                     found = true;
                     break;
@@ -96,7 +96,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         }
 
         if (!missingSlots.isEmpty()) {
-            net.minecraft.network.chat.Component message = new TranslatableComponent("jei.appliedenergistics2.missing_items");
+            Component message = new TranslatableComponent("jei.appliedenergistics2.missing_items");
             return new TransferWarning(helper.createUserErrorForSlots(message, missingSlots));
         }
 

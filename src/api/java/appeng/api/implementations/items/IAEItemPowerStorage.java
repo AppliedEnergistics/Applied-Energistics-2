@@ -47,7 +47,7 @@ public interface IAEItemPowerStorage {
      *
      * @return what it could extract
      */
-    double extractAEPower(net.minecraft.world.item.ItemStack stack, double amount, Actionable mode);
+    double extractAEPower(ItemStack stack, double amount, Actionable mode);
 
     /**
      * @return the current maximum power ( this can change :P )
@@ -57,13 +57,13 @@ public interface IAEItemPowerStorage {
     /**
      * @return the current AE Power Level, this may exceed getMEMaxPower()
      */
-    double getAECurrentPower(net.minecraft.world.item.ItemStack stack);
+    double getAECurrentPower(ItemStack stack);
 
     /**
      * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */
-    AccessRestriction getPowerFlow(net.minecraft.world.item.ItemStack stack);
+    AccessRestriction getPowerFlow(ItemStack stack);
 
 }

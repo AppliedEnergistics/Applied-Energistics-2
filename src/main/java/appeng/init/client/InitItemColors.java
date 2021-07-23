@@ -85,7 +85,7 @@ public final class InitItemColors {
         colors.register((is, tintIndex) -> renderColor, item);
     }
 
-    private static int getColorApplicatorColor(net.minecraft.world.item.ItemStack itemStack, int idx) {
+    private static int getColorApplicatorColor(ItemStack itemStack, int idx) {
         if (idx == 0) {
             return -1;
         }

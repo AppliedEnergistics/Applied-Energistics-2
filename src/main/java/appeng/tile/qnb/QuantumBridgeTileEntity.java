@@ -65,7 +65,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public QuantumBridgeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
@@ -114,7 +114,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removed, final net.minecraft.world.item.ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }

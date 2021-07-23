@@ -216,7 +216,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public net.minecraft.world.phys.HitResult getCurrentMouseOver() {
+    public HitResult getCurrentMouseOver() {
         return Minecraft.getInstance().hitResult;
     }
 

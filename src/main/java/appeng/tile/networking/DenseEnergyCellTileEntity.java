@@ -24,7 +24,7 @@ public class DenseEnergyCellTileEntity extends EnergyCellTileEntity {
 
     private final static double MAX_STORED = 200000 * 8;
 
-    public DenseEnergyCellTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public DenseEnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(MAX_STORED);
     }

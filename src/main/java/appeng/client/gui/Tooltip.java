@@ -36,45 +36,45 @@ import net.minecraft.network.chat.Style;
  */
 public final class Tooltip {
 
-    private final List<net.minecraft.network.chat.Component> content;
+    private final List<Component> content;
 
-    public Tooltip(List<net.minecraft.network.chat.Component> unprocessedLines) {
+    public Tooltip(List<Component> unprocessedLines) {
         this.content = new ArrayList<>(unprocessedLines.size());
 
         // Split translated lines at line-breaks found in the translated text
-        for (net.minecraft.network.chat.Component unprocessedLine : unprocessedLines) {
+        for (Component unprocessedLine : unprocessedLines) {
             splitLine(unprocessedLine, this.content);
         }
     }
 
-    private static void splitLine(net.minecraft.network.chat.Component unprocessedLine, List<net.minecraft.network.chat.Component> lines) {
+    private static void splitLine(Component unprocessedLine, List<Component> lines) {
         LineSplittingVisitor visitor = new LineSplittingVisitor(lines);
-        unprocessedLine.visit(visitor, net.minecraft.network.chat.Style.EMPTY);
+        unprocessedLine.visit(visitor, Style.EMPTY);
         visitor.flush();
     }
 
-    public Tooltip(net.minecraft.network.chat.Component... content) {
+    public Tooltip(Component... content) {
         this(Arrays.asList(content));
     }
 
     /**
      * The tooltip content.
      */
-    public List<net.minecraft.network.chat.Component> getContent() {
+    public List<Component> getContent() {
         return content;
     }
 
     private static class LineSplittingVisitor implements StyledContentConsumer<Object> {
-        private final List<net.minecraft.network.chat.Component> lines;
+        private final List<Component> lines;
 
         private MutableComponent currentPart;
 
-        public LineSplittingVisitor(List<net.minecraft.network.chat.Component> lines) {
+        public LineSplittingVisitor(List<Component> lines) {
             this.lines = lines;
         }
 
         @Override
-        public Optional<Object> accept(net.minecraft.network.chat.Style style, String text) {
+        public Optional<Object> accept(Style style, String text) {
             // a new-line character in the text should split the line and "flush" the
             // current part into the lines list
             String[] parts = text.split("\n", -1);
@@ -97,12 +97,12 @@ public final class Tooltip {
         public void flush() {
             if (currentPart != null) {
                 // Set default tooltip styles only if no explicit style has been set
-                if (currentPart.getStyle() == net.minecraft.network.chat.Style.EMPTY) {
+                if (currentPart.getStyle() == Style.EMPTY) {
                     // First line should be white, other lines gray
                     if (lines.isEmpty()) {
-                        currentPart.setStyle(net.minecraft.network.chat.Style.EMPTY.applyFormat(ChatFormatting.WHITE));
+                        currentPart.setStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE));
                     } else {
-                        currentPart.setStyle(net.minecraft.network.chat.Style.EMPTY.applyFormat(ChatFormatting.GRAY));
+                        currentPart.setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY));
                     }
                 }
 

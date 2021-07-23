@@ -40,16 +40,16 @@ public class GrinderRecipe implements Recipe<Container> {
 
     public static final RecipeType<GrinderRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
-    private final net.minecraft.resources.ResourceLocation id;
+    private final ResourceLocation id;
     private final String group;
-    private final net.minecraft.world.item.crafting.Ingredient ingredient;
+    private final Ingredient ingredient;
     private final int ingredientCount;
     private final ItemStack result;
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(net.minecraft.resources.ResourceLocation id, String group, net.minecraft.world.item.crafting.Ingredient ingredient, int ingredientCount,
-                         net.minecraft.world.item.ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
+                         ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;
@@ -81,12 +81,12 @@ public class GrinderRecipe implements Recipe<Container> {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getResultItem() {
+    public ItemStack getResultItem() {
         return result;
     }
 
     @Override
-    public net.minecraft.resources.ResourceLocation getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
@@ -113,8 +113,8 @@ public class GrinderRecipe implements Recipe<Container> {
     }
 
     @Override
-    public net.minecraft.core.NonNullList<Ingredient> getIngredients() {
-        NonNullList<net.minecraft.world.item.crafting.Ingredient> nonnulllist = NonNullList.create();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
         nonnulllist.add(this.ingredient);
         return nonnulllist;
     }

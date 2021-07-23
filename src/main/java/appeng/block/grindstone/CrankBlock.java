@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -52,13 +53,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
 
-    public CrankBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public CrankBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable net.minecraft.world.item.ItemStack heldItem, final BlockHitResult hit) {
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(w, pos);
             return InteractionResult.sidedSuccess(w.isClientSide());
@@ -81,13 +82,13 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public void setPlacedBy(final Level world, final BlockPos pos, final net.minecraft.world.level.block.state.BlockState state,
+    public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state,
                             final LivingEntity placer, final ItemStack stack) {
         final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {
-            final net.minecraft.core.Direction mnt = this.findCrankable(world, pos);
-            net.minecraft.core.Direction forward = net.minecraft.core.Direction.UP;
-            if (mnt == net.minecraft.core.Direction.UP || mnt == Direction.DOWN) {
+            final Direction mnt = this.findCrankable(world, pos);
+            Direction forward = Direction.UP;
+            if (mnt == Direction.UP || mnt == Direction.DOWN) {
                 forward = Direction.SOUTH;
             }
             tile.setOrientation(forward, mnt.getOpposite());
@@ -97,13 +98,13 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
         final BlockEntity te = w.getBlockEntity(pos);
         return !(te instanceof CrankTileEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
 
-    private net.minecraft.core.Direction findCrankable(final BlockGetter world, final BlockPos pos) {
-        for (final net.minecraft.core.Direction dir : net.minecraft.core.Direction.values()) {
+    private Direction findCrankable(final BlockGetter world, final BlockPos pos) {
+        for (final Direction dir : Direction.values()) {
             if (this.isCrankable(world, pos, dir)) {
                 return dir;
             }
@@ -111,20 +112,20 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
         return null;
     }
 
-    private boolean isCrankable(final BlockGetter world, final BlockPos pos, final net.minecraft.core.Direction offset) {
-        final net.minecraft.core.BlockPos o = pos.relative(offset);
+    private boolean isCrankable(final BlockGetter world, final BlockPos pos, final Direction offset) {
+        final BlockPos o = pos.relative(offset);
         final BlockEntity te = world.getBlockEntity(o);
 
         return te instanceof ICrankable && ((ICrankable) te).canCrankAttach(offset.getOpposite());
     }
 
     @Override
-    public RenderShape getRenderShape(net.minecraft.world.level.block.state.BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, BlockPos pos, Block blockIn, net.minecraft.core.BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final AEBaseTileEntity tile = this.getTileEntity(world, pos);
         if (tile != null) {

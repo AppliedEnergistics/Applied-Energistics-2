@@ -46,7 +46,7 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
         return Api.instance().grid().createManagedNode(this, TileEntityNodeListener.INSTANCE);
     }
 
-    public AENetworkTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public AENetworkTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

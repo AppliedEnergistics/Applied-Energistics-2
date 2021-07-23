@@ -49,12 +49,12 @@ import appeng.items.parts.PartItem;
  */
 public class DebugPartPlacerItem extends AEBaseItem {
 
-    public DebugPartPlacerItem(net.minecraft.world.item.Item.Properties properties) {
+    public DebugPartPlacerItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public InteractionResult onItemUseFirst(net.minecraft.world.item.ItemStack stack, UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level world = context.getLevel();
         if (world.isClientSide()) {
             return InteractionResult.PASS;
@@ -68,14 +68,14 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         if (!player.abilities.instabuild) {
-            player.sendMessage(new TextComponent("Only usable in creative mode"), net.minecraft.Util.NIL_UUID);
+            player.sendMessage(new TextComponent("Only usable in creative mode"), Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
 
         BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new TextComponent("Right-click something that will accept parts"),
-                    net.minecraft.Util.NIL_UUID);
+                    Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
         IPartHost center = (IPartHost) te;
@@ -85,13 +85,13 @@ public class DebugPartPlacerItem extends AEBaseItem {
             return InteractionResult.FAIL;
         }
 
-        net.minecraft.core.Direction face = context.getClickedFace();
+        Direction face = context.getClickedFace();
         Vec3i offset = face.getNormal();
-        Direction[] perpendicularFaces = Arrays.stream(net.minecraft.core.Direction.values()).filter(d -> d.getAxis() != face.getAxis())
-                .toArray(net.minecraft.core.Direction[]::new);
+        Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
+                .toArray(Direction[]::new);
 
         BlockPos nextPos = pos;
-        for (net.minecraft.world.item.Item item : ForgeRegistries.ITEMS) {
+        for (Item item : ForgeRegistries.ITEMS) {
             if (!(item instanceof PartItem)) {
                 continue;
             }
@@ -116,7 +116,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
             for (Direction dir : perpendicularFaces) {
-                net.minecraft.world.item.ItemStack itemStack = new ItemStack(item, 1);
+                ItemStack itemStack = new ItemStack(item, 1);
                 partHost.addPart(itemStack, AEPartLocation.fromFacing(dir), player, null);
             }
         }

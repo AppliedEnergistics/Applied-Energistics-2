@@ -41,6 +41,6 @@ final class WorldgenIds {
      * ID of the {@link ConfiguredFeature} and
      * {@link Feature} that generate charged quartz ore.
      */
-    public static final net.minecraft.resources.ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
+    public static final ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
 
 }

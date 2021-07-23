@@ -42,12 +42,12 @@ public class BlockPartFaceDeserializerMixin {
 
     @Inject(method = "deserialize", at = @At("RETURN"), cancellable = true, allow = 1, remap = false)
     public void onDeserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext,
-            CallbackInfoReturnable<net.minecraft.client.renderer.block.model.BlockElementFace> cri) {
+            CallbackInfoReturnable<BlockElementFace> cri) {
         if (!UnlitQuadHooks.isUnlitExtensionEnabled()) {
             return; // Not in a model that activated the deserializer
         }
 
-        net.minecraft.client.renderer.block.model.BlockElementFace modelElement = cri.getReturnValue();
+        BlockElementFace modelElement = cri.getReturnValue();
         cri.setReturnValue(UnlitQuadHooks.enhanceModelElementFace(modelElement, jsonElement));
     }
 

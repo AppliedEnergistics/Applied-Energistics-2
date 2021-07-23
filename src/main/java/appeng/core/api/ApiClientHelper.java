@@ -39,7 +39,7 @@ public class ApiClientHelper implements IClientHelper {
 
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
-            List<net.minecraft.network.chat.Component> lines) {
+            List<Component> lines) {
         if (handler == null) {
             return;
         }

@@ -64,7 +64,7 @@ public class CableBusBakedModel implements BakedModel {
      * DUNSWE for the facing index, 4 spin values per facing.
      */
     private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
-            Direction.NORTH, net.minecraft.core.Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
+            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
             Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
             Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
             Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
@@ -72,7 +72,7 @@ public class CableBusBakedModel implements BakedModel {
             Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
     };
 
-    private final LoadingCache<CableBusRenderState, List<net.minecraft.client.renderer.block.model.BakedQuad>> cableModelCache;
+    private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
     private final CableBuilder cableBuilder;
 
@@ -90,7 +90,7 @@ public class CableBusBakedModel implements BakedModel {
         this.particleTexture = particleTexture;
         this.cableModelCache = CacheBuilder.newBuilder()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
-                .weigher((Weigher<CableBusRenderState, List<net.minecraft.client.renderer.block.model.BakedQuad>>) (key, value) -> value.size())//
+                .weigher((Weigher<CableBusRenderState, List<BakedQuad>>) (key, value) -> value.size())//
                 .build(new CacheLoader<CableBusRenderState, List<BakedQuad>>() {
                     @Override
                     public List<BakedQuad> load(CableBusRenderState renderState) {
@@ -102,13 +102,13 @@ public class CableBusBakedModel implements BakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-                                                                              IModelData data) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData data) {
         CableBusRenderState renderState = data.getData(CableBusRenderState.PROPERTY);
 
         if (renderState == null || side != null) {
@@ -129,7 +129,7 @@ public class CableBusBakedModel implements BakedModel {
             quads.addAll(cableModel);
 
             // Then handle attachments
-            for (net.minecraft.core.Direction facing : Direction.values()) {
+            for (Direction facing : Direction.values()) {
                 final IPartModel partModel = renderState.getAttachments().get(facing);
                 if (partModel == null) {
                     continue;
@@ -147,7 +147,7 @@ public class CableBusBakedModel implements BakedModel {
                         throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                     }
 
-                    List<net.minecraft.client.renderer.block.model.BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
+                    List<BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
 
                     Direction spinDirection = getPartSpin(facing, partModelData);
 
@@ -246,7 +246,7 @@ public class CableBusBakedModel implements BakedModel {
         this.cableBuilder.addCableCore(renderState.getCoreType(), cableColor, quadsOut);
 
         // Render all internal connections to attachments
-        EnumMap<net.minecraft.core.Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
+        EnumMap<Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
         for (Direction facing : attachmentConnections.keySet()) {
             int distance = attachmentConnections.get(facing);
             int channels = renderState.getChannelsOnSide().get(facing);
@@ -372,8 +372,8 @@ public class CableBusBakedModel implements BakedModel {
     }
 
     @Override
-    public net.minecraft.client.renderer.block.model.ItemTransforms getTransforms() {
-        return net.minecraft.client.renderer.block.model.ItemTransforms.NO_TRANSFORMS;
+    public ItemTransforms getTransforms() {
+        return ItemTransforms.NO_TRANSFORMS;
     }
 
     @Override

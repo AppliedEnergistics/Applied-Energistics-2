@@ -160,7 +160,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 }
             }
 
-            net.minecraft.network.chat.Component restOfLine;
+            Component restOfLine;
             if (settings.getFallout() == null) {
                 restOfLine = new TextComponent(
                         String.format(Locale.ROOT, ", radius=%.2f [%s]", settings.getMeteoriteRadius(), state));
@@ -175,16 +175,16 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             // Add a tooltip
             String biomeId = world.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
-            net.minecraft.network.chat.Component tooltip = new TextComponent(settings.toString() + "\nBiome: ").copy()
+            Component tooltip = new TextComponent(settings.toString() + "\nBiome: ").copy()
                     .append(biomeId);
-            msg.withStyle(style -> style.withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendSuccess(msg, true);
         }
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static net.minecraft.network.chat.Component getClickablePosition(ServerLevel world, PlacedMeteoriteSettings settings,
+    private static Component getClickablePosition(ServerLevel world, PlacedMeteoriteSettings settings,
                                                                              BlockPos pos) {
         BlockPos tpPos = pos.above((int) Math.ceil(settings.getMeteoriteRadius()));
         int surfaceY = world.getHeightmapPos(Types.WORLD_SURFACE, tpPos).getY();
@@ -196,7 +196,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
         return new TextComponent(displayText).withStyle(ChatFormatting.UNDERLINE)
-                .withStyle(style -> style.withClickEvent(new net.minecraft.network.chat.ClickEvent(Action.RUN_COMMAND, tpCommand)));
+                .withStyle(style -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk) {

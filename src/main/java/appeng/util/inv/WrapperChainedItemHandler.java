@@ -95,7 +95,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
 
     @Override
     @Nonnull
-    public net.minecraft.world.item.ItemStack getStackInSlot(final int slot) {
+    public ItemStack getStackInSlot(final int slot) {
         int index = this.getIndexForSlot(slot);
         IItemHandler handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
@@ -104,7 +104,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
 
     @Override
     @Nonnull
-    public net.minecraft.world.item.ItemStack insertItem(final int slot, @Nonnull net.minecraft.world.item.ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(final int slot, @Nonnull ItemStack stack, boolean simulate) {
         int index = this.getIndexForSlot(slot);
         IItemHandler handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
@@ -113,7 +113,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
 
     @Override
     @Nonnull
-    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         int index = this.getIndexForSlot(slot);
         IItemHandler handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
@@ -137,7 +137,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public boolean isItemValid(int slot, net.minecraft.world.item.ItemStack stack) {
+    public boolean isItemValid(int slot, ItemStack stack) {
         int index = this.getIndexForSlot(slot);
         IItemHandler handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);

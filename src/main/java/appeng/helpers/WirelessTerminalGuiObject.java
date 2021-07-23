@@ -47,7 +47,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
-    private final net.minecraft.world.item.ItemStack effectiveItem;
+    private final ItemStack effectiveItem;
     private final IWirelessTermHandler wth;
     private final String encryptionKey;
     private final Player myPlayer;
@@ -211,7 +211,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStack() {
+    public ItemStack getItemStack() {
         return this.effectiveItem;
     }
 

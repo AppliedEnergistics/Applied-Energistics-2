@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.Level;
 
@@ -39,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
 
-    public GrinderBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties props) {
+    public GrinderBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 

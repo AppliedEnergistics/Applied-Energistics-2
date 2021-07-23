@@ -44,7 +44,7 @@ public class AppEngCellInventory implements IItemHandlerModifiable {
     }
 
     @Override
-    public void setStackInSlot(int slot, net.minecraft.world.item.ItemStack stack) {
+    public void setStackInSlot(int slot, ItemStack stack) {
         this.persist(slot);
         this.inv.setStackInSlot(slot, stack);
         this.cleanup(slot);
@@ -56,23 +56,23 @@ public class AppEngCellInventory implements IItemHandlerModifiable {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
+    public ItemStack getStackInSlot(int slot) {
         this.persist(slot);
         return this.inv.getStackInSlot(slot);
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         this.persist(slot);
-        final net.minecraft.world.item.ItemStack ret = this.inv.insertItem(slot, stack, simulate);
+        final ItemStack ret = this.inv.insertItem(slot, stack, simulate);
         this.cleanup(slot);
         return ret;
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         this.persist(slot);
-        final net.minecraft.world.item.ItemStack ret = this.inv.extractItem(slot, amount, simulate);
+        final ItemStack ret = this.inv.extractItem(slot, amount, simulate);
         this.cleanup(slot);
         return ret;
     }
@@ -83,7 +83,7 @@ public class AppEngCellInventory implements IItemHandlerModifiable {
     }
 
     @Override
-    public boolean isItemValid(int slot, net.minecraft.world.item.ItemStack stack) {
+    public boolean isItemValid(int slot, ItemStack stack) {
         return this.inv.isItemValid(slot, stack);
     }
 

@@ -47,7 +47,7 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
         extends MEMonitorableScreen<IAEItemStack, C> {
-    public ItemTerminalScreen(C container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public ItemTerminalScreen(C container, Inventory playerInventory, Component title,
                               ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
@@ -58,7 +58,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
     }
 
     @Override
-    protected IPartitionList<IAEItemStack> createPartitionList(List<net.minecraft.world.item.ItemStack> viewCells) {
+    protected IPartitionList<IAEItemStack> createPartitionList(List<ItemStack> viewCells) {
         return ViewCellItem.createFilter(viewCells);
     }
 
@@ -76,7 +76,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
-            if (clickType == net.minecraft.world.inventory.ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
+            if (clickType == ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
                 InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
                 menu.handleInteraction(-1, action);

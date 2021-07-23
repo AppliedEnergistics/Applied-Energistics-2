@@ -41,7 +41,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     private final NumberEntryWidget level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, Inventory playerInventory,
-                                   net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                   Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);

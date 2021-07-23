@@ -137,7 +137,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private int numLines = 0;
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, Inventory playerInventory,
-                                   net.minecraft.network.chat.Component title, ScreenStyle style) {
+                                   Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;
@@ -369,13 +369,13 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundTag invData = in.getCompound(key);
-                    net.minecraft.network.chat.Component un = Serializer.fromJson(invData.getString("un"));
+                    Component un = Serializer.fromJson(invData.getString("un"));
                     final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, net.minecraft.world.item.ItemStack.of(invData.getCompound(which)));
+                            current.getInventory().setStackInSlot(x, ItemStack.of(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -415,7 +415,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             // Search if the current inventory holds a pattern containing the search term.
             if (!found) {
-                for (final net.minecraft.world.item.ItemStack itemStack : entry.getInventory()) {
+                for (final ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
                     if (found) {
                         break;
@@ -479,7 +479,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final net.minecraft.world.item.ItemStack parsedItemStack = net.minecraft.world.item.ItemStack.of(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()
@@ -537,7 +537,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return this.names.size() + this.byId.size();
     }
 
-    private InterfaceRecord getById(final long id, final long sortBy, final net.minecraft.network.chat.Component name) {
+    private InterfaceRecord getById(final long id, final long sortBy, final Component name) {
         InterfaceRecord o = this.byId.get(id);
 
         if (o == null) {

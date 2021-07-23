@@ -36,7 +36,7 @@ public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
 
     private boolean hasPower = false;
 
-    public QuartzGrowthAcceleratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public QuartzGrowthAcceleratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags();

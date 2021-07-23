@@ -225,7 +225,7 @@ public final class InitScreens {
      */
     @FunctionalInterface
     public interface StyledScreenFactory<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> {
-        U create(T t, Inventory pi, net.minecraft.network.chat.Component title, ScreenStyle style);
+        U create(T t, Inventory pi, Component title, ScreenStyle style);
     }
 
 }

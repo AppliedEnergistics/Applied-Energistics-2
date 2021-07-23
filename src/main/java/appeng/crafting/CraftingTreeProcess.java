@@ -74,14 +74,14 @@ public class CraftingTreeProcess {
             CraftingEvent.fireAutoCraftingEvent(world, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
-                final net.minecraft.world.item.ItemStack g = ic.getItem(x);
+                final ItemStack g = ic.getItem(x);
                 if (!g.isEmpty() && g.getCount() > 1) {
                     this.fullSimulation = true;
                 }
             }
 
             for (final IAEItemStack part : details.getInputs()) {
-                final net.minecraft.world.item.ItemStack g = part.createItemStack();
+                final ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
                 for (final IAEItemStack a : details.getOutputs()) {
@@ -126,7 +126,7 @@ public class CraftingTreeProcess {
             }
         } else {
             for (final IAEItemStack part : details.getInputs()) {
-                final net.minecraft.world.item.ItemStack g = part.createItemStack();
+                final ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
                 for (final IAEItemStack a : details.getOutputs()) {
@@ -174,7 +174,7 @@ public class CraftingTreeProcess {
             CraftingEvent.fireAutoCraftingEvent(world, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
-                net.minecraft.world.item.ItemStack is = ic.getItem(x);
+                ItemStack is = ic.getItem(x);
                 is = Platform.getContainerItem(is);
 
                 final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
@@ -191,7 +191,7 @@ public class CraftingTreeProcess {
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * i, src);
 
                 if (this.containerItems) {
-                    final net.minecraft.world.item.ItemStack is = Platform.getContainerItem(stack.createItemStack());
+                    final ItemStack is = Platform.getContainerItem(stack.createItemStack());
                     final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(is);
                     if (o != null) {

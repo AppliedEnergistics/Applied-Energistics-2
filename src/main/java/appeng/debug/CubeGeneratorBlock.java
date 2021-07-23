@@ -38,7 +38,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final net.minecraft.core.BlockPos pos, final Player player, final InteractionHand hand,
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
                                          final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final CubeGeneratorTileEntity tcg = this.getTileEntity(w, pos);
         if (tcg != null) {

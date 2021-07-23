@@ -62,7 +62,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
-    public FluidInterfaceTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public FluidInterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

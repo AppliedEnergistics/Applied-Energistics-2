@@ -41,7 +41,7 @@ import net.minecraft.world.item.Item.Properties;
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;
 
-    public QuartzCuttingKnifeItem(net.minecraft.world.item.Item.Properties props, final QuartzToolType type) {
+    public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);
         this.type = type;
     }
@@ -67,13 +67,13 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public boolean isValidRepairItem(final net.minecraft.world.item.ItemStack a, final net.minecraft.world.item.ItemStack b) {
+    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 
     @Override
-    public ItemStack getContainerItem(final net.minecraft.world.item.ItemStack itemStack) {
-        net.minecraft.world.item.ItemStack damagedStack = itemStack.copy();
+    public ItemStack getContainerItem(final ItemStack itemStack) {
+        ItemStack damagedStack = itemStack.copy();
         if (damagedStack.hurt(1, random, null)) {
             return ItemStack.EMPTY;
         } else {
@@ -82,7 +82,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public boolean hasContainerItem(final net.minecraft.world.item.ItemStack stack) {
+    public boolean hasContainerItem(final ItemStack stack) {
         return true;
     }
 

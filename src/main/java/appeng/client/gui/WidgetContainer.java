@@ -100,22 +100,22 @@ public class WidgetContainer {
      * Convenient way to add Vanilla buttons without having to specify x,y,width and height. The actual
      * position/rectangle is instead sourced from the screen style.
      */
-    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, OnPress action, OnTooltip tooltip) {
-        Button button = new net.minecraft.client.gui.components.Button(0, 0, 0, 0, text, action, tooltip);
+    public Button addButton(String id, Component text, OnPress action, OnTooltip tooltip) {
+        Button button = new Button(0, 0, 0, 0, text, action, tooltip);
         add(id, button);
         return button;
     }
 
-    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, OnPress action) {
-        return addButton(id, text, action, net.minecraft.client.gui.components.Button.NO_TOOLTIP);
+    public Button addButton(String id, Component text, OnPress action) {
+        return addButton(id, text, action, Button.NO_TOOLTIP);
     }
 
-    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, Runnable action, OnTooltip tooltip) {
+    public Button addButton(String id, Component text, Runnable action, OnTooltip tooltip) {
         return addButton(id, text, btn -> action.run(), tooltip);
     }
 
-    public net.minecraft.client.gui.components.Button addButton(String id, net.minecraft.network.chat.Component text, Runnable action) {
-        return addButton(id, text, action, net.minecraft.client.gui.components.Button.NO_TOOLTIP);
+    public Button addButton(String id, Component text, Runnable action) {
+        return addButton(id, text, action, Button.NO_TOOLTIP);
     }
 
     /**

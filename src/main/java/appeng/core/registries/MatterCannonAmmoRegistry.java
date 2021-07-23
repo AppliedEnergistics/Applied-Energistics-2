@@ -33,9 +33,9 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
     /**
      * Contains a mapping from
      */
-    private final Map<net.minecraft.resources.ResourceLocation, Double> tagDamageModifiers = new HashMap<>();
+    private final Map<ResourceLocation, Double> tagDamageModifiers = new HashMap<>();
 
-    private final Map<net.minecraft.world.item.Item, Double> itemDamageModifiers = new IdentityHashMap<>();
+    private final Map<Item, Double> itemDamageModifiers = new IdentityHashMap<>();
 
     public MatterCannonAmmoRegistry() {
         this.addTagWeight("forge:nuggets/meatraw", 32);
@@ -131,7 +131,7 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
         }
 
         // Next, check each item tag
-        for (net.minecraft.resources.ResourceLocation tag : item.getTags()) {
+        for (ResourceLocation tag : item.getTags()) {
             weight = tagDamageModifiers.get(tag);
             if (weight != null) {
                 return weight.floatValue();
@@ -142,6 +142,6 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
     }
 
     private void addTagWeight(String name, final double weight) {
-        this.registerAmmoTag(new net.minecraft.resources.ResourceLocation(name), weight);
+        this.registerAmmoTag(new ResourceLocation(name), weight);
     }
 }

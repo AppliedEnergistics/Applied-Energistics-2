@@ -20,6 +20,7 @@ package appeng.facade;
 
 import java.io.IOException;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -135,7 +136,7 @@ public class FacadeContainer implements IFacadeContainer {
             if (t != null) {
                 final ItemStack is = ItemStack.of(t);
                 if (!is.isEmpty()) {
-                    final net.minecraft.world.item.Item i = is.getItem();
+                    final Item i = is.getItem();
                     if (i instanceof IFacadeItem) {
                         this.storage.setFacade(x,
                                 ((IFacadeItem) i).createPartFromItemStack(is, AEPartLocation.fromOrdinal(x)));
@@ -158,7 +159,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
             if (part != null) {
-                final int itemID = net.minecraft.world.item.Item.getId(part.getItem());
+                final int itemID = Item.getId(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
             }
         }

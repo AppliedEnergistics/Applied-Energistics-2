@@ -29,7 +29,7 @@ public class Fallout {
     private final MeteoriteBlockPutter putter;
     private final BlockState skyStone;
 
-    public Fallout(final MeteoriteBlockPutter putter, final net.minecraft.world.level.block.state.BlockState skyStone) {
+    public Fallout(final MeteoriteBlockPutter putter, final BlockState skyStone) {
         this.putter = putter;
         this.skyStone = skyStone;
     }
@@ -41,7 +41,7 @@ public class Fallout {
     public void getRandomFall(final LevelAccessor w, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
         } else if (a > 0.8) {
             this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.7) {

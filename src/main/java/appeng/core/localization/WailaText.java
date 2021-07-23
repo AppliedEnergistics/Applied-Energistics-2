@@ -51,11 +51,11 @@ public enum WailaText {
         return this.root + '.' + this.toString();
     }
 
-    public net.minecraft.network.chat.Component textComponent() {
+    public Component textComponent() {
         return new TranslatableComponent(this.root + '.' + this.toString());
     }
 
-    public net.minecraft.network.chat.Component textComponent(Object... args) {
+    public Component textComponent(Object... args) {
         return new TranslatableComponent(this.root + '.' + this.toString(), args);
     }
 

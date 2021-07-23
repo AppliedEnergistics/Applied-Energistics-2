@@ -76,7 +76,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
         super.getDrops(drops, wrenched);
 
-        for (final net.minecraft.world.item.ItemStack is : this.viewCell) {
+        for (final ItemStack is : this.viewCell) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -140,7 +140,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final net.minecraft.world.item.ItemStack removedStack, final ItemStack newStack) {
+                                  final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

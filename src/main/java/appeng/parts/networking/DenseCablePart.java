@@ -97,7 +97,7 @@ public abstract class DenseCablePart extends CablePart {
         }
     }
 
-    private boolean isDense(final net.minecraft.core.Direction of) {
+    private boolean isDense(final Direction of) {
         var adjacentHost = Api.instance().grid().getNodeHost(getTile().getLevel(), getTile().getBlockPos().relative(of));
 
         if (adjacentHost != null) {

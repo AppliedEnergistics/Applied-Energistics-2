@@ -32,7 +32,7 @@ public final class ParticleTypes {
 
     public static final SimpleParticleType CHARGED_ORE = new SimpleParticleType(false);
     public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
-    public static final ParticleType<EnergyParticleData> ENERGY = new net.minecraft.core.particles.ParticleType<EnergyParticleData>(false,
+    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
         @Override
         public Codec<EnergyParticleData> codec() {

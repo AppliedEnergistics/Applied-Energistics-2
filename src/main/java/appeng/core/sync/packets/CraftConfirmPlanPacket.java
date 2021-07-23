@@ -30,7 +30,7 @@ import appeng.core.sync.network.INetworkInfo;
 
 /**
  * Transfers a {@link CraftingPlanSummary} to the client for a
- * {@link appeng.container.me.crafting.CraftConfirmContainer}
+ * {@link CraftConfirmContainer}
  */
 public class CraftConfirmPlanPacket extends BasePacket {
     private final CraftingPlanSummary plan;

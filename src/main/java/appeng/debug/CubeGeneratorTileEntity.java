@@ -41,7 +41,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements Tickabl
     private int countdown = 20 * 10;
     private Player who = null;
 
-    public CubeGeneratorTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public CubeGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -88,7 +88,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements Tickabl
             this.who = player;
 
             if (hand.isEmpty()) {
-                this.is = net.minecraft.world.item.ItemStack.EMPTY;
+                this.is = ItemStack.EMPTY;
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
                     this.size--;

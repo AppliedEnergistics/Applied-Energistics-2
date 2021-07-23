@@ -68,7 +68,7 @@ public abstract class AbstractTableRenderer<T> {
         mouseY -= screen.getGuiTop();
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
-        List<net.minecraft.network.chat.Component> tooltipLines = null;
+        List<Component> tooltipLines = null;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -87,7 +87,7 @@ public abstract class AbstractTableRenderer<T> {
                     GuiComponent.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
-                List<net.minecraft.network.chat.Component> lines = getEntryDescription(entry);
+                List<Component> lines = getEntryDescription(entry);
 
                 // Compute the full height of the text block to center it vertically
                 float textHeight = lines.size() * lineHeight;
@@ -101,7 +101,7 @@ public abstract class AbstractTableRenderer<T> {
 
                 matrixStack.pushPose();
                 matrixStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
-                for (net.minecraft.network.chat.Component line : lines) {
+                for (Component line : lines) {
                     final int w = fontRenderer.width(line);
                     fontRenderer.draw(matrixStack, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
@@ -142,17 +142,17 @@ public abstract class AbstractTableRenderer<T> {
     /**
      * Implement in subclass to determine the text to show next to an entry.
      */
-    protected abstract List<net.minecraft.network.chat.Component> getEntryDescription(T entry);
+    protected abstract List<Component> getEntryDescription(T entry);
 
     /**
      * Get the item to show for an entry.
      */
-    protected abstract net.minecraft.world.item.ItemStack getEntryItem(T entry);
+    protected abstract ItemStack getEntryItem(T entry);
 
     /**
      * Get the tooltip lines to show for an entry.
      */
-    protected abstract List<net.minecraft.network.chat.Component> getEntryTooltip(T entry);
+    protected abstract List<Component> getEntryTooltip(T entry);
 
     /**
      * Override and return a color to draw a colored rectangle behind an entry. Return 0 to not draw a rectangle.

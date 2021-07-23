@@ -32,8 +32,8 @@ import appeng.tile.spatial.SpatialPylonTileEntity;
 public class SpatialPylonCluster implements IAECluster {
 
     private final ServerLevel world;
-    private final net.minecraft.core.BlockPos boundsMin;
-    private final net.minecraft.core.BlockPos boundsMax;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private final List<SpatialPylonTileEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
@@ -121,7 +121,7 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public net.minecraft.core.BlockPos getBoundsMin() {
+    public BlockPos getBoundsMin() {
         return this.boundsMin;
     }
 

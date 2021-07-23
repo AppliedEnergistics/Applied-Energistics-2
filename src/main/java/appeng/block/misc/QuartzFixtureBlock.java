@@ -62,7 +62,7 @@ import appeng.helpers.MetaRotation;
 public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, SimpleWaterloggedBlock {
 
     // Cache VoxelShapes for each facing
-    private static final Map<Direction, net.minecraft.world.phys.shapes.VoxelShape> SHAPES;
+    private static final Map<Direction, VoxelShape> SHAPES;
 
     static {
         SHAPES = new EnumMap<>(Direction.class);
@@ -71,14 +71,14 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
             final double xOff = -0.3 * facing.getStepX();
             final double yOff = -0.3 * facing.getStepY();
             final double zOff = -0.3 * facing.getStepZ();
-            net.minecraft.world.phys.shapes.VoxelShape shape = Shapes
+            VoxelShape shape = Shapes
                     .create(new AABB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
             SHAPES.put(facing, shape);
         }
     }
 
     // Cannot use the vanilla FACING property here because it excludes facing DOWN
-    public static final DirectionProperty FACING = net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -94,7 +94,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         builder.add(FACING, ODD, WATERLOGGED);
     }
 
@@ -103,15 +103,15 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = super.getStateForPlacement(context);
-        net.minecraft.core.BlockPos pos = context.getClickedPos();
-        net.minecraft.world.level.material.FluidState fluidState = context.getLevel().getFluidState(pos);
+        BlockPos pos = context.getClickedPos();
+        FluidState fluidState = context.getLevel().getFluidState(pos);
 
         // Set the even/odd property
         boolean oddPlacement = (pos.getX() + pos.getY() + pos.getZ()) % 2 != 0;
         blockstate = blockstate.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
         LevelReader iworldreader = context.getLevel();
-        net.minecraft.core.Direction[] adirection = context.getNearestLookingDirections();
+        Direction[] adirection = context.getNearestLookingDirections();
 
         for (Direction direction : adirection) {
             if (canPlaceAt(iworldreader, pos, direction)) {
@@ -125,8 +125,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updateShape(BlockState blockState, net.minecraft.core.Direction facing, net.minecraft.world.level.block.state.BlockState facingState, LevelAccessor world,
-                                  BlockPos currentPos, net.minecraft.core.BlockPos facingPos) {
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
+                                  BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));
@@ -140,27 +140,27 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final net.minecraft.core.BlockPos pos, final net.minecraft.core.Direction forward, final net.minecraft.core.Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final LevelReader w, final net.minecraft.core.BlockPos pos, final Direction dir) {
-        final net.minecraft.core.BlockPos test = pos.relative(dir);
-        net.minecraft.world.level.block.state.BlockState blockstate = w.getBlockState(test);
+    private boolean canPlaceAt(final LevelReader w, final BlockPos pos, final Direction dir) {
+        final BlockPos test = pos.relative(dir);
+        BlockState blockstate = w.getBlockState(test);
         return blockstate.isFaceSturdy(w, test, dir.getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(FACING);
         return SHAPES.get(facing);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final net.minecraft.core.BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -183,7 +183,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     // FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
     @Override
-    public void neighborChanged(net.minecraft.world.level.block.state.BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {

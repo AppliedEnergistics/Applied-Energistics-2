@@ -106,7 +106,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
         final ChargerTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {

@@ -22,6 +22,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -52,7 +53,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
             PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
-        super(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noDrops());
+        super(BlockBehaviour.Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noDrops());
     }
 
     @Override
@@ -67,19 +68,19 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(net.minecraft.world.level.block.state.BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos,
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
                                         CollisionContext context) {
         return Shapes.block();
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         // This also prevents any blocks from being placed on this block!
         return Shapes.empty();
     }
 
     @Override
-    public boolean canSurvive(net.minecraft.world.level.block.state.BlockState state, LevelReader worldIn, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         return false;
     }
 
@@ -94,12 +95,12 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public float getShadeBrightness(BlockState state, BlockGetter worldIn, net.minecraft.core.BlockPos pos) {
+    public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 1.0f;
     }
 
     @Override
-    public boolean canEntityDestroy(final net.minecraft.world.level.block.state.BlockState state, final BlockGetter world, final BlockPos pos,
+    public boolean canEntityDestroy(final BlockState state, final BlockGetter world, final BlockPos pos,
                                     final Entity entity) {
         return false;
     }

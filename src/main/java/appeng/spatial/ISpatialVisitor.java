@@ -22,5 +22,5 @@ import net.minecraft.core.BlockPos;
 
 public interface ISpatialVisitor {
 
-    void visit(net.minecraft.core.BlockPos pos);
+    void visit(BlockPos pos);
 }

@@ -20,6 +20,7 @@ package appeng.items.materials;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -33,19 +34,19 @@ import net.minecraft.world.item.Item.Properties;
 public class CustomEntityItem extends AEBaseItem {
     private final EntityFactory factory;
 
-    public CustomEntityItem(net.minecraft.world.item.Item.Properties properties, EntityFactory factory) {
+    public CustomEntityItem(Item.Properties properties, EntityFactory factory) {
         super(properties);
         this.factory = factory;
     }
 
     @Override
-    public boolean hasCustomEntity(final net.minecraft.world.item.ItemStack is) {
+    public boolean hasCustomEntity(final ItemStack is) {
         return true;
     }
 
     @Override
-    public net.minecraft.world.entity.Entity createEntity(final Level w, final Entity location, final ItemStack itemstack) {
-        net.minecraft.world.entity.item.ItemEntity eqi = factory.create(w, location.getX(), location.getY(), location.getZ(),
+    public Entity createEntity(final Level w, final Entity location, final ItemStack itemstack) {
+        ItemEntity eqi = factory.create(w, location.getX(), location.getY(), location.getZ(),
                 itemstack);
 
         eqi.setDeltaMovement(location.getDeltaMovement());

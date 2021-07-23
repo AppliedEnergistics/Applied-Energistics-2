@@ -43,7 +43,7 @@ import appeng.client.render.cablebus.FacadeBuilder;
  */
 public class FacadeBakedItemModel extends DelegateBakedModel {
 
-    private final net.minecraft.world.item.ItemStack textureStack;
+    private final ItemStack textureStack;
     private final FacadeBuilder facadeBuilder;
     private List<BakedQuad> quads = null;
 
@@ -54,13 +54,13 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable net.minecraft.world.level.block.state.BlockState state, @Nullable net.minecraft.core.Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getQuads(@Nullable BlockState state, @Nullable net.minecraft.core.Direction side, Random rand,
-                                                                              IModelData data) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData data) {
         if (side != null) {
             return Collections.emptyList();
         }

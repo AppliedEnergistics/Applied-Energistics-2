@@ -45,7 +45,7 @@ public interface ICellGuiHandler {
      * @param is Cell ItemStack
      * @return True, if specialized else false.
      */
-    default boolean isSpecializedFor(net.minecraft.world.item.ItemStack is) {
+    default boolean isSpecializedFor(ItemStack is) {
         return false;
     }
 
@@ -62,6 +62,6 @@ public interface ICellGuiHandler {
      * @param chan        storage channel
      */
     <T extends IAEStack<T>> void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler,
-                                              IMEInventoryHandler<T> inv, net.minecraft.world.item.ItemStack is, IStorageChannel<T> chan);
+                                              IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan);
 
 }

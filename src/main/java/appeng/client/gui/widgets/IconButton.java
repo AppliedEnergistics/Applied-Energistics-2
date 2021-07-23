@@ -106,7 +106,7 @@ public abstract class IconButton extends Button implements ITooltip {
     protected abstract Icon getIcon();
 
     @Override
-    public List<net.minecraft.network.chat.Component> getTooltipMessage() {
+    public List<Component> getTooltipMessage() {
         return Collections.singletonList(getMessage());
     }
 

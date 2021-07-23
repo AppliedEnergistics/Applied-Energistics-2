@@ -32,5 +32,5 @@ public interface IColorableTile {
 
     AEColor getColor();
 
-    boolean recolourBlock(net.minecraft.core.Direction side, AEColor colour, Player who);
+    boolean recolourBlock(Direction side, AEColor colour, Player who);
 }

@@ -31,7 +31,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
     private final ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, Inventory playerInventory, net.minecraft.network.chat.Component title,
+    public InscriberScreen(InscriberContainer container, Inventory playerInventory, Component title,
                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 

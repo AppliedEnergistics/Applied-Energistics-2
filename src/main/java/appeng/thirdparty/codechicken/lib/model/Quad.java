@@ -42,7 +42,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     public CachedFormat format;
 
     public int tintIndex = -1;
-    public net.minecraft.core.Direction orientation;
+    public Direction orientation;
     public boolean diffuseLighting = true;
     public TextureAtlasSprite sprite;
 
@@ -53,8 +53,8 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     private int vertexIndex = 0;
     // Cache for normal computation.
     private Vector3f v1 = new Vector3f();
-    private Vector3f v2 = new com.mojang.math.Vector3f();
-    private Vector3f t = new com.mojang.math.Vector3f();
+    private Vector3f v2 = new Vector3f();
+    private Vector3f t = new Vector3f();
     private Vector3f normal = new Vector3f();
 
     /**
@@ -83,7 +83,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     @Override
-    public void setQuadOrientation(net.minecraft.core.Direction orientation) {
+    public void setQuadOrientation(Direction orientation) {
         this.orientation = orientation;
     }
 
@@ -199,7 +199,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = net.minecraft.core.Direction.getNearest(this.normal.x(), this.normal.y(), this.normal.z());
+        this.orientation = Direction.getNearest(this.normal.x(), this.normal.y(), this.normal.z());
     }
 
     /**
@@ -271,7 +271,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      *
      * @return The BakedQuad.
      */
-    public net.minecraft.client.renderer.block.model.BakedQuad bake() {
+    public BakedQuad bake() {
         if (format.format != DefaultVertexFormat.BLOCK) {
             throw new IllegalStateException("Unable to bake this quad to the specified format. " + format.format);
         }

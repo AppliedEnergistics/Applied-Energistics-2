@@ -60,7 +60,7 @@ public enum PowerUnits {
         return value * this.conversionRatio / target.conversionRatio;
     }
 
-    public net.minecraft.network.chat.Component textComponent() {
+    public Component textComponent() {
         return new TranslatableComponent(unlocalizedName);
     }
 

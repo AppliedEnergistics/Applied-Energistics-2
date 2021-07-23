@@ -19,6 +19,7 @@
 package appeng.fluids.items;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.IItemHandler;
@@ -44,7 +45,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     private final int bytesPerType;
     private final double idleDrain;
 
-    public BasicFluidStorageCell(net.minecraft.world.item.Item.Properties props, ItemLike coreItem, int kilobytes, float idleDrain,
+    public BasicFluidStorageCell(Item.Properties props, ItemLike coreItem, int kilobytes, float idleDrain,
                                  int bytesPerType) {
         super(props, coreItem, kilobytes);
         this.idleDrain = idleDrain;
@@ -67,18 +68,18 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     }
 
     @Override
-    public int getTotalTypes(final net.minecraft.world.item.ItemStack cellItem) {
+    public int getTotalTypes(final ItemStack cellItem) {
         return 5;
     }
 
     @Override
-    public IItemHandler getConfigInventory(final net.minecraft.world.item.ItemStack is) {
+    public IItemHandler getConfigInventory(final ItemStack is) {
         return new FluidCellConfig(is);
     }
 
     @Override
     protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player) {
-        final net.minecraft.world.item.ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
+        final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
         if (!extraA.isEmpty()) {
             player.drop(extraA, false);
         }

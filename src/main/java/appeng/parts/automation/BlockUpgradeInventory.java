@@ -23,7 +23,7 @@ import appeng.util.inv.IAEAppEngInventory;
 import net.minecraft.world.level.block.Block;
 
 public class BlockUpgradeInventory extends UpgradeInventory {
-    private final net.minecraft.world.level.block.Block block;
+    private final Block block;
 
     public BlockUpgradeInventory(final Block block, final IAEAppEngInventory parent, final int s) {
         super(parent, s);

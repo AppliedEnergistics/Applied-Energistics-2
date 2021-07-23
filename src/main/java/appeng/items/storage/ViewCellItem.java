@@ -20,6 +20,7 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.items.IItemHandler;
@@ -43,7 +44,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public ViewCellItem(net.minecraft.world.item.Item.Properties properties) {
+    public ViewCellItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -88,7 +89,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
 
                 for (int x = 0; x < config.getSlots(); x++) {
-                    final net.minecraft.world.item.ItemStack is = config.getStackInSlot(x);
+                    final ItemStack is = config.getStackInSlot(x);
                     if (!is.isEmpty()) {
                         priorityList.add(AEItemStack.fromItemStack(is));
                     }

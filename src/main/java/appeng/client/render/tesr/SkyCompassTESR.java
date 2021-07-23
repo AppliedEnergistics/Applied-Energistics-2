@@ -68,7 +68,7 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassTileEntity> {
         // is symmetrical, this should
         // not affect the appearance
         if (forward == Direction.UP || forward == Direction.DOWN) {
-            up = net.minecraft.core.Direction.NORTH;
+            up = Direction.NORTH;
         }
         // Flip forward/up for rendering, the base model is facing up without any
         // rotation

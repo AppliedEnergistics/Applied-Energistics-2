@@ -70,7 +70,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         f2 = (1.0F - (tnt.getLife() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(90.0F));
+        mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
                 tnt.getLife() / 5 % 2 == 0);
         mStack.popPose();

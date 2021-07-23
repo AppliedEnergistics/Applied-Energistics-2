@@ -62,12 +62,12 @@ public class ManagedGridNode implements IManagedGridNode {
         // The following values are used until the node is constructed, and then are applied to the node
         private AEColor gridColor = AEColor.TRANSPARENT;
         private Set<Direction> exposedOnSides = EnumSet.allOf(Direction.class);
-        private net.minecraft.world.item.ItemStack visualRepresentation = net.minecraft.world.item.ItemStack.EMPTY;
+        private ItemStack visualRepresentation = ItemStack.EMPTY;
         private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
         private double idlePowerUsage = 1.0;
         private int owner = -1; // ME player id of owner
         private Level world;
-        private net.minecraft.core.BlockPos pos;
+        private BlockPos pos;
         private boolean inWorldNode;
 
         public InitData(T logicalHost, IGridNodeListener<T> listener) {
@@ -147,7 +147,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void create(Level world, @Nullable net.minecraft.core.BlockPos blockPos) {
+    public void create(Level world, @Nullable BlockPos blockPos) {
         // We can only ready up if the init-data still exists
         var initData = getInitData();
         initData.world = world;
@@ -239,7 +239,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    public ManagedGridNode setExposedOnSides(@Nonnull Set<net.minecraft.core.Direction> directions) {
+    public ManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
         } else {
@@ -281,7 +281,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Nonnull
-    public net.minecraft.world.item.ItemStack getVisualRepresentation() {
+    public ItemStack getVisualRepresentation() {
         return node != null ? node.getVisualRepresentation() : getInitData().visualRepresentation;
     }
 

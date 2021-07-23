@@ -40,34 +40,34 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_base");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_DEFAULT = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_ITEMS_1K = new ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_ITEMS_1K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/1k_item_cell");
     private static final ResourceLocation MODEL_CELL_ITEMS_4K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/4k_item_cell");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_ITEMS_16K = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_ITEMS_16K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/16k_item_cell");
-    private static final ResourceLocation MODEL_CELL_ITEMS_64K = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_ITEMS_64K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/64k_item_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_1K = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_FLUIDS_1K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/1k_fluid_cell");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_FLUIDS_4K = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_FLUIDS_4K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/4k_fluid_cell");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_FLUIDS_16K = new ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_FLUIDS_16K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/16k_fluid_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_64K = new net.minecraft.resources.ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_FLUIDS_64K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/64k_fluid_cell");
-    private static final net.minecraft.resources.ResourceLocation MODEL_CELL_CREATIVE = new ResourceLocation(
+    private static final ResourceLocation MODEL_CELL_CREATIVE = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/creative_cell");
 
-    private static final net.minecraft.resources.ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
+    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
             MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
             MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
-    public static Collection<net.minecraft.resources.ResourceLocation> getModels() {
+    public static Collection<ResourceLocation> getModels() {
         return Arrays.asList(MODELS);
     }
 
@@ -88,7 +88,7 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     }
 
     @Override
-    public void registerModel(Item item, net.minecraft.resources.ResourceLocation model) {
+    public void registerModel(Item item, ResourceLocation model) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(model);
         Preconditions.checkArgument(!this.registry.containsKey(item), "Cannot register an item twice.");
@@ -106,7 +106,7 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     @Override
     @Nonnull
-    public Map<Item, net.minecraft.resources.ResourceLocation> models() {
+    public Map<Item, ResourceLocation> models() {
         return Collections.unmodifiableMap(this.registry);
     }
 

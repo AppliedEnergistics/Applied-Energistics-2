@@ -54,7 +54,7 @@ public class SpatialStoragePlot {
      * The storage size of this dimension. This is dictated by the pylon structure size used to perform the first
      * transfer into this dimension. Once it's set, it cannot be changed anymore.
      */
-    private final net.minecraft.core.BlockPos size;
+    private final BlockPos size;
 
     /**
      * AE2 player id of who primarily owned the network when the storage plot was allocated.
@@ -67,7 +67,7 @@ public class SpatialStoragePlot {
     @Nullable
     private TransitionInfo lastTransition;
 
-    public SpatialStoragePlot(int id, net.minecraft.core.BlockPos size, int owner) {
+    public SpatialStoragePlot(int id, BlockPos size, int owner) {
         this.id = id;
         this.size = size;
         this.owner = owner;
@@ -88,7 +88,7 @@ public class SpatialStoragePlot {
      *
      * @see #getOrigin()
      */
-    public net.minecraft.core.BlockPos getSize() {
+    public BlockPos getSize() {
         return size;
     }
 
@@ -163,15 +163,15 @@ public class SpatialStoragePlot {
         posx -= 64;
         posz -= 64;
 
-        return new net.minecraft.core.BlockPos(posx, 64, posz);
+        return new BlockPos(posx, 64, posz);
     }
 
     /**
      * Returns the filename of the region in the world save containing this plot.
      */
     public String getRegionFilename() {
-        net.minecraft.core.BlockPos origin = this.getOrigin();
-        net.minecraft.world.level.ChunkPos originChunk = new ChunkPos(origin);
+        BlockPos origin = this.getOrigin();
+        ChunkPos originChunk = new ChunkPos(origin);
 
         return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
     }

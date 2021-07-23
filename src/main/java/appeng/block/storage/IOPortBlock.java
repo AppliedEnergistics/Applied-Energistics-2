@@ -46,7 +46,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, net.minecraft.core.BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
                                 boolean isMoving) {
         final IOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {

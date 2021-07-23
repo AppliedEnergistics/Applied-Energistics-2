@@ -266,7 +266,7 @@ class CableBuilder {
         addCoveredCableSizedCube(facing, cubeBuilder);
     }
 
-    public void addStraightCoveredConnection(net.minecraft.core.Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
+    public void addStraightCoveredConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
@@ -277,13 +277,13 @@ class CableBuilder {
         addStraightCoveredCableSizedCube(facing, cubeBuilder);
     }
 
-    private static void setStraightCableUVs(CubeBuilder cubeBuilder, net.minecraft.core.Direction facing, int x, int y) {
+    private static void setStraightCableUVs(CubeBuilder cubeBuilder, Direction facing, int x, int y) {
         switch (facing) {
             case DOWN:
             case UP:
-                cubeBuilder.setCustomUv(net.minecraft.core.Direction.NORTH, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.NORTH, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.EAST, x, 0, y, x);
-                cubeBuilder.setCustomUv(net.minecraft.core.Direction.SOUTH, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.SOUTH, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.WEST, x, 0, y, x);
                 break;
             case EAST:
@@ -291,12 +291,12 @@ class CableBuilder {
                 cubeBuilder.setCustomUv(Direction.UP, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.DOWN, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.NORTH, 0, x, x, y);
-                cubeBuilder.setCustomUv(net.minecraft.core.Direction.SOUTH, 0, x, x, y);
+                cubeBuilder.setCustomUv(Direction.SOUTH, 0, x, x, y);
                 break;
             case NORTH:
             case SOUTH:
-                cubeBuilder.setCustomUv(net.minecraft.core.Direction.UP, x, 0, y, x);
-                cubeBuilder.setCustomUv(net.minecraft.core.Direction.DOWN, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.UP, x, 0, y, x);
+                cubeBuilder.setCustomUv(Direction.DOWN, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.EAST, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.WEST, 0, x, x, y);
                 break;
@@ -462,8 +462,8 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
     }
 
-    public void addDenseSmartConnection(net.minecraft.core.Direction facing, AEColor cableColor, AECableType connectionType,
-                                        boolean cableBusAdjacent, int channels, List<net.minecraft.client.renderer.block.model.BakedQuad> quadsOut) {
+    public void addDenseSmartConnection(Direction facing, AEColor cableColor, AECableType connectionType,
+                                        boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut) {
         // Dense cables only render their connections as dense if the adjacent blocks
         // actually wants that
         if (connectionType == AECableType.SMART) {
@@ -521,7 +521,7 @@ class CableBuilder {
     }
 
     public void addStraightDenseSmartConnection(Direction facing, AEColor cableColor, int channels,
-            List<net.minecraft.client.renderer.block.model.BakedQuad> quadsOut) {
+            List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
@@ -552,7 +552,7 @@ class CableBuilder {
         cubeBuilder.setEmissiveMaterial(false);
     }
 
-    private static void addDenseCableSizedCube(net.minecraft.core.Direction facing, CubeBuilder cubeBuilder) {
+    private static void addDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
             case DOWN:
                 cubeBuilder.addCube(4, 0, 4, 12, 5, 12);
@@ -582,25 +582,25 @@ class CableBuilder {
         switch (facing) {
             case DOWN:
             case UP:
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 3);
+                cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.addCube(3, 0, 3, 13, 16, 13);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, 0);
                 break;
             case EAST:
             case WEST:
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.SOUTH, 3);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.NORTH, 3);
+                cubeBuilder.setUvRotation(Direction.SOUTH, 3);
+                cubeBuilder.setUvRotation(Direction.NORTH, 3);
                 cubeBuilder.addCube(0, 3, 3, 16, 13, 13);
                 cubeBuilder.setUvRotation(Direction.SOUTH, 0);
                 cubeBuilder.setUvRotation(Direction.NORTH, 0);
                 break;
             case NORTH:
             case SOUTH:
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 3);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.WEST, 3);
+                cubeBuilder.setUvRotation(Direction.EAST, 3);
+                cubeBuilder.setUvRotation(Direction.WEST, 3);
                 cubeBuilder.addCube(3, 3, 0, 13, 13, 16);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.WEST, 0);
+                cubeBuilder.setUvRotation(Direction.WEST, 0);
                 break;
         }
     }
@@ -638,9 +638,9 @@ class CableBuilder {
         switch (facing) {
             case DOWN:
             case UP:
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 3);
+                cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.addCube(5, 0, 5, 11, 16, 11);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, 0);
                 break;
             case EAST:
             case WEST:
@@ -652,10 +652,10 @@ class CableBuilder {
                 break;
             case NORTH:
             case SOUTH:
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 3);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.WEST, 3);
+                cubeBuilder.setUvRotation(Direction.EAST, 3);
+                cubeBuilder.setUvRotation(Direction.WEST, 3);
                 cubeBuilder.addCube(5, 5, 0, 11, 11, 16);
-                cubeBuilder.setUvRotation(net.minecraft.core.Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, 0);
                 cubeBuilder.setUvRotation(Direction.WEST, 0);
                 break;
         }

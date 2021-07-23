@@ -66,7 +66,7 @@ public final class Blitter {
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
 
-    Blitter(net.minecraft.resources.ResourceLocation texture, int referenceWidth, int referenceHeight) {
+    Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
         this.referenceWidth = referenceWidth;
         this.referenceHeight = referenceHeight;
@@ -89,7 +89,7 @@ public final class Blitter {
     /**
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */
-    public static Blitter texture(net.minecraft.resources.ResourceLocation file, int referenceWidth, int referenceHeight) {
+    public static Blitter texture(ResourceLocation file, int referenceWidth, int referenceHeight) {
         return new Blitter(file, referenceWidth, referenceHeight);
     }
 
@@ -97,7 +97,7 @@ public final class Blitter {
      * Creates a blitter where the source rectangle is in relation to a texture of the given size.
      */
     public static Blitter texture(String file, int referenceWidth, int referenceHeight) {
-        return new Blitter(new net.minecraft.resources.ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
+        return new Blitter(new ResourceLocation(AppEng.MOD_ID, "textures/" + file), referenceWidth, referenceHeight);
     }
 
     /**

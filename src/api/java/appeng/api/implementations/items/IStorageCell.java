@@ -35,7 +35,7 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * Any item which implements this can be treated as an IMEInventory via
- * {@link ICellHandler#getCellInventory(net.minecraft.world.item.ItemStack, appeng.api.storage.cells.ISaveProvider, IStorageChannel)} or
+ * {@link ICellHandler#getCellInventory(ItemStack, appeng.api.storage.cells.ISaveProvider, IStorageChannel)} or
  * {@link ICellHandler#isCell(ItemStack)}. It automatically handles the internals and NBT data, which is both nice, and
  * bad for you!
  *
@@ -64,7 +64,7 @@ public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem 
      *
      * @return number of bytes
      */
-    int getBytesPerType(@Nonnull net.minecraft.world.item.ItemStack cellItem);
+    int getBytesPerType(@Nonnull ItemStack cellItem);
 
     /**
      * Must be between 1 and 63, indicates how many types you want to store on the item.
@@ -73,7 +73,7 @@ public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem 
      *
      * @return number of types
      */
-    int getTotalTypes(@Nonnull net.minecraft.world.item.ItemStack cellItem);
+    int getTotalTypes(@Nonnull ItemStack cellItem);
 
     /**
      * Allows you to fine tune which items are allowed on a given cell, if you don't care, just return false; As the

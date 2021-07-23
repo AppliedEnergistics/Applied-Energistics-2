@@ -29,13 +29,13 @@ import net.minecraft.world.item.Item.Properties;
 public class QuartzHoeItem extends HoeItem {
     private final QuartzToolType type;
 
-    public QuartzHoeItem(net.minecraft.world.item.Item.Properties props, final QuartzToolType type) {
+    public QuartzHoeItem(Item.Properties props, final QuartzToolType type) {
         super(Tiers.IRON, -2, -1.0F, props);
         this.type = type;
     }
 
     @Override
-    public boolean isValidRepairItem(final net.minecraft.world.item.ItemStack a, final ItemStack b) {
+    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 

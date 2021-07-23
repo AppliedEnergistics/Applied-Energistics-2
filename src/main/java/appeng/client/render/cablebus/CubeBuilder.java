@@ -38,13 +38,13 @@ import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
  */
 public class CubeBuilder {
 
-    private final List<net.minecraft.client.renderer.block.model.BakedQuad> output;
+    private final List<BakedQuad> output;
 
     private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>(Direction.class);
 
-    private EnumSet<net.minecraft.core.Direction> drawFaces = EnumSet.allOf(Direction.class);
+    private EnumSet<Direction> drawFaces = EnumSet.allOf(Direction.class);
 
-    private final EnumMap<net.minecraft.core.Direction, Vector4f> customUv = new EnumMap<>(net.minecraft.core.Direction.class);
+    private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
     private byte[] uvRotations = new byte[Direction.values().length];
 
@@ -199,7 +199,7 @@ public class CubeBuilder {
         return uv;
     }
 
-    private UvVector getStandardUv(net.minecraft.core.Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
+    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
                                    float y2, float z2) {
         UvVector uv = new UvVector();
         switch (face) {
@@ -357,7 +357,7 @@ public class CubeBuilder {
     private void putVertex(BakedQuadBuilder builder, Direction face, float x, float y, float z, float u, float v) {
         VertexFormat format = builder.getVertexFormat();
 
-        List<com.mojang.blaze3d.vertex.VertexFormatElement> elements = format.getElements();
+        List<VertexFormatElement> elements = format.getElements();
         for (int i = 0; i < elements.size(); i++) {
             VertexFormatElement e = elements.get(i);
             switch (e.getUsage()) {
@@ -403,14 +403,14 @@ public class CubeBuilder {
     public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north,
             TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
         this.textures.put(Direction.UP, up);
-        this.textures.put(net.minecraft.core.Direction.DOWN, down);
+        this.textures.put(Direction.DOWN, down);
         this.textures.put(Direction.NORTH, north);
         this.textures.put(Direction.SOUTH, south);
         this.textures.put(Direction.EAST, east);
-        this.textures.put(net.minecraft.core.Direction.WEST, west);
+        this.textures.put(Direction.WEST, west);
     }
 
-    public void setTexture(net.minecraft.core.Direction facing, TextureAtlasSprite sprite) {
+    public void setTexture(Direction facing, TextureAtlasSprite sprite) {
         this.textures.put(facing, sprite);
     }
 
@@ -437,8 +437,8 @@ public class CubeBuilder {
         this.emissiveMaterial = renderFullBright;
     }
 
-    public void setCustomUv(net.minecraft.core.Direction facing, float u1, float v1, float u2, float v2) {
-        this.customUv.put(facing, new com.mojang.math.Vector4f(u1, v1, u2, v2));
+    public void setCustomUv(Direction facing, float u1, float v1, float u2, float v2) {
+        this.customUv.put(facing, new Vector4f(u1, v1, u2, v2));
     }
 
     public void setUvRotation(Direction facing, int rotation) {
@@ -458,7 +458,7 @@ public class CubeBuilder {
         this.useStandardUV = true;
     }
 
-    public List<net.minecraft.client.renderer.block.model.BakedQuad> getOutput() {
+    public List<BakedQuad> getOutput() {
         return this.output;
     }
 }

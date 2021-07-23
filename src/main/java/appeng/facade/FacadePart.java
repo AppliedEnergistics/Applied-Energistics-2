@@ -30,7 +30,7 @@ import appeng.api.util.AEPartLocation;
 
 public class FacadePart implements IFacadePart {
 
-    private final net.minecraft.world.item.ItemStack facade;
+    private final ItemStack facade;
     private final AEPartLocation side;
 
     public FacadePart(final ItemStack facade, final AEPartLocation side) {
@@ -43,7 +43,7 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getItemStack() {
+    public ItemStack getItemStack() {
         return this.facade;
     }
 
@@ -78,8 +78,8 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStack getTextureItem() {
-        final net.minecraft.world.item.Item maybeFacade = this.facade.getItem();
+    public ItemStack getTextureItem() {
+        final Item maybeFacade = this.facade.getItem();
 
         // AE Facade
         if (maybeFacade instanceof IFacadeItem) {
@@ -88,7 +88,7 @@ public class FacadePart implements IFacadePart {
             return facade.getTextureItem(this.facade);
         }
 
-        return net.minecraft.world.item.ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override

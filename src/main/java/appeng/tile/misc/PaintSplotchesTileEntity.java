@@ -57,7 +57,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesTileEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> tileEntityTypeIn) {
+    public PaintSplotchesTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -150,7 +150,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
             return;
         }
 
-        for (final net.minecraft.core.Direction side : net.minecraft.core.Direction.values()) {
+        for (final Direction side : Direction.values()) {
             if (!this.isSideValid(side)) {
                 this.removeSide(side);
             }
@@ -159,13 +159,13 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         this.updateData();
     }
 
-    public boolean isSideValid(final net.minecraft.core.Direction side) {
-        final net.minecraft.core.BlockPos p = this.worldPosition.relative(side);
+    public boolean isSideValid(final Direction side) {
+        final BlockPos p = this.worldPosition.relative(side);
         final BlockState blk = this.level.getBlockState(p);
         return blk.isFaceSturdy(level, p, side.getOpposite());
     }
 
-    private void removeSide(final net.minecraft.core.Direction side) {
+    private void removeSide(final Direction side) {
         final Iterator<Splotch> i = this.dots.iterator();
         while (i.hasNext()) {
             final Splotch s = i.next();
@@ -197,7 +197,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         }
     }
 
-    public void cleanSide(final net.minecraft.core.Direction side) {
+    public void cleanSide(final Direction side) {
         if (this.dots == null) {
             return;
         }
@@ -212,7 +212,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     public void addBlot(final ItemStack type, final Direction side, final Vec3 hitVec) {
-        final net.minecraft.core.BlockPos p = this.worldPosition.relative(side);
+        final BlockPos p = this.worldPosition.relative(side);
 
         final BlockState blk = this.level.getBlockState(p);
         if (blk.isFaceSturdy(this.level, p, side.getOpposite())) {
