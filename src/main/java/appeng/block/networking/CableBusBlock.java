@@ -394,7 +394,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         if (te == null) {
             return Shapes.empty();
         } else {
-            return te.getCableBus().getCollisionShape(context.getEntity());
+            return te.getCableBus().getCollisionShape(context);
         }
     }
 

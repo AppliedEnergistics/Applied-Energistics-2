@@ -45,6 +45,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants;
 
@@ -1043,9 +1045,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     /**
      * See {@link Block#getCollisionShape}
      */
-    public VoxelShape getCollisionShape(Entity entity) {
-        // This is a hack for facades
-        boolean itemEntity = entity instanceof ItemEntity;
+    public VoxelShape getCollisionShape(CollisionContext context) {
+        // This is a hack for annihilation planes
+        var itemEntity = context instanceof EntityCollisionContext entityContext
+                && entityContext.getEntity().orElse(null) instanceof ItemEntity;
 
         if (itemEntity) {
             if (cachedCollisionShapeLiving == null) {
