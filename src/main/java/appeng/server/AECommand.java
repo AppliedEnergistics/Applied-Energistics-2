@@ -22,11 +22,11 @@ import static net.minecraft.commands.Commands.literal;
 
 import java.util.Locale;
 
+import appeng.core.AppEng;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AEConfig;
 
@@ -51,7 +51,7 @@ public final class AECommand {
                 .requires(src -> src.hasPermission(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {
-            subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), ctx, ctx.getSource());
+            subCommand.command.call(AppEng.instance().getCurrentServer(), ctx, ctx.getSource());
             return 1;
         });
         builder.then(subCommandBuilder);

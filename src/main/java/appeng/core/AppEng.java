@@ -23,6 +23,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.HitResult;
@@ -84,4 +85,13 @@ public interface AppEng {
      */
     @Nullable
     Level getClientWorld();
+
+    /**
+     * Since in a Minecraft client, multiple servers can be launched and stopped during a single session,
+     * the result of this method should not be stored globally.
+     *
+     * @return The currently running Minecraft server instance, if there is one.
+     */
+    @Nullable
+    MinecraftServer getCurrentServer();
 }

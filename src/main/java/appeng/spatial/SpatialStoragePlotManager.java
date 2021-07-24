@@ -22,11 +22,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AppEng;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
@@ -45,7 +44,10 @@ public final class SpatialStoragePlotManager {
      * Gets the world used to store spatial storage cell's content.
      */
     public ServerLevel getWorld() {
-        MinecraftServer server = getServer();
+        var server = AppEng.instance().getCurrentServer();
+        if (server == null) {
+            throw new IllegalStateException("No server is currently running.");
+        }
         ServerLevel world = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
         if (world == null) {
             throw new IllegalStateException("The storage cell world is missing.");
@@ -111,10 +113,6 @@ public final class SpatialStoragePlotManager {
         }
 
         getWorldData().removePlot(plotId);
-    }
-
-    private static MinecraftServer getServer() {
-        return ServerLifecycleHooks.getCurrentServer();
     }
 
 }
