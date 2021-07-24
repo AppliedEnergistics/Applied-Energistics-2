@@ -20,10 +20,10 @@ package appeng.init.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import appeng.core.definitions.AEEntities;
 import appeng.entity.TinyTNTPrimedRenderer;
+import net.minecraftforge.fmlclient.registry.RenderingRegistry;
 
 /**
  * Registers custom renderers for our {@link AEEntities}.

@@ -42,7 +42,7 @@ class AddonLoader {
         final Collection<ModFileScanData> allScanData = ModList.get().getAllScanData();
 
         allScanData.stream().map(ModFileScanData::getAnnotations).flatMap(Set::stream)
-                .filter(a -> Objects.equals(a.getAnnotationType(), annotationType)).map(AnnotationData::getMemberName)
+                .filter(a -> Objects.equals(a.annotationType(), annotationType)).map(AnnotationData::memberName)
                 .forEach(className -> {
                     try {
                         final Class<?> clazz = Class.forName(className);

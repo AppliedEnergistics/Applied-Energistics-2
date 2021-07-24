@@ -20,7 +20,6 @@ package appeng.init.client;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.client.render.crafting.CraftingMonitorTESR;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
@@ -33,6 +32,7 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.tile.networking.CableBusTESR;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 @OnlyIn(Dist.CLIENT)
 public final class InitBlockEntityRenderers {
