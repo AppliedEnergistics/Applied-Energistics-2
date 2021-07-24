@@ -132,7 +132,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             LevelChunk c = world.getChunk(cp.x, cp.z);
-            player.connection.send(new ClientboundLevelChunkPacket(c, 65535)); // 65535 == full chunk
+            player.connection.send(new ClientboundLevelChunkPacket(c));
         });
 
         return InteractionResult.sidedSuccess(world.isClientSide());
