@@ -23,10 +23,11 @@ import java.util.Random;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Quaternion;
@@ -64,60 +65,50 @@ public class SpatialSkyRender {
         fade /= 1000;
         fade = 0.15f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
-        RenderSystem.disableFog();
-        RenderSystem.disableAlphaTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableBlend();
         RenderSystem.depthMask(false);
-        RenderSystem.color4f(0.0f, 0.0f, 0.0f, 1.0f);
+        RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f);
         final Tesselator tessellator = Tesselator.getInstance();
-        final BufferBuilder VertexBuffer = tessellator.getBuilder();
+        var buffer = tessellator.getBuilder();
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.pushPose();
             matrixStack.mulPose(rotation);
+            RenderSystem.applyModelViewMatrix();
 
-            RenderSystem.disableTexture();
-            VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION);
-            VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).endVertex();
-            VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.vertex(100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.vertex(100.0D, -100.0D, -100.0D).endVertex();
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            buffer.vertex(-100.0D, -100.0D, -100.0D).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(-100.0D, -100.0D, 100.0D).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(100.0D, -100.0D, 100.0D).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(100.0D, -100.0D, -100.0D).color(0f, 0f, 0f, 1f).endVertex();
             tessellator.end();
-            RenderSystem.enableTexture();
             matrixStack.popPose();
         }
 
         RenderSystem.depthMask(true);
 
         if (fade > 0.0f) {
-            RenderSystem.disableFog();
-            RenderSystem.disableAlphaTest();
             RenderSystem.enableBlend();
-            RenderSystem.disableTexture();
             RenderSystem.depthMask(false);
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            Lighting.turnOff();
-
-            RenderSystem.color4f(fade, fade, fade, 1.0f);
+            RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
             GL11.glCallList(this.dspList);
         }
 
         RenderSystem.depthMask(true);
         RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.enableTexture();
-        RenderSystem.enableFog();
 
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     private void renderTwinkles() {
         final Tesselator tessellator = Tesselator.getInstance();
         final BufferBuilder vb = tessellator.getBuilder();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION);
+        vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         for (int i = 0; i < 50; ++i) {
             double iX = this.random.nextFloat() * 2.0F - 1.0F;
@@ -154,7 +145,7 @@ public class SpatialSkyRender {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.vertex(x + d24, y + d22, z + d25).endVertex();
+                    vb.vertex(x + d24, y + d22, z + d25).color(1f, 1f, 1f, 1f).endVertex();
                 }
             }
         }
