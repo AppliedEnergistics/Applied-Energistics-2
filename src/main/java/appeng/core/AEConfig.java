@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import net.minecraftforge.fml.config.IConfigEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.resources.ResourceLocation;
@@ -126,7 +126,7 @@ public final class AEConfig {
 
     // FIXME: this is shit, move this concern out of the config class
     @SubscribeEvent
-    public static void onModConfigEvent(final IConfigEvent configEvent) {
+    public static void onModConfigEvent(final ModConfigEvent configEvent) {
         if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
             instance.syncClientConfig();
         } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
