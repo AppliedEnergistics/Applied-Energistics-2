@@ -20,8 +20,6 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +36,7 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class DecorationRecipes extends RecipeProvider implements IAE2DataProvider {
 
-    BlockDefinition[][] blocks = {
+    BlockDefinition<?>[][] blocks = {
             { AEBlocks.SKY_STONE_BLOCK, AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_STAIRS,
                     AEBlocks.SKY_STONE_WALL },
             { AEBlocks.SMOOTH_SKY_STONE_BLOCK, AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_STAIRS,
@@ -60,15 +58,15 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
     }
 
     @Override
-    public void buildShapelessRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
-        for (BlockDefinition[] block : blocks) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        for (var block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
             wallRecipe(consumer, block[0], block[3]);
         }
     }
 
-    private void slabRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition slabs) {
+    private void slabRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> slabs) {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
@@ -77,11 +75,11 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 .save(consumer, prefix("shaped/slabs/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock, 2)
-                .unlocks(criterionName(block), has(inputBlock))
+                .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
 
-    private void stairRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition stairs) {
+    private void stairRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
@@ -90,12 +88,12 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 .save(consumer, prefix("shaped/stairs/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
-                .unlocks(criterionName(block), has(inputBlock))
+                .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
     }
 
-    private void wallRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition block, BlockDefinition wall) {
+    private void wallRecipe(Consumer<FinishedRecipe> consumer, BlockDefinition<?> block, BlockDefinition<?> wall) {
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
@@ -104,7 +102,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 .save(consumer, prefix("shaped/walls/", block.id()));
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
-                .unlocks(criterionName(block), has(inputBlock))
+                .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/walls/", wall.id()));
 
     }
@@ -115,7 +113,7 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
                 prefix + id.getPath());
     }
 
-    private String criterionName(BlockDefinition block) {
+    private String criterionName(BlockDefinition<?> block) {
         return String.format("has_%s", block.id().getPath());
     }
 
