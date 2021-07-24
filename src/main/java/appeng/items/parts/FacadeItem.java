@@ -19,6 +19,7 @@
 package appeng.items.parts;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
@@ -39,7 +40,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.EmptyBlockGetter;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.parts.IAlphaPassItem;
@@ -57,7 +57,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final Named<Block> BLOCK_WHITELIST = BlockTags
+    private static final Tag.Named<Block> BLOCK_WHITELIST = BlockTags
             .createOptional(AppEng.makeId("whitelisted/facades"));
 
     private static final String NBT_ITEM_ID = "item";
@@ -91,11 +91,10 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
-        if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem)) {
+        if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
 
-        BlockItem blockItem = (BlockItem) itemStack.getItem();
         Block block = blockItem.getBlock();
         if (block == Blocks.AIR) {
             return ItemStack.EMPTY;

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
@@ -75,9 +76,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/item_annihilation_plane");
 
-    private static final Named<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
+    private static final Tag.Named<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
-    private static final Named<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
+    private static final Tag.Named<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
     private static final PlaneModels MODELS = new PlaneModels("part/item_annihilation_plane",
             "part/item_annihilation_plane_on");
@@ -252,7 +253,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
         if (overflow == null || overflow.getStackSize() == 0) {
-            entityItem.remove();
+            entityItem.discard();
             return true;
         }
 
