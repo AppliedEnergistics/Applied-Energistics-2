@@ -19,8 +19,10 @@
 package appeng.init.worldgen;
 
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneDecoratorConfiguration;
+import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -55,9 +57,12 @@ public final class InitFeatures {
                 .configured(
                         new OreConfiguration(Predicates.NATURAL_STONE, quartzOreState,
                                 AEConfig.instance().getQuartzOresPerCluster()))
-                .decorated(FeatureDecorator.RANGE/* RANGE */.configured(new RangeDecoratorConfiguration(12, 12, 72)))
-                .squared/* spreadHorizontally */()
-                .count/* repeat */(AEConfig.instance().getQuartzOresClusterAmount()));
+                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(
+                        VerticalAnchor.aboveBottom(12),
+                        VerticalAnchor.aboveBottom(72)
+                ))))
+                .squared()
+                .count(AEConfig.instance().getQuartzOresClusterAmount()));
     }
 
     private static void registerChargedQuartzOreFeature() {

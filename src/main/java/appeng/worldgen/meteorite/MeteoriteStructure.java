@@ -21,6 +21,7 @@ package appeng.worldgen.meteorite;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.ChunkPos;
@@ -49,8 +50,8 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
 
     @Override
     protected boolean isFeatureChunk(ChunkGenerator generator, BiomeSource biomeSource, long seed,
-                                     WorldgenRandom randIn, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos2,
-                                     NoneFeatureConfiguration featureConfig) {
+                                     WorldgenRandom randIn, ChunkPos chunkPos, Biome biome, ChunkPos chunkPos2,
+                                     NoneFeatureConfiguration featureConfig, LevelHeightAccessor heightAccessor) {
         return randIn.nextBoolean();
     }
 

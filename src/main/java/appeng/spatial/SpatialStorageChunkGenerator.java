@@ -21,23 +21,21 @@ package appeng.spatial;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryLookupCodec;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.StructureSettings;
@@ -51,6 +49,10 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
  * Chunk generator the spatial storage world.
  */
 public class SpatialStorageChunkGenerator extends ChunkGenerator {
+
+    public static final int MIN_Y = 0;
+
+    public static final int HEIGHT = 256;
 
     /**
      * This codec is necessary to restore the actual instance of the Biome we use, since it is sources from the dynamic
@@ -76,9 +78,9 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
         // Vertical sample is mostly used for Feature generation, for those purposes
         // we're all filled with matrix blocks
-        BlockState[] columnSample = new BlockState[256];
+        BlockState[] columnSample = new BlockState[HEIGHT];
         Arrays.fill(columnSample, this.defaultBlockState);
-        this.columnSample = new NoiseColumn(columnSample);
+        this.columnSample = new NoiseColumn(MIN_Y, columnSample);
     }
 
     @Override
@@ -112,7 +114,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
                 // FIXME: It's likely a bad idea to fill Y in the inner-loop given the storage
                 // layout of chunks
                 mutPos.setZ(cz);
-                for (int cy = 0; cy < 256; cy++) {
+                for (int cy = 0; cy < HEIGHT; cy++) {
                     mutPos.setY(cy);
                     chunk.setBlockState(mutPos, defaultBlockState, false);
                 }
@@ -126,22 +128,23 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public ChunkGenerator withSeed(long p_230349_1_) {
+    public ChunkGenerator withSeed(long seed) {
         return this;
     }
 
     @Override
-    public void fillFromNoise(LevelAccessor world, StructureFeatureManager accessor, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, StructureFeatureManager templates, ChunkAccess chunk) {
+        return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
-    public BlockGetter getBaseColumn(int x, int z) {
+    public int getBaseHeight(int x, int z, Types heightmapType, LevelHeightAccessor levelHeightAccessor) {
+        return MIN_Y;
+    }
+
+    @Override
+    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor) {
         return columnSample;
-    }
-
-    @Override
-    public int getBaseHeight(int x, int z, Types heightmapType) {
-        return 0;
     }
 
     @Override

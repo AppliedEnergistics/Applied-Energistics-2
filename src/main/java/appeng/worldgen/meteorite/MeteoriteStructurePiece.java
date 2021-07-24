@@ -21,13 +21,13 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.StructureFeatureManager;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -44,23 +44,26 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // be loaded without this being registered as a structure piece!
     }
 
-    private PlacedMeteoriteSettings settings;
+    private final PlacedMeteoriteSettings settings;
 
     protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
                                       boolean pureCrater, boolean craterLake) {
-        super(TYPE, 0);
+        super(TYPE, 0, createBoundingBox(center));
         this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
+    }
 
+    private static BoundingBox createBoundingBox(BlockPos origin) {
         // Assume a normal max height of 128 blocks for most biomes,
         // meteors spawned at about y64 are 9x9 chunks large at most.
         int range = 4 * 16;
 
-        ChunkPos chunkPos = new ChunkPos(center);
-        this.boundingBox = new BoundingBox(chunkPos.getMinBlockX() - range, center.getY(),
-                chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, center.getY(), chunkPos.getMaxBlockZ() + range);
+        ChunkPos chunkPos = new ChunkPos(origin);
+
+        return new BoundingBox(chunkPos.getMinBlockX() - range, origin.getY(),
+                chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, origin.getY(), chunkPos.getMaxBlockZ() + range);
     }
 
-    public MeteoriteStructurePiece(StructureManager templateManager, CompoundTag tag) {
+    public MeteoriteStructurePiece(ServerLevel level, CompoundTag tag) {
         super(TYPE, tag);
 
         BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
@@ -82,7 +85,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ServerLevel level, CompoundTag tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
         tag.putLong(Constants.TAG_POS, settings.getPos().asLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());
