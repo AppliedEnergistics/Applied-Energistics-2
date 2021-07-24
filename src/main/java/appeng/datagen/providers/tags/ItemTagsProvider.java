@@ -29,7 +29,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -39,6 +38,7 @@ import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
 import net.minecraft.data.tags.TagsProvider.TagAppender;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 

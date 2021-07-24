@@ -27,7 +27,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -35,6 +34,7 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 import net.minecraft.data.tags.TagsProvider.TagAppender;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
     public BlockTagsProvider(GatherDataEvent dataEvent) {

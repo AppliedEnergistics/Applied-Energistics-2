@@ -25,8 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
 import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import appeng.core.AppEng;
 import appeng.tile.spatial.SpatialAnchorTileEntity;

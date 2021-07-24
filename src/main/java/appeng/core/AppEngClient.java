@@ -43,7 +43,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -73,6 +72,7 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 /**
  * Client-specific functionality.
