@@ -53,7 +53,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
     private static final int SKYSTONE_SPAWN_LIMIT = 12;
-    private final BlockDefinition skyChestDefinition;
+    private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
@@ -114,37 +114,37 @@ public final class MeteoritePlacer {
     }
 
     private int minX(int x) {
-        if (x < boundingBox.x0) {
-            return boundingBox.x0;
-        } else if (x > boundingBox.x1) {
-            return boundingBox.x1;
+        if (x < boundingBox.minX()) {
+            return boundingBox.minX();
+        } else if (x > boundingBox.maxX()) {
+            return boundingBox.maxX();
         }
         return x;
     }
 
     private int minZ(int x) {
-        if (x < boundingBox.z0) {
-            return boundingBox.z0;
-        } else if (x > boundingBox.z1) {
-            return boundingBox.z1;
+        if (x < boundingBox.minZ()) {
+            return boundingBox.minZ();
+        } else if (x > boundingBox.maxZ()) {
+            return boundingBox.maxZ();
         }
         return x;
     }
 
     private int maxX(int x) {
-        if (x < boundingBox.x0) {
-            return boundingBox.x0;
-        } else if (x > boundingBox.x1) {
-            return boundingBox.x1;
+        if (x < boundingBox.minX()) {
+            return boundingBox.minX();
+        } else if (x > boundingBox.maxX()) {
+            return boundingBox.maxX();
         }
         return x;
     }
 
     private int maxZ(int x) {
-        if (x < boundingBox.z0) {
-            return boundingBox.z0;
-        } else if (x > boundingBox.z1) {
-            return boundingBox.z1;
+        if (x < boundingBox.minZ()) {
+            return boundingBox.minZ();
+        } else if (x > boundingBox.maxZ()) {
+            return boundingBox.maxZ();
         }
         return x;
     }
@@ -157,10 +157,10 @@ public final class MeteoritePlacer {
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
 
-            for (int i = boundingBox.x0; i <= boundingBox.x1; i++) {
+            for (int i = boundingBox.minX(); i <= boundingBox.maxX(); i++) {
                 blockPos.setX(i);
 
-                for (int k = boundingBox.z0; k <= boundingBox.z1; k++) {
+                for (int k = boundingBox.minZ(); k <= boundingBox.maxZ(); k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
                     final double dz = k - z;
@@ -184,10 +184,9 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntitiesOfClass(ItemEntity.class,
+        for (var e : world.getEntitiesOfClass(ItemEntity.class,
                 new AABB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
-            final Entity e = (Entity) o;
-            e.remove();
+            e.discard();
         }
     }
 
@@ -382,10 +381,10 @@ public final class MeteoritePlacer {
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
 
-            for (int i = boundingBox.x0; i <= boundingBox.x1; i++) {
+            for (int i = boundingBox.minX(); i <= boundingBox.maxX(); i++) {
                 blockPos.setX(i);
 
-                for (int k = boundingBox.z0; k <= boundingBox.z1; k++) {
+                for (int k = boundingBox.minZ(); k <= boundingBox.maxZ(); k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
                     final double dz = k - z;
