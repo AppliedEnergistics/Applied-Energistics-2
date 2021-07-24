@@ -59,7 +59,7 @@ public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
                            ItemOverrides overrides, ResourceLocation modelLocation) {
         TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
 
-        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }

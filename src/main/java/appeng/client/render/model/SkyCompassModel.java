@@ -49,8 +49,8 @@ public class SkyCompassModel implements BasicUnbakedModel<SkyCompassModel> {
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
-        BakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel pointerModel = bakery.bake(MODEL_POINTER, modelTransform, spriteGetter);
         return new SkyCompassBakedModel(baseModel, pointerModel);
     }
 

@@ -83,4 +83,14 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
     public int getBlockTint(BlockPos blockPosIn, ColorResolver colorResolverIn) {
         return world.getBlockTint(blockPosIn, colorResolverIn);
     }
+
+    @Override
+    public int getHeight() {
+        return world.getHeight();
+    }
+
+    @Override
+    public int getMinBuildHeight() {
+        return world.getMinBuildHeight();
+    }
 }

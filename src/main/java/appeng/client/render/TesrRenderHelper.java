@@ -94,7 +94,7 @@ public class TesrRenderHelper {
             matrixStack.scale(scale, scale, 0.0002f);
 
             Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, TransformType.GUI,
-                    combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
+                    combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers, 0);
 
             matrixStack.popPose();
 

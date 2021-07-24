@@ -47,7 +47,7 @@ public class FacadeItemModel implements BasicUnbakedModel<FacadeItemModel> {
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel bakedBaseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 
         return new FacadeDispatcherBakedModel(bakedBaseModel, facadeBuilder);

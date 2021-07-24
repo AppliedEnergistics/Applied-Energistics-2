@@ -108,7 +108,7 @@ public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestTileEnt
         // We "fake" the position here to make it use the light-value in front of the
         // drive
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
-        blockRenderer.renderModel(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer, false,
+        blockRenderer.tesselateBlock(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer, false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
         VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);

@@ -56,7 +56,7 @@ public class EncodedPatternModel implements IModelGeometry<EncodedPatternModel> 
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel baseModel = bakery.getBakedModel(this.baseModel, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.bake(this.baseModel, modelTransform, spriteGetter);
         return new EncodedPatternBakedModel(baseModel);
     }
 

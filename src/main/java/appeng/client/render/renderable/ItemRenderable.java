@@ -50,7 +50,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
                 matrixStack.pushPose();
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
-                    TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
+                    TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers, 0);
             matrixStack.popPose();
         }
     }

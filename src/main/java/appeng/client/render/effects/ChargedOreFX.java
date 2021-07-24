@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.ParticleProvider;
@@ -31,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ChargedOreFX extends DustParticle {
 
-    private static final DustParticleOptions PARTICLE_DATA = new DustParticleOptions(0.21f, 0.61f, 1.0f, 1.0f);
+    private static final DustParticleOptions PARTICLE_DATA = new DustParticleOptions(new Vector3f(0.21f, 0.61f, 1.0f), 1.0f);
 
     private ChargedOreFX(ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
                          SpriteSet spriteSet) {
