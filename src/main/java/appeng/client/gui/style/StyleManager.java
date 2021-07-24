@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -37,8 +36,7 @@ import com.google.gson.JsonParseException;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import appeng.core.AppEng;
 
@@ -61,7 +59,7 @@ public final class StyleManager {
         }
     }
 
-    public static ScreenStyle loadStyleDoc(String path) throws IOException {
+    public static ScreenStyle loadStyleDoc(String path) {
         ScreenStyle style = loadStyleDocInternal(path);
         // We only require the final style-document to be fully valid,
         // includes are allowed to be partially valid.
@@ -196,10 +194,9 @@ public final class StyleManager {
         StyleManager.styleCache.clear();
     }
 
-    private static class ReloadListener implements ISelectiveResourceReloadListener {
+    private static class ReloadListener implements ResourceManagerReloadListener {
         @Override
-        public void onResourceManagerReload(ResourceManager resourceManager,
-                                            Predicate<IResourceType> resourcePredicate) {
+        public void onResourceManagerReload(ResourceManager p_10758_) {
             setResourceManager(resourceManager);
         }
     }
