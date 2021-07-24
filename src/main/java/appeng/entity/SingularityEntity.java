@@ -95,7 +95,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                 other.grow(-1);
 
                                 if (other.getCount() == 0) {
-                                    e.remove();
+                                    e.discard();
                                 }
 
                                 ItemStack singularityStack = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack(2);
@@ -110,7 +110,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                             }
 
                             if (item.getCount() <= 0) {
-                                this.remove();
+                                this.discard();
                             }
                         }
                     }

@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public abstract class AEBaseItemEntity extends ItemEntity {
 
@@ -39,7 +39,7 @@ public abstract class AEBaseItemEntity extends ItemEntity {
                                final double y, final double z, final ItemStack stack) {
         this(entityType, world);
         this.setPos(x, y, z);
-        this.yRot = this.random.nextFloat() * 360.0F;
+        this.setYRot(this.random.nextFloat() * 360.0F);
         this.setDeltaMovement(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setItem(stack);
         this.lifespan = stack.getEntityLifespan(world);
