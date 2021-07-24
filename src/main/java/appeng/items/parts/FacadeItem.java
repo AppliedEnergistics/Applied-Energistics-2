@@ -108,7 +108,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();
-        final boolean isTileEntity = block.hasTileEntity(defaultState);
+        final boolean isTileEntity = defaultState.hasBlockEntity();
         final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
         final boolean isTileEntityAllowed = !isTileEntity || areTileEntitiesEnabled && isWhiteListed;
