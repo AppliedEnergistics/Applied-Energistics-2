@@ -110,14 +110,13 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void stepOn(final Level w, final BlockPos pos, final Entity entity) {
-        if (entity instanceof AbstractArrow && !w.isClientSide) {
-            final AbstractArrow entityarrow = (AbstractArrow) entity;
+    public void stepOn(final Level w, final BlockPos pos, BlockState state, final Entity entity) {
+        if (!w.isClientSide && entity instanceof AbstractArrow arrow) {
 
-            if (entityarrow.isOnFire()) {
+            if (arrow.isOnFire()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                Entity shooter = entityarrow.getOwner();
+                Entity shooter = arrow.getOwner();
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }
@@ -139,7 +138,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getSourceMob());
             primedTinyTNTEntity
-                    .setFuse(w.random.nextInt(primedTinyTNTEntity.getLife() / 4) + primedTinyTNTEntity.getLife() / 8);
+                    .setFuse(w.random.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
             w.addFreshEntity(primedTinyTNTEntity);
         }
     }
