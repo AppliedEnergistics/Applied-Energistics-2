@@ -31,6 +31,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.OreFeature;
 
 /**
@@ -46,13 +47,16 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos,
-                         ChargedQuartzOreConfig config) {
+    public boolean place(FeaturePlaceContext<ChargedQuartzOreConfig> context) {
+        var pos = context.origin();
+        var level = context.level();
+        var config = context.config();
+
         ChunkPos chunkPos = new ChunkPos(pos);
 
         MutableBlockPos bpos = new MutableBlockPos();
-        int height = worldIn.getHeight(Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-        ChunkAccess chunk = worldIn.getChunk(pos);
+        int height = level.getHeight(Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        ChunkAccess chunk = level.getChunk(pos);
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
             for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); x++) {
@@ -60,7 +64,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
                 for (int z = chunkPos.getMinBlockZ(); z <= chunkPos.getMaxBlockZ(); z++) {
                     bpos.setZ(z);
                     if (chunk.getBlockState(bpos).getBlock() == config.target.getBlock()
-                            && rand.nextFloat() < config.chance) {
+                            && context.random().nextFloat() < config.chance) {
                         chunk.setBlockState(bpos, config.state, false);
                     }
                 }

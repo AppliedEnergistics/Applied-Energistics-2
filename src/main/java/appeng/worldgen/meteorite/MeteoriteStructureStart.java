@@ -24,18 +24,18 @@ import com.google.common.math.StatsAccumulator;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -50,16 +50,16 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
     private final Tag<Block> terracottaTag = BlockTags.getAllTags()
             .getTagOrEmpty(new ResourceLocation("forge:terracotta"));
 
-    public MeteoriteStructureStart(StructureFeature<NoneFeatureConfiguration> feature, int chunkX, int chunkZ, BoundingBox box,
+    public MeteoriteStructureStart(StructureFeature<NoneFeatureConfiguration> feature, ChunkPos pos,
                                    int references, long seed) {
-        super(feature, chunkX, chunkZ, box, references, seed);
+        super(feature, pos, references, seed);
     }
 
     @Override
-    public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator generator,
-                               StructureManager templateManager, int chunkX, int chunkZ, Biome biome, NoneFeatureConfiguration config) {
-        final int centerX = chunkX * 16 + this.random.nextInt(16);
-        final int centerZ = chunkZ * 16 + this.random.nextInt(16);
+    public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator generator, StructureManager templateManager,
+                               ChunkPos chunkPos, Biome biome, NoneFeatureConfiguration config, LevelHeightAccessor heightAccessor) {
+        final int centerX = chunkPos.getMinBlockX() + this.random.nextInt(16);
+        final int centerZ = chunkPos.getMinBlockZ() + this.random.nextInt(16);
         final float meteoriteRadius = this.random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
@@ -74,7 +74,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType);
+                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType, heightAccessor);
                 stats.add(h);
             }
         }
@@ -92,16 +92,13 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
 
-        boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
+        boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius, heightAccessor);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.random.nextFloat() > .9f;
         FalloutMode fallout = getFalloutFromBaseBlock(
                 spawnBiome.getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial());
 
-        pieces.add(
-                new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
-
-        this.calculateBoundingBox();
+        addPiece(new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
     }
 
     /**
@@ -109,7 +106,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
      *
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius, LevelHeightAccessor heightAccessor) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         MutableBlockPos blockPos = new MutableBlockPos();
@@ -127,7 +124,7 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Types.OCEAN_FLOOR);
+                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Types.OCEAN_FLOOR, heightAccessor);
                     if (heigth < seaLevel) {
                         return true;
                     }
@@ -236,11 +233,11 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
     private FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
         final Block block = blockState.getBlock();
 
-        if (block.is(sandTag)) {
+        if (sandTag.contains(block)) {
             return FalloutMode.SAND;
-        } else if (block.is(terracottaTag)) {
+        } else if (terracottaTag.contains(block)) {
             return FalloutMode.TERRACOTTA;
-        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
+        } else if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
                 || block == Blocks.PACKED_ICE) {
             return FalloutMode.ICE_SNOW;
         } else {

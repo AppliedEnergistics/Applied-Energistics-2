@@ -24,18 +24,16 @@ import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistryAccess.RegistryHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.NearestNeighborBiomeZoomer;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tags.BlockTags;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 
@@ -49,22 +47,30 @@ import appeng.spatial.SpatialStorageDimensionIds;
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {
 
-    @Invoker("<init>")
-    static DimensionType create(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm,
-                                                                    boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks,
-                                                                    boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation skyProperties,
-                                                                    float ambientLight) {
-        throw new AssertionError();
-    }
-
     @Inject(method = "registerBuiltin", at = @At("TAIL"))
     private static void addRegistryDefaults(RegistryHolder registryTracker, CallbackInfoReturnable<?> cir) {
-        DimensionType dimensionType = create(OptionalLong.of(12000), false, false, false, false, 1.0, false, false,
-                false, false, 256, BlockTags.INFINIBURN_OVERWORLD.getName(),
-                SpatialStorageDimensionIds.SKY_PROPERTIES_ID, 1.0f);
-
-        Registry.register(registryTracker.dimensionTypes(), SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
-                dimensionType);
+        var dimensionType = DimensionType.create(
+                OptionalLong.of(12000), // fixedTime
+                false, // hasSkylight
+                false, // hasCeiling
+                false, // ultraWarm
+                false, // natural
+                1.0, // coordinateScale
+                false, // createDragonFight
+                false, // piglinSafe
+                false, // bedWorks
+                false, // respawnAnchorWorks
+                false, // hasRaids
+                SpatialStorageChunkGenerator.MIN_Y, // minY
+                SpatialStorageChunkGenerator.HEIGHT, // height
+                SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
+                NearestNeighborBiomeZoomer.INSTANCE, // biomeZoomer
+                BlockTags.INFINIBURN_OVERWORLD.getName(), // infiniburn
+                SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
+                1.0f // ambientLight
+        );
+        var dimensionTypes = registryTracker.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        Registry.register(dimensionTypes, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
     }
 
     /**
