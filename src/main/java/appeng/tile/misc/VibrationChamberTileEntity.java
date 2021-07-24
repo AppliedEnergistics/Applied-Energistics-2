@@ -131,7 +131,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     private boolean canEatFuel() {
         final ItemStack is = this.inv.getStackInSlot(0);
         if (!is.isEmpty()) {
-            final int newBurnTime = ForgeHooks.getBurnTime(is);
+            final int newBurnTime = getBurnTime(is);
             if (newBurnTime > 0 && is.getCount() > 0) {
                 return true;
             }
@@ -199,7 +199,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     private void eatFuel() {
         final ItemStack is = this.inv.getStackInSlot(0);
         if (!is.isEmpty()) {
-            final int newBurnTime = ForgeHooks.getBurnTime(is);
+            final int newBurnTime = getBurnTime(is);
             if (newBurnTime > 0 && is.getCount() > 0) {
                 this.setBurnTime(this.getBurnTime() + newBurnTime);
                 this.setMaxBurnTime(this.getBurnTime());
@@ -233,6 +233,14 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
     }
 
+    private static int getBurnTime(ItemStack is) {
+        return ForgeHooks.getBurnTime(is, null);
+    }
+
+    private static boolean hasBurnTime(ItemStack is) {
+        return getBurnTime(is) > 0;
+    }
+
     public int getBurnSpeed() {
         return this.burnSpeed;
     }
@@ -260,12 +268,12 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     private static class FuelSlotFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(IItemHandler inv, int slot, int amount) {
-            return ForgeHooks.getBurnTime(inv.getStackInSlot(slot)) == 0;
+            return !hasBurnTime(inv.getStackInSlot(slot));
         }
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return ForgeHooks.getBurnTime(stack) != 0;
+            return hasBurnTime(stack);
         }
     }
 }
