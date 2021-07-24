@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -52,8 +51,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -207,7 +204,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
                     SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                    random.nextFloat() * 0.4F + 0.8F);
+                    w.random.nextFloat() * 0.4F + 0.8F);
             w.setBlockAndUpdate(offsetPos, Blocks.FIRE.defaultBlockState());
         }
         return true;
@@ -262,7 +259,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         w.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
                 SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                random.nextFloat() * 0.4F + 0.8F);
+                w.random.nextFloat() * 0.4F + 0.8F);
 
         if (smeltedBlockState == null) {
             w.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
