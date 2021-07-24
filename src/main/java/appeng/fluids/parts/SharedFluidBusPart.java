@@ -18,6 +18,10 @@
 
 package appeng.fluids.parts;
 
+import appeng.api.networking.IGridNode;
+import appeng.util.Platform;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +30,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
@@ -107,17 +112,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected BlockEntity getConnectedTE() {
         BlockEntity self = this.getHost().getTile();
-        return this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
-    }
-
-    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
-        final Level w = self.getLevel();
-
-        if (w.getChunkSource().isTickingChunk(pos)) {
-            return w.getBlockEntity(pos);
-        }
-
-        return null;
+        return Platform.getTickingBlockEntity(getWorld(), self.getBlockPos().relative(this.getSide().getDirection()));
     }
 
     protected int calculateAmountToSend() {
@@ -170,7 +165,29 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
         return 5;
     }
 
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        return this.doBusWork();
+    }
+
     protected abstract TickRateModulation doBusWork();
 
-    protected abstract boolean canDoBusWork();
+    /**
+     * Checks if the bus can actually do something.
+     * <p>
+     * Currently this tests if the chunk for the target is actually loaded, and if the main node has it's
+     * channel and power requirements fulfilled.
+     *
+     * @return true, if the the bus should do its work.
+     */
+    protected boolean canDoBusWork() {
+        if (!getMainNode().isActive()) {
+            return false;
+        }
+
+        var self = this.getHost().getTile();
+        var targetPos = self.getBlockPos().relative(getSide().getDirection());
+
+        return Platform.areBlockEntitiesTicking(self.getLevel(), targetPos);
+    }
 }

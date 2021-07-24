@@ -18,6 +18,8 @@
 
 package appeng.parts.automation;
 
+import appeng.api.networking.IGridNode;
+import appeng.util.Platform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -82,19 +84,10 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected InventoryAdaptor getHandler() {
         final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = this.getTileEntity(self, self.getBlockPos().relative(this.getSide().getDirection()));
+        final BlockEntity target = Platform.getTickingBlockEntity(getWorld(),
+                self.getBlockPos().relative(this.getSide().getDirection()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
-    }
-
-    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
-        final Level w = self.getLevel();
-
-        if (w.getChunkSource().isTickingChunk(pos)) {
-            return w.getBlockEntity(pos);
-        }
-
-        return null;
     }
 
     protected int availableSlots() {
@@ -117,19 +110,28 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         }
     }
 
+    @Override
+    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+        return this.doBusWork();
+    }
+
     /**
      * Checks if the bus can actually do something.
      * <p>
-     * Currently this tests if the chunk for the target is actually loaded.
+     * Currently this tests if the chunk for the target is actually loaded, and if the main node has it's
+     * channel and power requirements fulfilled.
      *
      * @return true, if the the bus should do its work.
      */
     protected boolean canDoBusWork() {
-        final BlockEntity self = this.getHost().getTile();
-        final BlockPos selfPos = self.getBlockPos().relative(this.getSide().getDirection());
-        final Level world = self.getLevel();
+        if (!getMainNode().isActive()) {
+            return false;
+        }
 
-        return world != null && world.getChunkSource().isTickingChunk(selfPos);
+        var self = this.getHost().getTile();
+        var targetPos = self.getBlockPos().relative(getSide().getDirection());
+
+        return Platform.areBlockEntitiesTicking(self.getLevel(), targetPos);
     }
 
     private void updateState() {

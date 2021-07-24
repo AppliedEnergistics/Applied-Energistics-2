@@ -129,13 +129,8 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.doBusWork();
-    }
-
-    @Override
     protected TickRateModulation doBusWork() {
-        if (!this.getMainNode().isActive() || !this.canDoBusWork()) {
+        if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 

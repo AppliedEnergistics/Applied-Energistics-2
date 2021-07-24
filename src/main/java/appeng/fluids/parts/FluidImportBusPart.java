@@ -91,11 +91,6 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        return this.canDoBusWork() ? this.doBusWork() : TickRateModulation.IDLE;
-    }
-
-    @Override
     protected TickRateModulation doBusWork() {
         if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;
@@ -139,11 +134,6 @@ public class FluidImportBusPart extends SharedFluidBusPart {
             }
         }
         return TickRateModulation.SLEEP;
-    }
-
-    @Override
-    protected boolean canDoBusWork() {
-        return this.getMainNode().isActive();
     }
 
     private boolean isInFilter(FluidStack fluid) {

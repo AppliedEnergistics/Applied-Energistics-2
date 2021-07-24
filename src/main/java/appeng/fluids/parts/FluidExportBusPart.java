@@ -90,16 +90,6 @@ public class FluidExportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        return this.canDoBusWork() ? this.doBusWork() : TickRateModulation.IDLE;
-    }
-
-    @Override
-    protected boolean canDoBusWork() {
-        return this.getMainNode().isActive();
-    }
-
-    @Override
     protected TickRateModulation doBusWork() {
         if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;

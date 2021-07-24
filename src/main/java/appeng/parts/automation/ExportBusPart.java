@@ -113,7 +113,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     @Override
     protected TickRateModulation doBusWork() {
-        if (!this.getMainNode().isActive() || !this.canDoBusWork()) {
+        if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
@@ -208,11 +208,6 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     @Override
     public RedstoneMode getRSMode() {
         return (RedstoneMode) this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.doBusWork();
     }
 
     @Override
