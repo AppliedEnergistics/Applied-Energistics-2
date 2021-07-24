@@ -44,8 +44,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -112,11 +112,11 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
             item.zo = this.zo;
 
             this.level.addFreshEntity(item);
-            this.remove();
+            this.discard();
         }
 
-        if (this.getLife() <= 0) {
-            this.remove();
+        if (this.getFuse() <= 0) {
+            this.discard();
 
             if (!this.level.isClientSide) {
                 this.explode();
@@ -125,7 +125,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
             this.level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
                     0.0D);
         }
-        this.setFuse(this.getLife() - 1);
+        this.setFuse(this.getFuse() - 1);
     }
 
     // override :P
@@ -194,7 +194,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeByte(this.getLife());
+        buffer.writeByte(this.getFuse());
     }
 
     @Override
