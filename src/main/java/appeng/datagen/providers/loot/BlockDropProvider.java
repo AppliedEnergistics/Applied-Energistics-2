@@ -36,19 +36,18 @@ import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.ConstantIntValue;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.RandomValueBounds;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -58,19 +57,19 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
-    private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
+    private final Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
                             applyExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
                                     LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
-                                            .apply(SetItemCountFunction.setCount(RandomValueBounds.between(1.0F, 2.0F)))
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
                                             .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .put(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                             applyExplosionDecay(AEBlocks.QUARTZ_ORE_CHARGED.block(),
                                     LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-                                            .apply(SetItemCountFunction.setCount(RandomValueBounds.between(1.0F, 2.0F)))
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
                                             .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .build();
 
@@ -96,7 +95,7 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
 
     private LootTable.Builder defaultBuilder(Block block) {
         Builder<?> entry = LootItem.lootTableItem(block);
-        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantIntValue.exactly(1)).add(entry)
+        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantValue.exactly(1)).add(entry)
                 .when(ExplosionCondition.survivesExplosion());
 
         return LootTable.lootTable().withPool(pool);
