@@ -158,7 +158,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player,
                                    boolean willHarvest, FluidState fluid) {
-        if (player.abilities.instabuild) {
+        if (player.getAbilities().instabuild) {
             final AEBaseTileEntity tile = this.getTileEntity(world, pos);
             if (tile != null) {
                 tile.disableDrops();

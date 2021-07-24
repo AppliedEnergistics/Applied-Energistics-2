@@ -272,8 +272,7 @@ public class PatternTermContainer extends ItemTerminalContainer
                                                                         * TODO should this check powered / powerSource?
                                                                         */) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
-            InventoryAdaptor inv = new AdaptorItemHandler(
-                    new WrapperCursorItemHandler(this.getPlayerInventory().player.inventory));
+            InventoryAdaptor inv = new AdaptorItemHandler(new WrapperCursorItemHandler(this));
             final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInventory().player);
 
             if (packetPatternSlot.shift) {

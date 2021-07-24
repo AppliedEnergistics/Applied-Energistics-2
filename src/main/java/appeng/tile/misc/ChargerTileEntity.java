@@ -153,11 +153,11 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
         final ItemStack myItem = this.inv.getStackInSlot(0);
         if (myItem.isEmpty()) {
-            ItemStack held = player.inventory.getSelected();
+            ItemStack held = player.getInventory().getSelected();
 
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
-                held = player.inventory.removeItem(player.inventory.selected, 1);
+                held = player.getInventory().removeItem(player.getInventory().selected, 1);
                 this.inv.setStackInSlot(0, held);
             }
         } else {

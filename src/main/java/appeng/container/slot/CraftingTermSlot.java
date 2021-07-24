@@ -87,8 +87,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public ItemStack onTake(final Player p, final ItemStack is) {
-        return is;
+    public void onTake(final Player p, final ItemStack is) {
     }
 
     public void doClick(final InventoryAction action, final Player who) {
@@ -111,12 +110,12 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(who.inventory));
+            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getContainer()));
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else
         // pick up what was crafted...
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(who.inventory));
+            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getContainer()));
             maxTimesToCraft = 1;
         }
 

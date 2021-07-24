@@ -76,7 +76,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
-            if (clickType == ClickType.PICKUP && !inventory.getCarried().isEmpty()) {
+            if (clickType == ClickType.PICKUP && !getMenu().getCarried().isEmpty()) {
                 InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
                 menu.handleInteraction(-1, action);
@@ -99,7 +99,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
 
                     if (action == InventoryAction.PICKUP_OR_SET_DOWN
                             && shouldCraftOnClick(entry)
-                            && inventory.getCarried().isEmpty()) {
+                            && getMenu().getCarried().isEmpty()) {
                         menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
                     }
@@ -113,7 +113,7 @@ public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
                     if (entry.isCraftable()) {
                         menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
-                    } else if (inventory.player.abilities.instabuild) {
+                    } else if (getMenu().getPlayer().getAbilities().instabuild) {
                         action = InventoryAction.CREATIVE_DUPLICATE;
                     }
                     break;

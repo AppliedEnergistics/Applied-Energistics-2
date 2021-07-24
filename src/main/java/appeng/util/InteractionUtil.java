@@ -97,8 +97,8 @@ public final class InteractionUtil {
         final double y = playerIn.yo + (playerIn.getY() - playerIn.yo) + playerIn.getEyeHeight();
         final double z = playerIn.zo + (playerIn.getZ() - playerIn.zo);
 
-        final float playerPitch = playerIn.xRotO + (playerIn.xRot - playerIn.xRotO);
-        final float playerYaw = playerIn.yRotO + (playerIn.yRot - playerIn.yRotO);
+        final float playerPitch = playerIn.xRotO + (playerIn.getXRot() - playerIn.xRotO);
+        final float playerYaw = playerIn.yRotO + (playerIn.getYRot() - playerIn.yRotO);
 
         final float yawRayX = Mth.sin(-playerYaw * 0.017453292f - (float) Math.PI);
         final float yawRayZ = Mth.cos(-playerYaw * 0.017453292f - (float) Math.PI);
@@ -118,8 +118,8 @@ public final class InteractionUtil {
         final Level w = p.getCommandSenderWorld();
 
         final float f = 1.0F;
-        float f1 = p.xRotO + (p.xRot - p.xRotO) * f;
-        final float f2 = p.yRotO + (p.yRot - p.yRotO) * f;
+        float f1 = p.xRotO + (p.getXRot() - p.xRotO) * f;
+        final float f2 = p.yRotO + (p.getYRot() - p.yRotO) * f;
         final double d0 = p.xo + (p.getX() - p.xo) * f;
         final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset();
         final double d2 = p.zo + (p.getZ() - p.zo) * f;

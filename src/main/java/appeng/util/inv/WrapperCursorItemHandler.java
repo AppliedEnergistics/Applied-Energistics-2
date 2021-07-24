@@ -18,21 +18,24 @@
 
 package appeng.util.inv;
 
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.items.ItemStackHandler;
 
+/**
+ * Wraps the ItemStack that can be held by the player under their mouse in the current menu.
+ */
 public class WrapperCursorItemHandler extends ItemStackHandler {
-    private final Inventory inv;
+    private final AbstractContainerMenu menu;
 
-    public WrapperCursorItemHandler(Inventory PlayerInventory) {
+    public WrapperCursorItemHandler(AbstractContainerMenu menu) {
         super(1);
 
-        this.inv = PlayerInventory;
-        this.setStackInSlot(0, PlayerInventory.getCarried());
+        this.menu = menu;
+        this.setStackInSlot(0, menu.getCarried());
     }
 
     @Override
     protected void onContentsChanged(int slot) {
-        this.inv.setCarried(this.getStackInSlot(slot));
+        this.menu.setCarried(this.getStackInSlot(slot));
     }
 }

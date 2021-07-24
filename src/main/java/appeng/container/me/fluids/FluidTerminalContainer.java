@@ -78,7 +78,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
             return;
         }
 
-        final ItemStack held = player.inventory.getCarried();
+        var held = getCarried();
         if (held.getCount() != 1) {
             // only support stacksize 1 for now, since filled items are _usually_ not stackable
             return;
@@ -128,7 +128,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
                         held.getHoverName());
             }
 
-            player.inventory.setCarried(fh.getContainer());
+            setCarried(fh.getContainer());
             this.updateHeld(player);
             FluidSoundHelper.playFillSound(player, pulled.getFluidStack());
         } else if (action == InventoryAction.EMPTY_ITEM) {
@@ -165,7 +165,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
                         held.getHoverName());
             }
 
-            player.inventory.setCarried(fh.getContainer());
+            setCarried(fh.getContainer());
             this.updateHeld(player);
             FluidSoundHelper.playEmptySound(player, extract);
         }

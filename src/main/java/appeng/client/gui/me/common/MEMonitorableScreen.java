@@ -425,7 +425,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     @Override
     protected void renderTooltip(PoseStack matrixStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
-        if (style.isShowTooltipsWithItemInHand() || getPlayer().inventory.getCarried().isEmpty()) {
+        if (style.isShowTooltipsWithItemInHand() || getMenu().getCarried().isEmpty()) {
             RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
 
             if (repoSlot != null) {

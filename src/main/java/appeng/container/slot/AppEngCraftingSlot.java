@@ -81,7 +81,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack onTake(final Player playerIn, final ItemStack stack) {
+    public void onTake(final Player playerIn, final ItemStack stack) {
         CraftingEvent.fireCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
         this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(playerIn);
@@ -108,13 +108,11 @@ public class AppEngCraftingSlot extends AppEngSlot {
             if (!itemstack2.isEmpty()) {
                 if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
                     ItemHandlerUtil.setStackInSlot(this.craftingGrid, i, itemstack2);
-                } else if (!this.player.inventory.add(itemstack2)) {
+                } else if (!this.player.getInventory().add(itemstack2)) {
                     this.player.drop(itemstack2, false);
                 }
             }
         }
-
-        return stack;
     }
 
     /**

@@ -85,7 +85,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ServerT
 
     void click(final Player player) {
         if (!isRemote()) {
-            final ItemStack hand = player.inventory.getSelected();
+            final ItemStack hand = player.getInventory().getSelected();
             this.who = player;
 
             if (hand.isEmpty()) {

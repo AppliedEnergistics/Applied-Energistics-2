@@ -103,10 +103,10 @@ public class AEBaseBlockItem extends BlockItem {
                 forward = context.getHorizontalDirection().getOpposite();
 
                 if (player != null) {
-                    if (player.xRot > 65) {
+                    if (player.getXRot() > 65) {
                         up = forward.getOpposite();
                         forward = Direction.UP;
-                    } else if (player.xRot < -65) {
+                    } else if (player.getXRot() < -65) {
                         up = forward.getOpposite();
                         forward = Direction.DOWN;
                     }

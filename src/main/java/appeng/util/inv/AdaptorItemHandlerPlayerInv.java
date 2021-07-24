@@ -26,7 +26,7 @@ import appeng.util.Platform;
 
 public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
     public AdaptorItemHandlerPlayerInv(final Player playerInv) {
-        super(new PlayerMainInvWrapper(playerInv.inventory));
+        super(new PlayerMainInvWrapper(playerInv.getInventory()));
     }
 
     /**
