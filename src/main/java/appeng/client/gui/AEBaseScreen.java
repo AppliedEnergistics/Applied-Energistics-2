@@ -695,8 +695,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void containerTick() {
+        super.containerTick();
 
         widgets.tick();
 
