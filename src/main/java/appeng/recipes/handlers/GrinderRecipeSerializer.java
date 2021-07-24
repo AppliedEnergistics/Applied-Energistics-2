@@ -88,7 +88,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     @Override
     public GrinderRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 
-        String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
+        String group = buffer.readUtf();
         Ingredient ingredient = Ingredient.fromNetwork(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItem();

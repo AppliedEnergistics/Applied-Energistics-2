@@ -32,13 +32,6 @@ import appeng.core.sync.network.NetworkHandler;
 
 public abstract class BasePacket {
 
-    /**
-     * Sadly {@link FriendlyByteBuf#readString()} gets inlined by Proguard which means it's not available on the Server.
-     * This field has the default string length that is used for writeString, which then also should be used for
-     * readString when it has no special length requirements.
-     */
-    public static final int MAX_STRING_LENGTH = 32767;
-
     private FriendlyByteBuf p;
 
     public void serverPacketData(final INetworkInfo manager, final Player player) {

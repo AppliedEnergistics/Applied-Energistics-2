@@ -85,7 +85,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     @Nullable
     @Override
     public InscriberRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        String group = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
+        String group = buffer.readUtf();
         Ingredient middle = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
         Ingredient top = Ingredient.fromNetwork(buffer);
