@@ -18,38 +18,30 @@
 
 package appeng.spatial;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.LevelChunk;
 
 import appeng.api.movable.IMovableHandler;
 
 public class DefaultSpatialHandler implements IMovableHandler {
 
-    /**
-     * never called for the default.
-     *
-     * @param tile tile entity
-     * @return true
-     */
     @Override
-    public boolean canHandle(final Class<? extends BlockEntity> myClass, final BlockEntity tile) {
+    public boolean canHandle(BlockEntityType<?> type) {
         return true;
     }
 
     @Override
-    public void moveTile(final BlockEntity te, final Level w, final BlockPos newPosition) {
-        te.setLevelAndPosition(w, newPosition);
-
-        final LevelChunk c = w.getChunkAt(newPosition);
-        c.setBlockEntity(newPosition, te);
-
-        if (w.getChunkSource().isTickingChunk(newPosition)) {
-            final BlockState state = w.getBlockState(newPosition);
-            w.addBlockEntity(te);
-            w.sendBlockUpdated(newPosition, state, state, 1);
+    public boolean moveTile(BlockEntity te, CompoundTag savedData, Level w, BlockPos newPosition) {
+        var be = BlockEntity.loadStatic(newPosition, te.getBlockState(), savedData);
+        if (be != null) {
+            w.setBlockEntity(be);
+            return true;
+        } else {
+            return false;
         }
     }
+
 }
