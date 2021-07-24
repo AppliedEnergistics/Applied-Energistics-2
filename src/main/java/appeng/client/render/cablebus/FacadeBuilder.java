@@ -321,7 +321,7 @@ public class FacadeBuilder {
     public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, Direction side) {
         List<BakedQuad> facadeQuads = new ArrayList<>();
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(textureItem, null,
-                null);
+                null, 0);
         List<BakedQuad> modelQuads = gatherQuads(model, null, new Random(), EmptyModelData.INSTANCE);
 
         BakedPipeline pipeline = this.pipelines.get();

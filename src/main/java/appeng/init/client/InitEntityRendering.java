@@ -18,11 +18,12 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 
 import appeng.core.definitions.AEEntities;
 import appeng.entity.TinyTNTPrimedRenderer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.fmlclient.registry.RenderingRegistry;
 
 /**
@@ -31,18 +32,17 @@ import net.minecraftforge.fmlclient.registry.RenderingRegistry;
 public final class InitEntityRendering {
 
     private InitEntityRendering() {
-
     }
 
     public static void init() {
 
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.SINGULARITY,
-                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                (EntityRendererProvider<ItemEntity>) ItemEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.GROWING_CRYSTAL,
-                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                (EntityRendererProvider<ItemEntity>) ItemEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.CHARGED_QUARTZ,
-                m -> new ItemEntityRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                (EntityRendererProvider<ItemEntity>) ItemEntityRenderer::new);
     }
 
 }

@@ -66,7 +66,7 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
 
         TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);
         TextureAtlasSprite texMedium = spriteGetter.apply(TEXTURE_MEDIUM);

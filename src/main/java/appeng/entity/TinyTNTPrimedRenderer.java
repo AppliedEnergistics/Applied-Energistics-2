@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
@@ -36,21 +37,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
-    public TinyTNTPrimedRenderer(final EntityRenderDispatcher manager) {
-        super(manager);
+    public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
+        super(context);
         this.shadowRadius = 0.25F;
     }
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, PoseStack mStack,
                        MultiBufferSource buffers, int packedLight) {
-        final BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
         mStack.pushPose();
         mStack.translate(0, 0.25F, 0);
         float f2;
 
-        if (tnt.getLife() - partialTicks + 1.0F < 10.0F) {
-            f2 = 1.0F - (tnt.getLife() - partialTicks + 1.0F) / 10.0F;
+        if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
+            f2 = 1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 10.0F;
 
             if (f2 < 0.0F) {
                 f2 = 0.0F;
@@ -67,12 +67,12 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
-        f2 = (1.0F - (tnt.getLife() - partialTicks + 1.0F) / 100.0F) * 0.8F;
+        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
-                tnt.getLife() / 5 % 2 == 0);
+                tnt.getFuse() / 5 % 2 == 0);
         mStack.popPose();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
     }

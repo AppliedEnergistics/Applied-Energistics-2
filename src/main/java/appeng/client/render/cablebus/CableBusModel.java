@@ -76,7 +76,7 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
 
-        BakedModel translucentFacadeModel = bakery.getBakedModel(TRANSLUCENT_FACADE_MODEL, modelTransform,
+        BakedModel translucentFacadeModel = bakery.bake(TRANSLUCENT_FACADE_MODEL, modelTransform,
                 spriteGetter);
 
         FacadeBuilder facadeBuilder = new FacadeBuilder(translucentFacadeModel);
@@ -94,7 +94,7 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
         ImmutableMap.Builder<ResourceLocation, BakedModel> result = ImmutableMap.builder();
 
         for (ResourceLocation location : this.partModels.getModels()) {
-            BakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
+            BakedModel bakedModel = bakery.bake(location, transformIn, spriteGetterIn);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);
             } else {

@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Vector3f;
@@ -72,7 +73,7 @@ class CellLedRenderer {
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
     public static final RenderType RENDER_LAYER = RenderType.create("ae_drive_leds",
-            DefaultVertexFormat.POSITION_COLOR, 7, 32565, false, true, CompositeState.builder().createCompositeState(false));
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32565, false, true, RenderType.CompositeState.builder().createCompositeState(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,
                                  float partialTicks) {

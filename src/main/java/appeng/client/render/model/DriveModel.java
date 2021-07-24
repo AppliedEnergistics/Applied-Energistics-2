@@ -58,14 +58,14 @@ public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
         // Load the base model and the model for each cell model.
         for (Entry<Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
-            BakedModel cellModel = bakery.getBakedModel(entry.getValue(), modelTransform, spriteGetter);
+            BakedModel cellModel = bakery.bake(entry.getValue(), modelTransform, spriteGetter);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
-        final BakedModel defaultCell = bakery.getBakedModel(cellRegistry.getDefaultModel(), modelTransform,
+        final BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
+        final BakedModel defaultCell = bakery.bake(cellRegistry.getDefaultModel(), modelTransform,
                 spriteGetter);
-        cellModels.put(Items.AIR, bakery.getBakedModel(MODEL_CELL_EMPTY, modelTransform, spriteGetter));
+        cellModels.put(Items.AIR, bakery.bake(MODEL_CELL_EMPTY, modelTransform, spriteGetter));
 
         return new DriveBakedModel(baseModel, cellModels, defaultCell);
     }

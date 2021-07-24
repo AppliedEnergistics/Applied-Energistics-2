@@ -65,7 +65,7 @@ public class BiometricCardModel implements BasicUnbakedModel<BiometricCardModel>
                            ItemOverrides overrides, ResourceLocation locationIn) {
         TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
 
-        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, transformIn, spriteGetter);
+        BakedModel baseModel = bakery.bake(MODEL_BASE, transformIn, spriteGetter);
 
         return new BiometricCardBakedModel(baseModel, texture);
     }

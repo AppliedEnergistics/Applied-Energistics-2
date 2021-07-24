@@ -69,12 +69,14 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         for (int i = 0; i < 4; ++i) {
             final int[] offs = QUAD_OFFSETS[i];
             for (int j = 0; j < 4; ++j) {
-                final AEColor c = colors[j];
+                final AEColor col = colors[j];
+                // Same logic as in Biometric Card Model
                 if (active) {
-                    cb.setColorRGB(c.dye.getColorValue());
+                    cb.setColorRGB(col.mediumVariant);
                 } else {
-                    final float[] cv = c.dye.getTextureDiffuseColors();
-                    cb.setColorRGB(cv[0] * 0.5f, cv[1] * 0.5f, cv[2] * 0.5f);
+                    final float scale = 0.3f / 255.0f;
+                    cb.setColorRGB((col.blackVariant >> 16 & 0xff) * scale,
+                            (col.blackVariant >> 8 & 0xff) * scale, (col.blackVariant & 0xff) * scale);
                 }
 
                 final int startx = j % 2;

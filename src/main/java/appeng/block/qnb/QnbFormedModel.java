@@ -44,7 +44,7 @@ public class QnbFormedModel implements BasicUnbakedModel<QnbFormedModel> {
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel ringModel = bakery.getBakedModel(MODEL_RING, modelTransform, spriteGetter);
+        BakedModel ringModel = bakery.bake(MODEL_RING, modelTransform, spriteGetter);
         return new QnbFormedBakedModel(ringModel, spriteGetter);
     }
 
