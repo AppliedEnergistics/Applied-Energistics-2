@@ -168,9 +168,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
-    @Override
-    public boolean canConnectRedstone(final BlockState state, final BlockGetter w, final BlockPos pos,
-                                      Direction side) {
+    // TODO-1.17 This hook was removed from Forge with replacement and may be unnecessary
+    public boolean canConnectRedstone(BlockGetter w, BlockPos pos, Direction side) {
         // TODO: Verify this.
         if (side == null) {
             return false;

@@ -207,7 +207,7 @@ public class PartPlacement {
             BlockState blockState = world.getBlockState(pos);
             // FIXME isReplacable on the block state allows for more control, but requires
             // an item use context
-            if (!blockState.isAir(world, pos) && !blockState.canBeReplaced(useContext)) {
+            if (!blockState.isAir() && !blockState.canBeReplaced(useContext)) {
                 offset = side;
                 if (!world.isClientSide()) {
                     side = side.getOpposite();
@@ -267,7 +267,7 @@ public class PartPlacement {
                 final BlockState blkState = world.getBlockState(te_pos);
 
                 // FIXME: this is always true (host was de-referenced above)
-                if (blkState.isAir(world, te_pos) || blkState.canBeReplaced(useContext) || host != null) {
+                if (blkState.isAir() || blkState.canBeReplaced(useContext) || host != null) {
                     return place(held, te_pos, side.getOpposite(), player, hand, world,
                             pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
                                     : PlaceType.PLACE_ITEM,

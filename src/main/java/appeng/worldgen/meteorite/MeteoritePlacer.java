@@ -351,7 +351,7 @@ public final class MeteoritePlacer {
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);
 
-                                if (!xf.isAir(world, blockPosDown) && height > 0 && Math.random() > 0.6) {
+                                if (!xf.isAir() && height > 0 && Math.random() > 0.6) {
                                     randomShit++;
                                     this.type.getRandomFall(world, blockPos);
                                 }

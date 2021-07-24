@@ -138,7 +138,7 @@ public class CachedPlane {
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
 
                             // don't skip air, just let the code replace it...
-                            if (details.state.isAir(EmptyBlockGetter.INSTANCE, tePOS)) {
+                            if (details.state.isAir()) {
                                 w.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());

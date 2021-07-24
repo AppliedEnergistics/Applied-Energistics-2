@@ -161,7 +161,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
                         final BlockState state = this.level.getBlockState(point);
                         final Block block = state.getBlock();
 
-                        if (block != null && !block.isAir(state, this.level, point)) {
+                        if (!state.isAir()) {
                             float strength = (float) (2.3f
                                     - ((x + 0.5f - this.getX()) * (x + 0.5f - this.getX())
                                             + (y + 0.5f - this.getY()) * (y + 0.5f - this.getY())

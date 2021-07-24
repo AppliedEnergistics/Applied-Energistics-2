@@ -123,7 +123,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                     break;
             }
 
-            if (!w.getBlockState(pt).getBlock().isAir(w.getBlockState(pt), w, pt)) {
+            if (!w.getBlockState(pt).isAir()) {
                 return;
             }
 
