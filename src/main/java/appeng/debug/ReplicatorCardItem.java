@@ -23,7 +23,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.Entity;
@@ -181,17 +180,16 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                                 k + rel_z);
 
                                                         final BlockState state = src_w.getBlockState(p);
-                                                        final Block blk = state.getBlock();
                                                         final BlockState prev = world.getBlockState(d);
 
                                                         world.setBlockAndUpdate(d, state);
-                                                        if (blk != null && blk.hasTileEntity(state)) {
+                                                        if (state.hasBlockEntity()) {
                                                             final BlockEntity ote = src_w.getBlockEntity(p);
-                                                            final BlockEntity nte = blk.createTileEntity(state, world);
-                                                            final CompoundTag data = new CompoundTag();
-                                                            ote.save(data);
-                                                            nte.load(state, data.copy());
-                                                            world.setBlockEntity(d, nte);
+                                                            var data = ote.save(new CompoundTag());
+                                                            var newBe = BlockEntity.loadStatic(d, state, data);
+                                                            if (newBe != null) {
+                                                                world.setBlockEntity(newBe);
+                                                            }
                                                         }
                                                         world.sendBlockUpdated(d, prev, state, 3);
                                                     }
