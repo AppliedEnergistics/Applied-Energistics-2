@@ -48,7 +48,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.core.definitions.AEItems;
 import appeng.core.worlddata.WorldData;
@@ -159,8 +158,7 @@ public class SpatialStorageCommand implements ISubCommand {
             if (profileId == null) {
                 sendKeyValuePair(source, "Owner", "Unknown AE2 player (" + playerId + ")");
             } else {
-                MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-                ServerPlayer player = server.getPlayerList().getPlayer(profileId);
+                ServerPlayer player = source.getServer().getPlayerList().getPlayer(profileId);
                 if (player == null) {
                     sendKeyValuePair(source, "Owner", "Unknown Minecraft profile (" + profileId + ")");
                 } else {
@@ -227,12 +225,11 @@ public class SpatialStorageCommand implements ISubCommand {
             cell = AEItems.SPATIAL_CELL128.stack();
         }
 
-        if (!(cell.getItem() instanceof SpatialStorageCellItem)) {
+        if (!(cell.getItem() instanceof SpatialStorageCellItem spatialCellItem)) {
             throw new CommandRuntimeException(
                     new TextComponent("Storage cell items don't implement the storage cell interface!"));
         }
 
-        SpatialStorageCellItem spatialCellItem = (SpatialStorageCellItem) cell.getItem();
         spatialCellItem.setStoredDimension(cell, plotId, plot.getSize());
 
         player.addItem(cell);
@@ -289,7 +286,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     private static void runCommandFor(CommandSourceStack source, String command) {
-        Commands commandManager = ServerLifecycleHooks.getCurrentServer().getCommands();
+        Commands commandManager = source.getServer().getCommands();
         commandManager.performCommand(source, command);
     }
 

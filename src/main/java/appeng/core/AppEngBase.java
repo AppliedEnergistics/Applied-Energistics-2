@@ -54,12 +54,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.capabilities.Capabilities;
@@ -283,7 +283,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public Collection<ServerPlayer> getPlayers() {
-        final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        var server = getCurrentServer();
 
         if (server != null) {
             return server.getPlayerList().getPlayers();
@@ -318,6 +318,12 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public CableRenderMode getCableRenderMode() {
         return this.getCableRenderModeForPlayer(partInteractionPlayer.get());
+    }
+
+    @Nullable
+    @Override
+    public MinecraftServer getCurrentServer() {
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final Player player) {

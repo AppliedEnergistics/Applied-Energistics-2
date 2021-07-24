@@ -46,11 +46,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -65,7 +63,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.then(literal("force").executes(ctx -> {
-            test(ServerLifecycleHooks.getCurrentServer(), ctx.getSource(), true);
+            test(ctx.getSource().getServer(), ctx.getSource(), true);
             return 1;
         }));
     }
@@ -175,7 +173,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             // Add a tooltip
             String biomeId = world.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
-            Component tooltip = new TextComponent(settings.toString() + "\nBiome: ").copy()
+            Component tooltip = new TextComponent(settings + "\nBiome: ").copy()
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
