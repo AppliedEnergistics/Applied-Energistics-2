@@ -163,7 +163,7 @@ class BiometricCardBakedModel implements BakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity) {
+                                      LivingEntity entity, int seed) {
                 String username = "";
                 if (stack.getItem() instanceof IBiometricCard) {
                     final GameProfile gp = ((IBiometricCard) stack.getItem()).getProfile(stack);

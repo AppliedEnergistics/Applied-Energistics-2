@@ -86,7 +86,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity) {
+                                      LivingEntity entity, int seed) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
                 }

@@ -50,7 +50,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity) {
+                                      LivingEntity entity, int seed) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;
                 }
