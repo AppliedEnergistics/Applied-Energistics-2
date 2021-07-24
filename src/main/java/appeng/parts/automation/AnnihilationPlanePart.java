@@ -352,7 +352,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Checks if this plane can handle the block at the specific coordinates.
      */
     private boolean canHandleBlock(final ServerLevel w, final BlockPos pos, final BlockState state) {
-        if (state.isAir(w, pos)) {
+        if (state.isAir()) {
             return false;
         }
 

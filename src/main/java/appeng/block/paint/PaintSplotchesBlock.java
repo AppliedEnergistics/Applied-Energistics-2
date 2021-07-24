@@ -41,7 +41,7 @@ import appeng.tile.misc.PaintSplotchesTileEntity;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion());
+        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion().air());
     }
 
     @Override
@@ -81,11 +81,6 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
         }
 
         return 0;
-    }
-
-    @Override
-    public boolean isAir(final BlockState state, final BlockGetter world, final BlockPos pos) {
-        return true;
     }
 
     @Override
