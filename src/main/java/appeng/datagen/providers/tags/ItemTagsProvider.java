@@ -22,7 +22,6 @@ import java.nio.file.Path;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.tags.ItemTags;
@@ -37,7 +36,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
-import net.minecraft.data.tags.TagsProvider.TagAppender;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
@@ -143,14 +141,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         for (Object itemSource : itemSources) {
             if (itemSource instanceof ItemLike) {
                 builder.add(((ItemLike) itemSource).asItem());
-            } else if (itemSource instanceof Named) {
-                builder.addTag((Named<Item>) itemSource);
-            } else if (itemSource instanceof String) {
-                String itemSourceString = (String) itemSource;
+            } else if (itemSource instanceof Tag.Named) {
+                builder.addTag((Tag.Named<Item>) itemSource);
+            } else if (itemSource instanceof String itemSourceString) {
                 if (itemSourceString.startsWith("#")) {
                     builder.add(new Tag.TagEntry(new ResourceLocation(itemSourceString.substring(1))));
                 } else {
-                    builder.add(new ElementEntry(new ResourceLocation(itemSourceString)));
+                    builder.add(new Tag.ElementEntry(new ResourceLocation(itemSourceString)));
                 }
             } else {
                 throw new IllegalArgumentException("Unknown item source: " + itemSource);

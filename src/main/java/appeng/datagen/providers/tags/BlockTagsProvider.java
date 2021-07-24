@@ -20,7 +20,6 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
-import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.tags.BlockTags;
@@ -33,7 +32,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-import net.minecraft.data.tags.TagsProvider.TagAppender;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
@@ -106,16 +104,15 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
             if (blockSource instanceof Block) {
                 builder.add((Block) blockSource);
             } else if (blockSource instanceof BlockDefinition) {
-                builder.add(((BlockDefinition) blockSource).block());
-            } else if (blockSource instanceof Named) {
+                builder.add(((BlockDefinition<?>) blockSource).block());
+            } else if (blockSource instanceof Tag.Named) {
                 builder.addTag(
-                        (Named<Block>) blockSource);
-            } else if (blockSource instanceof String) {
-                String blockSourceString = (String) blockSource;
+                        (Tag.Named<Block>) blockSource);
+            } else if (blockSource instanceof String blockSourceString) {
                 if (blockSourceString.startsWith("#")) {
                     builder.add(new Tag.TagEntry(new ResourceLocation(blockSourceString.substring(1))));
                 } else {
-                    builder.add(new ElementEntry(new ResourceLocation(blockSourceString)));
+                    builder.add(new Tag.ElementEntry(new ResourceLocation(blockSourceString)));
                 }
             } else {
                 throw new IllegalArgumentException("Unknown block source: " + blockSource);

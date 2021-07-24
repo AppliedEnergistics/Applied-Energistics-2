@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.material.Fluid;
@@ -70,7 +71,7 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final Named<Fluid> TAG_BLACKLIST = FluidTags
+    public static final Tag.Named<Fluid> TAG_BLACKLIST = FluidTags
             .createOptional(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
