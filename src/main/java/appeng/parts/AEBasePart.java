@@ -380,7 +380,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     private boolean useMemoryCard(final Player player) {
-        final ItemStack memCardIS = player.inventory.getSelected();
+        final ItemStack memCardIS = player.getInventory().getSelected();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
             final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();

@@ -225,7 +225,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
 
     private I getHostFromPlayerInventory(Player player, ContainerLocator locator) {
 
-        ItemStack it = player.inventory.getItem(locator.getItemIndex());
+        ItemStack it = player.getInventory().getItem(locator.getItemIndex());
 
         if (it.isEmpty()) {
             AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d", player,

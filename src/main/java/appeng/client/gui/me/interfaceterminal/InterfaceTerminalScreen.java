@@ -238,7 +238,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     break;
 
                 case CLONE: // creative dupe:
-                    if (getPlayer().abilities.instabuild) {
+                    if (getPlayer().getAbilities().instabuild) {
                         action = InventoryAction.CREATIVE_DUPLICATE;
                     }
 
@@ -516,8 +516,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     private void reinitialize() {
-        this.children.removeAll(this.buttons);
-        this.buttons.clear();
+        this.children().removeAll(this.renderables);
+        this.renderables.clear();
         this.init();
     }
 

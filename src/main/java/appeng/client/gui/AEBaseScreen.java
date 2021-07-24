@@ -437,7 +437,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
         CustomSlotWidget slot = getGuiSlotAt(xCoord, yCoord);
         if (slot != null) {
-            slot.slotClicked(getPlayer().inventory.getCarried(), btn);
+            slot.slotClicked(getMenu().getCarried(), btn);
         }
 
         if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
@@ -459,7 +459,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
-        final ItemStack itemstack = getPlayer().inventory.getCarried();
+        var itemstack = getMenu().getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
         if (widgets.onMouseDrag(mousePos, mouseButton)) {
@@ -582,7 +582,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     protected boolean checkHotbarKeys(final Key input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
-        if (getPlayer().inventory.getCarried().isEmpty() && theSlot != null) {
+        if (getMenu().getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
                 if (getMinecraft().options.keyHotbarSlots[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();

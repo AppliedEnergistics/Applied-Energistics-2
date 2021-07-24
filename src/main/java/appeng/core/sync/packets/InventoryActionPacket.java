@@ -89,9 +89,7 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
-
+        if (sender.containerMenu instanceof AEBaseContainer baseContainer) {
             if (action == InventoryAction.SET_FILTER) {
                 baseContainer.setFilter(this.slot, this.slotItem);
             } else {
@@ -102,8 +100,8 @@ public class InventoryActionPacket extends BasePacket {
 
     @Override
     public void clientPacketData(final INetworkInfo network, final Player player) {
-        if (this.action == InventoryAction.UPDATE_HAND) {
-            player.inventory.setCarried(this.slotItem);
+        if (this.action == InventoryAction.UPDATE_HAND && player.containerMenu != null) {
+            player.containerMenu.setCarried(this.slotItem);
         }
     }
 }

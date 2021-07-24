@@ -329,7 +329,7 @@ public abstract class AppEngBase implements AppEng {
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final Player player) {
         if (player != null) {
             for (int x = 0; x < Inventory.getSelectionSize(); x++) {
-                final ItemStack is = player.inventory.getItem(x);
+                final ItemStack is = player.getInventory().getItem(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
                     final CompoundTag c = is.getTag();

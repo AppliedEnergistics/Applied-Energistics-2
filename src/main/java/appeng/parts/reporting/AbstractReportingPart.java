@@ -166,7 +166,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         final BlockEntity te = this.getTile();
 
-        if (InteractionUtil.isWrench(player, player.inventory.getSelected(), te.getBlockPos())) {
+        if (InteractionUtil.isWrench(player, player.getInventory().getSelected(), te.getBlockPos())) {
             if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
@@ -183,7 +183,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
                                   final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
-        final byte rotation = (byte) (Mth.floor(player.yRot * 4F / 360F + 2.5D) & 3);
+        final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);
         if (side == AEPartLocation.UP || side == AEPartLocation.DOWN) {
             this.spin = rotation;
         }

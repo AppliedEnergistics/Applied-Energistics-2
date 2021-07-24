@@ -102,8 +102,8 @@ public class SpatialStorageHelper {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayer) entity);
         }
 
-        PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.yRot,
-                entity.xRot);
+        PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),
+                entity.getXRot());
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw,

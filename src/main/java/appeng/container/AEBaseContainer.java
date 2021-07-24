@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
@@ -99,7 +100,7 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
-        this.mySrc = new PlayerSource(playerInventory.player, this.getActionHost());
+        this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
     }
 
     protected IActionHost getActionHost() {
@@ -119,7 +120,15 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     }
 
     public boolean isRemote() {
-        return this.playerInventory.player.getCommandSenderWorld().isClientSide();
+        return getPlayer().getCommandSenderWorld().isClientSide();
+    }
+
+    /**
+     * Convenience method to get the player owning this menu.
+     */
+    @Nonnull
+    public Player getPlayer() {
+        return getPlayerInventory().player;
     }
 
     public IActionSource getActionSource() {
@@ -479,7 +488,7 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
         }
 
         if (s instanceof FakeSlot) {
-            final ItemStack hand = player.inventory.getCarried();
+            final ItemStack hand = getCarried();
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
@@ -545,9 +554,10 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
 
     }
 
+    // TODO-1.17 This may no longer be necessary since Vanilla seems to sync the current menu's carried item to the client automatically in synchronizeCarriedToRemote
     protected void updateHeld(final ServerPlayer p) {
-        NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
-                p.inventory.getCarried()), p);
+        NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0, getCarried()), p);
+        throw new UnsupportedOperationException(); // TODO (see above)
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {
@@ -658,7 +668,7 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
      * Returns whether this container instance lives on the client.
      */
     protected boolean isClient() {
-        return playerInventory.player.getCommandSenderWorld().isClientSide();
+        return getPlayer().getCommandSenderWorld().isClientSide();
     }
 
     /**

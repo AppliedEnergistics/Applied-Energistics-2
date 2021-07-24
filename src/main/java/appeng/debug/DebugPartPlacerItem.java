@@ -67,7 +67,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             return InteractionResult.PASS;
         }
 
-        if (!player.abilities.instabuild) {
+        if (!player.getAbilities().instabuild) {
             player.sendMessage(new TextComponent("Only usable in creative mode"), Util.NIL_UUID);
             return InteractionResult.FAIL;
         }

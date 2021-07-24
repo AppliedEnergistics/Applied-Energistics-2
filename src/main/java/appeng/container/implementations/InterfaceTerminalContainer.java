@@ -164,9 +164,9 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         final ItemStack is = inv.server.getStackInSlot(slot);
-        final boolean hasItemInHand = !player.inventory.getCarried().isEmpty();
+        final boolean hasItemInHand = !getCarried().isEmpty();
 
-        final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
+        final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(this));
 
         final IItemHandler theSlot = new WrapperFilteredItemHandler(
                 new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
@@ -178,20 +178,20 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 if (hasItemInHand) {
                     ItemStack inSlot = theSlot.getStackInSlot(0);
                     if (inSlot.isEmpty()) {
-                        player.inventory.setCarried(interfaceSlot.addItems(player.inventory.getCarried()));
+                        setCarried(interfaceSlot.addItems(getCarried()));
                     } else {
                         inSlot = inSlot.copy();
-                        final ItemStack inHand = player.inventory.getCarried().copy();
+                        final ItemStack inHand = getCarried().copy();
 
                         ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
-                        player.inventory.setCarried(ItemStack.EMPTY);
+                        setCarried(ItemStack.EMPTY);
 
-                        player.inventory.setCarried(interfaceSlot.addItems(inHand.copy()));
+                        setCarried(interfaceSlot.addItems(inHand.copy()));
 
-                        if (player.inventory.getCarried().isEmpty()) {
-                            player.inventory.setCarried(inSlot);
+                        if (getCarried().isEmpty()) {
+                            setCarried(inSlot);
                         } else {
-                            player.inventory.setCarried(inHand);
+                            setCarried(inHand);
                             ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
                         }
                     }
@@ -239,8 +239,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 break;
             case CREATIVE_DUPLICATE:
 
-                if (player.abilities.instabuild && !hasItemInHand) {
-                    player.inventory.setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
+                if (player.getAbilities().instabuild && !hasItemInHand) {
+                    setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                 }
 
                 break;

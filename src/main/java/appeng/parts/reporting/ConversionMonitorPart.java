@@ -157,7 +157,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (allItems) {
                 if (this.getDisplayed() != null) {
                     final IAEItemStack input = this.getDisplayed().copy();
-                    IItemHandler inv = new PlayerMainInvWrapper(player.inventory);
+                    IItemHandler inv = new PlayerMainInvWrapper(player.getInventory());
 
                     for (int x = 0; x < inv.getSlots(); x++) {
                         final ItemStack targetStack = inv.getStackInSlot(x);

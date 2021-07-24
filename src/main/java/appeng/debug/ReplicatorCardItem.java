@@ -156,9 +156,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                 final int min_z = min.getZ();
 
                                 // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(Mth.wrapDegrees(player.yRot));
+                                final int x_rot = (int) -Math.signum(Mth.wrapDegrees(player.getYRot()));
                                 // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(Mth.wrapDegrees(player.yRot + 90));
+                                final int z_rot = (int) Math.signum(Mth.wrapDegrees(player.getYRot() + 90));
 
                                 // Loops for replication in each direction
                                 for (int r_x = 0; r_x < replications; r_x++) {

@@ -69,7 +69,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
             boolean found = false;
             // Player inventory is cheaper to check
             for (ItemStack itemStack : ingredients) {
-                if (itemStack != null && player.inventory.findSlotMatchingItem(itemStack) != -1) {
+                if (itemStack != null && player.getInventory().findSlotMatchingItem(itemStack) != -1) {
                     found = true;
                     break;
                 }

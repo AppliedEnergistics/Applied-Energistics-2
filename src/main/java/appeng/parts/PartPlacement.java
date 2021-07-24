@@ -161,7 +161,7 @@ public class PartPlacement {
                                 held.grow(-1);
 
                                 if (held.getCount() == 0) {
-                                    player.inventory.items.set(player.inventory.selected,
+                                    player.getInventory().items.set(player.getInventory().selected,
                                             ItemStack.EMPTY);
                                     MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                 }
