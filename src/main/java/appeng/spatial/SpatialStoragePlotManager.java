@@ -54,8 +54,11 @@ public final class SpatialStoragePlotManager {
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getWorld().getChunkSource().getDataStorage().computeIfAbsent(SpatialStorageWorldData::new,
-                SpatialStorageWorldData.ID);
+        return getWorld().getChunkSource().getDataStorage().computeIfAbsent(
+                SpatialStorageWorldData::load,
+                SpatialStorageWorldData::new,
+                SpatialStorageWorldData.ID
+        );
     }
 
     @Nullable
