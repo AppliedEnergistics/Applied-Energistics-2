@@ -38,7 +38,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.core.AEConfig;
-import appeng.core.sync.BasePacket;
 
 public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
         implements RecipeSerializer<GrinderRecipe> {
@@ -63,7 +62,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
         }
 
         JsonObject result = GsonHelper.getAsJsonObject(json, "result");
-        ItemStack primaryResult = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(result, "primary"));
+        ItemStack primaryResult = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(result, "primary"));
         JsonArray optionalResultsJson = GsonHelper.getAsJsonArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
@@ -72,7 +71,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
                 if (!optionalResultJson.isJsonObject()) {
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
-                ItemStack optionalResultItem = ShapedRecipe.itemFromJson(optionalResultJson.getAsJsonObject());
+                ItemStack optionalResultItem = ShapedRecipe.itemStackFromJson(optionalResultJson.getAsJsonObject());
                 float optionalChance = GsonHelper.getAsFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
                         AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));

@@ -32,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
-import appeng.core.sync.BasePacket;
 
 public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
         implements RecipeSerializer<InscriberRecipe> {
@@ -48,14 +47,11 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
 
     private static InscriberProcessType getMode(JsonObject json) {
         String mode = GsonHelper.getAsString(json, "mode", "inscribe");
-        switch (mode) {
-            case "inscribe":
-                return InscriberProcessType.INSCRIBE;
-            case "press":
-                return InscriberProcessType.PRESS;
-            default:
-                throw new IllegalStateException("Unknown mode for inscriber recipe: " + mode);
-        }
+        return switch (mode) {
+            case "inscribe" -> InscriberProcessType.INSCRIBE;
+            case "press" -> InscriberProcessType.PRESS;
+            default -> throw new IllegalStateException("Unknown mode for inscriber recipe: " + mode);
+        };
 
     }
 
@@ -65,7 +61,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         InscriberProcessType mode = getMode(json);
 
         String group = GsonHelper.getAsString(json, "group", "");
-        ItemStack result = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(json, "result"));
+        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
         JsonObject ingredients = GsonHelper.getAsJsonObject(json, "ingredients");
