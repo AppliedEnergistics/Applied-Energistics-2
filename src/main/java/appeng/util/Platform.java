@@ -1015,4 +1015,31 @@ public class Platform {
         return true;
     }
 
+    /**
+     * Retrieves a BlockEntity from a given position, but only if that particular BlockEntity would be in a state
+     * where it would be ticked by the chunk.
+     * <p/>
+     * This method also doesn't return a tile entity on the client-side.
+     */
+    @Nullable
+    public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+
+        if (!serverLevel.isPositionTickingWithEntitiesLoaded(pos)) {
+            return null;
+        }
+
+        return serverLevel.getBlockEntity(pos);
+    }
+
+    /**
+     * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
+     * @see {@link net.minecraft.world.level.chunk.LevelChunk#isTicking(BlockPos)} (which is package-visible)
+     */
+    public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
+        return level instanceof ServerLevel serverLevel && serverLevel.isPositionTickingWithEntitiesLoaded(pos);
+    }
+
 }

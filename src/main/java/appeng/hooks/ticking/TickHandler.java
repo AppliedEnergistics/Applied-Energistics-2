@@ -35,6 +35,8 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -258,20 +260,20 @@ public class TickHandler {
      * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
      */
     public void onWorldTick(final WorldTickEvent ev) {
-        final Level world = ev.world;
+        var level = ev.world;
 
-        if (world.isClientSide || ev.side != LogicalSide.SERVER) {
+        if (!(level instanceof ServerLevel serverLevel) || ev.side != LogicalSide.SERVER) {
             // While forge doesn't generate this event for client worlds,
             // the event is generic enough that some other mod might be insane enough to do so.
             return;
         }
 
         if (ev.phase == Phase.START) {
-            final Queue<IWorldRunnable> queue = this.callQueue.get(world);
-            processQueueElementsRemaining += this.processQueue(queue, world);
+            final Queue<IWorldRunnable> queue = this.callQueue.get(level);
+            processQueueElementsRemaining += this.processQueue(queue, level);
         } else if (ev.phase == Phase.END) {
-            this.simulateCraftingJobs(world);
-            this.readyTiles(world);
+            this.simulateCraftingJobs(level);
+            this.readyTiles(serverLevel);
         }
     }
 
@@ -339,39 +341,32 @@ public class TickHandler {
     }
 
     /**
-     * Ready the tiles in this world
+     * Ready the tiles in this world. server-side only.
      */
-    private void readyTiles(LevelAccessor world) {
-        ChunkSource chunkProvider = world.getChunkSource();
+    private void readyTiles(ServerLevel world) {
+        var chunkProvider = world.getChunkSource();
 
-        final Long2ObjectMap<List<AEBaseTileEntity>> worldQueue = tiles.getTiles(world);
+        var worldQueue = tiles.getTiles(world);
 
         // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
         long[] workSet = worldQueue.keySet().toLongArray();
 
         for (long packedChunkPos : workSet) {
-            ChunkPos chunkPos = new ChunkPos(packedChunkPos);
-
-            // Using the blockpos of the chunk start to test if it can tick.
-            // Relies on the world to test the chunkpos and not the explicit blockpos.
-            BlockPos testBlockPos = new BlockPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ());
-
-            // Readies this chunk, if it can tick and does exist.
-            // Chunks which are considered a border chunk will not "exist", but are loaded. Once this state changes they
-            // will be readied.
-            if (world.hasChunk(chunkPos.x, chunkPos.z) && chunkProvider.isTickingChunk(testBlockPos)) {
+            // Readies all of our block entities in this chunk as soon as it can tick BEs
+            // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
+            if (world.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
                 // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to
                 // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.
-                List<AEBaseTileEntity> chunkQueue = worldQueue.remove(packedChunkPos);
+                var chunkQueue = worldQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
-                    AELog.warn("Chunk %s was unloaded while we were readying tiles", chunkPos);
+                    AELog.warn("Chunk %s was unloaded while we were readying tiles", new ChunkPos(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 
-                for (AEBaseTileEntity bt : chunkQueue) {
-                    // Only ready tile entites which weren't destroyed in the meantime.
+                for (var bt : chunkQueue) {
+                    // Only ready block entities which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
                         // Note that this can load more chunks, but they'll at the earliest
                         // be initialized on the next tick

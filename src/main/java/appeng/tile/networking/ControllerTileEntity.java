@@ -20,6 +20,7 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
+import appeng.util.Platform;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -177,10 +178,6 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
      * @return true if there is a loaded controller
      */
     private boolean checkController(final BlockPos pos) {
-        if (this.level.getChunkSource().isTickingChunk(pos)) {
-            return this.level.getBlockEntity(pos) instanceof ControllerTileEntity;
-        }
-
-        return false;
+        return Platform.getTickingBlockEntity(getLevel(), pos) instanceof ControllerTileEntity;
     }
 }
