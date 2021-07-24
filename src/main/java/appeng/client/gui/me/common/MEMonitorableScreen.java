@@ -541,7 +541,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    public void tick() {
+    public void containerTick() {
         this.repo.setPower(this.menu.isPowered());
 
         if (this.supportsViewCells) {
@@ -553,7 +553,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
             }
         }
 
-        super.tick();
+        super.containerTick();
     }
 
     @Override
