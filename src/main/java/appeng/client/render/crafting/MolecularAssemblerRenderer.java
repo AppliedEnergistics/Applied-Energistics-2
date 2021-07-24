@@ -20,12 +20,13 @@ package appeng.client.render.crafting;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderStateShard.AlphaStateShard;
 import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
 import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -62,8 +63,6 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
-    private static final RenderType MC_161917_RENDERTYPE_FIX = RenderTypeAccess.createRenderType();
-
     private final Random particleRandom = new Random();
 
     public MolecularAssemblerRenderer(BlockEntityRendererProvider.Context context) {
@@ -94,16 +93,11 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
     private void renderPowerLight(PoseStack ms, MultiBufferSource bufferIn, int combinedLightIn,
                                   int combinedOverlayIn) {
-        // Render the translucent light overlay here instead of in the block, because thanks to the following MC
-        // bug, our particles would otherwise not be visible (because the glass pane would also render as translucent,
-        // even the fully transparent part)
-        // https://bugs.mojang.com/browse/MC-161917
-        // April 2021 update: the overlay is invisible in fabulous mode with the regular TRANSLUCENT render type,
-        // probably due to alpha ordering issues, so we have to stick with this fix.
         Minecraft minecraft = Minecraft.getInstance();
         BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
-        VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
+        VertexConsumer buffer = bufferIn.getBuffer(RenderType.translucent());
 
+        // TODO 1.17: Verify that the custom render type is no longer needed. The shader used for the translucent layer certainly doesn't use alpha testing, making it look like it will not work.
         minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
@@ -132,47 +126,15 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
         ms.pushPose();
         ms.translate(0.5, 0.5, 0.5); // Translate to center of block
 
-        if (!(is.getItem().getItem() instanceof BlockItem)) {
+        if (!(is.getItem() instanceof BlockItem)) {
             ms.translate(0, -0.3f, 0);
         } else {
             ms.translate(0, -0.2f, 0);
         }
 
         itemRenderer.renderStatic(is, TransformType.GROUND, combinedLightIn,
-                OverlayTexture.NO_OVERLAY, ms, bufferIn);
+                OverlayTexture.NO_OVERLAY, ms, bufferIn, 0);
         ms.popPose();
-    }
-
-    /**
-     * See above for when this can be removed. It creates a RenderType that is equivalent to
-     * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of the
-     * rendered block model from occluding our particles.
-     * <p>
-     * This class gives us access to the protected RenderState.TRANSLUCENT_TRANSPARENCY field.
-     */
-    private static class RenderTypeAccess extends RenderType {
-        public RenderTypeAccess(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
-                boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-            super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
-            throw new IllegalStateException("This class must not be instantiated");
-        }
-
-        /**
-         * See above for when this can be removed. It creates a RenderType that is equivalent to
-         * {@link RenderType#getTranslucent()}, but enables alpha testing. This prevents the fully transparents parts of
-         * the rendered block model from occluding our particles.
-         */
-        private static RenderType createRenderType() {
-            TextureStateShard mipmapBlockAtlasTexture = new TextureStateShard(
-                    TextureAtlas.LOCATION_BLOCKS, false, true);
-            LightmapStateShard disableLightmap = new LightmapStateShard(false);
-            CompositeState glState = CompositeState.builder().setTextureState(mipmapBlockAtlasTexture)
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setAlphaState(new AlphaStateShard(0.05F))
-                    .setLightmapState(disableLightmap).createCompositeState(true);
-
-            return RenderType.create("ae2_translucent_alphatest", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-                    GL11.GL_QUADS, 256, glState);
-        }
     }
 
 }
