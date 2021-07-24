@@ -18,30 +18,12 @@
 
 package appeng.init.internal;
 
+import appeng.core.definitions.AEBlockEntities;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.entity.CommandBlockEntity;
-import net.minecraft.world.level.block.entity.DaylightDetectorBlockEntity;
-import net.minecraft.world.level.block.entity.DropperBlockEntity;
-import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
-import net.minecraft.world.level.block.entity.TheEndPortalBlockEntity;
-import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
-import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
-import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.api.movable.IMovableRegistry;
 import appeng.core.Api;
-import appeng.tile.AEBaseTileEntity;
-import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
-import net.minecraft.world.level.block.entity.ComparatorBlockEntity;
-import net.minecraft.world.level.block.entity.DispenserBlockEntity;
-import net.minecraft.world.level.block.piston.PistonMovingBlockEntity;
 
 public final class InitSpatialMovableRegistry {
 
@@ -59,30 +41,30 @@ public final class InitSpatialMovableRegistry {
         /*
          * White List Vanilla...
          */
-        mr.whiteListTileEntity(BannerBlockEntity.class);
-        mr.whiteListTileEntity(BeaconBlockEntity.class);
-        mr.whiteListTileEntity(BrewingStandBlockEntity.class);
-        mr.whiteListTileEntity(ChestBlockEntity.class);
-        mr.whiteListTileEntity(CommandBlockEntity.class);
-        mr.whiteListTileEntity(ComparatorBlockEntity.class);
-        mr.whiteListTileEntity(DaylightDetectorBlockEntity.class);
-        mr.whiteListTileEntity(DispenserBlockEntity.class);
-        mr.whiteListTileEntity(DropperBlockEntity.class);
-        mr.whiteListTileEntity(EnchantmentTableBlockEntity.class);
-        mr.whiteListTileEntity(EnderChestBlockEntity.class);
-        mr.whiteListTileEntity(TheEndPortalBlockEntity.class);
-        mr.whiteListTileEntity(FurnaceBlockEntity.class);
-        mr.whiteListTileEntity(HopperBlockEntity.class);
-        mr.whiteListTileEntity(SpawnerBlockEntity.class);
-        mr.whiteListTileEntity(PistonMovingBlockEntity.class);
-        mr.whiteListTileEntity(ShulkerBoxBlockEntity.class);
-        mr.whiteListTileEntity(SignBlockEntity.class);
-        mr.whiteListTileEntity(SkullBlockEntity.class);
+        mr.whitelistBlockEntity(BlockEntityType.BANNER);
+        mr.whitelistBlockEntity(BlockEntityType.BEACON);
+        mr.whitelistBlockEntity(BlockEntityType.BREWING_STAND);
+        mr.whitelistBlockEntity(BlockEntityType.CHEST);
+        mr.whitelistBlockEntity(BlockEntityType.COMMAND_BLOCK);
+        mr.whitelistBlockEntity(BlockEntityType.COMPARATOR);
+        mr.whitelistBlockEntity(BlockEntityType.DAYLIGHT_DETECTOR);
+        mr.whitelistBlockEntity(BlockEntityType.DISPENSER);
+        mr.whitelistBlockEntity(BlockEntityType.DROPPER);
+        mr.whitelistBlockEntity(BlockEntityType.ENCHANTING_TABLE);
+        mr.whitelistBlockEntity(BlockEntityType.ENDER_CHEST);
+        mr.whitelistBlockEntity(BlockEntityType.END_PORTAL);
+        mr.whitelistBlockEntity(BlockEntityType.FURNACE);
+        mr.whitelistBlockEntity(BlockEntityType.HOPPER);
+        mr.whitelistBlockEntity(BlockEntityType.MOB_SPAWNER);
+        mr.whitelistBlockEntity(BlockEntityType.PISTON);
+        mr.whitelistBlockEntity(BlockEntityType.SHULKER_BOX);
+        mr.whitelistBlockEntity(BlockEntityType.SIGN);
+        mr.whitelistBlockEntity(BlockEntityType.SKULL);
 
         /*
-         * Whitelist AE2
+         * Whitelist all of AE2
          */
-        mr.whiteListTileEntity(AEBaseTileEntity.class);
+        AEBlockEntities.getBlockEntityTypes().values().forEach(mr::whitelistBlockEntity);
     }
 
 }

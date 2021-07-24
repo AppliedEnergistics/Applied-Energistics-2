@@ -23,9 +23,13 @@
 
 package appeng.api.movable;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import javax.annotation.Nullable;
 
 public interface IMovableHandler {
 
@@ -33,16 +37,18 @@ public interface IMovableHandler {
      * if you return true from this, your saying you can handle the class, not that single entity, you cannot opt out of
      * single entities.
      *
-     * @param myClass tile entity class
-     * @param tile    tile entity
+     * @param type The type of block entity to move.
      *
      * @return true if it can handle moving
      */
-    boolean canHandle(Class<? extends BlockEntity> myClass, BlockEntity tile);
+    boolean canHandle(BlockEntityType<?> type);
 
     /**
      * request that the handler move the the tile from its current location to the new one. the tile has already been
      * invalidated, and the blocks have already been fully moved.
+     * <p/>
+     * You are responsible for adding the new block entity to the target world, i.e. using
+     * {@link Level#setBlockEntity(BlockEntity)}.
      *
      * Potential Example:
      *
@@ -59,9 +65,12 @@ public interface IMovableHandler {
      * }
      * </pre>
      *
-     * @param tile        to be moved tile
+     * @param entity        to be moved tile
+     * @param savedData   the original entities data saved using {@link BlockEntity#save(CompoundTag)}.
      * @param world       world of tile
      * @param newPosition the new location
+     * @return True if moving succeeded. If false is returned, AE2 will attempt to recover the original entity.
      */
-    void moveTile(BlockEntity tile, Level world, BlockPos newPosition);
+    @Nullable
+    boolean moveTile(BlockEntity entity, CompoundTag savedData, Level world, BlockPos newPosition);
 }

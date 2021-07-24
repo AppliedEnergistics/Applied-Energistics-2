@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.movable.IMovableTile;
@@ -37,6 +37,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class MovableTileRegistry implements IMovableRegistry {
 
@@ -45,13 +46,13 @@ public class MovableTileRegistry implements IMovableRegistry {
 
     private final Set<Block> blacklisted = new HashSet<>();
 
-    private final Map<Class<? extends BlockEntity>, IMovableHandler> valid = new IdentityHashMap<>();
-    private final List<Class<? extends BlockEntity>> test = new ArrayList<>();
+    private final Map<BlockEntityType<?>, IMovableHandler> valid = new IdentityHashMap<>();
+    private final Set<BlockEntityType<?>> whitelistedTypes = new HashSet<>();
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final Named<Block> blockTagWhiteList;
-    private final Named<Block> blockTagBlackList;
+    private final Tag.Named<Block> blockTagWhiteList;
+    private final Tag.Named<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
         this.blockTagWhiteList = BlockTags.createOptional(TAG_WHITELIST);
@@ -64,22 +65,17 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void whiteListTileEntity(final Class<? extends BlockEntity> c) {
-        if (c.getName().equals(BlockEntity.class.getName())) {
-            throw new IllegalArgumentException(new AppEngException("Someone tried to make all tiles movable with " + c
-                    + ", this is a clear violation of the purpose of the white list."));
-        }
-
-        this.test.add(c);
+    public void whitelistBlockEntity(final BlockEntityType<?> c) {
+        this.whitelistedTypes.add(c);
     }
 
     @Override
     public boolean askToMove(final BlockEntity te) {
-        final Class<? extends BlockEntity> myClass = te.getClass();
-        IMovableHandler canMove = this.valid.get(myClass);
+        var type = te.getType();
+        IMovableHandler canMove = this.valid.get(type);
 
         if (canMove == null) {
-            canMove = this.testClass(myClass, te);
+            canMove = this.resolveHandler(te);
         }
 
         if (canMove != this.nullHandler) {
@@ -94,12 +90,12 @@ public class MovableTileRegistry implements IMovableRegistry {
         return false;
     }
 
-    private IMovableHandler testClass(final Class<? extends BlockEntity> myClass, final BlockEntity te) {
+    private IMovableHandler resolveHandler(BlockEntity te) {
         IMovableHandler handler = null;
 
         // ask handlers...
         for (final IMovableHandler han : this.handlers) {
-            if (han.canHandle(myClass, te)) {
+            if (han.canHandle(te.getType())) {
                 handler = han;
                 break;
             }
@@ -107,39 +103,38 @@ public class MovableTileRegistry implements IMovableRegistry {
 
         // if you have a handler your opted in
         if (handler != null) {
-            this.valid.put(myClass, handler);
+            this.valid.put(te.getType(), handler);
             return handler;
         }
 
         // if your movable our opted in
         if (te instanceof IMovableTile) {
-            this.valid.put(myClass, this.dsh);
+            this.valid.put(te.getType(), this.dsh);
             return this.dsh;
         }
 
         // if the block itself is via block tags
         if (AEConfig.instance().getSpatialBlockTags()
                 && this.blockTagWhiteList.contains(te.getBlockState().getBlock())) {
-            this.valid.put(myClass, this.dsh);
+            this.valid.put(te.getType(), this.dsh);
             return this.dsh;
         }
 
         // if you are on the white list your opted in.
-        for (final Class<? extends BlockEntity> testClass : this.test) {
-            if (testClass.isAssignableFrom(myClass)) {
-                this.valid.put(myClass, this.dsh);
-                return this.dsh;
-            }
+        // We do this now and not at the time of whitelisting, because whitelists should not overwrite the
+        // ability to register a custom handler
+        if (this.whitelistedTypes.contains(te.getType())) {
+            this.valid.put(te.getType(), this.dsh);
+            return this.dsh;
         }
 
-        this.valid.put(myClass, this.nullHandler);
+        this.valid.put(te.getType(), this.nullHandler);
         return this.nullHandler;
     }
 
     @Override
     public void doneMoving(final BlockEntity te) {
-        if (te instanceof IMovableTile) {
-            final IMovableTile mt = (IMovableTile) te;
+        if (te instanceof IMovableTile mt) {
             mt.doneMoving();
         }
     }
@@ -150,9 +145,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public IMovableHandler getHandler(final BlockEntity te) {
-        final Class<? extends BlockEntity> myClass = te.getClass();
-        final IMovableHandler h = this.valid.get(myClass);
+    public IMovableHandler getHandler(BlockEntity te) {
+        final IMovableHandler h = this.valid.get(te.getType());
         return h == null ? this.dsh : h;
     }
 
