@@ -92,12 +92,12 @@ final class CompassRegion {
         String name = this.lowX + "_" + this.lowZ;
 
         if (create) {
-            this.data = world.getDataStorage().computeIfAbsent(() -> new SaveData(name), name);
+            this.data = world.getDataStorage().computeIfAbsent(SaveData::load, SaveData::new, name);
             if (this.data.bitmap == null) {
                 this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
             }
         } else {
-            this.data = world.getDataStorage().get(() -> new SaveData(name), name);
+            this.data = world.getDataStorage().get(SaveData::load, name);
         }
     }
 
@@ -120,16 +120,13 @@ final class CompassRegion {
 
         private byte[] bitmap;
 
-        public SaveData(String name) {
-            super(name);
-        }
-
-        @Override
-        public void load(CompoundTag nbt) {
-            this.bitmap = nbt.getByteArray("b");
-            if (this.bitmap.length != BITMAP_LENGTH) {
-                throw new IllegalStateException("Invalid bitmap length: " + bitmap.length);
+        public static SaveData load(CompoundTag nbt) {
+            var result = new SaveData();
+            result.bitmap = nbt.getByteArray("b");
+            if (result.bitmap.length != BITMAP_LENGTH) {
+                throw new IllegalStateException("Invalid bitmap length: " + result.bitmap.length);
             }
+            return result;
         }
 
         @Override

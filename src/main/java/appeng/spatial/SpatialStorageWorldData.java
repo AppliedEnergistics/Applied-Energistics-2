@@ -52,10 +52,6 @@ public class SpatialStorageWorldData extends SavedData {
 
     private final Int2ObjectOpenHashMap<SpatialStoragePlot> plots = new Int2ObjectOpenHashMap<>();
 
-    public SpatialStorageWorldData() {
-        super(ID);
-    }
-
     public SpatialStoragePlot getPlotById(int id) {
         return plots.get(id);
     }
@@ -92,8 +88,8 @@ public class SpatialStorageWorldData extends SavedData {
         setDirty();
     }
 
-    @Override
-    public void load(CompoundTag tag) {
+    public static SpatialStorageWorldData load(CompoundTag tag) {
+        SpatialStorageWorldData result = new SpatialStorageWorldData();
         int version = tag.getInt(TAG_FORMAT);
         if (version != CURRENT_FORMAT) {
             // Currently no new format has been defined, as such anything but the current
@@ -105,11 +101,12 @@ public class SpatialStorageWorldData extends SavedData {
         for (Tag plotTag : plotsTag) {
             SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundTag) plotTag);
 
-            if (plots.containsKey(plot.getId())) {
+            if (result.plots.containsKey(plot.getId())) {
                 AELog.warn("Overwriting duplicate plot id %s", plot.getId());
             }
-            plots.put(plot.getId(), plot);
+            result.plots.put(plot.getId(), plot);
         }
+        return result;
     }
 
     @Override
