@@ -147,7 +147,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world,
-                                      @Nullable LivingEntity entity) {
+                                      @Nullable LivingEntity entity, int seed) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof LocalPlayer) {
