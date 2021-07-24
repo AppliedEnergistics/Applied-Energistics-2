@@ -23,30 +23,26 @@ import java.util.OptionalDouble;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderStateShard.LineStateShard;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
-
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
  */
 public class OverlayRenderType extends RenderType {
 
-    public OverlayRenderType(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
-            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn,
+    public OverlayRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode mode, int bufferSizeIn,
+                             boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+        super(nameIn, formatIn, mode, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn,
                 clearTaskIn);
     }
 
     public static RenderType getBlockHilightFace() {
         return create("block_hilight",
-                DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 65536,
+                DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 65536, false, false,
                 CompositeState.builder()
                         .setTransparencyState(TransparencyStateShard.CRUMBLING_TRANSPARENCY)
                         .setTextureState(NO_TEXTURE)
@@ -61,7 +57,7 @@ public class OverlayRenderType extends RenderType {
 
     public static RenderType getBlockHilightLine() {
         return create("block_hilight_line",
-                DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 65536,
+                DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 65536, false, false,
                 CompositeState.builder().setLineState(LINE_3)
                         .setTransparencyState(TransparencyStateShard.GLINT_TRANSPARENCY)
                         .setTextureState(NO_TEXTURE)
