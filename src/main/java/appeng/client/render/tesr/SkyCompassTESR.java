@@ -21,14 +21,13 @@ package appeng.client.render.tesr;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,21 +38,17 @@ import appeng.client.render.model.SkyCompassBakedModel;
 import appeng.tile.misc.SkyCompassTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassTileEntity> {
+public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassTileEntity> {
 
-    private static BlockRenderDispatcher blockRenderer;
+    private final BlockRenderDispatcher blockRenderer;
 
-    public SkyCompassTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public SkyCompassTESR(BlockEntityRendererProvider.Context context) {
+        this.blockRenderer = context.getBlockRenderDispatcher();
     }
 
     @Override
     public void render(SkyCompassTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
                        int combinedLightIn, int combinedOverlayIn) {
-
-        if (blockRenderer == null) {
-            blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        }
 
         VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
 

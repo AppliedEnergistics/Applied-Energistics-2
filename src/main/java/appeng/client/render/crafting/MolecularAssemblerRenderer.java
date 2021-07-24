@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.RenderStateShard.AlphaStateShard;
 import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
 import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.BlockItem;
 import org.lwjgl.opengl.GL11;
@@ -58,7 +58,7 @@ import appeng.tile.crafting.MolecularAssemblerTileEntity;
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
-public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerTileEntity> {
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
@@ -66,8 +66,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
 
     private final Random particleRandom = new Random();
 
-    public MolecularAssemblerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public MolecularAssemblerRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override

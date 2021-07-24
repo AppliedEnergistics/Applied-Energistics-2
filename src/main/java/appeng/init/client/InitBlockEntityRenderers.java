@@ -18,6 +18,8 @@
 
 package appeng.init.client;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,16 +44,16 @@ public final class InitBlockEntityRenderers {
 
     public static void init() {
 
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.INSCRIBER, InscriberTESR::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CRANK, CrankTESR::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.DRIVE, DriveLedTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CHEST, ChestTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
-        ClientRegistry.bindTileEntityRenderer(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.CRANK, CrankTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
+        BlockEntityRenderers.register(AEBlockEntities.DRIVE, DriveLedTileEntityRenderer::new);
+        BlockEntityRenderers.register(AEBlockEntities.CHEST, ChestTileEntityRenderer::new);
+        BlockEntityRenderers.register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
+        BlockEntityRenderers.register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
+        BlockEntityRenderers.register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
 
     }
 

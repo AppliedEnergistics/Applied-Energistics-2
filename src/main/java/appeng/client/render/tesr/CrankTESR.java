@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -41,10 +42,9 @@ import appeng.tile.grindstone.CrankTileEntity;
  * normal model.
  */
 @OnlyIn(Dist.CLIENT)
-public class CrankTESR extends BlockEntityRenderer<CrankTileEntity> {
+public class CrankTESR implements BlockEntityRenderer<CrankTileEntity> {
 
-    public CrankTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public CrankTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override

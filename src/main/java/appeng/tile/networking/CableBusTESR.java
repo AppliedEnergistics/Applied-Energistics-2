@@ -23,14 +23,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 
 import appeng.api.parts.IPart;
 
-public class CableBusTESR extends BlockEntityRenderer<CableBusTileEntity> {
+public class CableBusTESR implements BlockEntityRenderer<CableBusTileEntity> {
 
-    public CableBusTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public CableBusTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override

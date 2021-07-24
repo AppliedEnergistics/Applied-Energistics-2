@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,10 +37,9 @@ import appeng.tile.storage.DriveTileEntity;
  * Renders the drive cell status indicators.
  */
 @OnlyIn(Dist.CLIENT)
-public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveTileEntity> {
+public class DriveLedTileEntityRenderer implements BlockEntityRenderer<DriveTileEntity> {
 
-    public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public DriveLedTileEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
