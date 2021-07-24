@@ -25,7 +25,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,13 +33,12 @@ import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class ModularTESR<T extends AEBaseTileEntity> extends BlockEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseTileEntity> implements BlockEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 
     @SafeVarargs
-    public ModularTESR(BlockEntityRenderDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
-        super(rendererDispatcherIn);
+    public ModularTESR(Renderable<? super T>... renderables) {
         this.renderables = ImmutableList.copyOf(renderables);
     }
 

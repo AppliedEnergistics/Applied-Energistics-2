@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.Sheets;
@@ -42,7 +43,7 @@ import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR extends BlockEntityRenderer<SkyChestTileEntity> {
+public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
 
     public static final Material TEXTURE_STONE = new Material(Sheets.CHEST_SHEET,
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
@@ -53,9 +54,7 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestTileEntity> {
     private final ModelPart singleBottom;
     private final ModelPart singleLatch;
 
-    public SkyChestTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-
+    public SkyChestTESR(BlockEntityRendererProvider.Context context) {
         this.singleBottom = new ModelPart(64, 64, 0, 19);
         this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
         this.singleLid = new ModelPart(64, 64, 0, 0);

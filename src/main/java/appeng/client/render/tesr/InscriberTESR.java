@@ -18,16 +18,16 @@
 
 package appeng.client.render.tesr;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.Material;
@@ -48,15 +48,14 @@ import appeng.tile.misc.InscriberTileEntity;
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity> {
+public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
 
-    public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public InscriberTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
@@ -218,8 +217,9 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberTileEntity
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
+            RenderSystem.applyModelViewMatrix();
             itemRenderer.renderStatic(stack, TransformType.FIXED, combinedLight, combinedOverlay, ms,
-                    buffers);
+                    buffers, 0);
             ms.popPose();
         }
     }
