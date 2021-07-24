@@ -183,7 +183,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
-            uniqueStrs[i] = data.readUtf(BasePacket.MAX_STRING_LENGTH);
+            uniqueStrs[i] = data.readUtf();
         }
 
         boolean changed = false;

@@ -74,6 +74,8 @@ import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 
 public abstract class AEBaseContainer extends AbstractContainerMenu {
+    private static final int MAX_STRING_LENGTH = 32767;
+
     private final IActionSource mySrc;
     private final BlockEntity tileEntity;
     private final IPart part;
@@ -798,11 +800,11 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             jsonPayload = clientAction.gson.toJson(arg);
         }
 
-        // We do not allow for longer strings than BasePacket.MAX_STRING_LENGTH
-        if (jsonPayload != null && jsonPayload.length() > BasePacket.MAX_STRING_LENGTH) {
+        // We do not allow for longer strings than 32kb
+        if (jsonPayload != null && jsonPayload.length() > MAX_STRING_LENGTH) {
             throw new IllegalArgumentException(
                     "Cannot send client action " + action + " because serialized argument is longer than "
-                            + BasePacket.MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
+                            + MAX_STRING_LENGTH + " (" + jsonPayload.length() + ")");
         }
 
         NetworkHandler.instance().sendToServer(new GuiDataSyncPacket(containerId, writer -> {
@@ -838,7 +840,7 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
         public void handle(FriendlyByteBuf buffer) {
             T arg = null;
             if (argClass != Void.class) {
-                String payload = buffer.readUtf(BasePacket.MAX_STRING_LENGTH);
+                String payload = buffer.readUtf();
                 AELog.debug("Handling client action '%s' with payload %s", name, payload);
                 arg = gson.fromJson(payload, argClass);
             } else {

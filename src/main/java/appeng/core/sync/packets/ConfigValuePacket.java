@@ -53,8 +53,8 @@ public class ConfigValuePacket extends BasePacket {
     private final String Value;
 
     public ConfigValuePacket(final FriendlyByteBuf stream) {
-        this.Name = stream.readUtf(MAX_STRING_LENGTH);
-        this.Value = stream.readUtf(MAX_STRING_LENGTH);
+        this.Name = stream.readUtf();
+        this.Value = stream.readUtf();
     }
 
     // api

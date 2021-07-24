@@ -90,8 +90,7 @@ public class JEIRecipePacket extends BasePacket {
 
     public JEIRecipePacket(final FriendlyByteBuf stream) {
         this.crafting = stream.readBoolean();
-        final String id = stream.readUtf(Short.MAX_VALUE);
-        this.recipeId = new ResourceLocation(id);
+        this.recipeId = new ResourceLocation(stream.readUtf());
 
         int inlineRecipeType = stream.readVarInt();
         switch (inlineRecipeType) {
