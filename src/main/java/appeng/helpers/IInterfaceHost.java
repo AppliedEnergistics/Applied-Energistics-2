@@ -27,7 +27,7 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingRequester;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface IInterfaceHost extends ICraftingProvider, IUpgradeableHost, ICraftingRequester {
+public interface IInterfaceHost extends IUpgradeableHost {
 
     DualityInterface getInterfaceDuality();
 

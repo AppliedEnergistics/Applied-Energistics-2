@@ -124,6 +124,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         super(is);
 
         getMainNode()
+                .addService(ICraftingWatcherNode.class, this)
+                .addService(ICraftingProvider.class, this)
                 .addService(IEnergyWatcherHost.class, this)
                 .addService(IStackWatcherHost.class, this);
 
