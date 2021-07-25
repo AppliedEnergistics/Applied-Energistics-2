@@ -25,6 +25,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.cells.ISaveProvider;
 import net.minecraft.core.BlockPos;
 import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -110,7 +112,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestTileEntity extends AENetworkPowerTileEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity, ICellProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -143,7 +145,9 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     public ChestTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
         super(tileEntityTypeIn, pos, blockState);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode()
+                .addService(ICellProvider.class, this)
+                .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
@@ -213,7 +217,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                     idlePowerUsage = 1.0;
 
                     for (IStorageChannel channel : Api.instance().storage().storageChannels()) {
-                        final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is, this,
+                        final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is, this::saveChanges,
                                 channel);
                         if (newCell != null) {
                             idlePowerUsage += cellHandler.cellIdleDrain(is, newCell);
@@ -498,8 +502,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
-    @Override
-    public void blinkCell(final int slot) {
+    private void blinkCell(final int slot) {
         final long now = this.level.getGameTime();
         if (now - this.lastStateChange > 8) {
             this.state = 0;
@@ -557,8 +560,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         return true;
     }
 
-    @Override
-    public void saveChanges(final ICellInventory<?> cellInventory) {
+    private void saveChanges(final ICellInventory<?> cellInventory) {
         if (cellInventory != null) {
             cellInventory.persist();
         }

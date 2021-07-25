@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.api.storage.cells.ICellProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -60,8 +61,6 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.cells.ICellContainer;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -92,7 +91,7 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 public class StorageBusPart extends UpgradeablePart
-        implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
+        implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
@@ -124,7 +123,9 @@ public class StorageBusPart extends UpgradeablePart
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
         this.mySrc = new MachineSource(this);
-        getMainNode().addService(IGridTickable.class, this);
+        getMainNode()
+                .addService(ICellProvider.class, this)
+                .addService(IGridTickable.class, this);
     }
 
     @Override
@@ -506,23 +507,6 @@ public class StorageBusPart extends UpgradeablePart
         this.priority = newValue;
         this.getHost().markForSave();
         this.resetCache(true);
-    }
-
-    @Override
-    public void blinkCell(final int slot) {
-    }
-
-    // TODO: BC PIPE INTEGRATION
-    /*
-     * @Override
-     *
-     * @Method( iname = IntegrationType.BuildCraftTransport ) public ConnectOverride overridePipeConnection( PipeType
-     * type, ForgeDirection with ) { return type == PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT :
-     * ConnectOverride.DISCONNECT; }
-     */
-    @Override
-    public void saveChanges(final ICellInventory<?> cellInventory) {
-        // nope!
     }
 
     @Override

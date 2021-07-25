@@ -19,7 +19,6 @@
 package appeng.me.storage;
 
 import appeng.api.config.Actionable;
-import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
@@ -27,19 +26,21 @@ import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.IntConsumer;
+
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
     private final ItemStack is;
     private final ICellHandler handler;
-    private final IChestOrDrive cord;
+    private final IntConsumer cellActivityCallback;
 
     public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
-                        final IChestOrDrive cod) {
+                        IntConsumer cellActivityCallback) {
         super(i, i.getChannel());
         this.is = is;
         this.handler = han;
-        this.cord = cod;
+        this.cellActivityCallback = cellActivityCallback;
     }
 
     public CellState getStatus() {
@@ -56,7 +57,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
             final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
-                this.cord.blinkCell(this.getSlot());
+                this.cellActivityCallback.accept(this.getSlot());
                 this.oldStatus = newStatus;
             }
         }
@@ -72,7 +73,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
             final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
-                this.cord.blinkCell(this.getSlot());
+                this.cellActivityCallback.accept(this.getSlot());
                 this.oldStatus = newStatus;
             }
         }

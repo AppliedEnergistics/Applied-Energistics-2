@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.storage.cells.ICellProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
@@ -30,8 +31,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.cells.ICellContainer;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
@@ -40,7 +39,7 @@ import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
 
 public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends UpgradeablePart
-        implements ICellContainer, IPriorityHost, IMEInventory<T> {
+        implements ICellProvider, IPriorityHost, IMEInventory<T> {
 
     private boolean wasActive = false;
     private int priority = 0;
@@ -49,6 +48,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
     public AbstractFormationPlanePart(ItemStack is) {
         super(is);
+        getMainNode().addService(ICellProvider.class, this);
     }
 
     protected abstract void updateHandler();
@@ -143,15 +143,5 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
         this.priority = newValue;
         this.getHost().markForSave();
         this.updateHandler();
-    }
-
-    @Override
-    public void blinkCell(final int slot) {
-        // :P
-    }
-
-    @Override
-    public void saveChanges(final ICellInventory<?> cell) {
-        // nope!
     }
 }

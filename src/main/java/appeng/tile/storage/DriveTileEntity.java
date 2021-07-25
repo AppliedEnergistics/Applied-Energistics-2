@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.cells.ISaveProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -73,7 +75,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrDrive, IPriorityHost {
+public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrDrive, IPriorityHost, ICellProvider {
 
     private static final int BIT_POWER_MASK = Integer.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111111111111111111111111111111;
@@ -110,7 +112,9 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     public DriveTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
         super(tileEntityTypeIn, pos, blockState);
         this.mySrc = new MachineSource(this);
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode()
+                .addService(ICellProvider.class, this)
+                .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
         this.inventoryHandlers = new IdentityHashMap<>();
     }
@@ -343,14 +347,14 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
                     if (this.handlersBySlot[x] != null) {
                         for (IStorageChannel<? extends IAEStack<?>> channel : storageChannels) {
 
-                            ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory(is, this, channel);
+                            ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory(is, this::saveChanges, channel);
 
                             if (cell != null) {
                                 this.inv.setHandler(x, cell);
                                 power += this.handlersBySlot[x].cellIdleDrain(is, cell);
 
                                 final DriveWatcher<IAEItemStack> ih = new DriveWatcher(cell, is, this.handlersBySlot[x],
-                                        this);
+                                        this::blinkCell);
                                 ih.setPriority(this.priority);
                                 this.invBySlot[x] = ih;
                                 this.inventoryHandlers.get(channel).add(ih);
@@ -400,13 +404,11 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
-    @Override
-    public void blinkCell(final int slot) {
+    private void blinkCell(final int slot) {
         this.recalculateDisplay();
     }
 
-    @Override
-    public void saveChanges(final ICellInventory<?> cellInventory) {
+    private void saveChanges(final ICellInventory<?> cellInventory) {
         this.level.blockEntityChanged(this.worldPosition);
     }
 
