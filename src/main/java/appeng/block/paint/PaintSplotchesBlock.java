@@ -21,6 +21,7 @@ package appeng.block.paint;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -66,15 +67,15 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public void handleRain(final Level w, final BlockPos pos) {
-        if (!w.isClientSide()) {
-            w.removeBlock(pos, false);
+    public void handlePrecipitation(BlockState state, Level level, BlockPos pos, Biome.Precipitation precipitation) {
+        if (!level.isClientSide() && precipitation == Biome.Precipitation.RAIN) {
+            level.removeBlock(pos, false);
         }
     }
 
     @Override
-    public int getLightValue(final BlockState state, final BlockGetter w, final BlockPos pos) {
-        final PaintSplotchesTileEntity tp = this.getTileEntity(w, pos);
+    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+        final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
 
         if (tp != null) {
             return tp.getLightLevel();
