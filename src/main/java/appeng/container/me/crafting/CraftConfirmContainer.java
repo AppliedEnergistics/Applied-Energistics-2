@@ -192,15 +192,6 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
     }
 
     @Override
-    public void removeSlotListener(final ContainerListener c) {
-        super.removeSlotListener(c);
-        if (this.job != null) {
-            this.job.cancel(true);
-            this.setJob(null);
-        }
-    }
-
-    @Override
     public void removed(final Player par1PlayerEntity) {
         super.removed(par1PlayerEntity);
         if (this.job != null) {

@@ -121,16 +121,7 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     }
 
     @Override
-    public void removeSlotListener(final ContainerListener c) {
-        super.removeSlotListener(c);
-
-        if (this.containerListeners.isEmpty() && this.cpu != null) {
-            this.cpu.removeListener(this);
-        }
-    }
-
-    @Override
-    public void removed(final Player player) {
+    public void removed(Player player) {
         super.removed(player);
         if (this.cpu != null) {
             this.cpu.removeListener(this);

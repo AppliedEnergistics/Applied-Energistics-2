@@ -681,10 +681,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     }
 
     protected final void sendPacketToClient(BasePacket packet) {
-        for (ContainerListener c : this.containerListeners) {
-            if (c instanceof ServerPlayer) {
-                NetworkHandler.instance().sendTo(packet, (ServerPlayer) c);
-            }
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+            NetworkHandler.instance().sendTo(packet, serverPlayer);
         }
     }
 
@@ -714,13 +712,10 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public void addSlotListener(ContainerListener listener) {
-        super.addSlotListener(listener);
+    public void sendAllDataToRemote() {
+        super.sendAllDataToRemote();
 
-        // The first listener that is added is our opportunity to send the initial data packet, since
-        // this happens after the OpenContainer packet has been sent to the client, but before any other
-        // processing continues.
-        if (listener instanceof ServerPlayer && dataSync.hasFields()) {
+        if (dataSync.hasFields()) {
             sendPacketToClient(new GuiDataSyncPacket(containerId, dataSync::writeFull));
         }
     }

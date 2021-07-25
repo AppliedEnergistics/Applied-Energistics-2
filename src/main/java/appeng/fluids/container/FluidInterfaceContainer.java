@@ -18,12 +18,10 @@
 
 package appeng.fluids.container;
 
-import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ContainerListener;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
@@ -68,7 +66,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.tankSync.sendDiff(this.containerListeners);
+            this.tankSync.sendDiff(getPlayer());
         }
 
         super.broadcastChanges();
@@ -83,9 +81,9 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     }
 
     @Override
-    public void addSlotListener(ContainerListener listener) {
-        super.addSlotListener(listener);
-        this.tankSync.sendFull(Collections.singleton(listener));
+    public void sendAllDataToRemote() {
+        super.sendAllDataToRemote();
+        this.tankSync.sendFull(getPlayer());
     }
 
     @Override

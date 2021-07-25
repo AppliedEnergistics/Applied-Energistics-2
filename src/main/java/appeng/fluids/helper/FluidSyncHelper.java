@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.network.NetworkHandler;
@@ -42,12 +42,12 @@ public class FluidSyncHelper {
         this.idOffset = idOffset;
     }
 
-    public void sendFull(final Iterable<ContainerListener> listeners) {
-        this.sendDiffMap(this.createDiffMap(true), listeners);
+    public void sendFull(Player player) {
+        this.sendDiffMap(this.createDiffMap(true), player);
     }
 
-    public void sendDiff(final Iterable<ContainerListener> listeners) {
-        this.sendDiffMap(this.createDiffMap(false), listeners);
+    public void sendDiff(Player player) {
+        this.sendDiffMap(this.createDiffMap(false), player);
     }
 
     public void readPacket(final Map<Integer, IAEFluidStack> data) {
@@ -58,15 +58,13 @@ public class FluidSyncHelper {
         }
     }
 
-    private void sendDiffMap(final Map<Integer, IAEFluidStack> data, final Iterable<ContainerListener> listeners) {
+    private void sendDiffMap(final Map<Integer, IAEFluidStack> data, Player player) {
         if (data.isEmpty()) {
             return;
         }
 
-        for (final ContainerListener l : listeners) {
-            if (l instanceof ServerPlayer) {
-                NetworkHandler.instance().sendTo(new FluidSlotPacket(data), (ServerPlayer) l);
-            }
+        if (player instanceof ServerPlayer serverPlayer) {
+            NetworkHandler.instance().sendTo(new FluidSlotPacket(data), serverPlayer);
         }
     }
 

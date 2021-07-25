@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
@@ -154,12 +153,6 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
 
                 this.wirelessIn.set(ItemStack.EMPTY);
                 this.wirelessOut.set(term);
-
-                // update the two slots in question...
-                for (final ContainerListener listener : this.containerListeners) {
-                    listener.slotChanged(this, this.wirelessIn.index, this.wirelessIn.getItem());
-                    listener.slotChanged(this, this.wirelessOut.index, this.wirelessOut.getItem());
-                }
             }
         }
     }
