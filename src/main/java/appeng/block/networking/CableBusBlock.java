@@ -18,54 +18,6 @@
 
 package appeng.block.networking;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.phys.HitResult.Type;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.PartItemStack;
@@ -85,6 +37,53 @@ import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.util.Platform;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IBlockRenderProperties;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
 
 public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, SimpleWaterloggedBlock {
 
@@ -191,98 +190,6 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
 
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(final BlockState state, final Level world, final HitResult target,
-                                 final ParticleEngine effectRenderer) {
-
-        // Half the particle rate. Since we're spawning concentrated on a specific spot,
-        // our particle effect otherwise looks too strong
-        if (Platform.getRandom().nextBoolean()) {
-            return true;
-        }
-
-        if (target.getType() != Type.BLOCK) {
-            return false;
-        }
-        BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
-
-        ICableBusContainer cb = this.cb(world, blockPos);
-
-        // Our built-in model has the actual baked sprites we need
-        BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                .getBlockModel(this.defaultBlockState());
-
-        // We cannot add the effect if we don't have the model
-        if (!(model instanceof CableBusBakedModel)) {
-            return true;
-        }
-
-        CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
-
-        CableBusRenderState renderState = cb.getRenderState();
-
-        // Spawn a particle for one of the particle textures
-        TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
-        if (texture != null) {
-            double x = target.getLocation().x;
-            double y = target.getLocation().y;
-            double z = target.getLocation().z;
-            // FIXME: Check how this looks, probably like shit, maybe provide parts the
-            // ability to supply particle textures???
-            effectRenderer.add(
-                    new CableBusBreakingParticle((ClientLevel) world, x, y, z, texture).scale(0.8F));
-        }
-
-        return true;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine effectRenderer) {
-        ICableBusContainer cb = this.cb(world, pos);
-
-        // Our built-in model has the actual baked sprites we need
-        BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                .getBlockModel(this.defaultBlockState());
-
-        // We cannot add the effect if we dont have the model
-        if (!(model instanceof CableBusBakedModel)) {
-            return true;
-        }
-
-        CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
-
-        CableBusRenderState renderState = cb.getRenderState();
-
-        List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
-
-        if (!textures.isEmpty()) {
-            // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
-            for (int j = 0; j < 4; ++j) {
-                for (int k = 0; k < 4; ++k) {
-                    for (int l = 0; l < 4; ++l) {
-                        // Randomly select one of the textures if the cable bus has more than just one
-                        // possibility here
-                        final TextureAtlasSprite texture = Platform.pickRandom(textures);
-
-                        final double x = pos.getX() + (j + 0.5D) / 4.0D;
-                        final double y = pos.getY() + (k + 0.5D) / 4.0D;
-                        final double z = pos.getZ() + (l + 0.5D) / 4.0D;
-
-                        // FIXME: Check how this looks, probably like shit, maybe provide parts the
-                        // ability to supply particle textures???
-                        Particle effect = new CableBusBreakingParticle((ClientLevel) world, x, y, z,
-                                x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
-                        effectRenderer.add(effect);
-                    }
-                }
-            }
-        }
-
-        return true;
     }
 
     @Override
@@ -434,6 +341,102 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
 
         return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
+    }
+
+    @Override
+    public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
+        consumer.accept(new IBlockRenderProperties() {
+
+            @Override
+            public boolean addHitEffects(final BlockState state, final Level world, final HitResult target,
+                                         final ParticleEngine effectRenderer) {
+
+                // Half the particle rate. Since we're spawning concentrated on a specific spot,
+                // our particle effect otherwise looks too strong
+                if (Platform.getRandom().nextBoolean()) {
+                    return true;
+                }
+
+                if (target.getType() != Type.BLOCK) {
+                    return false;
+                }
+                BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
+
+                ICableBusContainer cb = cb(world, blockPos);
+
+                // Our built-in model has the actual baked sprites we need
+                BakedModel model = Minecraft.getInstance().getBlockRenderer()
+                        .getBlockModel(defaultBlockState());
+
+                // We cannot add the effect if we don't have the model
+                if (!(model instanceof CableBusBakedModel)) {
+                    return true;
+                }
+
+                CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
+
+                CableBusRenderState renderState = cb.getRenderState();
+
+                // Spawn a particle for one of the particle textures
+                TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
+                if (texture != null) {
+                    double x = target.getLocation().x;
+                    double y = target.getLocation().y;
+                    double z = target.getLocation().z;
+                    // FIXME: Check how this looks, probably like shit, maybe provide parts the
+                    // ability to supply particle textures???
+                    effectRenderer.add(
+                            new CableBusBreakingParticle((ClientLevel) world, x, y, z, texture).scale(0.8F));
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine effectRenderer) {
+                ICableBusContainer cb = cb(world, pos);
+
+                // Our built-in model has the actual baked sprites we need
+                BakedModel model = Minecraft.getInstance().getBlockRenderer()
+                        .getBlockModel(defaultBlockState());
+
+                // We cannot add the effect if we dont have the model
+                if (!(model instanceof CableBusBakedModel)) {
+                    return true;
+                }
+
+                CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
+
+                CableBusRenderState renderState = cb.getRenderState();
+
+                List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
+
+                if (!textures.isEmpty()) {
+                    // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
+                    for (int j = 0; j < 4; ++j) {
+                        for (int k = 0; k < 4; ++k) {
+                            for (int l = 0; l < 4; ++l) {
+                                // Randomly select one of the textures if the cable bus has more than just one
+                                // possibility here
+                                final TextureAtlasSprite texture = Platform.pickRandom(textures);
+
+                                final double x = pos.getX() + (j + 0.5D) / 4.0D;
+                                final double y = pos.getY() + (k + 0.5D) / 4.0D;
+                                final double z = pos.getZ() + (l + 0.5D) / 4.0D;
+
+                                // FIXME: Check how this looks, probably like shit, maybe provide parts the
+                                // ability to supply particle textures???
+                                Particle effect = new CableBusBreakingParticle((ClientLevel) world, x, y, z,
+                                        x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
+                                effectRenderer.add(effect);
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+        });
     }
 
 }
