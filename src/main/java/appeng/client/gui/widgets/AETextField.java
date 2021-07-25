@@ -24,9 +24,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 
 /**
@@ -123,19 +125,16 @@ public class AETextField extends EditBox {
         float green = (this.selectionColor & 255) / 255.0F;
         float alpha = (this.selectionColor >> 24 & 255) / 255.0F;
 
-        RenderSystem.color4f(red, green, blue, alpha);
-        RenderSystem.disableTexture();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormat.POSITION);
-        bufferbuilder.vertex(startX, endY, 0.0D).endVertex();
-        bufferbuilder.vertex(endX, endY, 0.0D).endVertex();
-        bufferbuilder.vertex(endX, startY, 0.0D).endVertex();
-        bufferbuilder.vertex(startX, startY, 0.0D).endVertex();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferbuilder.vertex(startX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
+        bufferbuilder.vertex(endX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
+        bufferbuilder.vertex(endX, startY, 0.0D).color(red, green, blue, alpha).endVertex();
+        bufferbuilder.vertex(startX, startY, 0.0D).color(red, green, blue, alpha).endVertex();
         tessellator.end();
         RenderSystem.disableColorLogicOp();
-        RenderSystem.enableTexture();
-        RenderSystem.color4f(1, 1, 1, 1);
     }
 
 }

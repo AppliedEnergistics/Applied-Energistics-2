@@ -468,7 +468,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
                     .add(new TextComponent("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
         }
 
-        this.renderWrappedToolTip(matrices, currentToolTip, x, y, this.font);
+        this.renderComponentTooltip(matrices, currentToolTip, x, y);
     }
 
     private int getMaxRows() {
@@ -609,8 +609,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     private void reinitalize() {
-        this.children.removeAll(this.buttons);
-        this.buttons.clear();
+        new ArrayList<>(this.children()).forEach(this::removeWidget);
         this.init();
     }
 }

@@ -134,8 +134,8 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     @Override
-    public void setItem(int slotID, ItemStack stack) {
-        super.setItem(slotID, stack);
+    public void setItem(int slotID, int stateId, ItemStack stack) {
+        super.setItem(slotID, stateId, stack);
         this.getAndUpdateOutput();
     }
 

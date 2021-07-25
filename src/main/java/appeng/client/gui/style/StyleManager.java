@@ -59,7 +59,7 @@ public final class StyleManager {
         }
     }
 
-    public static ScreenStyle loadStyleDoc(String path) {
+    public static ScreenStyle loadStyleDoc(String path) throws IOException {
         ScreenStyle style = loadStyleDocInternal(path);
         // We only require the final style-document to be fully valid,
         // includes are allowed to be partially valid.
@@ -160,7 +160,7 @@ public final class StyleManager {
         }
     }
 
-    private static ScreenStyle loadStyleDocInternal(String path) {
+    private static ScreenStyle loadStyleDocInternal(String path) throws IOException {
 
         ScreenStyle style = styleCache.get(path);
         if (style != null) {
@@ -174,6 +174,8 @@ public final class StyleManager {
             style = ScreenStyle.GSON.fromJson(document, ScreenStyle.class);
 
             style.validate();
+        } catch (IOException e) {
+            throw e;
         } catch (Exception e) {
             throw new JsonParseException("Failed to load style from " + path + " (packs: " + resourcePacks + ")", e);
         }

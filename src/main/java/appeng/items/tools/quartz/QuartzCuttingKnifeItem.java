@@ -38,8 +38,11 @@ import appeng.util.Platform;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.Properties;
 
+import java.util.Random;
+
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;
+    private final Random random = new Random();
 
     public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);

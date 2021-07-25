@@ -211,13 +211,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return AEColor.TRANSPARENT;
         }
 
-        if (paintBall.getItem() instanceof PaintBallItem) {
-            final PaintBallItem ipb = (PaintBallItem) paintBall.getItem();
+        if (paintBall.getItem() instanceof final PaintBallItem ipb) {
             return ipb.getColor();
         } else {
             for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
                 Tag<Item> tag = ItemTags.getAllTags().getTag(entry.getKey());
-                if (tag != null && paintBall.getItem().is(tag)) {
+                if (tag != null && tag.contains(paintBall.getItem())) {
                     return entry.getValue();
                 }
             }
@@ -328,10 +327,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         BlockEntity be = w.getBlockEntity(pos);
-        if (be instanceof IColorableTile) {
-            IColorableTile ct = (IColorableTile) be;
-            AEColor c = ct.getColor();
-            if (c != newColor) {
+        if (be instanceof IColorableTile ct) {
+            if (ct.getColor() != newColor) {
                 ct.recolourBlock(side, newColor, p);
                 return true;
             }

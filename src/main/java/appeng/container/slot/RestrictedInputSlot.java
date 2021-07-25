@@ -21,6 +21,7 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
+import appeng.tile.misc.VibrationChamberTileEntity;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.world.entity.player.Player;
@@ -153,7 +154,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ORE:
                 return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
-                return ForgeHooks.getBurnTime(stack) > 0;
+                return VibrationChamberTileEntity.hasBurnTime(stack);
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
