@@ -47,4 +47,10 @@ public class CableBusTESR implements BlockEntityRenderer<CableBusTileEntity> {
             }
         }
     }
+
+    @Override
+    public int getViewDistance() {
+        return 900;
+    }
+
 }
