@@ -22,7 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.api.networking.IGridNodeService;
 import appeng.api.storage.cells.ICellProvider;
+import appeng.tile.misc.InterfaceTileEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -463,20 +465,18 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
-        IInterfaceHost achievement = null;
+        IGridNode targetNode = null;
 
-        if (target instanceof IInterfaceHost) {
-            achievement = (IInterfaceHost) target;
-        }
-
-        if (target instanceof IPartHost) {
+        if (target instanceof InterfaceTileEntity interfaceTileEntity) {
+            targetNode = interfaceTileEntity.getMainNode().getNode();
+        } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);
-            if (part instanceof IInterfaceHost) {
-                achievement = (IInterfaceHost) part;
+            if (part instanceof InterfacePart interfacePart) {
+                targetNode = interfacePart.getMainNode().getNode();
             }
         }
 
-        if (achievement != null && achievement.getActionableNode() != null) {
+        if (targetNode != null) {
             // Platform.addStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
