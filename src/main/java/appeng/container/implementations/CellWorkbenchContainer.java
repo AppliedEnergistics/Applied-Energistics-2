@@ -20,12 +20,9 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -128,18 +125,6 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public void broadcastChanges() {
         final ItemStack is = getWorkbenchItem();
         if (isServer()) {
-            for (final ContainerListener listener : this.containerListeners) {
-                if (this.prevStack != is) {
-                    // if the bars changed an item was probably made, so just send shit!
-                    for (final Slot s : this.slots) {
-                        if (s instanceof OptionalRestrictedInputSlot) {
-                            final OptionalRestrictedInputSlot sri = (OptionalRestrictedInputSlot) s;
-                            listener.slotChanged(this, sri.index, sri.getItem());
-                        }
-                    }
-                }
-            }
-
             this.setCopyMode(this.getWorkBenchCopyMode());
             this.setFuzzyMode(this.getWorkBenchFuzzyMode());
         }

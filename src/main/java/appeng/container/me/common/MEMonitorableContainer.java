@@ -304,15 +304,6 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     @Override
-    public void removeSlotListener(final ContainerListener c) {
-        super.removeSlotListener(c);
-
-        if (this.containerListeners.isEmpty() && this.monitor != null) {
-            this.monitor.removeListener(this);
-        }
-    }
-
-    @Override
     public void removed(final Player player) {
         super.removed(player);
         if (this.monitor != null) {

@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -385,13 +384,6 @@ public class PatternTermContainer extends ItemTerminalContainer
     @Override
     public void onSlotChange(final Slot s) {
         if (s == this.encodedPatternSlot && isServer()) {
-            for (final ContainerListener listener : this.containerListeners) {
-                for (final Slot slot : this.slots) {
-                    if (slot instanceof OptionalFakeSlot || slot instanceof FakeCraftingMatrixSlot) {
-                        listener.slotChanged(this, slot.index, slot.getItem());
-                    }
-                }
-            }
             this.broadcastChanges();
         }
 
