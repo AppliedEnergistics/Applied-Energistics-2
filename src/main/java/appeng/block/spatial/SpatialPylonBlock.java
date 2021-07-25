@@ -45,12 +45,12 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     }
 
     @Override
-    public int getLightValue(final BlockState state, final BlockGetter w, final BlockPos pos) {
-        final SpatialPylonTileEntity tsp = this.getTileEntity(w, pos);
+    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+        final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
             return tsp.getLightValue();
         }
-        return super.getLightValue(state, w, pos);
+        return super.getLightEmission(state, world, pos);
     }
 
 }
