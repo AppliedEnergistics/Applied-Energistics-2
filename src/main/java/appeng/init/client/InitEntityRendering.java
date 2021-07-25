@@ -18,6 +18,7 @@
 
 package appeng.init.client;
 
+import appeng.client.render.tesr.SkyChestTESR;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 
@@ -35,6 +36,7 @@ public final class InitEntityRendering {
     }
 
     public static void init() {
+        RenderingRegistry.registerLayerDefinition(SkyChestTESR.MODEL_LAYER, SkyChestTESR::createSingleBodyLayer);
 
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(AEEntities.SINGULARITY,
