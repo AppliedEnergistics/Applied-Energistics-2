@@ -24,10 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -41,15 +38,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
@@ -260,7 +252,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEBlocks.INTERFACE.stack();
+        return AEBlocks.ITEM_INTERFACE.stack();
     }
 
     @Override

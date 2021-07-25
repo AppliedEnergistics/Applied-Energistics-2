@@ -119,13 +119,17 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
                 return itemStack;
             }
 
-            final ItemStack is = new ItemStack(this);
-            final CompoundTag data = new CompoundTag();
-            data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
-            is.setTag(data);
-            return is;
+            return createFacadeForItemUnchecked(itemStack);
         }
         return ItemStack.EMPTY;
+    }
+
+    public ItemStack createFacadeForItemUnchecked(final ItemStack itemStack) {
+        final ItemStack is = new ItemStack(this);
+        final CompoundTag data = new CompoundTag();
+        data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
+        is.setTag(data);
+        return is;
     }
 
     @Override

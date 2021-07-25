@@ -95,9 +95,9 @@ public final class InitP2PAttunements {
          * attune based on lots of random item related stuff
          */
 
-        addNewAttunement(p2p, AEBlocks.INTERFACE, TunnelType.ITEM);
+        addNewAttunement(p2p, AEBlocks.ITEM_INTERFACE, TunnelType.ITEM);
         addNewAttunement(p2p, AEParts.INTERFACE, TunnelType.ITEM);
-        addNewAttunement(p2p, AEParts.STORAGE_BUS, TunnelType.ITEM);
+        addNewAttunement(p2p, AEParts.ITEM_STORAGE_BUS, TunnelType.ITEM);
         addNewAttunement(p2p, AEParts.IMPORT_BUS, TunnelType.ITEM);
         addNewAttunement(p2p, AEParts.EXPORT_BUS, TunnelType.ITEM);
 

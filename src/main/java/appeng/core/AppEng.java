@@ -48,9 +48,6 @@ public interface AppEng {
         return new ResourceLocation(MOD_ID, id);
     }
 
-    @Nonnull
-    AdvancementTriggers getAdvancementTriggers();
-
     /**
      * Allows common item use methods to get the current mouse over without relying on client-only methods.
      */

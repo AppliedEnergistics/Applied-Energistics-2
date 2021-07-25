@@ -110,7 +110,7 @@ public final class AEBlockEntities {
     public static final BlockEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
             ChestTileEntity::new, AEBlocks.CHEST);
     public static final BlockEntityType<InterfaceTileEntity> INTERFACE = create("interface", InterfaceTileEntity.class,
-            InterfaceTileEntity::new, AEBlocks.INTERFACE);
+            InterfaceTileEntity::new, AEBlocks.ITEM_INTERFACE);
     public static final BlockEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
             FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new, AEBlocks.FLUID_INTERFACE);
     public static final BlockEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",

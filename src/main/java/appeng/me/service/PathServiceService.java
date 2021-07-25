@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import appeng.core.stats.AdvancementTriggers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -39,7 +40,6 @@ import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
@@ -280,14 +280,14 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
         }
 
         if (ch < 128) {
-            return AppEng.instance().getAdvancementTriggers().getNetworkApprentice();
+            return AdvancementTriggers.NETWORK_APPRENTICE;
         }
 
         if (ch < 2048) {
-            return AppEng.instance().getAdvancementTriggers().getNetworkEngineer();
+            return AdvancementTriggers.NETWORK_ENGINEER;
         }
 
-        return AppEng.instance().getAdvancementTriggers().getNetworkAdmin();
+        return AdvancementTriggers.NETWORK_ADMIN;
     }
 
     private void updateNodReq(final GridChannelRequirementChanged ev) {

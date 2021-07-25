@@ -18,41 +18,21 @@
 
 package appeng.core.stats;
 
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.CriterionTrigger;
-
 public class AdvancementTriggers {
-    private AppEngAdvancementTrigger networkApprentice = new AppEngAdvancementTrigger("network_apprentice");
-    private AppEngAdvancementTrigger networkEngineer = new AppEngAdvancementTrigger("network_engineer");
-    private AppEngAdvancementTrigger networkAdmin = new AppEngAdvancementTrigger("network_admin");
-    private AppEngAdvancementTrigger spatialExplorer = new AppEngAdvancementTrigger("spatial_explorer");
-
-    public AdvancementTriggers(ICriterionTriggerRegistry registry) {
-        registry.register(this.networkApprentice);
-        registry.register(this.networkEngineer);
-        registry.register(this.networkAdmin);
-        registry.register(this.spatialExplorer);
-    }
-
-    public IAdvancementTrigger getNetworkApprentice() {
-        return this.networkApprentice;
-    }
-
-    public IAdvancementTrigger getNetworkEngineer() {
-        return this.networkEngineer;
-    }
-
-    public IAdvancementTrigger getNetworkAdmin() {
-        return this.networkAdmin;
-    }
-
-    public IAdvancementTrigger getSpatialExplorer() {
-        return this.spatialExplorer;
-    }
-
-    @FunctionalInterface
-    public interface ICriterionTriggerRegistry {
-        void register(CriterionTrigger<? extends CriterionTriggerInstance> trigger);
-    }
-
+    /**
+     * Has a network with 8 channels
+     */
+    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger("network_apprentice");
+    /**
+     * Has a network with 128 channels
+     */
+    public static final AppEngAdvancementTrigger NETWORK_ENGINEER = new AppEngAdvancementTrigger("network_engineer");
+    /**
+     * Has a network with 2048 channels
+     */
+    public static final AppEngAdvancementTrigger NETWORK_ADMIN = new AppEngAdvancementTrigger("network_admin");
+    /**
+     * Entered spatial dimension
+     */
+    public static final AppEngAdvancementTrigger SPATIAL_EXPLORER = new AppEngAdvancementTrigger("spatial_explorer");
 }
