@@ -111,11 +111,6 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     }
 
     @Override
-    public double getViewDistance() {
-        return 900.0;
-    }
-
-    @Override
     public void setRemoved() {
         super.setRemoved();
         this.getCableBus().removeFromWorld();
