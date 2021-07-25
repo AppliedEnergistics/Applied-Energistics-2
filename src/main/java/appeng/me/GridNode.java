@@ -40,6 +40,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
@@ -368,7 +369,11 @@ public class GridNode implements IGridNode, IPathItem {
 
     public void loadFromNBT(final String name, final CompoundTag nodeData) {
         Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
-        if (this.myGrid == null) {
+        if (this.myGrid != null) {
+            throw new IllegalStateException("Loading data after part of a grid, this is invalid.");
+        }
+
+        if (nodeData.contains(name, Tag.TAG_COMPOUND)) {
             final CompoundTag node = nodeData.getCompound(name);
             this.owningPlayerId = node.getInt("p");
             this.setLastSecurityKey(node.getLong("k"));
@@ -377,7 +382,9 @@ public class GridNode implements IGridNode, IPathItem {
             final GridStorage gridStorage = WorldData.instance().storageData().getGridStorage(storageID);
             this.setGridStorage(gridStorage);
         } else {
-            throw new IllegalStateException("Loading data after part of a grid, this is invalid.");
+            this.owningPlayerId = -1; // Unknown owner
+            setLastSecurityKey(-1);
+            setGridStorage(null);
         }
     }
 
@@ -424,7 +431,7 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public boolean isExposedOnSide(@Nonnull Direction side) {
-        return exposedOnSides.contains(side);
+        return myGrid != null && exposedOnSides.contains(side);
     }
 
     @Override
