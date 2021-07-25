@@ -135,7 +135,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
         super.init();
         positionSlots(style);
 
-        widgets.populateScreen(this::addButton, getBounds(true), this);
+        widgets.populateScreen(this::addRenderableWidget, getBounds(true), this);
     }
 
     private void positionSlots(ScreenStyle style) {
@@ -256,7 +256,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
             return;
         }
 
-        for (AbstractWidget c : this.buttons) {
+        for (var c : this.renderables) {
             if (c instanceof ITooltip) {
                 Tooltip tooltip = ((ITooltip) c).getTooltip(mouseX, mouseY);
                 if (tooltip != null) {
@@ -425,7 +425,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
         if (btn == 1) {
             handlingRightClick = true;
             try {
-                for (AbstractWidget widget : this.buttons) {
+                for (var widget : this.children()) {
                     if (widget.isMouseOver(xCoord, yCoord)) {
                         return super.mouseClicked(xCoord, yCoord, 0);
                     }
@@ -633,12 +633,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
     public void drawItem(final int x, final int y, final ItemStack is) {
         this.itemRenderer.blitOffset = 100.0F;
-
-        // FIXME I dont think this is needed anymore...
-        Lighting.turnBackOn();
         this.itemRenderer.renderAndDecorateItem(is, x, y);
-        Lighting.turnOff();
-
         this.itemRenderer.blitOffset = 0.0F;
     }
 
@@ -691,7 +686,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
     public void bindTexture(final String file) {
         final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
-        getMinecraft().getTextureManager().bind(loc);
+        RenderSystem.setShaderTexture(0, loc);
     }
 
     @Override
@@ -700,7 +695,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
         widgets.tick();
 
-        for (GuiEventListener child : children) {
+        for (GuiEventListener child : children()) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();
             }
@@ -818,7 +813,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
         // Then any of the children
         if (ingredientSupplier == null) {
-            for (GuiEventListener child : super.children) {
+            for (GuiEventListener child : super.children()) {
                 if (child instanceof IIngredientSupplier && child.isMouseOver(mouseX, mouseY)) {
                     ingredientSupplier = (IIngredientSupplier) child;
                     break;

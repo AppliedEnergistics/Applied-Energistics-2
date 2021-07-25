@@ -22,6 +22,8 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.lwjgl.opengl.GL11;
@@ -232,8 +234,8 @@ public final class Blitter {
     }
 
     public void blit(PoseStack matrices, int zIndex) {
-        TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-        textureManager.bind(this.texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, this.texture);
 
         // With no source rectangle, we'll use the entirety of the texture. This happens rarely though.
         float minU, minV, maxU, maxV;
@@ -263,19 +265,23 @@ public final class Blitter {
         Matrix4f matrix = matrices.last().pose();
 
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.vertex(matrix, x1, y2, zIndex)
+                .uv(minU, maxV)
                 .color(r, g, b, a)
-                .uv(minU, maxV).endVertex();
+                .endVertex();
         bufferbuilder.vertex(matrix, x2, y2, zIndex)
+                .uv(maxU, maxV)
                 .color(r, g, b, a)
-                .uv(maxU, maxV).endVertex();
+                .endVertex();
         bufferbuilder.vertex(matrix, x2, y1, zIndex)
+                .uv(maxU, minV)
                 .color(r, g, b, a)
-                .uv(maxU, minV).endVertex();
+                .endVertex();
         bufferbuilder.vertex(matrix, x1, y1, zIndex)
+                .uv(minU, minV)
                 .color(r, g, b, a)
-                .uv(minU, minV).endVertex();
+                .endVertex();
         bufferbuilder.end();
 
         if (blending) {

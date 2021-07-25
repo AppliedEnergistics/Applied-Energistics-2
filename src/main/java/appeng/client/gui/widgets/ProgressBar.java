@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -127,6 +128,10 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     @Override
     public boolean isTooltipAreaVisible() {
         return true;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput output) {
     }
 
     public enum Direction {

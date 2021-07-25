@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -126,6 +128,10 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
     @Override
     public FluidStack getFluidIngredient() {
         return tank.getFluidInTank(this.slot).copy();
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput output) {
     }
 
 }

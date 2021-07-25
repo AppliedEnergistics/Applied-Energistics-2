@@ -233,11 +233,11 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
         }
     }
 
-    private static int getBurnTime(ItemStack is) {
+    public static int getBurnTime(ItemStack is) {
         return ForgeHooks.getBurnTime(is, null);
     }
 
-    private static boolean hasBurnTime(ItemStack is) {
+    public static boolean hasBurnTime(ItemStack is) {
         return getBurnTime(is) > 0;
     }
 

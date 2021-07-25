@@ -29,8 +29,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public ItemStack onTake(final Player player, final ItemStack stack) {
-        return stack;
+    public void onTake(final Player player, final ItemStack stack) {
     }
 
     @Override
