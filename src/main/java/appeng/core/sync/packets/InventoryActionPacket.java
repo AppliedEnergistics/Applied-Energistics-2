@@ -98,10 +98,4 @@ public class InventoryActionPacket extends BasePacket {
         }
     }
 
-    @Override
-    public void clientPacketData(final INetworkInfo network, final Player player) {
-        if (this.action == InventoryAction.UPDATE_HAND && player.containerMenu != null) {
-            player.containerMenu.setCarried(this.slotItem);
-        }
-    }
 }

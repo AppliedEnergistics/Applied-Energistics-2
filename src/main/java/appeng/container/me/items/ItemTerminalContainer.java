@@ -70,9 +70,9 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
         // Handle interactions where the player wants to put something into the network
         if (stack == null) {
             if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE || action == InventoryAction.ROLL_DOWN) {
-                putHeldItemIntoNetwork(player, true);
+                putCarriedItemIntoNetwork(true);
             } else if (action == InventoryAction.PICKUP_OR_SET_DOWN) {
-                putHeldItemIntoNetwork(player, false);
+                putCarriedItemIntoNetwork(false);
             }
             return;
         }
@@ -109,8 +109,6 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                             monitor.extractItems(extracted, Actionable.MODULATE,
                                     this.getActionSource());
                         }
-
-                        this.updateHeld(player);
                     }
                 }
             }
@@ -142,14 +140,12 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                         if (!fail.isEmpty()) {
                             monitor.injectItems(ais, Actionable.MODULATE, this.getActionSource());
                         }
-
-                        this.updateHeld(player);
                     }
                 }
                 break;
             case PICKUP_OR_SET_DOWN:
                 if (!getCarried().isEmpty()) {
-                    putHeldItemIntoNetwork(player, false);
+                    putCarriedItemIntoNetwork(false);
                 } else {
                     IAEItemStack ais = stack.copy();
                     ais.setStackSize(ais.getDefinition().getMaxStackSize());
@@ -160,13 +156,12 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
-                    this.updateHeld(player);
                 }
 
                 break;
             case SPLIT_OR_PLACE_SINGLE:
                 if (!getCarried().isEmpty()) {
-                    putHeldItemIntoNetwork(player, true);
+                    putCarriedItemIntoNetwork(true);
                 } else {
                     IAEItemStack ais = stack.copy();
                     final long maxSize = ais.getDefinition().getMaxStackSize();
@@ -185,7 +180,6 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
-                    this.updateHeld(player);
                 }
 
                 break;
@@ -194,7 +188,6 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
                     final ItemStack is = stack.createItemStack();
                     is.setCount(is.getMaxStackSize());
                     setCarried(is);
-                    this.updateHeld(player);
                 }
                 break;
             case MOVE_REGION:
@@ -211,7 +204,7 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
         }
     }
 
-    protected void putHeldItemIntoNetwork(ServerPlayer player, boolean singleItem) {
+    protected void putCarriedItemIntoNetwork(boolean singleItem) {
         var heldStack = getCarried();
 
         IAEItemStack stackToInsert = AEItemStack.fromItemStack(heldStack);
@@ -233,8 +226,6 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
             heldStack.setCount(heldStack.getCount() - (int) inserted);
             setCarried(heldStack);
         }
-
-        this.updateHeld(player);
     }
 
     private boolean moveOneStackToPlayer(IAEItemStack stack, ServerPlayer player) {
