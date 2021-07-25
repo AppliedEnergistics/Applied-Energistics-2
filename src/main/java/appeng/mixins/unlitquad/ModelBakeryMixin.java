@@ -24,7 +24,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
@@ -39,13 +39,13 @@ import appeng.hooks.UnlitQuadHooks;
 public class ModelBakeryMixin {
 
     @Inject(method = "loadModel", at = @At("HEAD"), allow = 1)
-    protected void onBeginLoadModel(ResourceLocation location, CallbackInfoReturnable<BlockModel> cri)
+    protected void onBeginLoadModel(ResourceLocation location, CallbackInfo cri)
             throws IOException {
         UnlitQuadHooks.beginDeserializingModel(location);
     }
 
     @Inject(method = "loadModel", at = @At("RETURN"))
-    protected void onEndLoadModel(ResourceLocation location, CallbackInfoReturnable<BlockModel> cri) {
+    protected void onEndLoadModel(ResourceLocation location, CallbackInfo cri) {
         UnlitQuadHooks.endDeserializingModel();
     }
 
