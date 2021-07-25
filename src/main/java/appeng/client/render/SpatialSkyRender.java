@@ -23,9 +23,10 @@ import java.util.Random;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.GameRenderer;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -37,11 +38,11 @@ public class SpatialSkyRender {
     private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
     private final Random random = new Random();
-    private final int dspList;
+    private final VertexBuffer sparkleBuffer;
     private long cycle = 0;
 
     public SpatialSkyRender() {
-        this.dspList = GL11.glGenLists(1);
+        sparkleBuffer = new VertexBuffer();
     }
 
     public static SpatialSkyRender getInstance() {
@@ -52,23 +53,16 @@ public class SpatialSkyRender {
             new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
             new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
-    public void render(PoseStack matrixStack) {
+    public void render(PoseStack matrixStack, Matrix4f projectionMatrix) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;
-            GL11.glNewList(this.dspList, GL11.GL_COMPILE);
-            this.renderTwinkles();
-            GL11.glEndList();
+            this.rebuildSparkles();
         }
-
-        float fade = now - this.cycle;
-        fade /= 1000;
-        fade = 0.15f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableBlend();
         RenderSystem.depthMask(false);
-        RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f);
         final Tesselator tessellator = Tesselator.getInstance();
         var buffer = tessellator.getBuilder();
 
@@ -77,35 +71,37 @@ public class SpatialSkyRender {
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.pushPose();
             matrixStack.mulPose(rotation);
-            RenderSystem.applyModelViewMatrix();
 
+            // This is very similar to how the End sky is rendered, just untextured
+            Matrix4f matrix4f = matrixStack.last().pose();
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            buffer.vertex(-100.0D, -100.0D, -100.0D).color(0f, 0f, 0f, 1f).endVertex();
-            buffer.vertex(-100.0D, -100.0D, 100.0D).color(0f, 0f, 0f, 1f).endVertex();
-            buffer.vertex(100.0D, -100.0D, 100.0D).color(0f, 0f, 0f, 1f).endVertex();
-            buffer.vertex(100.0D, -100.0D, -100.0D).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(matrix4f, -100.0f, -100.0f, -100.0f).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(matrix4f, -100.0f, -100.0f, 100.0f).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(matrix4f, 100.0f, -100.0f, 100.0f).color(0f, 0f, 0f, 1f).endVertex();
+            buffer.vertex(matrix4f, 100.0f, -100.0f, -100.0f).color(0f, 0f, 0f, 1f).endVertex();
             tessellator.end();
             matrixStack.popPose();
         }
 
-        RenderSystem.depthMask(true);
+        // Cycle the sparkles between 0 and 0.25 color value over 2 seconds
+        float fade = now - this.cycle;
+        fade /= 1000;
+        fade = 0.25f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
         if (fade > 0.0f) {
             RenderSystem.enableBlend();
-            RenderSystem.depthMask(false);
-            RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+            RenderSystem.defaultBlendFunc();
 
             RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
-            GL11.glCallList(this.dspList);
+            sparkleBuffer.drawWithShader(matrixStack.last().pose(), projectionMatrix, GameRenderer.getPositionColorShader());
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
         RenderSystem.depthMask(true);
         RenderSystem.enableBlend();
-
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    private void renderTwinkles() {
+    private void rebuildSparkles() {
         final Tesselator tessellator = Tesselator.getInstance();
         final BufferBuilder vb = tessellator.getBuilder();
         vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -145,11 +141,12 @@ public class SpatialSkyRender {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.vertex(x + d24, y + d22, z + d25).color(1f, 1f, 1f, 1f).endVertex();
+                    vb.vertex(x + d24, y + d22, z + d25).color(255, 255, 255, 255).endVertex();
                 }
             }
         }
+        vb.end();
 
-        tessellator.end();
+        sparkleBuffer.upload(vb);
     }
 }

@@ -42,7 +42,7 @@ public class SkyRenderMixin {
     @Inject(method = "renderSky(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/math/Matrix4f;FLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(PoseStack matrices, Matrix4f matrix, float f, Runnable runnable, CallbackInfo ci) {
         if (minecraft.level.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
-            SpatialSkyRender.getInstance().render(matrices);
+            SpatialSkyRender.getInstance().render(matrices, matrix);
             ci.cancel();
         }
     }
