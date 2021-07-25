@@ -24,6 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 
+import appeng.util.BootstrapMinecraft;
+import com.mojang.bridge.game.GameVersion;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +37,7 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.FuzzyMode;
 
+@BootstrapMinecraft
 public class FuzzyItemVariantListTest {
 
     @Test
@@ -42,14 +48,14 @@ public class FuzzyItemVariantListTest {
 
         // Unbreakable Diamond Sword @ 50% durability
         net.minecraft.world.item.ItemStack unbreakableSword = new net.minecraft.world.item.ItemStack(Items.DIAMOND_SWORD);
-        unbreakableSword.setDamage(unbreakableSword.getMaxDamage() / 2);
+        unbreakableSword.setDamageValue(unbreakableSword.getMaxDamage() / 2);
         unbreakableSword.getOrCreateTag().putBoolean("Unbreakable", true);
-        assertFalse(unbreakableSword.isDamageable());
+        assertFalse(unbreakableSword.isDamageableItem());
         AESharedItemStack unbreakableStack = new AESharedItemStack(unbreakableSword);
 
         // Unenchanted Diamond Sword @ 0% durability
         ItemStack damagedSword = new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD);
-        damagedSword.setDamage(damagedSword.getMaxDamage());
+        damagedSword.setDamageValue(damagedSword.getMaxDamage());
         AESharedItemStack damagedStack = new AESharedItemStack(damagedSword);
 
         // Create a list of stacks and sort by their natural order
@@ -67,7 +73,7 @@ public class FuzzyItemVariantListTest {
 
         {
             damagedStack = stack.copy();
-            damagedStack.setDamage(damagedStack.getMaxDamage());
+            damagedStack.setDamageValue(damagedStack.getMaxDamage());
         }
 
         @Test
@@ -84,7 +90,7 @@ public class FuzzyItemVariantListTest {
         void test99PercentDurabilityWithUnbreakable() {
             ItemStack unbreakableStack = damagedStack.copy();
             unbreakableStack.getOrCreateTag().putBoolean("Unbreakable", true);
-            assertFalse(unbreakableStack.isDamageable());
+            assertFalse(unbreakableStack.isDamageableItem());
 
             DamageBounds bounds = new DamageBounds(unbreakableStack, FuzzyMode.PERCENT_99);
             assertEquals(stack.getMaxDamage(), bounds.lower.itemDamage);

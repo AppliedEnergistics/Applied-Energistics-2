@@ -21,10 +21,12 @@ package appeng.util.helpers;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.Test;
 
 import appeng.api.util.AEColor;
 
+@BootstrapMinecraft
 public class P2PHelperTest {
 
     private P2PHelper unitUnderTest = new P2PHelper();

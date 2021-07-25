@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -31,7 +32,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.container.SlotSemantic;
@@ -46,11 +46,11 @@ class StyleManagerTest {
     void testInitialize() throws IOException {
         ReloadableResourceManager resourceManager = MockResourceManager.create();
         StyleManager.initialize(resourceManager);
-        verify(resourceManager).addReloadListener(reloadCaptor.capture());
+        verify(resourceManager).registerReloadListener(reloadCaptor.capture());
         assertThat(reloadCaptor.getValue())
                 .isNotNull()
-                .isInstanceOf(ISelectiveResourceReloadListener.class);
-        ((ISelectiveResourceReloadListener) reloadCaptor.getValue()).onResourceManagerReload(resourceManager);
+                .isInstanceOf(ResourceManagerReloadListener.class);
+        ((ResourceManagerReloadListener) reloadCaptor.getValue()).onResourceManagerReload(resourceManager);
     }
 
     @Test
