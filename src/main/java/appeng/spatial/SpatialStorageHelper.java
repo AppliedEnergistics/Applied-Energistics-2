@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.stats.IAdvancementTrigger;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -99,7 +101,7 @@ public class SpatialStorageHelper {
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayer && link.dim.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
-            AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayer) entity);
+            AdvancementTriggers.SPATIAL_EXPLORER.trigger((ServerPlayer) entity);
         }
 
         PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),

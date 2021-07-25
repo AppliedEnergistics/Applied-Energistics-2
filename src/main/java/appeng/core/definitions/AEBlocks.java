@@ -160,7 +160,7 @@ public final class AEBlocks {
     public static final BlockDefinition<ControllerBlock> CONTROLLER = block(AEBlockIds.CONTROLLER, ControllerBlock::new);
     public static final BlockDefinition<DriveBlock> DRIVE = block(AEBlockIds.DRIVE, DriveBlock::new);
     public static final BlockDefinition<ChestBlock> CHEST = block(AEBlockIds.CHEST, ChestBlock::new);
-    public static final BlockDefinition<InterfaceBlock> INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new);
+    public static final BlockDefinition<InterfaceBlock> ITEM_INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new);
     public static final BlockDefinition<FluidInterfaceBlock> FLUID_INTERFACE = block(AEBlockIds.FLUID_INTERFACE, FluidInterfaceBlock::new);
     public static final BlockDefinition<CellWorkbenchBlock> CELL_WORKBENCH = block(AEBlockIds.CELL_WORKBENCH, CellWorkbenchBlock::new);
     public static final BlockDefinition<IOPortBlock> IO_PORT = block(AEBlockIds.IO_PORT, IOPortBlock::new);

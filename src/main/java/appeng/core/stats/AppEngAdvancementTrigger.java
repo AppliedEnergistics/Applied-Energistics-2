@@ -27,7 +27,6 @@ import java.util.Set;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.advancements.CriterionTrigger.Listener;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.server.PlayerAdvancements;
@@ -41,17 +40,21 @@ import appeng.core.AppEng;
 
 public class AppEngAdvancementTrigger
         implements CriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
-    private final ResourceLocation ID;
+    private final ResourceLocation id;
     private final Map<PlayerAdvancements, AppEngAdvancementTrigger.Listeners> listeners = new HashMap<>();
 
-    public AppEngAdvancementTrigger(String parString) {
+    public AppEngAdvancementTrigger(String id) {
         super();
-        this.ID = new ResourceLocation(AppEng.MOD_ID, parString);
+        this.id = AppEng.makeId(id);
+    }
+
+    public Instance instance() {
+        return new Instance(id);
     }
 
     @Override
     public ResourceLocation getId() {
-        return this.ID;
+        return this.id;
     }
 
     @Override

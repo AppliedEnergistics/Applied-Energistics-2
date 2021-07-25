@@ -39,7 +39,7 @@ public final class InitUpgrades {
 
         // Interface
         Upgrades.CRAFTING.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEBlocks.INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEBlocks.ITEM_INTERFACE, 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);
@@ -103,9 +103,9 @@ public final class InitUpgrades {
         Upgrades.INVERTER.registerItem(AEItems.VIEW_CELL, 1);
 
         // Storage Bus
-        Upgrades.FUZZY.registerItem(AEParts.STORAGE_BUS, 1);
-        Upgrades.INVERTER.registerItem(AEParts.STORAGE_BUS, 1);
-        Upgrades.CAPACITY.registerItem(AEParts.STORAGE_BUS, 5);
+        Upgrades.FUZZY.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
+        Upgrades.INVERTER.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
+        Upgrades.CAPACITY.registerItem(AEParts.ITEM_STORAGE_BUS, 5);
 
         // Storage Bus Fluids
         Upgrades.INVERTER.registerItem(AEParts.FLUID_STORAGE_BUS, 1);

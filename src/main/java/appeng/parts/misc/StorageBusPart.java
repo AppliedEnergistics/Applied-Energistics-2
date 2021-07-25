@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.api.networking.IGridNodeService;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.tile.misc.InterfaceTileEntity;
 import net.minecraft.world.InteractionHand;
@@ -77,7 +76,6 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
-import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
@@ -522,7 +520,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEParts.STORAGE_BUS.stack();
+        return AEParts.ITEM_STORAGE_BUS.stack();
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package appeng.datagen;
 
+import appeng.datagen.providers.advancements.AdvancementGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,6 +44,7 @@ public class AE2DataGenerators {
             generator.addProvider(blockTagsProvider);
             generator.addProvider(new ItemTagsProvider(dataEvent, blockTagsProvider));
             generator.addProvider(new DecorationModelProvider(generator, dataEvent.getExistingFileHelper()));
+            generator.addProvider(new AdvancementGenerator(generator));
         }
     }
 

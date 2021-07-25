@@ -389,7 +389,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
             // Blocks and parts share the same soul!
             if (AEParts.INTERFACE.isSameAs(is)) {
-                is = AEBlocks.INTERFACE.stack();
+                is = AEBlocks.ITEM_INTERFACE.stack();
             }
 
             final String name = is.getDescriptionId();

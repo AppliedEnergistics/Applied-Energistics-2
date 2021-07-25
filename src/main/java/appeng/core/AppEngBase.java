@@ -24,6 +24,8 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import appeng.init.InitAdvancementTriggers;
+import appeng.init.client.InitAdditionalModels;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -192,7 +194,7 @@ public abstract class AppEngBase implements AppEng {
 
         // Do initialization that doesn't depend on mod registries being populated
         InitStats.init();
-        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
+        InitAdvancementTriggers.init();
 
         Capabilities.register();
         InitDispenserBehavior.init();
@@ -209,11 +211,6 @@ public abstract class AppEngBase implements AppEng {
         ChunkLoadingService.register();
 
         AddonLoader.loadAddons(Api.INSTANCE);
-    }
-
-    @Override
-    public AdvancementTriggers getAdvancementTriggers() {
-        return Objects.requireNonNull(this.advancementTriggers);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> event) {
