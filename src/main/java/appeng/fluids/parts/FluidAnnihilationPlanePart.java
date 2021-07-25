@@ -68,6 +68,8 @@ import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModelData;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.ItemFluidContainer;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -151,10 +153,10 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    fluid = ((BucketPickup) blockstate.getBlock()).takeLiquid(w, pos, blockstate);
-                    this.storeFluid(grid,
-                            AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
-                            true);
+                    var fluidContainer = ((BucketPickup) blockstate.getBlock()).pickupBlock(w, pos, blockstate);
+                    FluidUtil.getFluidContained(fluidContainer).ifPresent(fs -> {
+                            this.storeFluid(grid, AEFluidStack.fromFluidStack(fs), true);
+                    });
 
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
                             new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),
