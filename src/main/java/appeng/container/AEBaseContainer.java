@@ -459,10 +459,9 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             return;
         }
         final Slot s = this.getSlot(slotIndex);
-        if (!(s instanceof AppEngSlot)) {
+        if (!(s instanceof AppEngSlot appEngSlot)) {
             return;
         }
-        AppEngSlot appEngSlot = (AppEngSlot) s;
         if (!appEngSlot.isSlotEnabled()) {
             return;
         }
@@ -484,7 +483,6 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
                 case CRAFT_ITEM:
                 case CRAFT_STACK:
                     ((CraftingTermSlot) s).doClick(action, player);
-                    this.updateHeld(player);
                 default:
             }
         }
@@ -554,12 +552,6 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             }
         }
 
-    }
-
-    // TODO-1.17 This may no longer be necessary since Vanilla seems to sync the current menu's carried item to the client automatically in synchronizeCarriedToRemote
-    protected void updateHeld(final ServerPlayer p) {
-        NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0, getCarried()), p);
-        throw new UnsupportedOperationException(); // TODO (see above)
     }
 
     protected ItemStack transferStackToContainer(final ItemStack input) {

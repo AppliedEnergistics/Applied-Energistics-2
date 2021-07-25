@@ -247,8 +247,6 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             default:
                 return;
         }
-
-        this.updateHeld(player);
     }
 
     private InterfaceTerminalPacket createFullUpdate(@Nullable IGrid grid) {

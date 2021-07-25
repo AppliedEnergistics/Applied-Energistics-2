@@ -288,9 +288,6 @@ public class PatternTermContainer extends ItemTerminalContainer
 
             if (extracted != null) {
                 inv.addItems(extracted.createItemStack());
-                if (p instanceof ServerPlayer) {
-                    this.updateHeld((ServerPlayer) p);
-                }
                 this.broadcastChanges();
                 return;
             }
@@ -344,9 +341,6 @@ public class PatternTermContainer extends ItemTerminalContainer
                 }
 
                 inv.addItems(is);
-                if (p instanceof ServerPlayer) {
-                    this.updateHeld((ServerPlayer) p);
-                }
                 this.broadcastChanges();
             } else {
                 for (int x = 0; x < real.getContainerSize(); x++) {
