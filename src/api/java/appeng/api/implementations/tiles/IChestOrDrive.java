@@ -25,13 +25,13 @@ package appeng.api.implementations.tiles;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.security.IActionHost;
 import net.minecraft.world.item.Item;
 
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellContainer;
 import appeng.api.util.IOrientable;
 
-public interface IChestOrDrive extends ICellContainer, IOrientable {
+public interface IChestOrDrive extends IOrientable, IActionHost {
 
     /**
      * @return how many slots are available. Chest has 1, Drive has 10.

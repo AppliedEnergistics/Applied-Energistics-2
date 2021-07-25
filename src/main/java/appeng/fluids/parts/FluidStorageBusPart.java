@@ -367,7 +367,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 return Collections.singletonList(out);
             }
         }
-        return super.getCellArray(channel);
+        return Collections.emptyList();
     }
 
     private int createHandlerHash(BlockEntity target) {

@@ -58,7 +58,9 @@ public final class ContainerLocator {
          * An item used from the player's inventory, but right-clicked on a block face, has block position and side in
          * addition to the above.
          */
-        PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, BLOCK, PART
+        PLAYER_INVENTORY_WITH_BLOCK_CONTEXT,
+        BLOCK,
+        PART
     }
 
     private final Type type;

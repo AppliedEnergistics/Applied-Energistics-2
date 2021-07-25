@@ -22,7 +22,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

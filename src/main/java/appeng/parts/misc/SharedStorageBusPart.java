@@ -18,9 +18,7 @@
 
 package appeng.parts.misc;
 
-import java.util.Collections;
-import java.util.List;
-
+import appeng.api.storage.cells.ICellProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
@@ -30,10 +28,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellContainer;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
@@ -48,13 +43,15 @@ import net.minecraft.world.item.ItemStack;
  * @since rv6 22/05/2018
  */
 public abstract class SharedStorageBusPart extends UpgradeablePart
-        implements IGridTickable, ICellContainer, IPriorityHost {
+        implements ICellProvider, IGridTickable, IPriorityHost {
     private boolean wasActive = false;
     private int priority = 0;
 
     public SharedStorageBusPart(ItemStack is) {
         super(is);
-        getMainNode().addService(IGridTickable.class, this);
+        getMainNode()
+                .addService(ICellProvider.class, this)
+                .addService(IGridTickable.class, this);
     }
 
     protected void updateStatus() {
@@ -84,19 +81,6 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
     protected abstract void resetCache();
 
     protected abstract void resetCache(boolean fullReset);
-
-    @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void blinkCell(int slot) {
-    }
-
-    @Override
-    public void saveChanges(ICellInventory<?> cellInventory) {
-    }
 
     @Override
     public int getPriority() {
