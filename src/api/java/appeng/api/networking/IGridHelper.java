@@ -99,6 +99,8 @@ public interface IGridHelper {
     /**
      * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making
      * connections) on another host in the world.
+     * <p/>
+     * Nodes that have been destroyed or have not completed initialization will not be returned.
      *
      * @see #getNodeHost(LevelAccessor, BlockPos)
      */

@@ -792,8 +792,9 @@ public class Platform {
             return true;
         }
 
-        final boolean a_isSecure = isPowered(a.getGrid()) && a.getLastSecurityKey() != -1;
-        final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
+        // If the node has no grid, it counts as unpowered
+        final boolean a_isSecure = a.isPowered() && a.getLastSecurityKey() != -1;
+        final boolean b_isSecure = b.isPowered() && b.getLastSecurityKey() != -1;
 
         if (AEConfig.instance().isSecurityAuditLogEnabled()) {
             AELog.info(
@@ -808,23 +809,16 @@ public class Platform {
         }
 
         if (!a_isSecure && b_isSecure) {
+            // NOTE: b cannot be powered/secure if b has no grid, so b.getGrid() should succeed
             return checkPlayerPermissions(b.getGrid(), a.getOwningPlayerId());
         }
 
         if (a_isSecure && !b_isSecure) {
+            // NOTE: a cannot be powered/secure if a has no grid, so b.getGrid() should succeed
             return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
         }
 
         return true;
-    }
-
-    private static boolean isPowered(final IGrid grid) {
-        if (grid == null) {
-            return false;
-        }
-
-        final IEnergyService eg = grid.getService(IEnergyService.class);
-        return eg.isNetworkPowered();
     }
 
     private static boolean checkPlayerPermissions(final IGrid grid, final int playerID) {
