@@ -391,9 +391,6 @@ public class PatternTermContainer extends ItemTerminalContainer
                         listener.slotChanged(this, slot.index, slot.getItem());
                     }
                 }
-                if (listener instanceof ServerPlayer) {
-                    ((ServerPlayer) listener).ignoreSlotUpdateHack = false;
-                }
             }
             this.broadcastChanges();
         }

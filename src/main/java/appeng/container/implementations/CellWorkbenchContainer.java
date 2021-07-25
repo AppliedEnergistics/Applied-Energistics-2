@@ -137,10 +137,6 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
                             listener.slotChanged(this, sri.index, sri.getItem());
                         }
                     }
-
-                    if (listener instanceof ServerPlayer) {
-                        ((ServerPlayer) listener).ignoreSlotUpdateHack = false;
-                    }
                 }
             }
 
