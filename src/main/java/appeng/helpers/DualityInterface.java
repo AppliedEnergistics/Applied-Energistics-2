@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.crafting.ICraftingRequester;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.ListTag;
@@ -109,7 +110,7 @@ import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-        IConfigManagerHost, ICraftingProvider, IUpgradeableHost {
+        IConfigManagerHost, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
 
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
     public static final int NUMBER_OF_CONFIG_SLOTS = 9;
@@ -142,21 +143,22 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     public DualityInterface(final IManagedGridNode gridNode, final IInterfaceHost ih, ItemStack is) {
         this.gridProxy = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .addService(IGridTickable.class, this);
+                .addService(IGridTickable.class, this)
+                .addService(ICraftingProvider.class, this)
+                .addService(ICraftingRequester.class, this);
 
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.cm.registerSetting(Settings.BLOCK, YesNo.NO);
         this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
         this.iHost = ih;
-        this.craftingTracker = new MultiCraftingTracker(this.iHost, 9);
+        this.craftingTracker = new MultiCraftingTracker(this, 9);
 
-        final MachineSource actionSource = new MachineSource(this.iHost);
-        this.mySource = actionSource;
-        this.fluids.setChangeSource(actionSource);
-        this.items.setChangeSource(actionSource);
+        this.mySource = new MachineSource(this);
+        this.fluids.setChangeSource(this.mySource);
+        this.items.setChangeSource(this.mySource);
 
-        this.interfaceRequestSource = new InterfaceRequestSource(this.iHost);
+        this.interfaceRequestSource = new InterfaceRequestSource(this);
     }
 
     @Override
@@ -887,10 +889,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return (IPart) (this.iHost instanceof IPart ? this.iHost : null);
     }
 
+    @Override
     public ImmutableSet<ICraftingLink> getRequestedJobs() {
         return this.craftingTracker.getRequestedJobs();
     }
 
+    @Override
     public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack acquired,
             final Actionable mode) {
         final int slot = this.craftingTracker.getSlot(link);
@@ -910,6 +914,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return acquired;
     }
 
+    @Override
     public void jobStateChange(final ICraftingLink link) {
         this.craftingTracker.jobStateChange(link);
     }
@@ -1042,7 +1047,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         public InterfaceInventory(final DualityInterface tileInterface) {
             super(new AdaptorItemHandler(tileInterface.storage));
-            this.setActionSource(new MachineSource(DualityInterface.this.iHost));
+            this.setActionSource(mySource);
         }
 
         @Override
@@ -1081,4 +1086,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     }
 
+    @Override
+    @Nullable
+    public IGridNode getActionableNode() {
+        return gridProxy.getNode();
+    }
 }

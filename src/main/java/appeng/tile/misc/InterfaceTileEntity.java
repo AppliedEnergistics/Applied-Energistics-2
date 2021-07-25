@@ -228,38 +228,8 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table) {
-        return this.duality.pushPattern(patternDetails, table);
-    }
-
-    @Override
-    public boolean isBusy() {
-        return this.duality.isBusy();
-    }
-
-    @Override
-    public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
-        this.duality.provideCrafting(craftingTracker);
-    }
-
-    @Override
     public int getInstalledUpgrades(final Upgrades u) {
         return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public ImmutableSet<ICraftingLink> getRequestedJobs() {
-        return this.duality.getRequestedJobs();
-    }
-
-    @Override
-    public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
-        return this.duality.injectCraftedItems(link, items, mode);
-    }
-
-    @Override
-    public void jobStateChange(final ICraftingLink link) {
-        this.duality.jobStateChange(link);
     }
 
     @Override

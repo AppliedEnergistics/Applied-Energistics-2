@@ -90,6 +90,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     public ExportBusPart(final ItemStack is) {
         super(is);
 
+        getMainNode().addService(ICraftingRequester.class, this);
+
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
