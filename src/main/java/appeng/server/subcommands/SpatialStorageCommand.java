@@ -242,7 +242,21 @@ public class SpatialStorageCommand implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
 
+        // Test if the storage world has gone missing, which has occurred in the past. Instead of just not
+        // printing anything or a non-descript error, give the user some hint as to what's happening.
+        try {
+            SpatialStoragePlotManager.INSTANCE.getWorld();
+        } catch (IllegalStateException e) {
+            sender.sendSuccess(new TextComponent("The spatial I/O level is missing: " + e.getMessage()), true);
+            return;
+        }
+
         List<SpatialStoragePlot> plots = new ArrayList<>(SpatialStoragePlotManager.INSTANCE.getPlots());
+
+        if (plots.isEmpty()) {
+            sender.sendSuccess(new TextComponent("There are no spatial I/O plots."), true);
+            return;
+        }
 
         // Prints the least recently used plots
         plots.sort(Comparator.comparing((SpatialStoragePlot plot) -> {
