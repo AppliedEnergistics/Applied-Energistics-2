@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import appeng.util.BootstrapMinecraft;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 
@@ -45,6 +46,7 @@ import net.minecraft.network.chat.TextComponent;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 
+@BootstrapMinecraft
 public class ItemListTest {
 
     ItemList itemList = new ItemList();
@@ -442,10 +444,10 @@ public class ItemListTest {
             boolean craftable) {
         ItemStack is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
-            is.setDisplayName(new TextComponent(customName));
+            is.setHoverName(new TextComponent(customName));
         }
         int damage = (int) ((100 - durabilityPercent) / 100.0f * is.getMaxDamage());
-        is.setDamage(damage);
+        is.setDamageValue(damage);
         AEItemStack ais = AEItemStack.fromItemStack(is);
         ais.setStackSize(stored);
         ais.setCountRequestable(requestable);
@@ -461,7 +463,7 @@ public class ItemListTest {
     private AEItemStack nameTag(String customName, long stored, long requestable, boolean craftable) {
         ItemStack is = new ItemStack(net.minecraft.world.item.Items.NAME_TAG);
         if (customName != null) {
-            is.setDisplayName(new TextComponent(customName));
+            is.setHoverName(new TextComponent(customName));
         }
         AEItemStack ais = AEItemStack.fromItemStack(is);
         ais.setStackSize(stored);

@@ -21,6 +21,7 @@ package appeng.util.item;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import appeng.util.BootstrapMinecraft;
 import com.google.common.testing.EqualsTester;
 
 import net.minecraft.network.chat.TextComponent;
@@ -32,11 +33,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.Bootstrap;
 
+@BootstrapMinecraft
 class AESharedItemStackTest {
 
     @BeforeAll
     static void bootstrap() {
-        Bootstrap.register();
+        Bootstrap.bootStrap();
     }
 
     // Test stack -> Name for debugging the tests
@@ -45,31 +47,31 @@ class AESharedItemStackTest {
     AESharedItemStackTest() {
         TestItemWithCaps TEST_ITEM = new TestItemWithCaps();
 
-        net.minecraft.world.item.ItemStack nameTag1 = new net.minecraft.world.item.ItemStack(TEST_ITEM);
+        ItemStack nameTag1 = new ItemStack(TEST_ITEM);
         stacks.put(new AESharedItemStack(nameTag1), "no-nbt");
 
         // NBT
-        net.minecraft.world.item.ItemStack nameTag2 = new net.minecraft.world.item.ItemStack(TEST_ITEM);
-        nameTag2.setDisplayName(new TextComponent("Hello World"));
+        ItemStack nameTag2 = new ItemStack(TEST_ITEM);
+        nameTag2.setHoverName(new TextComponent("Hello World"));
         stacks.put(new AESharedItemStack(nameTag2), "nbt1");
 
         // Different NBT
-        net.minecraft.world.item.ItemStack nameTag3 = new net.minecraft.world.item.ItemStack(TEST_ITEM);
-        nameTag3.setDisplayName(new TextComponent("ABCDEFGH"));
+        ItemStack nameTag3 = new ItemStack(TEST_ITEM);
+        nameTag3.setHoverName(new TextComponent("ABCDEFGH"));
         stacks.put(new AESharedItemStack(nameTag3), "nbt2");
 
         // NBT + Cap
         CompoundTag capNbt = new CompoundTag();
         capNbt.putInt("Parent", 1);
-        net.minecraft.world.item.ItemStack nameTag4 = new net.minecraft.world.item.ItemStack(TEST_ITEM, 1, capNbt);
-        nameTag4.setDisplayName(new TextComponent("Hello World"));
+        ItemStack nameTag4 = new ItemStack(TEST_ITEM, 1, capNbt);
+        nameTag4.setHoverName(new TextComponent("Hello World"));
         stacks.put(new AESharedItemStack(nameTag4), "nbt1+cap1");
 
         // NBT + Different Cap
         CompoundTag capNbt2 = new CompoundTag();
         capNbt2.putInt("Parent", 123);
-        ItemStack nameTag5 = new net.minecraft.world.item.ItemStack(TEST_ITEM, 1, capNbt2);
-        nameTag5.setDisplayName(new TextComponent("Hello World"));
+        ItemStack nameTag5 = new ItemStack(TEST_ITEM, 1, capNbt2);
+        nameTag5.setHoverName(new TextComponent("Hello World"));
         stacks.put(new AESharedItemStack(nameTag5), "nbt1+cap2");
     }
 
@@ -85,7 +87,7 @@ class AESharedItemStackTest {
         }
 
         // Test that using the same item stack instance makes two separate shared stacks equal
-        net.minecraft.world.item.ItemStack itemStack = new ItemStack(Items.CRAFTING_TABLE);
+        ItemStack itemStack = new ItemStack(Items.CRAFTING_TABLE);
         tester.addEqualityGroup(
                 new AESharedItemStack(itemStack),
                 new AESharedItemStack(itemStack));

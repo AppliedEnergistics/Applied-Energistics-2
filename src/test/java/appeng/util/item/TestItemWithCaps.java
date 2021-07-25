@@ -73,7 +73,7 @@ public class TestItemWithCaps extends net.minecraft.world.item.Item {
 
         @Override
         public void deserializeNBT(IntTag nbt) {
-            counter = nbt.getInt();
+            counter = nbt.getAsInt();
         }
     }
 }

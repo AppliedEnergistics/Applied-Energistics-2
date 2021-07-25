@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -35,9 +34,9 @@ class TooltipTest {
     @Test
     void testLineSplitting() {
         Tooltip tooltip = new Tooltip(
-                new TextComponent("BOLD").mergeStyle(ChatFormatting.BOLD)
-                        .appendString("More Text\nSecond Line")
-                        .appendString("Continued Second Line"),
+                new TextComponent("BOLD").withStyle(ChatFormatting.BOLD)
+                        .append("More Text\nSecond Line")
+                        .append("Continued Second Line"),
                 new TranslatableComponent("Third Line"),
                 new TextComponent("Fourth Line"));
 

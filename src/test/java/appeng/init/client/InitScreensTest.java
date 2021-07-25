@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -47,6 +48,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
 import appeng.util.LoadTranslations;
 
+@BootstrapMinecraft
 @LoadTranslations
 @MockitoSettings
 class InitScreensTest {
@@ -104,7 +106,7 @@ class InitScreensTest {
         // Load AE2 translation data
         Map<String, String> i18n = new HashMap<>(Language.getInstance().getLanguageData());
         try (InputStream in = getClass().getResourceAsStream("/assets/appliedenergistics2/lang/en_us.json")) {
-            Language.func_240593_a_(in, i18n::put);
+            Language.loadFromJson(in, i18n::put);
         }
 
         StyleManager.initialize(MockResourceManager.create());

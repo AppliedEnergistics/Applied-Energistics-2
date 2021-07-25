@@ -53,12 +53,12 @@ public final class MockResourceManager {
             net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
             return getResource(loc);
         });
-        when(resourceManager.getAllResources(any())).thenAnswer(invoc -> {
+        when(resourceManager.getResources(any())).thenAnswer(invoc -> {
             ResourceLocation loc = invoc.getArgument(0);
             return Collections.singletonList(getResource(loc));
         });
 
-        when(resourceManager.getResourceNamespaces()).thenReturn(
+        when(resourceManager.getNamespaces()).thenReturn(
                 ImmutableSet.of("minecraft", AppEng.MOD_ID));
 
         return resourceManager;
@@ -82,6 +82,11 @@ public final class MockResourceManager {
                 return in;
             }
 
+            @Override
+            public boolean hasMetadata() {
+                return false;
+            }
+
             @Nullable
             @Override
             public <T> T getMetadata(MetadataSectionSerializer<T> serializer) {
@@ -89,7 +94,7 @@ public final class MockResourceManager {
             }
 
             @Override
-            public String getPackName() {
+            public String getSourceName() {
                 return "ae2";
             }
 

@@ -36,8 +36,8 @@ public class LoadTranslationsExtension implements Extension, BeforeAllCallback {
 
         // Load AE2 translations to test translated texts
         LanguageInfo language = new LanguageInfo("en_us", "US", "English", false);
-        ClientLanguage languageMap = ClientLanguage.func_239497_a_(MockResourceManager.create(),
+        ClientLanguage languageMap = ClientLanguage.loadFrom(MockResourceManager.create(),
                 Collections.singletonList(language));
-        Language.func_240594_a_(languageMap);
+        Language.inject(languageMap);
     }
 }
