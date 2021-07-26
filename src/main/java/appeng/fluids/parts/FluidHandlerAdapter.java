@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.me.GridAccessException;
@@ -64,6 +65,8 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	private final IGridProxyable proxyable;
 	private final FluidHandlerAdapter.InventoryCache cache;
 	private StorageFilter mode;
+	private AccessRestriction access;
+
 
 	FluidHandlerAdapter( IFluidHandler fluidHandler, IGridProxyable proxy )
 	{
@@ -73,6 +76,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 		{
 			PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
 			this.mode = ( (StorageFilter) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+			this.access = ( (AccessRestriction) partStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
 		}
 		this.cache = new FluidHandlerAdapter.InventoryCache( this.fluidHandler, this.mode);
 	}
@@ -141,7 +145,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	public TickRateModulation onTick()
 	{
 		List<IAEFluidStack> changes = this.cache.update();
-		if( !changes.isEmpty() )
+		if( !changes.isEmpty() && access.hasPermission( AccessRestriction.READ ) )
 		{
 			this.postDifference( changes );
 			return TickRateModulation.URGENT;
