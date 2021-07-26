@@ -282,6 +282,12 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
+	public void postCraftablesChanges( IStorageChannel<?> chan, Iterable<? extends IAEStack<?>> input, IActionSource src )
+	{
+		this.storageMonitors.get( chan ).updateCraftables( (Iterable) input, src );
+	}
+
+	@Override
 	public void registerCellProvider( final ICellProvider provider )
 	{
 		this.inactiveCellProviders.add( provider );

@@ -30,22 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import appeng.api.storage.data.IAEFluidStack;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -274,16 +271,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			return;
 		}
 
-		final Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
+		final Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = new Object2ObjectOpenHashMap<>(this.craftableItems);
 
 		// erase list.
 		this.craftingMethods.clear();
 		this.craftableItems.clear();
 		this.emitableItems.clear();
-
-		// update the stuff that was in the list...
-		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
-				new BaseActionSource() );
 
 		// re-create list..
 		for( final ICraftingProvider provider : this.craftingProviders )
@@ -319,7 +312,23 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 		}
 
-		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
+		Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftablesChanged = new Object2ObjectArrayMap<>();
+
+		ObjectSet<Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>>> i = oldItems.entrySet();
+		for ( Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>> ais : i) {
+			if (!this.craftableItems.containsKey( ais.getKey() )) {
+				craftablesChanged.put( ais.getKey().setCraftable( false ), ais.getValue() );
+			}
+		}
+
+		ObjectSet<Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>>> j = this.craftableItems.entrySet();
+		for ( Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>> ais : j) {
+			if (!oldItems.containsKey( ais )){
+				craftablesChanged.put( ais.getKey().setCraftable( true ), ais.getValue() );
+			}
+		}
+
+		this.storageGrid.postCraftablesChanges( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), craftablesChanged.keySet(),
 				new BaseActionSource() );
 	}
 

@@ -217,6 +217,20 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		}
 	}
 
+	protected void updateCraftables( Iterable<T> input, IActionSource src )
+	{
+		for( final T changedItem : input )
+		{
+			if (changedItem.isCraftable()) {
+				this.cachedList.add( changedItem.copy().setCraftable( true ) );
+			}
+			else
+			{
+				this.cachedList.findPrecise( changedItem ).setCraftable( false );
+			}
+		}
+	}
+
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
 		if( GLOBAL_DEPTH.contains( this ) )

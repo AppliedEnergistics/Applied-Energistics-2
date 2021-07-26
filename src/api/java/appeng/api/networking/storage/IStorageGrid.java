@@ -51,6 +51,7 @@ public interface IStorageGrid extends IGridCache, IStorageMonitorable
 	 * @param input injected items
 	 */
 	void postAlterationOfStoredItems( IStorageChannel<?> chan, Iterable<? extends IAEStack<?>> input, IActionSource src );
+	void postCraftablesChanges( IStorageChannel<?> chan, Iterable<? extends IAEStack<?>> input, IActionSource src);
 
 	/**
 	 * Used to add a cell provider to the storage system

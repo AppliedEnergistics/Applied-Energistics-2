@@ -21,6 +21,7 @@ package appeng.parts.misc;
 
 import javax.annotation.Nullable;
 import appeng.api.AEApi;
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
@@ -59,6 +60,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	private final IGridProxyable proxyable;
 	private final InventoryCache cache;
 	private StorageFilter mode;
+	private AccessRestriction access;
 
 	private ItemStack stackCache = null;
 
@@ -70,6 +72,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
 			this.mode = ( (StorageFilter) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+			this.access = ( (AccessRestriction) partStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
 		}
 		this.cache = new InventoryCache( this.itemHandler, this.mode );
 	}
@@ -220,7 +223,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	public TickRateModulation onTick()
 	{
 		List<IAEItemStack> changes = this.cache.update();
-		if( !changes.isEmpty() )
+		if( !changes.isEmpty() && access.hasPermission( AccessRestriction.READ ) )
 		{
 			this.postDifference( changes );
 			return TickRateModulation.URGENT;
