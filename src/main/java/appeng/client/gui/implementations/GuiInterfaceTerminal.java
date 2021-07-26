@@ -237,7 +237,11 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			int interfaceDim = dimHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
 			if( playerDim != interfaceDim )
 			{
-				mc.player.sendStatusMessage( new TextComponentString( "Interface located at dimension: " + interfaceDim + " [" + DimensionManager.getWorld( interfaceDim ).provider.getDimensionType().getName() + "] and cant be highlighted" ), false );
+				try {
+					mc.player.sendStatusMessage( new TextComponentString( "Interface located at dimension: " + interfaceDim + " [" + DimensionManager.getWorld( interfaceDim ).provider.getDimensionType().getName() + "] and cant be highlighted" ), false );
+				} catch(Exception e){
+					mc.player.sendStatusMessage( new TextComponentString( "Interface is located in another dimension and cannot be highlighted" ), false );
+				}
 			}
 			else
 			{
