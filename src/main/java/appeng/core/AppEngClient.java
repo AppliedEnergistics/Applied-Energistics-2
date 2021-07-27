@@ -18,34 +18,6 @@
 
 package appeng.core;
 
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.KeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
 import appeng.api.parts.CableRenderMode;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
@@ -64,6 +36,7 @@ import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBlockEntityRenderers;
 import appeng.init.client.InitBuiltInModels;
+import appeng.init.client.InitEntityLayerDefinitions;
 import appeng.init.client.InitEntityRendering;
 import appeng.init.client.InitItemColors;
 import appeng.init.client.InitItemModelsProperties;
@@ -72,7 +45,33 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmlclient.registry.ClientRegistry;
+
+import javax.annotation.Nonnull;
+import java.util.EnumMap;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * Client-specific functionality.
@@ -94,6 +93,8 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::modelRegistryEvent);
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
+        modEventBus.addListener(this::registerEntityRenderers);
+        modEventBus.addListener(this::registerEntityLayerDefinitions);
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onClientTick);
 
@@ -146,8 +147,16 @@ public class AppEngClient extends AppEngBase {
             ClientRegistry.registerKeyBinding(binding);
             this.bindings.put(key, binding);
         }
+    }
 
-        InitEntityRendering.init();
+    private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        InitEntityRendering.init(event::registerEntityRenderer);
+    }
+
+    private void registerEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        InitEntityLayerDefinitions.init((modelLayerLocation, layerDefinition) -> {
+            event.registerLayerDefinition(modelLayerLocation, () -> layerDefinition);
+        });
     }
 
     /**

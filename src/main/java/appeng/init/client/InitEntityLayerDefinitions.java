@@ -18,31 +18,28 @@
 
 package appeng.init.client;
 
+import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.definitions.AEEntities;
 import appeng.entity.TinyTNTPrimedRenderer;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+
+import java.util.function.BiConsumer;
 
 /**
  * Registers custom renderers for our {@link AEEntities}.
  */
-public final class InitEntityRendering {
+public final class InitEntityLayerDefinitions {
 
-    private InitEntityRendering() {
+    private InitEntityLayerDefinitions() {
     }
 
-    public static void init(RendererConsumer consumer) {
-        consumer.register(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
-        consumer.register(AEEntities.SINGULARITY, ItemEntityRenderer::new);
-        consumer.register(AEEntities.GROWING_CRYSTAL, ItemEntityRenderer::new);
-        consumer.register(AEEntities.CHARGED_QUARTZ, ItemEntityRenderer::new);
-    }
-
-    @FunctionalInterface
-    public interface RendererConsumer {
-        <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider);
+    public static void init(BiConsumer<ModelLayerLocation, LayerDefinition> consumer) {
+        consumer.accept(SkyChestTESR.MODEL_LAYER, SkyChestTESR.createSingleBodyLayer());
     }
 
 }
