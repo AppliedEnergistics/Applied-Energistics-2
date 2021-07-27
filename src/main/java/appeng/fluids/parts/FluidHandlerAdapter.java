@@ -67,7 +67,6 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	private StorageFilter mode;
 	private AccessRestriction access;
 
-
 	FluidHandlerAdapter( IFluidHandler fluidHandler, IGridProxyable proxy )
 	{
 		this.fluidHandler = fluidHandler;

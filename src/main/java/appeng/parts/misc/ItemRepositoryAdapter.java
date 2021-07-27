@@ -2,7 +2,10 @@ package appeng.parts.misc;
 
 import javax.annotation.Nullable;
 import appeng.api.AEApi;
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -38,6 +41,8 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     private final IItemRepository itemRepository;
     private final IGridProxyable proxyable;
     private final InventoryCache cache;
+    private StorageFilter mode;
+    private AccessRestriction access;
 
     private ItemStack stackCache;
 
@@ -46,6 +51,12 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         this.itemRepository = itemRepository;
         this.proxyable = proxy;
         this.cache = new InventoryCache( this.itemRepository );
+        if( this.proxyable instanceof PartStorageBus )
+        {
+            PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
+            this.mode = ( ( StorageFilter ) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+            this.access = ( (AccessRestriction) partStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
+        }
     }
 
     @Override
@@ -180,17 +191,15 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     @Override
     public TickRateModulation onTick()
     {
+        List<IAEItemStack> changes = this.cache.update();
+        if( !changes.isEmpty() && access.hasPermission( AccessRestriction.READ ) )
         {
-            List<IAEItemStack> changes = this.cache.update();
-            if( !changes.isEmpty() )
-            {
-                this.postDifference( changes );
-                return TickRateModulation.URGENT;
-            }
-            else
-            {
-                return TickRateModulation.SLOWER;
-            }
+            this.postDifference( changes );
+            return TickRateModulation.URGENT;
+        }
+        else
+        {
+            return TickRateModulation.SLOWER;
         }
     }
 
