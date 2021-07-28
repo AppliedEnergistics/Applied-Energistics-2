@@ -27,6 +27,7 @@ import appeng.core.AppEng;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
+import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
@@ -40,6 +41,7 @@ public class AE2DataGenerators {
         if (dataEvent.includeServer()) {
             generator.addProvider(new BlockDropProvider(dataEvent));
             generator.addProvider(new DecorationRecipes(generator));
+            generator.addProvider(new DecorationBlockRecipes(generator));
             BlockTagsProvider blockTagsProvider = new BlockTagsProvider(dataEvent);
             generator.addProvider(blockTagsProvider);
             generator.addProvider(new ItemTagsProvider(dataEvent, blockTagsProvider));

@@ -30,6 +30,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
+import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -52,23 +53,23 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         addAe2("dusts/certus_quartz", AEItems.CERTUS_QUARTZ_DUST);
         addAe2("dusts/ender", AEItems.ENDER_DUST);
         addAe2("dusts/fluix", AEItems.FLUIX_DUST);
-        addAe2("dusts/quartz", "#appliedenergistics2:dusts/certus_quartz", "#forge:dusts/quartz");
+        addAe2(AETags.QUARTZ_DUST, "#appliedenergistics2:dusts/certus_quartz", "#forge:dusts/quartz");
 
-        addAe2("crystals/certus",
-                "#appliedenergistics2:crystals/certus_quartz",
+        addAe2(AETags.CERTUS_QUARTZ_CRYSTAL,
+                AETags.NATURAL_CERTUS_QUARTZ_CRYSTAL,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
-        addAe2("crystals/certus_quartz",
+        addAe2(AETags.NATURAL_CERTUS_QUARTZ_CRYSTAL,
                 AEItems.CERTUS_QUARTZ_CRYSTAL);
         addAe2("crystals/fluix",
                 AEItems.FLUIX_CRYSTAL,
                 AEItems.PURIFIED_FLUIX_CRYSTAL);
-        addAe2("crystals/nether",
+        addAe2(AETags.NETHER_QUARTZ_CRYSTALS,
                 Tags.Items.GEMS_QUARTZ,
                 AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL);
         addAe2("crystals/quartz",
                 Tags.Items.GEMS_QUARTZ,
-                "#appliedenergistics2:crystals/certus_quartz",
+                AETags.NATURAL_CERTUS_QUARTZ_CRYSTAL,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
 
         addAe2("workbench", Items.CRAFTING_TABLE);
@@ -97,7 +98,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEParts.SEMI_DARK_MONITOR,
                 AEParts.DARK_MONITOR);
 
-        addAe2("glass", Items.GLASS, Tags.Items.GLASS);
+        addAe2(AETags.GLASS, Items.GLASS, Tags.Items.GLASS);
 
         addAe2("gears/wooden", AEItems.WOODEN_GEAR);
     }
@@ -131,6 +132,10 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
     private void addAe2(String tagName, Object... itemSources) {
         add(AppEng.makeId(tagName), itemSources);
+    }
+
+    private void addAe2(Tag.Named<Item> tag, Object... itemSources) {
+        add(tag.getName(), itemSources);
     }
 
     @SuppressWarnings("unchecked")

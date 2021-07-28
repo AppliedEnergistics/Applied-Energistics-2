@@ -18,6 +18,8 @@
 
 package appeng.datagen.providers.recipes;
 
+import static appeng.datagen.providers.recipes.RecipeCriterions.criterionName;
+
 import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
@@ -111,10 +113,6 @@ public class DecorationRecipes extends RecipeProvider implements IAE2DataProvide
         return new ResourceLocation(
                 id.getNamespace(),
                 prefix + id.getPath());
-    }
-
-    private String criterionName(BlockDefinition<?> block) {
-        return String.format("has_%s", block.id().getPath());
     }
 
     @Override
