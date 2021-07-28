@@ -245,7 +245,10 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( out != null )
 								{
-									out.setStackSize( recipe[x][y].getCount() );
+									if (!cct.useRealItems())
+									{
+										out.setStackSize( recipe[x][y].getCount() );
+									}
 									currentItem = out.createItemStack();
 								}
 							}
