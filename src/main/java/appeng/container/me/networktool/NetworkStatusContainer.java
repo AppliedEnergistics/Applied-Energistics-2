@@ -18,9 +18,9 @@
 
 package appeng.container.me.networktool;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.core.Direction;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;

@@ -18,8 +18,8 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;

@@ -22,10 +22,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -94,7 +94,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
         LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
         if (this.isActive()) {
             final BlockEntity self = this.getTile();
-            final BlockEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+            final BlockEntity te = self.getLevel()
+                    .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 fluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

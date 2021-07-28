@@ -18,13 +18,12 @@
 
 package appeng.items.tools.quartz;
 
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 
 import appeng.util.Platform;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item.Properties;
 
 public class QuartzHoeItem extends HoeItem {
     private final QuartzToolType type;

@@ -25,12 +25,11 @@ import java.util.Objects;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.Icon;
-
-import net.minecraft.client.gui.components.Button.OnPress;
 
 public class ToggleButton extends Button implements ITooltip {
     private final Icon icon;
@@ -42,7 +41,7 @@ public class ToggleButton extends Button implements ITooltip {
     private boolean isActive;
 
     public ToggleButton(final Icon on, final Icon off, final Component displayName,
-                        final Component displayHint, OnPress onPress) {
+            final Component displayHint, OnPress onPress) {
         super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
         this.icon = on;
         this.iconDisabled = off;

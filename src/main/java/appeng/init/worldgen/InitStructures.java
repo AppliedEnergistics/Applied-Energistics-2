@@ -20,7 +20,6 @@ package appeng.init.worldgen;
 
 import java.util.Locale;
 
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -50,9 +49,9 @@ public final class InitStructures {
     // This mirrors the Vanilla registration method for structures, but uses the
     // Forge registry instead
     private static <F extends StructureFeature<?>> void registerStructure(IForgeRegistry<StructureFeature<?>> registry,
-                                                                                                                     String name,
-                                                                                                                     F structure,
-                                                                                                                     Decoration stage) {
+            String name,
+            F structure,
+            Decoration stage) {
         StructureFeature.STRUCTURES_REGISTRY.put(name.toLowerCase(Locale.ROOT), structure);
         StructureFeature.STEP.put(structure, stage);
         structure.setRegistryName(name.toLowerCase(Locale.ROOT));

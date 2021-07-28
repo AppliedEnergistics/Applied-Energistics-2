@@ -18,9 +18,9 @@
 
 package appeng.integration.modules.theoneprobe.part;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -38,5 +38,5 @@ public interface IPartProbInfoProvider {
      * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, Level, IBlockState, IProbeHitData)
      */
     void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
-                      BlockState blockState, IProbeHitData data);
+            BlockState blockState, IProbeHitData data);
 }

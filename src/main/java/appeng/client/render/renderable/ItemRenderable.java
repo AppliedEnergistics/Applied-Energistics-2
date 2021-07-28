@@ -22,12 +22,12 @@ import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -41,7 +41,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
 
     @Override
     public void renderTileEntityAt(T te, float partialTicks, PoseStack matrixStack,
-                                   MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
+            MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
         Pair<ItemStack, Transformation> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
             if (pair.getRight() != null) {

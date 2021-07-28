@@ -18,19 +18,19 @@
 
 package appeng.mixins.feature;
 
-import net.minecraft.data.worldgen.Features;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.data.worldgen.Features;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 @Mixin(Features.class)
 public interface ConfiguredFeaturesAccessor {
 
     @Invoker("register")
     static <FC extends FeatureConfiguration> ConfiguredFeature<FC, ?> register(String id,
-                                                                               ConfiguredFeature<FC, ?> configuredFeature) {
+            ConfiguredFeature<FC, ?> configuredFeature) {
         throw new AssertionError();
     }
 

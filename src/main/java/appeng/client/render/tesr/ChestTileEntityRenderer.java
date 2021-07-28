@@ -27,18 +27,18 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.world.item.Item;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -71,7 +71,7 @@ public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestTileEnt
 
     @Override
     public void render(ChestTileEntity chest, float partialTicks, PoseStack matrices, MultiBufferSource buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         Level world = chest.getLevel();
         if (world == null) {
@@ -108,7 +108,8 @@ public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestTileEnt
         // We "fake" the position here to make it use the light-value in front of the
         // drive
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
-        blockRenderer.tesselateBlock(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer, false,
+        blockRenderer.tesselateBlock(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer,
+                false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
         VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
@@ -138,7 +139,7 @@ public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestTileEnt
         @Nonnull
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                        @Nonnull IModelData extraData) {
+                @Nonnull IModelData extraData) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }

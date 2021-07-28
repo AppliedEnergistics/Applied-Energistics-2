@@ -30,22 +30,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -102,7 +102,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-                                    IModelData extraData) {
+            IModelData extraData) {
         if (side == null) {
             return Collections.emptyList();
         }
@@ -202,13 +202,13 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     private BakedQuad createQuad(Direction side, List<Vec3> corners, TextureAtlasSprite sprite, float uOffset,
-                                 float vOffset) {
+            float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
     private BakedQuad createQuad(Direction side, Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4,
-                                 TextureAtlasSprite sprite, float uOffset, float vOffset) {
+            TextureAtlasSprite sprite, float uOffset, float vOffset) {
         Vec3 normal = new Vec3(side.getNormal().getX(), side.getNormal().getY(),
                 side.getNormal().getZ());
 
@@ -233,7 +233,7 @@ class GlassBakedModel implements IDynamicBakedModel {
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
     private void putVertex(BakedQuadBuilder builder, Vec3 normal, double x, double y, double z,
-                           TextureAtlasSprite sprite, float u, float v) {
+            TextureAtlasSprite sprite, float u, float v) {
         VertexFormat vertexFormat = builder.getVertexFormat();
         for (int e = 0; e < vertexFormat.getElements().size(); e++) {
             VertexFormatElement el = vertexFormat.getElements().get(e);
@@ -303,7 +303,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     @Nonnull
     @Override
     public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-                                   @Nonnull IModelData tileData) {
+            @Nonnull IModelData tileData) {
 
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block

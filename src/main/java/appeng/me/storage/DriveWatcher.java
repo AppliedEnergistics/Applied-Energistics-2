@@ -18,15 +18,16 @@
 
 package appeng.me.storage;
 
+import java.util.function.IntConsumer;
+
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.function.IntConsumer;
 
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
@@ -36,7 +37,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
     private final IntConsumer cellActivityCallback;
 
     public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
-                        IntConsumer cellActivityCallback) {
+            IntConsumer cellActivityCallback) {
         super(i, i.getChannel());
         this.is = is;
         this.handler = han;

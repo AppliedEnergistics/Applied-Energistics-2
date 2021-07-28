@@ -18,12 +18,12 @@
 
 package appeng.client.render.effects;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,7 +33,7 @@ import appeng.api.util.AEPartLocation;
 public class MatterCannonFX extends TextureSheetParticle {
 
     public MatterCannonFX(final ClientLevel par1World, final double x, final double y, final double z,
-                          SpriteSet sprite) {
+            SpriteSet sprite) {
         super(par1World, x, y, z);
         this.gravity = 0;
         this.bCol = 1;
@@ -86,7 +86,7 @@ public class MatterCannonFX extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType data, ClientLevel world, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }
     }

@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -66,8 +66,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IContainerCraftingPacket container;
 
     public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-                            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-                            final IContainerCraftingPacket ccp) {
+            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final IContainerCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -181,7 +181,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private ItemStack craftItem(final Player p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
-                                                         final IItemList all) {
+            final IItemList all) {
         // update crafting matrix...
         ItemStack is = this.getItem();
 
@@ -252,7 +252,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private boolean preCraft(final Player p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set,
-                             final ItemStack result) {
+            final ItemStack result) {
         return true;
     }
 
@@ -261,7 +261,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private void postCraft(final Player p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set,
-                           final ItemStack result) {
+            final ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...

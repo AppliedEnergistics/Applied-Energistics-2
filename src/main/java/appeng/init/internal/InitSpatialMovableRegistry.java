@@ -18,12 +18,12 @@
 
 package appeng.init.internal;
 
-import appeng.core.definitions.AEBlockEntities;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.api.movable.IMovableRegistry;
 import appeng.core.Api;
+import appeng.core.definitions.AEBlockEntities;
 
 public final class InitSpatialMovableRegistry {
 

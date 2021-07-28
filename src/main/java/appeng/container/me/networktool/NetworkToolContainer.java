@@ -18,9 +18,10 @@
 
 package appeng.container.me.networktool;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
@@ -28,7 +29,6 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.slot.RestrictedInputSlot;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * @see appeng.client.gui.me.networktool.NetworkToolScreen

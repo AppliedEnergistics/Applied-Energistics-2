@@ -18,8 +18,8 @@
 
 package appeng.container;
 
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 /*
  * Totally useless container that does nothing.

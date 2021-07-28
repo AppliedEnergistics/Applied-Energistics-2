@@ -31,7 +31,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +41,7 @@ import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;

@@ -18,30 +18,28 @@
 
 package appeng.block.spatial;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseBlock;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 /**
  * This block is used to fill empty space in spatial dimensions and delinates the border of a spatial dimensions's
@@ -69,7 +67,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
-                                        CollisionContext context) {
+            CollisionContext context) {
         return Shapes.block();
     }
 
@@ -101,7 +99,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
 
     @Override
     public boolean canEntityDestroy(final BlockState state, final BlockGetter world, final BlockPos pos,
-                                    final Entity entity) {
+            final Entity entity) {
         return false;
     }
 }

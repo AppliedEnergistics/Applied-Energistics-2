@@ -20,18 +20,17 @@ package appeng.block;
 
 import java.util.List;
 
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -54,13 +53,13 @@ public class AEBaseBlockItem extends BlockItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public final void appendHoverText(final ItemStack itemStack, final Level world, final List<Component> toolTip,
-                                      final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(final ItemStack itemStack, final Level world, final List<Component> toolTip,
-                                      final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
     }
 

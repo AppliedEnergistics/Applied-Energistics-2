@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -74,7 +74,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
     }
 
     public CraftingJob(final Level w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
-                       final ICraftingCallback callback) {
+            final ICraftingCallback callback) {
         this.world = this.wrapWorld(w);
         this.output = what.copy();
         this.actionSrc = actionSrc;

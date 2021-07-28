@@ -19,9 +19,9 @@
 package appeng.worldgen.meteorite;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
-import net.minecraft.nbt.CompoundTag;
 
 public final class PlacedMeteoriteSettings {
 
@@ -33,7 +33,7 @@ public final class PlacedMeteoriteSettings {
     private final boolean craterLake;
 
     public PlacedMeteoriteSettings(BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
-                                   boolean pureCrater, boolean craterLake) {
+            boolean pureCrater, boolean craterLake) {
         this.pos = pos;
         this.craterType = craterType;
         this.meteoriteRadius = meteoriteRadius;

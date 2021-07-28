@@ -49,7 +49,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.fuzzyMode = addToLeftToolbar(

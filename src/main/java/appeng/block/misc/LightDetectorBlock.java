@@ -22,25 +22,24 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.Level;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -59,8 +58,9 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     public LightDetectorBlock() {
         super(defaultProps(AEMaterials.FIXTURE).noCollission().noOcclusion());
 
-        this.registerDefaultState(this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)
-                .setValue(WATERLOGGED, false));
+        this.registerDefaultState(
+                this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)
+                        .setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -97,7 +97,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
@@ -123,13 +124,13 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
-                                        CollisionContext context) {
+            CollisionContext context) {
         return Shapes.empty();
     }
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {
             this.dropTorch(world, pos);
@@ -177,7 +178,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
-                                                                        BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));

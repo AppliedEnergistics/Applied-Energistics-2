@@ -20,14 +20,14 @@ package appeng.debug;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import appeng.tile.ServerTickingBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.core.AELog;
 import appeng.tile.AEBaseTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import appeng.tile.ServerTickingBlockEntity;
 
 public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity {
 

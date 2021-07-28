@@ -24,10 +24,11 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.world.entity.player.Player;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
-import net.minecraft.world.entity.player.Player;
 
 public class PlayerRegistry implements IPlayerRegistry {
 

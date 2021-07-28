@@ -22,12 +22,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AppEng;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
 /**
@@ -59,8 +59,7 @@ public final class SpatialStoragePlotManager {
         return getWorld().getChunkSource().getDataStorage().computeIfAbsent(
                 SpatialStorageWorldData::load,
                 SpatialStorageWorldData::new,
-                SpatialStorageWorldData.ID
-        );
+                SpatialStorageWorldData.ID);
     }
 
     @Nullable

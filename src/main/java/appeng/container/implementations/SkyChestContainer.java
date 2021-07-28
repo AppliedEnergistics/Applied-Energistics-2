@@ -18,14 +18,15 @@
 
 package appeng.container.implementations;
 
-import appeng.container.AEBaseContainer;
-import appeng.container.SlotSemantic;
-import appeng.container.slot.AppEngSlot;
-import appeng.tile.storage.SkyChestTileEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.container.AEBaseContainer;
+import appeng.container.SlotSemantic;
+import appeng.container.slot.AppEngSlot;
+import appeng.tile.storage.SkyChestTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.SkyChestScreen

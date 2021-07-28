@@ -18,17 +18,13 @@
 
 package appeng.init.client;
 
-import appeng.client.render.tesr.SkyChestTESR;
-import appeng.core.definitions.AEEntities;
-import appeng.entity.TinyTNTPrimedRenderer;
-import com.google.common.collect.ImmutableMap;
+import java.util.function.BiConsumer;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemEntityRenderer;
-import net.minecraft.world.entity.item.ItemEntity;
 
-import java.util.function.BiConsumer;
+import appeng.client.render.tesr.SkyChestTESR;
+import appeng.core.definitions.AEEntities;
 
 /**
  * Registers custom renderers for our {@link AEEntities}.

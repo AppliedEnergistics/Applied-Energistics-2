@@ -21,19 +21,19 @@ package appeng.entity;
 import java.util.Date;
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
-import net.minecraft.world.phys.AABB;
 
 public final class SingularityEntity extends AEBaseItemEntity {
 

@@ -23,15 +23,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
@@ -47,7 +47,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     private final PlacedMeteoriteSettings settings;
 
     protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
-                                      boolean pureCrater, boolean craterLake) {
+            boolean pureCrater, boolean craterLake) {
         super(TYPE, 0, createBoundingBox(center));
         this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
     }
@@ -60,7 +60,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
         ChunkPos chunkPos = new ChunkPos(origin);
 
         return new BoundingBox(chunkPos.getMinBlockX() - range, origin.getY(),
-                chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, origin.getY(), chunkPos.getMaxBlockZ() + range);
+                chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, origin.getY(),
+                chunkPos.getMaxBlockZ() + range);
     }
 
     public MeteoriteStructurePiece(ServerLevel level, CompoundTag tag) {
@@ -95,8 +96,9 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_, ChunkGenerator chunkGeneratorIn,
-                               Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
+    public boolean postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_,
+            ChunkGenerator chunkGeneratorIn,
+            Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 

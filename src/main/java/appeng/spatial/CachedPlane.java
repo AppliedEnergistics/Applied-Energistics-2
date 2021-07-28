@@ -22,21 +22,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
+import net.minecraft.world.level.ServerTickList;
 import net.minecraft.world.level.TickNextTickData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.lighting.LevelLightEngine;
-import net.minecraft.world.level.ServerTickList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ThreadedLevelLightEngine;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -66,7 +66,7 @@ public class CachedPlane {
     private final BlockState matrixBlockState;
 
     public CachedPlane(final ServerLevel w, final int minX, final int minY, final int minZ, final int maxX,
-                       final int maxY, final int maxZ) {
+            final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         if (matrixFrameBlock != null) {

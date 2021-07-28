@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.sync.BasePacket;

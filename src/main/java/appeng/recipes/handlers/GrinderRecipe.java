@@ -22,14 +22,14 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
@@ -49,7 +49,7 @@ public class GrinderRecipe implements Recipe<Container> {
     private final int turns;
 
     public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
-                         ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+            ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;

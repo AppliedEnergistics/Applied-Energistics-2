@@ -1,15 +1,14 @@
 package appeng.datagen.providers.advancements;
 
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
@@ -26,10 +25,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Set;
-import java.util.function.Consumer;
+import appeng.api.util.AEColor;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public class AdvancementGenerator implements IAE2DataProvider {
 
@@ -93,7 +95,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(root)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
                 .save(consumer, "appliedenergistics2:main/charged_quartz");
 
         var charger = Advancement.Builder.advancement()
@@ -138,8 +141,10 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(root)
-                .addCriterion("calc", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CALCULATION_PROCESSOR_PRESS))
-                .addCriterion("eng", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ENGINEERING_PROCESSOR_PRESS))
+                .addCriterion("calc",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CALCULATION_PROCESSOR_PRESS))
+                .addCriterion("eng",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ENGINEERING_PROCESSOR_PRESS))
                 .addCriterion("logic", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.LOGIC_PROCESSOR_PRESS))
                 .addCriterion("silicon", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.SILICON_PRESS))
                 .requirements(RequirementsStrategy.OR)
@@ -169,8 +174,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         FrameType.TASK,
                         false,
                         false,
-                        false
-                )
+                        false)
                 .parent(controller)
                 .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL1K))
                 .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL4K))
@@ -233,8 +237,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         FrameType.TASK,
                         false,
                         false,
-                        false
-                )
+                        false)
                 .parent(patternTerminal)
                 .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_1K))
                 .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_4K))
@@ -270,7 +273,9 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(fluix)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(GLASS_CABLE).build()))
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance
+                                .hasItems(ItemPredicate.Builder.item().of(GLASS_CABLE).build()))
                 .save(consumer, "appliedenergistics2:main/glass_cable");
 
         var facade = Advancement.Builder.advancement()
@@ -300,7 +305,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(fluix)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUARTZ_GROWTH_ACCELERATOR))
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUARTZ_GROWTH_ACCELERATOR))
                 .save(consumer, "appliedenergistics2:main/growth_accelerator");
 
         var iface = Advancement.Builder.advancement()
@@ -402,8 +408,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         FrameType.TASK,
                         false,
                         false,
-                        false
-                )
+                        false)
                 .parent(storageCell)
                 .addCriterion("pc_1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL1K))
                 .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL4k))
@@ -451,8 +456,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         FrameType.TASK,
                         false,
                         false,
-                        false
-                )
+                        false)
                 .parent(spatialIoport)
                 .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.instance())
                 .save(consumer, "appliedenergistics2:main/spatial_explorer");
@@ -471,7 +475,6 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .parent(iface)
                 .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ITEM_STORAGE_BUS))
                 .save(consumer, "appliedenergistics2:main/storage_bus");
-
 
     }
 

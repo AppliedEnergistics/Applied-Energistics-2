@@ -25,8 +25,8 @@ package appeng.api.implementations.parts;
 
 import java.util.EnumSet;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;

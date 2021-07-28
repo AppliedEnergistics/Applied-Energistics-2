@@ -19,12 +19,11 @@
 package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.Tiers;
 
 import appeng.util.Platform;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
 
 public class QuartzPickaxeItem extends PickaxeItem {
     private final QuartzToolType type;

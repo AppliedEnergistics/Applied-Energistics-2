@@ -21,13 +21,12 @@ package appeng.client.render.overlay;
 import java.util.OptionalDouble;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.RenderType;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
@@ -35,7 +34,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 public class OverlayRenderType extends RenderType {
 
     public OverlayRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode mode, int bufferSizeIn,
-                             boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
         super(nameIn, formatIn, mode, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn,
                 clearTaskIn);
     }

@@ -21,15 +21,15 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.core.Api;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.grid.AENetworkTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class PhantomNodeTileEntity extends AENetworkTileEntity {
 

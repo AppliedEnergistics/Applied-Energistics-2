@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -57,7 +57,8 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.level.getBlockState(this.worldPosition);
-        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition, false);
+        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition,
+                false);
     }
 
     @Override

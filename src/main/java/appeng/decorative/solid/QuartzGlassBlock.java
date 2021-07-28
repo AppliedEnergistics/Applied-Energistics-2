@@ -18,11 +18,9 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.core.Direction;
-
+import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QuartzGlassBlock extends AbstractGlassBlock {

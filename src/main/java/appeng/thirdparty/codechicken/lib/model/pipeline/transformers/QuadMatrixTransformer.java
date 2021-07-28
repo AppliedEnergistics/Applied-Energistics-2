@@ -18,9 +18,10 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import com.mojang.math.Vector4f;
-import net.minecraft.core.Direction;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
+
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad;

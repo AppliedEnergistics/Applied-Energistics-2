@@ -19,14 +19,14 @@ package appeng.worldgen.meteorite.debug;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 
 /**
  * Makes decisions about spawning meteorites in the world.
@@ -37,7 +37,7 @@ public class MeteoriteSpawner {
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, BlockPos startPos,
-                                                                     float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
+            float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
         MutableBlockPos mutablePos = startPos.mutable();
@@ -58,7 +58,7 @@ public class MeteoriteSpawner {
 
     @Nullable
     public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, BlockPos pos, float coreRadius,
-                                                     CraterType craterType, boolean pureCrater) {
+            CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
         }

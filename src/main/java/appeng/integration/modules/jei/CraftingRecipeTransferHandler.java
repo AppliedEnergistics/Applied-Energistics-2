@@ -25,11 +25,11 @@ import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -48,7 +48,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
 
     @Override
     protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, Recipe<?> recipe,
-                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients
         // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
@@ -123,7 +123,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
 
         @Override
         public void showError(PoseStack matrixStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
-                              int recipeY) {
+                int recipeY) {
             this.parent.showError(matrixStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
         }
 

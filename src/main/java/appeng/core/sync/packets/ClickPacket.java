@@ -20,15 +20,16 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -42,7 +43,6 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
-import net.minecraft.world.phys.Vec3;
 
 public class ClickPacket extends BasePacket {
 
@@ -75,7 +75,8 @@ public class ClickPacket extends BasePacket {
 
     // API for when a block was right clicked
     public ClickPacket(UseOnContext context) {
-        this(context.getClickedPos(), context.getClickedFace(), context.getClickedPos().getX(), context.getClickedPos().getY(),
+        this(context.getClickedPos(), context.getClickedFace(), context.getClickedPos().getX(),
+                context.getClickedPos().getY(),
                 context.getClickedPos().getZ(), context.getHand());
     }
 
@@ -85,12 +86,12 @@ public class ClickPacket extends BasePacket {
     }
 
     private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-                        final InteractionHand hand) {
+            final InteractionHand hand) {
         this(pos, side, hitX, hitY, hitZ, hand, false);
     }
 
     public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-                       final InteractionHand hand, boolean leftClick) {
+            final InteractionHand hand, boolean leftClick) {
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 

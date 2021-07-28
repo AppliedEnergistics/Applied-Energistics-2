@@ -33,7 +33,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
-    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(Float.NaN /* disables clouds */, false,
+    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(Float.NaN /* disables clouds */,
+            false,
             SkyType.NONE /* we use a custom render mixin */, true, false) {
 
         @Override

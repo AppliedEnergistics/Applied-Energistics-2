@@ -21,6 +21,7 @@ package appeng.container.me.items;
 import javax.annotation.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
@@ -42,7 +43,6 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
-import net.minecraft.world.entity.player.Inventory;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -58,14 +58,14 @@ public class ItemTerminalContainer extends MEMonitorableContainer<IAEItemStack> 
     }
 
     public ItemTerminalContainer(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
-                                 boolean bindInventory) {
+            boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }
 
     @Override
     protected void handleNetworkInteraction(ServerPlayer player, @Nullable IAEItemStack stack,
-                                            InventoryAction action) {
+            InventoryAction action) {
 
         // Handle interactions where the player wants to put something into the network
         if (stack == null) {

@@ -28,14 +28,14 @@ import java.util.function.Function;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * A helper class that builds quads for cable connections.
@@ -463,7 +463,7 @@ class CableBuilder {
     }
 
     public void addDenseSmartConnection(Direction facing, AEColor cableColor, AECableType connectionType,
-                                        boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut) {
+            boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut) {
         // Dense cables only render their connections as dense if the adjacent blocks
         // actually wants that
         if (connectionType == AECableType.SMART) {

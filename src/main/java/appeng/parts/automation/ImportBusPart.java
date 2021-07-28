@@ -18,11 +18,12 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -53,7 +54,6 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.item.AEItemStack;
-import net.minecraft.world.phys.Vec3;
 
 public class ImportBusPart extends SharedItemBusPart implements IInventoryDestination {
 

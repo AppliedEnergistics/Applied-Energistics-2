@@ -20,9 +20,10 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import net.minecraft.world.item.ItemStack;
 
 public final class IMEAdaptorIterator implements Iterator<ItemSlot> {
     private final Iterator<IAEItemStack> stack;

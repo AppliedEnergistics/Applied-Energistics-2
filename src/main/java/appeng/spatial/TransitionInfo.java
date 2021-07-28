@@ -20,9 +20,9 @@ package appeng.spatial;
 
 import java.time.Instant;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 /**

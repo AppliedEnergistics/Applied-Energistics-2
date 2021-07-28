@@ -24,11 +24,13 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.CellWorkbenchScreen;
@@ -112,8 +114,6 @@ import appeng.fluids.container.FluidIOBusContainer;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 
 /**
  * The server sends the client a container identifier, which the client then maps onto a screen using
@@ -202,8 +202,8 @@ public final class InitScreens {
      * Registers a screen for a given container and ensures the given style is applied after opening the screen.
      */
     private static <M extends AEBaseContainer, U extends AEBaseScreen<M>> void register(MenuType<M> type,
-                                                                                        StyledScreenFactory<M, U> factory,
-                                                                                        String stylePath) {
+            StyledScreenFactory<M, U> factory,
+            String stylePath) {
         CONTAINER_STYLES.put(type, stylePath);
         MenuScreens.<M, U>register(type, (container, playerInv, title) -> {
             ScreenStyle style;

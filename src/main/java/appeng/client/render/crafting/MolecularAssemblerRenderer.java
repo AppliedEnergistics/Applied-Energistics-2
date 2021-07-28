@@ -20,32 +20,21 @@ package appeng.client.render.crafting;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
-import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.BlockItem;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -70,7 +59,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
     @Override
     public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, PoseStack ms,
-                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -92,18 +81,19 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
     }
 
     private void renderPowerLight(PoseStack ms, MultiBufferSource bufferIn, int combinedLightIn,
-                                  int combinedOverlayIn) {
+            int combinedOverlayIn) {
         Minecraft minecraft = Minecraft.getInstance();
         BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         VertexConsumer buffer = bufferIn.getBuffer(RenderType.translucent());
 
-        // TODO 1.17: Verify that the custom render type is no longer needed. The shader used for the translucent layer certainly doesn't use alpha testing, making it look like it will not work.
+        // TODO 1.17: Verify that the custom render type is no longer needed. The shader used for the translucent layer
+        // certainly doesn't use alpha testing, making it look like it will not work.
         minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
     private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, PoseStack ms,
-                              MultiBufferSource bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+            MultiBufferSource bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getBlockPos().getX() + 0.5f;
         double centerY = molecularAssembler.getBlockPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getBlockPos().getZ() + 0.5f;

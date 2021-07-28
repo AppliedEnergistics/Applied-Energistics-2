@@ -26,14 +26,15 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.state.BlockState;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.item.Item;
 import net.minecraft.core.Direction;
-import com.mojang.math.Matrix4f;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
@@ -66,7 +67,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                    @Nonnull IModelData extraData) {
+            @Nonnull IModelData extraData) {
 
         List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
@@ -117,7 +118,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
-                                 List<BakedQuad> result, Direction side, BakedModel bakedCell, Matrix4f transform) {
+            List<BakedQuad> result, Direction side, BakedModel bakedCell, Matrix4f transform) {
         MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
         for (BakedQuad bakedQuad : bakedCell.getQuads(state, side, rand, extraData)) {
             BakedQuadBuilder builder = new BakedQuadBuilder();

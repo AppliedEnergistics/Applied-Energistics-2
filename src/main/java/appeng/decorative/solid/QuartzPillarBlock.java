@@ -18,23 +18,20 @@
 
 package appeng.decorative.solid;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.helpers.MetaRotation;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableBlock {
     public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;

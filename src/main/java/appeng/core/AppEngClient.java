@@ -18,6 +18,36 @@
 
 package appeng.core;
 
+import java.util.EnumMap;
+import java.util.Objects;
+import java.util.Random;
+
+import javax.annotation.Nonnull;
+
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
@@ -45,33 +75,6 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
-
-import javax.annotation.Nonnull;
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.Random;
 
 /**
  * Client-specific functionality.
@@ -197,7 +200,8 @@ public class AppEngClient extends AppEngBase {
         final Minecraft mc = Minecraft.getInstance();
         final Player player = mc.player;
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            final boolean mainHand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean mainHand = player.getItemInHand(InteractionHand.MAIN_HAND)
+                    .getItem() instanceof IMouseWheelItem;
             final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
@@ -233,7 +237,7 @@ public class AppEngClient extends AppEngBase {
     // vanilla particle system
     @Override
     public void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
-                            final double posZ, final Object o) {
+            final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:
@@ -256,7 +260,8 @@ public class AppEngClient extends AppEngBase {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D,
+                    0.0D,
                     0.0D);
         }
     }
@@ -266,12 +271,14 @@ public class AppEngClient extends AppEngBase {
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
 
-        Minecraft.getInstance().particleEngine.createParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
+        Minecraft.getInstance().particleEngine.createParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
+                posZ + z,
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightning(final Level world, final double posX, final double posY, final double posZ) {
-        Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
+        Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f,
+                0.0f,
                 0.0f);
     }
 

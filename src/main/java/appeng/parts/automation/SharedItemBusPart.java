@@ -18,22 +18,21 @@
 
 package appeng.parts.automation;
 
-import appeng.api.networking.IGridNode;
-import appeng.util.Platform;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 
 public abstract class SharedItemBusPart extends UpgradeablePart implements IGridTickable {
 
@@ -118,8 +117,8 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     /**
      * Checks if the bus can actually do something.
      * <p>
-     * Currently this tests if the chunk for the target is actually loaded, and if the main node has it's
-     * channel and power requirements fulfilled.
+     * Currently this tests if the chunk for the target is actually loaded, and if the main node has it's channel and
+     * power requirements fulfilled.
      *
      * @return true, if the the bus should do its work.
      */

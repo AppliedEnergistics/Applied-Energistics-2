@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.core.definitions.AEItems;

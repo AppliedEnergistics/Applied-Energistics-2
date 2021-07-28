@@ -77,7 +77,8 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> {
         LazyOptional<IItemHandler> itemHandler = LazyOptional.empty();
         if (this.isActive()) {
             final BlockEntity self = this.getTile();
-            final BlockEntity te = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+            final BlockEntity te = self.getLevel()
+                    .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 
             if (te != null) {
                 itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,

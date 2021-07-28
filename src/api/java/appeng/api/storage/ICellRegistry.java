@@ -101,5 +101,5 @@ public interface ICellRegistry {
      */
     @Nullable
     <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
-                                                                      IStorageChannel<T> chan);
+            IStorageChannel<T> chan);
 }

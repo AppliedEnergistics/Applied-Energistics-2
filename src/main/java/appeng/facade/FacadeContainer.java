@@ -20,10 +20,10 @@ package appeng.facade;
 
 import java.io.IOException;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;

@@ -20,7 +20,6 @@ package appeng.me.helpers;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-
 import appeng.api.networking.IGridNodeListener.State;
 
 /**

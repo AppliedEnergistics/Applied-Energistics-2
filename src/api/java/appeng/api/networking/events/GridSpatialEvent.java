@@ -49,8 +49,8 @@ public class GridSpatialEvent extends GridEvent {
      * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
      */
     public GridSpatialEvent(Level spatialIoWorld,
-                            BlockPos spatialIoPos,
-                            double EnergyUsage) {
+            BlockPos spatialIoPos,
+            double EnergyUsage) {
         this.spatialIoWorld = spatialIoWorld;
         this.spatialIoPos = spatialIoPos;
         this.spatialEnergyUsage = EnergyUsage;

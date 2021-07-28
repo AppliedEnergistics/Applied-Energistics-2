@@ -18,12 +18,12 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class Fallout {
     private final MeteoriteBlockPutter putter;

@@ -52,7 +52,8 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
         buffer.writeUtf(property.getName(value));
     }
 
-    public static SingleValueMatcher<?> create(StateDefinition<?, ?> stateContainer, String propertyName, String value) {
+    public static SingleValueMatcher<?> create(StateDefinition<?, ?> stateContainer, String propertyName,
+            String value) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
         return new SingleValueMatcher<>(property, value);
     }

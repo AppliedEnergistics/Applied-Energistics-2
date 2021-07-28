@@ -20,13 +20,11 @@ package appeng.block.crafting;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
-
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.level.block.Block;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 

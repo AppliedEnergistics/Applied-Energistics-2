@@ -26,11 +26,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -115,8 +114,8 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     private IClientRepo<T> clientRepo;
 
     public MEMonitorableContainer(MenuType<?> containerType, int id, Inventory ip,
-                                  final ITerminalHost host, final boolean bindInventory,
-                                  IStorageChannel<T> storageChannel) {
+            final ITerminalHost host, final boolean bindInventory,
+            IStorageChannel<T> storageChannel) {
         super(containerType, id, ip, host);
 
         this.storageChannel = storageChannel;
@@ -393,7 +392,7 @@ public abstract class MEMonitorableContainer<T extends IAEStack<T>> extends AEBa
     }
 
     protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T stack,
-                                                     InventoryAction action);
+            InventoryAction action);
 
     @Nullable
     protected final T getStackBySerial(long serial) {

@@ -25,9 +25,9 @@ package appeng.api.implementations.tiles;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.security.IActionHost;
 import net.minecraft.world.item.Item;
 
+import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.cells.CellState;
 import appeng.api.util.IOrientable;
 

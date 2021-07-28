@@ -18,16 +18,13 @@
 
 package appeng.client.render.tesr;
 
-import java.util.function.Function;
-
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.render.renderable.ItemRenderable;
@@ -39,8 +36,7 @@ public final class ChargerTESR {
     }
 
     public static BlockEntityRendererProvider<ChargerTileEntity> FACTORY = context -> new ModularTESR<>(
-            new ItemRenderable<>(ChargerTESR::getRenderedItem)
-    );
+            new ItemRenderable<>(ChargerTESR::getRenderedItem));
 
     private static Pair<ItemStack, Transformation> getRenderedItem(ChargerTileEntity tile) {
         Transformation transform = new Transformation(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);

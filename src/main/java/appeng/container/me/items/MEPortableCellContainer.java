@@ -20,6 +20,7 @@ package appeng.container.me.items;
 
 import java.util.Objects;
 
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.Actionable;
@@ -27,7 +28,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.interfaces.IInventorySlotAware;
-import net.minecraft.world.entity.player.Inventory;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -44,7 +44,7 @@ public class MEPortableCellContainer extends ItemTerminalContainer {
     private double powerMultiplier = 0.5;
 
     protected MEPortableCellContainer(MenuType<? extends MEPortableCellContainer> type, int id,
-                                      final Inventory ip, final IPortableCell monitorable) {
+            final Inventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         // Is the screen being opened a specific slot? If not, it must be for the currently held item
         if (monitorable instanceof IInventorySlotAware) {

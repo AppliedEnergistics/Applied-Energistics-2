@@ -27,10 +27,10 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -54,7 +54,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
 
     @Override
     public void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
-                            final float partialTicks) {
+            final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             FluidBlitter.create(fs.getFluidStack())

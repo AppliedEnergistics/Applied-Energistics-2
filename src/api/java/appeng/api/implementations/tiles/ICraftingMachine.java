@@ -23,8 +23,8 @@
 
 package appeng.api.implementations.tiles;
 
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.CraftingContainer;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 

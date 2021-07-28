@@ -20,16 +20,16 @@ package appeng.hooks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
+
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
+import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -59,8 +59,7 @@ public class UnlitQuadHooks {
     private static final ThreadLocal<Boolean> ENABLE_UNLIT_EXTENSIONS = new ThreadLocal<>();
 
     /**
-     * Notify the unlit model system that a specific model is about to be deserialized by
-     * {@link ModelBakery}.
+     * Notify the unlit model system that a specific model is about to be deserialized by {@link ModelBakery}.
      */
     public static void beginDeserializingModel(ResourceLocation location) {
         String namespace = location.getNamespace();
@@ -105,7 +104,8 @@ public class UnlitQuadHooks {
         }
         TextureAtlasSprite sprite = ((BakedQuadAccessor) quad).getSprite();
         // Copy the quad to disable diffuse lighting
-        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite, false /* diffuse lighting */);
+        return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite,
+                false /* diffuse lighting */);
     }
 
     /**

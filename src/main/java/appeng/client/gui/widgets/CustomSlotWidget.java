@@ -19,6 +19,7 @@
 package appeng.client.gui.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +53,7 @@ public abstract class CustomSlotWidget extends GuiComponent implements ITooltip 
     }
 
     public abstract void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
-                                     final float partialTicks);
+            final float partialTicks);
 
     @Override
     public int getTooltipAreaX() {

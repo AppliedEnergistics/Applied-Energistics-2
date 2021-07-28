@@ -18,20 +18,21 @@
 
 package appeng.mixins.structure;
 
-import net.minecraft.data.worldgen.StructureFeatures;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 @Mixin(StructureFeatures.class)
 public interface ConfiguredStructureFeaturesAccessor {
 
     @Invoker("register")
-    static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register(String id,
-                                                                                                                                                                   ConfiguredStructureFeature<FC, F> configuredStructureFeature) {
+    static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register(
+            String id,
+            ConfiguredStructureFeature<FC, F> configuredStructureFeature) {
         throw new AssertionError();
     }
 

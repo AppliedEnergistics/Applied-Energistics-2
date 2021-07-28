@@ -18,25 +18,12 @@
 
 package appeng.block.networking;
 
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusBreakingParticle;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ClickPacket;
-import appeng.helpers.AEMaterials;
-import appeng.integration.abstraction.IAEFacade;
-import appeng.parts.ICableBusContainer;
-import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.networking.CableBusTileEntity;
-import appeng.util.Platform;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -80,10 +67,25 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IBlockRenderProperties;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusBreakingParticle;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ClickPacket;
+import appeng.helpers.AEMaterials;
+import appeng.integration.abstraction.IAEFacade;
+import appeng.parts.ICableBusContainer;
+import appeng.parts.NullCableBusContainer;
+import appeng.tile.AEBaseTileEntity;
+import appeng.tile.networking.CableBusTileEntity;
+import appeng.util.Platform;
 
 public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade, SimpleWaterloggedBlock {
 
@@ -151,12 +153,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         // FIXME: Potentially check the fluid one too
-        return super.canBeReplaced(state, useContext) && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
+        return super.canBeReplaced(state, useContext)
+                && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
     }
 
     @Override
     public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player,
-                                   boolean willHarvest, FluidState fluid) {
+            boolean willHarvest, FluidState fluid) {
         if (player.getAbilities().instabuild) {
             final AEBaseTileEntity tile = this.getTileEntity(world, pos);
             if (tile != null) {
@@ -179,7 +182,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos,
-                                  Player player) {
+            Player player) {
         final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
@@ -194,7 +197,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         if (!world.isClientSide()) {
             this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
         }
@@ -233,8 +236,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
                     final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
 
                     if (this.cb(worldIn, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
-                                (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
+                        NetworkHandler.instance()
+                                .sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
+                                        (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
                     }
                 }
             }
@@ -246,8 +250,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
@@ -257,7 +262,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     public boolean recolorBlock(final BlockGetter world, final BlockPos pos, final Direction side,
-                                final DyeColor color, final Player who) {
+            final DyeColor color, final Player who) {
         try {
             return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
         } catch (final Throwable ignored) {
@@ -334,7 +339,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));
@@ -349,7 +354,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
             @Override
             public boolean addHitEffects(final BlockState state, final Level world, final HitResult target,
-                                         final ParticleEngine effectRenderer) {
+                    final ParticleEngine effectRenderer) {
 
                 // Half the particle rate. Since we're spawning concentrated on a specific spot,
                 // our particle effect otherwise looks too strong
@@ -360,7 +365,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
                 if (target.getType() != Type.BLOCK) {
                     return false;
                 }
-                BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y, target.getLocation().z);
+                BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y,
+                        target.getLocation().z);
 
                 ICableBusContainer cb = cb(world, blockPos);
 
@@ -393,7 +399,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             }
 
             @Override
-            public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine effectRenderer) {
+            public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos,
+                    ParticleEngine effectRenderer) {
                 ICableBusContainer cb = cb(world, pos);
 
                 // Our built-in model has the actual baked sprites we need

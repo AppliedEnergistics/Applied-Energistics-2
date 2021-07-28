@@ -25,6 +25,9 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
@@ -32,13 +35,10 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 /**
- * Similar to {@link ClientboundContainerSetSlotPacket}, but for fluids, and used in both directions
- * (server->client and client->server).
+ * Similar to {@link ClientboundContainerSetSlotPacket}, but for fluids, and used in both directions (server->client and
+ * client->server).
  * <p/>
  * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
  * <p/>

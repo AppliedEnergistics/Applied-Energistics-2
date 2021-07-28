@@ -31,15 +31,15 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.IAppEngApi;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Gives you a view into a Nodes connections and information.
@@ -59,9 +59,8 @@ public interface IGridNode {
 
     /**
      * Gets the host of the grid node, which does not necessarily have a representation in the game world. In most
-     * cases, this will be the game object that has created the node, for example a
-     * {@link BlockEntity} or {@link appeng.api.parts.IPart}, but may also represent something
-     * entirely different.
+     * cases, this will be the game object that has created the node, for example a {@link BlockEntity} or
+     * {@link appeng.api.parts.IPart}, but may also represent something entirely different.
      */
     @Nonnull
     Object getOwner();

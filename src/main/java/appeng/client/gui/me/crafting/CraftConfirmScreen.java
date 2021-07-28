@@ -21,14 +21,14 @@ package appeng.client.gui.me.crafting;
 import java.text.NumberFormat;
 
 import com.mojang.blaze3d.platform.InputConstants;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -52,7 +52,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private final Scrollbar scrollbar;
 
     public CraftConfirmScreen(CraftConfirmContainer container, Inventory playerInventory, Component title,
-                              ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
@@ -120,7 +120,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {

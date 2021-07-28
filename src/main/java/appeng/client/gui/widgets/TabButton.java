@@ -23,14 +23,13 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
-
-import net.minecraft.world.item.ItemStack;
 
 public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
@@ -39,7 +38,7 @@ public class TabButton extends Button implements ITooltip {
     private ItemStack item;
 
     public TabButton(final Icon ico, final Component message, final ItemRenderer ir,
-                     OnPress onPress) {
+            OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
 
         this.icon = ico;
@@ -54,7 +53,7 @@ public class TabButton extends Button implements ITooltip {
      * @param ir      renderer
      */
     public TabButton(final ItemStack ico, final Component message, final ItemRenderer ir,
-                     OnPress onPress) {
+            OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
         this.item = ico;
         this.itemRenderer = ir;

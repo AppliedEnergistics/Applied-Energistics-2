@@ -19,13 +19,13 @@
 package appeng.core.sync.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.RunningOnDifferentThreadException;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.RunningOnDifferentThreadException;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
@@ -76,7 +76,8 @@ public class NetworkHandler {
         if (this.serverHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) ctx.getNetworkManager().getPacketListener();
+                ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) ctx.getNetworkManager()
+                        .getPacketListener();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(
                         () -> this.serverHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));

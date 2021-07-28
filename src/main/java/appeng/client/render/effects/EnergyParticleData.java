@@ -23,13 +23,12 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.util.AEPartLocation;
-
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
 public class EnergyParticleData implements ParticleOptions {
 

@@ -27,21 +27,21 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -109,7 +109,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private final Scrollbar scrollbar;
 
     public MEMonitorableScreen(C container, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.style = style.getTerminalStyle();
@@ -273,7 +273,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
@@ -349,7 +349,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)

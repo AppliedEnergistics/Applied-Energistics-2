@@ -19,10 +19,11 @@
 package appeng.client.gui.me.items;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.world.level.block.Blocks;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.Blitter;
@@ -55,7 +56,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private final ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(PatternTermContainer container, Inventory playerInventory,
-                             Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(

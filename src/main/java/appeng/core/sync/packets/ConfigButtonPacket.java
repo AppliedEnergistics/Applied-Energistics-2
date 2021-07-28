@@ -22,9 +22,9 @@ import java.util.EnumSet;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;

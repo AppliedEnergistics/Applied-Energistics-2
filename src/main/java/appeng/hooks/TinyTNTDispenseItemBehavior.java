@@ -19,13 +19,13 @@
 package appeng.hooks;
 
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.Direction;
-
-import appeng.entity.TinyTNTPrimedEntity;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+
+import appeng.entity.TinyTNTPrimedEntity;
 
 public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavior {
 

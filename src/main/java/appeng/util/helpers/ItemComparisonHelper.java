@@ -20,9 +20,9 @@ package appeng.util.helpers;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.FuzzyMode;
 

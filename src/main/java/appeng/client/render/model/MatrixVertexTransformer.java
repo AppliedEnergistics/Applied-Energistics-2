@@ -21,12 +21,13 @@ package appeng.client.render.model;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.minecraft.core.Direction;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector4f;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
 /**

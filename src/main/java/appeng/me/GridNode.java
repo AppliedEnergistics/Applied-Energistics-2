@@ -38,10 +38,11 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -57,7 +58,6 @@ import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
-import net.minecraft.world.item.ItemStack;
 
 public class GridNode implements IGridNode, IPathItem {
     private final ServerLevel world;

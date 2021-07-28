@@ -26,11 +26,11 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * AE can render the core of a cable (the core that connections are made to, in case the cable is not a straight line)

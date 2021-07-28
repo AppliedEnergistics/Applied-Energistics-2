@@ -22,23 +22,23 @@ import java.util.Set;
 
 import com.google.common.math.StatsAccumulator;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
@@ -51,13 +51,14 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
             .getTagOrEmpty(new ResourceLocation("forge:terracotta"));
 
     public MeteoriteStructureStart(StructureFeature<NoneFeatureConfiguration> feature, ChunkPos pos,
-                                   int references, long seed) {
+            int references, long seed) {
         super(feature, pos, references, seed);
     }
 
     @Override
-    public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator generator, StructureManager templateManager,
-                               ChunkPos chunkPos, Biome biome, NoneFeatureConfiguration config, LevelHeightAccessor heightAccessor) {
+    public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator generator,
+            StructureManager templateManager,
+            ChunkPos chunkPos, Biome biome, NoneFeatureConfiguration config, LevelHeightAccessor heightAccessor) {
         final int centerX = chunkPos.getMinBlockX() + this.random.nextInt(16);
         final int centerZ = chunkPos.getMinBlockZ() + this.random.nextInt(16);
         final float meteoriteRadius = this.random.nextFloat() * 6.0f + 2;
@@ -106,7 +107,8 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
      *
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius, LevelHeightAccessor heightAccessor) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius,
+            LevelHeightAccessor heightAccessor) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         MutableBlockPos blockPos = new MutableBlockPos();
@@ -124,7 +126,8 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Types.OCEAN_FLOOR, heightAccessor);
+                    int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Types.OCEAN_FLOOR,
+                            heightAccessor);
                     if (heigth < seaLevel) {
                         return true;
                     }

@@ -27,27 +27,26 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.world.item.SnowballItem;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SnowballItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -309,7 +308,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private boolean recolourBlock(final Block blk, final Direction side, final Level w, final BlockPos pos,
-                                  final AEColor newColor, @Nullable final Player p) {
+            final AEColor newColor, @Nullable final Player p) {
         final BlockState state = w.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
@@ -338,7 +337,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
-                                                                 Property<T> prop) {
+            Property<T> prop) {
         if (newState.hasProperty(prop)) {
             return newState.setValue(prop, oldState.getValue(prop));
         }
@@ -356,7 +355,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
-                                final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,

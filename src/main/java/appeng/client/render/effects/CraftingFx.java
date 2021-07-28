@@ -19,17 +19,17 @@
 package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Camera;
-import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import com.mojang.math.Vector3f;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,7 +44,7 @@ public class CraftingFx extends TextureSheetParticle {
     private final float offsetZ;
 
     public CraftingFx(final ClientLevel par1World, final double x, final double y, final double z,
-                      final SpriteSet sprite) {
+            final SpriteSet sprite) {
         super(par1World, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
@@ -135,7 +135,7 @@ public class CraftingFx extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType data, ClientLevel worldIn, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);
         }
     }

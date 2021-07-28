@@ -19,16 +19,16 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.container.implementations.GrinderContainer;
-import net.minecraft.world.entity.player.Inventory;
 
 public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
 
     public GrinderScreen(GrinderContainer container, Inventory playerInventory, Component title,
-                         ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 

@@ -18,9 +18,9 @@
 
 package appeng.parts.misc;
 
-import appeng.api.storage.cells.ICellProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.config.Settings;
@@ -29,13 +29,13 @@ import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.UpgradeablePart;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * @author BrockWS

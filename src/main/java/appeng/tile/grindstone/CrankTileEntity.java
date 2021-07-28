@@ -20,16 +20,16 @@ package appeng.tile.grindstone;
 
 import java.io.IOException;
 
-import appeng.tile.CommonTickingBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import appeng.tile.CommonTickingBlockEntity;
 
 public class CrankTileEntity extends AEBaseTileEntity implements CommonTickingBlockEntity {
 
@@ -63,8 +63,6 @@ public class CrankTileEntity extends AEBaseTileEntity implements CommonTickingBl
         }
     }
 
-
-
     private ICrankable getGrinder() {
         if (isRemote()) {
             return null;
@@ -95,7 +93,8 @@ public class CrankTileEntity extends AEBaseTileEntity implements CommonTickingBl
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.level.getBlockState(this.worldPosition);
-        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition, false);
+        state.getBlock().neighborChanged(state, this.level, this.worldPosition, state.getBlock(), this.worldPosition,
+                false);
     }
 
     /**

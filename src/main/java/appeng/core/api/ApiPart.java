@@ -18,24 +18,24 @@
 
 package appeng.core.api;
 
-import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
 import appeng.core.AppEng;
 import appeng.parts.PartPlacement;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 public class ApiPart implements IPartHelper {
 
     @Override
     public InteractionResult placeBus(final ItemStack is, final BlockPos pos, final Direction side,
-                                      final Player player, final InteractionHand hand, final Level w) {
+            final Player player, final InteractionHand hand, final Level w) {
         return PartPlacement.place(is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0);
     }
 

@@ -18,13 +18,16 @@
 
 package appeng.items.tools.quartz;
 
+import java.util.Random;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -35,10 +38,6 @@ import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item.Properties;
-
-import java.util.Random;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;

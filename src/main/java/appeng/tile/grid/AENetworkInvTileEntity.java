@@ -21,9 +21,10 @@ package appeng.tile.grid;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -33,7 +34,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedTileEntity;
 import appeng.me.helpers.TileEntityNodeListener;
 import appeng.tile.AEBaseInvTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity
         implements IInWorldGridNodeHost, IGridConnectedTileEntity {

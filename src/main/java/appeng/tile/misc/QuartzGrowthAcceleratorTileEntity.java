@@ -22,16 +22,16 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class QuartzGrowthAcceleratorTileEntity extends AENetworkTileEntity
         implements IPowerChannelState, ICrystalGrowthAccelerator {

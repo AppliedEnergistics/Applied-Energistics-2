@@ -23,9 +23,9 @@
 
 package appeng.api.implementations.items;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 
 /**
  * Implemented on AE's wrench(s) as a substitute for if BC's API is not available.

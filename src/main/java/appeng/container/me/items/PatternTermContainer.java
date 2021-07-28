@@ -18,19 +18,18 @@
 
 package appeng.container.me.items;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ResultSlot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -300,7 +299,8 @@ public class PatternTermContainer extends ItemTerminalContainer
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final Recipe<CraftingContainer> r = p.level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, p.level)
+            final Recipe<CraftingContainer> r = p.level.getRecipeManager()
+                    .getRecipeFor(RecipeType.CRAFTING, ic, p.level)
                     .orElse(null);
 
             if (r == null) {

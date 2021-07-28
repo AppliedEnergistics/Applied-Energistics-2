@@ -25,6 +25,7 @@ import java.util.OptionalLong;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;

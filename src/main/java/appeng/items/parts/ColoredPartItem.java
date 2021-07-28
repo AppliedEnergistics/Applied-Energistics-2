@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
-import net.minecraft.world.item.Item.Properties;
 
 public class ColoredPartItem<T extends IPart> extends PartItem<T> {
 

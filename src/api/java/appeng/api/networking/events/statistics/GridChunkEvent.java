@@ -23,8 +23,8 @@
 
 package appeng.api.networking.events.statistics;
 
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 
 /**
  * An event send from the statistics grid once something about a chunk changes.

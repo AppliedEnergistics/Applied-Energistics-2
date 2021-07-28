@@ -28,19 +28,18 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.ids.AEBlockIds;
@@ -114,7 +113,7 @@ public final class AEBlocks {
     private static final Properties SKYSTONE_PROPERTIES = defaultProps(Material.STONE)
             .strength(50, 150).requiresCorrectToolForDrops();
     private static final StateArgumentPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
-                                                                                    p4) -> false;
+            p4) -> false;
     private static final Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.STONE)
             .strength(50, 150).noOcclusion();
 
@@ -237,8 +236,8 @@ public final class AEBlocks {
     }
 
     private static <T extends Block> BlockDefinition<T> block(ResourceLocation id,
-                                                                                              Supplier<T> blockSupplier,
-                                                                                              @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
+            Supplier<T> blockSupplier,
+            @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
 
         // Create block and matching item, and set factory name of both
         T block = blockSupplier.get();

@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 

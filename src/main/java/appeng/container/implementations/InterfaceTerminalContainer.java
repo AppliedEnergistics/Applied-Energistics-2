@@ -24,13 +24,13 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component.Serializer;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;

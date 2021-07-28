@@ -22,7 +22,8 @@ public class AdvancementTriggers {
     /**
      * Has a network with 8 channels
      */
-    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger("network_apprentice");
+    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger(
+            "network_apprentice");
     /**
      * Has a network with 128 channels
      */

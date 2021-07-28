@@ -21,8 +21,8 @@ package appeng.client.render.effects;
 import java.util.Random;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +38,7 @@ public class LightningArcFX extends LightningFX {
     private final double rz;
 
     public LightningArcFX(final ClientLevel w, final double x, final double y, final double z, final double ex,
-                          final double ey, final double ez, final double r, final double g, final double b) {
+            final double ey, final double ez, final double r, final double g, final double b) {
         super(w, x, y, z, r, g, b, 6);
 
         this.rx = ex - x;
@@ -76,7 +76,7 @@ public class LightningArcFX extends LightningFX {
 
         @Override
         public Particle createParticle(LightningArcParticleData data, ClientLevel worldIn, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             TextureSheetParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.pickSprite(this.spriteSet);

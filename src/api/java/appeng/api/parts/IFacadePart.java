@@ -23,9 +23,9 @@
 
 package appeng.api.parts;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.Item;
 
 import appeng.api.util.AEPartLocation;
 

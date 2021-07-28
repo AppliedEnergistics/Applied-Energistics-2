@@ -21,10 +21,11 @@ package appeng.me;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
+import net.minecraft.nbt.CompoundTag;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
 import appeng.core.worlddata.WorldData;
-import net.minecraft.nbt.CompoundTag;
 
 public class GridStorage implements IGridStorage {
 

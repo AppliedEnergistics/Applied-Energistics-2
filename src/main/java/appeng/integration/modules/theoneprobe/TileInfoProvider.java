@@ -24,6 +24,8 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -37,8 +39,6 @@ import appeng.integration.modules.theoneprobe.tile.ITileProbInfoProvider;
 import appeng.integration.modules.theoneprobe.tile.PowerStateInfoProvider;
 import appeng.integration.modules.theoneprobe.tile.PowerStorageInfoProvider;
 import appeng.tile.AEBaseTileEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public final class TileInfoProvider implements IProbeInfoProvider {
     private final List<ITileProbInfoProvider> providers;
@@ -59,7 +59,7 @@ public final class TileInfoProvider implements IProbeInfoProvider {
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
-                             BlockState blockState, IProbeHitData data) {
+            BlockState blockState, IProbeHitData data) {
         final BlockEntity tile = world.getBlockEntity(data.getPos());
 
         if (tile instanceof AEBaseTileEntity) {

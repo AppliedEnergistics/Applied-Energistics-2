@@ -20,10 +20,11 @@ package appeng.integration.modules.theoneprobe.part;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -33,7 +34,6 @@ import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class P2PStateInfoProvider implements IPartProbInfoProvider {
 
@@ -43,7 +43,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
 
     @Override
     public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
-                             BlockState blockState, IProbeHitData data) {
+            BlockState blockState, IProbeHitData data) {
         if (part instanceof P2PTunnelPart) {
             final P2PTunnelPart tunnel = (P2PTunnelPart) part;
 

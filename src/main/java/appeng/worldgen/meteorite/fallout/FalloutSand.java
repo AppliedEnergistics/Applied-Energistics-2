@@ -18,18 +18,19 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class FalloutSand extends FalloutCopy {
     private static final double GLASS_THRESHOLD = 0.66;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSand(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+    public FalloutSand(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter,
+            final BlockState skyStone) {
         super(w, pos, putter, skyStone);
         this.putter = putter;
     }

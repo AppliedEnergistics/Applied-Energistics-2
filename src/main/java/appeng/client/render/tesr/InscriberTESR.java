@@ -21,21 +21,21 @@ package appeng.client.render.tesr;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Quaternion;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.items.IItemHandler;
 
@@ -60,7 +60,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEnt
 
     @Override
     public void render(InscriberTileEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
@@ -188,7 +188,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEnt
     }
 
     private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,
-                                  float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+            float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
         vb.vertex(ms.last().pose(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.uv(sprite.getU(texU), sprite.getV(texV));
@@ -201,7 +201,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEnt
     private static final ResourceLocation TAG_STORAGE_BLOCKS = new ResourceLocation("forge:storage_blocks");
 
     private void renderItem(PoseStack ms, final ItemStack stack, final float o, MultiBufferSource buffers,
-                            int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
             ms.pushPose();
             // move to center

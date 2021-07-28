@@ -30,25 +30,25 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.ClickEvent.Action;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.server.level.ServerLevel;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -69,7 +69,8 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> ctx, final CommandSourceStack sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> ctx,
+            final CommandSourceStack sender) {
         test(srv, sender, false);
     }
 
@@ -183,7 +184,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
     // Add a clickable link to teleport the user to the Meteorite
     private static Component getClickablePosition(ServerLevel world, PlacedMeteoriteSettings settings,
-                                                                             BlockPos pos) {
+            BlockPos pos) {
         BlockPos tpPos = pos.above((int) Math.ceil(settings.getMeteoriteRadius()));
         int surfaceY = world.getHeightmapPos(Types.WORLD_SURFACE, tpPos).getY();
         if (surfaceY > tpPos.getY()) {

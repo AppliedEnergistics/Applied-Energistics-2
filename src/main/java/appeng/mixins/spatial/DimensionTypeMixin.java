@@ -22,20 +22,20 @@ import java.util.OptionalLong;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.RegistryAccess.RegistryHolder;
-import net.minecraft.world.level.biome.NearestNeighborBiomeZoomer;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess.RegistryHolder;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.NearestNeighborBiomeZoomer;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -79,8 +79,8 @@ public class DimensionTypeMixin {
      */
     @Inject(method = "defaultDimensions", at = @At("RETURN"))
     private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
-                                               Registry<NoiseGeneratorSettings> dimensionSettings, long seed,
-                                               CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
+            Registry<NoiseGeneratorSettings> dimensionSettings, long seed,
+            CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
         MappedRegistry<LevelStem> simpleregistry = cir.getReturnValue();
 
         simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,

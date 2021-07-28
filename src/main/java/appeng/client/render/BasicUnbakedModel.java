@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -48,8 +48,8 @@ public interface BasicUnbakedModel<T extends IModelGeometry<T>> extends IModelGe
 
     @Override
     default Collection<Material> getTextures(IModelConfiguration owner,
-                                             Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-                                             Set<Pair<String, String>> unresolvedTextureReferences) {
+            Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
+            Set<Pair<String, String>> unresolvedTextureReferences) {
         return Stream.concat(
                 getModelDependencies().stream().map(unbakedModelGetter)
                         .flatMap(ubm -> ubm.getMaterials(unbakedModelGetter, unresolvedTextureReferences).stream()),

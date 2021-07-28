@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -37,7 +37,7 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
     private final SettingToggleButton<YesNo> overlayToggle;
 
     public SpatialAnchorScreen(SpatialAnchorContainer container, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
         this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(

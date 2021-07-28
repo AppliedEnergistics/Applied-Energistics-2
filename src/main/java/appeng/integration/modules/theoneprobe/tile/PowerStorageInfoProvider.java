@@ -18,8 +18,10 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -29,14 +31,12 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level world, BlockState blockState, IProbeHitData data) {
+            Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof IAEPowerStorage) {
             final IAEPowerStorage storage = (IAEPowerStorage) tile;
             final double maxPower = storage.getAEMaxPower();

@@ -19,15 +19,15 @@
 package appeng.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
-import com.mojang.math.Vector3f;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
@@ -83,7 +83,7 @@ public class TesrRenderHelper {
      * Render an item in 2D.
      */
     public static void renderItem2d(PoseStack matrixStack, MultiBufferSource buffers, ItemStack itemStack,
-                                    float scale, int combinedLightIn, int combinedOverlayIn) {
+            float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
             matrixStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
@@ -111,7 +111,7 @@ public class TesrRenderHelper {
      * @param combinedOverlayIn
      */
     public static void renderItem2dWithAmount(PoseStack matrixStack, MultiBufferSource buffers,
-                                              IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
+            IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
         final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
         TesrRenderHelper.renderItem2d(matrixStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);

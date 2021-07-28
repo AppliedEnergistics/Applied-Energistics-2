@@ -18,16 +18,16 @@
 
 package appeng.client.gui.widgets;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 
@@ -53,7 +53,7 @@ public class AETextField extends EditBox {
      * @param height       absolute height
      */
     public AETextField(final Font fontRenderer, final int xPos, final int yPos, final int width,
-                       final int height) {
+            final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
                 TextComponent.EMPTY);

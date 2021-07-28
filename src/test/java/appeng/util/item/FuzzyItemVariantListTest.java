@@ -24,11 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 
-import appeng.util.BootstrapMinecraft;
-import com.mojang.bridge.game.GameVersion;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.config.FuzzyMode;
+import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 public class FuzzyItemVariantListTest {
@@ -47,7 +43,8 @@ public class FuzzyItemVariantListTest {
         AESharedItemStack undamagedStack = new AESharedItemStack(undamagedSword);
 
         // Unbreakable Diamond Sword @ 50% durability
-        net.minecraft.world.item.ItemStack unbreakableSword = new net.minecraft.world.item.ItemStack(Items.DIAMOND_SWORD);
+        net.minecraft.world.item.ItemStack unbreakableSword = new net.minecraft.world.item.ItemStack(
+                Items.DIAMOND_SWORD);
         unbreakableSword.setDamageValue(unbreakableSword.getMaxDamage() / 2);
         unbreakableSword.getOrCreateTag().putBoolean("Unbreakable", true);
         assertFalse(unbreakableSword.isDamageableItem());

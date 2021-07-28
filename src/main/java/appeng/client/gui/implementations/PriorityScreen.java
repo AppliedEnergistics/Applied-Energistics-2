@@ -21,8 +21,9 @@ package appeng.client.gui.implementations;
 import java.util.OptionalInt;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -36,7 +37,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     private final NumberEntryWidget priority;
 
     public PriorityScreen(PriorityContainer container, Inventory playerInventory, Component title,
-                          ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(container.getPriorityHost());
         this.subGui.addBackButton("back", widgets);
@@ -62,7 +63,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     @Override
     public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.priority.render(matrixStack, mouseX, mouseY, partialTicks);

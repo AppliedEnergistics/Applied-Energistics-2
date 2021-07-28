@@ -26,6 +26,7 @@ import com.google.common.collect.Multiset;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -34,7 +35,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
 import appeng.tile.spatial.SpatialAnchorTileEntity;
-import net.minecraft.world.level.LevelAccessor;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen

@@ -19,10 +19,10 @@
 package appeng.parts.automation;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.Upgrades;
 import appeng.util.inv.IAEAppEngInventory;
-import net.minecraft.world.level.ItemLike;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
     private final Item item;

@@ -18,10 +18,9 @@
 
 package appeng.decorative;
 
-import appeng.block.AEBaseBlock;
-
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import appeng.block.AEBaseBlock;
 
 public class AEDecorativeBlock extends AEBaseBlock {
     public AEDecorativeBlock(BlockBehaviour.Properties props) {

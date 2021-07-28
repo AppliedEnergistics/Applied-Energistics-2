@@ -28,11 +28,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 
 public interface ICraftingHelper {
 
@@ -71,7 +71,7 @@ public interface ICraftingHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
     ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
-                                                             boolean allowSubstitutes);
+            boolean allowSubstitutes);
 
     /**
      * Same as {@link #decodePattern(ItemStack, Level, boolean)} with no auto recovery of changed recipe ids.

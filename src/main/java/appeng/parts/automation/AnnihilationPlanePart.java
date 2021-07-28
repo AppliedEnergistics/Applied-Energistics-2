@@ -23,23 +23,23 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.tags.Tag;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -310,7 +310,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     private void performBreakBlock(ServerLevel w, BlockPos pos, BlockState blockState, IEnergyService energy,
-                                   float requiredPower, List<ItemStack> items) {
+            float requiredPower, List<ItemStack> items) {
 
         if (!this.breakBlockAndStoreExtraItems(w, pos)) {
             // We failed to actually replace the block with air or it already was the case

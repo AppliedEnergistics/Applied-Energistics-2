@@ -18,10 +18,10 @@
 
 package appeng.client.render.cablebus;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,7 +34,7 @@ public class CableBusBreakingParticle extends TextureSheetParticle {
     private final float vCoord;
 
     public CableBusBreakingParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY,
-                                    double speedZ, TextureAtlasSprite sprite) {
+            double speedZ, TextureAtlasSprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.gravity = 1.0F;

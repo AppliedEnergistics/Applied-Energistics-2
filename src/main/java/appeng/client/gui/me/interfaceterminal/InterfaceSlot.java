@@ -19,10 +19,10 @@
 package appeng.client.gui.me.interfaceterminal;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.container.slot.AppEngSlot;
 import appeng.items.misc.EncodedPatternItem;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * This slot is used in the {@link InterfaceTerminalScreen} to interact with the internal inventory of interfaces.

@@ -24,13 +24,13 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.math.Vector4f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.core.Direction;
-import com.mojang.math.Vector4f;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 /**
@@ -200,7 +200,7 @@ public class CubeBuilder {
     }
 
     private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
-                                   float y2, float z2) {
+            float y2, float z2) {
         UvVector uv = new UvVector();
         switch (face) {
             case DOWN:

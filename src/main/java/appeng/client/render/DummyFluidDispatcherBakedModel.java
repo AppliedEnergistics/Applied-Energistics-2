@@ -26,20 +26,20 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.math.Transformation;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Direction;
-import com.mojang.math.Transformation;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -55,7 +55,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
 
     public DummyFluidDispatcherBakedModel(BakedModel baseModel,
-                                          Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+            Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -86,7 +86,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity, int seed) {
+                    LivingEntity entity, int seed) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
                 }

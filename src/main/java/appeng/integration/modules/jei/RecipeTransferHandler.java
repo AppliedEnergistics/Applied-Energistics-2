@@ -20,15 +20,16 @@ package appeng.integration.modules.jei;
 
 import java.util.Map;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -40,7 +41,6 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.helpers.IContainerCraftingPacket;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContainerCraftingPacket>
         implements IRecipeTransferHandler<T> {
@@ -60,7 +60,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContaine
 
     @Override
     public final IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
-                                                     Player player, boolean maxTransfer, boolean doTransfer) {
+            Player player, boolean maxTransfer, boolean doTransfer) {
         if (!(recipe instanceof Recipe)) {
             return this.helper.createInternalError();
         }
@@ -133,7 +133,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContaine
     }
 
     protected abstract IRecipeTransferError doTransferRecipe(T container, Recipe<?> recipe, IRecipeLayout recipeLayout,
-                                                             Player player, boolean maxTransfer);
+            Player player, boolean maxTransfer);
 
     protected abstract boolean isCrafting();
 

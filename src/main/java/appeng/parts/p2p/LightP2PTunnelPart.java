@@ -21,12 +21,13 @@ package appeng.parts.p2p;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -36,7 +37,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import net.minecraft.world.item.ItemStack;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
 
@@ -133,7 +133,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final BlockEntity te = this.getTile();
-            this.opacity = 255 - te.getLevel().getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
+            this.opacity = 255
+                    - te.getLevel().getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
         }
 
         return (int) (emit * (this.opacity / 255.0f));

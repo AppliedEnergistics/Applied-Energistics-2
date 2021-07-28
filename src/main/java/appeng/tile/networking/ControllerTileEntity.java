@@ -20,11 +20,10 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
-import appeng.util.Platform;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -41,6 +40,7 @@ import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
 import appeng.core.Api;
 import appeng.tile.grid.AENetworkPowerTileEntity;
+import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class ControllerTileEntity extends AENetworkPowerTileEntity {
@@ -128,7 +128,8 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
         }
 
         if (this.checkController(this.worldPosition)
-                && this.level.getBlockState(this.worldPosition).getValue(ControllerBlock.CONTROLLER_STATE) != metaState) {
+                && this.level.getBlockState(this.worldPosition)
+                        .getValue(ControllerBlock.CONTROLLER_STATE) != metaState) {
             this.level.setBlockAndUpdate(this.worldPosition,
                     this.level.getBlockState(this.worldPosition).setValue(ControllerBlock.CONTROLLER_STATE, metaState));
         }

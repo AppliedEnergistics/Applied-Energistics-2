@@ -24,9 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import appeng.core.stats.AdvancementTriggers;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -40,6 +39,7 @@ import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.core.Api;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;

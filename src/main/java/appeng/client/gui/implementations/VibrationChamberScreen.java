@@ -20,9 +20,9 @@ package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
@@ -41,7 +41,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     private final ProgressBar generationRateBar;
 
     public VibrationChamberScreen(VibrationChamberContainer container, Inventory playerInventory,
-                                  Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
@@ -59,7 +59,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
 
     @Override
     public void drawFG(PoseStack matrices, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.menu.getRemainingBurnTime() > 0) {
             int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;

@@ -25,20 +25,17 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.cells.ISaveProvider;
 import net.minecraft.core.BlockPos;
-import appeng.tile.ServerTickingBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -83,6 +80,7 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -100,6 +98,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.tile.ServerTickingBlockEntity;
 import appeng.tile.grid.AENetworkPowerTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -112,7 +111,8 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestTileEntity extends AENetworkPowerTileEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity, ICellProvider {
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity,
+        ICellProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -217,7 +217,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
                     idlePowerUsage = 1.0;
 
                     for (IStorageChannel channel : Api.instance().storage().storageChannels()) {
-                        final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is, this::saveChanges,
+                        final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is,
+                                this::saveChanges,
                                 channel);
                         if (newCell != null) {
                             idlePowerUsage += cellHandler.cellIdleDrain(is, newCell);

@@ -18,12 +18,10 @@
 
 package appeng.fluids.container;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

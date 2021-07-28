@@ -20,8 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.container.me.crafting.CraftConfirmContainer;
 import appeng.container.me.crafting.CraftingPlanSummary;
@@ -29,8 +29,7 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
 /**
- * Transfers a {@link CraftingPlanSummary} to the client for a
- * {@link CraftConfirmContainer}
+ * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmContainer}
  */
 public class CraftConfirmPlanPacket extends BasePacket {
     private final CraftingPlanSummary plan;

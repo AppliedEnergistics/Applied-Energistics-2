@@ -19,7 +19,9 @@
 package appeng.integration.modules.theoneprobe.part;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -28,14 +30,12 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class PowerStateInfoProvider implements IPartProbInfoProvider {
 
     @Override
     public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
-                             BlockState blockState, IProbeHitData data) {
+            BlockState blockState, IProbeHitData data) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;
             final Component tooltip = this.getToolTip(state.isActive(), state.isPowered());

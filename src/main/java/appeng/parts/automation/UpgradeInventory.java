@@ -18,10 +18,10 @@
 
 package appeng.parts.automation;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;

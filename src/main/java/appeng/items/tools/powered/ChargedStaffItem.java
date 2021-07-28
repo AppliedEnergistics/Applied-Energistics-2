@@ -30,7 +30,6 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.LightningPacket;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
-import net.minecraft.world.item.Item.Properties;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
@@ -46,7 +45,8 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                 for (int x = 0; x < 2; x++) {
                     final AABB entityBoundingBox = target.getBoundingBox();
                     final float dx = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minX);
-                    final float dy = (float) (Platform.getRandomFloat() * target.getBbHeight() + entityBoundingBox.minY);
+                    final float dy = (float) (Platform.getRandomFloat() * target.getBbHeight()
+                            + entityBoundingBox.minY);
                     final float dz = (float) (Platform.getRandomFloat() * target.getBbWidth() + entityBoundingBox.minZ);
                     AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.level,
                             new LightningPacket(dx, dy, dz));

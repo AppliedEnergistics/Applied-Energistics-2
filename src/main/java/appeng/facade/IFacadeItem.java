@@ -19,9 +19,9 @@
 package appeng.facade;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.util.AEPartLocation;
-import net.minecraft.world.level.block.state.BlockState;
 
 public interface IFacadeItem {
 

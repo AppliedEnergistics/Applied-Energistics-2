@@ -20,8 +20,8 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
 
 final class PropertyUtils {
     private PropertyUtils() {
