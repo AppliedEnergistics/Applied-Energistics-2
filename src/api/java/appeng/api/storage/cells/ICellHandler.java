@@ -56,7 +56,7 @@ public interface ICellHandler {
      * @return a new IMEHandler for the provided item
      */
     <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
-                                                                      IStorageChannel<T> channel);
+            IStorageChannel<T> channel);
 
     /**
      * 0 - cell is missing.

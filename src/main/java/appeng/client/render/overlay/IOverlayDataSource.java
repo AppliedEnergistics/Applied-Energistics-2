@@ -22,10 +22,10 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.util.DimensionalBlockPos;
-import net.minecraft.world.level.ChunkPos;
 
 /**
  * A source providing data for a chunk overlay.

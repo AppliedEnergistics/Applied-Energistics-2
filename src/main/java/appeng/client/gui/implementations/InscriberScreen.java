@@ -18,21 +18,21 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.InscriberContainer;
-import net.minecraft.world.entity.player.Inventory;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 
     private final ProgressBar pb;
 
     public InscriberScreen(InscriberContainer container, Inventory playerInventory, Component title,
-                           ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);

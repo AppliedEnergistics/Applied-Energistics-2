@@ -19,13 +19,10 @@
 package appeng.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -44,7 +41,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, PoseStack mStack,
-                       MultiBufferSource buffers, int packedLight) {
+            MultiBufferSource buffers, int packedLight) {
         mStack.pushPose();
         mStack.translate(0, 0.25F, 0);
         float f2;

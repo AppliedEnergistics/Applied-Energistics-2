@@ -20,12 +20,12 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -62,7 +62,7 @@ public abstract class UpgradeableContainer extends AEBaseContainer implements IO
     private NetworkToolViewer tbInventory;
 
     public UpgradeableContainer(MenuType<?> containerType, int id, final Inventory ip,
-                                final IUpgradeableHost te) {
+            final IUpgradeableHost te) {
         super(containerType, id, ip, te);
         this.upgradeable = te;
 

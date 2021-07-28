@@ -21,11 +21,12 @@ package appeng.client.gui.me.crafting;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.Font;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;

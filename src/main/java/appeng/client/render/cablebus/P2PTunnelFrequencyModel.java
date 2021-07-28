@@ -21,13 +21,13 @@ package appeng.client.render.cablebus;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
@@ -40,8 +40,8 @@ public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequ
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         try {
             final TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
             return new P2PTunnelFrequencyBakedModel(texture);

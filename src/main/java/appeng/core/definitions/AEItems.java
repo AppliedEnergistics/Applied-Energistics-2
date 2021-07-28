@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ToolType;
@@ -279,7 +279,7 @@ public final class AEItems {
     }
 
     static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory,
-                                                   CreativeModeTab group) {
+            CreativeModeTab group) {
 
         Properties p = new Properties().tab(group);
 

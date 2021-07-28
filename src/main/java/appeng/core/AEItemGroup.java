@@ -21,12 +21,12 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.ItemDefinition;
-import net.minecraft.world.item.ItemStack;
 
 public class AEItemGroup extends CreativeModeTab {
 

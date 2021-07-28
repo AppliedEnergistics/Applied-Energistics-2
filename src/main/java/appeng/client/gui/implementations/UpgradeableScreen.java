@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;

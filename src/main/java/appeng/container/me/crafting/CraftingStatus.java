@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.storage.data.IAEItemStack;

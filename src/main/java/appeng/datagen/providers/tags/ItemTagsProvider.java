@@ -22,12 +22,13 @@ import java.nio.file.Path;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -35,8 +36,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
-
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 

@@ -27,14 +27,14 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
@@ -101,7 +101,8 @@ public class CraftingTileEntity extends AENetworkTileEntity
             return false;
         }
 
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level.getBlockState(this.worldPosition)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
+                .getBlockState(this.worldPosition)
                 .getBlock();
         return unit.type == CraftingUnitType.ACCELERATOR;
     }

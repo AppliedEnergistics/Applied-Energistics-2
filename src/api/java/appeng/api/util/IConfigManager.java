@@ -25,8 +25,9 @@ package appeng.api.util;
 
 import java.util.Set;
 
-import appeng.api.config.Settings;
 import net.minecraft.nbt.CompoundTag;
+
+import appeng.api.config.Settings;
 
 /**
  * Used to adjust settings on an object,

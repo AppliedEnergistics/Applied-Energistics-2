@@ -18,13 +18,13 @@
 
 package appeng.decorative.solid;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,8 +33,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
@@ -65,7 +63,7 @@ public class SkyStoneBlock extends AEBaseBlock {
 
     @Override
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerLevel) {
             ServerLevel serverWorld = (ServerLevel) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);

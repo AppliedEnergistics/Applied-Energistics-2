@@ -20,13 +20,13 @@ package appeng.entity;
 
 import java.util.List;
 
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public abstract class AEBaseItemEntity extends ItemEntity {
@@ -36,7 +36,7 @@ public abstract class AEBaseItemEntity extends ItemEntity {
     }
 
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level world, final double x,
-                               final double y, final double z, final ItemStack stack) {
+            final double y, final double z, final ItemStack stack) {
         this(entityType, world);
         this.setPos(x, y, z);
         this.setYRot(this.random.nextFloat() * 360.0F);

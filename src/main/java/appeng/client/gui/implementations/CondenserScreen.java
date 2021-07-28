@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -30,14 +31,13 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.CondenserContainer;
 import appeng.core.localization.GuiText;
-import net.minecraft.world.entity.player.Inventory;
 
 public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     private final SettingToggleButton<CondenserOutput> mode;
 
     public CondenserScreen(CondenserContainer container, Inventory playerInventory, Component title,
-                           ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.menu.getOutput());

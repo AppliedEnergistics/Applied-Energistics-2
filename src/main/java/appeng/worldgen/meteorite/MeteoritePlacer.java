@@ -21,20 +21,20 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
@@ -48,7 +48,6 @@ import appeng.worldgen.meteorite.fallout.FalloutCopy;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 import appeng.worldgen.meteorite.fallout.FalloutSand;
 import appeng.worldgen.meteorite.fallout.FalloutSnow;
-import net.minecraft.world.entity.item.ItemEntity;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
@@ -201,7 +200,8 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             this.putter.put(world, pos, this.skyChestDefinition.block().defaultBlockState());
 
-            final BlockEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
+            final BlockEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another
+                                                              // issue
             final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {

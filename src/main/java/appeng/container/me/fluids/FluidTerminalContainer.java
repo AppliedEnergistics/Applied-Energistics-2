@@ -20,10 +20,9 @@ package appeng.container.me.fluids;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -60,7 +59,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
     }
 
     public FluidTerminalContainer(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
-                                  boolean bindInventory) {
+            boolean bindInventory) {
         super(containerType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
@@ -72,7 +71,7 @@ public class FluidTerminalContainer extends MEMonitorableContainer<IAEFluidStack
 
     @Override
     protected void handleNetworkInteraction(ServerPlayer player, @Nullable IAEFluidStack stack,
-                                            InventoryAction action) {
+            InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
             return;

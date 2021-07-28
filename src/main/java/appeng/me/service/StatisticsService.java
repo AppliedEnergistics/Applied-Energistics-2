@@ -26,8 +26,9 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -35,7 +36,6 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.statistics.GridChunkEvent;
 import appeng.me.InWorldGridNode;
-import net.minecraft.world.level.LevelAccessor;
 
 /**
  * A grid providing precomupted statistics about a network.

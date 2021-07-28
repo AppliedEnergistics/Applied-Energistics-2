@@ -21,6 +21,7 @@ package appeng.fluids.container;
 import java.util.Iterator;
 
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -38,7 +39,6 @@ import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.iterators.NullIterator;
-import net.minecraft.world.inventory.MenuType;
 
 /**
  * @author BrockWS

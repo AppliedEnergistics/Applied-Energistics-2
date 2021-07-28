@@ -21,18 +21,17 @@ package appeng.client.render.crafting;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.math.Transformation;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 
 import appeng.client.render.DelegateBakedModel;
@@ -126,7 +125,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         @Nullable
         @Override
         public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world,
-                                  @Nullable LivingEntity entity, int seed) {
+                @Nullable LivingEntity entity, int seed) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();

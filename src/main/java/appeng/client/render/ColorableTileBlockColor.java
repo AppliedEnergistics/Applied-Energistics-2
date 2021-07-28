@@ -21,13 +21,13 @@ package appeng.client.render;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Automatically exposes the color of a colorable tile using tint indices 0-2
@@ -38,7 +38,7 @@ public class ColorableTileBlockColor implements BlockColor {
 
     @Override
     public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos,
-                        int tintIndex) {
+            int tintIndex) {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
         if (worldIn != null && pos != null) {

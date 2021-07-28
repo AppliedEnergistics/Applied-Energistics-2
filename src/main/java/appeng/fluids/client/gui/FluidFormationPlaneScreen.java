@@ -18,8 +18,8 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -32,7 +32,7 @@ import appeng.fluids.util.IAEFluidTank;
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
 
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, Inventory playerInventory,
-                                     Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = container.getFluidConfigInventory();

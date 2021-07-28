@@ -24,8 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.items.AEBaseItem;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class StorageComponentItem extends AEBaseItem implements IStorageComponent {
     private final int storageInKb;
 

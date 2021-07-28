@@ -22,9 +22,9 @@ import java.util.function.Consumer;
 
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;

@@ -18,8 +18,10 @@
 
 package appeng.fluids.parts;
 
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.container.me.fluids.FluidTerminalContainer;
@@ -27,8 +29,6 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * @author BrockWS

@@ -20,12 +20,11 @@ package appeng.decorative.solid;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-
-import appeng.block.AEBaseBlock;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.block.AEBaseBlock;
 
 public class QuartzOreBlock extends AEBaseBlock {
     public QuartzOreBlock(BlockBehaviour.Properties props) {
@@ -34,7 +33,7 @@ public class QuartzOreBlock extends AEBaseBlock {
 
     @Override
     public int getExpDrop(BlockState state, LevelReader reader, BlockPos pos, int fortune,
-                          int silktouch) {
+            int silktouch) {
         return silktouch == 0 ? Mth.nextInt(RANDOM, 2, 5) : 0;
     }
 

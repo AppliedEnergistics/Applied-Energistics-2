@@ -19,11 +19,11 @@
 package appeng.tile.networking;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -85,7 +85,8 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
         if (this.currentMeta != storageLevel) {
             this.currentMeta = (byte) storageLevel;
             this.level.setBlockAndUpdate(this.worldPosition,
-                    this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE, storageLevel));
+                    this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE,
+                            storageLevel));
         }
     }
 

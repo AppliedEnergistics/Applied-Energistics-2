@@ -18,12 +18,12 @@
 
 package appeng.client.render.effects;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class VibrantFX extends TextureSheetParticle {
 
     public VibrantFX(final ClientLevel par1World, final double x, final double y, final double z, final double par8,
-                     final double par10, final double par12, SpriteSet sprite) {
+            final double par10, final double par12, SpriteSet sprite) {
         super(par1World, x, y, z, par8, par10, par12);
         final float f = this.random.nextFloat() * 0.1F + 0.8F;
         this.rCol = f * 0.7f;
@@ -89,7 +89,7 @@ public class VibrantFX extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }

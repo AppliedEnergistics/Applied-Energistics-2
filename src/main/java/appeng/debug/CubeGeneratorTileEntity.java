@@ -18,22 +18,22 @@
 
 package appeng.debug;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import appeng.tile.ServerTickingBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTileEntity;
+import appeng.tile.ServerTickingBlockEntity;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity {
 

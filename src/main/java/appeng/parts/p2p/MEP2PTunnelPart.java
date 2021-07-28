@@ -23,10 +23,11 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
@@ -47,7 +48,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
 import appeng.parts.AEBasePart;
-import net.minecraft.world.item.ItemStack;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -129,7 +129,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-                            final AEPartLocation side) {
+            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.outerNode.setOwningPlayer(player);
     }

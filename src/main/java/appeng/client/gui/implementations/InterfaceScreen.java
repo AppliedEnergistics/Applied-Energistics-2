@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -39,7 +39,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     private final ToggleButton interfaceMode;
 
     public InterfaceScreen(InterfaceContainer container, Inventory playerInventory, Component title,
-                           ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

@@ -18,6 +18,9 @@
 
 package appeng.helpers;
 
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -42,8 +45,6 @@ import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
 import appeng.tile.networking.WirelessTileEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
@@ -60,7 +61,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private final int inventorySlot;
 
     public WirelessTerminalGuiObject(final IWirelessTermHandler wh, final ItemStack is, final Player ep,
-                                     int inventorySlot) {
+            int inventorySlot) {
         this.encryptionKey = wh.getEncryptionKey(is);
         this.effectiveItem = is;
         this.myPlayer = ep;

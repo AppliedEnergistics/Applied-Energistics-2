@@ -42,6 +42,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -82,7 +84,6 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.CraftingStorageTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
-import net.minecraft.world.level.Level;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
@@ -404,7 +405,7 @@ public class CraftingService
 
     @Override
     public Future<ICraftingJob> beginCraftingJob(final Level world, final IGrid grid, final IActionSource actionSrc,
-                                                 final IAEItemStack slotItem, final ICraftingCallback cb) {
+            final IAEItemStack slotItem, final ICraftingCallback cb) {
         if (world == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }

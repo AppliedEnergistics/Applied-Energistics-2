@@ -18,11 +18,11 @@
 
 package appeng.block.spatial;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEMaterials;
@@ -37,7 +37,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
         if (tsp != null) {
             tsp.neighborChanged(fromPos);

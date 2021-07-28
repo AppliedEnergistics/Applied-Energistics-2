@@ -18,10 +18,10 @@
 
 package appeng.init;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
 
 import appeng.core.stats.AeStats;
 

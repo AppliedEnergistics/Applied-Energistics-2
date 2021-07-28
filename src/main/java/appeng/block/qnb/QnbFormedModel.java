@@ -24,12 +24,12 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
@@ -42,8 +42,8 @@ public class QnbFormedModel implements BasicUnbakedModel<QnbFormedModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel ringModel = bakery.bake(MODEL_RING, modelTransform, spriteGetter);
         return new QnbFormedBakedModel(ringModel, spriteGetter);
     }

@@ -21,11 +21,11 @@ package appeng.integration.modules.jei;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.IFocus;

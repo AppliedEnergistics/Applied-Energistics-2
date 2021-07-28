@@ -18,9 +18,10 @@
 
 package appeng.parts.networking;
 
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
-import net.minecraft.world.item.ItemStack;
 
 public class CoveredCablePart extends CablePart {
     public CoveredCablePart(final ItemStack is) {

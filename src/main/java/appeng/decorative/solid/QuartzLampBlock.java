@@ -31,8 +31,6 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class QuartzLampBlock extends QuartzGlassBlock {
 
     public QuartzLampBlock(BlockBehaviour.Properties props) {

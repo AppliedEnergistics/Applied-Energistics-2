@@ -18,8 +18,8 @@
 
 package appeng.client.render.model;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Used as the cache key for caching automatically rotated baked models.

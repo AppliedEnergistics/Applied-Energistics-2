@@ -23,16 +23,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.EntityType.EntityFactory;
+import net.minecraft.world.entity.MobCategory;
 
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType.Builder;
-import net.minecraft.world.entity.EntityType.EntityFactory;
 
 public final class AEEntities {
 
@@ -69,9 +69,9 @@ public final class AEEntities {
             builder -> builder.sized(0.25F, 0.4F));
 
     private static <T extends Entity> EntityType<T> create(String id,
-                                                                                      EntityFactory<T> entityFactory,
-                                                                                      MobCategory classification,
-                                                                                      Consumer<Builder<T>> customizer) {
+            EntityFactory<T> entityFactory,
+            MobCategory classification,
+            Consumer<Builder<T>> customizer) {
         String registryLoc = "appliedenergistics2:" + id;
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);

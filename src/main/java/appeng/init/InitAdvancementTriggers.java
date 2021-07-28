@@ -1,7 +1,8 @@
 package appeng.init;
 
-import appeng.core.stats.AdvancementTriggers;
 import net.minecraft.advancements.CriteriaTriggers;
+
+import appeng.core.stats.AdvancementTriggers;
 
 public final class InitAdvancementTriggers {
 

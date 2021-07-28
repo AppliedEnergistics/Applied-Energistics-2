@@ -24,16 +24,14 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import appeng.parts.misc.InterfacePart;
-import appeng.tile.misc.InterfaceTileEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -75,13 +73,14 @@ import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.PartModel;
+import appeng.parts.misc.InterfacePart;
 import appeng.parts.misc.SharedStorageBusPart;
+import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.Platform;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
@@ -267,7 +266,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+        final BlockEntity target = self.getLevel()
+                .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {

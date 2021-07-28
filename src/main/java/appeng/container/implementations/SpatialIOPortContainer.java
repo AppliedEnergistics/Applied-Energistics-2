@@ -19,6 +19,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.energy.IEnergyService;
@@ -29,7 +30,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.spatial.SpatialIOPortTileEntity;
-import net.minecraft.world.inventory.MenuType;
 
 /**
  * @see appeng.client.gui.implementations.SpatialIOPortScreen

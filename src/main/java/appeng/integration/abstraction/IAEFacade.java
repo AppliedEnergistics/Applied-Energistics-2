@@ -21,11 +21,11 @@ package appeng.integration.abstraction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-
 import net.minecraft.world.level.block.state.BlockState;
+
 import team.chisel.ctm.api.IFacade;
 
 /**
@@ -46,7 +46,7 @@ public interface IAEFacade extends IFacade {
     @Nonnull
     @Override
     default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side,
-                                                                       @Nonnull BlockPos connection) {
+            @Nonnull BlockPos connection) {
         return getFacadeState(world, pos, side);
     }
 

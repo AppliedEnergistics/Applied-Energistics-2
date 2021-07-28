@@ -22,15 +22,16 @@ import com.google.common.base.Joiner;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.MinecraftServer;
 
 import appeng.server.ISubCommand;
 
 public class Supporters implements ISubCommand {
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data, final CommandSourceStack sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data,
+            final CommandSourceStack sender) {
         final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov",
                 "BevoLJ" };
         sender.sendSuccess(new TextComponent("Special thanks to " + Joiner.on(", ").join(who)), true);

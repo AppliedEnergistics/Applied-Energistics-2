@@ -26,19 +26,20 @@ import javax.annotation.Nullable;
 
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -68,7 +69,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-                                    IModelData extraData) {
+            IModelData extraData) {
         float rotation = 0;
         // Get rotation from the special block state
         Float rotationFromData = extraData.getData(ROTATION);
@@ -147,7 +148,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world,
-                                      @Nullable LivingEntity entity, int seed) {
+                    @Nullable LivingEntity entity, int seed) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof LocalPlayer) {

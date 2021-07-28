@@ -20,13 +20,12 @@ package appeng.mixins.unlitquad;
 
 import java.io.IOException;
 
-import net.minecraft.client.resources.model.ModelBakery;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.hooks.UnlitQuadHooks;

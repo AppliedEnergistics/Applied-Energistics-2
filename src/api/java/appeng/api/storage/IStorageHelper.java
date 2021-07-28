@@ -27,8 +27,8 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;

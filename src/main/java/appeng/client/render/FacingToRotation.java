@@ -21,14 +21,14 @@ package appeng.client.render;
 import java.util.Locale;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import com.mojang.math.Quaternion;
-import net.minecraft.core.Direction;
-import net.minecraft.util.StringRepresentable;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import net.minecraft.core.Vec3i;
 import com.mojang.math.Vector4f;
+
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * TODO: Removed useless stuff.

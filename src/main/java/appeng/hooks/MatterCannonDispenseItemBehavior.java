@@ -18,19 +18,19 @@
 
 package appeng.hooks;
 
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 
 import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.util.Platform;
-import net.minecraft.world.level.block.DispenserBlock;
 
 public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 

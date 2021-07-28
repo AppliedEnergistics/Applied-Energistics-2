@@ -22,17 +22,17 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -180,7 +180,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public final void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-                                  final AEPartLocation side) {
+            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
 
         final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);

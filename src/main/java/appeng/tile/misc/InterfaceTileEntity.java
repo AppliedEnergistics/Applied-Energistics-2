@@ -24,16 +24,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -192,7 +192,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }
 

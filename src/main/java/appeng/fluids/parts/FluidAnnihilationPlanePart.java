@@ -22,21 +22,22 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.tags.Tag;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -68,8 +69,6 @@ import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModelData;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -155,7 +154,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // space, tough luck. you loose the source block.
                     var fluidContainer = ((BucketPickup) blockstate.getBlock()).pickupBlock(w, pos, blockstate);
                     FluidUtil.getFluidContained(fluidContainer).ifPresent(fs -> {
-                            this.storeFluid(grid, AEFluidStack.fromFluidStack(fs), true);
+                        this.storeFluid(grid, AEFluidStack.fromFluidStack(fs), true);
                     });
 
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,

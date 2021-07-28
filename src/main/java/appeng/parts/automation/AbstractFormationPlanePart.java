@@ -18,12 +18,11 @@
 
 package appeng.parts.automation;
 
-import appeng.api.storage.cells.ICellProvider;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -31,6 +30,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;

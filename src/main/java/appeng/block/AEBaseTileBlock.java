@@ -20,34 +20,31 @@ package appeng.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -81,9 +78,9 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     // TODO : Was this change needed?
     public void setTileEntity(final Class<T> tileEntityClass,
-                              BlockEntityType.BlockEntitySupplier<T> factory,
-                              BlockEntityTicker<T> clientTicker,
-                              BlockEntityTicker<T> serverTicker) {
+            BlockEntityType.BlockEntitySupplier<T> factory,
+            BlockEntityTicker<T> clientTicker,
+            BlockEntityTicker<T> serverTicker) {
         this.tileEntityClass = tileEntityClass;
         this.tileEntityFactory = factory;
         this.serverTicker = serverTicker;
@@ -118,7 +115,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @SuppressWarnings("unchecked")
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState,
+            BlockEntityType<T> type) {
         return (BlockEntityTicker<T>) (level.isClientSide() ? clientTicker : serverTicker);
     }
 
@@ -159,7 +157,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Override
     public boolean triggerEvent(final BlockState state, final Level worldIn, final BlockPos pos, final int eventID,
-                                final int eventParam) {
+            final int eventParam) {
         super.triggerEvent(state, worldIn, pos, eventID, eventParam);
         final BlockEntity tileentity = worldIn.getBlockEntity(pos);
         return tileentity != null ? tileentity.triggerEvent(eventID, eventParam) : false;
@@ -167,7 +165,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Override
     public void setPlacedBy(final Level w, final BlockPos pos, final BlockState state, final LivingEntity placer,
-                            final ItemStack is) {
+            final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
         // than a translation component, since our custom naming cannot handle
@@ -184,7 +182,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
-                                 InteractionHand hand, BlockHitResult hit) {
+            InteractionHand hand, BlockHitResult hit) {
         ItemStack heldItem;
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
@@ -259,8 +257,9 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         return this.onActivated(world, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 

@@ -22,22 +22,22 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -62,8 +62,9 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
@@ -98,7 +99,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
             for (int bolts = 0; bolts < 3; bolts++) {
                 if (AppEngClient.instance().shouldAddParticles(r)) {
-                    Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                    Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING,
+                            xOff + 0.5 + pos.getX(),
                             yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                 }
             }
@@ -159,7 +161,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
-                                        CollisionContext context) {
+            CollisionContext context) {
         return Shapes.create(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 

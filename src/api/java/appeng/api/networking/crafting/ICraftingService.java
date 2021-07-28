@@ -28,11 +28,12 @@ import java.util.concurrent.Future;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.world.level.Level;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.world.level.Level;
 
 public interface ICraftingService extends IGridService {
 
@@ -60,7 +61,7 @@ public interface ICraftingService extends IGridService {
      *         on this, your be waiting forever.
      */
     Future<ICraftingJob> beginCraftingJob(Level world, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
-                                          ICraftingCallback callback);
+            ICraftingCallback callback);
 
     /**
      * Submit the job to the Crafting system for processing.

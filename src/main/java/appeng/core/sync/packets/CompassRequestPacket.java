@@ -20,8 +20,9 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.sync.BasePacket;
@@ -29,7 +30,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
-import net.minecraft.world.entity.player.Player;
 
 public class CompassRequestPacket extends BasePacket implements ICompassCallback {
 

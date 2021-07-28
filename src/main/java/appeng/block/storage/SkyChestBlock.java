@@ -24,44 +24,39 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.core.definitions.AEBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
+import appeng.core.definitions.AEBlockEntities;
 import appeng.tile.storage.SkyChestTileEntity;
-
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements SimpleWaterloggedBlock {
 
@@ -112,8 +107,9 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!w.isClientSide()) {
             SkyChestTileEntity tile = getTileEntity(w, pos);
             if (tile != null) {
@@ -180,7 +176,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));

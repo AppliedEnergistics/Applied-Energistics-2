@@ -31,9 +31,11 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -67,8 +69,6 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -186,44 +186,48 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGenericGuiContainerHandler(AEBaseScreen.class, new IGuiContainerHandler<AbstractContainerScreen<?>>() {
-            @Override
-            public List<Rect2i> getGuiExtraAreas(AbstractContainerScreen containerScreen) {
-                if (containerScreen instanceof AEBaseScreen) {
-                    return ((AEBaseScreen<?>) containerScreen).getExclusionZones();
-                } else {
-                    return Collections.emptyList();
-                }
-            }
+        registration.addGenericGuiContainerHandler(AEBaseScreen.class,
+                new IGuiContainerHandler<AbstractContainerScreen<?>>() {
+                    @Override
+                    public List<Rect2i> getGuiExtraAreas(AbstractContainerScreen containerScreen) {
+                        if (containerScreen instanceof AEBaseScreen) {
+                            return ((AEBaseScreen<?>) containerScreen).getExclusionZones();
+                        } else {
+                            return Collections.emptyList();
+                        }
+                    }
 
-            @Nullable
-            @Override
-            public Object getIngredientUnderMouse(AbstractContainerScreen<?> containerScreen, double mouseX, double mouseY) {
-                // The following code allows the player to show recipes involving fluids in AE fluid terminals or AE
-                // fluid tanks shown in fluid interfaces and other UI.
-                if (containerScreen instanceof AEBaseScreen) {
-                    AEBaseScreen<?> baseScreen = (AEBaseScreen<?>) containerScreen;
-                    return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
-                }
+                    @Nullable
+                    @Override
+                    public Object getIngredientUnderMouse(AbstractContainerScreen<?> containerScreen, double mouseX,
+                            double mouseY) {
+                        // The following code allows the player to show recipes involving fluids in AE fluid terminals
+                        // or AE
+                        // fluid tanks shown in fluid interfaces and other UI.
+                        if (containerScreen instanceof AEBaseScreen) {
+                            AEBaseScreen<?> baseScreen = (AEBaseScreen<?>) containerScreen;
+                            return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
+                        }
 
-                return null;
-            }
+                        return null;
+                    }
 
-            @Override
-            public Collection<IGuiClickableArea> getGuiClickableAreas(AbstractContainerScreen<?> containerScreen, double mouseX,
-                                                                      double mouseY) {
-                if (containerScreen instanceof GrinderScreen) {
-                    return Arrays.asList(
-                            IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),
-                            IGuiClickableArea.createBasic(103, 40, 55, 22, GrinderRecipeCategory.UID));
-                } else if (containerScreen instanceof InscriberScreen) {
-                    return Collections.singletonList(
-                            IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.UID));
-                }
+                    @Override
+                    public Collection<IGuiClickableArea> getGuiClickableAreas(
+                            AbstractContainerScreen<?> containerScreen, double mouseX,
+                            double mouseY) {
+                        if (containerScreen instanceof GrinderScreen) {
+                            return Arrays.asList(
+                                    IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),
+                                    IGuiClickableArea.createBasic(103, 40, 55, 22, GrinderRecipeCategory.UID));
+                        } else if (containerScreen instanceof InscriberScreen) {
+                            return Collections.singletonList(
+                                    IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.UID));
+                        }
 
-                return Collections.emptyList();
-            }
-        });
+                        return Collections.emptyList();
+                    }
+                });
 
         registration.addGhostIngredientHandler(AEBaseScreen.class, new GhostIngredientHandler());
     }

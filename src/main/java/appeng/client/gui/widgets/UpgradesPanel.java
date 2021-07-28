@@ -30,6 +30,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -38,7 +39,6 @@ import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
 import appeng.container.slot.AppEngSlot;
-import net.minecraft.world.inventory.Slot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.
@@ -207,7 +207,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     private static void drawSlot(PoseStack matrices, int zIndex, int x, int y,
-                                 boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
+            boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
         int srcWidth = SLOT_SIZE;

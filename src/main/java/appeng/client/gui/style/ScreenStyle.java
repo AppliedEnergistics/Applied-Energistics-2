@@ -29,8 +29,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.network.chat.Style;
 
 import appeng.container.SlotSemantic;

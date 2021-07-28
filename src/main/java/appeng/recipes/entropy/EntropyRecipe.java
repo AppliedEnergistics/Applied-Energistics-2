@@ -26,21 +26,21 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateHolder;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 
 import appeng.core.AppEng;
 import appeng.items.tools.powered.EntropyManipulatorItem;
@@ -84,9 +84,9 @@ public class EntropyRecipe implements Recipe<Container> {
     private final List<ItemStack> drops;
 
     public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
-                         Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
-                         List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
-                         List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
+            Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
+            List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
+            List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
         Preconditions.checkArgument(inputBlock != null || inputFluid != null,
                 "One of inputBlock or inputFluid must not be null");
 
@@ -278,7 +278,7 @@ public class EntropyRecipe implements Recipe<Container> {
      * Copies a property from one stateholder to another (if that stateholder also has that property).
      */
     private static <T extends Comparable<T>, SH extends StateHolder<?, SH>> SH copyProperty(SH from, SH to,
-                                                                                            Property<T> property) {
+            Property<T> property) {
         if (to.hasProperty(property)) {
             return to.setValue(property, from.getValue(property));
         } else {

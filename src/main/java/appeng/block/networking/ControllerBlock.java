@@ -18,17 +18,16 @@
 
 package appeng.block.networking;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Material;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.ControllerTileEntity;
@@ -86,7 +85,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      */
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world,
-                                  BlockPos pos, BlockPos facingPos) {
+            BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 
@@ -130,7 +129,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final ControllerTileEntity tc = this.getTileEntity(world, pos);
         if (tc != null) {
             tc.onNeighborChange(false);

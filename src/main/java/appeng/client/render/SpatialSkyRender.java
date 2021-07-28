@@ -20,18 +20,17 @@ package appeng.client.render;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
-import net.minecraft.client.renderer.GameRenderer;
-
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Quaternion;
+
+import net.minecraft.client.renderer.GameRenderer;
 
 public class SpatialSkyRender {
 
@@ -93,7 +92,8 @@ public class SpatialSkyRender {
             RenderSystem.defaultBlendFunc();
 
             RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
-            sparkleBuffer.drawWithShader(matrixStack.last().pose(), projectionMatrix, GameRenderer.getPositionColorShader());
+            sparkleBuffer.drawWithShader(matrixStack.last().pose(), projectionMatrix,
+                    GameRenderer.getPositionColorShader());
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
 

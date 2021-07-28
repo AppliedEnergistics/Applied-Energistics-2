@@ -20,13 +20,13 @@ package appeng.init.worldgen;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneDecoratorConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.Predicates;
+import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
-import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.Predicates;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AEConfig;
@@ -59,8 +59,7 @@ public final class InitFeatures {
                                 AEConfig.instance().getQuartzOresPerCluster()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(
                         VerticalAnchor.aboveBottom(12),
-                        VerticalAnchor.aboveBottom(72)
-                ))))
+                        VerticalAnchor.aboveBottom(72)))))
                 .squared()
                 .count(AEConfig.instance().getQuartzOresClusterAmount()));
     }

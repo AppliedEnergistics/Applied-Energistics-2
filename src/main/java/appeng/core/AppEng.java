@@ -20,20 +20,18 @@ package appeng.core;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
-import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
-import net.minecraft.world.entity.player.Player;
 
 public interface AppEng {
 
@@ -63,7 +61,7 @@ public interface AppEng {
     void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level w, BasePacket packet);
 
     void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
-                     final double posZ, final Object o);
+            final double posZ, final Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
@@ -84,8 +82,8 @@ public interface AppEng {
     Level getClientWorld();
 
     /**
-     * Since in a Minecraft client, multiple servers can be launched and stopped during a single session,
-     * the result of this method should not be stored globally.
+     * Since in a Minecraft client, multiple servers can be launched and stopped during a single session, the result of
+     * this method should not be stored globally.
      *
      * @return The currently running Minecraft server instance, if there is one.
      */

@@ -18,18 +18,18 @@
 
 package appeng.datagen;
 
-import appeng.datagen.providers.advancements.AdvancementGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
+import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.recipes.DecorationRecipes;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {

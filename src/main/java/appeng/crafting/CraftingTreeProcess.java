@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 

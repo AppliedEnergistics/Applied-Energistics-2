@@ -45,7 +45,7 @@ public class AEMaterials {
      * @return
      */
     private static Material make(MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
-                                 boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
+            boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
         return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, flammable, replaceable, pushReaction);
     }
 

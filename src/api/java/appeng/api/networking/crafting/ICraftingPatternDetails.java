@@ -27,10 +27,10 @@ import java.util.List;
 
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * Describes a crafting or processing pattern decoded by {@link appeng.api.crafting.ICraftingHelper}.
@@ -54,8 +54,7 @@ public interface ICraftingPatternDetails {
     boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, Level world);
 
     /**
-     * @return if this pattern is for a Vanilla {@link RecipeType#CRAFTING crafting
-     *         recipe}.
+     * @return if this pattern is for a Vanilla {@link RecipeType#CRAFTING crafting recipe}.
      */
     boolean isCraftable();
 

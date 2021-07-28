@@ -28,23 +28,23 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component.Serializer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiComponent;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component.Serializer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
@@ -137,7 +137,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private int numLines = 0;
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, Inventory playerInventory,
-                                   Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;
@@ -175,7 +175,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
 
@@ -263,7 +263,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
     @Override
     public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
 
         // Draw the top of the dialog

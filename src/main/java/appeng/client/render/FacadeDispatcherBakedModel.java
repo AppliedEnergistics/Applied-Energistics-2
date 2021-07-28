@@ -21,16 +21,16 @@ package appeng.client.render;
 import java.util.Objects;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.FacadeItem;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
@@ -50,7 +50,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity, int seed) {
+                    LivingEntity entity, int seed) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;
                 }

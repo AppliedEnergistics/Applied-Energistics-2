@@ -22,19 +22,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
@@ -199,7 +199,7 @@ public class CableAnchorPart implements IPart {
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-                            final AEPartLocation side) {
+            final AEPartLocation side) {
 
     }
 

@@ -26,8 +26,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.items.AEBaseItem;
 
-import net.minecraft.world.item.Item.Properties;
-
 /**
  * Used for items that use a different entity for when they're dropped.
  */

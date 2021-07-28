@@ -18,18 +18,17 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import com.mojang.math.Quaternion;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +48,7 @@ public class CrankTESR implements BlockEntityRenderer<CrankTileEntity> {
 
     @Override
     public void render(CrankTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation

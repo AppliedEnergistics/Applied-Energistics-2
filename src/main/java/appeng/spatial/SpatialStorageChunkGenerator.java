@@ -26,24 +26,24 @@ import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryLookupCodec;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.biome.FixedBiomeSource;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep.Carving;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.StructureSettings;
 
 import appeng.core.definitions.AEBlocks;
-import net.minecraft.world.level.biome.FixedBiomeSource;
-import net.minecraft.world.level.levelgen.GenerationStep.Carving;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
 
 /**
  * Chunk generator the spatial storage world.
@@ -133,7 +133,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, StructureFeatureManager templates, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, StructureFeatureManager templates,
+            ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 

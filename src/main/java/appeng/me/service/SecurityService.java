@@ -26,6 +26,8 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.world.entity.player.Player;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -36,7 +38,6 @@ import appeng.api.networking.security.ISecurityService;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
-import net.minecraft.world.entity.player.Player;
 
 public class SecurityService implements ISecurityService, IGridServiceProvider {
 

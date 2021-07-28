@@ -21,29 +21,29 @@ package appeng.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -76,7 +76,7 @@ public class PartPlacement {
     private boolean wasCanceled = false;
 
     public static InteractionResult place(final ItemStack held, final BlockPos pos, Direction side,
-                                          final Player player, final InteractionHand hand, final Level world, PlaceType pass, final int depth) {
+            final Player player, final InteractionHand hand, final Level world, PlaceType pass, final int depth) {
         if (depth > 3) {
             return InteractionResult.FAIL;
         }
@@ -106,7 +106,8 @@ public class PartPlacement {
                     if (mop.getType() == Type.BLOCK) {
                         final List<ItemStack> is = new ArrayList<>();
                         final SelectedPart sp = selectPart(player, host,
-                                mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()));
+                                mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
+                                        -mop.getBlockPos().getZ()));
 
                         // SelectedPart contains either a facade or a part. Never both.
                         if (sp.part != null) {
@@ -280,7 +281,8 @@ public class PartPlacement {
         if (!world.isClientSide) {
             if (mop.getType() != Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
-                        mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()));
+                        mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
+                                -mop.getBlockPos().getZ()));
 
                 if (sp.part != null && !InteractionUtil.isInAlternateUseMode(player)
                         && sp.part.onActivate(player, hand, mop.getLocation())) {

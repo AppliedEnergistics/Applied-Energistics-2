@@ -18,15 +18,16 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.world.entity.player.Inventory;
+
 import org.lwjgl.glfw.GLFW;
 
-import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
@@ -41,7 +42,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     private EditBox name;
 
     public QuartzKnifeScreen(QuartzKnifeContainer container, Inventory playerInventory, Component title,
-                             ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -60,7 +61,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     @Override
     public void drawBG(PoseStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.name.render(matrices, mouseX, mouseY, partialTicks);
     }

@@ -20,16 +20,16 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,8 +52,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 
-import net.minecraft.world.item.Item.Properties;
-
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-17
@@ -75,7 +73,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
-                                final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
@@ -141,7 +139,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public InteractionResultHolder<ItemStack> use(final Level world, final Player player, final InteractionHand hand) {
         this.disassembleDrive(player.getItemInHand(hand), world, player);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(world.isClientSide()), player.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(world.isClientSide()),
+                player.getItemInHand(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final Level world, final Player player) {

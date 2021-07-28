@@ -20,8 +20,8 @@ package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -44,7 +44,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     private final NumberEntryWidget level;
 
     public LevelEmitterScreen(LevelEmitterContainer container, Inventory playerInventory, Component title,
-                              ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,
@@ -94,7 +94,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
     @Override
     public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }

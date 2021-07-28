@@ -29,12 +29,12 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
-import net.minecraft.world.level.LevelAccessor;
 
 /**
  * A helper responsible for creating new {@link IGridNode}, and connecting existing nodes.

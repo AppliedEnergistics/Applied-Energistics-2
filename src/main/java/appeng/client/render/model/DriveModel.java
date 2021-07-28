@@ -26,11 +26,11 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -51,8 +51,8 @@ public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         final ICellModelRegistry cellRegistry = Api.instance().client().cells();
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 

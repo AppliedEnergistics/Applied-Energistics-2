@@ -27,12 +27,12 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -62,7 +62,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                    @Nonnull IModelData extraData) {
+            @Nonnull IModelData extraData) {
         if (side == null) {
             return Collections.emptyList(); // No generic quads for this model
         }
@@ -222,7 +222,7 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
      * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting cubes on that corner.
      */
     private void addCornerCap(CubeBuilder builder, EnumSet<Direction> connections, Direction side, Direction down,
-                              Direction west, Direction north) {
+            Direction west, Direction north) {
         if (connections.contains(down) || connections.contains(west) || connections.contains(north)) {
             return;
         }

@@ -24,28 +24,27 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -90,7 +89,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
                 AEMaterials.FIXTURE).noCollission().noOcclusion().strength(0)
                         .lightLevel(b -> 14).sound(SoundType.GLASS));
 
-        this.registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false).setValue(WATERLOGGED, false));
+        this.registerDefaultState(
+                defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -126,7 +126,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // no longer be placed
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
                     Fluids.WATER.getTickDelay(world));
@@ -140,7 +140,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());
@@ -184,7 +185,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {
             this.dropTorch(world, pos);

@@ -23,17 +23,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.crafting.CraftingEvent;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -61,6 +60,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.crafting.CraftingEvent;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
@@ -401,10 +401,12 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
                 final IAEItemStack item = AEItemStack.fromItemStack(output);
                 if (item != null) {
-                    final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), 32,
+                    final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(),
+                            this.worldPosition.getZ(), 32,
                             this.level);
                     NetworkHandler.instance()
-                            .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item), where);
+                            .sendToAllAround(new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item),
+                                    where);
                 }
 
                 this.saveChanges();

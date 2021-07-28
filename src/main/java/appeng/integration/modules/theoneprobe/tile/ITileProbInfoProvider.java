@@ -18,9 +18,9 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -38,5 +38,5 @@ public interface ITileProbInfoProvider {
      * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, Level, IBlockState, IProbeHitData)
      */
     void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
-                      BlockState blockState, IProbeHitData data);
+            BlockState blockState, IProbeHitData data);
 }

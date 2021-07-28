@@ -20,18 +20,17 @@ package appeng.core.sync.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 
-import net.minecraft.world.entity.player.Player;
-
 public final class ServerPacketHandler extends BasePacketHandler implements IPacketHandler {
 
     @Override
     public void onPacketData(final INetworkInfo manager, final PacketListener handler, final FriendlyByteBuf packet,
-                             final Player player) {
+            final Player player) {
         try {
             final int packetType = packet.readInt();
             final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);

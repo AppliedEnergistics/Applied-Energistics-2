@@ -23,13 +23,12 @@ import java.util.concurrent.Future;
 import javax.annotation.Nullable;
 
 import net.minecraft.Util;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;

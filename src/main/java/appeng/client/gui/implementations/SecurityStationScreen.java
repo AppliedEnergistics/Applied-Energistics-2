@@ -23,8 +23,8 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -48,7 +48,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationCon
     private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationContainer container,
-                                 Inventory playerInventory, Component title, ScreenStyle style) {
+            Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");

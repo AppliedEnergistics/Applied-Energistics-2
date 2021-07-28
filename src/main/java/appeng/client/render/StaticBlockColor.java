@@ -20,10 +20,10 @@ package appeng.client.render;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.util.AEColor;
 
@@ -40,7 +40,7 @@ public class StaticBlockColor implements BlockColor {
 
     @Override
     public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos,
-                        int tintIndex) {
+            int tintIndex) {
         return this.color.getVariantByTintIndex(tintIndex);
     }
 

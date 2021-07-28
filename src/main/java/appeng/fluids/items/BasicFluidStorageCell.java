@@ -33,8 +33,6 @@ import appeng.fluids.helper.FluidCellConfig;
 import appeng.items.storage.AbstractStorageCell;
 import appeng.util.InventoryAdaptor;
 
-import net.minecraft.world.item.Item.Properties;
-
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-17
@@ -46,7 +44,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     private final double idleDrain;
 
     public BasicFluidStorageCell(Item.Properties props, ItemLike coreItem, int kilobytes, float idleDrain,
-                                 int bytesPerType) {
+            int bytesPerType) {
         super(props, coreItem, kilobytes);
         this.idleDrain = idleDrain;
         this.bytesPerType = bytesPerType;

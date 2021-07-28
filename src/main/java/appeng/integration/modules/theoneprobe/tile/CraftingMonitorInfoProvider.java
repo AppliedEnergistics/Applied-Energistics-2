@@ -18,8 +18,11 @@
 
 package appeng.integration.modules.theoneprobe.tile;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -30,15 +33,12 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level world, BlockState blockState, IProbeHitData data) {
+            Level world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof CraftingMonitorTileEntity) {
             final CraftingMonitorTileEntity monitor = (CraftingMonitorTileEntity) tile;
             final IAEItemStack displayStack = monitor.getJobProgress();

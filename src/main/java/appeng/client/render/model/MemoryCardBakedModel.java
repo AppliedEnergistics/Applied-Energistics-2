@@ -31,13 +31,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +69,7 @@ class MemoryCardBakedModel implements BakedModel {
     }
 
     private MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash,
-                                 Cache<CacheKey, MemoryCardBakedModel> modelCache) {
+            Cache<CacheKey, MemoryCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
         this.colorCode = hash;
@@ -148,7 +148,7 @@ class MemoryCardBakedModel implements BakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity, int seed) {
+                    LivingEntity entity, int seed) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard) {
                         final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();

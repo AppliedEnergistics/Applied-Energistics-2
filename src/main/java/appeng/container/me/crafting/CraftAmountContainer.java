@@ -23,10 +23,11 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -49,7 +50,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
-import net.minecraft.world.level.Level;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
@@ -85,7 +85,7 @@ public class CraftAmountContainer extends AEBaseContainer {
      * Opens the craft amount screen for the given player.
      */
     public static void open(ServerPlayer player, ContainerLocator locator, IAEItemStack itemToCraft,
-                            int initialAmount) {
+            int initialAmount) {
         ContainerOpener.openContainer(CraftAmountContainer.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountContainer) {

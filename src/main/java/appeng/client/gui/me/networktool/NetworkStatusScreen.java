@@ -24,6 +24,7 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -35,7 +36,6 @@ import appeng.container.me.networktool.NetworkStatus;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import net.minecraft.world.entity.player.Inventory;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
@@ -55,7 +55,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
     private final Scrollbar scrollbar;
 
     public NetworkStatusScreen(NetworkStatusContainer container, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -76,7 +76,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> {
 
     @Override
     public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY) {
+            final int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;

@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,8 +40,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-
-import net.minecraft.world.item.Item.Properties;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
@@ -57,7 +55,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
-                                final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getAEMaxPower(stack);

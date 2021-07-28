@@ -23,15 +23,14 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -47,6 +46,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
+import appeng.tile.ServerTickingBlockEntity;
 import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
@@ -115,7 +115,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }

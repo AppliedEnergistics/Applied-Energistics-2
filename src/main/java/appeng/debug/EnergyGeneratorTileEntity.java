@@ -23,11 +23,10 @@ import javax.annotation.Nullable;
 import com.google.common.math.IntMath;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import appeng.tile.ServerTickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -35,6 +34,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.tile.AEBaseTileEntity;
+import appeng.tile.ServerTickingBlockEntity;
 
 public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ServerTickingBlockEntity, IEnergyStorage {
     /**

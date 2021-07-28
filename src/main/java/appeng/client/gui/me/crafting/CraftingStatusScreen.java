@@ -19,9 +19,9 @@
 package appeng.client.gui.me.crafting;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -39,7 +39,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     private final Button selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, Inventory playerInventory,
-                                Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 

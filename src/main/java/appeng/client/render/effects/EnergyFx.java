@@ -22,10 +22,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,7 +39,7 @@ public class EnergyFx extends TextureSheetParticle {
     private final int startBlkZ;
 
     public EnergyFx(final ClientLevel par1World, final double par2, final double par4, final double par6,
-                    final SpriteSet sprite) {
+            final SpriteSet sprite) {
         super(par1World, par2, par4, par6);
         this.gravity = 0;
         this.bCol = 1;
@@ -110,7 +110,7 @@ public class EnergyFx extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(EnergyParticleData data, ClientLevel worldIn, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);

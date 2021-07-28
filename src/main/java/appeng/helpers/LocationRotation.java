@@ -19,9 +19,9 @@
 package appeng.helpers;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.util.IOrientable;
-import net.minecraft.world.level.BlockGetter;
 
 public class LocationRotation implements IOrientable {
 

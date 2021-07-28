@@ -18,12 +18,13 @@
 
 package appeng.init.client;
 
-import appeng.core.definitions.AEEntities;
-import appeng.entity.TinyTNTPrimedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+
+import appeng.core.definitions.AEEntities;
+import appeng.entity.TinyTNTPrimedRenderer;
 
 /**
  * Registers custom renderers for our {@link AEEntities}.

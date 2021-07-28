@@ -20,8 +20,8 @@ package appeng.fluids.helper;
 
 import java.util.EnumSet;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;

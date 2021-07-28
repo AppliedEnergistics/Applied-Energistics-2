@@ -32,29 +32,28 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -219,7 +218,7 @@ public class Platform {
     }
 
     public static boolean checkPermissions(final Player player, final Object accessInterface,
-                                           SecurityPermissions requiredPermission, boolean notifyPlayer) {
+            SecurityPermissions requiredPermission, boolean notifyPlayer) {
         // FIXME: Check permissions...
         if (requiredPermission != null && accessInterface instanceof IActionHost) {
             final IGridNode gn = ((IActionHost) accessInterface).getActionableNode();
@@ -895,10 +894,10 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-                                                                          final IMEMonitor<IAEItemStack> src, final Level w, final Recipe<CraftingContainer> r,
-                                                                          final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
-                                                                          final IItemList<IAEItemStack> items, final Actionable realForFake,
-                                                                          final IPartitionList<IAEItemStack> filter) {
+            final IMEMonitor<IAEItemStack> src, final Level w, final Recipe<CraftingContainer> r,
+            final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
+            final IItemList<IAEItemStack> items, final Actionable realForFake,
+            final IPartitionList<IAEItemStack> filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
                 return ItemStack.EMPTY;
@@ -1010,8 +1009,8 @@ public class Platform {
     }
 
     /**
-     * Retrieves a BlockEntity from a given position, but only if that particular BlockEntity would be in a state
-     * where it would be ticked by the chunk.
+     * Retrieves a BlockEntity from a given position, but only if that particular BlockEntity would be in a state where
+     * it would be ticked by the chunk.
      * <p/>
      * This method also doesn't return a tile entity on the client-side.
      */
@@ -1030,6 +1029,7 @@ public class Platform {
 
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
+     * 
      * @see {@link net.minecraft.world.level.chunk.LevelChunk#isTicking(BlockPos)} (which is package-visible)
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {

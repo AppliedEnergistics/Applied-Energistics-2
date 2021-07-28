@@ -20,8 +20,8 @@ package appeng.client.render.effects;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 
 import appeng.core.AppEng;
 

@@ -24,7 +24,6 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.Tiers;
 
 import appeng.util.Platform;
-import net.minecraft.world.item.Item.Properties;
 
 public class QuartzSpadeItem extends ShovelItem {
     private final QuartzToolType type;

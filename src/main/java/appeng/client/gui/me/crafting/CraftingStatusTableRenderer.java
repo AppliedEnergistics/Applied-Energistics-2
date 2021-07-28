@@ -21,8 +21,8 @@ package appeng.client.gui.me.crafting;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;

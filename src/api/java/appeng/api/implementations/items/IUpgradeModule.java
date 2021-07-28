@@ -23,8 +23,9 @@
 
 package appeng.api.implementations.items;
 
-import appeng.api.config.Upgrades;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.Upgrades;
 
 public interface IUpgradeModule {
 

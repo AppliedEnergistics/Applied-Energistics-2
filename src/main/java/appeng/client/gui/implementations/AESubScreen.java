@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;

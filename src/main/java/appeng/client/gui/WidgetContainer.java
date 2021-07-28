@@ -29,10 +29,10 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.components.Button.OnTooltip;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.gui.components.Button.OnTooltip;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
@@ -48,8 +48,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
 /**
- * This utility class helps with positioning commonly used Minecraft {@link AbstractWidget} instances on a screen without having
- * to recreate them everytime the screen resizes in the <code>init</code> method.
+ * This utility class helps with positioning commonly used Minecraft {@link AbstractWidget} instances on a screen
+ * without having to recreate them everytime the screen resizes in the <code>init</code> method.
  * <p/>
  * This class sources the positioning and sizing for widgets from the {@link ScreenStyle}, and correlates between the
  * screen's JSON file and the widget using a string id.

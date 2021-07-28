@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
@@ -51,7 +51,8 @@ public class PartPlacementPacket extends BasePacket {
     }
 
     // api
-    public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight, final InteractionHand hand) {
+    public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight,
+            final InteractionHand hand) {
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());

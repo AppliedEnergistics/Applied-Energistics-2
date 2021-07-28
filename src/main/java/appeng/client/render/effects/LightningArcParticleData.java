@@ -23,12 +23,11 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.phys.Vec3;
-
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
@@ -56,7 +55,7 @@ public class LightningArcParticleData implements ParticleOptions {
 
         @Override
         public LightningArcParticleData fromNetwork(ParticleType<LightningArcParticleData> particleTypeIn,
-                                                    FriendlyByteBuf buffer) {
+                FriendlyByteBuf buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();

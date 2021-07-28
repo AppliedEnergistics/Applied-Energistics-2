@@ -21,8 +21,8 @@ package appeng.container.implementations;
 import java.util.Iterator;
 
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -188,7 +188,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     }
 
     private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
-                                                                                     IStorageChannel<T> channel) {
+            IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
         if (cellInv != null) {
             final IItemList<T> list = cellInv.getAvailableItems(channel.createList());

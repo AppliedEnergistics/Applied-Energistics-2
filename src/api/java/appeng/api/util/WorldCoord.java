@@ -23,8 +23,8 @@
 
 package appeng.api.util;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Represents a relative coordinate, either relative to another object, or relative to the origin of a dimension.

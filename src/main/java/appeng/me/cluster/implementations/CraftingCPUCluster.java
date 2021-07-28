@@ -26,18 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import appeng.crafting.CraftingEvent;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -66,6 +64,7 @@ import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;
+import appeng.crafting.CraftingEvent;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingWatcher;

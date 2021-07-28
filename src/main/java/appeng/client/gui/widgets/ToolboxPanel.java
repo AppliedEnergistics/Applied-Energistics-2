@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;

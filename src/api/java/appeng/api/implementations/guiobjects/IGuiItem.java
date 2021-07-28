@@ -26,8 +26,8 @@ package appeng.api.implementations.guiobjects;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Implemented on Item objects, to return objects used to manage, and interact with the contents.

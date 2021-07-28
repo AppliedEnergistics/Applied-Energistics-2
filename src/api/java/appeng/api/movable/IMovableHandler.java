@@ -23,13 +23,13 @@
 
 package appeng.api.movable;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-
-import javax.annotation.Nullable;
 
 public interface IMovableHandler {
 
@@ -65,7 +65,7 @@ public interface IMovableHandler {
      * }
      * </pre>
      *
-     * @param entity        to be moved tile
+     * @param entity      to be moved tile
      * @param savedData   the original entities data saved using {@link BlockEntity#save(CompoundTag)}.
      * @param world       world of tile
      * @param newPosition the new location

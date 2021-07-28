@@ -20,13 +20,14 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -34,7 +35,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
 import appeng.tile.misc.CondenserTileEntity;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.level.material.Material;
 
 public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
@@ -43,8 +43,9 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }

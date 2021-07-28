@@ -23,9 +23,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
@@ -44,8 +45,6 @@ import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.parts.AEBasePart;
-
-import net.minecraft.world.entity.player.Player;
 
 public class CablePart extends AEBasePart implements ICablePart {
 

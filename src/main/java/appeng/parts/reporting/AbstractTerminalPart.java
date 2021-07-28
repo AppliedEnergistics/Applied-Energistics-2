@@ -20,11 +20,11 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
@@ -140,7 +140,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

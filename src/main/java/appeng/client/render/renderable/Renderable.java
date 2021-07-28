@@ -26,6 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public interface Renderable<T extends BlockEntity> {
 
     void renderTileEntityAt(T te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffers,
-                            int combinedLight, int combinedOverlay);
+            int combinedLight, int combinedOverlay);
 
 }

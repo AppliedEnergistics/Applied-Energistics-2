@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -42,7 +42,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public StorageBusScreen(StorageBusContainer container, Inventory playerInventory, Component title,
-                            ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

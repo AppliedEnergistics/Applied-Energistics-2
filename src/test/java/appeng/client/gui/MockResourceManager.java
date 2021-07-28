@@ -32,10 +32,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 
 import appeng.core.AppEng;
 

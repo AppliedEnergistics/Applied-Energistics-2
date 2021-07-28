@@ -18,9 +18,9 @@
 
 package appeng.integration.modules.jei;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -37,7 +37,7 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
 
     @Override
     protected IRecipeTransferError doTransferRecipe(PatternTermContainer container, Recipe<?> recipe,
-                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
         if (container.isCraftingMode()
                 && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
             return this.helper

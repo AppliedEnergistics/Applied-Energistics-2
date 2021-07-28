@@ -18,6 +18,21 @@
 
 package appeng.core.definitions;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraft.world.level.block.state.BlockState;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AppEng;
 import appeng.debug.ChunkLoaderTileEntity;
@@ -61,19 +76,6 @@ import appeng.tile.storage.ChestTileEntity;
 import appeng.tile.storage.DriveTileEntity;
 import appeng.tile.storage.IOPortTileEntity;
 import appeng.tile.storage.SkyChestTileEntity;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
@@ -141,11 +143,13 @@ public final class AEBlockEntities {
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K);
     public static final BlockEntityType<CraftingMonitorTileEntity> CRAFTING_MONITOR = create("crafting_monitor",
             CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new, AEBlocks.CRAFTING_MONITOR);
-    public static final BlockEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create("molecular_assembler",
+    public static final BlockEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create(
+            "molecular_assembler",
             MolecularAssemblerTileEntity.class, MolecularAssemblerTileEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);
     public static final BlockEntityType<LightDetectorTileEntity> LIGHT_DETECTOR = create("light_detector",
             LightDetectorTileEntity.class, LightDetectorTileEntity::new, AEBlocks.LIGHT_DETECTOR);
-    public static final BlockEntityType<PaintSplotchesTileEntity> PAINT = create("paint", PaintSplotchesTileEntity.class,
+    public static final BlockEntityType<PaintSplotchesTileEntity> PAINT = create("paint",
+            PaintSplotchesTileEntity.class,
             PaintSplotchesTileEntity::new, AEBlocks.PAINT);
     public static final BlockEntityType<SkyChestTileEntity> SKY_CHEST = create("sky_chest", SkyChestTileEntity.class,
             SkyChestTileEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
@@ -173,9 +177,9 @@ public final class AEBlockEntities {
     @SuppressWarnings("unchecked")
     @SafeVarargs
     private static <T extends AEBaseTileEntity> BlockEntityType<T> create(String shortId,
-                                                                          Class<T> entityClass,
-                                                                          BlockEntityFactory<T> factory,
-                                                                          BlockDefinition<? extends AEBaseTileBlock<?>>... blockDefinitions) {
+            Class<T> entityClass,
+            BlockEntityFactory<T> factory,
+            BlockDefinition<? extends AEBaseTileBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
         ResourceLocation id = AppEng.makeId(shortId);
@@ -185,7 +189,8 @@ public final class AEBlockEntities {
                 .toArray(AEBaseTileBlock[]::new);
 
         AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
-        BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(), blockPos, blockState);
+        BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
+                blockPos, blockState);
         var type = Builder.of(supplier, blocks).build(null);
         type.setRegistryName(id);
         typeHolder.set(type); // Makes it available to the supplier used above

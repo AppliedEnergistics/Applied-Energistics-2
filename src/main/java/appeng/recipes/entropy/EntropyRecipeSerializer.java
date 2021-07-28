@@ -32,11 +32,11 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -256,7 +256,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     }
 
     private static void parseStateMatchers(StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
-                                           Consumer<StateMatcher> consumer) {
+            Consumer<StateMatcher> consumer) {
         JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {
@@ -289,7 +289,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     }
 
     private static void parseStateAppliers(StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
-                                           Consumer<StateApplier<?>> consumer) {
+            Consumer<StateApplier<?>> consumer) {
         JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
         properties.entrySet().forEach(entry -> {

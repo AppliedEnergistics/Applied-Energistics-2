@@ -18,9 +18,9 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -32,7 +32,7 @@ import appeng.util.Platform;
 public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
     public WirelessScreen(WirelessContainer container, Inventory playerInventory, Component title,
-                          ScreenStyle style) {
+            ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }

@@ -21,13 +21,13 @@ package appeng.client.render.crafting;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
@@ -70,8 +70,8 @@ class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);

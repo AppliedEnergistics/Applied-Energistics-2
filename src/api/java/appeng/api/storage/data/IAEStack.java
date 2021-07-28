@@ -27,10 +27,10 @@ import java.io.IOException;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
-import net.minecraft.world.item.ItemStack;
 
 public interface IAEStack<T extends IAEStack<T>> {
 

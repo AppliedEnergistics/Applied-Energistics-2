@@ -18,10 +18,10 @@
 
 package appeng.util;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -67,7 +67,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
             IInventoryDestination destination);
 
     public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                                                             IInventoryDestination destination);
+            IInventoryDestination destination);
 
     // return what isn't used...
     public abstract ItemStack addItems(ItemStack toBeAdded);

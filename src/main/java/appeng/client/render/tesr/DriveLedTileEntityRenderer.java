@@ -18,12 +18,12 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +43,7 @@ public class DriveLedTileEntityRenderer implements BlockEntityRenderer<DriveTile
 
     @Override
     public void render(DriveTileEntity drive, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");

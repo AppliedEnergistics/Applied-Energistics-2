@@ -20,9 +20,9 @@ package appeng.tile.misc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.tile.AEBaseTileEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class SkyCompassTileEntity extends AEBaseTileEntity {
 

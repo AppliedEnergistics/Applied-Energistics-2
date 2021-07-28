@@ -20,9 +20,9 @@ package appeng.client.gui.me.common;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * Base class for virtual client-side only slots that do not allow Vanilla to directly interact with the contained item

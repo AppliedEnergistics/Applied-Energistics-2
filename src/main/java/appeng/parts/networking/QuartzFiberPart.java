@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
@@ -44,8 +45,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
-
-import net.minecraft.world.item.ItemStack;
 
 public class QuartzFiberPart extends AEBasePart {
 
@@ -116,7 +115,7 @@ public class QuartzFiberPart extends AEBasePart {
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-                            final AEPartLocation side) {
+            final AEPartLocation side) {
         super.onPlacement(player, hand, held, side);
         this.outerNode.setOwningPlayer(player);
     }

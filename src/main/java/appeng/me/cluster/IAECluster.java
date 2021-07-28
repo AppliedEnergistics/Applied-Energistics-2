@@ -20,8 +20,8 @@ package appeng.me.cluster;
 
 import java.util.Iterator;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IAECluster {
 

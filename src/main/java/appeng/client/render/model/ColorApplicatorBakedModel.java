@@ -26,12 +26,13 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,7 +50,7 @@ class ColorApplicatorBakedModel implements BakedModel {
     private final List<BakedQuad> generalQuads;
 
     ColorApplicatorBakedModel(BakedModel baseModel, ModelState transforms, TextureAtlasSprite texDark,
-                              TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+            TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
         this.baseModel = baseModel;
         this.transforms = transforms;
 
@@ -62,7 +63,7 @@ class ColorApplicatorBakedModel implements BakedModel {
     }
 
     private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
-                                        TextureAtlasSprite texBright) {
+            TextureAtlasSprite texBright) {
         List<BakedQuad> quads = this.baseModel.getQuads(null, facing, new Random(0), EmptyModelData.INSTANCE);
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {

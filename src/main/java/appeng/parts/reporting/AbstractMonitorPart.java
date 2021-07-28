@@ -21,14 +21,15 @@ package appeng.parts.reporting;
 import java.io.IOException;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.Util;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -216,7 +217,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderDynamic(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers,
-                              int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if ((this.getClientFlags() & (PanelPart.POWERED_FLAG | PanelPart.CHANNEL_FLAG)) != (PanelPart.POWERED_FLAG
                 | PanelPart.CHANNEL_FLAG)) {

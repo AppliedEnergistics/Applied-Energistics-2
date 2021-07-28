@@ -21,8 +21,8 @@ package appeng.parts.automation;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
 public class PlaneModelLoader implements IModelLoader<PlaneModel> {

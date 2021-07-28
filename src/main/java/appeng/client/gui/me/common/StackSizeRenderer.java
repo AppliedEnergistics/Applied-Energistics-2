@@ -19,13 +19,13 @@
 package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;

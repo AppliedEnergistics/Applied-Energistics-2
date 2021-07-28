@@ -18,13 +18,10 @@
 
 package appeng.client.render.tesr;
 
-import appeng.block.storage.SkyChestBlock;
-import appeng.block.storage.SkyChestBlock.SkyChestType;
-import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -43,6 +40,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
+
+import appeng.block.storage.SkyChestBlock;
+import appeng.block.storage.SkyChestBlock.SkyChestType;
+import appeng.core.AppEng;
+import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
@@ -69,15 +71,20 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
     public static LayerDefinition createSingleBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
-        partdefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 10.0F, 1.0F));
-        partdefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 9.0F, 0.0F));
+        partdefinition.addOrReplaceChild("bottom",
+                CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
+        partdefinition.addOrReplaceChild("lid",
+                CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F),
+                PartPose.offset(0.0F, 10.0F, 1.0F));
+        partdefinition.addOrReplaceChild("lock",
+                CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F),
+                PartPose.offset(0.0F, 9.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
     @Override
     public void render(SkyChestTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = tileEntityIn.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -96,8 +103,8 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
     }
 
     private void renderModels(PoseStack matrixStackIn, VertexConsumer bufferIn, ModelPart chestLid,
-                              ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn,
-                              int combinedOverlayIn) {
+            ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn,
+            int combinedOverlayIn) {
         chestLid.xRot = -(lidAngle * 1.5707964F);
         chestLatch.xRot = chestLid.xRot;
         chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);

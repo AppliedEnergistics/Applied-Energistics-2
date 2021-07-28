@@ -21,13 +21,13 @@ package appeng.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.util.Platform;
 

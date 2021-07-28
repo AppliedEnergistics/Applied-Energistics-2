@@ -26,11 +26,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;

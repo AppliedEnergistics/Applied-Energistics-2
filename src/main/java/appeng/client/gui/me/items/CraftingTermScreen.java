@@ -18,8 +18,8 @@
 
 package appeng.client.gui.me.items;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.ScreenStyle;
@@ -33,7 +33,7 @@ import appeng.container.me.items.CraftingTermContainer;
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
 
     public CraftingTermScreen(CraftingTermContainer container, Inventory playerInventory,
-                              Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());

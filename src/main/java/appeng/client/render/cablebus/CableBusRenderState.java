@@ -25,8 +25,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.IModelData;

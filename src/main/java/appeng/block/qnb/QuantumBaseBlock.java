@@ -18,23 +18,21 @@
 
 package appeng.block.qnb;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
 
@@ -70,7 +68,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);

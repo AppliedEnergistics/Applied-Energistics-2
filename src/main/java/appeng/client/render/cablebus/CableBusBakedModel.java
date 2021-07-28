@@ -36,11 +36,11 @@ import com.google.common.cache.Weigher;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,7 +83,7 @@ public class CableBusBakedModel implements BakedModel {
     private final TextureAtlasSprite particleTexture;
 
     CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-                       Map<ResourceLocation, BakedModel> partModels, TextureAtlasSprite particleTexture) {
+            Map<ResourceLocation, BakedModel> partModels, TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -108,7 +108,7 @@ public class CableBusBakedModel implements BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-                                    IModelData data) {
+            IModelData data) {
         CableBusRenderState renderState = data.getData(CableBusRenderState.PROPERTY);
 
         if (renderState == null || side != null) {

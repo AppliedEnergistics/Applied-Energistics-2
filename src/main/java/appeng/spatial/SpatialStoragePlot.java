@@ -22,8 +22,8 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.util.Constants;

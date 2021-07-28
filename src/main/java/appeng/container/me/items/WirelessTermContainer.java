@@ -18,9 +18,9 @@
 
 package appeng.container.me.items;
 
+import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.Util;
 
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.core.AEConfig;

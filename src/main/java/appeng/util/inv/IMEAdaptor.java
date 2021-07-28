@@ -100,7 +100,7 @@ public class IMEAdaptor extends InventoryAdaptor {
 
     @Override
     public ItemStack removeSimilarItems(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
-                                        final IInventoryDestination destination) {
+            final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, null, destination, Actionable.MODULATE);
         }
@@ -131,7 +131,7 @@ public class IMEAdaptor extends InventoryAdaptor {
 
     @Override
     public ItemStack simulateSimilarRemove(final int amount, final ItemStack filter, final FuzzyMode fuzzyMode,
-                                                                    final IInventoryDestination destination) {
+            final IInventoryDestination destination) {
         if (filter.isEmpty()) {
             return this.doRemoveItems(amount, ItemStack.EMPTY, destination, Actionable.SIMULATE);
         }

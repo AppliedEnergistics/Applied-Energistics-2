@@ -20,16 +20,15 @@ package appeng.block.misc;
 
 import java.util.Random;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -135,7 +134,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             ry += dz * forward.getStepY();
             rz += dz * forward.getStepZ();
 
-            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+            Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D,
+                    0.0D);
         }
     }
 

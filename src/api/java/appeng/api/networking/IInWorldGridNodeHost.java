@@ -26,15 +26,15 @@ package appeng.api.networking;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 
 /**
- * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or tile entity to
- * become part of a grid.
+ * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or tile entity
+ * to become part of a grid.
  */
 public interface IInWorldGridNodeHost {
 

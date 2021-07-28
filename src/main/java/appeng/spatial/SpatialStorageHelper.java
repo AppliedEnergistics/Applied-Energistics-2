@@ -22,26 +22,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.stats.IAdvancementTrigger;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.portal.PortalInfo;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.util.WorldCoord;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.stats.AdvancementTriggers;
 
 public class SpatialStorageHelper {
 
@@ -109,7 +107,7 @@ public class SpatialStorageHelper {
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw,
-                                      Function<Boolean, Entity> repositionEntity) {
+                    Function<Boolean, Entity> repositionEntity) {
                 return repositionEntity.apply(false);
             }
 
@@ -154,8 +152,8 @@ public class SpatialStorageHelper {
     }
 
     public void swapRegions(final ServerLevel srcWorld, final int srcX, final int srcY, final int srcZ,
-                            final ServerLevel dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
-                            final int scaleY, final int scaleZ) {
+            final ServerLevel dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
+            final int scaleY, final int scaleZ) {
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                 dstY + scaleY + 1, dstZ + scaleZ + 1,
@@ -246,7 +244,7 @@ public class SpatialStorageHelper {
         private final double z;
 
         TelDestination(final ServerLevel dimension, final AABB srcBox, final double x, final double y,
-                       final double z, final int tileX, final int tileY, final int tileZ) {
+                final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));

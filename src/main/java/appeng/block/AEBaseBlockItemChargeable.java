@@ -21,14 +21,14 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -39,8 +39,6 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.GuiText;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
     public AEBaseBlockItemChargeable(Block id, Item.Properties props) {
@@ -50,7 +48,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(final ItemStack stack, final Level world, final List<Component> lines,
-                                      final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 

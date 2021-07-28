@@ -20,11 +20,11 @@ package appeng.me.cluster;
 
 import java.lang.ref.WeakReference;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
@@ -224,8 +224,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     public abstract boolean isValidTile(BlockEntity te);
 
     private boolean verifyUnownedRegionInner(final ServerLevel w, int minX, int minY, int minZ, int maxX, int maxY,
-                                             int maxZ,
-                                             final AEPartLocation side) {
+            int maxZ,
+            final AEPartLocation side) {
         switch (side) {
             case WEST:
                 minX -= 1;

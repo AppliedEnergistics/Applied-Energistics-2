@@ -18,13 +18,13 @@
 
 package appeng.helpers;
 
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import appeng.api.util.IOrientable;
 import appeng.decorative.solid.QuartzPillarBlock;
@@ -83,7 +83,8 @@ public class MetaRotation implements IOrientable {
     public void setOrientation(final Direction forward, final Direction up) {
         if (this.w instanceof Level) {
             if (this.facingProp != null) {
-                ((Level) this.w).setBlockAndUpdate(this.pos, this.w.getBlockState(this.pos).setValue(this.facingProp, up));
+                ((Level) this.w).setBlockAndUpdate(this.pos,
+                        this.w.getBlockState(this.pos).setValue(this.facingProp, up));
             } else {
                 // TODO 1.10.2-R - Temp
                 ((Level) this.w).setBlockAndUpdate(this.pos,

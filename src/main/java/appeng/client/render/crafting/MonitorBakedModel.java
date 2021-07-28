@@ -18,9 +18,9 @@
 
 package appeng.client.render.crafting;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.util.AEColor;
@@ -59,7 +59,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
     @Override
     protected void addInnerCube(Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
-                                float y1, float z1, float x2, float y2, float z2) {
+            float y1, float z1, float x2, float y2, float z2) {
         Direction forward = getForward(modelData);
 
         // For sides other than the front, use the chassis texture

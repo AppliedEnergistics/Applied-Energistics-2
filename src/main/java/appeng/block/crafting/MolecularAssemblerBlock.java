@@ -18,16 +18,17 @@
 
 package appeng.block.crafting;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -35,9 +36,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.phys.BlockHitResult;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
 
@@ -61,7 +59,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
 
     @Override
     public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
-                                 BlockHitResult hit) {
+            BlockHitResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {

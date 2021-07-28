@@ -28,9 +28,10 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -49,7 +50,6 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.tile.misc.CondenserTileEntity;
-import net.minecraft.world.item.ItemStack;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 

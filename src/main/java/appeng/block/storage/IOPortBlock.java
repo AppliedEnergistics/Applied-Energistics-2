@@ -20,14 +20,16 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
@@ -35,8 +37,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
 import appeng.tile.storage.IOPortTileEntity;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
 
 public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
@@ -47,7 +47,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
     @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         final IOPortTileEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
@@ -56,7 +56,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
     @Override
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }

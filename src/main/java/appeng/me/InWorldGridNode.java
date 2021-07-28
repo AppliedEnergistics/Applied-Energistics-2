@@ -23,10 +23,10 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
@@ -47,10 +47,10 @@ public class InWorldGridNode extends GridNode {
     private final BlockPos location;
 
     public <T> InWorldGridNode(ServerLevel world,
-                               BlockPos location,
-                               T owner,
-                               @Nonnull IGridNodeListener<T> listener,
-                               Set<GridFlags> flags) {
+            BlockPos location,
+            T owner,
+            @Nonnull IGridNodeListener<T> listener,
+            Set<GridFlags> flags) {
         super(world, owner, listener, flags);
         this.location = location;
     }

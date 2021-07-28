@@ -64,8 +64,10 @@ public final class WorldData implements IWorldData {
             throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
-        final PlayerData playerData = overworld.getDataStorage().computeIfAbsent(PlayerData::load, PlayerData::new, PlayerData.NAME);
-        final StorageData storageData = overworld.getDataStorage().computeIfAbsent(StorageData::load, StorageData::new, StorageData.NAME);
+        final PlayerData playerData = overworld.getDataStorage().computeIfAbsent(PlayerData::load, PlayerData::new,
+                PlayerData.NAME);
+        final StorageData storageData = overworld.getDataStorage().computeIfAbsent(StorageData::load, StorageData::new,
+                StorageData.NAME);
 
         final ThreadFactory compassThreadFactory = new CompassThreadFactory();
         final CompassService compassService = new CompassService(server, compassThreadFactory);

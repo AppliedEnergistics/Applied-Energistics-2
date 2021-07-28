@@ -20,7 +20,6 @@ package appeng.items;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public abstract class AEBaseItem extends Item {
 

@@ -18,9 +18,9 @@
 
 package appeng.container.me.crafting;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.network.chat.Component;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;

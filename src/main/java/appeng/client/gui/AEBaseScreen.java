@@ -35,30 +35,28 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.Rect2i;
+
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import appeng.client.Point;
@@ -273,7 +271,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     protected void drawGuiSlot(PoseStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
-                               float partialTicks) {
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -369,7 +367,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
     @Override
     protected final void renderBg(PoseStack matrixStack, final float f, final int x,
-                                  final int y) {
+            final int y) {
 
         this.drawBG(matrixStack, leftPos, topPos, x, y, f);
 
@@ -485,7 +483,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
 
     @Override
     protected void slotClicked(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-                               final ClickType clickType) {
+            final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -625,7 +623,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     }
 
     public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
         if (style.getBackground() != null) {
             style.getBackground().dest(offsetX, offsetY).blit(matrixStack, getBlitOffset());
         }

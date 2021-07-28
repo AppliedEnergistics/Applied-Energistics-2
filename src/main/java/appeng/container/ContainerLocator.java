@@ -22,21 +22,21 @@ import com.google.common.base.Preconditions;
 
 import io.netty.handler.codec.DecoderException;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.parts.AEBasePart;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Describes how a container the player has opened was originally located. This can be one of three ways:
@@ -107,7 +107,8 @@ public final class ContainerLocator {
         }
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
         AEPartLocation side = AEPartLocation.fromFacing(context.getClickedFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level, context.getClickedPos(),
+        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level,
+                context.getClickedPos(),
                 side);
     }
 

@@ -20,33 +20,29 @@ package appeng.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import appeng.init.InitAdvancementTriggers;
-import appeng.init.client.InitAdditionalModels;
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.common.MinecraftForge;
@@ -56,12 +52,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.capabilities.Capabilities;
@@ -73,6 +69,7 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
+import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
 import appeng.init.InitContainerTypes;
@@ -291,7 +288,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
-                                    final double dist, final Level w, final BasePacket packet) {
+            final double dist, final Level w, final BasePacket packet) {
         if (w.isClientSide()) {
             return;
         }

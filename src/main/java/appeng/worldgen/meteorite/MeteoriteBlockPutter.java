@@ -18,10 +18,10 @@
 
 package appeng.worldgen.meteorite;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 
 public class MeteoriteBlockPutter {
     public boolean put(final LevelAccessor w, BlockPos pos, final BlockState blk) {

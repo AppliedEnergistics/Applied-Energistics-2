@@ -20,16 +20,16 @@ package appeng.debug;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseTileBlock;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.Material;
 
 public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity> {
 
@@ -38,8 +38,9 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final CubeGeneratorTileEntity tcg = this.getTileEntity(w, pos);
         if (tcg != null) {
             tcg.click(player);

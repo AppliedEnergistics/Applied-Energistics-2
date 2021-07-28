@@ -21,10 +21,11 @@ package appeng.core.registries;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.Util;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.Util;
+import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
@@ -34,7 +35,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
-import net.minecraft.world.level.BlockGetter;
 
 public final class WirelessRegistry implements IWirelessTermRegistry {
     private final List<IWirelessTermHandler> handlers;

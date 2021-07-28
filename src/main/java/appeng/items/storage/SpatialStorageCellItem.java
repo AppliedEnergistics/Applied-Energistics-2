@@ -22,14 +22,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,8 +43,6 @@ import appeng.spatial.SpatialStorageHelper;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorageCell {
     private static final String TAG_PLOT_ID = "plot_id";
@@ -64,7 +62,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
-                                final TooltipFlag advancedTooltips) {
+            final TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
             lines.add(GuiText.Unformatted.text().copy().withStyle(ChatFormatting.ITALIC));
@@ -113,7 +111,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public boolean doSpatialTransition(final ItemStack is, final ServerLevel w, final BlockPos min,
-                                       final BlockPos max, int playerId) {
+            final BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;

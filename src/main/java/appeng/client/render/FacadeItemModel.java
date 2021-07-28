@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
@@ -45,8 +45,8 @@ public class FacadeItemModel implements BasicUnbakedModel<FacadeItemModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel bakedBaseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 

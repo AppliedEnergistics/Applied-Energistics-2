@@ -18,16 +18,17 @@
 
 package appeng.entity;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
@@ -36,7 +37,6 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEEntities;
 import appeng.items.misc.CrystalSeedItem;
-import net.minecraft.world.phys.Vec3;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
 

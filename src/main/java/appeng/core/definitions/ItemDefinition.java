@@ -22,12 +22,12 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.util.Platform;
-import net.minecraft.world.item.ItemStack;
 
 public class ItemDefinition<T extends Item> implements ItemLike {
     private final ResourceLocation id;

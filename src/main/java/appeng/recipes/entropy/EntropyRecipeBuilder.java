@@ -25,10 +25,10 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.resources.ResourceLocation;
 
 class EntropyRecipeBuilder {
     private ResourceLocation id;

@@ -19,6 +19,7 @@
 package appeng.fluids.container;
 
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -28,7 +29,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.world.inventory.MenuType;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
 

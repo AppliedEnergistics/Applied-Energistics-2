@@ -20,11 +20,9 @@ package appeng.init.worldgen;
 
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 import appeng.api.features.IWorldGen;
@@ -70,9 +68,9 @@ public final class InitBiomeModifications {
     }
 
     private static boolean shouldGenerateIn(ResourceLocation id,
-                                            boolean enabled,
-                                            IWorldGen.WorldGenType worldGenType,
-                                            BiomeCategory category) {
+            boolean enabled,
+            IWorldGen.WorldGenType worldGenType,
+            BiomeCategory category) {
         if (id == null) {
             return false; // We don't add to unnamed biomes
         }

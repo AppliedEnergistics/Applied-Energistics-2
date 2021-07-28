@@ -29,6 +29,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -42,14 +45,11 @@ import appeng.fluids.client.gui.FluidBlitter;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.ItemStack;
 
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
 
     public FluidTerminalScreen(FluidTerminalContainer container, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 
@@ -65,7 +65,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
 
     @Override
     protected void renderGridInventoryEntry(PoseStack matrices, int x, int y,
-                                            GridInventoryEntry<IAEFluidStack> entry) {
+            GridInventoryEntry<IAEFluidStack> entry) {
         IAEFluidStack fs = entry.getStack();
         FluidBlitter.create(fs.getFluidStack())
                 .dest(x, y, 16, 16)
@@ -74,7 +74,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
 
     @Override
     protected void renderGridInventoryEntryTooltip(PoseStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x,
-                                                   int y) {
+            int y) {
         IAEFluidStack fluidStack = entry.getStack();
         String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                 .format(entry.getStoredAmount() / 1000.0) + " B";

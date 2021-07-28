@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText.StyledContentConsumer;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 
 /**
  * Models a tooltip shown by a custom widget or button.

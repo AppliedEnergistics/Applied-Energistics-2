@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -36,8 +38,6 @@ import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class MovableTileRegistry implements IMovableRegistry {
 

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;

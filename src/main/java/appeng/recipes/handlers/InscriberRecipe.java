@@ -18,18 +18,18 @@
 
 package appeng.recipes.handlers;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class InscriberRecipe implements Recipe<Container> {
 
@@ -47,7 +47,7 @@ public class InscriberRecipe implements Recipe<Container> {
     private final InscriberProcessType processType;
 
     public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;

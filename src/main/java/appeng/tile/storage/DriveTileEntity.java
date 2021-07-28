@@ -30,17 +30,15 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.cells.ISaveProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
@@ -57,6 +55,7 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
@@ -65,7 +64,6 @@ import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
@@ -347,7 +345,8 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
                     if (this.handlersBySlot[x] != null) {
                         for (IStorageChannel<? extends IAEStack<?>> channel : storageChannels) {
 
-                            ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory(is, this::saveChanges, channel);
+                            ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory(is, this::saveChanges,
+                                    channel);
 
                             if (cell != null) {
                                 this.inv.setHandler(x, cell);

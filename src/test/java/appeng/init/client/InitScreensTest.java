@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -38,7 +37,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.network.chat.Component;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -46,6 +44,7 @@ import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.Text;
+import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
 
 @BootstrapMinecraft
@@ -123,8 +122,9 @@ class InitScreensTest {
         assertThat(errors).withFailMessage(formatMissingTranslations(errors)).isEmpty();
     }
 
-    private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text, Map<String, String> errors,
-                                            Set<String> i18nKeys) {
+    private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text,
+            Map<String, String> errors,
+            Set<String> i18nKeys) {
         if (text instanceof TranslatableComponent) {
             String key = ((TranslatableComponent) text).getKey();
             if (!i18nKeys.contains(key)) {

@@ -18,11 +18,14 @@
 
 package appeng.items.tools.quartz;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalBlockPos;
@@ -30,10 +33,6 @@ import appeng.block.AEBaseBlock;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.Block;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
@@ -55,13 +54,15 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
                 if (w.isClientSide()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide()) : InteractionResult.PASS;
+                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide())
+                            : InteractionResult.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
                 if (aeBlock.rotateAroundFaceAxis(w, pos, context.getClickedFace())) {
                     p.swing(context.getHand());
-                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide()) : InteractionResult.FAIL;
+                    return !w.isClientSide() ? InteractionResult.sidedSuccess(w.isClientSide())
+                            : InteractionResult.FAIL;
                 }
             }
         }

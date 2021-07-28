@@ -23,15 +23,17 @@ import java.util.Set;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridNode;
@@ -53,10 +55,6 @@ import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.tile.networking.ControllerTileEntity;
 import appeng.util.InteractionUtil;
-
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 
 public class DebugCardItem extends AEBaseItem {
 

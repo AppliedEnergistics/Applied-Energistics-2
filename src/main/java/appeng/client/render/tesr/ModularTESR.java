@@ -44,7 +44,7 @@ public class ModularTESR<T extends AEBaseTileEntity> implements BlockEntityRende
 
     @Override
     public void render(T te, float partialTicks, PoseStack ms, MultiBufferSource buffers, int combinedLight,
-                       int combinedOverlay) {
+            int combinedOverlay) {
         ms.pushPose();
         ms.translate(0.5, 0.5, 0.5);
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);

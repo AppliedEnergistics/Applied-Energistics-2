@@ -20,9 +20,9 @@ package appeng.core.sync;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkDirection;
 
 import appeng.core.AEConfig;

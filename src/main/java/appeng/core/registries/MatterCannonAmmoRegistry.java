@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.IMatterCannonAmmoRegistry;
-import net.minecraft.world.item.ItemStack;
 
 public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
 

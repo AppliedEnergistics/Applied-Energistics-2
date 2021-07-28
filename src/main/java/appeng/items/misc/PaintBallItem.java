@@ -18,11 +18,10 @@
 
 package appeng.items.misc;
 
+import net.minecraft.world.item.Item;
+
 import appeng.api.util.AEColor;
 import appeng.items.AEBaseItem;
-
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 
 public class PaintBallItem extends AEBaseItem {
 

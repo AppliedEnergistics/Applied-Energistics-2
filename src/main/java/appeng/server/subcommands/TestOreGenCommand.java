@@ -28,16 +28,16 @@ import com.google.common.math.StatsAccumulator;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 
@@ -58,7 +58,8 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data, final CommandSourceStack sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data,
+            final CommandSourceStack sender) {
 
         int radius = 1000;
 

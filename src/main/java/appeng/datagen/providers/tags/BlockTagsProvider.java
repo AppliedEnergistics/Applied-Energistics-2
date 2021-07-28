@@ -20,19 +20,18 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
-
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
     public BlockTagsProvider(GatherDataEvent dataEvent) {

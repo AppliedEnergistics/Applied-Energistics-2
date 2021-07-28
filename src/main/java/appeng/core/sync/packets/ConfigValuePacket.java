@@ -20,9 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -44,8 +46,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.helpers.IMouseWheelItem;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 public class ConfigValuePacket extends BasePacket {
 

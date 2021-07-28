@@ -18,11 +18,6 @@
 
 package appeng.tile.storage;
 
-import appeng.container.implementations.SkyChestContainer;
-import appeng.tile.AEBaseInvTileEntity;
-import appeng.tile.ClientTickingBlockEntity;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -38,6 +33,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.container.implementations.SkyChestContainer;
+import appeng.tile.AEBaseInvTileEntity;
+import appeng.tile.ClientTickingBlockEntity;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.inv.InvOperation;
 
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
 public class SkyChestTileEntity extends AEBaseInvTileEntity implements ClientTickingBlockEntity, LidBlockEntity {
@@ -113,7 +114,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ClientTic
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 

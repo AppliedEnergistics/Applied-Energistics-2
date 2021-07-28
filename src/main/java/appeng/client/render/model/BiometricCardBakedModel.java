@@ -31,17 +31,17 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.api.implementations.items.IBiometricCard;
@@ -66,7 +66,7 @@ class BiometricCardBakedModel implements BakedModel {
     }
 
     private BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, int hash,
-                                    Cache<Integer, BiometricCardBakedModel> modelCache) {
+            Cache<Integer, BiometricCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
         this.hash = hash;
@@ -163,7 +163,7 @@ class BiometricCardBakedModel implements BakedModel {
         return new ItemOverrides() {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
-                                      LivingEntity entity, int seed) {
+                    LivingEntity entity, int seed) {
                 String username = "";
                 if (stack.getItem() instanceof IBiometricCard) {
                     final GameProfile gp = ((IBiometricCard) stack.getItem()).getProfile(stack);

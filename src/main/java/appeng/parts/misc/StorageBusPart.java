@@ -22,19 +22,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.api.storage.cells.ICellProvider;
-import appeng.tile.misc.InterfaceTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -62,6 +60,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -85,6 +84,7 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.misc.InterfaceTileEntity;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -386,7 +386,8 @@ public class StorageBusPart extends UpgradeablePart
 
         this.cached = true;
         final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+        final BlockEntity target = self.getLevel()
+                .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {

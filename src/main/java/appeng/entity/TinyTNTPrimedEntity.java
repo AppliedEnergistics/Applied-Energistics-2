@@ -22,12 +22,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.Explosion.BlockInteraction;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,14 +36,13 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -63,7 +63,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
     }
 
     public TinyTNTPrimedEntity(final Level w, final double x, final double y, final double z,
-                               final LivingEntity igniter) {
+            final LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, w);
         this.setPos(x, y, z);
         double d0 = w.random.nextDouble() * ((float) Math.PI * 2F);
@@ -93,7 +93,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
         this.zo = this.getZ();
         this.setDeltaMovement(this.getDeltaMovement().subtract(0, 0.03999999910593033D, 0));
         this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(this.getDeltaMovement().multiply(0.9800000190734863D, 0.9800000190734863D, 0.9800000190734863D));
+        this.setDeltaMovement(
+                this.getDeltaMovement().multiply(0.9800000190734863D, 0.9800000190734863D, 0.9800000190734863D));
 
         if (this.onGround) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.699999988079071D, 0.699999988079071D, -0.5D));

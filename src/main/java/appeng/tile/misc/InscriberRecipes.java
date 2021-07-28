@@ -24,13 +24,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.features.InscriberProcessType;
@@ -61,7 +61,7 @@ public final class InscriberRecipes {
 
     @Nullable
     public static InscriberRecipe findRecipe(Level world, ItemStack input, ItemStack plateA, ItemStack plateB,
-                                             boolean supportNamePress) {
+            boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
             boolean isNameB = AEItems.NAME_PRESS.isSameAs(plateB);

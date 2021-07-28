@@ -23,21 +23,20 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 
 import appeng.core.AELog;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
-import net.minecraft.world.item.Item.Properties;
 
 public class EraserItem extends AEBaseItem {
 
