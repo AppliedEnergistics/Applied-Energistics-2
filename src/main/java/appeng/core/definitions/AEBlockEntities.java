@@ -203,7 +203,7 @@ public final class AEBlockEntities {
         }
         BlockEntityTicker<T> clientTicker = null;
         if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass)) {
-            serverTicker = (level, pos, state, entity) -> {
+            clientTicker = (level, pos, state, entity) -> {
                 ((ClientTickingBlockEntity) entity).clientTick();
             };
         }
