@@ -18,57 +18,66 @@
 
 package appeng.tile.storage;
 
-import java.io.IOException;
-
+import appeng.container.implementations.SkyChestContainer;
+import appeng.tile.AEBaseInvTileEntity;
 import appeng.tile.ClientTickingBlockEntity;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.inv.InvOperation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
-import appeng.tile.ServerTickingBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.ChestLidController;
+import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-
-import appeng.block.storage.SkyChestBlock;
-import appeng.tile.AEBaseInvTileEntity;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
 public class SkyChestTileEntity extends AEBaseInvTileEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
-    private int numPlayersUsing;
-    private float lidAngle;
-    private float prevLidAngle;
+    private final ChestLidController chestLidController = new ChestLidController();
+
+    private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
+        protected void onOpen(Level level, BlockPos pos, BlockState state) {
+            playSound(level, pos, SoundEvents.CHEST_OPEN);
+        }
+
+        protected void onClose(Level level, BlockPos pos, BlockState state) {
+            playSound(level, pos, SoundEvents.CHEST_CLOSE);
+        }
+
+        private void playSound(Level level, BlockPos pos, SoundEvent event) {
+            var x = pos.getX() + 0.5D;
+            var y = pos.getY() + 0.5D;
+            var z = pos.getZ() + 0.5D;
+            level.playSound(null, x, y, z, event, SoundSource.BLOCKS,
+                    0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+        }
+
+        protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int p_155364_, int x) {
+            level.blockEvent(pos, state.getBlock(), 1, x);
+        }
+
+        protected boolean isOwnContainer(Player player) {
+            if (player.containerMenu instanceof SkyChestContainer menu) {
+                return menu.getChest() == SkyChestTileEntity.this;
+            } else {
+                return false;
+            }
+        }
+    };
 
     public SkyChestTileEntity(BlockEntityType<? extends SkyChestTileEntity> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-    }
-
-    @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
-        super.writeToStream(data);
-        data.writeBoolean(this.numPlayersUsing > 0);
-    }
-
-    @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
-        final boolean c = super.readFromStream(data);
-        final int wasOpen = this.numPlayersUsing;
-        this.numPlayersUsing = data.readBoolean() ? 1 : 0;
-
-        return wasOpen != numPlayersUsing || c;
     }
 
     @Override
@@ -76,78 +85,47 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ClientTic
         return this.inv;
     }
 
-    public void openInventory(final Player player) {
-        // Ignore calls to this function on the client, since the server is responsible for
-        // calculating the numPlayersUsing count.
-        if (!player.isSpectator() && !isRemote()) {
-            this.numPlayersUsing++;
-            onOpenOrClose();
+    public void startOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
-    public void closeInventory(final Player player) {
-        // Ignore calls to this function on the client, since the server is responsible for
-        // calculating the numPlayersUsing count.
-        if (!player.isSpectator() && !isRemote()) {
-            this.numPlayersUsing = Math.max(this.numPlayersUsing - 1, 0);
-            onOpenOrClose();
-        }
-    }
-
-    // See ChestTileEntity
-    private void onOpenOrClose() {
-        Block block = this.getBlockState().getBlock();
-        if (block instanceof SkyChestBlock) {
-            this.level.blockEvent(this.worldPosition, block, 1, this.numPlayersUsing);
-            this.level.updateNeighborsAt(this.worldPosition, block);
+    public void stopOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
     @Override
     public void clientTick() {
-        this.prevLidAngle = this.lidAngle;
-        // Play a sound on initial opening.
-        if (this.numPlayersUsing > 0 && this.lidAngle == 0.0f) {
-            this.playSound(SoundEvents.CHEST_OPEN);
-        }
-
-        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0f) {
-            this.lidAngle = Math.max(this.lidAngle - 0.1f, 0);
-            // Play a sound on the way down.
-            if (this.lidAngle < 0.5f && this.prevLidAngle >= 0.5f) {
-                this.playSound(SoundEvents.CHEST_CLOSE);
-            }
-        } else if (this.numPlayersUsing > 0 && this.lidAngle < 1.0f) {
-            this.lidAngle = Math.min(this.lidAngle + 0.1f, 1);
-        }
+        chestLidController.tickLid();
     }
 
-    private void playSound(SoundEvent soundIn) {
-        double d0 = this.worldPosition.getX() + 0.5d;
-        double d1 = this.worldPosition.getY() + 0.5d;
-        double d2 = this.worldPosition.getZ() + 0.5d;
-        this.level.playSound(null, d0, d1, d2, soundIn, SoundSource.BLOCKS, 0.5f,
-                this.level.random.nextFloat() * 0.1f + 0.9f);
-    }
-
-    @Override
     public boolean triggerEvent(int id, int type) {
         if (id == 1) {
-            this.numPlayersUsing = type;
+            this.chestLidController.shouldBeOpen(type > 0);
             return true;
+        } else {
+            return super.triggerEvent(id, type);
         }
-        return super.triggerEvent(id, type);
     }
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
 
     }
 
     @Override
     public float getOpenNess(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
+        return this.chestLidController.getOpenness(partialTicks);
+    }
+
+    public void recheckOpen() {
+        if (!this.remove) {
+            this.openersCounter.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
+        }
     }
 
 }

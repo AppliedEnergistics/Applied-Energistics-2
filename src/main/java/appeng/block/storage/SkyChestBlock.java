@@ -20,14 +20,19 @@ package appeng.block.storage;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.core.definitions.AEBlockEntities;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -117,6 +122,12 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
         }
 
         return InteractionResult.sidedSuccess(w.isClientSide());
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestTileEntity::recheckOpen);
+
     }
 
     @Override

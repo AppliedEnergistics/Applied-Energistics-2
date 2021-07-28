@@ -18,15 +18,14 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
 import appeng.tile.storage.SkyChestTileEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see appeng.client.gui.implementations.SkyChestScreen
@@ -41,21 +40,24 @@ public class SkyChestContainer extends AEBaseContainer {
 
     public SkyChestContainer(int id, final Inventory ip, final SkyChestTileEntity chest) {
         super(TYPE, id, ip, chest);
-        this.chest = chest;
 
-        IItemHandler inv = this.chest.getInternalInventory();
+        this.chest = chest;
+        chest.startOpen(ip.player);
+
+        IItemHandler inv = chest.getInternalInventory();
         for (int i = 0; i < inv.getSlots(); i++) {
             this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
         }
 
-        this.chest.openInventory(ip.player);
-
         this.createPlayerInventorySlots(ip);
     }
 
-    @Override
-    public void removed(final Player par1PlayerEntity) {
-        super.removed(par1PlayerEntity);
-        this.chest.closeInventory(par1PlayerEntity);
+    public void removed(Player player) {
+        super.removed(player);
+        this.chest.stopOpen(player);
+    }
+
+    public SkyChestTileEntity getChest() {
+        return chest;
     }
 }
