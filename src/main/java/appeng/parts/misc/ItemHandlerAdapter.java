@@ -101,7 +101,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		ItemStack remaining = orgInput;
 
-		for ( int i = 0; i < slotCount && !remaining.isEmpty(); i++ )
+		for( int i = 0; i < slotCount && !remaining.isEmpty(); i++ )
 		{
 			remaining = this.itemHandler.insertItem( i, remaining, type == Actionable.SIMULATE );
 		}
@@ -121,6 +121,21 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( type == Actionable.MODULATE )
 		{
+			IAEItemStack added;
+			if( remaining.isEmpty() )
+			{
+				added = iox;
+			}
+			else
+			{
+				added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
+			}
+			this.cache.currentlyCached.add( added );
+			if( access.hasPermission( AccessRestriction.READ ) )
+			{
+				postDifference( Collections.singletonList( added ) );
+			}
+
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
@@ -203,6 +218,15 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			IAEItemStack gatheredAEItemStack = AEItemStack.fromItemStack( gathered );
 			if( mode == Actionable.MODULATE )
 			{
+				IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( gatheredAEItemStack );
+				if( cachedStack != null )
+				{
+					cachedStack.decStackSize( gatheredAEItemStack.getStackSize() );
+					if( access.hasPermission( AccessRestriction.READ ) )
+					{
+						postDifference( Collections.singletonList( gatheredAEItemStack.copy().setStackSize( -gatheredAEItemStack.getStackSize() ) ) );
+					}
+				}
 				try
 				{
 					this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );

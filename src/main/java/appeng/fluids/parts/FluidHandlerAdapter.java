@@ -19,17 +19,13 @@
 package appeng.fluids.parts;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.me.GridAccessException;
-import appeng.parts.misc.PartStorageBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -96,6 +92,21 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
 		if( type == Actionable.MODULATE )
 		{
+			IAEFluidStack added;
+			if( remaining == 0 )
+			{
+				added = input;
+			}
+			else
+			{
+				added = input.copy().setStackSize( input.getStackSize() - remaining );
+			}
+			this.cache.currentlyCached.add( added );
+			if( access.hasPermission( AccessRestriction.READ ) )
+			{
+				postDifference( Collections.singletonList( added ) );
+			}
+
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
@@ -128,6 +139,15 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 		IAEFluidStack gatheredAEFluidstack = AEFluidStack.fromFluidStack( gathered );
 		if( mode == Actionable.MODULATE )
 		{
+			IAEFluidStack cachedStack = this.cache.currentlyCached.findPrecise( request );
+			if( cachedStack != null )
+			{
+				cachedStack.decStackSize( gathered.amount );
+				if( access.hasPermission( AccessRestriction.READ ) )
+				{
+					postDifference( Collections.singletonList( gatheredAEFluidstack.copy().setStackSize( -gathered.amount ) ) );
+				}
+			}
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );

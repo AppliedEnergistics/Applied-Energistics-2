@@ -81,7 +81,7 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         ItemStack remaining = this.itemRepository.insertItem( orgInput, type == Actionable.SIMULATE );
 
         // Store the stack in the cache for next time.
-        if (!remaining.isEmpty() && remaining != orgInput)
+        if( !remaining.isEmpty() && remaining != orgInput )
         {
             stackCache = remaining;
         }
@@ -95,6 +95,20 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( type == Actionable.MODULATE )
         {
+            IAEItemStack added;
+            if( remaining.isEmpty() )
+            {
+                added = iox;
+            }
+            else
+            {
+                added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
+            }
+            this.cache.currentlyCached.add( added );
+            if( access.hasPermission( AccessRestriction.READ ) )
+            {
+                postDifference( Collections.singletonList( added ) );
+            }
             try
             {
                 this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
@@ -132,6 +146,16 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
             IAEItemStack extractedAEItemStack = AEItemStack.fromItemStack( extracted );
             if( mode == Actionable.MODULATE )
             {
+                IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( extractedAEItemStack );
+                if( cachedStack != null )
+                {
+                    cachedStack.decStackSize( extractedAEItemStack.getStackSize() );
+                    if( access.hasPermission( AccessRestriction.READ ) )
+                    {
+                        postDifference( Collections.singletonList( extractedAEItemStack.copy().setStackSize( -extractedAEItemStack.getStackSize() ) ) );
+                    }
+                }
+
                 try
                 {
                     this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
