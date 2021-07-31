@@ -180,7 +180,10 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					}
 					else
 					{
-						this.pushItemIntoTarget( destination, energy, inv, ais );
+						if( inv.getStorageList().findPrecise( ais ) != null )
+						{
+							this.pushItemIntoTarget( destination, energy, inv, ais );
+						}
 					}
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
