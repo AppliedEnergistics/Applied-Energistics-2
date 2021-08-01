@@ -22,6 +22,7 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.config.AccessRestriction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +56,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 {
 	private boolean wasActive = false;
 	private int priority = 0;
+	protected boolean accessChanged;
 
 	public PartSharedStorageBus( ItemStack is )
 	{
@@ -146,6 +148,10 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
+		if( settingName instanceof AccessRestriction )
+		{
+			this.accessChanged = true;
+		}
 		this.resetCache( true );
 		this.getHost().markForSave();
 	}

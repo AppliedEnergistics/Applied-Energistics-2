@@ -5,7 +5,6 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -41,7 +40,6 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     private final IItemRepository itemRepository;
     private final IGridProxyable proxyable;
     private final InventoryCache cache;
-    private StorageFilter mode;
     private AccessRestriction access;
 
     private ItemStack stackCache;
@@ -54,9 +52,9 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
         if( this.proxyable instanceof PartStorageBus )
         {
             PartStorageBus partStorageBus = (PartStorageBus) this.proxyable;
-            this.mode = ( ( StorageFilter ) partStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
             this.access = ( (AccessRestriction) partStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
         }
+        this.cache.update();
     }
 
     @Override
@@ -95,20 +93,9 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
 
         if( type == Actionable.MODULATE )
         {
-            IAEItemStack added;
-            if( remaining.isEmpty() )
-            {
-                added = iox;
-            }
-            else
-            {
-                added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
-            }
+            IAEItemStack added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
             this.cache.currentlyCached.add( added );
-            if( access.hasPermission( AccessRestriction.READ ) )
-            {
-                postDifference( Collections.singletonList( added ) );
-            }
+            this.postDifference( Collections.singletonList( added ) );
             try
             {
                 this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
@@ -146,16 +133,12 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
             IAEItemStack extractedAEItemStack = AEItemStack.fromItemStack( extracted );
             if( mode == Actionable.MODULATE )
             {
-                IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( extractedAEItemStack );
-                if( cachedStack != null )
+                IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( request );
+                if (cachedStack != null)
                 {
                     cachedStack.decStackSize( extractedAEItemStack.getStackSize() );
-                    if( access.hasPermission( AccessRestriction.READ ) )
-                    {
-                        postDifference( Collections.singletonList( extractedAEItemStack.copy().setStackSize( -extractedAEItemStack.getStackSize() ) ) );
-                    }
+                    this.postDifference( Collections.singletonList( extractedAEItemStack.copy().setStackSize( -extractedAEItemStack.getStackSize() ) ) );
                 }
-
                 try
                 {
                     this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );

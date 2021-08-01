@@ -36,6 +36,7 @@ public final class ConfigManager implements IConfigManager
 {
 	private final Map<Settings, Enum<?>> settings = new EnumMap<>( Settings.class );
 	private final IConfigManagerHost target;
+	private Map<Settings, Enum<?>> oldSettings = new EnumMap<>( Settings.class );
 
 	public ConfigManager( final IConfigManagerHost tile )
 	{
@@ -72,8 +73,13 @@ public final class ConfigManager implements IConfigManager
 	{
 		final Enum<?> oldValue = this.getSetting( settingName );
 		this.settings.put( settingName, newValue );
+		this.oldSettings.put( settingName, oldValue );
 		this.target.updateSetting( this, settingName, newValue );
 		return oldValue;
+	}
+
+	public Enum<?> getOldSetting(final Settings settingName){
+		return this.oldSettings.get( settingName );
 	}
 
 	/**

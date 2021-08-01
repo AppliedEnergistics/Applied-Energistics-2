@@ -26,6 +26,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.GridAccessException;
+import appeng.util.inv.ItemSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -73,7 +75,8 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			this.mode = ( (StorageFilter) partFluidStorageBus.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
 			this.access = ( (AccessRestriction) partFluidStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
 		}
-		this.cache = new FluidHandlerAdapter.InventoryCache( this.fluidHandler, this.mode);
+		this.cache = new FluidHandlerAdapter.InventoryCache( this.fluidHandler, this.mode );
+		this.cache.update();
 	}
 
 	@Override
@@ -92,26 +95,14 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
 		if( type == Actionable.MODULATE )
 		{
-			IAEFluidStack added;
-			if( remaining == 0 )
-			{
-				added = input;
-			}
-			else
-			{
-				added = input.copy().setStackSize( input.getStackSize() - remaining );
-			}
+			IAEFluidStack added = input.copy().setStackSize( input.getStackSize() - remaining );
 			this.cache.currentlyCached.add( added );
-			if( access.hasPermission( AccessRestriction.READ ) )
-			{
-				postDifference( Collections.singletonList( added ) );
-			}
-
+			this.postDifference( Collections.singletonList( added ) );
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 			}
-			catch( GridAccessException ignore )
+			catch( GridAccessException ex )
 			{
 				// meh
 			}
@@ -142,17 +133,14 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			IAEFluidStack cachedStack = this.cache.currentlyCached.findPrecise( request );
 			if( cachedStack != null )
 			{
-				cachedStack.decStackSize( gathered.amount );
-				if( access.hasPermission( AccessRestriction.READ ) )
-				{
-					postDifference( Collections.singletonList( gatheredAEFluidstack.copy().setStackSize( -gathered.amount ) ) );
-				}
+				cachedStack.decStackSize( gatheredAEFluidstack.getStackSize() );
+				this.postDifference( Collections.singletonList( gatheredAEFluidstack.copy().setStackSize( -gatheredAEFluidstack.getStackSize() ) ) );
 			}
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 			}
-			catch( GridAccessException ignore )
+			catch( GridAccessException ex )
 			{
 				// meh
 			}

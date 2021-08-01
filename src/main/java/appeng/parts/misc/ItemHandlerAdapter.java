@@ -75,6 +75,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			this.access = ( (AccessRestriction) partStorageBus.getConfigManager().getSetting( Settings.ACCESS ) );
 		}
 		this.cache = new InventoryCache( this.itemHandler, this.mode );
+		this.cache.update();
 	}
 
 	@Override
@@ -121,21 +122,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( type == Actionable.MODULATE )
 		{
-			IAEItemStack added;
-			if( remaining.isEmpty() )
-			{
-				added = iox;
-			}
-			else
-			{
-				added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
-			}
+			IAEItemStack added = iox.copy().setStackSize( iox.getStackSize() - remaining.getCount() );
 			this.cache.currentlyCached.add( added );
-			if( access.hasPermission( AccessRestriction.READ ) )
-			{
-				postDifference( Collections.singletonList( added ) );
-			}
-
+			this.postDifference( Collections.singletonList( added ) );
 			try
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
@@ -144,7 +133,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			{
 				// meh
 			}
-
 		}
 
 		return AEItemStack.fromItemStack( remaining );
@@ -218,14 +206,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			IAEItemStack gatheredAEItemStack = AEItemStack.fromItemStack( gathered );
 			if( mode == Actionable.MODULATE )
 			{
-				IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( gatheredAEItemStack );
+				IAEItemStack cachedStack = this.cache.currentlyCached.findPrecise( request );
 				if( cachedStack != null )
 				{
 					cachedStack.decStackSize( gatheredAEItemStack.getStackSize() );
-					if( access.hasPermission( AccessRestriction.READ ) )
-					{
-						postDifference( Collections.singletonList( gatheredAEItemStack.copy().setStackSize( -gatheredAEItemStack.getStackSize() ) ) );
-					}
+					this.postDifference( Collections.singletonList( gatheredAEItemStack.copy().setStackSize( -gatheredAEItemStack.getStackSize() ) ) );
 				}
 				try
 				{

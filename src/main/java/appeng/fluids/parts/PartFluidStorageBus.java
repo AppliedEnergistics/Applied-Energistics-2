@@ -26,6 +26,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.util.ConfigManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -167,11 +168,23 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		final boolean fullReset = this.resetCacheLogic == 2;
 		this.resetCacheLogic = 0;
 
-		final IMEInventory<IAEFluidStack> in = this.getInternalHandler();
+		final MEInventoryHandler<IAEFluidStack> in = this.getInternalHandler();
 		IItemList<IAEFluidStack> before = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+		boolean denyRead = false;
 		if( in != null )
 		{
+			AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
+			AccessRestriction oldAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getOldSetting( Settings.ACCESS );
+			if( oldAccess.hasPermission( AccessRestriction.READ ) && !currentAccess.hasPermission( AccessRestriction.READ ) )
+			{
+				denyRead = true;
+			}
+			if( accessChanged )
+			{
+				in.setBaseAccess( oldAccess );
+			}
 			before = in.getAvailableItems( before );
+			in.setBaseAccess( currentAccess );
 		}
 
 		this.cached = false;
@@ -180,15 +193,17 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			this.handlerHash = 0;
 		}
 
-		final IMEInventory<IAEFluidStack> out = this.getInternalHandler();
+		final MEInventoryHandler<IAEFluidStack> out = this.getInternalHandler();
 
-		if( in != out )
+		if( in != out || denyRead )
 		{
 			IItemList<IAEFluidStack> after = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
-			if( out != null )
+
+			if( out != null && !denyRead )
 			{
 				after = out.getAvailableItems( after );
 			}
+
 			Platform.postListChanges( before, after, this, this.source );
 		}
 	}
@@ -264,13 +279,22 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource source )
 	{
+		if( this.source.machine().map( machine -> machine == this ).orElse( false ) && monitor != null )
+		{
+			AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
+			if( !currentAccess.hasPermission( AccessRestriction.READ ) )
+			{
+				return;
+			}
+		}
 		try
 		{
 			if( this.getProxy().isActive() )
 			{
 				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
 			}
-		} catch ( final GridAccessException e )
+		}
+		catch( final GridAccessException e )
 		{
 			// :(
 		}

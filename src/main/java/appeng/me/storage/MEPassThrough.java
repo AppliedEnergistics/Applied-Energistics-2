@@ -41,7 +41,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 		this.setInternal( i );
 	}
 
-	protected IMEInventory<T> getInternal()
+	public IMEInventory<T> getInternal()
 	{
 		return this.internal;
 	}
