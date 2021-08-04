@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 
 public abstract class GuiCustomSlot extends Gui implements ITooltip
 {
-	private final int x;
-	private final int y;
-	private final int id;
+	protected final int x;
+	protected final int y;
+	protected final int id;
 
 	public GuiCustomSlot( final int id, final int x, final int y )
 	{

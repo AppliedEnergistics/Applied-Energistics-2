@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.fluids.container.ContainerFluidInterface;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -89,6 +90,10 @@ public class PacketTargetFluidStack extends AppEngPacket
 		if( player.openContainer instanceof ContainerFluidTerminal )
 		{
 			( (ContainerFluidTerminal) player.openContainer ).setTargetStack( this.stack );
+		}
+		else if( player.openContainer instanceof ContainerFluidInterface )
+		{
+			( (ContainerFluidInterface) player.openContainer ).setTargetStack( this.stack );
 		}
 	}
 }

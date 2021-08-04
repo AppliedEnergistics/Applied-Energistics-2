@@ -21,6 +21,9 @@ package appeng.fluids.client.gui;
 
 import java.io.IOException;
 
+import appeng.api.util.IConfigManager;
+import appeng.client.gui.widgets.GuiCustomSlot;
+import appeng.util.IConfigManagerHost;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -38,11 +41,12 @@ import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
 
 
-public class GuiFluidInterface extends GuiUpgradeable
+public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerHost
 {
 	public final static int ID_BUTTON_TANK = 222;
 
 	private final IFluidInterfaceHost host;
+	private final ContainerFluidInterface container;
 	private GuiTabButton priority;
 
 	public GuiFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
@@ -50,6 +54,8 @@ public class GuiFluidInterface extends GuiUpgradeable
 		super( new ContainerFluidInterface( ip, te ) );
 		this.ySize = 231;
 		this.host = te;
+		( this.container = (ContainerFluidInterface) this.inventorySlots ).setGui( this );
+
 	}
 
 	@Override
@@ -62,9 +68,7 @@ public class GuiFluidInterface extends GuiUpgradeable
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, this.getGuiLeft() + 35 + 18 * i, this
-					.getGuiTop() + 53, 16, 68 );
-			this.buttonList.add( guiTank );
+			this.guiSlots.add( new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 36 + 18 * i, 53, 16, 68 ) );
 			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
@@ -105,8 +109,32 @@ public class GuiFluidInterface extends GuiUpgradeable
 	}
 
 	@Override
+	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
+	{
+		for( GuiCustomSlot slot : this.guiSlots )
+		{
+			if( slot instanceof GuiFluidTank )
+			{
+				if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.mc.player ) )
+				{
+					this.container.setTargetStack( ( (GuiFluidTank) slot ).getFluidStack() );
+					slot.slotClicked( this.mc.player.inventory.getItemStack(), btn );
+					return;
+				}
+			}
+		}
+		super.mouseClicked( xCoord, yCoord, btn );
+	}
+
+	@Override
 	protected boolean drawUpgrades()
 	{
 		return false;
+	}
+
+	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+
 	}
 }

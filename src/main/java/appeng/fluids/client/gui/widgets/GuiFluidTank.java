@@ -19,42 +19,50 @@
 package appeng.fluids.client.gui.widgets;
 
 
+import appeng.client.gui.widgets.GuiCustomSlot;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.helpers.InventoryAction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
 
 
 @SideOnly( Side.CLIENT )
-public class GuiFluidTank extends GuiButton implements ITooltip
+public class GuiFluidTank extends GuiCustomSlot implements ITooltip
 {
 	private final IAEFluidTank tank;
 	private final int slot;
+	private final int width;
+	private final int height;
 
 	public GuiFluidTank( IAEFluidTank tank, int slot, int id, int x, int y, int w, int h )
 	{
-		super( id, x, y, w, h, "" );
+		super( id, x, y );
 		this.tank = tank;
 		this.slot = slot;
+		this.width = w;
+		this.height = h;
 	}
 
 	@Override
-	public void drawButton( final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks )
+	public void drawContent( Minecraft mc, int mouseX, int mouseY, float partialTicks )
 	{
-		if( this.visible )
+		final IAEFluidStack fs = this.getFluidStack();
+		if( fs != null )
 		{
 			GlStateManager.disableBlend();
 			GlStateManager.disableLighting();
 
-			drawRect( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
+			//drawRect( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
 
 			final IAEFluidStack fluid = this.tank.getFluidInSlot( this.slot );
 			if( fluid != null && fluid.getStackSize() > 0 )
@@ -69,17 +77,16 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 				TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getFluid().getStill().toString() );
 				final int scaledHeight = (int) ( this.height * ( (float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity() ) );
 
-				int iconHeightRemainder = scaledHeight % 16;
+				int iconHeightRemainder = scaledHeight % this.getHeight();
 				if( iconHeightRemainder > 0 )
 				{
-					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder, sprite, 16, iconHeightRemainder );
+					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder, sprite, this.getWidth(), iconHeightRemainder );
 				}
-				for( int i = 0; i < scaledHeight / 16; i++ )
+				for( int i = 0; i < scaledHeight / this.getHeight(); i++ )
 				{
-					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder - ( i + 1 ) * 16, sprite, 16, 16 );
+					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder - ( i + 1 ) * 16, sprite, this.getWidth(), this.getHeight() );
 				}
 			}
-
 		}
 	}
 
@@ -100,31 +107,51 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 	@Override
 	public int xPos()
 	{
-		return this.x - 2;
+		return this.x - 1;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return this.y - 2;
+		return this.y - 1;
 	}
 
 	@Override
 	public int getWidth()
 	{
-		return this.width + 4;
+		return this.width;
 	}
 
 	@Override
 	public int getHeight()
 	{
-		return this.height + 4;
+		return this.height + 1;
 	}
 
 	@Override
 	public boolean isVisible()
 	{
 		return true;
+	}
+
+	public IAEFluidStack getFluidStack()
+	{
+		return this.tank.getFluidInSlot( this.slot );
+	}
+
+	@Override
+	public void slotClicked( ItemStack clickStack, final int mouseButton )
+	{
+
+		if( getFluidStack() != null )
+		{
+			NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.FILL_ITEM, slot, 0 ) );
+		}
+		else
+		{
+			NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.EMPTY_ITEM, slot, 0 ) );
+		}
+
 	}
 
 }
