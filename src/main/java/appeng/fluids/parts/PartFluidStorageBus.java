@@ -173,18 +173,23 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		boolean denyRead = false;
 		if( in != null )
 		{
-			AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
-			AccessRestriction oldAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getOldSetting( Settings.ACCESS );
-			if( oldAccess.hasPermission( AccessRestriction.READ ) && !currentAccess.hasPermission( AccessRestriction.READ ) )
-			{
-				denyRead = true;
-			}
 			if( accessChanged )
 			{
+				AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
+				AccessRestriction oldAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getOldSetting( Settings.ACCESS );
+				if( oldAccess.hasPermission( AccessRestriction.READ ) && !currentAccess.hasPermission( AccessRestriction.READ ) )
+				{
+					denyRead = true;
+				}
 				in.setBaseAccess( oldAccess );
+				before = in.getAvailableItems( before );
+				in.setBaseAccess( currentAccess );
+				accessChanged = false;
 			}
-			before = in.getAvailableItems( before );
-			in.setBaseAccess( currentAccess );
+			else
+			{
+				before = in.getAvailableItems( before );
+			}
 		}
 
 		this.cached = false;
