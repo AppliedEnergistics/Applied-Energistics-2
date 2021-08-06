@@ -270,12 +270,15 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 				@Override
 				public Rectangle getArea()
 				{
-					if( slot instanceof SlotFake )
+					if( slot instanceof SlotFake && ( (SlotFake) slot ).isSlotEnabled() )
+					{
 						return new Rectangle( getGuiLeft() + ( (SlotFake) slot ).xPos, getGuiTop() + ( (SlotFake) slot ).yPos, 16, 16 );
-					else
+					}
+					else if( slot instanceof GuiFluidSlot && ( (GuiFluidSlot) slot ).isSlotEnabled() )
 					{
 						return new Rectangle( getGuiLeft() + ( (GuiFluidSlot) slot ).xPos(), getGuiTop() + ( (GuiFluidSlot) slot ).yPos(), 16, 16 );
 					}
+					return new Rectangle();
 				}
 
 				@Override
@@ -284,7 +287,7 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 					PacketInventoryAction p = null;
 					try
 					{
-						if( slot instanceof SlotFake )
+						if( slot instanceof SlotFake && ( (SlotFake) slot ).isSlotEnabled() )
 						{
 							if( finalItemStack.isEmpty() && finalFluidStack != null )
 							{
