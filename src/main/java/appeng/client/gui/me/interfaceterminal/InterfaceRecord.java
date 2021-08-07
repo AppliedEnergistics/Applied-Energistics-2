@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.helpers.DualityItemInterface;
+import appeng.menu.implementations.InterfaceTerminalMenu;
 
 /**
  * This class is used on the client-side to represent an interface and it's inventory as it is shown in the
@@ -35,8 +36,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final String searchName;
 
     /**
-     * Identifier for this interface on the server-side. See
-     * {@link appeng.container.implementations.InterfaceTerminalContainer}
+     * Identifier for this interface on the server-side. See {@link InterfaceTerminalMenu}
      */
     private final long serverId;
 

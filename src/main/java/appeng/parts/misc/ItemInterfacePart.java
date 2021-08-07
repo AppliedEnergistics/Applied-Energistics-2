@@ -46,9 +46,6 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ItemInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -56,6 +53,9 @@ import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -163,7 +163,7 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            ContainerOpener.openContainer(ItemInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
+            MenuOpener.open(ItemInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -231,7 +231,7 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return ItemInterfaceContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return ItemInterfaceMenu.TYPE;
     }
 }

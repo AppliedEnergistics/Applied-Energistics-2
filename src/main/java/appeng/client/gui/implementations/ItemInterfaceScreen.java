@@ -28,19 +28,19 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.container.implementations.ItemInterfaceContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.menu.implementations.ItemInterfaceMenu;
 
-public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceContainer> {
+public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
 
     private final SettingToggleButton<YesNo> blockMode;
     private final ToggleButton interfaceMode;
 
-    public ItemInterfaceScreen(ItemInterfaceContainer container, Inventory playerInventory, Component title,
+    public ItemInterfaceScreen(ItemInterfaceMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
 

@@ -30,19 +30,19 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.ItemIOBusContainer;
+import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.parts.automation.ExportBusPart;
 
-public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusContainer> {
+public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusMenu> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final SettingToggleButton<YesNo> craftMode;
     private final SettingToggleButton<SchedulingMode> schedulingMode;
 
-    public ItemIOBusScreen(ItemIOBusContainer container, Inventory playerInventory, Component title,
+    public ItemIOBusScreen(ItemIOBusMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);
@@ -51,7 +51,7 @@ public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusContainer> {
         addToLeftToolbar(this.fuzzyMode);
 
         // Craft & Scheduling mode is only supported by export bus
-        if (container.getUpgradeable() instanceof ExportBusPart) {
+        if (menu.getUpgradeable() instanceof ExportBusPart) {
             this.craftMode = new ServerSettingToggleButton<>(Settings.CRAFT_ONLY,
                     YesNo.NO);
             addToLeftToolbar(this.craftMode);

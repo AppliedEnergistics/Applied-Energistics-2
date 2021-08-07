@@ -64,14 +64,14 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ItemFormationPlaneContainer;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.ItemFormationPlaneMenu;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -163,7 +163,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(ItemFormationPlaneMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -342,8 +342,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return ItemFormationPlaneContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return ItemFormationPlaneMenu.TYPE;
     }
 
     private int countEntitesAround(Level level, BlockPos pos) {

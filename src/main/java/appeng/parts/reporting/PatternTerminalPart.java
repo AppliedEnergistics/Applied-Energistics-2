@@ -32,11 +32,11 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.container.me.items.ItemTerminalContainer;
-import appeng.container.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
@@ -93,11 +93,11 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public MenuType<?> getContainerType(final Player p) {
+    public MenuType<?> getMenuType(final Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
-            return PatternTermContainer.TYPE;
+            return PatternTermMenu.TYPE;
         }
-        return ItemTerminalContainer.TYPE;
+        return ItemTerminalMenu.TYPE;
     }
 
     @Override

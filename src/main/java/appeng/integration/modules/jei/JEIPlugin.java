@@ -56,8 +56,6 @@ import appeng.api.config.CondenserOutput;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.InscriberScreen;
-import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.me.items.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -67,6 +65,8 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -96,12 +96,12 @@ public class JEIPlugin implements IModPlugin {
 
         // Allow vanilla crafting recipe transfer from JEI to crafting terminal
         registration.addRecipeTransferHandler(
-                new CraftingRecipeTransferHandler(CraftingTermContainer.class, registration.getTransferHelper()),
+                new CraftingRecipeTransferHandler(CraftingTermMenu.class, registration.getTransferHelper()),
                 VanillaRecipeCategoryUid.CRAFTING);
 
         // Universal handler for processing to try and handle all IRecipe
         registration.addUniversalRecipeTransferHandler(
-                new PatternRecipeTransferHandler(PatternTermContainer.class, registration.getTransferHelper()));
+                new PatternRecipeTransferHandler(PatternTermMenu.class, registration.getTransferHelper()));
     }
 
     @Override

@@ -45,13 +45,13 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.container.implementations.ItemInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
+import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
@@ -257,7 +257,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return ItemInterfaceContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return ItemInterfaceMenu.TYPE;
     }
 }

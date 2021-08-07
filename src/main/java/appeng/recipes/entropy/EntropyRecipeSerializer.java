@@ -255,7 +255,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
         }
     }
 
-    private static void parseStateMatchers(StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
+    private static void parseStateMatchers(StateDefinition<?, ?> stateDefinition, JsonObject propertiesContainer,
             Consumer<StateMatcher> consumer) {
         JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
@@ -268,27 +268,27 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
             }
 
             if (value.isJsonPrimitive()) {
-                consumer.accept(SingleValueMatcher.create(stateContainer, key, value.getAsString()));
+                consumer.accept(SingleValueMatcher.create(stateDefinition, key, value.getAsString()));
             } else if (value.isJsonArray()) {
                 JsonArray array = value.getAsJsonArray();
                 List<String> list = new ArrayList<>();
                 for (JsonElement e : array) {
                     list.add(e.getAsString());
                 }
-                consumer.accept(MultipleValuesMatcher.create(stateContainer, key, list));
+                consumer.accept(MultipleValuesMatcher.create(stateDefinition, key, list));
             } else if (value.isJsonObject() && value.getAsJsonObject().has("min")
                     && value.getAsJsonObject().has("max")) {
                 String min = value.getAsJsonObject().get("min").getAsString();
                 String max = value.getAsJsonObject().get("max").getAsString();
 
-                consumer.accept(RangeValueMatcher.create(stateContainer, key, min, max));
+                consumer.accept(RangeValueMatcher.create(stateDefinition, key, min, max));
             } else {
                 throw new IllegalArgumentException("Invalid matcher: " + value);
             }
         });
     }
 
-    private static void parseStateAppliers(StateDefinition<?, ?> stateContainer, JsonObject propertiesContainer,
+    private static void parseStateAppliers(StateDefinition<?, ?> stateDefinition, JsonObject propertiesContainer,
             Consumer<StateApplier<?>> consumer) {
         JsonObject properties = GsonHelper.getAsJsonObject(propertiesContainer, "properties", new JsonObject());
 
@@ -296,7 +296,7 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
             String key = entry.getKey();
             String value = entry.getValue().getAsString();
 
-            consumer.accept(StateApplier.create(stateContainer, key, value));
+            consumer.accept(StateApplier.create(stateDefinition, key, value));
         });
     }
 

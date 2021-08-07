@@ -70,9 +70,6 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ItemStorageBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -83,6 +80,9 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.Platform;
@@ -259,7 +259,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(ItemStorageBusMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -525,7 +525,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return ItemStorageBusContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return ItemStorageBusMenu.TYPE;
     }
 }

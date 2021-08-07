@@ -38,6 +38,6 @@ public interface IPriorityHost {
     /**
      * Used to show the user interface of this part when returning from the priority GUI.
      */
-    MenuType<?> getContainerType();
+    MenuType<?> getMenuType();
 
 }

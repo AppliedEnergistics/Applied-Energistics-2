@@ -33,9 +33,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.IOPortBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.IOPortContainer;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.IOPortMenu;
 import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
@@ -65,8 +65,8 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
         final IOPortBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(IOPortContainer.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(IOPortMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

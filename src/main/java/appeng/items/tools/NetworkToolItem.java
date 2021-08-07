@@ -42,17 +42,17 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAgent;
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.networktool.NetworkStatusContainer;
-import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.me.networktool.NetworkStatusMenu;
+import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -143,15 +143,15 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         }
 
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            if (p.containerMenu instanceof AEBaseContainer) {
+            if (p.containerMenu instanceof AEBaseMenu) {
                 return true;
             }
 
             if (nodeHost != null) {
-                ContainerOpener.openContainer(NetworkStatusContainer.TYPE, p,
-                        ContainerLocator.forItemUseContext(useContext));
+                MenuOpener.open(NetworkStatusMenu.TYPE, p,
+                        MenuLocator.forItemUseContext(useContext));
             } else {
-                ContainerOpener.openContainer(NetworkToolContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+                MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
             }
 
             return true;

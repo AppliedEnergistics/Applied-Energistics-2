@@ -33,7 +33,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.network.chat.Style;
 
-import appeng.container.SlotSemantic;
+import appeng.menu.SlotSemantic;
 
 /**
  * A screen style document defines various visual aspects of AE2 screens.

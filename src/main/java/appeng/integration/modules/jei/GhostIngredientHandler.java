@@ -31,11 +31,11 @@ import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.FluidSlotWidget;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.FakeSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.menu.slot.AppEngSlot;
+import appeng.menu.slot.FakeSlot;
 import appeng.util.fluid.AEFluidStack;
 
 /**

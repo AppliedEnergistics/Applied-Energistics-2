@@ -25,25 +25,25 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.me.crafting.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.me.crafting.CraftingStatusMenu;
 
 /**
  * This specialized version of the {@link CraftingCPUScreen} allows a player to cycle through the CPUs that are
  * currently working on crafting jobs, and see their crafting status.
  */
-public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContainer> {
+public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> {
 
     private final Button selectCPU;
 
-    public CraftingStatusScreen(CraftingStatusContainer container, Inventory playerInventory,
+    public CraftingStatusScreen(CraftingStatusMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
-        AESubScreen subGui = new AESubScreen(container.getTarget());
+        AESubScreen subGui = new AESubScreen(menu.getTarget());
         subGui.addBackButton("back", widgets);
     }
 

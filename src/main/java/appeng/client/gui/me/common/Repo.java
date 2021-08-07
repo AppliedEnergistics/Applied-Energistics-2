@@ -39,11 +39,11 @@ import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.common.IClientRepo;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
 import appeng.util.prioritylist.IPartitionList;
 
 /**

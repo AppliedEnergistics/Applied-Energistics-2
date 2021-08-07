@@ -64,7 +64,7 @@ class InitScreensTest {
      */
     @Test
     void testMissingStyles() {
-        List<String> missingStyles = InitScreens.CONTAINER_STYLES.values().stream()
+        List<String> missingStyles = InitScreens.MENU_STYLES.values().stream()
                 .filter(f -> (getClass().getResourceAsStream("/assets/appliedenergistics2" + f) == null))
                 .collect(Collectors.toList());
         assertThat(missingStyles).isEmpty();
@@ -78,7 +78,7 @@ class InitScreensTest {
         StyleManager.initialize(MockResourceManager.create());
 
         List<String> errors = new ArrayList<>();
-        for (String path : InitScreens.CONTAINER_STYLES.values()) {
+        for (String path : InitScreens.MENU_STYLES.values()) {
             try {
                 StyleManager.loadStyleDoc(path);
             } catch (Exception e) {
@@ -111,7 +111,7 @@ class InitScreensTest {
         StyleManager.initialize(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();
-        for (String path : InitScreens.CONTAINER_STYLES.values()) {
+        for (String path : InitScreens.MENU_STYLES.values()) {
             ScreenStyle style = StyleManager.loadStyleDoc(path);
 
             for (Text text : style.getText().values()) {

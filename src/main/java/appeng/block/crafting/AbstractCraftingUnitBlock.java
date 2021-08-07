@@ -35,9 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.crafting.CraftingCPUContainer;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
@@ -99,8 +99,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(CraftingCPUMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());

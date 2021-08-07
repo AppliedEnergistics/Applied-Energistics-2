@@ -24,9 +24,9 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.parts.PartModel;
 
 /**
@@ -50,8 +50,8 @@ public class FluidTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public MenuType<?> getContainerType(Player player) {
-        return FluidTerminalContainer.TYPE;
+    public MenuType<?> getMenuType(Player player) {
+        return FluidTerminalMenu.TYPE;
     }
 
     @Override

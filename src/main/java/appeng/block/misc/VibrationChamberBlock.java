@@ -39,10 +39,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.util.InteractionUtil;
 
 public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {
@@ -77,8 +77,8 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
         if (!level.isClientSide()) {
             final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
-                ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
+                MenuOpener.open(VibrationChamberMenu.TYPE, player,
+                        MenuLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 

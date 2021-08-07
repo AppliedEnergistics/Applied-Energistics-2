@@ -28,17 +28,17 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.core.localization.GuiText;
+import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.util.Platform;
 
-public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorContainer> {
+public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorMenu> {
 
     private final SettingToggleButton<YesNo> overlayToggle;
 
-    public SpatialAnchorScreen(SpatialAnchorContainer container, Inventory playerInventory,
+    public SpatialAnchorScreen(SpatialAnchorMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
         this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(
                 Settings.OVERLAY_MODE, YesNo.NO));

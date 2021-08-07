@@ -29,8 +29,8 @@ import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.FluidIOBusContainer;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.parts.automation.FluidExportBusPart;
 import appeng.parts.automation.FluidImportBusPart;
 import appeng.util.fluid.IAEFluidTank;
@@ -39,26 +39,26 @@ import appeng.util.fluid.IAEFluidTank;
  * @see FluidImportBusPart
  * @see FluidExportBusPart
  */
-public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
+public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusMenu> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusContainer container, Inventory playerInventory, Component title,
+    public FluidIOBusScreen(FluidIOBusMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         final IAEFluidTank inv = this.menu.getFluidConfigInventory();
 
         addSlot(new FluidSlotWidget(inv, 0), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 1, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 2, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 3, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 4, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 1, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 2, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 3, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 4, 1), SlotSemantic.CONFIG);
 
-        addSlot(new OptionalFluidSlotWidget(inv, container, 5, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 6, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 7, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 8, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 5, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 6, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 7, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 8, 2), SlotSemantic.CONFIG);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);

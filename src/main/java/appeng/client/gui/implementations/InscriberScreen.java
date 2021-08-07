@@ -25,15 +25,15 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
-import appeng.container.implementations.InscriberContainer;
+import appeng.menu.implementations.InscriberMenu;
 
-public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
+public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
     private final ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, Inventory playerInventory, Component title,
+    public InscriberScreen(InscriberMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);

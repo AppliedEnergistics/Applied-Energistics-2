@@ -37,17 +37,17 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.item.AEItemStack;
 
-public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
+public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermMenu> {
 
-    CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
-        super(containerClass, helper);
+    CraftingRecipeTransferHandler(Class<CraftingTermMenu> menuClass, IRecipeTransferHandlerHelper helper) {
+        super(menuClass, helper);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, Recipe<?> recipe,
+    protected IRecipeTransferError doTransferRecipe(CraftingTermMenu menu, Recipe<?> recipe,
             IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients
@@ -81,7 +81,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
                         // We use AE stacks to get an easily comparable item type key that ignores stack size
                         IAEItemStack aeStack = AEItemStack.fromItemStack(itemStack);
                         int reservedAmount = reservedGridAmounts.getOrDefault(aeStack, 0) + 1;
-                        if (container.hasItemType(itemStack, reservedAmount)) {
+                        if (menu.hasItemType(itemStack, reservedAmount)) {
                             reservedGridAmounts.put(aeStack, reservedAmount);
                             found = true;
                             break;

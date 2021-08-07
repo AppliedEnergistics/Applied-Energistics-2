@@ -42,10 +42,10 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
-import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
+import appeng.menu.implementations.PriorityMenu;
 
 /**
  * This utility class helps with positioning commonly used Minecraft {@link AbstractWidget} instances on a screen
@@ -252,7 +252,7 @@ public class WidgetContainer {
     }
 
     /**
-     * Adds a button named "openPriority" that opens the priority GUI for the current container host.
+     * Adds a button named "openPriority" that opens the priority GUI for the current menu host.
      */
     public void addOpenPriorityButton() {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
@@ -261,7 +261,7 @@ public class WidgetContainer {
     }
 
     private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
+        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityMenu.TYPE));
     }
 
     @Nullable

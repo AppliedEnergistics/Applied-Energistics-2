@@ -36,24 +36,24 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.UpgradeableMenu;
 
 /**
  * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
  * toolbox to more easily install/remove upgrades.
  */
-public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
+public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T> {
 
-    public UpgradeableScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+    public UpgradeableScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
 
         this.widgets.add("upgrades", new UpgradesPanel(
-                container.getSlots(SlotSemantic.UPGRADE),
+                menu.getSlots(SlotSemantic.UPGRADE),
                 this::getCompatibleUpgrades));
-        if (container.hasToolbox()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style, container.getToolboxName()));
+        if (menu.hasToolbox()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolboxName()));
         }
     }
 

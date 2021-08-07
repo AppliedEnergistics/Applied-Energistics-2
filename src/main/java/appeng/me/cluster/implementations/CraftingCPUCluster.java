@@ -62,7 +62,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;
@@ -75,6 +74,7 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.me.service.CraftingService;
+import appeng.menu.NullMenu;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -637,7 +637,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                 continue;
                             }
 
-                            ic = new CraftingContainer(new ContainerNull(), 3, 3);
+                            ic = new CraftingContainer(new NullMenu(), 3, 3);
                             boolean found = false;
 
                             for (int x = 0; x < input.length; x++) {

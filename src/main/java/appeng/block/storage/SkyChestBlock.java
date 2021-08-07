@@ -53,10 +53,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyChestBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.SkyChestContainer;
 import appeng.core.definitions.AEBlockEntities;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.SkyChestMenu;
 
 public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 
@@ -113,8 +113,8 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         if (!level.isClientSide()) {
             SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {
-                ContainerOpener.openContainer(SkyChestContainer.TYPE, player,
-                        ContainerLocator.forBlockEntity(blockEntity));
+                MenuOpener.open(SkyChestMenu.TYPE, player,
+                        MenuLocator.forBlockEntity(blockEntity));
             }
         }
 

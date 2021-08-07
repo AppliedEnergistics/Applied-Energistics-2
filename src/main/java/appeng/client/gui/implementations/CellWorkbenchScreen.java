@@ -37,20 +37,20 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.implementations.CellWorkbenchMenu;
 
-public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContainer> {
+public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
     private final ToggleButton copyMode;
 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public CellWorkbenchScreen(CellWorkbenchContainer container, Inventory playerInventory,
+    public CellWorkbenchScreen(CellWorkbenchMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.fuzzyMode = addToLeftToolbar(
                 new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));

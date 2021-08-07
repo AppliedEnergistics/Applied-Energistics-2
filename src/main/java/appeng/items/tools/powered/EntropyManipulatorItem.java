@@ -58,10 +58,10 @@ import net.minecraft.world.phys.HitResult.Type;
 import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.misc.TinyTNTBlock;
-import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.menu.NullMenu;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.InteractionUtil;
@@ -222,7 +222,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         BlockState smeltedBlockState = null;
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
-        CraftingContainer tempInv = new CraftingContainer(new ContainerNull(), 1, 1);
+        CraftingContainer tempInv = new CraftingContainer(new NullMenu(), 1, 1);
         for (final ItemStack i : stack) {
             tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,

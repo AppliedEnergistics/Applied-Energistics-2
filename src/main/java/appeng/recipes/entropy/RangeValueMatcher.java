@@ -55,17 +55,17 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
         buffer.writeUtf(property.getName(maxValue));
     }
 
-    public static StateMatcher create(StateDefinition<?, ?> stateContainer, String propertyName, String minValueName,
+    public static StateMatcher create(StateDefinition<?, ?> stateDefinition, String propertyName, String minValueName,
             String maxValueName) {
-        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        Property<?> property = PropertyUtils.getRequiredProperty(stateDefinition, propertyName);
         return new RangeValueMatcher<>(property, minValueName, maxValueName);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static StateMatcher readFromPacket(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    public static StateMatcher readFromPacket(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String minName = buffer.readUtf();
         String maxName = buffer.readUtf();
-        return create(stateContainer, propertyName, minName, maxName);
+        return create(stateDefinition, propertyName, minName, maxName);
     }
 }

@@ -37,7 +37,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.container.implementations.SkyChestContainer;
+import appeng.menu.implementations.SkyChestMenu;
 import appeng.util.inv.InvOperation;
 
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
@@ -69,7 +69,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
         }
 
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof SkyChestContainer menu) {
+            if (player.containerMenu instanceof SkyChestMenu menu) {
                 return menu.getChest() == SkyChestBlockEntity.this;
             } else {
                 return false;

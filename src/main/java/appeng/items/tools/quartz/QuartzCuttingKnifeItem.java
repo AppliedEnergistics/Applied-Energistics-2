@@ -32,11 +32,11 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
@@ -53,8 +53,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         if (!level.isClientSide() && player != null) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
-                    ContainerLocator.forItemUseContext(context));
+            MenuOpener.open(QuartzKnifeMenu.TYPE, context.getPlayer(),
+                    MenuLocator.forItemUseContext(context));
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
@@ -62,7 +62,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
         if (!level.isClientSide()) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+            MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocator.forHand(p, hand));
         }
         p.swing(hand);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),

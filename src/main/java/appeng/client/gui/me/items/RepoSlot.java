@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.me.common.ClientReadOnlySlot;
 import appeng.client.gui.me.common.Repo;
-import appeng.container.me.common.GridInventoryEntry;
+import appeng.menu.me.common.GridInventoryEntry;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the

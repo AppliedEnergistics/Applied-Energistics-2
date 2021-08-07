@@ -43,11 +43,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.implementations.FluidIOBusContainer;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
+import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.fluid.AEFluidStack;
 
@@ -80,8 +80,8 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    protected MenuType<?> getContainerType() {
-        return FluidIOBusContainer.IMPORT_TYPE;
+    protected MenuType<?> getMenuType() {
+        return FluidIOBusMenu.IMPORT_TYPE;
     }
 
     @Override

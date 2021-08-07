@@ -42,7 +42,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.container.implementations.FluidInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityFluidInterface;
@@ -50,6 +49,7 @@ import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
+import appeng.menu.implementations.FluidInterfaceMenu;
 
 public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
@@ -155,7 +155,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return FluidInterfaceContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return FluidInterfaceMenu.TYPE;
     }
 }

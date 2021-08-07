@@ -38,10 +38,10 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
 import appeng.core.Api;
 import appeng.helpers.IConfigurableFluidInventory;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -90,13 +90,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(getContainerType(), player, ContainerLocator.forPart(this));
+            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
 
         return true;
     }
 
-    protected abstract MenuType<?> getContainerType();
+    protected abstract MenuType<?> getMenuType();
 
     @Override
     public void getBoxes(IPartCollisionHelper bch) {

@@ -63,9 +63,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.FluidStorageBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -75,6 +72,9 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
@@ -215,7 +215,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(FluidStorageBusMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -437,7 +437,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return FluidStorageBusContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return FluidStorageBusMenu.TYPE;
     }
 }

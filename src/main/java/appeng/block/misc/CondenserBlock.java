@@ -31,9 +31,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CondenserBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.CondenserContainer;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.CondenserMenu;
 import appeng.util.InteractionUtil;
 
 public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
@@ -53,8 +53,8 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
         if (!level.isClientSide()) {
             final CondenserBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
-                ContainerOpener.openContainer(CondenserContainer.TYPE, player,
-                        ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
+                MenuOpener.open(CondenserMenu.TYPE, player,
+                        MenuLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 

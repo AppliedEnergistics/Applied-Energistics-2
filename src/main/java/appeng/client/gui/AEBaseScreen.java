@@ -68,14 +68,6 @@ import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.VerticalButtonBar;
-import appeng.container.AEBaseContainer;
-import appeng.container.SlotSemantic;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.CraftingTermSlot;
-import appeng.container.slot.DisabledSlot;
-import appeng.container.slot.FakeSlot;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.PatternTermSlot;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -83,8 +75,16 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantic;
+import appeng.menu.slot.AppEngSlot;
+import appeng.menu.slot.CraftingTermSlot;
+import appeng.menu.slot.DisabledSlot;
+import appeng.menu.slot.FakeSlot;
+import appeng.menu.slot.IOptionalSlot;
+import appeng.menu.slot.PatternTermSlot;
 
-public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractContainerScreen<T> {
+public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
@@ -109,8 +109,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractCo
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
-    public AEBaseScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title);
+    public AEBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title);
 
         // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
         // in the init method

@@ -27,16 +27,16 @@ public interface StateMatcher {
 
     void writeToPacket(FriendlyByteBuf buffer);
 
-    static StateMatcher read(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    static StateMatcher read(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         MatcherType type = buffer.readEnum(MatcherType.class);
 
         switch (type) {
             case SINGLE:
-                return SingleValueMatcher.readFromPacket(stateContainer, buffer);
+                return SingleValueMatcher.readFromPacket(stateDefinition, buffer);
             case MULTIPLE:
-                return MultipleValuesMatcher.readFromPacket(stateContainer, buffer);
+                return MultipleValuesMatcher.readFromPacket(stateDefinition, buffer);
             case RANGE:
-                return RangeValueMatcher.readFromPacket(stateContainer, buffer);
+                return RangeValueMatcher.readFromPacket(stateDefinition, buffer);
         }
 
         return null;

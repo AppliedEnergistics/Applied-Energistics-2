@@ -31,8 +31,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.style.Blitter;
-import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
+import appeng.menu.interfaces.IProgressProvider;
 
 public class ProgressBar extends AbstractWidget implements ITooltip {
 

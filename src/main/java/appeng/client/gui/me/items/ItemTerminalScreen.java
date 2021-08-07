@@ -40,17 +40,17 @@ import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IScrollSource;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.common.MEMonitorableContainer;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.prioritylist.IPartitionList;
 
-public class ItemTerminalScreen<C extends MEMonitorableContainer<IAEItemStack>>
+public class ItemTerminalScreen<C extends MEMonitorableMenu<IAEItemStack>>
         extends MEMonitorableScreen<IAEItemStack, C> {
-    public ItemTerminalScreen(C container, Inventory playerInventory, Component title,
+    public ItemTerminalScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
     }
 
     @Override

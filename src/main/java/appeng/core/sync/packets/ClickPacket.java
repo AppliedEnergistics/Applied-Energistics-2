@@ -34,15 +34,15 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.CableBusBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.me.networktool.NetworkToolMenu;
 
 public class ClickPacket extends BasePacket {
 
@@ -140,8 +140,8 @@ public class ClickPacket extends BasePacket {
                             new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, pos, false));
                     tnt.serverSideToolLogic(useContext);
                 } else {
-                    ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,
-                            ContainerLocator.forHand(player, hand));
+                    MenuOpener.open(NetworkToolMenu.TYPE, player,
+                            MenuLocator.forHand(player, hand));
                 }
             }
 

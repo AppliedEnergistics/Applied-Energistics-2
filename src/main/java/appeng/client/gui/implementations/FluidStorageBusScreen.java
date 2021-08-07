@@ -31,10 +31,10 @@ import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.FluidStorageBusContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.util.fluid.IAEFluidTank;
 
 /**
@@ -42,14 +42,14 @@ import appeng.util.fluid.IAEFluidTank;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusContainer> {
+public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu> {
 
     private final SettingToggleButton<AccessRestriction> rwMode;
     private final SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusContainer container, Inventory playerInventory,
+    public FluidStorageBusScreen(FluidStorageBusMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         final IAEFluidTank config = this.menu.getFluidConfigInventory();
 
@@ -59,7 +59,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
                 if (y < 2) {
                     addSlot(new FluidSlotWidget(config, idx), SlotSemantic.CONFIG);
                 } else {
-                    addSlot(new OptionalFluidSlotWidget(config, container, idx, y - 2), SlotSemantic.CONFIG);
+                    addSlot(new OptionalFluidSlotWidget(config, menu, idx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }

@@ -46,9 +46,6 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.FluidInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -57,6 +54,9 @@ import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -132,7 +132,7 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
+            MenuOpener.open(FluidInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
         }
 
         return true;
@@ -205,8 +205,8 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return FluidInterfaceContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return FluidInterfaceMenu.TYPE;
     }
 
     @Override

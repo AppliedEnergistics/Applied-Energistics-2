@@ -57,14 +57,14 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.FluidFormationPlaneContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.FluidFormationPlaneMenu;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
@@ -181,7 +181,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidFormationPlaneContainer.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(FluidFormationPlaneMenu.TYPE, player, MenuLocator.forPart(this));
         }
 
         return true;
@@ -224,7 +224,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public MenuType<?> getContainerType() {
-        return FluidFormationPlaneContainer.TYPE;
+    public MenuType<?> getMenuType() {
+        return FluidFormationPlaneMenu.TYPE;
     }
 }

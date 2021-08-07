@@ -53,13 +53,13 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
@@ -145,7 +145,7 @@ public class JEIRecipePacket extends BasePacket {
         // Setup and verification
         final ServerPlayer pmp = (ServerPlayer) player;
         final AbstractContainerMenu con = pmp.containerMenu;
-        Preconditions.checkArgument(con instanceof IContainerCraftingPacket);
+        Preconditions.checkArgument(con instanceof IMenuCraftingPacket);
 
         Recipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
         if (recipe == null && this.recipe != null) {
@@ -156,7 +156,7 @@ public class JEIRecipePacket extends BasePacket {
         }
         Preconditions.checkArgument(recipe != null);
 
-        final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
+        final IMenuCraftingPacket cct = (IMenuCraftingPacket) con;
         final IGridNode node = cct.getNetworkNode();
 
         Preconditions.checkArgument(node != null);
@@ -306,7 +306,7 @@ public class JEIRecipePacket extends BasePacket {
      * Finds the first matching itemstack with the highest stored amount.
      */
     private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
-            IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
+            IMEMonitor<IAEItemStack> storage, IMenuCraftingPacket cct) {
         Stream<AEItemStack> stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -319,7 +319,7 @@ public class JEIRecipePacket extends BasePacket {
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
-            ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IContainerCraftingPacket cct) {
+            ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IMenuCraftingPacket cct) {
         Stream<IAEItemStack> stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
@@ -333,7 +333,7 @@ public class JEIRecipePacket extends BasePacket {
      * the stream is empty.
      */
     private static IAEItemStack getMostStored(Stream<? extends IAEItemStack> stacks, IMEMonitor<IAEItemStack> storage,
-            IContainerCraftingPacket cct) {
+            IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {
                     // Determine the stored count
@@ -346,9 +346,9 @@ public class JEIRecipePacket extends BasePacket {
                 .orElse(null);
     }
 
-    private void handleProcessing(AbstractContainerMenu con, IContainerCraftingPacket cct, Recipe<?> recipe) {
-        if (con instanceof PatternTermContainer) {
-            PatternTermContainer patternTerm = (PatternTermContainer) con;
+    private void handleProcessing(AbstractContainerMenu con, IMenuCraftingPacket cct, Recipe<?> recipe) {
+        if (con instanceof PatternTermMenu) {
+            PatternTermMenu patternTerm = (PatternTermMenu) con;
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());

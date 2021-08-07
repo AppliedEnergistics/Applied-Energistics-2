@@ -29,9 +29,9 @@ import net.minecraft.world.entity.player.Player;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.AEBaseMenu;
 import appeng.util.EnumCycler;
 
 public final class ConfigButtonPacket extends BasePacket {
@@ -60,10 +60,10 @@ public final class ConfigButtonPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
-            if (baseContainer.getTarget() instanceof IConfigurableObject) {
-                final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
+        if (sender.containerMenu instanceof AEBaseMenu) {
+            final AEBaseMenu baseMenu = (AEBaseMenu) sender.containerMenu;
+            if (baseMenu.getTarget() instanceof IConfigurableObject) {
+                final IConfigManager cm = ((IConfigurableObject) baseMenu.getTarget()).getConfigManager();
                 Enum setting = cm.getSetting(this.option);
                 Enum newState = EnumCycler.rotateEnum(setting, this.rotationDirection,
                         (EnumSet) this.option.getPossibleValues());

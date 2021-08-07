@@ -27,18 +27,18 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-import appeng.container.me.items.PatternTermContainer;
+import appeng.menu.me.items.PatternTermMenu;
 
-public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermContainer> {
+public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermMenu> {
 
-    PatternRecipeTransferHandler(Class<PatternTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
+    PatternRecipeTransferHandler(Class<PatternTermMenu> containerClass, IRecipeTransferHandlerHelper helper) {
         super(containerClass, helper);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(PatternTermContainer container, Recipe<?> recipe,
+    protected IRecipeTransferError doTransferRecipe(PatternTermMenu menu, Recipe<?> recipe,
             IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
-        if (container.isCraftingMode()
+        if (menu.isCraftingMode()
                 && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
             return this.helper
                     .createUserErrorWithTooltip(

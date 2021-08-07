@@ -39,18 +39,18 @@ import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IScrollSource;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalContainer> {
+public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalMenu> {
 
-    public FluidTerminalScreen(FluidTerminalContainer container, Inventory playerInventory,
+    public FluidTerminalScreen(FluidTerminalMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
     }
 
     @Override

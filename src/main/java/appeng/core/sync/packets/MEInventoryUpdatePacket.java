@@ -40,14 +40,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.common.IClientRepo;
-import appeng.container.me.common.IncrementalUpdateHelper;
-import appeng.container.me.common.MEMonitorableContainer;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
+import appeng.menu.me.common.IncrementalUpdateHelper;
+import appeng.menu.me.common.MEMonitorableMenu;
 
 public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 
@@ -75,9 +75,9 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         this.list = new ArrayList<>(itemCount);
 
         // We need to access the current screen to know which storage channel was used to serialize this data
-        MEMonitorableContainer<T> container = getContainer();
-        if (container != null) {
-            IStorageChannel<T> storageChannel = container.getStorageChannel();
+        MEMonitorableMenu<T> menu = getMenu();
+        if (menu != null) {
+            IStorageChannel<T> storageChannel = menu.getStorageChannel();
             for (int i = 0; i < itemCount; i++) {
                 this.list.add(GridInventoryEntry.read(storageChannel, data));
             }
@@ -85,9 +85,9 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     }
 
     @SuppressWarnings("unchecked")
-    private MEMonitorableContainer<T> getContainer() {
+    private MEMonitorableMenu<T> getMenu() {
         // This is slightly dangerous since it accesses the game thread from the network thread,
-        // but reading the current container is atomic (reference field), and from then the window id
+        // but reading the current menu is atomic (reference field), and from then the window id
         // and storage channel are immutable.
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
@@ -95,16 +95,16 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
             return null;
         }
 
-        AbstractContainerMenu currentContainer = player.containerMenu;
-        if (!(currentContainer instanceof MEMonitorableContainer)) {
+        AbstractContainerMenu currentMenu = player.containerMenu;
+        if (!(currentMenu instanceof MEMonitorableMenu)) {
             // Ignore a packet for a screen that has already been closed
             return null;
         }
 
         // If the window id matches, this unsafe cast should actually be safe
-        MEMonitorableContainer<?> meContainer = (MEMonitorableContainer<?>) currentContainer;
-        if (meContainer.containerId == windowId) {
-            return (MEMonitorableContainer<T>) meContainer;
+        MEMonitorableMenu<?> meMenu = (MEMonitorableMenu<?>) currentMenu;
+        if (meMenu.containerId == windowId) {
+            return (MEMonitorableMenu<T>) meMenu;
         }
 
         return null;
@@ -253,13 +253,13 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final Player player) {
-        MEMonitorableContainer<T> container = getContainer();
-        if (container == null) {
-            AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+        MEMonitorableMenu<T> menu = getMenu();
+        if (menu == null) {
+            AELog.info("Ignoring ME inventory update packet because the target menu isn't open.");
             return;
         }
 
-        IClientRepo<T> clientRepo = container.getClientRepo();
+        IClientRepo<T> clientRepo = menu.getClientRepo();
         if (clientRepo == null) {
             AELog.info("Ignoring ME inventory update packet because no client repo is available.");
             return;

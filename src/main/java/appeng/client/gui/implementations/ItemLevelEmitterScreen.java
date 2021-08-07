@@ -34,9 +34,9 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.ItemLevelEmitterContainer;
+import appeng.menu.implementations.ItemLevelEmitterMenu;
 
-public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterContainer> {
+public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMenu> {
 
     private final SettingToggleButton<LevelType> levelMode;
     private final SettingToggleButton<YesNo> craftingMode;
@@ -44,9 +44,9 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterCo
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public ItemLevelEmitterScreen(ItemLevelEmitterContainer container, Inventory playerInventory, Component title,
+    public ItemLevelEmitterScreen(ItemLevelEmitterMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
@@ -63,7 +63,7 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterCo
 
         this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);

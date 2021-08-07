@@ -23,13 +23,13 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.container.me.crafting.CraftConfirmContainer;
-import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.crafting.CraftConfirmMenu;
+import appeng.menu.me.crafting.CraftingPlanSummary;
 
 /**
- * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmContainer}
+ * Transfers a {@link CraftingPlanSummary} to the client for a {@link CraftConfirmMenu}
  */
 public class CraftConfirmPlanPacket extends BasePacket {
     private final CraftingPlanSummary plan;
@@ -49,9 +49,8 @@ public class CraftConfirmPlanPacket extends BasePacket {
 
     @Override
     public void clientPacketData(INetworkInfo network, Player player) {
-        if (player.containerMenu instanceof CraftConfirmContainer) {
-            CraftConfirmContainer container = (CraftConfirmContainer) player.containerMenu;
-            container.setPlan(plan);
+        if (player.containerMenu instanceof CraftConfirmMenu menu) {
+            menu.setPlan(plan);
         }
     }
 }

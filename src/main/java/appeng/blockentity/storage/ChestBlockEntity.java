@@ -92,14 +92,14 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
-import appeng.container.me.fluids.FluidTerminalContainer;
-import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.menu.me.fluids.FluidTerminalMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -806,16 +806,16 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         this.updateHandler();
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                return ItemTerminalContainer.TYPE;
+                return ItemTerminalMenu.TYPE;
             }
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {
-                return FluidTerminalContainer.TYPE;
+                return FluidTerminalMenu.TYPE;
             }
         }
         return null;

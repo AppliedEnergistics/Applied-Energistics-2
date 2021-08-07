@@ -33,17 +33,17 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.me.crafting.CraftConfirmContainer;
-import appeng.container.me.crafting.CraftingPlanSummary;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.me.crafting.CraftConfirmMenu;
+import appeng.menu.me.crafting.CraftingPlanSummary;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
  * for crafting.
  */
-public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
+public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
 
     private final CraftConfirmTableRenderer table;
 
@@ -51,9 +51,9 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private final Button selectCPU;
     private final Scrollbar scrollbar;
 
-    public CraftConfirmScreen(CraftConfirmContainer container, Inventory playerInventory, Component title,
+    public CraftConfirmScreen(CraftConfirmMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
@@ -64,7 +64,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
         this.selectCPU.active = false;
 
-        widgets.addButton("cancel", GuiText.Cancel.text(), container::goBack);
+        widgets.addButton("cancel", GuiText.Cancel.text(), menu::goBack);
     }
 
     @Override
