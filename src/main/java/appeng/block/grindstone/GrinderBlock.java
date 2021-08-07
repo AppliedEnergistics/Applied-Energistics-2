@@ -29,14 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.tile.grindstone.GrinderBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
+public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
 
     public GrinderBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -45,7 +45,7 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
     @Override
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final GrinderTileEntity tg = this.getTileEntity(w, pos);
+        final GrinderBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,

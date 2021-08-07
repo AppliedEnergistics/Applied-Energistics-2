@@ -51,14 +51,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 
-public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements SimpleWaterloggedBlock {
+public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -111,7 +111,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!w.isClientSide()) {
-            SkyChestTileEntity tile = getTileEntity(w, pos);
+            SkyChestBlockEntity tile = getTileEntity(w, pos);
             if (tile != null) {
                 ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
             }
@@ -122,13 +122,13 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestTileEntity::recheckOpen);
+        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestBlockEntity::recheckOpen);
 
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
+        final SkyChestBlockEntity sk = this.getTileEntity(worldIn, pos);
         Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }

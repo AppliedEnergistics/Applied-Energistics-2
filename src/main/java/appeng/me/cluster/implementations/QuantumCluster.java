@@ -37,7 +37,7 @@ import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.service.helpers.ConnectionWrapper;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
@@ -46,17 +46,17 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
-    private QuantumBridgeTileEntity[] Ring;
+    private QuantumBridgeBlockEntity[] Ring;
     private boolean registered = false;
     private ConnectionWrapper connection;
     private long thisSide;
     private long otherSide;
-    private QuantumBridgeTileEntity center;
+    private QuantumBridgeBlockEntity center;
 
     public QuantumCluster(final BlockPos min, final BlockPos max) {
         this.boundsMin = min.immutable();
         this.boundsMax = max.immutable();
-        this.setRing(new QuantumBridgeTileEntity[8]);
+        this.setRing(new QuantumBridgeBlockEntity[8]);
     }
 
     @SubscribeEvent
@@ -218,24 +218,24 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
             this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
 
-            for (final QuantumBridgeTileEntity r : this.getRing()) {
+            for (final QuantumBridgeBlockEntity r : this.getRing()) {
                 r.updateStatus(null, (byte) -1, this.isUpdateStatus());
             }
 
             this.center = null;
-            this.setRing(new QuantumBridgeTileEntity[8]);
+            this.setRing(new QuantumBridgeBlockEntity[8]);
         } finally {
             MBCalculator.setModificationInProgress(null);
         }
     }
 
     @Override
-    public Iterator<QuantumBridgeTileEntity> getTiles() {
+    public Iterator<QuantumBridgeBlockEntity> getTiles() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }
 
-    public boolean isCorner(final QuantumBridgeTileEntity tileQuantumBridge) {
+    public boolean isCorner(final QuantumBridgeBlockEntity tileQuantumBridge) {
         return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge
                 || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
     }
@@ -245,11 +245,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         return this.thisSide;
     }
 
-    public QuantumBridgeTileEntity getCenter() {
+    public QuantumBridgeBlockEntity getCenter() {
         return this.center;
     }
 
-    void setCenter(final QuantumBridgeTileEntity c) {
+    void setCenter(final QuantumBridgeBlockEntity c) {
         this.registered = true;
         MinecraftForge.EVENT_BUS.register(this);
         this.center = c;
@@ -263,11 +263,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         this.updateStatus = updateStatus;
     }
 
-    QuantumBridgeTileEntity[] getRing() {
+    QuantumBridgeBlockEntity[] getRing() {
         return this.Ring;
     }
 
-    private void setRing(final QuantumBridgeTileEntity[] ring) {
+    private void setRing(final QuantumBridgeBlockEntity[] ring) {
         this.Ring = ring;
     }
 

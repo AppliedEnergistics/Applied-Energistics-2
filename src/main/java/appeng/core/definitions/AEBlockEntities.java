@@ -33,140 +33,140 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.core.AppEng;
-import appeng.debug.ChunkLoaderTileEntity;
-import appeng.debug.CubeGeneratorTileEntity;
-import appeng.debug.EnergyGeneratorTileEntity;
-import appeng.debug.ItemGenTileEntity;
-import appeng.debug.PhantomNodeTileEntity;
-import appeng.tile.AEBaseTileEntity;
+import appeng.debug.ChunkLoaderBlockEntity;
+import appeng.debug.CubeGeneratorBlockEntity;
+import appeng.debug.EnergyGeneratorBlockEntity;
+import appeng.debug.ItemGenBlockEntity;
+import appeng.debug.PhantomNodeBlockEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.tile.ClientTickingBlockEntity;
 import appeng.tile.ServerTickingBlockEntity;
-import appeng.tile.crafting.CraftingMonitorTileEntity;
-import appeng.tile.crafting.CraftingStorageTileEntity;
-import appeng.tile.crafting.CraftingTileEntity;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
-import appeng.tile.grindstone.CrankTileEntity;
-import appeng.tile.grindstone.GrinderTileEntity;
-import appeng.tile.misc.CellWorkbenchTileEntity;
-import appeng.tile.misc.ChargerTileEntity;
-import appeng.tile.misc.CondenserTileEntity;
-import appeng.tile.misc.FluidInterfaceTileEntity;
-import appeng.tile.misc.InscriberTileEntity;
-import appeng.tile.misc.ItemInterfaceTileEntity;
-import appeng.tile.misc.LightDetectorTileEntity;
-import appeng.tile.misc.PaintSplotchesTileEntity;
-import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
-import appeng.tile.misc.SecurityStationTileEntity;
-import appeng.tile.misc.SkyCompassTileEntity;
-import appeng.tile.misc.VibrationChamberTileEntity;
-import appeng.tile.networking.CableBusTileEntity;
-import appeng.tile.networking.ControllerTileEntity;
-import appeng.tile.networking.CreativeEnergyCellTileEntity;
-import appeng.tile.networking.DenseEnergyCellTileEntity;
-import appeng.tile.networking.EnergyAcceptorTileEntity;
-import appeng.tile.networking.EnergyCellTileEntity;
-import appeng.tile.networking.WirelessTileEntity;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
-import appeng.tile.spatial.SpatialPylonTileEntity;
-import appeng.tile.storage.ChestTileEntity;
-import appeng.tile.storage.DriveTileEntity;
-import appeng.tile.storage.IOPortTileEntity;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import appeng.tile.crafting.CraftingStorageBlockEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.tile.misc.CellWorkbenchBlockEntity;
+import appeng.tile.misc.ChargerBlockEntity;
+import appeng.tile.misc.CondenserBlockEntity;
+import appeng.tile.misc.FluidInterfaceBlockEntity;
+import appeng.tile.misc.InscriberBlockEntity;
+import appeng.tile.misc.ItemInterfaceBlockEntity;
+import appeng.tile.misc.LightDetectorBlockEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.tile.misc.QuartzGrowthAcceleratorBlockEntity;
+import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.tile.networking.CableBusBlockEntity;
+import appeng.tile.networking.ControllerBlockEntity;
+import appeng.tile.networking.CreativeEnergyCellBlockEntity;
+import appeng.tile.networking.DenseEnergyCellBlockEntity;
+import appeng.tile.networking.EnergyAcceptorBlockEntity;
+import appeng.tile.networking.EnergyCellBlockEntity;
+import appeng.tile.networking.WirelessBlockEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.spatial.SpatialAnchorBlockEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.tile.storage.ChestBlockEntity;
+import appeng.tile.storage.DriveBlockEntity;
+import appeng.tile.storage.IOPortBlockEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
 
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
 
-    public static final BlockEntityType<GrinderTileEntity> GRINDSTONE = create("grindstone", GrinderTileEntity.class,
-            GrinderTileEntity::new, AEBlocks.GRINDSTONE);
-    public static final BlockEntityType<CrankTileEntity> CRANK = create("crank", CrankTileEntity.class,
-            CrankTileEntity::new, AEBlocks.CRANK);
-    public static final BlockEntityType<InscriberTileEntity> INSCRIBER = create("inscriber", InscriberTileEntity.class,
-            InscriberTileEntity::new, AEBlocks.INSCRIBER);
-    public static final BlockEntityType<WirelessTileEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
-            WirelessTileEntity.class, WirelessTileEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
-    public static final BlockEntityType<ChargerTileEntity> CHARGER = create("charger", ChargerTileEntity.class,
-            ChargerTileEntity::new, AEBlocks.CHARGER);
-    public static final BlockEntityType<SecurityStationTileEntity> SECURITY_STATION = create("security_station",
-            SecurityStationTileEntity.class, SecurityStationTileEntity::new, AEBlocks.SECURITY_STATION);
-    public static final BlockEntityType<QuantumBridgeTileEntity> QUANTUM_BRIDGE = create("quantum_ring",
-            QuantumBridgeTileEntity.class, QuantumBridgeTileEntity::new, AEBlocks.QUANTUM_RING,
+    public static final BlockEntityType<GrinderBlockEntity> GRINDSTONE = create("grindstone", GrinderBlockEntity.class,
+            GrinderBlockEntity::new, AEBlocks.GRINDSTONE);
+    public static final BlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
+            CrankBlockEntity::new, AEBlocks.CRANK);
+    public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber", InscriberBlockEntity.class,
+            InscriberBlockEntity::new, AEBlocks.INSCRIBER);
+    public static final BlockEntityType<WirelessBlockEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
+            WirelessBlockEntity.class, WirelessBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
+    public static final BlockEntityType<ChargerBlockEntity> CHARGER = create("charger", ChargerBlockEntity.class,
+            ChargerBlockEntity::new, AEBlocks.CHARGER);
+    public static final BlockEntityType<SecurityStationBlockEntity> SECURITY_STATION = create("security_station",
+            SecurityStationBlockEntity.class, SecurityStationBlockEntity::new, AEBlocks.SECURITY_STATION);
+    public static final BlockEntityType<QuantumBridgeBlockEntity> QUANTUM_BRIDGE = create("quantum_ring",
+            QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new, AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK);
-    public static final BlockEntityType<SpatialPylonTileEntity> SPATIAL_PYLON = create("spatial_pylon",
-            SpatialPylonTileEntity.class, SpatialPylonTileEntity::new, AEBlocks.SPATIAL_PYLON);
-    public static final BlockEntityType<SpatialIOPortTileEntity> SPATIAL_IO_PORT = create("spatial_io_port",
-            SpatialIOPortTileEntity.class, SpatialIOPortTileEntity::new, AEBlocks.SPATIAL_IO_PORT);
-    public static final BlockEntityType<SpatialAnchorTileEntity> SPATIAL_ANCHOR = create("spatial_anchor",
-            SpatialAnchorTileEntity.class, SpatialAnchorTileEntity::new, AEBlocks.SPATIAL_ANCHOR);
-    public static final BlockEntityType<CableBusTileEntity> CABLE_BUS = create("cable_bus", CableBusTileEntity.class,
-            CableBusTileEntity::new, AEBlocks.MULTI_PART);
-    public static final BlockEntityType<ControllerTileEntity> CONTROLLER = create("controller",
-            ControllerTileEntity.class, ControllerTileEntity::new, AEBlocks.CONTROLLER);
-    public static final BlockEntityType<DriveTileEntity> DRIVE = create("drive", DriveTileEntity.class,
-            DriveTileEntity::new, AEBlocks.DRIVE);
-    public static final BlockEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
-            ChestTileEntity::new, AEBlocks.CHEST);
-    public static final BlockEntityType<ItemInterfaceTileEntity> INTERFACE = create("interface",
-            ItemInterfaceTileEntity.class,
-            ItemInterfaceTileEntity::new, AEBlocks.ITEM_INTERFACE);
-    public static final BlockEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
-            FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new, AEBlocks.FLUID_INTERFACE);
-    public static final BlockEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",
-            CellWorkbenchTileEntity.class, CellWorkbenchTileEntity::new, AEBlocks.CELL_WORKBENCH);
-    public static final BlockEntityType<IOPortTileEntity> IO_PORT = create("io_port", IOPortTileEntity.class,
-            IOPortTileEntity::new, AEBlocks.IO_PORT);
-    public static final BlockEntityType<CondenserTileEntity> CONDENSER = create("condenser", CondenserTileEntity.class,
-            CondenserTileEntity::new, AEBlocks.CONDENSER);
-    public static final BlockEntityType<EnergyAcceptorTileEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
-            EnergyAcceptorTileEntity.class, EnergyAcceptorTileEntity::new, AEBlocks.ENERGY_ACCEPTOR);
-    public static final BlockEntityType<VibrationChamberTileEntity> VIBRATION_CHAMBER = create("vibration_chamber",
-            VibrationChamberTileEntity.class, VibrationChamberTileEntity::new, AEBlocks.VIBRATION_CHAMBER);
-    public static final BlockEntityType<QuartzGrowthAcceleratorTileEntity> QUARTZ_GROWTH_ACCELERATOR = create(
-            "quartz_growth_accelerator", QuartzGrowthAcceleratorTileEntity.class,
-            QuartzGrowthAcceleratorTileEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
-    public static final BlockEntityType<EnergyCellTileEntity> ENERGY_CELL = create("energy_cell",
-            EnergyCellTileEntity.class, EnergyCellTileEntity::new, AEBlocks.ENERGY_CELL);
-    public static final BlockEntityType<DenseEnergyCellTileEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
-            DenseEnergyCellTileEntity.class, DenseEnergyCellTileEntity::new, AEBlocks.DENSE_ENERGY_CELL);
-    public static final BlockEntityType<CreativeEnergyCellTileEntity> CREATIVE_ENERGY_CELL = create(
+    public static final BlockEntityType<SpatialPylonBlockEntity> SPATIAL_PYLON = create("spatial_pylon",
+            SpatialPylonBlockEntity.class, SpatialPylonBlockEntity::new, AEBlocks.SPATIAL_PYLON);
+    public static final BlockEntityType<SpatialIOPortBlockEntity> SPATIAL_IO_PORT = create("spatial_io_port",
+            SpatialIOPortBlockEntity.class, SpatialIOPortBlockEntity::new, AEBlocks.SPATIAL_IO_PORT);
+    public static final BlockEntityType<SpatialAnchorBlockEntity> SPATIAL_ANCHOR = create("spatial_anchor",
+            SpatialAnchorBlockEntity.class, SpatialAnchorBlockEntity::new, AEBlocks.SPATIAL_ANCHOR);
+    public static final BlockEntityType<CableBusBlockEntity> CABLE_BUS = create("cable_bus", CableBusBlockEntity.class,
+            CableBusBlockEntity::new, AEBlocks.MULTI_PART);
+    public static final BlockEntityType<ControllerBlockEntity> CONTROLLER = create("controller",
+            ControllerBlockEntity.class, ControllerBlockEntity::new, AEBlocks.CONTROLLER);
+    public static final BlockEntityType<DriveBlockEntity> DRIVE = create("drive", DriveBlockEntity.class,
+            DriveBlockEntity::new, AEBlocks.DRIVE);
+    public static final BlockEntityType<ChestBlockEntity> CHEST = create("chest", ChestBlockEntity.class,
+            ChestBlockEntity::new, AEBlocks.CHEST);
+    public static final BlockEntityType<ItemInterfaceBlockEntity> INTERFACE = create("interface",
+            ItemInterfaceBlockEntity.class,
+            ItemInterfaceBlockEntity::new, AEBlocks.ITEM_INTERFACE);
+    public static final BlockEntityType<FluidInterfaceBlockEntity> FLUID_INTERFACE = create("fluid_interface",
+            FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new, AEBlocks.FLUID_INTERFACE);
+    public static final BlockEntityType<CellWorkbenchBlockEntity> CELL_WORKBENCH = create("cell_workbench",
+            CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new, AEBlocks.CELL_WORKBENCH);
+    public static final BlockEntityType<IOPortBlockEntity> IO_PORT = create("io_port", IOPortBlockEntity.class,
+            IOPortBlockEntity::new, AEBlocks.IO_PORT);
+    public static final BlockEntityType<CondenserBlockEntity> CONDENSER = create("condenser", CondenserBlockEntity.class,
+            CondenserBlockEntity::new, AEBlocks.CONDENSER);
+    public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
+            EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
+    public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
+            VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
+    public static final BlockEntityType<QuartzGrowthAcceleratorBlockEntity> QUARTZ_GROWTH_ACCELERATOR = create(
+            "quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
+            QuartzGrowthAcceleratorBlockEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
+    public static final BlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
+            EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.ENERGY_CELL);
+    public static final BlockEntityType<DenseEnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
+            DenseEnergyCellBlockEntity.class, DenseEnergyCellBlockEntity::new, AEBlocks.DENSE_ENERGY_CELL);
+    public static final BlockEntityType<CreativeEnergyCellBlockEntity> CREATIVE_ENERGY_CELL = create(
             "creative_energy_cell",
-            CreativeEnergyCellTileEntity.class, CreativeEnergyCellTileEntity::new, AEBlocks.CREATIVE_ENERGY_CELL);
-    public static final BlockEntityType<CraftingTileEntity> CRAFTING_UNIT = create("crafting_unit",
-            CraftingTileEntity.class, CraftingTileEntity::new, AEBlocks.CRAFTING_UNIT,
+            CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new, AEBlocks.CREATIVE_ENERGY_CELL);
+    public static final BlockEntityType<CraftingBlockEntity> CRAFTING_UNIT = create("crafting_unit",
+            CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_UNIT,
             AEBlocks.CRAFTING_ACCELERATOR);
-    public static final BlockEntityType<CraftingStorageTileEntity> CRAFTING_STORAGE = create("crafting_storage",
-            CraftingStorageTileEntity.class, CraftingStorageTileEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
+    public static final BlockEntityType<CraftingStorageBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
+            CraftingStorageBlockEntity.class, CraftingStorageBlockEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K);
-    public static final BlockEntityType<CraftingMonitorTileEntity> CRAFTING_MONITOR = create("crafting_monitor",
-            CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new, AEBlocks.CRAFTING_MONITOR);
-    public static final BlockEntityType<MolecularAssemblerTileEntity> MOLECULAR_ASSEMBLER = create(
+    public static final BlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create("crafting_monitor",
+            CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new, AEBlocks.CRAFTING_MONITOR);
+    public static final BlockEntityType<MolecularAssemblerBlockEntity> MOLECULAR_ASSEMBLER = create(
             "molecular_assembler",
-            MolecularAssemblerTileEntity.class, MolecularAssemblerTileEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);
-    public static final BlockEntityType<LightDetectorTileEntity> LIGHT_DETECTOR = create("light_detector",
-            LightDetectorTileEntity.class, LightDetectorTileEntity::new, AEBlocks.LIGHT_DETECTOR);
-    public static final BlockEntityType<PaintSplotchesTileEntity> PAINT = create("paint",
-            PaintSplotchesTileEntity.class,
-            PaintSplotchesTileEntity::new, AEBlocks.PAINT);
-    public static final BlockEntityType<SkyChestTileEntity> SKY_CHEST = create("sky_chest", SkyChestTileEntity.class,
-            SkyChestTileEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
-    public static final BlockEntityType<SkyCompassTileEntity> SKY_COMPASS = create("sky_compass",
-            SkyCompassTileEntity.class, SkyCompassTileEntity::new, AEBlocks.SKY_COMPASS);
+            MolecularAssemblerBlockEntity.class, MolecularAssemblerBlockEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);
+    public static final BlockEntityType<LightDetectorBlockEntity> LIGHT_DETECTOR = create("light_detector",
+            LightDetectorBlockEntity.class, LightDetectorBlockEntity::new, AEBlocks.LIGHT_DETECTOR);
+    public static final BlockEntityType<PaintSplotchesBlockEntity> PAINT = create("paint",
+            PaintSplotchesBlockEntity.class,
+            PaintSplotchesBlockEntity::new, AEBlocks.PAINT);
+    public static final BlockEntityType<SkyChestBlockEntity> SKY_CHEST = create("sky_chest", SkyChestBlockEntity.class,
+            SkyChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
+    public static final BlockEntityType<SkyCompassBlockEntity> SKY_COMPASS = create("sky_compass",
+            SkyCompassBlockEntity.class, SkyCompassBlockEntity::new, AEBlocks.SKY_COMPASS);
 
-    public static final BlockEntityType<ItemGenTileEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
-            ItemGenTileEntity.class, ItemGenTileEntity::new, AEBlocks.DEBUG_ITEM_GEN);
-    public static final BlockEntityType<ChunkLoaderTileEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
-            ChunkLoaderTileEntity.class, ChunkLoaderTileEntity::new, AEBlocks.DEBUG_CHUNK_LOADER);
-    public static final BlockEntityType<PhantomNodeTileEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
-            PhantomNodeTileEntity.class, PhantomNodeTileEntity::new, AEBlocks.DEBUG_PHANTOM_NODE);
-    public static final BlockEntityType<CubeGeneratorTileEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
-            CubeGeneratorTileEntity.class, CubeGeneratorTileEntity::new, AEBlocks.DEBUG_CUBE_GEN);
-    public static final BlockEntityType<EnergyGeneratorTileEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
-            EnergyGeneratorTileEntity.class, EnergyGeneratorTileEntity::new, AEBlocks.DEBUG_ENERGY_GEN);
+    public static final BlockEntityType<ItemGenBlockEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
+            ItemGenBlockEntity.class, ItemGenBlockEntity::new, AEBlocks.DEBUG_ITEM_GEN);
+    public static final BlockEntityType<ChunkLoaderBlockEntity> DEBUG_CHUNK_LOADER = create("debug_chunk_loader",
+            ChunkLoaderBlockEntity.class, ChunkLoaderBlockEntity::new, AEBlocks.DEBUG_CHUNK_LOADER);
+    public static final BlockEntityType<PhantomNodeBlockEntity> DEBUG_PHANTOM_NODE = create("debug_phantom_node",
+            PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new, AEBlocks.DEBUG_PHANTOM_NODE);
+    public static final BlockEntityType<CubeGeneratorBlockEntity> DEBUG_CUBE_GEN = create("debug_cube_gen",
+            CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new, AEBlocks.DEBUG_CUBE_GEN);
+    public static final BlockEntityType<EnergyGeneratorBlockEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
+            EnergyGeneratorBlockEntity.class, EnergyGeneratorBlockEntity::new, AEBlocks.DEBUG_ENERGY_GEN);
 
     private AEBlockEntities() {
     }
@@ -177,17 +177,17 @@ public final class AEBlockEntities {
 
     @SuppressWarnings("unchecked")
     @SafeVarargs
-    private static <T extends AEBaseTileEntity> BlockEntityType<T> create(String shortId,
-            Class<T> entityClass,
-            BlockEntityFactory<T> factory,
-            BlockDefinition<? extends AEBaseTileBlock<?>>... blockDefinitions) {
+    private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,
+                                                                           Class<T> entityClass,
+                                                                           BlockEntityFactory<T> factory,
+                                                                           BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
         ResourceLocation id = AppEng.makeId(shortId);
 
         var blocks = Arrays.stream(blockDefinitions)
                 .map(BlockDefinition::block)
-                .toArray(AEBaseTileBlock[]::new);
+                .toArray(AEBaseEntityBlock[]::new);
 
         AtomicReference<BlockEntityType<T>> typeHolder = new AtomicReference<>();
         BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
@@ -197,7 +197,7 @@ public final class AEBlockEntities {
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
-        AEBaseTileEntity.registerTileItem(type, blockDefinitions[0].asItem());
+        AEBaseBlockEntity.registerTileItem(type, blockDefinitions[0].asItem());
 
         // If the block entity classes implement specific interfaces, automatically register them
         // as tickers with the blocks that create that entity.
@@ -215,7 +215,7 @@ public final class AEBlockEntities {
         }
 
         for (var block : blocks) {
-            AEBaseTileBlock<T> baseTileBlock = (AEBaseTileBlock<T>) block;
+            AEBaseEntityBlock<T> baseTileBlock = (AEBaseEntityBlock<T>) block;
             baseTileBlock.setTileEntity(entityClass, supplier, clientTicker, serverTicker);
         }
 
@@ -223,7 +223,7 @@ public final class AEBlockEntities {
     }
 
     @FunctionalInterface
-    interface BlockEntityFactory<T extends AEBaseTileEntity> {
+    interface BlockEntityFactory<T extends AEBaseBlockEntity> {
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
 

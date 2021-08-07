@@ -39,7 +39,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 
@@ -82,7 +82,7 @@ public class AEBaseBlockItem extends BlockItem {
         Direction side = context.getClickedFace();
         Player player = context.getPlayer();
 
-        if (this.blockType instanceof AEBaseTileBlock) {
+        if (this.blockType instanceof AEBaseEntityBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
                 if (up == Direction.UP || up == Direction.DOWN) {
@@ -132,8 +132,8 @@ public class AEBaseBlockItem extends BlockItem {
             return result;
         }
 
-        if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getLevel(),
+        if (this.blockType instanceof AEBaseEntityBlock && !(this.blockType instanceof LightDetectorBlock)) {
+            final AEBaseBlockEntity tile = ((AEBaseEntityBlock<?>) this.blockType).getTileEntity(context.getLevel(),
                     context.getClickedPos());
             ori = tile;
 
@@ -145,7 +145,7 @@ public class AEBaseBlockItem extends BlockItem {
                 ori.setOrientation(forward, up);
             }
 
-            if (tile instanceof IOwnerAwareTile ownerAwareTile) {
+            if (tile instanceof IOwnerAwareBlockEntity ownerAwareTile) {
                 ownerAwareTile.setOwner(player);
             }
 

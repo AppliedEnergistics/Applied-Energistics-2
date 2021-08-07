@@ -20,9 +20,9 @@ package appeng.block.crafting;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 
-public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingTileEntity> {
+public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingBlockEntity> {
 
     public CraftingUnitBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
         super(props, type);

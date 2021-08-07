@@ -43,7 +43,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 
 /**
  * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
@@ -74,7 +74,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
             return Collections.emptyList();
         }
 
-        PaintSplotches splotchesState = extraData.getData(PaintSplotchesTileEntity.SPLOTCHES);
+        PaintSplotches splotchesState = extraData.getData(PaintSplotchesBlockEntity.SPLOTCHES);
 
         if (splotchesState == null) {
             // This is the inventory model which should usually not be used other than in

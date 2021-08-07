@@ -24,11 +24,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
 
-public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity, SpatialPylonCluster> {
+public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
 
-    public SpatialPylonCalculator(final SpatialPylonTileEntity t) {
+    public SpatialPylonCalculator(final SpatialPylonBlockEntity t) {
         super(t);
     }
 
@@ -61,7 +61,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     @Override
     public void updateTiles(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getBlockEntity(p);
+            final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);
         }
@@ -69,6 +69,6 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
 
     @Override
     public boolean isValidTile(final BlockEntity te) {
-        return te instanceof SpatialPylonTileEntity;
+        return te instanceof SpatialPylonBlockEntity;
     }
 }

@@ -28,11 +28,11 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 
-public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
+public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 
-    public CraftingCPUCalculator(final CraftingTileEntity t) {
+    public CraftingCPUCalculator(final CraftingBlockEntity t) {
         super(t);
     }
 
@@ -69,8 +69,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
                 return false;
             }
 
-            if (!storage && te instanceof CraftingTileEntity) {
-                storage = ((CraftingTileEntity) te).getStorageBytes() > 0;
+            if (!storage && te instanceof CraftingBlockEntity) {
+                storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
             }
         }
 
@@ -80,14 +80,14 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     @Override
     public void updateTiles(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final CraftingTileEntity te = (CraftingTileEntity) w.getBlockEntity(blockPos);
+            final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
         }
 
         c.done();
 
-        final Iterator<CraftingTileEntity> i = c.getTiles();
+        final Iterator<CraftingBlockEntity> i = c.getTiles();
         while (i.hasNext()) {
             var gh = i.next();
             var n = gh.getGridNode();
@@ -103,6 +103,6 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
     @Override
     public boolean isValidTile(final BlockEntity te) {
-        return te instanceof CraftingTileEntity;
+        return te instanceof CraftingBlockEntity;
     }
 }

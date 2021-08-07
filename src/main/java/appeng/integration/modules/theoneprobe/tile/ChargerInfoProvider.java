@@ -30,16 +30,16 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.misc.ChargerBlockEntity;
 
-public class ChargerInfoProvider implements ITileProbInfoProvider {
+public class ChargerInfoProvider implements IBlockEntityProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
-            Level world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof ChargerTileEntity) {
-            final ChargerTileEntity charger = (ChargerTileEntity) tile;
+    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+                             Level world, BlockState blockState, IProbeHitData data) {
+        if (tile instanceof ChargerBlockEntity) {
+            final ChargerBlockEntity charger = (ChargerBlockEntity) tile;
             final IItemHandler chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 

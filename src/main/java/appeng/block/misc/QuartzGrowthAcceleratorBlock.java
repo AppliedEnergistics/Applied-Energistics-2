@@ -34,14 +34,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
+import appeng.tile.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.util.Platform;
 
-public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>
+public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowthAcceleratorBlockEntity>
         implements IOrientableBlock {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
@@ -52,7 +52,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorBlockEntity te) {
         return currentState.setValue(POWERED, te.isPowered());
     }
 
@@ -69,7 +69,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             return;
         }
 
-        final QuartzGrowthAcceleratorTileEntity cga = this.getTileEntity(w, pos);
+        final QuartzGrowthAcceleratorBlockEntity cga = this.getTileEntity(w, pos);
 
         if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;

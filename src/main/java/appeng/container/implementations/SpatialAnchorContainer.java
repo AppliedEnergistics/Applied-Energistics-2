@@ -34,7 +34,7 @@ import appeng.api.config.YesNo;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
+import appeng.tile.spatial.SpatialAnchorBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen
@@ -42,7 +42,7 @@ import appeng.tile.spatial.SpatialAnchorTileEntity;
 public class SpatialAnchorContainer extends AEBaseContainer {
 
     public static final MenuType<SpatialAnchorContainer> TYPE = ContainerTypeBuilder
-            .create(SpatialAnchorContainer::new, SpatialAnchorTileEntity.class)
+            .create(SpatialAnchorContainer::new, SpatialAnchorBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialanchor");
 
@@ -68,7 +68,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
     @GuiSync(21)
     public int allChunks;
 
-    public SpatialAnchorContainer(int id, final Inventory ip, final SpatialAnchorTileEntity spatialAnchor) {
+    public SpatialAnchorContainer(int id, final Inventory ip, final SpatialAnchorBlockEntity spatialAnchor) {
         super(TYPE, id, ip, spatialAnchor);
     }
 
@@ -77,7 +77,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) this.getTileEntity();
+            SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getTileEntity();
             this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 
             var gridNode = anchor.getGridNode();
@@ -93,7 +93,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
 
                 HashMap<LevelAccessor, Integer> stats = new HashMap<>();
 
-                for (var machine : grid.getMachines(SpatialAnchorTileEntity.class)) {
+                for (var machine : grid.getMachines(SpatialAnchorBlockEntity.class)) {
                     LevelAccessor world = machine.getLevel();
                     stats.merge(world, machine.countLoadedChunks(), Math::max);
                 }

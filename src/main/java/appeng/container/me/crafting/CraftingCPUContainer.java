@@ -40,7 +40,7 @@ import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
@@ -48,7 +48,7 @@ import appeng.tile.crafting.CraftingTileEntity;
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
     public static final MenuType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
-            .create(CraftingCPUContainer::new, CraftingTileEntity.class)
+            .create(CraftingCPUContainer::new, CraftingBlockEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .withContainerTitle(craftingTileEntity -> {
                 // Use the cluster's custom name instead of the right-clicked block entities one
@@ -74,8 +74,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.grid = null;
         }
 
-        if (te instanceof CraftingTileEntity) {
-            this.setCPU(((CraftingTileEntity) te).getCluster());
+        if (te instanceof CraftingBlockEntity) {
+            this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
 
         if (this.getGrid() == null && isServer()) {

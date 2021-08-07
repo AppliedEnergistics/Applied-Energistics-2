@@ -29,11 +29,11 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.EnergyCellTileEntity;
+import appeng.tile.networking.EnergyCellBlockEntity;
 
-public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
+public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
 
     public static final int MAX_FULLNESS = 4;
 

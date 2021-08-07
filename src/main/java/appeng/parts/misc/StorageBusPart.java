@@ -84,7 +84,7 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.misc.ItemInterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceBlockEntity;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -466,7 +466,7 @@ public class StorageBusPart extends UpgradeablePart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof ItemInterfaceTileEntity interfaceTileEntity) {
+        if (target instanceof ItemInterfaceBlockEntity interfaceTileEntity) {
             targetNode = interfaceTileEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);

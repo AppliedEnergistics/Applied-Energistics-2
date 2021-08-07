@@ -30,14 +30,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.FluidInterfaceContainer;
-import appeng.tile.misc.FluidInterfaceTileEntity;
+import appeng.tile.misc.FluidInterfaceBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
+public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {
     public FluidInterfaceBlock() {
         super(defaultProps(Material.METAL));
     }

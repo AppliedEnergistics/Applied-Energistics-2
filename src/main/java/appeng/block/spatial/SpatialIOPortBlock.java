@@ -31,14 +31,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
+public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {
 
     public SpatialIOPortBlock() {
         super(defaultProps(Material.METAL));
@@ -48,7 +48,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
+        final SpatialIOPortBlockEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -61,7 +61,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
             return InteractionResult.PASS;
         }
 
-        final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
+        final SpatialIOPortBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,

@@ -33,14 +33,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.crafting.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 import appeng.util.InteractionUtil;
 
-public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
+public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -72,7 +72,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     @Override
     public void neighborChanged(final BlockState state, final Level worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
+        final CraftingBlockEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
         }
@@ -84,7 +84,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             return; // Just a block state change
         }
 
-        final CraftingTileEntity cp = this.getTileEntity(w, pos);
+        final CraftingBlockEntity cp = this.getTileEntity(w, pos);
         if (cp != null) {
             cp.breakCluster();
         }
@@ -95,7 +95,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     @Override
     public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final CraftingTileEntity tg = this.getTileEntity(w, pos);
+        final CraftingBlockEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
             if (!w.isClientSide()) {

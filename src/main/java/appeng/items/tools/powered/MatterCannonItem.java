@@ -81,7 +81,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -274,9 +274,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
 
                 final BlockEntity te = w.getBlockEntity(hitPos);
-                if (te instanceof PaintSplotchesTileEntity) {
+                if (te instanceof PaintSplotchesBlockEntity) {
                     final Vec3 hp = pos.getLocation().subtract(hitPos.getX(), hitPos.getY(), hitPos.getZ());
-                    ((PaintSplotchesTileEntity) te).addBlot(type, side.getOpposite(), hp);
+                    ((PaintSplotchesBlockEntity) te).addBlot(type, side.getOpposite(), hp);
                 }
             }
         }

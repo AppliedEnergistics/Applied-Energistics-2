@@ -73,14 +73,14 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.facade.FacadeContainer;
-import appeng.helpers.AEMultiTile;
+import appeng.helpers.AEMultiBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
+public class CableBusContainer extends CableBusStorage implements AEMultiBlockEntity, ICableBusContainer {
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
     private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);

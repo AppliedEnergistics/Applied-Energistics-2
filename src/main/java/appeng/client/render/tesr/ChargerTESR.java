@@ -28,17 +28,17 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.render.renderable.ItemRenderable;
-import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.misc.ChargerBlockEntity;
 
 public final class ChargerTESR {
 
     private ChargerTESR() {
     }
 
-    public static BlockEntityRendererProvider<ChargerTileEntity> FACTORY = context -> new ModularTESR<>(
+    public static BlockEntityRendererProvider<ChargerBlockEntity> FACTORY = context -> new ModularTESR<>(
             new ItemRenderable<>(ChargerTESR::getRenderedItem));
 
-    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerTileEntity tile) {
+    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity tile) {
         Transformation transform = new Transformation(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
         return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);
     }

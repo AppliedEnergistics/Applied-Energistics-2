@@ -29,14 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
-import appeng.tile.misc.CondenserTileEntity;
+import appeng.tile.misc.CondenserBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
+public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
 
     public CondenserBlock() {
         super(defaultProps(Material.METAL));
@@ -51,7 +51,7 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
         }
 
         if (!w.isClientSide()) {
-            final CondenserTileEntity tc = this.getTileEntity(w, pos);
+            final CondenserBlockEntity tc = this.getTileEntity(w, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getDirection()));

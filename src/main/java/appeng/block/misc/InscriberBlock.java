@@ -31,14 +31,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
-import appeng.tile.misc.InscriberTileEntity;
+import appeng.tile.misc.InscriberBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
+public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
 
     public InscriberBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -54,7 +54,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            final InscriberTileEntity tg = this.getTileEntity(w, pos);
+            final InscriberBlockEntity tg = this.getTileEntity(w, pos);
             if (tg != null) {
                 if (!w.isClientSide()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,

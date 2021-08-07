@@ -43,12 +43,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
-import appeng.tile.misc.LightDetectorTileEntity;
+import appeng.tile.misc.LightDetectorBlockEntity;
 
-public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity> implements IOrientableBlock {
+public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity> implements IOrientableBlock {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -85,7 +85,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, world, pos, neighbor);
 
-        final LightDetectorTileEntity tld = this.getTileEntity(world, pos);
+        final LightDetectorBlockEntity tld = this.getTileEntity(world, pos);
         if (tld != null) {
             tld.updateLight();
         }

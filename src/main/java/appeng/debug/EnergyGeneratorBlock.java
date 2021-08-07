@@ -20,9 +20,9 @@ package appeng.debug;
 
 import net.minecraft.world.level.material.Material;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 
-public class EnergyGeneratorBlock extends AEBaseTileBlock<EnergyGeneratorTileEntity> {
+public class EnergyGeneratorBlock extends AEBaseEntityBlock<EnergyGeneratorBlockEntity> {
 
     public EnergyGeneratorBlock() {
         super(defaultProps(Material.METAL));

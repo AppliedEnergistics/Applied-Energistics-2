@@ -29,14 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.DriveBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
+public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
 
     public DriveBlock() {
         super(defaultProps(Material.METAL));
@@ -49,7 +49,7 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
             return InteractionResult.PASS;
         }
 
-        final DriveTileEntity tg = this.getTileEntity(w, pos);
+        final DriveBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));

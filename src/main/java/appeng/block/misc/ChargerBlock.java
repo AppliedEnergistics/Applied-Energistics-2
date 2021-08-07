@@ -42,15 +42,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.misc.ChargerBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
+public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.METAL).noOcclusion());
@@ -70,7 +70,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
         }
 
         if (!w.isClientSide()) {
-            final ChargerTileEntity tc = this.getTileEntity(w, pos);
+            final ChargerBlockEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
@@ -90,7 +90,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             return;
         }
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getTileEntity(w, pos);
         if (tile != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
                 .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
@@ -110,7 +110,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             final double twoPixels = 2.0 / 16.0;
             final Direction up = tile.getUp();

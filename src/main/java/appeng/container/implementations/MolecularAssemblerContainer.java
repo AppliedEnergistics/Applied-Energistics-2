@@ -36,7 +36,7 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -44,23 +44,23 @@ import appeng.tile.crafting.MolecularAssemblerTileEntity;
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
     public static final MenuType<MolecularAssemblerContainer> TYPE = ContainerTypeBuilder
-            .create(MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class)
+            .create(MolecularAssemblerContainer::new, MolecularAssemblerBlockEntity.class)
             .build("molecular_assembler");
 
     private static final int MAX_CRAFT_PROGRESS = 100;
-    private final MolecularAssemblerTileEntity tma;
+    private final MolecularAssemblerBlockEntity tma;
     @GuiSync(4)
     public int craftProgress = 0;
 
     private Slot encodedPatternSlot;
 
-    public MolecularAssemblerContainer(int id, final Inventory ip, final MolecularAssemblerTileEntity te) {
+    public MolecularAssemblerContainer(int id, final Inventory ip, final MolecularAssemblerBlockEntity te) {
         super(TYPE, id, ip, te);
         this.tma = te;
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -80,7 +80,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
     @Override
     protected void setupConfig() {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         for (int i = 0; i < 9; i++) {
             this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);

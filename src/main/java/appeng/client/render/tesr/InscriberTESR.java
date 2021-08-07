@@ -43,12 +43,12 @@ import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.tile.misc.InscriberTileEntity;
+import appeng.tile.misc.InscriberBlockEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEntity> {
+public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
@@ -59,8 +59,8 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberTileEnt
     }
 
     @Override
-    public void render(InscriberTileEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(InscriberBlockEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLight, int combinedOverlay) {
 
         // render inscriber
 

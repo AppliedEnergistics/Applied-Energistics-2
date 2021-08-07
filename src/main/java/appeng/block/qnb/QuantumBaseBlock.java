@@ -31,10 +31,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
-public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
+public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBlockEntity> {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
@@ -62,14 +62,14 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeBlockEntity te) {
         return currentState.setValue(FORMED, te.isFormed());
     }
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
+        final QuantumBridgeBlockEntity bridge = this.getTileEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);
         }
@@ -81,7 +81,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
             return; // Just a block state change
         }
 
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null) {
             bridge.breakCluster();
         }

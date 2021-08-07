@@ -29,14 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.tile.misc.CellWorkbenchBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
+public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
 
     public CellWorkbenchBlock() {
         super(defaultProps(Material.METAL));
@@ -49,7 +49,7 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
             return InteractionResult.PASS;
         }
 
-        final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
+        final CellWorkbenchBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forTileEntity(tg));

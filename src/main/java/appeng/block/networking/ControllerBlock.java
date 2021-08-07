@@ -29,10 +29,10 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.networking.ControllerTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.tile.networking.ControllerBlockEntity;
 
-public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
+public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 
     public enum ControllerBlockState implements StringRepresentable {
         offline, online, conflicted;
@@ -130,7 +130,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final ControllerTileEntity tc = this.getTileEntity(world, pos);
+        final ControllerBlockEntity tc = this.getTileEntity(world, pos);
         if (tc != null) {
             tc.onNeighborChange(false);
         }

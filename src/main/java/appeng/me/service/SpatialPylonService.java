@@ -33,8 +33,8 @@ import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
-import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 
@@ -52,7 +52,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     private BlockPos captureMin;
     private BlockPos captureMax;
     private boolean isValid = false;
-    private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
+    private List<SpatialIOPortBlockEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
     public SpatialPylonService(final IGrid g) {
@@ -68,13 +68,13 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         this.clusters = new HashMap<>();
         this.ioPorts = new ArrayList<>();
 
-        for (var gm : grid.getMachineNodes(SpatialIOPortTileEntity.class)) {
-            this.ioPorts.add((SpatialIOPortTileEntity) gm.getOwner());
+        for (var gm : grid.getMachineNodes(SpatialIOPortBlockEntity.class)) {
+            this.ioPorts.add((SpatialIOPortBlockEntity) gm.getOwner());
         }
 
-        for (var gm : grid.getMachineNodes(SpatialPylonTileEntity.class)) {
+        for (var gm : grid.getMachineNodes(SpatialPylonBlockEntity.class)) {
             if (gm.meetsChannelRequirements()) {
-                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getOwner()).getCluster();
+                final SpatialPylonCluster c = ((SpatialPylonBlockEntity) gm.getOwner()).getCluster();
                 if (c != null) {
                     this.clusters.put(c, c);
                 }

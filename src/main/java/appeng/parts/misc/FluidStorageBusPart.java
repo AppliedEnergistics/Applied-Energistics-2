@@ -75,7 +75,7 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.PartModel;
-import appeng.tile.misc.ItemInterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceBlockEntity;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -338,7 +338,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof ItemInterfaceTileEntity interfaceTileEntity) {
+        if (target instanceof ItemInterfaceBlockEntity interfaceTileEntity) {
             targetNode = interfaceTileEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);

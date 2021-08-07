@@ -29,9 +29,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 
-public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity> {
+public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEntity> {
 
     public CubeGeneratorBlock() {
         super(defaultProps(Material.METAL));
@@ -41,7 +41,7 @@ public class CubeGeneratorBlock extends AEBaseTileBlock<CubeGeneratorTileEntity>
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final CubeGeneratorTileEntity tcg = this.getTileEntity(w, pos);
+        final CubeGeneratorBlockEntity tcg = this.getTileEntity(w, pos);
         if (tcg != null) {
             tcg.click(player);
         }

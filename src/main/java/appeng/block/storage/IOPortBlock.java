@@ -31,14 +31,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
-import appeng.tile.storage.IOPortTileEntity;
+import appeng.tile.storage.IOPortBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
+public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
     public IOPortBlock() {
         super(defaultProps(Material.METAL));
@@ -48,7 +48,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final IOPortTileEntity te = this.getTileEntity(world, pos);
+        final IOPortBlockEntity te = this.getTileEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -61,7 +61,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
             return InteractionResult.PASS;
         }
 
-        final IOPortTileEntity tg = this.getTileEntity(w, pos);
+        final IOPortBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,

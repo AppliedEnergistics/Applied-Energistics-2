@@ -32,15 +32,15 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.misc.SecurityStationBlockEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
     private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final SecurityStationTileEntity securityTile;
+    private final SecurityStationBlockEntity securityTile;
 
-    public SecurityStationInventory(final SecurityStationTileEntity ts) {
+    public SecurityStationInventory(final SecurityStationBlockEntity ts) {
         this.securityTile = ts;
     }
 

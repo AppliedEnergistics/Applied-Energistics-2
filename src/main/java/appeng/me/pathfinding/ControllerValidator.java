@@ -22,7 +22,7 @@ import net.minecraft.core.BlockPos;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
-import appeng.tile.networking.ControllerTileEntity;
+import appeng.tile.networking.ControllerBlockEntity;
 
 public class ControllerValidator implements IGridVisitor {
 
@@ -46,7 +46,7 @@ public class ControllerValidator implements IGridVisitor {
 
     @Override
     public boolean visitNode(final IGridNode n) {
-        if (this.isValid() && n.getOwner() instanceof ControllerTileEntity c) {
+        if (this.isValid() && n.getOwner() instanceof ControllerBlockEntity c) {
 
             final BlockPos pos = c.getBlockPos();
 

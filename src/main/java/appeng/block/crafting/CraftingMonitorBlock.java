@@ -20,9 +20,9 @@ package appeng.block.crafting;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import appeng.tile.crafting.CraftingMonitorTileEntity;
+import appeng.tile.crafting.CraftingMonitorBlockEntity;
 
-public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorTileEntity> {
+public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
     public CraftingMonitorBlock(BlockBehaviour.Properties props) {
         super(props, CraftingUnitType.MONITOR);
     }

@@ -30,14 +30,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -53,14 +53,14 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerBlockEntity te) {
         return currentState.setValue(POWERED, te.isPowered());
     }
 
     @Override
     public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
+        final MolecularAssemblerBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,

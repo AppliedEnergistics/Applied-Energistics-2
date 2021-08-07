@@ -50,10 +50,10 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.tile.networking.ControllerTileEntity;
+import appeng.tile.networking.ControllerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem {
@@ -95,7 +95,7 @@ public class DebugCardItem extends AEBaseItem {
                 var node = (GridNode) gh.getGridNode(side);
                 // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
                 if (node == null) {
-                    if (gh instanceof IGridConnectedTileEntity gridConnectedTileEntity) {
+                    if (gh instanceof IGridConnectedBlockEntity gridConnectedTileEntity) {
                         node = (GridNode) gridConnectedTileEntity.getMainNode().getNode();
                         this.outputMsg(player, "Main node of IGridConnectedTileEntity");
                     }
@@ -129,7 +129,7 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getOwner() instanceof ControllerTileEntity) {
+                                if (n.getOwner() instanceof ControllerBlockEntity) {
                                     break outer;
                                 }
 

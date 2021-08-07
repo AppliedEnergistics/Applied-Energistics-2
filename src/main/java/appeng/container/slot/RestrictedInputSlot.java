@@ -45,7 +45,7 @@ import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
 import appeng.util.Platform;
 
 /**
@@ -153,7 +153,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ORE:
                 return GrinderRecipes.isValidIngredient(getWorld(), stack);
             case FUEL:
-                return VibrationChamberTileEntity.hasBurnTime(stack);
+                return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

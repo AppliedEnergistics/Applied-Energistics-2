@@ -1,7 +1,7 @@
 package appeng.tile;
 
 /**
- * Implement this on your block entity subclass of {@link AEBaseTileEntity} to handle tick events for both server and
+ * Implement this on your block entity subclass of {@link AEBaseBlockEntity} to handle tick events for both server and
  * client in the same way.
  */
 public interface CommonTickingBlockEntity extends ServerTickingBlockEntity, ClientTickingBlockEntity {

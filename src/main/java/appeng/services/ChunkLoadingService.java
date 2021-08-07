@@ -29,7 +29,7 @@ import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import appeng.core.AppEng;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
+import appeng.tile.spatial.SpatialAnchorBlockEntity;
 
 public class ChunkLoadingService implements LoadingValidationCallback {
 
@@ -62,8 +62,8 @@ public class ChunkLoadingService implements LoadingValidationCallback {
 
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
-            if (tileEntity instanceof SpatialAnchorTileEntity) {
-                SpatialAnchorTileEntity anchor = (SpatialAnchorTileEntity) tileEntity;
+            if (tileEntity instanceof SpatialAnchorBlockEntity) {
+                SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) tileEntity;
                 for (Long chunk : chunks.getSecond()) {
                     anchor.registerChunk(new ChunkPos(chunk.longValue()));
                 }

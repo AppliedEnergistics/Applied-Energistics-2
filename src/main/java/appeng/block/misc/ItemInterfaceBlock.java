@@ -35,14 +35,14 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.util.IOrientable;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ItemInterfaceContainer;
-import appeng.tile.misc.ItemInterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity> {
+public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {
 
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
@@ -57,7 +57,7 @@ public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity>
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ItemInterfaceTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ItemInterfaceBlockEntity te) {
         return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
@@ -68,7 +68,7 @@ public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity>
             return InteractionResult.PASS;
         }
 
-        final ItemInterfaceTileEntity tg = this.getTileEntity(w, pos);
+        final ItemInterfaceBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(ItemInterfaceContainer.TYPE, p,
@@ -86,8 +86,8 @@ public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity>
 
     @Override
     protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
-        if (rotatable instanceof ItemInterfaceTileEntity) {
-            ((ItemInterfaceTileEntity) rotatable).setSide(axis);
+        if (rotatable instanceof ItemInterfaceBlockEntity) {
+            ((ItemInterfaceBlockEntity) rotatable).setSide(axis);
         }
     }
 }

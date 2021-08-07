@@ -29,7 +29,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SpatialIOPortScreen
@@ -37,7 +37,7 @@ import appeng.tile.spatial.SpatialIOPortTileEntity;
 public class SpatialIOPortContainer extends AEBaseContainer {
 
     public static final MenuType<SpatialIOPortContainer> TYPE = ContainerTypeBuilder
-            .create(SpatialIOPortContainer::new, SpatialIOPortTileEntity.class)
+            .create(SpatialIOPortContainer::new, SpatialIOPortBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialioport");
 
@@ -58,7 +58,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     @GuiSync(33)
     public int zSize;
 
-    public SpatialIOPortContainer(int id, final Inventory ip, final SpatialIOPortTileEntity spatialIOPort) {
+    public SpatialIOPortContainer(int id, final Inventory ip, final SpatialIOPortBlockEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
@@ -76,7 +76,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
         if (isServer()) {
             this.delay++;
 
-            var gridNode = ((SpatialIOPortTileEntity) getTileEntity()).getGridNode();
+            var gridNode = ((SpatialIOPortBlockEntity) getTileEntity()).getGridNode();
             var grid = gridNode != null ? gridNode.getGrid() : null;
 
             if (this.delay > 15 && grid != null) {

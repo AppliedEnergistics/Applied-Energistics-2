@@ -33,14 +33,14 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.misc.SecurityStationBlockEntity;
 import appeng.util.InteractionUtil;
 
-public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
+public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -57,7 +57,7 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationBlockEntity te) {
         return currentState.setValue(POWERED, te.isActive());
     }
 
@@ -68,7 +68,7 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
             return InteractionResult.PASS;
         }
 
-        final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
+        final SecurityStationBlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,

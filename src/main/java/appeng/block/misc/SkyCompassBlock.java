@@ -33,10 +33,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.SkyCompassTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.tile.misc.SkyCompassBlockEntity;
 
-public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
+public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
     public SkyCompassBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -45,7 +45,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     @Override
     public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
             final Direction up) {
-        final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
         }
@@ -61,7 +61,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassTileEntity sc = this.getTileEntity(world, pos);
+        final SkyCompassBlockEntity sc = this.getTileEntity(world, pos);
         final Direction forward = sc.getForward();
         if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
             this.dropTorch(world, pos);
@@ -89,7 +89,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassTileEntity tile = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

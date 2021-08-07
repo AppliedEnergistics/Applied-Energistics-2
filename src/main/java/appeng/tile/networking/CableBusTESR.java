@@ -27,14 +27,14 @@ import net.minecraft.core.Direction;
 
 import appeng.api.parts.IPart;
 
-public class CableBusTESR implements BlockEntityRenderer<CableBusTileEntity> {
+public class CableBusTESR implements BlockEntityRenderer<CableBusBlockEntity> {
 
     public CableBusTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(CableBusTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CableBusBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

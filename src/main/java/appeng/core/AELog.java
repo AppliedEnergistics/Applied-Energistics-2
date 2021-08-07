@@ -28,7 +28,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public final class AELog {
@@ -263,7 +263,7 @@ public final class AELog {
      * @see AELog#log(Level, String, Object...)
      */
     public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState,
-            @Nonnull BlockState newState, @Nonnull final AEBaseTileEntity aeBaseTile) {
+            @Nonnull BlockState newState, @Nonnull final AEBaseBlockEntity aeBaseTile) {
         if (AEConfig.instance().isBlockUpdateLogEnabled()) {
             info(BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState);
         }

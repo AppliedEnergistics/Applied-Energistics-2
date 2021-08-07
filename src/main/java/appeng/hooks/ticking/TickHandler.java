@@ -56,7 +56,7 @@ import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldRunnable;
 import appeng.util.Platform;
 
@@ -71,7 +71,7 @@ public class TickHandler {
     private final Queue<IWorldRunnable> serverQueue = new ArrayDeque<>();
     private final Multimap<LevelAccessor, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<LevelAccessor, Queue<IWorldRunnable>> callQueue = new HashMap<>();
-    private final ServerTileRepo tiles = new ServerTileRepo();
+    private final ServerBlockEntityRepo tiles = new ServerBlockEntityRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
@@ -134,13 +134,13 @@ public class TickHandler {
     }
 
     /**
-     * Add a {@link AEBaseTileEntity} to be initializes with the next update.
+     * Add a {@link AEBaseBlockEntity} to be initializes with the next update.
      * <p>
      * Must be called on the server.
      *
      * @param tile to be added, must be not null
      */
-    public void addInit(final AEBaseTileEntity tile) {
+    public void addInit(final AEBaseBlockEntity tile) {
         // for no there is no reason to care about this on the client...
         if (!tile.getLevel().isClientSide()) {
             Objects.requireNonNull(tile);

@@ -48,7 +48,7 @@ import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
-import appeng.tile.networking.ControllerTileEntity;
+import appeng.tile.networking.ControllerBlockEntity;
 
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 
@@ -60,7 +60,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
     }
 
     private final List<PathSegment> active = new ArrayList<>();
-    private final Set<ControllerTileEntity> controllers = new HashSet<>();
+    private final Set<ControllerBlockEntity> controllers = new HashSet<>();
     private final Set<IGridNode> requireChannels = new HashSet<>();
     private final Set<IGridNode> blockDense = new HashSet<>();
     private final IGrid myGrid;
@@ -118,11 +118,11 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
                 final HashSet<IPathItem> closedList = new HashSet<>();
                 this.semiOpen = new HashSet<>();
 
-                for (final IGridNode node : this.myGrid.getMachineNodes(ControllerTileEntity.class)) {
+                for (final IGridNode node : this.myGrid.getMachineNodes(ControllerBlockEntity.class)) {
                     closedList.add((IPathItem) node);
                     for (final IGridConnection gcc : node.getConnections()) {
                         var gc = (GridConnection) gcc;
-                        if (!(gc.getOtherSide(node).getOwner() instanceof ControllerTileEntity)) {
+                        if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
                             final List<IPathItem> open = new ArrayList<>();
                             closedList.add(gc);
                             open.add(gc);
@@ -148,9 +148,9 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
             if (this.active.isEmpty() && this.ticksUntilReady <= 0) {
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    final Iterator<ControllerTileEntity> controllerIterator = this.controllers.iterator();
+                    final Iterator<ControllerBlockEntity> controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
-                        final ControllerTileEntity controller = controllerIterator.next();
+                        final ControllerBlockEntity controller = controllerIterator.next();
                         controller.getGridNode().beginVisit(new ControllerChannelUpdater());
                     }
                 }
@@ -167,7 +167,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
     @Override
     public void removeNode(final IGridNode gridNode) {
-        if (gridNode.getOwner() instanceof ControllerTileEntity controller) {
+        if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.remove(controller);
             this.recalculateControllerNextTick = true;
         }
@@ -185,7 +185,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
     @Override
     public void addNode(final IGridNode gridNode) {
-        if (gridNode.getOwner() instanceof ControllerTileEntity controller) {
+        if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.add(controller);
             this.recalculateControllerNextTick = true;
         }

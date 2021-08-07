@@ -37,15 +37,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
 import appeng.util.InteractionUtil;
 
-public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
+public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {
 
     // Indicates that the vibration chamber is currently working
     private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
@@ -56,7 +56,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberBlockEntity te) {
         return currentState.setValue(ACTIVE, te.isOn);
     }
 
@@ -75,7 +75,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
         }
 
         if (!w.isClientSide()) {
-            final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+            final VibrationChamberBlockEntity tc = this.getTileEntity(w, pos);
             if (tc != null) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
@@ -91,7 +91,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             return;
         }
 
-        final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+        final VibrationChamberBlockEntity tc = this.getTileEntity(w, pos);
         if (tc != null && tc.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;

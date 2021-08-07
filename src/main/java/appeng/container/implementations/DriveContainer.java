@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.DriveBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.DriveScreen
@@ -32,10 +32,10 @@ import appeng.tile.storage.DriveTileEntity;
 public class DriveContainer extends AEBaseContainer {
 
     public static final MenuType<DriveContainer> TYPE = ContainerTypeBuilder
-            .create(DriveContainer::new, DriveTileEntity.class)
+            .create(DriveContainer::new, DriveBlockEntity.class)
             .build("drive");
 
-    public DriveContainer(int id, final Inventory ip, final DriveTileEntity drive) {
+    public DriveContainer(int id, final Inventory ip, final DriveBlockEntity drive) {
         super(TYPE, id, ip, drive);
 
         for (int i = 0; i < 10; i++) {

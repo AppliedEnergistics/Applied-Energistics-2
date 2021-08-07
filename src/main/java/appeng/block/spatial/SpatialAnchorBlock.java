@@ -33,17 +33,17 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
+import appeng.tile.spatial.SpatialAnchorBlockEntity;
 import appeng.util.InteractionUtil;
 
 /**
  * The block for our chunk loader
  */
-public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity> {
+public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -59,7 +59,7 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorBlockEntity te) {
         return currentState.setValue(POWERED, te.isActive());
     }
 
@@ -71,7 +71,7 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
             return InteractionResult.PASS;
         }
 
-        final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
+        final SpatialAnchorBlockEntity tg = this.getTileEntity(worldIn, pos);
         if (tg != null) {
             if (!worldIn.isClientSide()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,

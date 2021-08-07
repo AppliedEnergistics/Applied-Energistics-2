@@ -28,9 +28,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 
-public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
+public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
 
     public ItemGenBlock() {
         super(defaultProps(Material.METAL));
@@ -41,8 +41,8 @@ public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
             BlockHitResult hit) {
 
         BlockEntity tileEntity = w.getBlockEntity(pos);
-        if (tileEntity instanceof ItemGenTileEntity) {
-            ItemGenTileEntity itemGen = (ItemGenTileEntity) tileEntity;
+        if (tileEntity instanceof ItemGenBlockEntity) {
+            ItemGenBlockEntity itemGen = (ItemGenBlockEntity) tileEntity;
             itemGen.setItem(heldItem.getItem());
 
             return InteractionResult.sidedSuccess(w.isClientSide);

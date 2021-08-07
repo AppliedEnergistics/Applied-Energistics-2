@@ -30,7 +30,7 @@ public class TheOneProbeModule implements IIntegrationModule, Function<ITheOnePr
     @Override
     public Void apply(ITheOneProbe input) {
         input.registerProbeConfigProvider(new AEConfigProvider());
-        input.registerProvider(new TileInfoProvider());
+        input.registerProvider(new BlockEntityInfoProvider());
         input.registerProvider(new PartInfoProvider());
 
         return null;

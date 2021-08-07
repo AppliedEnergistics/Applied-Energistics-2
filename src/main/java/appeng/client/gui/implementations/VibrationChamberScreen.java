@@ -30,7 +30,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
-import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
@@ -53,8 +53,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.generationRateBar.setFullMsg(new TextComponent(VibrationChamberTileEntity.POWER_PER_TICK
-                * this.menu.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
+        this.generationRateBar.setFullMsg(new TextComponent(VibrationChamberBlockEntity.POWER_PER_TICK
+                * this.menu.getCurrentProgress() / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t"));
     }
 
     @Override

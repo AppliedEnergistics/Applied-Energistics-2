@@ -82,8 +82,8 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.tile.crafting.CraftingStorageTileEntity;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingStorageBlockEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
@@ -172,7 +172,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
         }
     }
@@ -202,7 +202,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
         }
     }
@@ -253,7 +253,7 @@ public class CraftingService
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (var tile : this.grid.getMachines(CraftingStorageTileEntity.class)) {
+        for (var tile : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
             final CraftingCPUCluster cluster = tile.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);

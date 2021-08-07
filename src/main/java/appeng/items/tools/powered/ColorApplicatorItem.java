@@ -76,7 +76,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -158,10 +158,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 final Block testBlk = w.getBlockState(pos.relative(side)).getBlock();
                 final BlockEntity painted = w.getBlockEntity(pos.relative(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
-                        && painted instanceof PaintSplotchesTileEntity) {
+                        && painted instanceof PaintSplotchesBlockEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                    ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
+                    ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                     return InteractionResult.sidedSuccess(w.isClientSide());
                 }
             } else if (!paintBall.isEmpty()) {

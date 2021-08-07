@@ -44,11 +44,11 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
+public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
@@ -83,8 +83,8 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
     }
 
     @Override
-    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyChestBlockEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn,
+                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = tileEntityIn.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -112,7 +112,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getRenderMaterial(SkyChestTileEntity tileEntity) {
+    protected Material getRenderMaterial(SkyChestBlockEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getLevel() != null) {
             Block blockType = tileEntity.getBlockState().getBlock();

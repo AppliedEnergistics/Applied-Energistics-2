@@ -31,7 +31,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.IOPortTileEntity;
+import appeng.tile.storage.IOPortBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.IOPortScreen
@@ -39,7 +39,7 @@ import appeng.tile.storage.IOPortTileEntity;
 public class IOPortContainer extends UpgradeableContainer {
 
     public static final MenuType<IOPortContainer> TYPE = ContainerTypeBuilder
-            .create(IOPortContainer::new, IOPortTileEntity.class)
+            .create(IOPortContainer::new, IOPortBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("ioport");
 
@@ -48,7 +48,7 @@ public class IOPortContainer extends UpgradeableContainer {
     @GuiSync(3)
     public OperationMode opMode = OperationMode.EMPTY;
 
-    public IOPortContainer(int id, final Inventory ip, final IOPortTileEntity te) {
+    public IOPortContainer(int id, final Inventory ip, final IOPortBlockEntity te) {
         super(TYPE, id, ip, te);
     }
 
