@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -62,33 +61,17 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     private static final int INITIAL_BUFFER_CAPACITY = 2 * 1024;
 
     // input.
-    private final List<GridInventoryEntry<T>> list;
-
-    private boolean fullUpdate;
-
-    private int windowId;
+    private PacketBuffer bufferedClientSideData;
 
     public MEInventoryUpdatePacket(final PacketBuffer data) {
-        int itemCount = data.readShort();
-        this.windowId = data.readVarInt();
-        this.fullUpdate = data.readBoolean();
-        this.list = new ArrayList<>(itemCount);
-
-        // We need to access the current screen to know which storage channel was used to serialize this data
-        MEMonitorableContainer<T> container = getContainer();
-        if (container != null) {
-            IStorageChannel<T> storageChannel = container.getStorageChannel();
-            for (int i = 0; i < itemCount; i++) {
-                this.list.add(GridInventoryEntry.read(storageChannel, data));
-            }
-        }
+        // We need to wait until we're on the main thread to parse this data,
+        // because the storage channel is only known to the open container.
+        bufferedClientSideData = data;
+        bufferedClientSideData.retain();
     }
 
     @SuppressWarnings("unchecked")
-    private MEMonitorableContainer<T> getContainer() {
-        // This is slightly dangerous since it accesses the game thread from the network thread,
-        // but reading the current container is atomic (reference field), and from then the window id
-        // and storage channel are immutable.
+    private MEMonitorableContainer<T> getContainer(int windowId) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             // Probably a race-condition when the player already has left the game
@@ -112,7 +95,6 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 
     // api
     private MEInventoryUpdatePacket() {
-        this.list = Collections.emptyList();
     }
 
     // Byte offset to the field in the packet that contains the item count
@@ -253,19 +235,34 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        MEMonitorableContainer<T> container = getContainer();
-        if (container == null) {
-            AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
-            return;
-        }
+        try {
+            int itemCount = bufferedClientSideData.readShort();
+            int windowId = bufferedClientSideData.readVarInt();
+            boolean fullUpdate = bufferedClientSideData.readBoolean();
+            List<GridInventoryEntry<T>> list = new ArrayList<>(itemCount);
 
-        IClientRepo<T> clientRepo = container.getClientRepo();
-        if (clientRepo == null) {
-            AELog.info("Ignoring ME inventory update packet because no client repo is available.");
-            return;
-        }
+            // We need to access the current screen to know which storage channel was used to serialize this data
+            MEMonitorableContainer<T> container = getContainer(windowId);
+            if (container == null) {
+                AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+                return;
+            }
 
-        clientRepo.handleUpdate(fullUpdate, list);
+            IStorageChannel<T> storageChannel = container.getStorageChannel();
+            for (int i = 0; i < itemCount; i++) {
+                list.add(GridInventoryEntry.read(storageChannel, bufferedClientSideData));
+            }
+
+            IClientRepo<T> clientRepo = container.getClientRepo();
+            if (clientRepo == null) {
+                AELog.info("Ignoring ME inventory update packet because no client repo is available.");
+                return;
+            }
+
+            clientRepo.handleUpdate(fullUpdate, list);
+        } finally {
+            bufferedClientSideData.release();
+        }
     }
 
 }
