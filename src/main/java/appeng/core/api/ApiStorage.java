@@ -47,10 +47,10 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingLink;
-import appeng.fluids.items.FluidDummyItem;
-import appeng.fluids.util.AEFluidStack;
-import appeng.fluids.util.FluidList;
+import appeng.items.misc.FluidDummyItem;
 import appeng.util.Platform;
+import appeng.util.fluid.AEFluidStack;
+import appeng.util.fluid.FluidList;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 

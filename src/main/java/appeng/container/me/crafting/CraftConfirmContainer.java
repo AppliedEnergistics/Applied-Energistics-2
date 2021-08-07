@@ -54,8 +54,8 @@ import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.CraftingTerminalPart;
+import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.parts.reporting.TerminalPart;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -164,7 +164,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
             originalGui = WirelessTermContainer.TYPE;
         }
 
-        if (ah instanceof TerminalPart) {
+        if (ah instanceof ItemTerminalPart) {
             originalGui = ItemTerminalContainer.TYPE;
         }
 

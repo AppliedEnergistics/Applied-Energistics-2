@@ -57,8 +57,9 @@ import appeng.block.grindstone.GrinderBlock;
 import appeng.block.misc.CellWorkbenchBlock;
 import appeng.block.misc.ChargerBlock;
 import appeng.block.misc.CondenserBlock;
+import appeng.block.misc.FluidInterfaceBlock;
 import appeng.block.misc.InscriberBlock;
-import appeng.block.misc.InterfaceBlock;
+import appeng.block.misc.ItemInterfaceBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.QuartzFixtureBlock;
 import appeng.block.misc.QuartzGrowthAcceleratorBlock;
@@ -99,7 +100,6 @@ import appeng.decorative.solid.QuartzOreBlock;
 import appeng.decorative.solid.QuartzPillarBlock;
 import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
-import appeng.fluids.block.FluidInterfaceBlock;
 
 /**
  * Internal implementation for the API blocks
@@ -159,7 +159,7 @@ public final class AEBlocks {
     public static final BlockDefinition<ControllerBlock> CONTROLLER = block(AEBlockIds.CONTROLLER, ControllerBlock::new);
     public static final BlockDefinition<DriveBlock> DRIVE = block(AEBlockIds.DRIVE, DriveBlock::new);
     public static final BlockDefinition<ChestBlock> CHEST = block(AEBlockIds.CHEST, ChestBlock::new);
-    public static final BlockDefinition<InterfaceBlock> ITEM_INTERFACE = block(AEBlockIds.ITEM_INTERFACE, InterfaceBlock::new);
+    public static final BlockDefinition<ItemInterfaceBlock> ITEM_INTERFACE = block(AEBlockIds.ITEM_INTERFACE, ItemInterfaceBlock::new);
     public static final BlockDefinition<FluidInterfaceBlock> FLUID_INTERFACE = block(AEBlockIds.FLUID_INTERFACE, FluidInterfaceBlock::new);
     public static final BlockDefinition<CellWorkbenchBlock> CELL_WORKBENCH = block(AEBlockIds.CELL_WORKBENCH, CellWorkbenchBlock::new);
     public static final BlockDefinition<IOPortBlock> IO_PORT = block(AEBlockIds.IO_PORT, IOPortBlock::new);

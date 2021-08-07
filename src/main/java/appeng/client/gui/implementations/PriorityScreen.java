@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.container.implementations.PriorityContainer;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {

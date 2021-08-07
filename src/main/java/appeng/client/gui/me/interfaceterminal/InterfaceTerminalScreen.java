@@ -62,7 +62,7 @@ import appeng.core.Api;
 import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.helpers.DualityInterface;
+import appeng.helpers.DualityItemInterface;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 
@@ -541,7 +541,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         InterfaceRecord o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new InterfaceRecord(id, DualityInterface.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
+            this.byId.put(id, o = new InterfaceRecord(id, DualityItemInterface.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
             this.refreshList = true;
         }
 

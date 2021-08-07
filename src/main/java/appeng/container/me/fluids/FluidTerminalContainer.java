@@ -38,10 +38,10 @@ import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.MEMonitorableContainer;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.fluids.util.AEFluidStack;
-import appeng.fluids.util.FluidSoundHelper;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
+import appeng.util.fluid.AEFluidStack;
+import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * @see appeng.client.gui.me.fluids.FluidTerminalScreen

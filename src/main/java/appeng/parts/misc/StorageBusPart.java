@@ -70,7 +70,7 @@ import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.StorageBusContainer;
+import appeng.container.implementations.ItemStorageBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -84,7 +84,7 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -259,7 +259,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(StorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(ItemStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }
@@ -466,11 +466,11 @@ public class StorageBusPart extends UpgradeablePart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof InterfaceTileEntity interfaceTileEntity) {
+        if (target instanceof ItemInterfaceTileEntity interfaceTileEntity) {
             targetNode = interfaceTileEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);
-            if (part instanceof InterfacePart interfacePart) {
+            if (part instanceof ItemInterfacePart interfacePart) {
                 targetNode = interfacePart.getMainNode().getNode();
             }
         }
@@ -526,6 +526,6 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public MenuType<?> getContainerType() {
-        return StorageBusContainer.TYPE;
+        return ItemStorageBusContainer.TYPE;
     }
 }

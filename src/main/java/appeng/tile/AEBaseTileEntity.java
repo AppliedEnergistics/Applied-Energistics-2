@@ -59,14 +59,14 @@ import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.fluids.helper.IConfigurableFluidInventory;
-import appeng.fluids.util.AEFluidInventory;
+import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import appeng.util.fluid.AEFluidInventory;
 
 public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject {
 

@@ -30,11 +30,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.widgets.FluidSlotWidget;
+import appeng.container.implementations.IFluidSyncContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.client.gui.widgets.FluidSlotWidget;
-import appeng.fluids.container.IFluidSyncContainer;
-import appeng.fluids.util.AEFluidStack;
+import appeng.util.fluid.AEFluidStack;
 
 /**
  * Similar to {@link ClientboundContainerSetSlotPacket}, but for fluids, and used in both directions (server->client and

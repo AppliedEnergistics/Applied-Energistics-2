@@ -45,14 +45,14 @@ import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
-import appeng.helpers.DualityInterface;
+import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.InventoryAction;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.parts.misc.InterfacePart;
+import appeng.parts.misc.ItemInterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
@@ -98,8 +98,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         VisitorState state = new VisitorState();
         if (grid != null) {
-            visitInterfaceHosts(grid, InterfaceTileEntity.class, state);
-            visitInterfaceHosts(grid, InterfacePart.class, state);
+            visitInterfaceHosts(grid, ItemInterfaceTileEntity.class, state);
+            visitInterfaceHosts(grid, ItemInterfacePart.class, state);
         }
 
         InterfaceTerminalPacket packet;
@@ -136,7 +136,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private <T extends IInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
-            final DualityInterface dual = ih.getInterfaceDuality();
+            final DualityItemInterface dual = ih.getInterfaceDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
                 continue;
             }
@@ -257,15 +257,15 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return new InterfaceTerminalPacket(true, new CompoundTag());
         }
 
-        for (var ih : grid.getActiveMachines(InterfaceTileEntity.class)) {
-            final DualityInterface dual = ih.getInterfaceDuality();
+        for (var ih : grid.getActiveMachines(ItemInterfaceTileEntity.class)) {
+            final DualityItemInterface dual = ih.getInterfaceDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
             }
         }
 
-        for (var ih : grid.getActiveMachines(InterfacePart.class)) {
-            final DualityInterface dual = ih.getInterfaceDuality();
+        for (var ih : grid.getActiveMachines(ItemInterfacePart.class)) {
+            final DualityItemInterface dual = ih.getInterfaceDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
             }
@@ -348,7 +348,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         // This is a reference to the real inventory used by this machine
         private final IItemHandler server;
 
-        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final Component name) {
+        public InvTracker(final DualityItemInterface dual, final IItemHandler patterns, final Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlots());
             this.name = name;

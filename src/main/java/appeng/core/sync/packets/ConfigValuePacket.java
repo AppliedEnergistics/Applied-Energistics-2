@@ -31,11 +31,13 @@ import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.LevelEmitterContainer;
+import appeng.container.implementations.FluidLevelEmitterContainer;
+import appeng.container.implementations.FluidStorageBusContainer;
+import appeng.container.implementations.ItemLevelEmitterContainer;
+import appeng.container.implementations.ItemStorageBusContainer;
 import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.container.implementations.StorageBusContainer;
 import appeng.container.me.crafting.CraftConfirmContainer;
 import appeng.container.me.crafting.CraftingCPUContainer;
 import appeng.container.me.crafting.CraftingCPUCyclingContainer;
@@ -43,8 +45,6 @@ import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.networktool.NetworkToolContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.helpers.IMouseWheelItem;
 
 public class ConfigValuePacket extends BasePacket {
@@ -112,8 +112,8 @@ public class ConfigValuePacket extends BasePacket {
         } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
             final PriorityContainer pc = (PriorityContainer) c;
             pc.setPriority(Integer.parseInt(this.Value));
-        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
-            final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
+        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof ItemLevelEmitterContainer) {
+            final ItemLevelEmitterContainer lvc = (ItemLevelEmitterContainer) c;
             lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
             final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
@@ -132,14 +132,14 @@ public class ConfigValuePacket extends BasePacket {
         } else if (this.Name.startsWith("StorageBus.")) {
             if (this.Name.equals("StorageBus.Action")) {
                 if (this.Value.equals("Partition")) {
-                    if (c instanceof StorageBusContainer) {
-                        ((StorageBusContainer) c).partition();
+                    if (c instanceof ItemStorageBusContainer) {
+                        ((ItemStorageBusContainer) c).partition();
                     } else if (c instanceof FluidStorageBusContainer) {
                         ((FluidStorageBusContainer) c).partition();
                     }
                 } else if (this.Value.equals("Clear")) {
-                    if (c instanceof StorageBusContainer) {
-                        ((StorageBusContainer) c).clear();
+                    if (c instanceof ItemStorageBusContainer) {
+                        ((ItemStorageBusContainer) c).clear();
                     } else if (c instanceof FluidStorageBusContainer) {
                         ((FluidStorageBusContainer) c).clear();
                     }
