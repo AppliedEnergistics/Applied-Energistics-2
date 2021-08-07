@@ -26,9 +26,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
-import appeng.menu.me.networktool.NetworkStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.networktool.NetworkStatus;
 
 public class NetworkStatusPacket extends BasePacket {
 

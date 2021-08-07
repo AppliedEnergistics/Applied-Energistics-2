@@ -33,11 +33,11 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.menu.me.crafting.CraftConfirmMenu;
-import appeng.menu.me.crafting.CraftingPlanSummary;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.me.crafting.CraftConfirmMenu;
+import appeng.menu.me.crafting.CraftingPlanSummary;
 
 /**
  * This screen shows the computed crafting plan and allows the player to select a CPU on which it should be scheduled
@@ -52,7 +52,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     private final Scrollbar scrollbar;
 
     public CraftConfirmScreen(CraftConfirmMenu menu, Inventory playerInventory, Component title,
-                              ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 

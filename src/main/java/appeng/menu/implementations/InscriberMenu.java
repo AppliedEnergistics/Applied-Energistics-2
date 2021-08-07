@@ -26,13 +26,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.ItemDefinition;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen

@@ -48,7 +48,7 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
 
     @Override
     protected IRecipeTransferError doTransferRecipe(CraftingTermMenu menu, Recipe<?> recipe,
-                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients
         // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory

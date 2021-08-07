@@ -29,15 +29,15 @@ import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.helpers.InventoryAction;
 import appeng.menu.MenuLocator;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
@@ -58,7 +58,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     }
 
     public ItemTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
-                            boolean bindInventory) {
+            boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }

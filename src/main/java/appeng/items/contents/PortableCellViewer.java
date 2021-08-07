@@ -35,9 +35,9 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.core.Api;
 import appeng.me.helpers.MEMonitorHandler;
+import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.util.ConfigManager;
 
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware {

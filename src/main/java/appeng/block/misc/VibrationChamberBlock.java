@@ -39,10 +39,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
+import appeng.core.AEConfig;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.VibrationChamberMenu;
-import appeng.core.AEConfig;
 import appeng.util.InteractionUtil;
 
 public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {

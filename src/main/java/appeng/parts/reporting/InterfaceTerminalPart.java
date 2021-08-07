@@ -25,11 +25,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPartModel;
+import appeng.core.AppEng;
+import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
 public class InterfaceTerminalPart extends AbstractDisplayPart {

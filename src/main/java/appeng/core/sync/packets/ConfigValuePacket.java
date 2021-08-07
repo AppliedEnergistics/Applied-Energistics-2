@@ -30,6 +30,9 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.helpers.IMouseWheelItem;
 import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.menu.implementations.FluidStorageBusMenu;
@@ -39,13 +42,10 @@ import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SecurityStationMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
-import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingCPUCyclingMenu;
+import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.helpers.IMouseWheelItem;
 
 public class ConfigValuePacket extends BasePacket {
 

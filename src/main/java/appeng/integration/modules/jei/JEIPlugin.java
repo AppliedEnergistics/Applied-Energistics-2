@@ -56,8 +56,6 @@ import appeng.api.config.CondenserOutput;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.InscriberScreen;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -67,6 +65,8 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 

@@ -29,17 +29,17 @@ import net.minecraft.world.item.ItemStack;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.menu.implementations.ChestMenu;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
-import appeng.menu.me.items.PatternTermMenu;
-import appeng.menu.me.items.WirelessTermMenu;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.menu.implementations.ChestMenu;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.WirelessTermMenu;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
@@ -53,8 +53,8 @@ public final class AESubScreen {
     private final ItemStack previousMenuIcon;
 
     /**
-     * Based on the menu we're opening for, try to determine what it's "primary" GUI would be so that we can go
-     * back to it.
+     * Based on the menu we're opening for, try to determine what it's "primary" GUI would be so that we can go back to
+     * it.
      */
     public AESubScreen(Object menuHost) {
 

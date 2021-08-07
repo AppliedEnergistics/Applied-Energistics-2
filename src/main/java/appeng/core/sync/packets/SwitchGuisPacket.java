@@ -26,11 +26,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class SwitchGuisPacket extends BasePacket {
 

@@ -32,9 +32,9 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
+import appeng.me.service.StatisticsService;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
-import appeng.me.service.StatisticsService;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen

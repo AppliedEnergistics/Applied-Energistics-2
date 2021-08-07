@@ -28,7 +28,7 @@ import appeng.menu.implementations.GrinderMenu;
 public class GrinderScreen extends AEBaseScreen<GrinderMenu> {
 
     public GrinderScreen(GrinderMenu menu, Inventory playerInventory, Component title,
-                         ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 

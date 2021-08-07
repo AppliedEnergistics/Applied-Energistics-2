@@ -44,7 +44,7 @@ public class MEPortableCellMenu extends ItemTerminalMenu {
     private double powerMultiplier = 0.5;
 
     protected MEPortableCellMenu(MenuType<? extends MEPortableCellMenu> type, int id,
-                                 final Inventory ip, final IPortableCell monitorable) {
+            final Inventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         // Is the screen being opened a specific slot? If not, it must be for the currently held item
         if (monitorable instanceof IInventorySlotAware) {

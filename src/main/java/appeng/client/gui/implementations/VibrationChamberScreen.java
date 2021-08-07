@@ -41,7 +41,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
     private final ProgressBar generationRateBar;
 
     public VibrationChamberScreen(VibrationChamberMenu menu, Inventory playerInventory,
-                                  Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),

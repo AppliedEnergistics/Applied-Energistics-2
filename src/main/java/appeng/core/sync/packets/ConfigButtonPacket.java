@@ -29,9 +29,9 @@ import net.minecraft.world.entity.player.Player;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.AEBaseMenu;
 import appeng.util.EnumCycler;
 
 public final class ConfigButtonPacket extends BasePacket {

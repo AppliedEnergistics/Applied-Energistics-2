@@ -28,7 +28,7 @@ import appeng.menu.implementations.SkyChestMenu;
 public class SkyChestScreen extends AEBaseScreen<SkyChestMenu> {
 
     public SkyChestScreen(SkyChestMenu menu, Inventory playerInv, Component title,
-                          ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInv, title, style);
     }
 

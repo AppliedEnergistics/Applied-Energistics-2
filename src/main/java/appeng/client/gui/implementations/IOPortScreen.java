@@ -30,9 +30,9 @@ import appeng.api.config.Settings;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.IOPortMenu;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.menu.implementations.IOPortMenu;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
 
@@ -41,7 +41,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     public IOPortScreen(IOPortMenu menu, Inventory playerInventory, Component title,
-                        ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.fullMode = new ServerSettingToggleButton<>(Settings.FULLNESS_MODE,

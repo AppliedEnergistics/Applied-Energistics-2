@@ -41,7 +41,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     private final NumberEntryWidget level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterMenu menu, Inventory playerInventory,
-                                   Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);

@@ -23,9 +23,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.AEBaseMenu;
 
 public class SwapSlotsPacket extends BasePacket {
 

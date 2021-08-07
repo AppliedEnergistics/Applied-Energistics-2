@@ -31,8 +31,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.client.gui.Icon;
-import appeng.menu.AEBaseMenu;
 import appeng.core.AELog;
+import appeng.menu.AEBaseMenu;
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {

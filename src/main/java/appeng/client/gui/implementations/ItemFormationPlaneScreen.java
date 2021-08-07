@@ -36,7 +36,7 @@ public class ItemFormationPlaneScreen extends UpgradeableScreen<ItemFormationPla
     private final SettingToggleButton<YesNo> placeMode;
 
     public ItemFormationPlaneScreen(ItemFormationPlaneMenu menu, Inventory playerInventory,
-                                    Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.placeMode = new ServerSettingToggleButton<>(Settings.PLACE_BLOCK,

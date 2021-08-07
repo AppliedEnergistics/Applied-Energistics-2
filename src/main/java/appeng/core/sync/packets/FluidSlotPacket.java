@@ -31,9 +31,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.FluidSlotWidget;
-import appeng.menu.implementations.IFluidSyncMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.implementations.IFluidSyncMenu;
 import appeng.util.fluid.AEFluidStack;
 
 /**

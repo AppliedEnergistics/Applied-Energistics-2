@@ -29,10 +29,10 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.core.Api;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
-import appeng.core.Api;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override

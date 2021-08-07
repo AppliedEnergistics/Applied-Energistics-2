@@ -74,7 +74,7 @@ public final class MenuLocator {
     }
 
     private MenuLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
-                        AEPartLocation side) {
+            AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
         this.worldId = worldId;
@@ -97,8 +97,8 @@ public final class MenuLocator {
     }
 
     /**
-     * Construct a menu locator for an item being used on a block. The item could still open a menu for
-     * itself, but it might also open a special menu for the block being right-clicked.
+     * Construct a menu locator for an item being used on a block. The item could still open a menu for itself, but it
+     * might also open a special menu for the block being right-clicked.
      */
     public static MenuLocator forItemUseContext(UseOnContext context) {
         Player player = context.getPlayer();

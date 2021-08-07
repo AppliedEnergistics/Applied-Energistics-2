@@ -37,7 +37,7 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
 
     @Override
     protected IRecipeTransferError doTransferRecipe(PatternTermMenu menu, Recipe<?> recipe,
-                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
         if (menu.isCraftingMode()
                 && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
             return this.helper

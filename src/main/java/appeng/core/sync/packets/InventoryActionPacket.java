@@ -25,10 +25,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
+import appeng.menu.AEBaseMenu;
 import appeng.util.Platform;
 
 public class InventoryActionPacket extends BasePacket {

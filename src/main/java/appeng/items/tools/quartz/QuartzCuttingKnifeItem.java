@@ -32,11 +32,11 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.items.AEBaseItem;
+import appeng.items.contents.QuartzKnifeObj;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.items.AEBaseItem;
-import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {

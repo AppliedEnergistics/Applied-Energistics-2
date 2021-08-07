@@ -26,9 +26,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
-import appeng.menu.me.crafting.CraftingStatusEntry;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.menu.me.crafting.CraftingStatusEntry;
 import appeng.util.ReadableNumberConverter;
 
 public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingStatusEntry> {

@@ -22,10 +22,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.menu.AEBaseMenu;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
+import appeng.menu.AEBaseMenu;
 
 /**
  * @see appeng.client.gui.implementations.PriorityScreen

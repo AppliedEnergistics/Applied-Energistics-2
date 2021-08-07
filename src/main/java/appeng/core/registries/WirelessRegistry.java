@@ -30,11 +30,11 @@ import net.minecraft.world.level.BlockGetter;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
+import appeng.core.Api;
+import appeng.core.localization.PlayerMessages;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.WirelessTermMenu;
-import appeng.core.Api;
-import appeng.core.localization.PlayerMessages;
 
 public final class WirelessRegistry implements IWirelessTermRegistry {
     private final List<IWirelessTermHandler> handlers;

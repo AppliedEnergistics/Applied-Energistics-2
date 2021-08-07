@@ -40,10 +40,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.helpers.AEMaterials;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.WirelessMenu;
-import appeng.helpers.AEMaterials;
 import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {

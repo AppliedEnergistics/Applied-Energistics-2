@@ -46,14 +46,14 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.util.Platform;
 
 /**
@@ -92,12 +92,12 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(MenuFactory<C, I> factory,
-                                                                         Class<I> hostInterface) {
+            Class<I> hostInterface) {
         return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
     public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(TypedMenuFactory<C, I> factory,
-                                                                         Class<I> hostInterface) {
+            Class<I> hostInterface) {
         return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
@@ -124,15 +124,15 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * menu is being first opened.
      */
     public MenuTypeBuilder<M, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
-                                                 InitialDataDeserializer<M, I> initialDataDeserializer) {
+            InitialDataDeserializer<M, I> initialDataDeserializer) {
         this.initialDataSerializer = initialDataSerializer;
         this.initialDataDeserializer = initialDataDeserializer;
         return this;
     }
 
     /**
-     * Opens a menu that is based around a single block entity. The block entity's position is encoded in the
-     * packet buffer.
+     * Opens a menu that is based around a single block entity. The block entity's position is encoded in the packet
+     * buffer.
      */
     private M fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, MenuLocator.read(packetBuf));
@@ -276,8 +276,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     /**
-     * Strategy used to serialize initial data for opening the menu on the client-side into the packet that is sent
-     * to the client.
+     * Strategy used to serialize initial data for opening the menu on the client-side into the packet that is sent to
+     * the client.
      */
     @FunctionalInterface
     public interface InitialDataSerializer<I> {
@@ -285,8 +285,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     /**
-     * Strategy used to deserialize initial data for opening the menu on the client-side from the packet received
-     * by the server.
+     * Strategy used to deserialize initial data for opening the menu on the client-side from the packet received by the
+     * server.
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {

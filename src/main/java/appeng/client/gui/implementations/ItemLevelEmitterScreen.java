@@ -45,7 +45,7 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMe
     private final NumberEntryWidget level;
 
     public ItemLevelEmitterScreen(ItemLevelEmitterMenu menu, Inventory playerInventory, Component title,
-                                  ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,

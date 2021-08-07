@@ -38,7 +38,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
     private final NumberEntryWidget priority;
 
     public PriorityScreen(PriorityMenu menu, Inventory playerInventory, Component title,
-                          ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.subGui = new AESubScreen(menu.getPriorityHost());
         this.subGui.addBackButton("back", widgets);

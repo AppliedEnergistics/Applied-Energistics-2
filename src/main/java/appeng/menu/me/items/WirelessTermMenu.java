@@ -22,10 +22,10 @@ import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
  * @see appeng.client.gui.implementations.WirelessScreen

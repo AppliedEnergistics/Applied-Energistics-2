@@ -36,12 +36,12 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.menu.me.crafting.CraftingCPUMenu;
-import appeng.menu.me.crafting.CraftingStatus;
-import appeng.menu.me.crafting.CraftingStatusEntry;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.me.crafting.CraftingCPUMenu;
+import appeng.menu.me.crafting.CraftingStatus;
+import appeng.menu.me.crafting.CraftingStatusEntry;
 
 /**
  * This screen shows the current crafting job that a crafting CPU is working on (if any).

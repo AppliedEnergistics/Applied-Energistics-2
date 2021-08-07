@@ -31,13 +31,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.gui.Icon;
+import appeng.core.definitions.AEItems;
+import appeng.items.contents.QuartzKnifeObj;
+import appeng.items.materials.NamePressItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.core.definitions.AEItems;
-import appeng.items.contents.QuartzKnifeObj;
-import appeng.items.materials.NamePressItem;
 
 /**
  * @see appeng.client.gui.implementations.QuartzKnifeScreen

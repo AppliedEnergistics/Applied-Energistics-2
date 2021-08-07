@@ -27,9 +27,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
+import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.core.sync.packets.NetworkStatusPacket;
 
 /**
  * @see NetworkStatusScreen

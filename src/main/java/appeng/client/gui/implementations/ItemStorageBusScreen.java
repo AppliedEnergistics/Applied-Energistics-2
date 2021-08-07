@@ -31,9 +31,9 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.implementations.ItemStorageBusMenu;
 
 public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> {
 
@@ -42,7 +42,7 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public ItemStorageBusScreen(ItemStorageBusMenu menu, Inventory playerInventory, Component title,
-                                ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

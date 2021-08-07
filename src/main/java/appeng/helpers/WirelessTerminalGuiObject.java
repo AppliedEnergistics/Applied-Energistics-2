@@ -43,8 +43,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
-import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.core.Api;
+import appeng.menu.interfaces.IInventorySlotAware;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 

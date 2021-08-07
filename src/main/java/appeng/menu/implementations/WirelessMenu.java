@@ -23,11 +23,11 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.core.AEConfig;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.core.AEConfig;
 
 /**
  * @see appeng.client.gui.implementations.WirelessScreen

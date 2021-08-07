@@ -56,7 +56,6 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEngClient;
@@ -64,6 +63,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.InventoryAction;
+import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.util.Platform;
 
 public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu> {
@@ -137,7 +137,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
     private int numLines = 0;
 
     public InterfaceTerminalScreen(InterfaceTerminalMenu menu, Inventory playerInventory,
-                                   Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;

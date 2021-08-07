@@ -25,8 +25,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
 import appeng.core.localization.GuiText;
+import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
 import appeng.util.ReadableNumberConverter;
 
 public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPlanSummaryEntry> {

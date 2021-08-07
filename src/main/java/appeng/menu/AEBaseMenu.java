@@ -56,6 +56,12 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.parts.IPart;
+import appeng.core.AELog;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.GuiDataSyncPacket;
+import appeng.helpers.InventoryAction;
+import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -63,12 +69,6 @@ import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
-import appeng.core.AELog;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.GuiDataSyncPacket;
-import appeng.helpers.InventoryAction;
-import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
@@ -89,7 +89,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private int ticksSinceCheck = 900;
 
     public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
-                      final Object host) {
+            final Object host) {
         super(menuType, id);
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;

@@ -30,11 +30,11 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
-import appeng.menu.SlotSemantic;
-import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.SlotSemantic;
+import appeng.menu.me.items.PatternTermMenu;
 
 public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
@@ -56,7 +56,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private final ActionButton substitutionsDisabledBtn;
 
     public PatternTermScreen(PatternTermMenu menu, Inventory playerInventory,
-                             Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(

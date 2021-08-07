@@ -25,17 +25,17 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.me.networktool.NetworkToolMenu;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolMenu> {
 
     private final ToggleButton transparentFacadesButton;
 
     public NetworkToolScreen(NetworkToolMenu menu, Inventory playerInventory, Component title,
-                             ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,

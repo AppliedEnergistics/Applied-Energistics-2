@@ -26,13 +26,13 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemInterfaceScreen;
+import appeng.helpers.DualityItemInterface;
+import appeng.helpers.IInterfaceHost;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IInterfaceHost;
 
 /**
  * @see ItemInterfaceScreen

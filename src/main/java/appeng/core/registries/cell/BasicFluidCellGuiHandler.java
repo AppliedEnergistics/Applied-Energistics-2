@@ -29,10 +29,10 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.core.Api;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.fluids.FluidTerminalMenu;
-import appeng.core.Api;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 

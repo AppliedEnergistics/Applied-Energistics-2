@@ -30,10 +30,10 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartModel;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 

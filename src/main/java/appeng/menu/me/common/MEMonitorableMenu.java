@@ -61,11 +61,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
-import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.AppEngSlot;
-import appeng.menu.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
@@ -73,6 +68,11 @@ import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantic;
+import appeng.menu.guisync.GuiSync;
+import appeng.menu.slot.AppEngSlot;
+import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
@@ -114,8 +114,8 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
     private IClientRepo<T> clientRepo;
 
     public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
-                             final ITerminalHost host, final boolean bindInventory,
-                             IStorageChannel<T> storageChannel) {
+            final ITerminalHost host, final boolean bindInventory,
+            IStorageChannel<T> storageChannel) {
         super(menuType, id, ip, host);
 
         this.storageChannel = storageChannel;

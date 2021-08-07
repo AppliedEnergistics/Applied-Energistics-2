@@ -31,7 +31,7 @@ import appeng.util.fluid.IAEFluidTank;
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneMenu> {
 
     public FluidFormationPlaneScreen(FluidFormationPlaneMenu menu, Inventory playerInventory,
-                                     Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         final IAEFluidTank config = menu.getFluidConfigInventory();

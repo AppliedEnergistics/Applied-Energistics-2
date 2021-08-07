@@ -37,12 +37,12 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.NullMenu;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;
+import appeng.menu.NullMenu;
 
 public class ApiCrafting implements ICraftingHelper {
 

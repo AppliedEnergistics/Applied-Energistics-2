@@ -37,10 +37,10 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.implementations.CellWorkbenchMenu;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
@@ -49,7 +49,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public CellWorkbenchScreen(CellWorkbenchMenu menu, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.fuzzyMode = addToLeftToolbar(

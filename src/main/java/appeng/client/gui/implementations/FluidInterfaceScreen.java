@@ -24,15 +24,15 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.FluidTankWidget;
+import appeng.helpers.DualityFluidInterface;
 import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.FluidInterfaceMenu;
-import appeng.helpers.DualityFluidInterface;
 import appeng.util.fluid.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceMenu> {
 
     public FluidInterfaceScreen(FluidInterfaceMenu menu, Inventory playerInventory,
-                                Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();

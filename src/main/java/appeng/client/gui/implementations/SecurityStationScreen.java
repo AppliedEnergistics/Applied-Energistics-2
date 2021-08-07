@@ -33,9 +33,9 @@ import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.menu.implementations.SecurityStationMenu;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.implementations.SecurityStationMenu;
 
 public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMenu> {
 
@@ -48,7 +48,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
     private final Blitter encodingBg;
 
     public SecurityStationScreen(SecurityStationMenu menu,
-                                 Inventory playerInventory, Component title, ScreenStyle style) {
+            Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");

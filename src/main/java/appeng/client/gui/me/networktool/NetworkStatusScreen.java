@@ -31,10 +31,10 @@ import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.core.localization.GuiText;
 import appeng.menu.me.networktool.MachineGroup;
 import appeng.menu.me.networktool.NetworkStatus;
 import appeng.menu.me.networktool.NetworkStatusMenu;
-import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
@@ -55,7 +55,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     private final Scrollbar scrollbar;
 
     public NetworkStatusScreen(NetworkStatusMenu menu, Inventory playerInventory,
-                               Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 

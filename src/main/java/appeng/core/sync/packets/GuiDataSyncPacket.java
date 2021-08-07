@@ -26,9 +26,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.AEBaseMenu;
 
 /**
  * This packet is used for two purposes: Server->Client to synchronize GUI data. Client->Server to synchronize GUI

@@ -23,10 +23,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.menu.me.common.IMEInteractionHandler;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
+import appeng.menu.me.common.IMEInteractionHandler;
 
 /**
  * Packet sent by clients to interact with an ME inventory such as an item terminal.

@@ -116,8 +116,8 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 /**
- * The server sends the client a menu identifier, which the client then maps onto a screen using
- * {@link MenuScreens}. This class registers our screens.
+ * The server sends the client a menu identifier, which the client then maps onto a screen using {@link MenuScreens}.
+ * This class registers our screens.
  */
 public final class InitScreens {
 
@@ -202,8 +202,8 @@ public final class InitScreens {
      * Registers a screen for a given menu and ensures the given style is applied after opening the screen.
      */
     private static <M extends AEBaseMenu, U extends AEBaseScreen<M>> void register(MenuType<M> type,
-                                                                                   StyledScreenFactory<M, U> factory,
-                                                                                   String stylePath) {
+            StyledScreenFactory<M, U> factory,
+            String stylePath) {
         MENU_STYLES.put(type, stylePath);
         MenuScreens.<M, U>register(type, (menu, playerInv, title) -> {
             ScreenStyle style;

@@ -39,6 +39,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
+import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -46,10 +50,6 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.InaccessibleSlot;
-import appeng.core.AELog;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfirmAutoCraftPacket;
-import appeng.me.helpers.PlayerSource;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
@@ -85,7 +85,7 @@ public class CraftAmountMenu extends AEBaseMenu {
      * Opens the craft amount screen for the given player.
      */
     public static void open(ServerPlayer player, MenuLocator locator, IAEItemStack itemToCraft,
-                            int initialAmount) {
+            int initialAmount) {
         MenuOpener.open(CraftAmountMenu.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountMenu) {

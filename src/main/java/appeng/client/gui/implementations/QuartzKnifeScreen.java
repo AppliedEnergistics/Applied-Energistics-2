@@ -32,17 +32,17 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.menu.implementations.QuartzKnifeMenu;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
 
     private EditBox name;
 
     public QuartzKnifeScreen(QuartzKnifeMenu menu, Inventory playerInventory, Component title,
-                             ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 

@@ -28,8 +28,8 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.menu.me.common.IncrementalUpdateHelper;
 
 /**
  * Describes a currently running crafting job. A crafting status can either be a full update which replaces any

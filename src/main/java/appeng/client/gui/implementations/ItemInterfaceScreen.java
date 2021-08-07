@@ -28,10 +28,10 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.menu.implementations.ItemInterfaceMenu;
 
 public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
 
@@ -39,7 +39,7 @@ public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
     private final ToggleButton interfaceMode;
 
     public ItemInterfaceScreen(ItemInterfaceMenu menu, Inventory playerInventory, Component title,
-                               ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

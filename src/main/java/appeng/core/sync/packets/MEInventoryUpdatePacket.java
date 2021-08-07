@@ -40,14 +40,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.IClientRepo;
-import appeng.menu.me.common.IncrementalUpdateHelper;
-import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
+import appeng.menu.me.common.IncrementalUpdateHelper;
+import appeng.menu.me.common.MEMonitorableMenu;
 
 public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
 

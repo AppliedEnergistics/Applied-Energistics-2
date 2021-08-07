@@ -44,7 +44,7 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusMenu> {
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     public FluidIOBusScreen(FluidIOBusMenu menu, Inventory playerInventory, Component title,
-                            ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         final IAEFluidTank inv = this.menu.getFluidConfigInventory();

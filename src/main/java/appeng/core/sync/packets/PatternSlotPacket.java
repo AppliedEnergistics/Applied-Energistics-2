@@ -27,10 +27,10 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.util.item.AEItemStack;
 
 public class PatternSlotPacket extends BasePacket {

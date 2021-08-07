@@ -34,11 +34,11 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.helpers.InventoryAction;
+import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidSoundHelper;
@@ -59,7 +59,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
     }
 
     public FluidTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
-                             boolean bindInventory) {
+            boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }

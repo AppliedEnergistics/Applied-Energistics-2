@@ -26,9 +26,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
-import appeng.menu.me.crafting.CraftingStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.menu.me.crafting.CraftingStatus;
 
 public class CraftingStatusPacket extends BasePacket {
     private final CraftingStatus status;

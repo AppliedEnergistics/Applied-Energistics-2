@@ -37,14 +37,14 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.util.IConfigManager;
+import appeng.items.contents.NetworkToolViewer;
+import appeng.items.tools.NetworkToolItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.items.contents.NetworkToolViewer;
-import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
 
 public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlotHost {
@@ -62,7 +62,7 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
     private NetworkToolViewer tbInventory;
 
     public UpgradeableMenu(MenuType<?> menuType, int id, final Inventory ip,
-                           final IUpgradeableHost te) {
+            final IUpgradeableHost te) {
         super(menuType, id, ip, te);
         this.upgradeable = te;
 

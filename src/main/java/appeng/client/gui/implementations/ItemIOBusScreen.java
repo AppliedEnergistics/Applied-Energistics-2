@@ -41,7 +41,7 @@ public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusMenu> {
     private final SettingToggleButton<SchedulingMode> schedulingMode;
 
     public ItemIOBusScreen(ItemIOBusMenu menu, Inventory playerInventory, Component title,
-                           ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
