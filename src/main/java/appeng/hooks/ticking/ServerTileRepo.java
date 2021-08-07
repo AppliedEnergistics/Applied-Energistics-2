@@ -36,7 +36,7 @@ import appeng.tile.AEBaseTileEntity;
  */
 class ServerTileRepo {
 
-    // Mapping is world -> encoded chunk pos -> tile entities waiting to be initialized
+    // Mapping is world -> encoded chunk pos -> block entities waiting to be initialized
     private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseTileEntity>>> tiles = new Object2ObjectOpenHashMap<>();
 
     /**

@@ -133,7 +133,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return this.tile;
     }
 
@@ -237,13 +237,13 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void addToWorld() {
-        this.mainNode.create(getWorld(), getTile().getBlockPos());
+        this.mainNode.create(getWorld(), getBlockEntity().getBlockPos());
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
         this.setSide(side);
-        this.tile = tile;
+        this.tile = blockEntity;
         this.host = host;
     }
 
@@ -482,7 +482,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
                 var items = List.of(is.copy());
                 nodeOwner.getHost().removePart(nodeOwner.getSide(), false);
-                var tile = nodeOwner.getTile();
+                var tile = nodeOwner.getBlockEntity();
                 Platform.spawnDrops(tile.getLevel(), tile.getBlockPos(), items);
                 is.setCount(0);
             }

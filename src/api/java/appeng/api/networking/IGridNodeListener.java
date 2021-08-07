@@ -14,7 +14,7 @@ public interface IGridNodeListener<T> {
 
     /**
      * Called by the {@link IGridNode} when it's persistent state has changed and the host needs to ensure it is saved.
-     * Can be implemented on tile-entities by delegating to {@link BlockEntity#markDirty()} for example.
+     * Can be implemented on block entities by delegating to {@link BlockEntity#setChanged()} for example.
      */
     void onSaveChanges(T nodeOwner, IGridNode node);
 

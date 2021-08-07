@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.CraftingContainer;

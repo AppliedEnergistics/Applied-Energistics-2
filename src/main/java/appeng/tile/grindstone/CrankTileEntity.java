@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.implementations.tiles.ICrankable;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.CommonTickingBlockEntity;
 

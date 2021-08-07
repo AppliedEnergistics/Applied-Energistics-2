@@ -26,7 +26,7 @@ package appeng.api.util;
 import net.minecraft.core.Direction;
 
 /**
- * Nearly all of AE's Tile Entities implement IOrientable.
+ * Nearly all of AE's Block entities implement IOrientable.
  *
  * and it can be used to manipulate the direction of some machines, most of these orientations are purely visual.
  *
@@ -35,17 +35,17 @@ import net.minecraft.core.Direction;
 public interface IOrientable {
 
     /**
-     * @return true or false, if the tile rotation is meaningful, or even changeable
+     * @return true or false, if the block entity rotation is meaningful, or even changeable
      */
     boolean canBeRotated();
 
     /**
-     * @return the direction the tile is facing
+     * @return the direction the block entity is facing
      */
     Direction getForward();
 
     /**
-     * @return the direction top of the tile
+     * @return the direction top of the block entity
      */
     Direction getUp();
 

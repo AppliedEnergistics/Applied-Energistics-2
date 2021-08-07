@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;

@@ -263,7 +263,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = self.getLevel()
                 .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);

@@ -47,8 +47,8 @@ public final class DimensionalBlockPos {
         this(coordinate.getWorld(), coordinate.pos);
     }
 
-    public DimensionalBlockPos(BlockEntity tileEntity) {
-        this(tileEntity.getLevel(), tileEntity.getBlockPos());
+    public DimensionalBlockPos(BlockEntity blockentity) {
+        this(blockentity.getLevel(), blockentity.getBlockPos());
     }
 
     public DimensionalBlockPos(Level world, BlockPos pos) {

@@ -82,13 +82,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void notifyNeighbors() {
-        final Level world = this.getTile().getLevel();
+        final Level world = this.getBlockEntity().getLevel();
 
-        Platform.notifyBlocksOfNeighbors(world, this.getTile().getBlockPos());
+        Platform.notifyBlocksOfNeighbors(world, this.getBlockEntity().getBlockPos());
 
         // and this cause sometimes it can go thought walls.
         for (final Direction face : Direction.values()) {
-            Platform.notifyBlocksOfNeighbors(world, this.getTile().getBlockPos().relative(face));
+            Platform.notifyBlocksOfNeighbors(world, this.getBlockEntity().getBlockPos().relative(face));
         }
     }
 
@@ -118,9 +118,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
-            final BlockPos target = this.getTile().getBlockPos().relative(this.getSide().getDirection());
+            final BlockPos target = this.getBlockEntity().getBlockPos().relative(this.getSide().getDirection());
 
-            final BlockState state = this.getTile().getLevel().getBlockState(target);
+            final BlockState state = this.getBlockEntity().getLevel().getBlockState(target);
             final Block b = state.getBlock();
             if (b != null && !this.isOutput()) {
                 Direction srcSide = this.getSide().getDirection();
@@ -128,8 +128,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                     srcSide = Direction.UP;
                 }
 
-                this.power = b.getSignal(state, this.getTile().getLevel(), target, srcSide);
-                this.power = Math.max(this.power, b.getSignal(state, this.getTile().getLevel(), target, srcSide));
+                this.power = b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide);
+                this.power = Math.max(this.power, b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

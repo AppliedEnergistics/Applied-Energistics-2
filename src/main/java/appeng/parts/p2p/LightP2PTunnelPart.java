@@ -91,7 +91,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
             return false;
         }
 
-        final BlockEntity te = this.getTile();
+        final BlockEntity te = this.getBlockEntity();
         final Level w = te.getLevel();
 
         final int newLevel = w.getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
@@ -132,7 +132,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final BlockEntity te = this.getTile();
+            final BlockEntity te = this.getBlockEntity();
             this.opacity = 255
                     - te.getLevel().getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
         }

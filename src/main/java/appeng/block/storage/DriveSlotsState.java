@@ -22,7 +22,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.Item;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.cells.CellState;
 
 /**

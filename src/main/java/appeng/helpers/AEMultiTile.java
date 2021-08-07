@@ -18,10 +18,10 @@
 
 package appeng.helpers;
 
-import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
 
-public interface AEMultiTile extends IInWorldGridNodeHost, IPartHost, IColorableTile {
+public interface AEMultiTile extends IInWorldGridNodeHost, IPartHost, IColorableBlockEntity {
 
 }

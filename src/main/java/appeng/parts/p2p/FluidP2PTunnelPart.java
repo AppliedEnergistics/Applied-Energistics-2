@@ -93,7 +93,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> {
     private IFluidHandler getAttachedFluidHandler() {
         LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
         if (this.isActive()) {
-            final BlockEntity self = this.getTile();
+            final BlockEntity self = this.getBlockEntity();
             final BlockEntity te = self.getLevel()
                     .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 

@@ -32,7 +32,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.tiles.IViewCellStorage;
+import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;

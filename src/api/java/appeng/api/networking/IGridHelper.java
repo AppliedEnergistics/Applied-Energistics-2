@@ -124,7 +124,7 @@ public interface IGridHelper {
      * <p/>
      * This method can be called on both server and client.
      *
-     * @param owner    The game object that owns the node, such as a tile entity or {@link appeng.api.parts.IPart}.
+     * @param owner    The game object that owns the node, such as a block entity or {@link appeng.api.parts.IPart}.
      * @param listener A listener that will adapt events sent by the grid node to the owner.
      * @param <T>      The type of the owner.
      * @return The managed grid node.

@@ -41,7 +41,7 @@ public interface IOverlayDataSource {
     /**
      * {@link BlockEntity} in case needed for additional data.
      *
-     * @return the tile entity providing the data
+     * @return the block entity providing the data
      */
     @Nonnull
     BlockEntity getOverlayTileEntity();

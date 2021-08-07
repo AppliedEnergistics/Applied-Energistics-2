@@ -114,7 +114,7 @@ public abstract class AENetworkPowerTileEntity extends AEBasePoweredTileEntity
     @Override
     public void onReady() {
         super.onReady();
-        this.getMainNode().create(getLevel(), getTile().getBlockPos());
+        this.getMainNode().create(getLevel(), getBlockEntity().getBlockPos());
     }
 
 }

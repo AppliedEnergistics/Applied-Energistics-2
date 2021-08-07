@@ -54,8 +54,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.implementations.tiles.IMEChest;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
+import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -111,7 +111,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestTileEntity extends AENetworkPowerTileEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ServerTickingBlockEntity,
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableBlockEntity, ServerTickingBlockEntity,
         ICellProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
@@ -629,9 +629,9 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         }
 
         private boolean securityCheck(final Player player, final SecurityPermissions requiredPermission) {
-            if (ChestTileEntity.this.getTile() instanceof IActionHost && requiredPermission != null) {
+            if (ChestTileEntity.this.getBlockEntity() instanceof IActionHost && requiredPermission != null) {
 
-                final IGridNode gn = ((IActionHost) ChestTileEntity.this.getTile()).getActionableNode();
+                final IGridNode gn = ((IActionHost) ChestTileEntity.this.getBlockEntity()).getActionableNode();
                 if (gn != null && gn.getGrid() != null) {
                     final IGrid g = gn.getGrid();
                     final boolean requirePower = false;

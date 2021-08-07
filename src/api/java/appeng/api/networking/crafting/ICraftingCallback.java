@@ -33,7 +33,7 @@ public interface ICraftingCallback {
      * case and can deadlock in other ones.
      * 
      * It will also be called from a separate crafting thread. If your callback is not thread safe you have to take care
-     * if it yourself. For example by using a thread safe queue and handling it with the tileentity/world/server tick.
+     * if it yourself. For example by using a thread safe queue and handling it with the blockentity/world/server tick.
      *
      * @param job - final job
      */

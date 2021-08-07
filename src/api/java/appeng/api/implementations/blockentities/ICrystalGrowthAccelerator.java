@@ -21,16 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-import net.minecraftforge.items.IItemHandler;
+public interface ICrystalGrowthAccelerator {
 
-public interface IViewCellStorage {
-
-    /**
-     * should contains at least 5 slot, the first 5
-     *
-     * @return inventory with at least 5 slot
-     */
-    IItemHandler getViewCellStorage();
+    boolean isPowered();
 }

@@ -42,7 +42,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.tiles.ICraftingMachine;
+import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

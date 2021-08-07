@@ -42,7 +42,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.api.movable.IMovableTile;
+import appeng.api.movable.IMovableBlockEntity;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -66,7 +66,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
 public class SpatialAnchorTileEntity extends AENetworkTileEntity
-        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableTile {
+        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableBlockEntity {
 
     static {
         Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorTileEntity.class,
@@ -80,7 +80,7 @@ public class SpatialAnchorTileEntity extends AENetworkTileEntity
      * center of the SCS, but not as much as trying to fully load a 128 cubic cell with 8x8 chunks. This would need to
      * load a 17x17 square.
      * <p>
-     * TODO: 1.17 Break API compat and pass plot id or plot-descriptor to {@link IMovableTile}.
+     * TODO: 1.17 Break API compat and pass plot id or plot-descriptor to {@link IMovableBlockEntity}.
      */
     private static final int SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE = 4;
 

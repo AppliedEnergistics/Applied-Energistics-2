@@ -43,7 +43,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.FakePlayer;
 
-import appeng.api.implementations.tiles.ICrankable;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.stats.AeStats;
 import appeng.tile.AEBaseTileEntity;

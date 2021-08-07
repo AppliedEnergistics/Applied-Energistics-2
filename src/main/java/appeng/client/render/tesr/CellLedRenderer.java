@@ -30,11 +30,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
 
 /**
- * Utility class to render LEDs for storage cells from a Tile Entity Renderer.
+ * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
 class CellLedRenderer {
 

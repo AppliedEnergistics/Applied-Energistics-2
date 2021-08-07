@@ -196,7 +196,7 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
 
     @Override
     public BlockEntity getTileEntity() {
-        return super.getHost().getTile();
+        return super.getHost().getBlockEntity();
     }
 
     @Override

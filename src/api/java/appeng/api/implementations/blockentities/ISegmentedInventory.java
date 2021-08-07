@@ -21,9 +21,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-public interface ICrystalGrowthAccelerator {
+import net.minecraftforge.items.IItemHandler;
 
-    boolean isPowered();
+public interface ISegmentedInventory {
+
+    /**
+     * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
+     * them a real inventories will result in duplication.
+     *
+     * @param name inventory name
+     *
+     * @return inventory with inventory name
+     */
+    IItemHandler getInventoryByName(String name);
 }

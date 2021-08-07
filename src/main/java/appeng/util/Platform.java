@@ -1012,7 +1012,7 @@ public class Platform {
      * Retrieves a BlockEntity from a given position, but only if that particular BlockEntity would be in a state where
      * it would be ticked by the chunk.
      * <p/>
-     * This method also doesn't return a tile entity on the client-side.
+     * This method also doesn't return a block entity on the client-side.
      */
     @Nullable
     public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {

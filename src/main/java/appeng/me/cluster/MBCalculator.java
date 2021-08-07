@@ -216,10 +216,10 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     public abstract void updateTiles(TCluster c, ServerLevel w, BlockPos min, BlockPos max);
 
     /**
-     * check if the tile entities are correct for the structure.
+     * check if the block entities are correct for the structure.
      *
-     * @param te to be checked tile entity
-     * @return true if tile entity is valid for structure
+     * @param te to be checked block entity
+     * @return true if block entity is valid for structure
      */
     public abstract boolean isValidTile(BlockEntity te);
 

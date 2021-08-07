@@ -58,7 +58,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.tiles.ICraftingMachine;
+import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -645,7 +645,7 @@ public class DualityItemInterface
     }
 
     @Override
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 
@@ -880,8 +880,8 @@ public class DualityItemInterface
         if (this.getPart() instanceof IUpgradeableHost) {
             return (IUpgradeableHost) this.getPart();
         }
-        if (this.getTile() instanceof IUpgradeableHost) {
-            return (IUpgradeableHost) this.getTile();
+        if (this.getBlockEntity() instanceof IUpgradeableHost) {
+            return (IUpgradeableHost) this.getBlockEntity();
         }
         return null;
     }

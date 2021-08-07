@@ -28,26 +28,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 /**
- * Used to determine if a tile is marked as movable, a block will be considered movable, if...
+ * Used to determine if a block entity is marked as movable, a block will be considered movable, if...
  *
- * 1. The Tile or its super classes have been white listed with whiteListTileEntity.
+ * 1. The Block Entity or its super classes have been white listed with whiteListBlockentity.
  *
- * 2. The Tile implements IMovableTile
+ * 2. The Block Entity implements IMovableBlockEntity
  *
  * 3. A IMovableHandler is register that returns canHandle = true for the {@link BlockEntity} subclass
  *
  *
  * The movement process is as follows,
  *
- * 1. IMovableTile.prepareToMove() or TileEntity.invalidate() depending on your opt-in method. 2. The tile will be
+ * 1. IMovableBlockEntity.prepareToMove() or Blockentity.invalidate() depending on your opt-in method. 2. The block entity will be
  * removed from the world. 3. Its world, coordinates will be changed. *** this can be overridden with a IMovableHandler
- * *** 4. It will then be re-added to the world, or a new world. 5. TileEntity.clearRemoved() 6. IMovableTile.doneMoving
- * ( if you implemented IMovableTile )
+ * *** 4. It will then be re-added to the world, or a new world. 5. Blockentity.clearRemoved() 6. IMovableBlockEntity.doneMoving
+ * ( if you implemented IMovableBlockEntity )
  *
  * Please note, this is a 100% white list only feature, I will never opt in any non-vanilla, non-AE blocks. If you do
- * not want to support your tiles being moved, you don't have to do anything.
+ * not want to support your block entities being moved, you don't have to do anything.
  *
- * I appreciate anyone that takes the effort to get their tiles to work with this system to create a better use
+ * I appreciate anyone that takes the effort to get their block entities to work with this system to create a better use
  * experience.
  *
  * If you need a build of deobf build of AE for testing, do not hesitate to ask.
@@ -62,25 +62,25 @@ public interface IMovableRegistry {
     void blacklistBlock(Block blk);
 
     /**
-     * White list your tile entity with the registry.
+     * White list your block entity with the registry.
      *
-     * If you tile is handled with IMovableHandler or IMovableTile you do not need to white list it.
+     * If you block entity is handled with IMovableHandler or IMovableBlockEntity you do not need to white list it.
      */
     void whitelistBlockEntity(BlockEntityType<?> type);
 
     /**
-     * @param te to be moved tile entity
+     * @param be to be moved block entity
      *
-     * @return true if the tile has accepted your request to move it
+     * @return true if the block entity has accepted your request to move it
      */
-    boolean askToMove(BlockEntity te);
+    boolean askToMove(BlockEntity be);
 
     /**
-     * tells the tile you are done moving it.
+     * tells the block entity you are done moving it.
      *
-     * @param te moved tile entity
+     * @param be moved block entity
      */
-    void doneMoving(BlockEntity te);
+    void doneMoving(BlockEntity be);
 
     /**
      * add a new handler movable handler.
@@ -94,11 +94,11 @@ public interface IMovableRegistry {
      *
      * only valid after askToMove(...) = true
      *
-     * @param te tile entity
+     * @param be block entity
      *
-     * @return moving handler of tile entity
+     * @return moving handler of block entity
      */
-    IMovableHandler getHandler(BlockEntity te);
+    IMovableHandler getHandler(BlockEntity be);
 
     /**
      * @return a copy of the default handler

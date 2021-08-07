@@ -21,35 +21,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-import net.minecraft.core.Direction;
+import net.minecraftforge.items.IItemHandler;
 
-/**
- * Crank/Crankable API,
- *
- * Tiles that Implement this can receive power, from the crank, and have the crank placed on them.
- *
- * Tiles that access other tiles that implement this method can act as Cranks.
- *
- * This interface must be implemented by a tile entity.
- */
-public interface ICrankable {
+public interface IViewCellStorage {
 
     /**
-     * Test if the crank can turn, return false if there is no work to be done.
+     * should contains at least 5 slot, the first 5
      *
-     * @return if crank should be allowed to turn.
+     * @return inventory with at least 5 slot
      */
-    boolean canTurn();
-
-    /**
-     * The crank has completed one turn.
-     */
-    void applyTurn();
-
-    /**
-     * @return true if the crank can attach on the given side.
-     */
-    boolean canCrankAttach(Direction directionToCrank);
+    IItemHandler getViewCellStorage();
 }

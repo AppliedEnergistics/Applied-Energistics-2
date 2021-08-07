@@ -54,7 +54,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.tile.storage.ChestTileEntity;
 
 /**
- * The tile entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
+ * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
 public class ChestTileEntityRenderer implements BlockEntityRenderer<ChestTileEntity> {

@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTileEntity;

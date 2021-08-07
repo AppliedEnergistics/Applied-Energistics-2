@@ -145,7 +145,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 return;
             }
 
-            final BlockPos pos = this.getTile().getBlockPos();
+            final BlockPos pos = this.getBlockEntity().getBlockPos();
             final int planePosX = pos.getX();
             final int planePosY = pos.getY();
             final int planePosZ = pos.getZ();
@@ -192,7 +192,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getLevel(), new ItemTransitionEffectPacket(entity.getX(),
+                            this.getBlockEntity().getLevel(), new ItemTransitionEffectPacket(entity.getX(),
                                     entity.getY(), entity.getZ(), this.getSide().getOpposite()));
                 }
             }
@@ -276,7 +276,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         if (this.isAccepting && this.getMainNode().isActive()) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
-                final BlockEntity te = this.getTile();
+                final BlockEntity te = this.getBlockEntity();
                 final ServerLevel w = (ServerLevel) te.getLevel();
 
                 final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
@@ -297,7 +297,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                             performBreakBlock(w, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
-                            TickHandler.instance().addCallable(this.getTile().getLevel(), this::finishBreakBlock);
+                            TickHandler.instance().addCallable(this.getBlockEntity().getLevel(), this::finishBreakBlock);
                         }
                         return TickRateModulation.URGENT;
                     }
@@ -452,7 +452,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private void refresh() {
         this.isAccepting = true;
 
-        getTile().requestModelDataUpdate();
+        getBlockEntity().requestModelDataUpdate();
 
         getMainNode().ifPresent((g, n) -> g.getTickManager().alertDevice(n));
     }

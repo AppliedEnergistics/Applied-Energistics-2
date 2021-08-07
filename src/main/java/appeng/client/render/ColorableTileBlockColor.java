@@ -26,7 +26,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 
 /**
@@ -43,8 +43,8 @@ public class ColorableTileBlockColor implements BlockColor {
 
         if (worldIn != null && pos != null) {
             BlockEntity te = worldIn.getBlockEntity(pos);
-            if (te instanceof IColorableTile) {
-                color = ((IColorableTile) te).getColor();
+            if (te instanceof IColorableBlockEntity) {
+                color = ((IColorableBlockEntity) te).getColor();
             }
         }
 

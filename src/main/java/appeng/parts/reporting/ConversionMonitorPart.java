@@ -90,7 +90,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (InteractionUtil.isWrench(player, eq, this.getTile().getBlockPos())
+            } else if (InteractionUtil.isWrench(player, eq, this.getBlockEntity().getBlockPos())
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
@@ -206,7 +206,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
                 newItems = adaptor.addItems(newItems);
                 if (!newItems.isEmpty()) {
-                    final BlockEntity te = this.getTile();
+                    final BlockEntity te = this.getBlockEntity();
                     final List<ItemStack> list = Collections.singletonList(newItems);
                     Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide().getDirection()), list);
                 }

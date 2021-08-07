@@ -24,10 +24,10 @@
 package appeng.api.movable;
 
 /**
- * You can implement this, or use the IMovableRegistry to white list your tile, please see the registry for more
+ * You can implement this, or use the IMovableRegistry to white list your block entity, please see the registry for more
  * information.
  */
-public interface IMovableTile {
+public interface IMovableBlockEntity {
 
     /**
      * notification that your block will be moved, called instead of invalidate, return false to prevent movement.

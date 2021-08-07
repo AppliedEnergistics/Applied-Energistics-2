@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-import appeng.api.implementations.tiles.ICrankable;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipes;

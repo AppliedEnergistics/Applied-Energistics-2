@@ -34,13 +34,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.util.item.AEItemStack;
 
-public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {
+public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableBlockEntity {
 
     @OnlyIn(Dist.CLIENT)
     private Integer dspList;

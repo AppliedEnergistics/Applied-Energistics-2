@@ -126,7 +126,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final BlockEntity te = this.getTile();
+        final BlockEntity te = this.getBlockEntity();
         final Level w = te.getLevel();
         final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
 

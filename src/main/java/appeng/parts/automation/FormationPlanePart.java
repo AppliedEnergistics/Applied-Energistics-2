@@ -193,7 +193,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
         boolean worked = false;
 
-        final BlockEntity te = this.getHost().getTile();
+        final BlockEntity te = this.getHost().getBlockEntity();
         final Level w = te.getLevel();
         final AEPartLocation side = this.getSide();
 
@@ -202,7 +202,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
                 final Player player = Platform.getPlayer((ServerLevel) w);
-                Platform.configurePlayer(player, side, this.getTile());
+                Platform.configurePlayer(player, side, this.getBlockEntity());
                 // Seems to work without...
                 // Hand hand = player.getActiveHand();
                 // player.setHeldItem(hand, is);

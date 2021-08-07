@@ -106,7 +106,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
             final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
-                    this.getHost().getTile().getLevel());
+                    this.getHost().getBlockEntity().getLevel());
             if (details != null) {
                 this.setCraftingRecipe(details.isCraftable());
                 this.setSubstitution(details.canSubstitute());

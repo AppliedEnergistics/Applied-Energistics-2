@@ -29,12 +29,12 @@ package appeng.api.implementations;
 public interface IPowerChannelState {
 
     /**
-     * @return true if the part/tile is powered.
+     * @return true if the part/block is powered.
      */
     boolean isPowered();
 
     /**
-     * @return true if the part/tile isActive
+     * @return true if the part/block isActive
      */
     boolean isActive();
 }

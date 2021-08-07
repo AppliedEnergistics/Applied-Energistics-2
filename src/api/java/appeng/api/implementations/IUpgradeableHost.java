@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.util.IConfigurableObject;
 
 public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInventory {
@@ -42,11 +42,9 @@ public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInvento
     int getInstalledUpgrades(Upgrades u);
 
     /**
-     * the tile...
-     *
-     * @return tile entity
+     * @return block entity
      */
-    BlockEntity getTile();
+    BlockEntity getBlockEntity();
 
     /**
      * @return The inventory used to store the upgrade cards.

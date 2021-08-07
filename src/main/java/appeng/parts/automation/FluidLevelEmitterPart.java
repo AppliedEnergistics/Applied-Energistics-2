@@ -186,7 +186,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
         final boolean isOn = this.isLevelEmitterOn();
         if (this.prevState != isOn) {
             this.getHost().markForUpdate();
-            final BlockEntity te = this.getHost().getTile();
+            final BlockEntity te = this.getHost().getBlockEntity();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide().getDirection()));

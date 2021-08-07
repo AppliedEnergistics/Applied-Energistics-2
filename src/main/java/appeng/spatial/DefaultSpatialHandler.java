@@ -34,7 +34,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
     }
 
     @Override
-    public boolean moveTile(BlockEntity te, CompoundTag savedData, Level w, BlockPos newPosition) {
+    public boolean moveBlockEntity(BlockEntity te, CompoundTag savedData, Level w, BlockPos newPosition) {
         var be = BlockEntity.loadStatic(newPosition, te.getBlockState(), savedData);
         if (be != null) {
             w.setBlockEntity(be);

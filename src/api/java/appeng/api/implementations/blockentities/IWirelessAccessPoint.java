@@ -21,16 +21,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
+import javax.annotation.Nullable;
 
-import appeng.api.util.AEColor;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.util.DimensionalBlockPos;
 
-public interface IColorableTile {
+public interface IWirelessAccessPoint extends IActionHost {
 
-    AEColor getColor();
+    /**
+     * @return location of WAP
+     */
+    DimensionalBlockPos getLocation();
 
-    boolean recolourBlock(Direction side, AEColor colour, Player who);
+    /**
+     * @return max range for this WAP
+     */
+    double getRange();
+
+    /**
+     * @return can you use this WAP?
+     */
+    boolean isActive();
+
+    /**
+     * @return grid of linked WAP
+     */
+    @Nullable
+    IGrid getGrid();
 }

@@ -167,7 +167,7 @@ public final class PlaneConnectionHelper {
     private BlockEntity getHostTileEntity() {
         IPartHost host = part.getHost();
         if (host != null) {
-            return host.getTile();
+            return host.getBlockEntity();
         }
         return null;
     }

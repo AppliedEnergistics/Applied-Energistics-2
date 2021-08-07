@@ -24,7 +24,7 @@
 package appeng.api.util;
 
 /**
- * Implemented by various Tiles or Parts in AE
+ * Implemented by various block entities or parts in AE
  */
 public interface IConfigurableObject {
 

@@ -38,7 +38,7 @@ import appeng.api.storage.ICellRegistry;
 public interface IRegistryContainer {
 
     /**
-     * Use the movable registry to white list your tiles.
+     * Use the movable registry to white list your block entities.
      */
     IMovableRegistry movable();
 

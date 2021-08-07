@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.movable.IMovableTile;
+import appeng.api.movable.IMovableBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
@@ -79,8 +79,8 @@ public class MovableTileRegistry implements IMovableRegistry {
         }
 
         if (canMove != this.nullHandler) {
-            if (te instanceof IMovableTile) {
-                ((IMovableTile) te).prepareToMove();
+            if (te instanceof IMovableBlockEntity) {
+                ((IMovableBlockEntity) te).prepareToMove();
             }
 
             te.setRemoved();
@@ -108,7 +108,7 @@ public class MovableTileRegistry implements IMovableRegistry {
         }
 
         // if your movable our opted in
-        if (te instanceof IMovableTile) {
+        if (te instanceof IMovableBlockEntity) {
             this.valid.put(te.getType(), this.dsh);
             return this.dsh;
         }
@@ -134,7 +134,7 @@ public class MovableTileRegistry implements IMovableRegistry {
 
     @Override
     public void doneMoving(final BlockEntity te) {
-        if (te instanceof IMovableTile mt) {
+        if (te instanceof IMovableBlockEntity mt) {
             mt.doneMoving();
         }
     }

@@ -27,7 +27,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;

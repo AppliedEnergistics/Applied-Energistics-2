@@ -94,12 +94,12 @@ public class QuartzFiberPart extends AEBasePart {
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getTile().getBlockPos());
+        this.outerNode.create(getWorld(), getBlockEntity().getBlockPos());
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
-        super.setPartHostInfo(side, host, tile);
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+        super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 

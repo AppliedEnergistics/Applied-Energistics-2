@@ -73,7 +73,7 @@ public final class InitAutoRotatingModel {
             }
 
             if (block.block() instanceof AEBaseBlock) {
-                // This is a default rotating model if the base-block uses an AE tile entity
+                // This is a default rotating model if the base-block uses an AE block entity
                 // which exposes UP/FRONT as extended props
                 register(block, AutoRotatingBakedModel::new);
             }

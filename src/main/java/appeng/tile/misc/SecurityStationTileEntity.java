@@ -47,7 +47,7 @@ import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
@@ -76,7 +76,7 @@ import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class SecurityStationTileEntity extends AENetworkTileEntity implements ITerminalHost, IAEAppEngInventory,
-        ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile {
+        ILocatable, IConfigManagerHost, ISecurityProvider, IColorableBlockEntity {
 
     private static int difference = 0;
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);

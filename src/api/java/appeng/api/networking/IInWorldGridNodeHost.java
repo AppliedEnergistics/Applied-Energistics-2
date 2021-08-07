@@ -33,7 +33,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 
 /**
- * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or tile entity
+ * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or block entity
  * to become part of a grid.
  */
 public interface IInWorldGridNodeHost {

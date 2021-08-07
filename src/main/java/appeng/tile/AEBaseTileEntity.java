@@ -51,8 +51,8 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.tiles.ISegmentedInventory;
-import appeng.api.util.ICommonTile;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.util.IBlockEntityDrops;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
@@ -68,7 +68,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.fluid.AEFluidInventory;
 
-public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject {
+public class AEBaseTileEntity extends BlockEntity implements IOrientable, IBlockEntityDrops, ICustomNameObject {
 
     private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
@@ -97,7 +97,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     @Nonnull
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return this;
     }
 
@@ -166,7 +166,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     /**
-     * This builds a tag with the actual data that should be sent to the client for update syncs. If the tile entity
+     * This builds a tag with the actual data that should be sent to the client for update syncs. If the block entity
      * doesn't need update syncs, it returns null.
      */
     private CompoundTag writeUpdateData() {
@@ -368,11 +368,11 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     /**
-     * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
+     * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
-     * @param drops drops of tile entity
+     * @param drops drops of block entity
      */
     @Override
     public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
@@ -442,7 +442,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     /**
-     * Checks if this tile entity is remote (we are running on the logical client side).
+     * Checks if this block entity is remote (we are running on the logical client side).
      */
     public boolean isRemote() {
         Level world = getLevel();
@@ -489,7 +489,7 @@ public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommo
     }
 
     /**
-     * AE Tile Entities will generally confine themselves to rendering within the bounding block. Forge however would
+     * AE Block entities will generally confine themselves to rendering within the bounding block. Forge however would
      * retrieve the collision box here, which is very expensive.
      */
     @OnlyIn(Dist.CLIENT)

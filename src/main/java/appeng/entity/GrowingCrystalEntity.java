@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;

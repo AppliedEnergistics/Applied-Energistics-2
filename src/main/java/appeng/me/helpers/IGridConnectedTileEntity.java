@@ -31,13 +31,13 @@ import appeng.block.IOwnerAwareTile;
 import appeng.tile.AEBaseTileEntity;
 
 /**
- * Interface implemented by the various AE2 tile entities that connect to the grid, to support callbacks from the tile
+ * Interface implemented by the various AE2 block entities that connect to the grid, to support callbacks from the tile
  * entities main grid node.
  */
 public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
 
     /**
-     * @return The main node that the tile entity uses to connect to the grid.
+     * @return The main node that the block entity uses to connect to the grid.
      */
     IManagedGridNode getMainNode();
 
@@ -55,13 +55,13 @@ public interface IGridConnectedTileEntity extends IActionHost, IOwnerAwareTile {
     void securityBreak();
 
     /**
-     * Used to save changes in the grid nodes contained in the tile entity to disk. Implemented in
+     * Used to save changes in the grid nodes contained in the block entity to disk. Implemented in
      * {@link AEBaseTileEntity#saveChanges()}
      */
     void saveChanges();
 
     /**
-     * Called when the tile entities main grid nodes power or channel assignment state changes. Primarily used to send
+     * Called when the block entities main grid nodes power or channel assignment state changes. Primarily used to send
      * rendering updates to the client.
      */
     default void onMainNodeStateChanged(IGridNodeListener.State reason) {

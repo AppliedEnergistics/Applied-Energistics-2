@@ -29,15 +29,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public interface ICommonTile {
+public interface IBlockEntityDrops {
 
     /**
-     * implemented on AE's Tile Entities, Gets a list of drops that the entity will normally drop, this doesn't include
+     * implemented on AE's block entities, Gets a list of drops that the entity will normally drop, this doesn't include
      * the block itself.
      *
-     * @param world world of tile entity
+     * @param world world of block entity
      * @param pos   location of the block
-     * @param drops drops of tile entity
+     * @param drops drops of block entity
      */
     void getDrops(Level world, BlockPos pos, List<ItemStack> drops);
 }

@@ -118,7 +118,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final BlockEntity te = this.getHost().getTile();
+        final BlockEntity te = this.getHost().getBlockEntity();
         final Level w = te.getLevel();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getBlockPos().relative(side.getDirection());

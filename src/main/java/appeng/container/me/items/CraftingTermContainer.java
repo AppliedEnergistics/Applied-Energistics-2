@@ -33,7 +33,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerNull;
 import appeng.container.SlotSemantic;

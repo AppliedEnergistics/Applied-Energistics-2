@@ -510,7 +510,7 @@ public class DualityFluidInterface
     }
 
     @Override
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 

@@ -55,7 +55,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -144,9 +144,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
                 final BlockEntity te = w.getBlockEntity(pos);
                 // clean cables.
-                if (te instanceof IColorableTile && p != null && this.getAECurrentPower(is) > powerPerUse
-                        && ((IColorableTile) te).getColor() != AEColor.TRANSPARENT) {
-                    if (((IColorableTile) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
+                if (te instanceof IColorableBlockEntity && p != null && this.getAECurrentPower(is) > powerPerUse
+                        && ((IColorableBlockEntity) te).getColor() != AEColor.TRANSPARENT) {
+                    if (((IColorableBlockEntity) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
@@ -326,7 +326,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         BlockEntity be = w.getBlockEntity(pos);
-        if (be instanceof IColorableTile ct) {
+        if (be instanceof IColorableBlockEntity ct) {
             if (ct.getColor() != newColor) {
                 ct.recolourBlock(side, newColor, p);
                 return true;

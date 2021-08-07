@@ -21,10 +21,35 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-import appeng.api.networking.energy.IEnergySource;
+import net.minecraft.core.Direction;
 
-public interface IMEChest extends IChestOrDrive, IEnergySource {
+/**
+ * Crank/Crankable API,
+ * <p/>
+ * Block entities that implement this can receive power, from the crank, and have the crank placed on them.
+ * <p/>
+ * Block entities that access other block entities that implement this method can act as Cranks.
+ * <p/>
+ * This interface must be implemented by a block entity.
+ */
+public interface ICrankable {
 
+    /**
+     * Test if the crank can turn, return false if there is no work to be done.
+     *
+     * @return if crank should be allowed to turn.
+     */
+    boolean canTurn();
+
+    /**
+     * The crank has completed one turn.
+     */
+    void applyTurn();
+
+    /**
+     * @return true if the crank can attach on the given side.
+     */
+    boolean canCrankAttach(Direction directionToCrank);
 }

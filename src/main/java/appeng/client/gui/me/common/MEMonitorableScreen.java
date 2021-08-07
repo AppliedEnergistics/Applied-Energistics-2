@@ -48,7 +48,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.tiles.IMEChest;
+import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;

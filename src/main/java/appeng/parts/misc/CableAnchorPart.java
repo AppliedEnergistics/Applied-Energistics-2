@@ -167,7 +167,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
         this.host = host;
         this.mySide = side;
     }

@@ -268,7 +268,7 @@ public class CachedPlane {
 
                 boolean success;
                 try {
-                    success = handler.moveTile(te, savedData, this.world,
+                    success = handler.moveBlockEntity(te, savedData, this.world,
                             new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
                 } catch (final Throwable e) {
                     AELog.debug(e);

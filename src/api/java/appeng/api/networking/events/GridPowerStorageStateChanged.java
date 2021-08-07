@@ -46,12 +46,12 @@ public class GridPowerStorageStateChanged extends GridEvent {
 
     public enum PowerEventType {
         /**
-         * informs the network this tile is ready to receive power again.
+         * informs the network this block entity is ready to receive power again.
          */
         REQUEST_POWER,
 
         /**
-         * informs the network this tile is ready to provide power again.
+         * informs the network this block entity is ready to provide power again.
          */
         PROVIDE_POWER
     }

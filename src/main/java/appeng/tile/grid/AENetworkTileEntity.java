@@ -99,7 +99,7 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IInWorldGri
     @Override
     public void onReady() {
         super.onReady();
-        this.getMainNode().create(getLevel(), getTile().getBlockPos());
+        this.getMainNode().create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override

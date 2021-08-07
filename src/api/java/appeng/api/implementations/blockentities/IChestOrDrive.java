@@ -21,19 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.tiles;
+package appeng.api.implementations.blockentities;
 
-import net.minecraftforge.items.IItemHandler;
+import javax.annotation.Nullable;
 
-public interface ISegmentedInventory {
+import net.minecraft.world.item.Item;
+
+import appeng.api.networking.security.IActionHost;
+import appeng.api.storage.cells.CellState;
+import appeng.api.util.IOrientable;
+
+public interface IChestOrDrive extends IOrientable, IActionHost {
 
     /**
-     * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
-     * them a real inventories will result in duplication.
-     *
-     * @param name inventory name
-     *
-     * @return inventory with inventory name
+     * @return how many slots are available. Chest has 1, Drive has 10.
      */
-    IItemHandler getInventoryByName(String name);
+    int getCellCount();
+
+    /**
+     * @param slot slot index
+     *
+     * @return status of the slot, one of the above indices.
+     */
+    CellState getCellStatus(int slot);
+
+    /**
+     * @return if the device is online you should check this before providing any other information.
+     */
+    boolean isPowered();
+
+    /**
+     * @param slot slot index
+     *
+     * @return is the cell currently blinking to show activity.
+     */
+    boolean isCellBlinking(int slot);
+
+    /**
+     * Returns the item of the cell in the given slot or null.
+     */
+    @Nullable
+    Item getCellItem(int slot);
+
 }
