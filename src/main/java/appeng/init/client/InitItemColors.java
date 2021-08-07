@@ -111,11 +111,10 @@ public final class InitItemColors {
     private static int getDummyFluidItemColor(ItemStack stack, int tintIndex) {
 
         Item item = stack.getItem();
-        if (!(item instanceof FluidDummyItem)) {
+        if (!(item instanceof FluidDummyItem fluidItem)) {
             return -1;
         }
 
-        FluidDummyItem fluidItem = (FluidDummyItem) item;
         FluidStack fluidStack = fluidItem.getFluidStack(stack);
 
         return fluidStack.getFluid().getAttributes().getColor(fluidStack);

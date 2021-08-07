@@ -34,9 +34,8 @@ public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBeha
     @Override
     protected ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
-        if (i instanceof IBlockTool) {
+        if (i instanceof IBlockTool tm) {
             final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
-            final IBlockTool tm = (IBlockTool) i;
 
             final Level level = dispenser.getLevel();
             if (level instanceof ServerLevel) {

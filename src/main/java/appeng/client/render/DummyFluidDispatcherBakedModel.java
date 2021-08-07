@@ -87,11 +87,9 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
-                if (!(stack.getItem() instanceof FluidDummyItem)) {
+                if (!(stack.getItem() instanceof FluidDummyItem itemFacade)) {
                     return originalModel;
                 }
-
-                FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
 
                 FluidStack fluidStack = itemFacade.getFluidStack(stack);
                 if (fluidStack.isEmpty()) {

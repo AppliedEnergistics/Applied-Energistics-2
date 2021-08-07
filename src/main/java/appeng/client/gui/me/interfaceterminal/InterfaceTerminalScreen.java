@@ -186,15 +186,13 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
         for (; i < this.numLines; ++i) {
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
-                if (lineObj instanceof InterfaceRecord) {
+                if (lineObj instanceof InterfaceRecord inv) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
-                    final InterfaceRecord inv = (InterfaceRecord) lineObj;
                     for (int z = 0; z < inv.getInventory().getSlots(); z++) {
                         this.menu.slots
                                 .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
-                } else if (lineObj instanceof String) {
-                    String name = (String) lineObj;
+                } else if (lineObj instanceof String name) {
                     final int rows = this.byName.get(name).size();
                     if (rows > 1) {
                         name = name + " (" + rows + ')';

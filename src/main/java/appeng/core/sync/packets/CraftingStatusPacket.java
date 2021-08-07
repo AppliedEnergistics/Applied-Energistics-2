@@ -50,8 +50,7 @@ public class CraftingStatusPacket extends BasePacket {
     public void clientPacketData(INetworkInfo network, Player player) {
         Screen screen = Minecraft.getInstance().screen;
 
-        if (screen instanceof CraftingCPUScreen) {
-            CraftingCPUScreen<?> cpuScreen = (CraftingCPUScreen<?>) screen;
+        if (screen instanceof CraftingCPUScreen<?>cpuScreen) {
             cpuScreen.postUpdate(this.status);
         }
     }

@@ -72,11 +72,10 @@ public final class CompassService {
     // FIXME this is never registered
     @SubscribeEvent
     public void unloadWorld(final WorldEvent.Unload event) {
-        if (!(event.getWorld() instanceof ServerLevel)) {
+        if (!(event.getWorld() instanceof ServerLevel level)) {
             return;
         }
 
-        ServerLevel level = (ServerLevel) event.getWorld();
         if (this.worldSet.containsKey(level)) {
             final CompassReader compassReader = this.worldSet.remove(level);
             compassReader.close();

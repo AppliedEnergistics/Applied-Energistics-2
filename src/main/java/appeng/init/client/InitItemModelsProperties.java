@@ -59,11 +59,10 @@ public final class InitItemModelsProperties {
 
         // Register the client-only item model property for chargeable items
         ForgeRegistries.ITEMS.forEach(item -> {
-            if (!(item instanceof AEBaseBlockItemChargeable)) {
+            if (!(item instanceof AEBaseBlockItemChargeable chargeable)) {
                 return;
             }
 
-            AEBaseBlockItemChargeable chargeable = (AEBaseBlockItemChargeable) item;
             ItemProperties.register(chargeable, new ResourceLocation("appliedenergistics2:fill_level"),
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);

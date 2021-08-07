@@ -80,8 +80,7 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
             final SecurityPermissions permission = SecurityPermissions.valueOf(value);
 
             final ItemStack a = this.configSlot.getItem();
-            if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
-                final IBiometricCard bc = (IBiometricCard) a.getItem();
+            if (!a.isEmpty() && a.getItem() instanceof IBiometricCard bc) {
                 if (bc.hasPermission(a, permission)) {
                     bc.removePermission(a, permission);
                 } else {
@@ -100,8 +99,7 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
         this.setPermissionMode(0);
 
         final ItemStack a = this.configSlot.getItem();
-        if (!a.isEmpty() && a.getItem() instanceof IBiometricCard) {
-            final IBiometricCard bc = (IBiometricCard) a.getItem();
+        if (!a.isEmpty() && a.getItem() instanceof IBiometricCard bc) {
 
             for (final SecurityPermissions sp : bc.getPermissions(a)) {
                 this.setPermissionMode(this.getPermissionMode() | 1 << sp.ordinal());

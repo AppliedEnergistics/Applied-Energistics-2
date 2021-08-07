@@ -137,10 +137,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onEntityCollision(final Entity entity) {
-        if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && !isRemote()
+        if (this.isAccepting && entity instanceof ItemEntity itemEntity && entity.isAlive() && !isRemote()
                 && this.getMainNode().isActive()) {
 
-            ItemEntity itemEntity = (ItemEntity) entity;
             if (isItemBlacklisted(itemEntity.getItem().getItem())) {
                 return;
             }
@@ -442,8 +441,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // this (bad practice, really)
         final AABB box = new AABB(pos).inflate(0.2);
         for (final Object ei : level.getEntitiesOfClass(ItemEntity.class, box)) {
-            if (ei instanceof ItemEntity) {
-                final ItemEntity entityItem = (ItemEntity) ei;
+            if (ei instanceof ItemEntity entityItem) {
                 this.storeEntityItem(entityItem);
             }
         }

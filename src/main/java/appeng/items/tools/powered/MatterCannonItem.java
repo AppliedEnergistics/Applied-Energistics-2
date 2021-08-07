@@ -239,29 +239,25 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             AELog.debug(err);
         }
 
-        if (pos.getType() != Type.MISS && type != null && type.getItem() instanceof PaintBallItem) {
-            final PaintBallItem ipb = (PaintBallItem) type.getItem();
+        if (pos.getType() != Type.MISS && type != null && type.getItem() instanceof PaintBallItem ipb) {
 
             final AEColor col = ipb.getColor();
             // boolean lit = ipb.isLumen( type );
 
-            if (pos instanceof EntityHitResult) {
-                EntityHitResult entityResult = (EntityHitResult) pos;
+            if (pos instanceof EntityHitResult entityResult) {
                 Entity entityHit = entityResult.getEntity();
 
                 final int id = entityHit.getId();
                 final PlayerColor marker = new PlayerColor(id, col, 20 * 30);
                 TickHandler.instance().getPlayerColors().put(id, marker);
 
-                if (entityHit instanceof Sheep) {
-                    final Sheep sh = (Sheep) entityHit;
+                if (entityHit instanceof Sheep sh) {
                     sh.setColor(col.dye);
                 }
 
                 entityHit.hurt(DamageSource.playerAttack(p), 0);
                 NetworkHandler.instance().sendToAll(marker.getPacket());
-            } else if (pos instanceof BlockHitResult) {
-                BlockHitResult blockResult = (BlockHitResult) pos;
+            } else if (pos instanceof BlockHitResult blockResult) {
                 final Direction side = blockResult.getDirection();
                 final BlockPos hitPos = blockResult.getBlockPos().relative(side);
 
@@ -344,13 +340,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             if (pos.getType() != Type.MISS) {
                 final DamageSource dmgSrc = new EntityDamageSource("matter_cannon", p);
 
-                if (pos instanceof EntityHitResult) {
-                    EntityHitResult entityResult = (EntityHitResult) pos;
+                if (pos instanceof EntityHitResult entityResult) {
                     Entity entityHit = entityResult.getEntity();
 
                     final int dmg = (int) Math.ceil(penetration / 20.0f);
-                    if (entityHit instanceof LivingEntity) {
-                        final LivingEntity el = (LivingEntity) entityHit;
+                    if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
                         el.knockback(0, -direction.x, -direction.z);
                         // el.knockBack( p, 0, Vector3d.x,
@@ -365,8 +359,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     } else if (entityHit.hurt(dmgSrc, dmg)) {
                         hasDestroyed = true;
                     }
-                } else if (pos instanceof BlockHitResult) {
-                    BlockHitResult blockResult = (BlockHitResult) pos;
+                } else if (pos instanceof BlockHitResult blockResult) {
 
                     if (!AEConfig.instance().isMatterCanonBlockDamageEnabled()) {
                         penetration = 0;

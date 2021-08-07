@@ -37,7 +37,7 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
     @Override
     protected ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
-        if (i instanceof MatterCannonItem) {
+        if (i instanceof MatterCannonItem tm) {
             final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
@@ -46,8 +46,6 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
                     dir = d;
                 }
             }
-
-            final MatterCannonItem tm = (MatterCannonItem) i;
 
             final Level level = dispenser.getLevel();
             if (level instanceof ServerLevel) {

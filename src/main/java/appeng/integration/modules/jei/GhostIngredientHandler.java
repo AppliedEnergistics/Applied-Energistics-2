@@ -63,11 +63,9 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
     @SuppressWarnings("unchecked")
     private static <I> void addItemStackTargets(AEBaseScreen<?> gui, List<Target<I>> targets) {
         for (Slot slot : gui.getMenu().slots) {
-            if (!(slot instanceof AppEngSlot)) {
+            if (!(slot instanceof AppEngSlot appEngSlot)) {
                 continue;
             }
-
-            AppEngSlot appEngSlot = (AppEngSlot) slot;
 
             if (!appEngSlot.isSlotEnabled()) {
                 continue;

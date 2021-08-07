@@ -96,8 +96,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T extends IAEStack<T>> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
-        if (slot instanceof RepoSlot) {
-            RepoSlot<?> repoSlot = (RepoSlot<?>) slot;
+        if (slot instanceof RepoSlot<?>repoSlot) {
             if (repoSlot.repo == repo) {
                 return (RepoSlot<T>) repoSlot;
             }

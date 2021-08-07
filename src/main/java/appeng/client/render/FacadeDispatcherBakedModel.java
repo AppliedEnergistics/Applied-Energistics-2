@@ -51,11 +51,9 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
-                if (!(stack.getItem() instanceof FacadeItem)) {
+                if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
                     return originalModel;
                 }
-
-                FacadeItem itemFacade = (FacadeItem) stack.getItem();
 
                 ItemStack textureItem = itemFacade.getTextureItem(stack);
 

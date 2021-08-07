@@ -94,32 +94,23 @@ public class ConfigValuePacket extends BasePacket {
             final ItemStack is = player.getItemInHand(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingMenu) {
-            final CraftingCPUCyclingMenu qk = (CraftingCPUCyclingMenu) c;
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingMenu qk) {
             qk.cycleSelectedCPU(this.Value.equals("Next"));
-        } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmMenu) {
-            final CraftConfirmMenu qk = (CraftConfirmMenu) c;
+        } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmMenu qk) {
             qk.startJob();
-        } else if (this.Name.equals("TileCrafting.Cancel") && c instanceof CraftingCPUMenu) {
-            final CraftingCPUMenu qk = (CraftingCPUMenu) c;
+        } else if (this.Name.equals("TileCrafting.Cancel") && c instanceof CraftingCPUMenu qk) {
             qk.cancelCrafting();
-        } else if (this.Name.equals("QuartzKnife.Name") && c instanceof QuartzKnifeMenu) {
-            final QuartzKnifeMenu qk = (QuartzKnifeMenu) c;
+        } else if (this.Name.equals("QuartzKnife.Name") && c instanceof QuartzKnifeMenu qk) {
             qk.setName(this.Value);
-        } else if (this.Name.equals("TileSecurityStation.ToggleOption") && c instanceof SecurityStationMenu) {
-            final SecurityStationMenu sc = (SecurityStationMenu) c;
+        } else if (this.Name.equals("TileSecurityStation.ToggleOption") && c instanceof SecurityStationMenu sc) {
             sc.toggleSetting(this.Value, player);
-        } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityMenu) {
-            final PriorityMenu pc = (PriorityMenu) c;
+        } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityMenu pc) {
             pc.setPriority(Integer.parseInt(this.Value));
-        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof ItemLevelEmitterMenu) {
-            final ItemLevelEmitterMenu lvc = (ItemLevelEmitterMenu) c;
+        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof ItemLevelEmitterMenu lvc) {
             lvc.setReportingValue(Long.parseLong(this.Value));
-        } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterMenu) {
-            final FluidLevelEmitterMenu lvc = (FluidLevelEmitterMenu) c;
+        } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterMenu lvc) {
             lvc.setReportingValue(Long.parseLong(this.Value));
-        } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermMenu) {
-            final PatternTermMenu cpt = (PatternTermMenu) c;
+        } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermMenu cpt) {
             if (this.Name.equals("PatternTerminal.CraftMode")) {
                 cpt.getPatternTerminal().setCraftingRecipe(this.Value.equals("1"));
             } else if (this.Name.equals("PatternTerminal.Encode")) {
@@ -145,8 +136,7 @@ public class ConfigValuePacket extends BasePacket {
                     }
                 }
             }
-        } else if (this.Name.startsWith("CellWorkbench.") && c instanceof CellWorkbenchMenu) {
-            final CellWorkbenchMenu ccw = (CellWorkbenchMenu) c;
+        } else if (this.Name.startsWith("CellWorkbench.") && c instanceof CellWorkbenchMenu ccw) {
             if (this.Name.equals("CellWorkbench.Action")) {
                 if (this.Value.equals("CopyMode")) {
                     ccw.nextWorkBenchCopyMode();

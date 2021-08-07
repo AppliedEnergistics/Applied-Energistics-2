@@ -61,10 +61,9 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
     @Override
     public final IRecipeTransferError transferRecipe(T menu, Object recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer, boolean doTransfer) {
-        if (!(recipe instanceof Recipe)) {
+        if (!(recipe instanceof Recipe<?>irecipe)) {
             return this.helper.createInternalError();
         }
-        final Recipe<?> irecipe = (Recipe<?>) recipe;
         final ResourceLocation recipeId = irecipe.getId();
 
         if (recipeId == null) {

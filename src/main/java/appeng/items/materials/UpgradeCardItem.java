@@ -87,8 +87,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
             }
 
             ItemStack heldStack = player.getItemInHand(hand);
-            if (upgrades != null && !heldStack.isEmpty() && heldStack.getItem() instanceof IUpgradeModule) {
-                final IUpgradeModule um = (IUpgradeModule) heldStack.getItem();
+            if (upgrades != null && !heldStack.isEmpty() && heldStack.getItem() instanceof IUpgradeModule um) {
                 final Upgrades u = um.getType(heldStack);
 
                 if (u != null) {

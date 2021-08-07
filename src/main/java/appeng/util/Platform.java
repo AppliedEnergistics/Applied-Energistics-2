@@ -309,8 +309,7 @@ public class Platform {
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
-        if (o instanceof AEItemStack) {
-            final AEItemStack ais = (AEItemStack) o;
+        if (o instanceof AEItemStack ais) {
             return ais.getToolTip();
         } else if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;

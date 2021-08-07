@@ -300,37 +300,32 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             cm.readFromNBT(compound);
         }
 
-        if (this instanceof IPriorityHost) {
-            final IPriorityHost pHost = (IPriorityHost) this;
+        if (this instanceof IPriorityHost pHost) {
             pHost.setPriority(compound.getInt("priority"));
         }
 
         final IItemHandler inv = this.getInventoryByName("config");
-        if (inv instanceof AppEngInternalAEInventory) {
-            final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+        if (inv instanceof AppEngInternalAEInventory target) {
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
             tmp.readFromNBT(compound, "config");
             for (int x = 0; x < tmp.getSlots(); x++) {
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
-            if (this instanceof LevelEmitterPart) {
-                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+            if (this instanceof LevelEmitterPart partLevelEmitter) {
                 partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
             }
         }
 
         if (this instanceof IConfigurableFluidInventory) {
             final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory) {
-                final AEFluidInventory target = (AEFluidInventory) tank;
+            if (tank instanceof AEFluidInventory target) {
                 final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
                 for (int x = 0; x < tmp.getSlots(); x++) {
                     target.setFluidInSlot(x, tmp.getFluidInSlot(x));
                 }
             }
-            if (this instanceof FluidLevelEmitterPart) {
-                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+            if (this instanceof FluidLevelEmitterPart fluidLevelEmitterPart) {
                 fluidLevelEmitterPart.setReportingValue(compound.getLong("reportingValue"));
             }
         }
@@ -350,16 +345,14 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             cm.writeToNBT(output);
         }
 
-        if (this instanceof IPriorityHost) {
-            final IPriorityHost pHost = (IPriorityHost) this;
+        if (this instanceof IPriorityHost pHost) {
             output.putInt("priority", pHost.getPriority());
         }
 
         final IItemHandler inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
-            if (this instanceof LevelEmitterPart) {
-                final LevelEmitterPart partLevelEmitter = (LevelEmitterPart) this;
+            if (this instanceof LevelEmitterPart partLevelEmitter) {
                 output.putLong("reportingValue", partLevelEmitter.getReportingValue());
             }
         }
@@ -367,8 +360,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         if (this instanceof IConfigurableFluidInventory) {
             final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
             ((AEFluidInventory) tank).writeToNBT(output, "config");
-            if (this instanceof FluidLevelEmitterPart) {
-                final FluidLevelEmitterPart fluidLevelEmitterPart = (FluidLevelEmitterPart) this;
+            if (this instanceof FluidLevelEmitterPart fluidLevelEmitterPart) {
                 output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());
             }
         }
@@ -382,8 +374,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     private boolean useMemoryCard(final Player player) {
         final ItemStack memCardIS = player.getInventory().getSelected();
 
-        if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
-            final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
+        if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
+                && memCardIS.getItem() instanceof IMemoryCard memoryCard) {
 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 

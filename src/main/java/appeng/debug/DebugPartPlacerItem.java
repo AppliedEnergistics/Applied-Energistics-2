@@ -72,12 +72,11 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         BlockEntity te = level.getBlockEntity(pos);
-        if (!(te instanceof IPartHost)) {
+        if (!(te instanceof IPartHost center)) {
             player.sendMessage(new TextComponent("Right-click something that will accept parts"),
                     Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
-        IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
             player.sendMessage(new TextComponent("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
@@ -105,11 +104,10 @@ public class DebugPartPlacerItem extends AEBaseItem {
             }
 
             BlockEntity t = level.getBlockEntity(nextPos);
-            if (!(t instanceof IPartHost)) {
+            if (!(t instanceof IPartHost partHost)) {
                 continue;
             }
 
-            IPartHost partHost = (IPartHost) t;
             if (partHost.addPart(cable.getItemStack(PartItemStack.PICK), AEPartLocation.INTERNAL, player,
                     null) == null) {
                 continue;

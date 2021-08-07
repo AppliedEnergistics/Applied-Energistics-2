@@ -50,7 +50,7 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
                 .hasPermissions(new DimensionalBlockPos(level, pos), p)) {
 
             Block block = level.getBlockState(pos).getBlock();
-            if (block instanceof AEBaseBlock) {
+            if (block instanceof AEBaseBlock aeBlock) {
                 if (level.isClientSide()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
@@ -58,7 +58,6 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
                             : InteractionResult.PASS;
                 }
 
-                AEBaseBlock aeBlock = (AEBaseBlock) block;
                 if (aeBlock.rotateAroundFaceAxis(level, pos, context.getClickedFace())) {
                     p.swing(context.getHand());
                     return !level.isClientSide() ? InteractionResult.sidedSuccess(level.isClientSide())

@@ -39,8 +39,7 @@ public class CraftingMonitorInfoProvider implements IBlockEntityInfoProvider {
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
             Level level, BlockState blockState, IProbeHitData data) {
-        if (blockEntity instanceof CraftingMonitorBlockEntity) {
-            final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) blockEntity;
+        if (blockEntity instanceof CraftingMonitorBlockEntity monitor) {
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {

@@ -65,8 +65,7 @@ public final class AESubScreen {
             IPriorityHost priorityHost = (IPriorityHost) menuHost;
             this.previousMenuIcon = priorityHost.getItemStackRepresentation();
             this.previousMenuType = ChestMenu.TYPE;
-        } else if (menuHost instanceof IPriorityHost) {
-            IPriorityHost priorityHost = (IPriorityHost) menuHost;
+        } else if (menuHost instanceof IPriorityHost priorityHost) {
             this.previousMenuIcon = priorityHost.getItemStackRepresentation();
             this.previousMenuType = priorityHost.getMenuType();
         } else if (menuHost instanceof WirelessTerminalGuiObject) {

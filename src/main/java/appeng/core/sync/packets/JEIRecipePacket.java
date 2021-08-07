@@ -268,8 +268,7 @@ public class JEIRecipePacket extends BasePacket {
 
         // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
         // matrix
-        if (recipe instanceof IShapedRecipe) {
-            IShapedRecipe<?> shapedRecipe = (IShapedRecipe<?>) recipe;
+        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
             int width = shapedRecipe.getRecipeWidth();
             int height = shapedRecipe.getRecipeHeight();
             Preconditions.checkArgument(width <= 3 && height <= 3);
@@ -347,8 +346,7 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     private void handleProcessing(AbstractContainerMenu con, IMenuCraftingPacket cct, Recipe<?> recipe) {
-        if (con instanceof PatternTermMenu) {
-            PatternTermMenu patternTerm = (PatternTermMenu) con;
+        if (con instanceof PatternTermMenu patternTerm) {
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());

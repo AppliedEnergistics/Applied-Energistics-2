@@ -122,9 +122,8 @@ public class PartModelsHelper {
             locations.add((ResourceLocation) value);
         } else if (value instanceof IPartModel) {
             locations.addAll(((IPartModel) value).getModels());
-        } else if (value instanceof Collection) {
+        } else if (value instanceof Collection<?>values) {
             // Check that each object is an IPartModel
-            Collection<?> values = (Collection<?>) value;
             for (Object candidate : values) {
                 if (!(candidate instanceof IPartModel)) {
                     AELog.error("List of locations obtained from {} contains a non resource location: {}", source,

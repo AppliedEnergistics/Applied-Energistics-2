@@ -235,8 +235,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     @Override
     protected Slot addSlot(final Slot newSlot) {
-        if (newSlot instanceof AppEngSlot) {
-            final AppEngSlot s = (AppEngSlot) newSlot;
+        if (newSlot instanceof AppEngSlot s) {
             s.setMenu(this);
         }
         return super.addSlot(newSlot);

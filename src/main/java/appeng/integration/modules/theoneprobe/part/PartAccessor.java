@@ -33,10 +33,9 @@ import appeng.api.parts.SelectedPart;
 public final class PartAccessor {
 
     public Optional<IPart> getMaybePart(final BlockEntity te, final IProbeHitData data) {
-        if (te instanceof IPartHost) {
+        if (te instanceof IPartHost host) {
             BlockPos pos = data.getPos();
             final Vec3 position = data.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
-            final IPartHost host = (IPartHost) te;
             final SelectedPart sp = host.selectPart(position);
 
             if (sp.part != null) {

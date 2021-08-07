@@ -231,8 +231,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level.isClientSide()) {
             final HitResult rtr = Minecraft.getInstance().hitResult;
-            if (rtr instanceof BlockHitResult) {
-                BlockHitResult brtr = (BlockHitResult) rtr;
+            if (rtr instanceof BlockHitResult brtr) {
                 if (brtr.getBlockPos().equals(pos)) {
                     final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
 
@@ -376,11 +375,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                         .getBlockModel(defaultBlockState());
 
                 // We cannot add the effect if we don't have the model
-                if (!(model instanceof CableBusBakedModel)) {
+                if (!(model instanceof CableBusBakedModel cableBusModel)) {
                     return true;
                 }
-
-                CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
 
                 CableBusRenderState renderState = cb.getRenderState();
 
@@ -409,11 +406,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                         .getBlockModel(defaultBlockState());
 
                 // We cannot add the effect if we dont have the model
-                if (!(model instanceof CableBusBakedModel)) {
+                if (!(model instanceof CableBusBakedModel cableBusModel)) {
                     return true;
                 }
-
-                CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
 
                 CableBusRenderState renderState = cb.getRenderState();
 
