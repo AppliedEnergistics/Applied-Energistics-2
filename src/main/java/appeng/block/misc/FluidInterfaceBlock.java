@@ -32,8 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.FluidInterfaceBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.util.InteractionUtil;
 
@@ -53,8 +53,8 @@ public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEn
         final BlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(FluidInterfaceMenu.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(FluidInterfaceMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

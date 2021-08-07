@@ -60,14 +60,14 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
         }
     }
 
-    public static MultipleValuesMatcher<?> create(StateDefinition<?, ?> stateContainer, String propertyName,
+    public static MultipleValuesMatcher<?> create(StateDefinition<?, ?> stateDefinition, String propertyName,
             List<String> values) {
-        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+        Property<?> property = PropertyUtils.getRequiredProperty(stateDefinition, propertyName);
         return new MultipleValuesMatcher<>(property, values);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static MultipleValuesMatcher<?> readFromPacket(StateDefinition<?, ?> stateContainer,
+    public static MultipleValuesMatcher<?> readFromPacket(StateDefinition<?, ?> stateDefinition,
             FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         int size = buffer.readInt();
@@ -76,7 +76,7 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
             values.add(buffer.readUtf());
         }
 
-        return create(stateContainer, propertyName, values);
+        return create(stateDefinition, propertyName, values);
     }
 
 }

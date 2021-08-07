@@ -33,7 +33,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvider {
 
-    public static final MenuType<VibrationChamberMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<VibrationChamberMenu> TYPE = MenuTypeBuilder
             .create(VibrationChamberMenu::new, VibrationChamberBlockEntity.class)
             .build("vibrationchamber");
 

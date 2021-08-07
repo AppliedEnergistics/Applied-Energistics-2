@@ -27,14 +27,14 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingStatusScreen
  */
-public class CraftingStatusMenu extends CraftingCPUMenu implements CraftingCPUCyclingContainer {
+public class CraftingStatusMenu extends CraftingCPUMenu implements CraftingCPUCyclingMenu {
 
-    public static final MenuType<CraftingStatusMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingStatusMenu> TYPE = MenuTypeBuilder
             .create(CraftingStatusMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingstatus");

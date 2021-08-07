@@ -32,7 +32,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class QNBMenu extends AEBaseMenu {
 
-    public static final MenuType<QNBMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<QNBMenu> TYPE = MenuTypeBuilder
             .create(QNBMenu::new, QuantumBridgeBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("qnb");

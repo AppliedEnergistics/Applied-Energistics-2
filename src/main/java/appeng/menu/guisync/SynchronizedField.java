@@ -27,7 +27,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 /**
- * This class is responsible for synchronizing Container-fields from server to client.
+ * This class is responsible for synchronizing menu-fields from server to client.
  */
 public abstract class SynchronizedField<T> {
 

@@ -37,7 +37,7 @@ import appeng.util.fluid.IAEFluidTank;
  */
 public class FluidInterfaceMenu extends FluidConfigurableMenu {
 
-    public static final MenuType<FluidInterfaceMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidInterfaceMenu> TYPE = MenuTypeBuilder
             .create(FluidInterfaceMenu::new, IFluidInterfaceHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_interface");

@@ -32,13 +32,13 @@ import appeng.helpers.IPriorityHost;
  */
 public class PriorityMenu extends AEBaseMenu {
 
-    public static final MenuType<PriorityMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<PriorityMenu> TYPE = MenuTypeBuilder
             .create(PriorityMenu::new, IPriorityHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarInt(host.getPriority());
-            }, (host, container, buffer) -> {
-                container.priorityValue = buffer.readVarInt();
+            }, (host, menu, buffer) -> {
+                menu.priorityValue = buffer.readVarInt();
             })
             .build("priority");
 

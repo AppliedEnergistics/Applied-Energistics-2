@@ -46,14 +46,14 @@ import appeng.core.localization.GuiText;
  */
 public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T> {
 
-    public UpgradeableScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+    public UpgradeableScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
 
         this.widgets.add("upgrades", new UpgradesPanel(
-                container.getSlots(SlotSemantic.UPGRADE),
+                menu.getSlots(SlotSemantic.UPGRADE),
                 this::getCompatibleUpgrades));
-        if (container.hasToolbox()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style, container.getToolboxName()));
+        if (menu.hasToolbox()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolboxName()));
         }
     }
 

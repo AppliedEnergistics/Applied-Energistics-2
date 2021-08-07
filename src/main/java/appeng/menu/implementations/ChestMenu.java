@@ -32,7 +32,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ChestMenu extends AEBaseMenu {
 
-    public static final MenuType<ChestMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ChestMenu> TYPE = MenuTypeBuilder
             .create(ChestMenu::new, ChestBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("chest");

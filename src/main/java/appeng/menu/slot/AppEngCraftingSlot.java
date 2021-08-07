@@ -85,7 +85,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
         CraftingEvent.fireCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
         this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(playerIn);
-        final CraftingContainer ic = new CraftingContainer(this.getContainer(), 3, 3);
+        final CraftingContainer ic = new CraftingContainer(this.getMenu(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.getSlots(); x++) {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));

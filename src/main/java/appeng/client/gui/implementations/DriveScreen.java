@@ -27,9 +27,9 @@ import appeng.menu.implementations.DriveMenu;
 
 public class DriveScreen extends AEBaseScreen<DriveMenu> {
 
-    public DriveScreen(DriveMenu container, Inventory playerInventory, Component title,
+    public DriveScreen(DriveMenu menu, Inventory playerInventory, Component title,
                        ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
     }

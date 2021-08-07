@@ -41,9 +41,9 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
 
     private EditBox name;
 
-    public QuartzKnifeScreen(QuartzKnifeMenu container, Inventory playerInventory, Component title,
+    public QuartzKnifeScreen(QuartzKnifeMenu menu, Inventory playerInventory, Component title,
                              ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
     }
 
     @Override

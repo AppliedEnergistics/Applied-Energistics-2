@@ -40,9 +40,9 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
     // "Progress-bar" that indicates the energy generation rate
     private final ProgressBar generationRateBar;
 
-    public VibrationChamberScreen(VibrationChamberMenu container, Inventory playerInventory,
+    public VibrationChamberScreen(VibrationChamberMenu menu, Inventory playerInventory,
                                   Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
                 Direction.VERTICAL);

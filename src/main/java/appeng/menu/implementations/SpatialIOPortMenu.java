@@ -36,7 +36,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class SpatialIOPortMenu extends AEBaseMenu {
 
-    public static final MenuType<SpatialIOPortMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<SpatialIOPortMenu> TYPE = MenuTypeBuilder
             .create(SpatialIOPortMenu::new, SpatialIOPortBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialioport");

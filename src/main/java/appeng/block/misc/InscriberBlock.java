@@ -33,8 +33,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.util.InteractionUtil;
 
@@ -58,8 +58,8 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
             final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {
                 if (!level.isClientSide()) {
-                    ContainerOpener.openContainer(InscriberMenu.TYPE, p,
-                            ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                    MenuOpener.open(InscriberMenu.TYPE, p,
+                            MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide());
             }

@@ -40,15 +40,15 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     private final NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterMenu container, Inventory playerInventory,
+    public FluidLevelEmitterScreen(FluidLevelEmitterMenu menu, Inventory playerInventory,
                                    Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
 
         this.level = new NumberEntryWidget(NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);

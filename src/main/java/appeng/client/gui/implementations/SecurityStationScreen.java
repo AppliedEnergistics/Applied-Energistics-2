@@ -47,9 +47,9 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
 
     private final Blitter encodingBg;
 
-    public SecurityStationScreen(SecurityStationMenu container,
+    public SecurityStationScreen(SecurityStationMenu menu,
                                  Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         encodingBg = style.getImage("encoding");
 

@@ -56,7 +56,7 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
@@ -105,7 +105,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 .setIdlePowerUsage(0.0)
                 .addService(IGridTickable.class, this);
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
-        this.craftingInv = new CraftingContainer(new ContainerNull(), 3, 3);
+        this.craftingInv = new CraftingContainer(new NullMenu(), 3, 3);
 
     }
 

@@ -31,9 +31,9 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
     private final ProgressBar pb;
 
-    public InscriberScreen(InscriberMenu container, Inventory playerInventory, Component title,
+    public InscriberScreen(InscriberMenu menu, Inventory playerInventory, Component title,
                            ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);

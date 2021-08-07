@@ -30,9 +30,9 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortMenu> {
 
-    public SpatialIOPortScreen(SpatialIOPortMenu container, Inventory playerInventory,
+    public SpatialIOPortScreen(SpatialIOPortMenu menu, Inventory playerInventory,
                                Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
 

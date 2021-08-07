@@ -28,7 +28,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.core.sync.packets.NetworkStatusPacket;
 
 /**
@@ -36,7 +36,7 @@ import appeng.core.sync.packets.NetworkStatusPacket;
  */
 public class NetworkStatusMenu extends AEBaseMenu {
 
-    public static final MenuType<NetworkStatusMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<NetworkStatusMenu> TYPE = MenuTypeBuilder
             .create(NetworkStatusMenu::new, INetworkTool.class)
             .build("networkstatus");
 
@@ -54,7 +54,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
         }
 
         if (this.grid == null && isServer()) {
-            this.setValidContainer(false);
+            this.setValidMenu(false);
         }
     }
 

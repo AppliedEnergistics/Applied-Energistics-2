@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * This utility class helps containers that need to send a list of information that is grouped by
+ * This utility class helps menus that need to send a list of information that is grouped by
  * {@link appeng.api.storage.data.IAEItemStack} to the client and keep it updated, without having to resend the
  * {@link appeng.api.storage.data.IAEItemStack} everytime. This can be especially important if the item stack is
  * serialized using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's

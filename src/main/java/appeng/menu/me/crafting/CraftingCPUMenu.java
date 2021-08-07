@@ -36,7 +36,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
@@ -47,10 +47,10 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
  */
 public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    public static final MenuType<CraftingCPUMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder
             .create(CraftingCPUMenu::new, CraftingBlockEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
-            .withContainerTitle(craftingBlockEntity -> {
+            .withMenuTitle(craftingBlockEntity -> {
                 // Use the cluster's custom name instead of the right-clicked block entities one
                 CraftingCPUCluster cluster = craftingBlockEntity.getCluster();
                 if (cluster != null && cluster.getName() != null) {
@@ -79,7 +79,7 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
         }
 
         if (this.getGrid() == null && isServer()) {
-            this.setValidContainer(false);
+            this.setValidMenu(false);
         }
     }
 

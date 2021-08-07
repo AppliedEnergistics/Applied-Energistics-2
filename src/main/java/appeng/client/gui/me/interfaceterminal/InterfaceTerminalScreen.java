@@ -136,9 +136,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
     private AETextField searchField;
     private int numLines = 0;
 
-    public InterfaceTerminalScreen(InterfaceTerminalMenu container, Inventory playerInventory,
+    public InterfaceTerminalScreen(InterfaceTerminalMenu menu, Inventory playerInventory,
                                    Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;
 

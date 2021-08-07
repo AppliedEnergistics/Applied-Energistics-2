@@ -45,21 +45,21 @@ import appeng.helpers.IMenuCraftingPacket;
 abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
         implements IRecipeTransferHandler<T> {
 
-    private final Class<T> containerClass;
+    private final Class<T> menuClass;
     protected final IRecipeTransferHandlerHelper helper;
 
-    RecipeTransferHandler(Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
-        this.containerClass = containerClass;
+    RecipeTransferHandler(Class<T> menuClass, IRecipeTransferHandlerHelper helper) {
+        this.menuClass = menuClass;
         this.helper = helper;
     }
 
     @Override
     public final Class<T> getContainerClass() {
-        return this.containerClass;
+        return this.menuClass;
     }
 
     @Override
-    public final IRecipeTransferError transferRecipe(T container, Object recipe, IRecipeLayout recipeLayout,
+    public final IRecipeTransferError transferRecipe(T menu, Object recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer, boolean doTransfer) {
         if (!(recipe instanceof Recipe)) {
             return this.helper.createInternalError();
@@ -89,7 +89,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
                     new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
         }
 
-        final IRecipeTransferError error = doTransferRecipe(container, irecipe, recipeLayout, player, maxTransfer);
+        final IRecipeTransferError error = doTransferRecipe(menu, irecipe, recipeLayout, player, maxTransfer);
 
         if (doTransfer && this.canTransfer(error)) {
             if (canSendReference) {
@@ -132,7 +132,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
         return error;
     }
 
-    protected abstract IRecipeTransferError doTransferRecipe(T container, Recipe<?> recipe, IRecipeLayout recipeLayout,
+    protected abstract IRecipeTransferError doTransferRecipe(T menu, Recipe<?> recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer);
 
     protected abstract boolean isCrafting();

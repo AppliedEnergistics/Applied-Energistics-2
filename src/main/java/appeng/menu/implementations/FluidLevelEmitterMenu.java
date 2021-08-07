@@ -31,13 +31,13 @@ import appeng.util.fluid.IAEFluidTank;
 
 public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
 
-    public static final MenuType<FluidLevelEmitterMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(FluidLevelEmitterMenu::new, FluidLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
-            }, (host, container, buffer) -> {
-                container.reportingValue = buffer.readVarLong();
+            }, (host, menu, buffer) -> {
+                menu.reportingValue = buffer.readVarLong();
             })
             .build("fluid_level_emitter");
 

@@ -41,7 +41,7 @@ import appeng.me.service.StatisticsService;
  */
 public class SpatialAnchorMenu extends AEBaseMenu {
 
-    public static final MenuType<SpatialAnchorMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<SpatialAnchorMenu> TYPE = MenuTypeBuilder
             .create(SpatialAnchorMenu::new, SpatialAnchorBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("spatialanchor");

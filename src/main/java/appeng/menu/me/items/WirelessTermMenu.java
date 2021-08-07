@@ -22,7 +22,7 @@ import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -32,7 +32,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
  */
 public class WirelessTermMenu extends MEPortableCellMenu {
 
-    public static final MenuType<WirelessTermMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<WirelessTermMenu> TYPE = MenuTypeBuilder
             .create(WirelessTermMenu::new, WirelessTerminalGuiObject.class)
             .build("wirelessterm");
 
@@ -48,11 +48,11 @@ public class WirelessTermMenu extends MEPortableCellMenu {
         super.broadcastChanges();
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (isServer() && this.isValidContainer()) {
+            if (isServer() && this.isValidMenu()) {
                 this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
             }
 
-            this.setValidContainer(false);
+            this.setValidMenu(false);
         } else {
             this.setPowerMultiplier(
                     AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));

@@ -34,7 +34,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -49,7 +49,7 @@ import appeng.util.fluid.FluidSoundHelper;
  */
 public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
 
-    public static final MenuType<FluidTerminalMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidTerminalMenu> TYPE = MenuTypeBuilder
             .create(FluidTerminalMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_terminal");

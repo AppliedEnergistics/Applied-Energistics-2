@@ -27,12 +27,12 @@ final class PropertyUtils {
     private PropertyUtils() {
     }
 
-    static Property<?> getRequiredProperty(StateDefinition<?, ?> stateContainer, String name) {
-        Objects.requireNonNull(stateContainer, "stateContainer must not be null");
+    static Property<?> getRequiredProperty(StateDefinition<?, ?> stateDefinition, String name) {
+        Objects.requireNonNull(stateDefinition, "stateDefinition must not be null");
 
-        Property<?> property = stateContainer.getProperty(name);
+        Property<?> property = stateDefinition.getProperty(name);
         if (property == null) {
-            throw new IllegalArgumentException("Unknown property: " + name + " on " + stateContainer.getOwner());
+            throw new IllegalArgumentException("Unknown property: " + name + " on " + stateDefinition.getOwner());
         }
         return property;
     }

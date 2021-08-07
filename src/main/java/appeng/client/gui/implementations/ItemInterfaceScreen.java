@@ -38,9 +38,9 @@ public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
     private final SettingToggleButton<YesNo> blockMode;
     private final ToggleButton interfaceMode;
 
-    public ItemInterfaceScreen(ItemInterfaceMenu container, Inventory playerInventory, Component title,
+    public ItemInterfaceScreen(ItemInterfaceMenu menu, Inventory playerInventory, Component title,
                                ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
 

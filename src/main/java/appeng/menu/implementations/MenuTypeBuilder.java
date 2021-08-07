@@ -47,8 +47,8 @@ import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -59,15 +59,15 @@ import appeng.util.Platform;
 /**
  * Builder that allows creation of menu types which can be opened from multiple types of hosts.
  *
- * @param <C>
+ * @param <M>
  */
-public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
+public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     private final Class<I> hostInterface;
 
-    private final ContainerFactory<C, I> factory;
+    private final MenuFactory<M, I> factory;
 
-    private Function<I, Component> containerTitleStrategy = this::getDefaultContainerTitle;
+    private Function<I, Component> menuTitleStrategy = this::getDefaultMenuTitle;
 
     @Nullable
     private SecurityPermissions requiredPermission;
@@ -76,35 +76,35 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
     private InitialDataSerializer<I> initialDataSerializer;
 
     @Nullable
-    private InitialDataDeserializer<C, I> initialDataDeserializer;
+    private InitialDataDeserializer<M, I> initialDataDeserializer;
 
-    private MenuType<C> menuType;
+    private MenuType<M> menuType;
 
-    private ContainerTypeBuilder(Class<I> hostInterface, TypedContainerFactory<C, I> typedFactory) {
+    private MenuTypeBuilder(Class<I> hostInterface, TypedMenuFactory<M, I> typedFactory) {
         this.hostInterface = hostInterface;
         this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(menuType, windowId, playerInv,
                 accessObj);
     }
 
-    private ContainerTypeBuilder(Class<I> hostInterface, ContainerFactory<C, I> factory) {
+    private MenuTypeBuilder(Class<I> hostInterface, MenuFactory<M, I> factory) {
         this.hostInterface = hostInterface;
         this.factory = factory;
     }
 
-    public static <C extends AEBaseMenu, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory,
-                                                                              Class<I> hostInterface) {
-        return new ContainerTypeBuilder<>(hostInterface, factory);
+    public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(MenuFactory<C, I> factory,
+                                                                         Class<I> hostInterface) {
+        return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
-    public static <C extends AEBaseMenu, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory,
-                                                                              Class<I> hostInterface) {
-        return new ContainerTypeBuilder<>(hostInterface, factory);
+    public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(TypedMenuFactory<C, I> factory,
+                                                                         Class<I> hostInterface) {
+        return new MenuTypeBuilder<>(hostInterface, factory);
     }
 
     /**
      * Requires that the player has a certain permission on the block entity to open the menu.
      */
-    public ContainerTypeBuilder<C, I> requirePermission(SecurityPermissions permission) {
+    public MenuTypeBuilder<M, I> requirePermission(SecurityPermissions permission) {
         this.requiredPermission = permission;
         return this;
     }
@@ -114,8 +114,8 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
      * <p>
      * The stratgy should return {@link TextComponent#EMPTY} if there's no custom name.
      */
-    public ContainerTypeBuilder<C, I> withContainerTitle(Function<I, Component> containerTitleStrategy) {
-        this.containerTitleStrategy = containerTitleStrategy;
+    public MenuTypeBuilder<M, I> withMenuTitle(Function<I, Component> menuTitleStrategy) {
+        this.menuTitleStrategy = menuTitleStrategy;
         return this;
     }
 
@@ -123,8 +123,8 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
      * Sets a serializer and deserializer for additional data that should be transmitted from server->client when the
      * menu is being first opened.
      */
-    public ContainerTypeBuilder<C, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
-            InitialDataDeserializer<C, I> initialDataDeserializer) {
+    public MenuTypeBuilder<M, I> withInitialData(InitialDataSerializer<I> initialDataSerializer,
+                                                 InitialDataDeserializer<M, I> initialDataDeserializer) {
         this.initialDataSerializer = initialDataSerializer;
         this.initialDataDeserializer = initialDataDeserializer;
         return this;
@@ -134,21 +134,21 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
      * Opens a menu that is based around a single block entity. The block entity's position is encoded in the
      * packet buffer.
      */
-    private C fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
-        I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
+    private M fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
+        I host = getHostFromLocator(inv.player, MenuLocator.read(packetBuf));
         if (host != null) {
-            C container = factory.create(windowId, inv, host);
+            M menu = factory.create(windowId, inv, host);
             if (initialDataDeserializer != null) {
-                initialDataDeserializer.deserializeInitialData(host, container, packetBuf);
+                initialDataDeserializer.deserializeInitialData(host, menu, packetBuf);
             }
-            return container;
+            return menu;
         }
         return null;
     }
 
-    private boolean open(Player player, ContainerLocator locator) {
+    private boolean open(Player player, MenuLocator locator) {
         if (!(player instanceof ServerPlayer)) {
-            // Cannot open containers on the client or for non-players
+            // Cannot open menus on the client or for non-players
             // FIXME logging?
             return false;
         }
@@ -163,16 +163,16 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
             return false;
         }
 
-        Component title = containerTitleStrategy.apply(accessInterface);
+        Component title = menuTitleStrategy.apply(accessInterface);
 
-        MenuProvider container = new SimpleMenuProvider((wnd, p, pl) -> {
-            C c = factory.create(wnd, p, accessInterface);
+        MenuProvider menu = new SimpleMenuProvider((wnd, p, pl) -> {
+            M m = factory.create(wnd, p, accessInterface);
             // Set the original locator on the opened server-side menu for it to more
             // easily remember how to re-open after being closed.
-            c.setLocator(locator);
-            return c;
+            m.setLocator(locator);
+            return m;
         }, title);
-        NetworkHooks.openGui((ServerPlayer) player, container, buffer -> {
+        NetworkHooks.openGui((ServerPlayer) player, menu, buffer -> {
             locator.write(buffer);
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buffer);
@@ -182,7 +182,7 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
         return true;
     }
 
-    private I getHostFromLocator(Player player, ContainerLocator locator) {
+    private I getHostFromLocator(Player player, MenuLocator locator) {
         if (locator.hasItemIndex()) {
             return getHostFromPlayerInventory(player, locator);
         }
@@ -223,7 +223,7 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
         }
     }
 
-    private I getHostFromPlayerInventory(Player player, ContainerLocator locator) {
+    private I getHostFromPlayerInventory(Player player, MenuLocator locator) {
 
         ItemStack it = player.getInventory().getItem(locator.getItemIndex());
 
@@ -256,22 +256,22 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<C> build(String id) {
+    public MenuType<M> build(String id) {
         Preconditions.checkState(menuType == null, "build was already called");
 
         menuType = IForgeContainerType.create(this::fromNetwork);
         menuType.setRegistryName(AppEng.MOD_ID, id);
-        ContainerOpener.addOpener(menuType, this::open);
+        MenuOpener.addOpener(menuType, this::open);
         return menuType;
     }
 
     @FunctionalInterface
-    public interface ContainerFactory<C, I> {
+    public interface MenuFactory<C, I> {
         C create(int windowId, Inventory playerInv, I accessObj);
     }
 
     @FunctionalInterface
-    public interface TypedContainerFactory<C extends AbstractContainerMenu, I> {
+    public interface TypedMenuFactory<C extends AbstractContainerMenu, I> {
         C create(MenuType<C> type, int windowId, Inventory playerInv, I accessObj);
     }
 
@@ -290,7 +290,7 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
      */
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
-        void deserializeInitialData(I host, C container, FriendlyByteBuf buffer);
+        void deserializeInitialData(I host, C menu, FriendlyByteBuf buffer);
     }
 
     private boolean checkPermission(Player player, Object accessInterface) {
@@ -303,7 +303,7 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
 
     }
 
-    private Component getDefaultContainerTitle(I accessInterface) {
+    private Component getDefaultMenuTitle(I accessInterface) {
         if (accessInterface instanceof ICustomNameObject) {
             ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
             if (customNameObject.hasCustomInventoryName()) {

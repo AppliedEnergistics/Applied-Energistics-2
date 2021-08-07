@@ -47,9 +47,9 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
     private final SettingToggleButton<AccessRestriction> rwMode;
     private final SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusMenu container, Inventory playerInventory,
+    public FluidStorageBusScreen(FluidStorageBusMenu menu, Inventory playerInventory,
                                  Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         final IAEFluidTank config = this.menu.getFluidConfigInventory();
 
@@ -59,7 +59,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
                 if (y < 2) {
                     addSlot(new FluidSlotWidget(config, idx), SlotSemantic.CONFIG);
                 } else {
-                    addSlot(new OptionalFluidSlotWidget(config, container, idx, y - 2), SlotSemantic.CONFIG);
+                    addSlot(new OptionalFluidSlotWidget(config, menu, idx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }

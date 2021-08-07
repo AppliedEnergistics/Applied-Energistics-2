@@ -40,7 +40,7 @@ import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SecurityStationMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
-import appeng.menu.me.crafting.CraftingCPUCyclingContainer;
+import appeng.menu.me.crafting.CraftingCPUCyclingMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.core.sync.BasePacket;
@@ -94,8 +94,8 @@ public class ConfigValuePacket extends BasePacket {
             final ItemStack is = player.getItemInHand(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
-        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingContainer) {
-            final CraftingCPUCyclingContainer qk = (CraftingCPUCyclingContainer) c;
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingCPUCyclingMenu) {
+            final CraftingCPUCyclingMenu qk = (CraftingCPUCyclingMenu) c;
             qk.cycleSelectedCPU(this.Value.equals("Next"));
         } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmMenu) {
             final CraftConfirmMenu qk = (CraftConfirmMenu) c;

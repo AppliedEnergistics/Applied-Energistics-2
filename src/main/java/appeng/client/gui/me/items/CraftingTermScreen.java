@@ -32,11 +32,11 @@ import appeng.menu.me.items.CraftingTermMenu;
  */
 public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermMenu> {
 
-    public CraftingTermScreen(CraftingTermMenu container, Inventory playerInventory,
+    public CraftingTermScreen(CraftingTermMenu menu, Inventory playerInventory,
                               Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
-        ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());
+        ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> menu.clearCraftingGrid());
         clearBtn.setHalfSize(true);
         widgets.add("clearCraftingGrid", clearBtn);
     }

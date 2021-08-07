@@ -54,9 +54,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
     private final Scrollbar scrollbar;
 
-    public NetworkStatusScreen(NetworkStatusMenu container, Inventory playerInventory,
+    public NetworkStatusScreen(NetworkStatusMenu menu, Inventory playerInventory,
                                Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());

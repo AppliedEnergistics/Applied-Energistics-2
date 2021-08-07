@@ -36,9 +36,9 @@ public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
 
     private final SettingToggleButton<CondenserOutput> mode;
 
-    public CondenserScreen(CondenserMenu container, Inventory playerInventory, Component title,
+    public CondenserScreen(CondenserMenu menu, Inventory playerInventory, Component title,
                            ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.menu.getOutput());
         widgets.add("mode", this.mode);

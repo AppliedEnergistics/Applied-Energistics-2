@@ -41,10 +41,10 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.FakeCraftingMatrixSlot;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -70,7 +70,7 @@ import appeng.util.item.AEItemStack;
 public class PatternTermMenu extends ItemTerminalMenu
         implements IOptionalSlotHost, IMenuCraftingPacket {
 
-    public static MenuType<PatternTermMenu> TYPE = ContainerTypeBuilder
+    public static MenuType<PatternTermMenu> TYPE = MenuTypeBuilder
             .create(PatternTermMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
@@ -291,8 +291,8 @@ public class PatternTermMenu extends ItemTerminalMenu
                 return;
             }
 
-            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
-            final CraftingContainer real = new CraftingContainer(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
+            final CraftingContainer real = new CraftingContainer(new NullMenu(), 3, 3);
 
             for (int x = 0; x < 9; x++) {
                 ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY

@@ -109,8 +109,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
-    public AEBaseScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title);
+    public AEBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title);
 
         // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
         // in the init method

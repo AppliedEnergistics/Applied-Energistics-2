@@ -35,12 +35,12 @@ import appeng.util.fluid.IAEFluidTank;
  */
 public class FluidIOBusMenu extends FluidConfigurableMenu {
 
-    public static final MenuType<FluidIOBusMenu> EXPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidIOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(FluidIOBusMenu::new, FluidExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_export_bus");
 
-    public static final MenuType<FluidIOBusMenu> IMPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidIOBusMenu> IMPORT_TYPE = MenuTypeBuilder
             .create(FluidIOBusMenu::new, FluidImportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_import_bus");

@@ -29,7 +29,7 @@ import appeng.util.fluid.IAEFluidTank;
 
 public class FluidFormationPlaneMenu extends FluidConfigurableMenu {
 
-    public static final MenuType<FluidFormationPlaneMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidFormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(FluidFormationPlaneMenu::new, FluidFormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_formation_plane");

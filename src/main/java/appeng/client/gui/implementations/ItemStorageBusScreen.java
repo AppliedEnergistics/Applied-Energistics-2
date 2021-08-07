@@ -41,9 +41,9 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
     private final SettingToggleButton<StorageFilter> storageFilter;
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public ItemStorageBusScreen(ItemStorageBusMenu container, Inventory playerInventory, Component title,
+    public ItemStorageBusScreen(ItemStorageBusMenu menu, Inventory playerInventory, Component title,
                                 ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
 

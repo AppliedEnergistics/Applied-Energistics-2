@@ -43,13 +43,13 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
     private boolean initialAmountInitialized;
 
-    public CraftAmountScreen(CraftAmountMenu container, Inventory playerInventory, Component title,
+    public CraftAmountScreen(CraftAmountMenu menu, Inventory playerInventory, Component title,
                              ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);
 
-        AESubScreen subGui = new AESubScreen(container.getTarget());
+        AESubScreen subGui = new AESubScreen(menu.getTarget());
         subGui.addBackButton("back", widgets);
 
         this.amountToCraft = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);

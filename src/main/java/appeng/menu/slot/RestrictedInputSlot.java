@@ -87,12 +87,12 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     private Level getLevel() {
-        return getContainer().getPlayerInventory().player.getCommandSenderWorld();
+        return getMenu().getPlayerInventory().player.getCommandSenderWorld();
     }
 
     @Override
     public boolean mayPlace(final ItemStack stack) {
-        if (!this.getContainer().isValidForSlot(this, stack)) {
+        if (!this.getMenu().isValidForSlot(this, stack)) {
             return false;
         }
 

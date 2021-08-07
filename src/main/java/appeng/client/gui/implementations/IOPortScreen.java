@@ -40,9 +40,9 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
     private final SettingToggleButton<OperationMode> operationMode;
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public IOPortScreen(IOPortMenu container, Inventory playerInventory, Component title,
+    public IOPortScreen(IOPortMenu menu, Inventory playerInventory, Component title,
                         ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.fullMode = new ServerSettingToggleButton<>(Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);

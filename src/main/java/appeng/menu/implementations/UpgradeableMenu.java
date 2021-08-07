@@ -168,10 +168,10 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
                         this.getPlayerInventory().setItem(this.tbSlot,
                                 this.tbInventory.getItemStack());
                     } else {
-                        this.setValidContainer(false);
+                        this.setValidMenu(false);
                     }
                 } else {
-                    this.setValidContainer(false);
+                    this.setValidMenu(false);
                 }
             }
         }

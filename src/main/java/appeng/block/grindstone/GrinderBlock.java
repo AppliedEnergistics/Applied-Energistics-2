@@ -31,8 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.grindstone.GrinderBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.GrinderMenu;
 import appeng.util.InteractionUtil;
 
@@ -49,8 +49,8 @@ public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
         final GrinderBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(GrinderMenu.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(GrinderMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

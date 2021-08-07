@@ -48,16 +48,16 @@ class StateApplier<T extends Comparable<T>> {
         buffer.writeUtf(property.getName(value));
     }
 
-    static StateApplier<?> create(StateDefinition<?, ?> stateContainer, String propertyName, String value) {
-        Property<?> property = PropertyUtils.getRequiredProperty(stateContainer, propertyName);
+    static StateApplier<?> create(StateDefinition<?, ?> stateDefinition, String propertyName, String value) {
+        Property<?> property = PropertyUtils.getRequiredProperty(stateDefinition, propertyName);
         return new StateApplier<>(property, value);
     }
 
     @OnlyIn(Dist.CLIENT)
-    static StateApplier<?> readFromPacket(StateDefinition<?, ?> stateContainer, FriendlyByteBuf buffer) {
+    static StateApplier<?> readFromPacket(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();
-        return create(stateContainer, propertyName, value);
+        return create(stateDefinition, propertyName, value);
     }
 
 }

@@ -43,7 +43,7 @@ import appeng.items.misc.EncodedPatternItem;
  */
 public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgressProvider {
 
-    public static final MenuType<MolecularAssemblerMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<MolecularAssemblerMenu> TYPE = MenuTypeBuilder
             .create(MolecularAssemblerMenu::new, MolecularAssemblerBlockEntity.class)
             .build("molecular_assembler");
 

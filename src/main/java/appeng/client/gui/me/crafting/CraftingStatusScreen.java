@@ -38,12 +38,12 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
 
     private final Button selectCPU;
 
-    public CraftingStatusScreen(CraftingStatusMenu container, Inventory playerInventory,
+    public CraftingStatusScreen(CraftingStatusMenu menu, Inventory playerInventory,
                                 Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
-        AESubScreen subGui = new AESubScreen(container.getTarget());
+        AESubScreen subGui = new AESubScreen(menu.getTarget());
         subGui.addBackButton("back", widgets);
     }
 

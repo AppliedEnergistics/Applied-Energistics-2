@@ -41,7 +41,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.core.Api;
 import appeng.helpers.IMenuCraftingPacket;
@@ -63,7 +63,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
     private final IStorageMonitorable storage;
-    private final IMenuCraftingPacket container;
+    private final IMenuCraftingPacket menu;
 
     public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
             final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
@@ -74,7 +74,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         this.mySrc = mySrc;
         this.pattern = cMatrix;
         this.craftInv = secondMatrix;
-        this.container = ccp;
+        this.menu = ccp;
     }
 
     public IItemHandler getCraftingMatrix() {
@@ -110,12 +110,12 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getContainer()));
+            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getMenu()));
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else
         // pick up what was crafted...
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getContainer()));
+            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getMenu()));
             maxTimesToCraft = 1;
         }
 
@@ -148,12 +148,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
-        if (this.container instanceof CraftingTermMenu) {
-            final CraftingTermMenu containerTerminal = (CraftingTermMenu) this.container;
-            final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
+        if (this.menu instanceof final CraftingTermMenu terminalMenu) {
+            var recipe = terminalMenu.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, level)) {
-                return containerTerminal.getCurrentRecipe();
+                return terminalMenu.getCurrentRecipe();
             }
         }
 
@@ -164,12 +163,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // refactoring.
     @Override
     protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
-        if (this.container instanceof CraftingTermMenu) {
-            final CraftingTermMenu containerTerminal = (CraftingTermMenu) this.container;
-            final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
+        if (this.menu instanceof CraftingTermMenu terminalMenu) {
+            var recipe = terminalMenu.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, level)) {
-                return containerTerminal.getCurrentRecipe().getRemainingItems(ic);
+                return terminalMenu.getCurrentRecipe().getRemainingItems(ic);
             }
         }
 
@@ -193,7 +191,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             // add one of each item to the items on the board...
             Level level = p.level;
             if (!level.isClientSide()) {
-                final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
+                final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
                 for (int x = 0; x < 9; x++) {
                     ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
@@ -230,7 +228,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
                             set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
                                     this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
-                                    ViewCellItem.createFilter(this.container.getViewCells()));
+                                    ViewCellItem.createFilter(this.menu.getViewCells()));
                             ic.setItem(x, set[x]);
                         }
                     }

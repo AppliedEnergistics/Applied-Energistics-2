@@ -27,9 +27,9 @@ import appeng.menu.implementations.ChestMenu;
 
 public class ChestScreen extends AEBaseScreen<ChestMenu> {
 
-    public ChestScreen(ChestMenu container, Inventory playerInventory, Component title,
+    public ChestScreen(ChestMenu menu, Inventory playerInventory, Component title,
                        ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
     }

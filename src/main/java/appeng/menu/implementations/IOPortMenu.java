@@ -38,7 +38,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class IOPortMenu extends UpgradeableMenu {
 
-    public static final MenuType<IOPortMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<IOPortMenu> TYPE = MenuTypeBuilder
             .create(IOPortMenu::new, IOPortBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("ioport");

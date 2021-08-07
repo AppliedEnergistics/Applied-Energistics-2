@@ -50,7 +50,7 @@ public class FluidTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public MenuType<?> getContainerType(Player player) {
+    public MenuType<?> getMenuType(Player player) {
         return FluidTerminalMenu.TYPE;
     }
 

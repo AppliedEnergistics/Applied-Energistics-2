@@ -84,8 +84,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
-    private boolean isContainerValid = true;
-    private ContainerLocator locator;
+    private boolean menuValid = true;
+    private MenuLocator locator;
     private int ticksSinceCheck = 900;
 
     public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
@@ -146,7 +146,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         this.ticksSinceCheck = 0;
-        this.setValidContainer(this.isValidContainer() && this.hasAccess(security, requirePower));
+        this.setValidMenu(this.isValidMenu() && this.hasAccess(security, requirePower));
     }
 
     protected boolean hasAccess(final SecurityPermissions perm, final boolean requirePower) {
@@ -237,7 +237,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     protected Slot addSlot(final Slot newSlot) {
         if (newSlot instanceof AppEngSlot) {
             final AppEngSlot s = (AppEngSlot) newSlot;
-            s.setContainer(this);
+            s.setMenu(this);
         }
         return super.addSlot(newSlot);
     }
@@ -247,7 +247,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (isServer()) {
             if (this.blockEntity != null
                     && this.blockEntity.getLevel().getBlockEntity(this.blockEntity.getBlockPos()) != this.blockEntity) {
-                this.setValidContainer(false);
+                this.setValidMenu(false);
             }
 
             if (dataSync.hasChanges()) {
@@ -297,7 +297,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
             // Gather a list of valid destinations.
             if (playerSide) {
-                tis = this.transferStackToContainer(tis);
+                tis = this.transferStackToMenu(tis);
 
                 if (!tis.isEmpty()) {
                     // target slots in the menu...
@@ -431,7 +431,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(final Player PlayerEntity) {
-        if (this.isValidContainer()) {
+        if (this.isValidMenu()) {
             if (this.blockEntity instanceof Container) {
                 return ((Container) this.blockEntity).stillValid(PlayerEntity);
             }
@@ -552,7 +552,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     }
 
-    protected ItemStack transferStackToContainer(final ItemStack input) {
+    protected ItemStack transferStackToMenu(final ItemStack input) {
         return input;
     }
 
@@ -640,19 +640,19 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return true;
     }
 
-    public boolean isValidContainer() {
-        return this.isContainerValid;
+    public boolean isValidMenu() {
+        return this.menuValid;
     }
 
-    public void setValidContainer(final boolean isContainerValid) {
-        this.isContainerValid = isContainerValid;
+    public void setValidMenu(final boolean isContainerValid) {
+        this.menuValid = isContainerValid;
     }
 
-    public ContainerLocator getLocator() {
+    public MenuLocator getLocator() {
         return this.locator;
     }
 
-    public void setLocator(final ContainerLocator locator) {
+    public void setLocator(final MenuLocator locator) {
         this.locator = locator;
     }
 

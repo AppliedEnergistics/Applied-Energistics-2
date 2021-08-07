@@ -47,7 +47,7 @@ import appeng.parts.AEBasePart;
  * <li>An item held by the player.</li>
  * </ul>
  */
-public final class ContainerLocator {
+public final class MenuLocator {
 
     private enum Type {
         /**
@@ -69,12 +69,12 @@ public final class ContainerLocator {
     private final BlockPos blockPos;
     private final AEPartLocation side;
 
-    private ContainerLocator(Type type, int itemIndex, Level level, BlockPos blockPos, AEPartLocation side) {
+    private MenuLocator(Type type, int itemIndex, Level level, BlockPos blockPos, AEPartLocation side) {
         this(type, itemIndex, level.dimension().location(), blockPos, side);
     }
 
-    private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
-            AEPartLocation side) {
+    private MenuLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
+                        AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
         this.worldId = worldId;
@@ -82,39 +82,39 @@ public final class ContainerLocator {
         this.side = side;
     }
 
-    public static ContainerLocator forBlockEntity(BlockEntity te) {
+    public static MenuLocator forBlockEntity(BlockEntity te) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
-        return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
+        return new MenuLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
-    public static ContainerLocator forBlockEntitySide(BlockEntity te, Direction side) {
+    public static MenuLocator forBlockEntitySide(BlockEntity te, Direction side) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
-        return new ContainerLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
+        return new MenuLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
     }
 
     /**
      * Construct a menu locator for an item being used on a block. The item could still open a menu for
      * itself, but it might also open a special menu for the block being right-clicked.
      */
-    public static ContainerLocator forItemUseContext(UseOnContext context) {
+    public static MenuLocator forItemUseContext(UseOnContext context) {
         Player player = context.getPlayer();
         if (player == null) {
             throw new IllegalArgumentException("Cannot open a menu without a player");
         }
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
         AEPartLocation side = AEPartLocation.fromFacing(context.getClickedFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level,
+        return new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level,
                 context.getClickedPos(),
                 side);
     }
 
-    public static ContainerLocator forHand(Player player, InteractionHand hand) {
+    public static MenuLocator forHand(Player player, InteractionHand hand) {
         int slot = getPlayerInventorySlotFromHand(player, hand);
-        return new ContainerLocator(Type.PLAYER_INVENTORY, slot, (ResourceLocation) null, null, null);
+        return new MenuLocator(Type.PLAYER_INVENTORY, slot, (ResourceLocation) null, null, null);
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {
@@ -131,10 +131,10 @@ public final class ContainerLocator {
         throw new IllegalArgumentException("Could not find item held in hand " + hand + " in player inventory");
     }
 
-    public static ContainerLocator forPart(AEBasePart part) {
+    public static MenuLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
         DimensionalBlockPos pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getLevel(), pos.getPos(), part.getSide());
+        return new MenuLocator(Type.PART, -1, pos.getLevel(), pos.getPos(), part.getSide());
     }
 
     public boolean hasItemIndex() {
@@ -193,22 +193,22 @@ public final class ContainerLocator {
                 buf.writeByte(side.ordinal());
                 break;
             default:
-                throw new IllegalStateException("Unsupported ContainerLocator type: " + type);
+                throw new IllegalStateException("Unsupported MenuLocator type: " + type);
         }
     }
 
-    public static ContainerLocator read(FriendlyByteBuf buf) {
+    public static MenuLocator read(FriendlyByteBuf buf) {
         byte type = buf.readByte();
         switch (type) {
             case 0:
-                return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
+                return new MenuLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
             case 1:
-                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
+                return new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
                         buf.readResourceLocation(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
             case 2:
-                return new ContainerLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
+                return new MenuLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
             case 3:
-                return new ContainerLocator(Type.PART, -1, buf.readResourceLocation(), buf.readBlockPos(),
+                return new MenuLocator(Type.PART, -1, buf.readResourceLocation(), buf.readBlockPos(),
                         AEPartLocation.values()[buf.readByte()]);
             default:
                 throw new DecoderException("ContainerLocator type out of range: " + type);

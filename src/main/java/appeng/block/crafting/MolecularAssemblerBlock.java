@@ -32,8 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.util.InteractionUtil;
 
@@ -63,8 +63,8 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
         final MolecularAssemblerBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(MolecularAssemblerMenu.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(MolecularAssemblerMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

@@ -50,9 +50,8 @@ public class ConfirmAutoCraftPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
-        if (player.containerMenu instanceof CraftAmountMenu) {
-            final CraftAmountMenu cca = (CraftAmountMenu) player.containerMenu;
-            cca.confirm(amount, autoStart);
+        if (player.containerMenu instanceof CraftAmountMenu menu) {
+            menu.confirm(amount, autoStart);
         }
     }
 }

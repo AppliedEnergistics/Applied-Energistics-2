@@ -37,7 +37,7 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
@@ -127,7 +127,7 @@ public class ApiCrafting implements ICraftingHelper {
         ResourceLocation currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
-        CraftingContainer testInventory = new CraftingContainer(new ContainerNull(), 3, 3);
+        CraftingContainer testInventory = new CraftingContainer(new NullMenu(), 3, 3);
         for (int x = 0; x < 9; x++) {
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;

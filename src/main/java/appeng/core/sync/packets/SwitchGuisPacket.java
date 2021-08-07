@@ -27,8 +27,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.menu.AEBaseMenu;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -57,9 +57,9 @@ public class SwitchGuisPacket extends BasePacket {
         final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu) {
             final AEBaseMenu bc = (AEBaseMenu) c;
-            final ContainerLocator locator = bc.getLocator();
+            final MenuLocator locator = bc.getLocator();
             if (locator != null) {
-                ContainerOpener.openContainer(newGui, player, locator);
+                MenuOpener.open(newGui, player, locator);
             }
         }
     }

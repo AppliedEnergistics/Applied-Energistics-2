@@ -148,7 +148,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
                     }
                 }
             } else {
-                this.setValidContainer(false);
+                this.setValidMenu(false);
             }
         } else {
             this.monitor = null;
@@ -188,7 +188,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
             if (this.monitor != this.host.getInventory(storageChannel)) {
-                this.setValidContainer(false);
+                this.setValidMenu(false);
                 return;
             }
 

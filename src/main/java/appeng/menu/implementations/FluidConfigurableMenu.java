@@ -34,7 +34,7 @@ import appeng.helpers.FluidSyncHelper;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.IAEFluidTank;
 
-public abstract class FluidConfigurableMenu extends UpgradeableMenu implements IFluidSyncContainer {
+public abstract class FluidConfigurableMenu extends UpgradeableMenu implements IFluidSyncMenu {
     private FluidSyncHelper sync = null;
 
     public FluidConfigurableMenu(MenuType<?> menuType, int id, Inventory ip, IUpgradeableHost te) {
@@ -51,7 +51,7 @@ public abstract class FluidConfigurableMenu extends UpgradeableMenu implements I
     }
 
     @Override
-    protected ItemStack transferStackToContainer(ItemStack input) {
+    protected ItemStack transferStackToMenu(ItemStack input) {
         Optional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
         if (fsOpt.isPresent()) {
             final IAEFluidTank t = this.getFluidConfigInventory();

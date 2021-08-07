@@ -27,8 +27,8 @@ import appeng.menu.implementations.QNBMenu;
 
 public class QNBScreen extends AEBaseScreen<QNBMenu> {
 
-    public QNBScreen(QNBMenu container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+    public QNBScreen(QNBMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
     }
 
 }

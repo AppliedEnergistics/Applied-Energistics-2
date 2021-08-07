@@ -66,7 +66,7 @@ import appeng.util.inv.filter.IAEItemFilter;
  */
 public final class InterfaceTerminalMenu extends AEBaseMenu {
 
-    public static final MenuType<InterfaceTerminalMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
             .create(InterfaceTerminalMenu::new, InterfaceTerminalPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interfaceterminal");

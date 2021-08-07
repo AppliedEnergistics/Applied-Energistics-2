@@ -39,7 +39,7 @@ import appeng.helpers.IInterfaceHost;
  */
 public class ItemInterfaceMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemInterfaceMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemInterfaceMenu> TYPE = MenuTypeBuilder
             .create(ItemInterfaceMenu::new, IInterfaceHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interface");

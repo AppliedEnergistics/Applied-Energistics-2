@@ -61,9 +61,9 @@ public final class ConfigButtonPacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
         if (sender.containerMenu instanceof AEBaseMenu) {
-            final AEBaseMenu baseContainer = (AEBaseMenu) sender.containerMenu;
-            if (baseContainer.getTarget() instanceof IConfigurableObject) {
-                final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
+            final AEBaseMenu baseMenu = (AEBaseMenu) sender.containerMenu;
+            if (baseMenu.getTarget() instanceof IConfigurableObject) {
+                final IConfigManager cm = ((IConfigurableObject) baseMenu.getTarget()).getConfigManager();
                 Enum setting = cm.getSetting(this.option);
                 Enum newState = EnumCycler.rotateEnum(setting, this.rotationDirection,
                         (EnumSet) this.option.getPossibleValues());

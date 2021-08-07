@@ -49,9 +49,8 @@ public class CraftConfirmPlanPacket extends BasePacket {
 
     @Override
     public void clientPacketData(INetworkInfo network, Player player) {
-        if (player.containerMenu instanceof CraftConfirmMenu) {
-            CraftConfirmMenu container = (CraftConfirmMenu) player.containerMenu;
-            container.setPlan(plan);
+        if (player.containerMenu instanceof CraftConfirmMenu menu) {
+            menu.setPlan(plan);
         }
     }
 }

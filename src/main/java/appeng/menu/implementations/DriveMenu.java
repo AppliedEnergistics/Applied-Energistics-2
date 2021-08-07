@@ -31,7 +31,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class DriveMenu extends AEBaseMenu {
 
-    public static final MenuType<DriveMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<DriveMenu> TYPE = MenuTypeBuilder
             .create(DriveMenu::new, DriveBlockEntity.class)
             .build("drive");
 

@@ -27,7 +27,7 @@ import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -35,7 +35,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class NetworkToolMenu extends AEBaseMenu {
 
-    public static final MenuType<NetworkToolMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<NetworkToolMenu> TYPE = MenuTypeBuilder
             .create(NetworkToolMenu::new, INetworkTool.class)
             .build("networktool");
 
@@ -74,14 +74,14 @@ public class NetworkToolMenu extends AEBaseMenu {
                     this.getPlayerInventory().setItem(this.getPlayerInventory().selected,
                             this.toolInv.getItemStack());
                 } else {
-                    this.setValidContainer(false);
+                    this.setValidMenu(false);
                 }
             } else {
-                this.setValidContainer(false);
+                this.setValidMenu(false);
             }
         }
 
-        if (this.isValidContainer()) {
+        if (this.isValidMenu()) {
             final CompoundTag data = currentItem.getOrCreateTag();
             this.setFacadeMode(data.getBoolean("hideFacades"));
         }

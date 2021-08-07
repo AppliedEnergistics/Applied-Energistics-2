@@ -51,8 +51,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -284,7 +284,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidLevelEmitterMenu.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(FluidLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }

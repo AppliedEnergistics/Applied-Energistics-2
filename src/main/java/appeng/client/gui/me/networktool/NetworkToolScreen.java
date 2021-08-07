@@ -34,9 +34,9 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolMenu> {
 
     private final ToggleButton transparentFacadesButton;
 
-    public NetworkToolScreen(NetworkToolMenu container, Inventory playerInventory, Component title,
+    public NetworkToolScreen(NetworkToolMenu menu, Inventory playerInventory, Component title,
                              ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,
                 GuiText.TransparentFacades.text(), GuiText.TransparentFacadesHint.text(),

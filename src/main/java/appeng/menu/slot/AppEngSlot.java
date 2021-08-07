@@ -41,7 +41,7 @@ public class AppEngSlot extends Slot {
     private final int invSlot;
 
     private boolean isDraggable = true;
-    private AEBaseMenu container = null;
+    private AEBaseMenu menu = null;
 
     /**
      * Shows an icon from the icon sprite-sheet in the background of this slot.
@@ -111,8 +111,8 @@ public class AppEngSlot extends Slot {
     }
 
     private void notifyContainerSlotChanged() {
-        if (this.getContainer() != null) {
-            this.getContainer().onSlotChange(this);
+        if (this.getMenu() != null) {
+            this.getMenu().onSlotChange(this);
         }
     }
 
@@ -206,16 +206,16 @@ public class AppEngSlot extends Slot {
         this.isDraggable = isDraggable;
     }
 
-    protected AEBaseMenu getContainer() {
-        return this.container;
+    protected AEBaseMenu getMenu() {
+        return this.menu;
     }
 
-    public void setContainer(final AEBaseMenu myContainer) {
-        this.container = myContainer;
+    public void setMenu(final AEBaseMenu menu) {
+        this.menu = menu;
     }
 
     protected boolean isRemote() {
-        return container == null || container.isRemote();
+        return menu == null || menu.isRemote();
     }
 
     /**

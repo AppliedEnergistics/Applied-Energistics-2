@@ -31,9 +31,9 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
 
     private final ProgressBar pb;
 
-    public MolecularAssemblerScreen(MolecularAssemblerMenu container, Inventory playerInventory,
+    public MolecularAssemblerScreen(MolecularAssemblerMenu menu, Inventory playerInventory,
                                     Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);

@@ -45,7 +45,7 @@ import appeng.util.inv.InvOperation;
  */
 public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngInventory {
 
-    public static final MenuType<SecurityStationMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<SecurityStationMenu> TYPE = MenuTypeBuilder
             .create(SecurityStationMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.SECURITY)
             .build("securitystation");

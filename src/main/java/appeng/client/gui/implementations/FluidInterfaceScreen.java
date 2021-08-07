@@ -31,9 +31,9 @@ import appeng.util.fluid.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceMenu> {
 
-    public FluidInterfaceScreen(FluidInterfaceMenu container, Inventory playerInventory,
+    public FluidInterfaceScreen(FluidInterfaceMenu menu, Inventory playerInventory,
                                 Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {

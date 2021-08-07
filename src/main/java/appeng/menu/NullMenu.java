@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,12 +16,22 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.menu.implementations;
+package appeng.menu;
 
-import java.util.Map;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import appeng.api.storage.data.IAEFluidStack;
+/*
+ * Totally useless menu that does nothing.
+ */
+public class NullMenu extends AbstractContainerMenu {
 
-public interface IFluidSyncContainer {
-    void receiveFluidSlots(final Map<Integer, IAEFluidStack> fluids);
+    public NullMenu() {
+        super(null, 0);
+    }
+
+    @Override
+    public boolean stillValid(final Player PlayerEntity) {
+        return false;
+    }
 }

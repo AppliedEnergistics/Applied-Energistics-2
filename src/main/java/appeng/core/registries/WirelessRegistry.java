@@ -30,8 +30,8 @@ import net.minecraft.world.level.BlockGetter;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.me.items.WirelessTermMenu;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
@@ -96,7 +96,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (handler.hasPower(player, 0.5, item)) {
-            ContainerOpener.openContainer(WirelessTermMenu.TYPE, player, ContainerLocator.forHand(player, hand));
+            MenuOpener.open(WirelessTermMenu.TYPE, player, MenuLocator.forHand(player, hand));
         } else {
             player.sendMessage(PlayerMessages.DeviceNotPowered.get(), Util.NIL_UUID);
         }

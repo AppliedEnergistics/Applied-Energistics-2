@@ -27,11 +27,11 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.core.AELog;
 
 /**
- * Allows opening containers generically.
+ * Allows opening menus generically.
  */
-public final class ContainerOpener {
+public final class MenuOpener {
 
-    private ContainerOpener() {
+    private MenuOpener() {
     }
 
     private static final Map<MenuType<? extends AEBaseMenu>, Opener> registry = new HashMap<>();
@@ -40,7 +40,7 @@ public final class ContainerOpener {
         registry.put(type, opener);
     }
 
-    public static boolean openContainer(MenuType<?> type, Player player, ContainerLocator locator) {
+    public static boolean open(MenuType<?> type, Player player, MenuLocator locator) {
         Opener opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open menu for unknown menu type {}", type);
@@ -53,7 +53,7 @@ public final class ContainerOpener {
     @FunctionalInterface
     public interface Opener {
 
-        boolean open(Player player, ContainerLocator locator);
+        boolean open(Player player, MenuLocator locator);
 
     }
 

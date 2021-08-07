@@ -51,9 +51,9 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     private final Button selectCPU;
     private final Scrollbar scrollbar;
 
-    public CraftConfirmScreen(CraftConfirmMenu container, Inventory playerInventory, Component title,
+    public CraftConfirmScreen(CraftConfirmMenu menu, Inventory playerInventory, Component title,
                               ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.table = new CraftConfirmTableRenderer(this, 9, 19);
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
@@ -64,7 +64,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
         this.selectCPU.active = false;
 
-        widgets.addButton("cancel", GuiText.Cancel.text(), container::goBack);
+        widgets.addButton("cancel", GuiText.Cancel.text(), menu::goBack);
     }
 
     @Override

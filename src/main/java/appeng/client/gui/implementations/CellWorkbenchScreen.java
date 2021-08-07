@@ -48,9 +48,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
-    public CellWorkbenchScreen(CellWorkbenchMenu container, Inventory playerInventory,
+    public CellWorkbenchScreen(CellWorkbenchMenu menu, Inventory playerInventory,
                                Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.fuzzyMode = addToLeftToolbar(
                 new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));

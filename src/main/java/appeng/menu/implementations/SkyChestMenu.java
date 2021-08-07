@@ -33,7 +33,7 @@ import appeng.menu.slot.AppEngSlot;
  */
 public class SkyChestMenu extends AEBaseMenu {
 
-    public static final MenuType<SkyChestMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<SkyChestMenu> TYPE = MenuTypeBuilder
             .create(SkyChestMenu::new, SkyChestBlockEntity.class)
             .build("skychest");
 

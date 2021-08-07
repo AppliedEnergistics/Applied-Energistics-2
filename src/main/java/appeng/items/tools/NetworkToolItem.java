@@ -43,8 +43,8 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAgent;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.core.Api;
@@ -148,10 +148,10 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
 
             if (nodeHost != null) {
-                ContainerOpener.openContainer(NetworkStatusMenu.TYPE, p,
-                        ContainerLocator.forItemUseContext(useContext));
+                MenuOpener.open(NetworkStatusMenu.TYPE, p,
+                        MenuLocator.forItemUseContext(useContext));
             } else {
-                ContainerOpener.openContainer(NetworkToolMenu.TYPE, p, ContainerLocator.forHand(p, hand));
+                MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
             }
 
             return true;

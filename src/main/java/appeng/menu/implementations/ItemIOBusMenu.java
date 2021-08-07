@@ -38,12 +38,12 @@ import appeng.parts.automation.SharedItemBusPart;
  */
 public class ItemIOBusMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemIOBusMenu> EXPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemIOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(ItemIOBusMenu::new, ExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("export_bus");
 
-    public static final MenuType<ItemIOBusMenu> IMPORT_TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemIOBusMenu> IMPORT_TYPE = MenuTypeBuilder
             .create(ItemIOBusMenu::new, ImportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");

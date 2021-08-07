@@ -41,8 +41,8 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -118,7 +118,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemIOBusMenu.IMPORT_TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(ItemIOBusMenu.IMPORT_TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }

@@ -55,9 +55,9 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private final ActionButton substitutionsEnabledBtn;
     private final ActionButton substitutionsDisabledBtn;
 
-    public PatternTermScreen(PatternTermMenu container, Inventory playerInventory,
+    public PatternTermScreen(PatternTermMenu menu, Inventory playerInventory,
                              Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(
                 new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,

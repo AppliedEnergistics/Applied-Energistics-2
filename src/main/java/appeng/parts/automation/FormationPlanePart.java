@@ -64,8 +64,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemFormationPlaneMenu;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -163,7 +163,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemFormationPlaneMenu.TYPE, player, ContainerLocator.forPart(this));
+            MenuOpener.open(ItemFormationPlaneMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -342,7 +342,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         return ItemFormationPlaneMenu.TYPE;
     }
 

@@ -39,7 +39,7 @@ import appeng.core.definitions.ItemDefinition;
  */
 public class InscriberMenu extends UpgradeableMenu implements IProgressProvider {
 
-    public static final MenuType<InscriberMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<InscriberMenu> TYPE = MenuTypeBuilder
             .create(InscriberMenu::new, InscriberBlockEntity.class)
             .build("inscriber");
 

@@ -37,7 +37,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
 
-    public static final MenuType<CondenserMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CondenserMenu> TYPE = MenuTypeBuilder
             .create(CondenserMenu::new, CondenserBlockEntity.class)
             .build("condenser");
 

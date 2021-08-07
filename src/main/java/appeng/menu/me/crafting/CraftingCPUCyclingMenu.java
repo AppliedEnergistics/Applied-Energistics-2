@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,22 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.menu;
+package appeng.menu.me.crafting;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-
-/*
- * Totally useless menu that does nothing.
+/**
+ * Implemented on screens that show information about a crafting CPU and allow the CPU to be cycled. Is triggered by
+ * receiving a config value packet with name <code>Terminal.Cpu</code>.
  */
-public class ContainerNull extends AbstractContainerMenu {
+public interface CraftingCPUCyclingMenu {
 
-    public ContainerNull() {
-        super(null, 0);
-    }
+    void cycleSelectedCPU(boolean forward);
 
-    @Override
-    public boolean stillValid(final Player PlayerEntity) {
-        return false;
-    }
 }

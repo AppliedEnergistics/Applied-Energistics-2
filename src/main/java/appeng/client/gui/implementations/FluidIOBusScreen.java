@@ -43,22 +43,22 @@ public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusMenu> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusMenu container, Inventory playerInventory, Component title,
+    public FluidIOBusScreen(FluidIOBusMenu menu, Inventory playerInventory, Component title,
                             ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         final IAEFluidTank inv = this.menu.getFluidConfigInventory();
 
         addSlot(new FluidSlotWidget(inv, 0), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 1, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 2, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 3, 1), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 4, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 1, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 2, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 3, 1), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 4, 1), SlotSemantic.CONFIG);
 
-        addSlot(new OptionalFluidSlotWidget(inv, container, 5, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 6, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 7, 2), SlotSemantic.CONFIG);
-        addSlot(new OptionalFluidSlotWidget(inv, container, 8, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 5, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 6, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 7, 2), SlotSemantic.CONFIG);
+        addSlot(new OptionalFluidSlotWidget(inv, menu, 8, 2), SlotSemantic.CONFIG);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addToLeftToolbar(this.redstoneMode);

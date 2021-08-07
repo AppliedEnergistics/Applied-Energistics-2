@@ -37,8 +37,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.util.InteractionUtil;
 
@@ -72,8 +72,8 @@ public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEnti
         final ItemInterfaceBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(ItemInterfaceMenu.TYPE, p,
-                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                MenuOpener.open(ItemInterfaceMenu.TYPE, p,
+                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

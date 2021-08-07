@@ -33,7 +33,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
@@ -64,7 +64,7 @@ public class CraftingTreeProcess {
         if (details.isCraftable()) {
             final IAEItemStack[] list = details.getSparseInputs();
 
-            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
             final IAEItemStack[] is = details.getSparseInputs();
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
@@ -161,7 +161,7 @@ public class CraftingTreeProcess {
         this.job.handlePausing();
 
         if (this.fullSimulation) {
-            final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
+            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
 
             for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
                 final IAEItemStack item = entry.getKey().getStack(entry.getValue());

@@ -35,7 +35,7 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class GrinderMenu extends AEBaseMenu {
 
-    public static final MenuType<GrinderMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<GrinderMenu> TYPE = MenuTypeBuilder
             .create(GrinderMenu::new, GrinderBlockEntity.class)
             .build("grinder");
 

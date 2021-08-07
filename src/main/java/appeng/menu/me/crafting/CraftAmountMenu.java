@@ -40,11 +40,11 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -56,7 +56,7 @@ import appeng.me.helpers.PlayerSource;
  */
 public class CraftAmountMenu extends AEBaseMenu {
 
-    public static final MenuType<CraftAmountMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftAmountMenu> TYPE = MenuTypeBuilder
             .create(CraftAmountMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftamount");
@@ -84,9 +84,9 @@ public class CraftAmountMenu extends AEBaseMenu {
     /**
      * Opens the craft amount screen for the given player.
      */
-    public static void open(ServerPlayer player, ContainerLocator locator, IAEItemStack itemToCraft,
-            int initialAmount) {
-        ContainerOpener.openContainer(CraftAmountMenu.TYPE, player, locator);
+    public static void open(ServerPlayer player, MenuLocator locator, IAEItemStack itemToCraft,
+                            int initialAmount) {
+        MenuOpener.open(CraftAmountMenu.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountMenu) {
             CraftAmountMenu cca = (CraftAmountMenu) player.containerMenu;
@@ -155,10 +155,10 @@ public class CraftAmountMenu extends AEBaseMenu {
                 futureJob = cg.beginCraftingJob(getLevel(), getGrid(), getActionSrc(),
                         this.itemToCreate, null);
 
-                final ContainerLocator locator = getLocator();
+                final MenuLocator locator = getLocator();
                 if (locator != null) {
                     Player player = this.getPlayerInventory().player;
-                    ContainerOpener.openContainer(CraftConfirmMenu.TYPE, player, locator);
+                    MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
                     if (player.containerMenu instanceof CraftConfirmMenu) {
                         final CraftConfirmMenu ccc = (CraftConfirmMenu) player.containerMenu;

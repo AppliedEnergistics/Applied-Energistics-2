@@ -34,7 +34,7 @@ import appeng.core.AEConfig;
  */
 public class WirelessMenu extends AEBaseMenu {
 
-    public static final MenuType<WirelessMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<WirelessMenu> TYPE = MenuTypeBuilder
             .create(WirelessMenu::new, WirelessBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("wireless");

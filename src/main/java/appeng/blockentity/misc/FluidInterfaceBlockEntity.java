@@ -155,7 +155,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         return FluidInterfaceMenu.TYPE;
     }
 }

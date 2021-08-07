@@ -45,45 +45,45 @@ import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 
 /**
- * Utility class for sub-screens of other containers that allow returning to the primary menu UI.
+ * Utility class for sub-screens of other menus that allow returning to the primary menu UI.
  */
 public final class AESubScreen {
 
-    private final MenuType<?> previousContainerType;
-    private final ItemStack previousContainerIcon;
+    private final MenuType<?> previousMenuType;
+    private final ItemStack previousMenuIcon;
 
     /**
      * Based on the menu we're opening for, try to determine what it's "primary" GUI would be so that we can go
      * back to it.
      */
-    public AESubScreen(Object containerHost) {
+    public AESubScreen(Object menuHost) {
 
-        if (containerHost instanceof ChestBlockEntity) {
+        if (menuHost instanceof ChestBlockEntity) {
             // A chest is also a priority host, but the priority _interface_ can only be
             // opened from the
             // chest ui that doesn't actually show the contents of the inserted cell.
-            IPriorityHost priorityHost = (IPriorityHost) containerHost;
-            this.previousContainerIcon = priorityHost.getItemStackRepresentation();
-            this.previousContainerType = ChestMenu.TYPE;
-        } else if (containerHost instanceof IPriorityHost) {
-            IPriorityHost priorityHost = (IPriorityHost) containerHost;
-            this.previousContainerIcon = priorityHost.getItemStackRepresentation();
-            this.previousContainerType = priorityHost.getContainerType();
-        } else if (containerHost instanceof WirelessTerminalGuiObject) {
-            this.previousContainerIcon = AEItems.WIRELESS_TERMINAL.stack();
-            this.previousContainerType = WirelessTermMenu.TYPE;
-        } else if (containerHost instanceof ItemTerminalPart) {
-            this.previousContainerIcon = AEParts.TERMINAL.stack();
-            this.previousContainerType = ItemTerminalMenu.TYPE;
-        } else if (containerHost instanceof CraftingTerminalPart) {
-            this.previousContainerIcon = AEParts.CRAFTING_TERMINAL.stack();
-            this.previousContainerType = CraftingTermMenu.TYPE;
-        } else if (containerHost instanceof PatternTerminalPart) {
-            this.previousContainerIcon = AEParts.PATTERN_TERMINAL.stack();
-            this.previousContainerType = PatternTermMenu.TYPE;
+            IPriorityHost priorityHost = (IPriorityHost) menuHost;
+            this.previousMenuIcon = priorityHost.getItemStackRepresentation();
+            this.previousMenuType = ChestMenu.TYPE;
+        } else if (menuHost instanceof IPriorityHost) {
+            IPriorityHost priorityHost = (IPriorityHost) menuHost;
+            this.previousMenuIcon = priorityHost.getItemStackRepresentation();
+            this.previousMenuType = priorityHost.getMenuType();
+        } else if (menuHost instanceof WirelessTerminalGuiObject) {
+            this.previousMenuIcon = AEItems.WIRELESS_TERMINAL.stack();
+            this.previousMenuType = WirelessTermMenu.TYPE;
+        } else if (menuHost instanceof ItemTerminalPart) {
+            this.previousMenuIcon = AEParts.TERMINAL.stack();
+            this.previousMenuType = ItemTerminalMenu.TYPE;
+        } else if (menuHost instanceof CraftingTerminalPart) {
+            this.previousMenuIcon = AEParts.CRAFTING_TERMINAL.stack();
+            this.previousMenuType = CraftingTermMenu.TYPE;
+        } else if (menuHost instanceof PatternTerminalPart) {
+            this.previousMenuIcon = AEParts.PATTERN_TERMINAL.stack();
+            this.previousMenuType = PatternTermMenu.TYPE;
         } else {
-            this.previousContainerIcon = null;
-            this.previousContainerType = null;
+            this.previousMenuIcon = null;
+            this.previousMenuType = null;
         }
     }
 
@@ -92,12 +92,12 @@ public final class AESubScreen {
     }
 
     public TabButton addBackButton(String id, WidgetContainer widgets, @Nullable Component label) {
-        if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
+        if (this.previousMenuType != null && !previousMenuIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getHoverName();
+                label = previousMenuIcon.getHoverName();
             }
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            TabButton button = new TabButton(previousContainerIcon, label,
+            TabButton button = new TabButton(previousMenuIcon, label,
                     itemRenderer, btn -> goBack());
             widgets.add(id, button);
             return button;
@@ -106,7 +106,7 @@ public final class AESubScreen {
     }
 
     public void goBack() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(this.previousContainerType));
+        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(this.previousMenuType));
     }
 
 }

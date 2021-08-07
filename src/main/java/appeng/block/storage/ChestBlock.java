@@ -36,8 +36,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.ChestBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ChestMenu;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.InteractionUtil;
@@ -85,8 +85,8 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
                         p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                     }
                 } else {
-                    ContainerOpener.openContainer(ChestMenu.TYPE, p,
-                            ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
+                    MenuOpener.open(ChestMenu.TYPE, p,
+                            MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
             }
 

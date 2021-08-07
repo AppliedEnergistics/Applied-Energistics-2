@@ -49,7 +49,7 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;
@@ -65,8 +65,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private static final Comparator<IAEItemStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
             .compare(right.getStackSize(), left.getStackSize());
 
-    private final CraftingContainer crafting = new CraftingContainer(new ContainerNull(), 3, 3);
-    private final CraftingContainer testFrame = new CraftingContainer(new ContainerNull(), 3, 3);
+    private final CraftingContainer crafting = new CraftingContainer(new NullMenu(), 3, 3);
+    private final CraftingContainer testFrame = new CraftingContainer(new NullMenu(), 3, 3);
     private final ItemStack correctOutput;
     private final CraftingRecipe standardRecipe;
     private final List<IAEItemStack> inputs;

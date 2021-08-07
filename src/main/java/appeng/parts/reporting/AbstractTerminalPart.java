@@ -39,8 +39,8 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -110,12 +110,12 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !player.level.isClientSide) {
-            ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
+            MenuOpener.open(getMenuType(player), player, MenuLocator.forPart(this));
         }
         return true;
     }
 
-    public MenuType<?> getContainerType(final Player player) {
+    public MenuType<?> getMenuType(final Player player) {
         return ItemTerminalMenu.TYPE;
     }
 

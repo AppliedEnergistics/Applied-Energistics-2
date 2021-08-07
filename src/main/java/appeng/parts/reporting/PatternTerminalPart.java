@@ -93,7 +93,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public MenuType<?> getContainerType(final Player p) {
+    public MenuType<?> getMenuType(final Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return PatternTermMenu.TYPE;
         }

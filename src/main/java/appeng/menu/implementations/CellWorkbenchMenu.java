@@ -53,7 +53,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class CellWorkbenchMenu extends UpgradeableMenu {
 
-    public static final MenuType<CellWorkbenchMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CellWorkbenchMenu> TYPE = MenuTypeBuilder
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
 

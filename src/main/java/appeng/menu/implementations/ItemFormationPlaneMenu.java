@@ -41,7 +41,7 @@ import appeng.parts.automation.FormationPlanePart;
  */
 public class ItemFormationPlaneMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemFormationPlaneMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemFormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(ItemFormationPlaneMenu::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("formationplane");

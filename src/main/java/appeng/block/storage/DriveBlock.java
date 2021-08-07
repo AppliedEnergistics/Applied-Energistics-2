@@ -31,8 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.DriveMenu;
 import appeng.util.InteractionUtil;
 
@@ -53,7 +53,7 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
         final DriveBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(DriveMenu.TYPE, p, ContainerLocator.forBlockEntity(tg));
+                MenuOpener.open(DriveMenu.TYPE, p, MenuLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

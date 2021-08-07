@@ -35,9 +35,9 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.ITerminalHost;
-import appeng.menu.ContainerNull;
+import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.core.sync.network.NetworkHandler;
@@ -55,7 +55,7 @@ import appeng.util.inv.WrapperInvItemHandler;
  */
 public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingPacket {
 
-    public static final MenuType<CraftingTermMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingterm");
@@ -90,7 +90,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
 
     @Override
     public void slotsChanged(Container inventory) {
-        final ContainerNull cn = new ContainerNull();
+        final NullMenu cn = new NullMenu();
         final CraftingContainer ic = new CraftingContainer(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {

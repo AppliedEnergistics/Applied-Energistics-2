@@ -42,8 +42,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.me.items.MEPortableCellMenu;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -63,7 +63,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
-        ContainerOpener.openContainer(MEPortableCellMenu.TYPE, player, ContainerLocator.forHand(player, hand));
+        MenuOpener.open(MEPortableCellMenu.TYPE, player, MenuLocator.forHand(player, hand));
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }

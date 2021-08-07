@@ -48,9 +48,9 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalMenu> {
 
-    public FluidTerminalScreen(FluidTerminalMenu container, Inventory playerInventory,
+    public FluidTerminalScreen(FluidTerminalMenu menu, Inventory playerInventory,
                                Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
     }
 
     @Override

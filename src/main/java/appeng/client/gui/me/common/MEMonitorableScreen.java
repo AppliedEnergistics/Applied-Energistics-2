@@ -108,9 +108,9 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
 
-    public MEMonitorableScreen(C container, Inventory playerInventory,
+    public MEMonitorableScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.style = style.getTerminalStyle();
         if (this.style == null) {
@@ -120,7 +120,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = createRepo(scrollbar);
-        container.setClientRepo(this.repo);
+        menu.setClientRepo(this.repo);
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
 
@@ -130,7 +130,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
         this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
         this.menu.setGui(this);
 
-        List<Slot> viewCellSlots = container.getSlots(SlotSemantic.VIEW_CELL);
+        List<Slot> viewCellSlots = menu.getSlots(SlotSemantic.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
         if (this.supportsViewCells) {
             List<Component> tooltip = Collections.singletonList(GuiText.TerminalViewCellsTooltip.text());
@@ -200,7 +200,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
         this.rows = Mth.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
 
-        // Size the container according to the number of rows we decided to have
+        // Size the menu according to the number of rows we decided to have
         this.imageHeight = style.getScreenHeight(rows);
 
         // Re-create the ME slots since the number of rows could have changed

@@ -257,7 +257,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         return ItemInterfaceMenu.TYPE;
     }
 }

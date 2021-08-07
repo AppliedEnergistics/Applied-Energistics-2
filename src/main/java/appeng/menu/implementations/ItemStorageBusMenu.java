@@ -50,7 +50,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class ItemStorageBusMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemStorageBusMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemStorageBusMenu> TYPE = MenuTypeBuilder
             .create(ItemStorageBusMenu::new, StorageBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("storagebus");

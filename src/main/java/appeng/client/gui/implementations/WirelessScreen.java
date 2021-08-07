@@ -31,9 +31,9 @@ import appeng.util.Platform;
 
 public class WirelessScreen extends AEBaseScreen<WirelessMenu> {
 
-    public WirelessScreen(WirelessMenu container, Inventory playerInventory, Component title,
+    public WirelessScreen(WirelessMenu menu, Inventory playerInventory, Component title,
                           ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
 

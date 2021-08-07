@@ -44,9 +44,9 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMe
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public ItemLevelEmitterScreen(ItemLevelEmitterMenu container, Inventory playerInventory, Component title,
+    public ItemLevelEmitterScreen(ItemLevelEmitterMenu menu, Inventory playerInventory, Component title,
                                   ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
@@ -63,7 +63,7 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMe
 
         this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
-        this.level.setValue(container.getReportingValue());
+        this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);

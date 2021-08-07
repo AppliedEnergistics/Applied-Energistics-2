@@ -26,7 +26,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.interfaces.IInventorySlotAware;
 
 /**
@@ -34,7 +34,7 @@ import appeng.menu.interfaces.IInventorySlotAware;
  */
 public class MEPortableCellMenu extends ItemTerminalMenu {
 
-    public static final MenuType<MEPortableCellMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<MEPortableCellMenu> TYPE = MenuTypeBuilder
             .create(MEPortableCellMenu::new, IPortableCell.class)
             .build("meportablecell");
 
@@ -60,7 +60,7 @@ public class MEPortableCellMenu extends ItemTerminalMenu {
     @Override
     public void broadcastChanges() {
         if (!ensureGuiItemIsInSlot(this.cell, this.slot)) {
-            this.setValidContainer(false);
+            this.setValidMenu(false);
             return;
         }
 

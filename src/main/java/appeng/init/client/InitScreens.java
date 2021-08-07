@@ -122,7 +122,7 @@ import appeng.menu.me.networktool.NetworkToolMenu;
 public final class InitScreens {
 
     @VisibleForTesting
-    static final Map<MenuType<?>, String> CONTAINER_STYLES = new IdentityHashMap<>();
+    static final Map<MenuType<?>, String> MENU_STYLES = new IdentityHashMap<>();
 
     private InitScreens() {
     }
@@ -204,8 +204,8 @@ public final class InitScreens {
     private static <M extends AEBaseMenu, U extends AEBaseScreen<M>> void register(MenuType<M> type,
                                                                                    StyledScreenFactory<M, U> factory,
                                                                                    String stylePath) {
-        CONTAINER_STYLES.put(type, stylePath);
-        MenuScreens.<M, U>register(type, (container, playerInv, title) -> {
+        MENU_STYLES.put(type, stylePath);
+        MenuScreens.<M, U>register(type, (menu, playerInv, title) -> {
             ScreenStyle style;
             try {
                 style = StyleManager.loadStyleDoc(stylePath);
@@ -215,7 +215,7 @@ public final class InitScreens {
                 throw new RuntimeException("Failed to read Screen JSON file: " + stylePath, e);
             }
 
-            return factory.create(container, playerInv, title, style);
+            return factory.create(menu, playerInv, title, style);
         });
     }
 

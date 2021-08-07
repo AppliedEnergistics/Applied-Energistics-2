@@ -44,7 +44,7 @@ import appeng.items.materials.NamePressItem;
  */
 public class QuartzKnifeMenu extends AEBaseMenu {
 
-    public static final MenuType<QuartzKnifeMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<QuartzKnifeMenu> TYPE = MenuTypeBuilder
             .create(QuartzKnifeMenu::new, QuartzKnifeObj.class)
             .build("quartzknife");
 
@@ -75,7 +75,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     @Override
     public void broadcastChanges() {
         if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInventory().selected)) {
-            this.setValidContainer(false);
+            this.setValidMenu(false);
             return;
         }
 

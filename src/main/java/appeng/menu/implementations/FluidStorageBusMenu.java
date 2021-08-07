@@ -46,7 +46,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class FluidStorageBusMenu extends FluidConfigurableMenu {
 
-    public static final MenuType<FluidStorageBusMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<FluidStorageBusMenu> TYPE = MenuTypeBuilder
             .create(FluidStorageBusMenu::new, FluidStorageBusPart.class)
             .build("fluid_storage_bus");
 

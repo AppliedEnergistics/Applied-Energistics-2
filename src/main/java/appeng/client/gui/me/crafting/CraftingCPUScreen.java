@@ -56,8 +56,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
     private CraftingStatus status;
 
-    public CraftingCPUScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+    public CraftingCPUScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
 
         this.table = new CraftingStatusTableRenderer(this, 9, 19);
 

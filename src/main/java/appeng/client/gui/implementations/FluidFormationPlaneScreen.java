@@ -30,11 +30,11 @@ import appeng.util.fluid.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneMenu> {
 
-    public FluidFormationPlaneScreen(FluidFormationPlaneMenu container, Inventory playerInventory,
+    public FluidFormationPlaneScreen(FluidFormationPlaneMenu menu, Inventory playerInventory,
                                      Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
 
-        final IAEFluidTank config = container.getFluidConfigInventory();
+        final IAEFluidTank config = menu.getFluidConfigInventory();
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
@@ -42,7 +42,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
                 if (y < 2) {
                     addSlot(new FluidSlotWidget(config, idx), SlotSemantic.CONFIG);
                 } else {
-                    addSlot(new OptionalFluidSlotWidget(config, container, idx, y - 2), SlotSemantic.CONFIG);
+                    addSlot(new OptionalFluidSlotWidget(config, menu, idx, y - 2), SlotSemantic.CONFIG);
                 }
             }
         }

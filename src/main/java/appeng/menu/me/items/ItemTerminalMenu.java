@@ -29,8 +29,8 @@ import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.ContainerLocator;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.MenuLocator;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.MEMonitorableMenu;
@@ -49,7 +49,7 @@ import appeng.util.item.AEItemStack;
  */
 public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
 
-    public static final MenuType<ItemTerminalMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemTerminalMenu> TYPE = MenuTypeBuilder
             .create(ItemTerminalMenu::new, ITerminalHost.class)
             .build("item_terminal");
 
@@ -79,7 +79,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
 
         switch (action) {
             case AUTO_CRAFT:
-                final ContainerLocator locator = getLocator();
+                final MenuLocator locator = getLocator();
                 if (locator != null) {
                     CraftAmountMenu.open(player, locator, stack, 1);
                 }
@@ -251,9 +251,9 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     }
 
     @Override
-    protected ItemStack transferStackToContainer(ItemStack input) {
+    protected ItemStack transferStackToMenu(ItemStack input) {
         if (!canInteractWithGrid()) {
-            return super.transferStackToContainer(input);
+            return super.transferStackToMenu(input);
         }
 
         final IAEItemStack ais = Platform.poweredInsert(powerSource, monitor,

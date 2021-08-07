@@ -37,13 +37,13 @@ import appeng.parts.automation.LevelEmitterPart;
 
 public class ItemLevelEmitterMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemLevelEmitterMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<ItemLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(ItemLevelEmitterMenu::new, LevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
-            }, (host, container, buffer) -> {
-                container.reportingValue = buffer.readVarLong();
+            }, (host, menu, buffer) -> {
+                menu.reportingValue = buffer.readVarLong();
             })
             .build("levelemitter");
 

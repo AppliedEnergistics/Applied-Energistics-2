@@ -28,7 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import appeng.core.AELog;
 
 /**
- * Helper class for synchronizing fields from server-side containers to client-side containers. Fields need to be
+ * Helper class for synchronizing fields from server-side menus to client-side menus. Fields need to be
  * annotated with {@link GuiSync} and given a unique key within the class hierarchy.
  */
 public class DataSynchronization {

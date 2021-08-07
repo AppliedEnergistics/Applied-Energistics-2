@@ -31,7 +31,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.FluidSlotWidget;
-import appeng.menu.implementations.IFluidSyncContainer;
+import appeng.menu.implementations.IFluidSyncMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.fluid.AEFluidStack;
@@ -42,7 +42,7 @@ import appeng.util.fluid.AEFluidStack;
  * <p/>
  * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
  * <p/>
- * The menu on both sides of the synchronization must implement {@link IFluidSyncContainer}.
+ * The menu on both sides of the synchronization must implement {@link IFluidSyncMenu}.
  */
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;
@@ -77,16 +77,16 @@ public class FluidSlotPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo manager, final Player player) {
         final AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof IFluidSyncContainer) {
-            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        if (c instanceof IFluidSyncMenu) {
+            ((IFluidSyncMenu) c).receiveFluidSlots(this.list);
         }
     }
 
     @Override
     public void serverPacketData(INetworkInfo manager, Player player) {
         final AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof IFluidSyncContainer) {
-            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        if (c instanceof IFluidSyncMenu) {
+            ((IFluidSyncMenu) c).receiveFluidSlots(this.list);
         }
     }
 }

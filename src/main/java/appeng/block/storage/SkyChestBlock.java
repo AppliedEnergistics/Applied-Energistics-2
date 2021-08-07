@@ -53,8 +53,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyChestBlockEntity;
-import appeng.menu.ContainerLocator;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.core.definitions.AEBlockEntities;
 
@@ -113,8 +113,8 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         if (!level.isClientSide()) {
             SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {
-                ContainerOpener.openContainer(SkyChestMenu.TYPE, player,
-                        ContainerLocator.forBlockEntity(blockEntity));
+                MenuOpener.open(SkyChestMenu.TYPE, player,
+                        MenuLocator.forBlockEntity(blockEntity));
             }
         }
 

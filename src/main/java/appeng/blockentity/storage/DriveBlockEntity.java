@@ -437,7 +437,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         return DriveMenu.TYPE;
     }
 

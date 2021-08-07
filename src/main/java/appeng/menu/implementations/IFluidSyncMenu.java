@@ -16,14 +16,12 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.menu.me.crafting;
+package appeng.menu.implementations;
 
-/**
- * Implemented on screens that show information about a crafting CPU and allow the CPU to be cycled. Is triggered by
- * receiving a config value packet with name <code>Terminal.Cpu</code>.
- */
-public interface CraftingCPUCyclingContainer {
+import java.util.Map;
 
-    void cycleSelectedCPU(boolean forward);
+import appeng.api.storage.data.IAEFluidStack;
 
+public interface IFluidSyncMenu {
+    void receiveFluidSlots(final Map<Integer, IAEFluidStack> fluids);
 }

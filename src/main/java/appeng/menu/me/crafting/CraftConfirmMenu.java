@@ -42,9 +42,9 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.ContainerOpener;
+import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.ContainerTypeBuilder;
+import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -60,11 +60,11 @@ import appeng.parts.reporting.PatternTerminalPart;
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
-public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingContainer {
+public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMenu {
 
     private static final String ACTION_BACK = "back";
 
-    public static final MenuType<CraftConfirmMenu> TYPE = ContainerTypeBuilder
+    public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
             .create(CraftConfirmMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftconfirm");
@@ -135,7 +135,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingCo
                 this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e.toString()),
                         Util.NIL_UUID);
                 AELog.debug(e);
-                this.setValidContainer(false);
+                this.setValidMenu(false);
                 this.result = null;
             }
 
@@ -181,7 +181,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingCo
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
             if (g != null && originalGui != null && this.getLocator() != null) {
-                ContainerOpener.openContainer(originalGui, getPlayerInventory().player, getLocator());
+                MenuOpener.open(originalGui, getPlayerInventory().player, getLocator());
             }
         }
     }

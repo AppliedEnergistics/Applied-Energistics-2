@@ -806,7 +806,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public MenuType<?> getContainerType() {
+    public MenuType<?> getMenuType() {
         this.updateHandler();
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()

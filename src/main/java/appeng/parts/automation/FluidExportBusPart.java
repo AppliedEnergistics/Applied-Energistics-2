@@ -79,7 +79,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    protected MenuType<?> getContainerType() {
+    protected MenuType<?> getMenuType() {
         return FluidIOBusMenu.EXPORT_TYPE;
     }
 

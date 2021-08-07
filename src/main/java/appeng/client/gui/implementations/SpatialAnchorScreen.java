@@ -36,9 +36,9 @@ public class SpatialAnchorScreen extends AEBaseScreen<SpatialAnchorMenu> {
 
     private final SettingToggleButton<YesNo> overlayToggle;
 
-    public SpatialAnchorScreen(SpatialAnchorMenu container, Inventory playerInventory,
+    public SpatialAnchorScreen(SpatialAnchorMenu menu, Inventory playerInventory,
                                Component title, ScreenStyle style) {
-        super(container, playerInventory, title, style);
+        super(menu, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
         this.addToLeftToolbar(this.overlayToggle = new ServerSettingToggleButton<>(
                 Settings.OVERLAY_MODE, YesNo.NO));
