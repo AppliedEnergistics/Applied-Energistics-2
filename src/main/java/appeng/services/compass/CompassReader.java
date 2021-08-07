@@ -27,10 +27,10 @@ import net.minecraft.server.level.ServerLevel;
 
 public final class CompassReader {
     private final Map<Long, CompassRegion> regions = new HashMap<>(100);
-    private final ServerLevel world;
+    private final ServerLevel level;
 
-    public CompassReader(ServerLevel world) {
-        this.world = Preconditions.checkNotNull(world);
+    public CompassReader(ServerLevel level) {
+        this.level = Preconditions.checkNotNull(level);
     }
 
     public void close() {
@@ -61,7 +61,7 @@ public final class CompassReader {
         CompassRegion cr = this.regions.get(pos);
 
         if (cr == null) {
-            cr = new CompassRegion(world, cx, cz);
+            cr = new CompassRegion(level, cx, cz);
             this.regions.put(pos, cr);
         }
 

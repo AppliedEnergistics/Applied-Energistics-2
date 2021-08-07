@@ -26,7 +26,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Defines the source world and area of a transition into the spatial storage plot.
+ * Defines the source level and area of a transition into the spatial storage plot.
  */
 public final class TransitionInfo {
 

@@ -35,7 +35,7 @@ public interface IWorldGen {
      * @deprecated Scheduled for removal in 9.0.0.
      */
     @Deprecated
-    boolean isWorldGenEnabled(WorldGenType type, ServerLevel w);
+    boolean isWorldGenEnabled(WorldGenType type, ServerLevel level);
 
     /**
      * Forces a given AE2 world-generation type to be disabled for a given biome.

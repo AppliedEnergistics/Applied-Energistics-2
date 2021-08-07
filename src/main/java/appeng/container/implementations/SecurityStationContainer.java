@@ -29,14 +29,14 @@ import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
+import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
@@ -55,14 +55,14 @@ public class SecurityStationContainer extends ItemTerminalContainer implements I
     private final RestrictedInputSlot wirelessIn;
     private final OutputSlot wirelessOut;
 
-    private final SecurityStationTileEntity securityBox;
+    private final SecurityStationBlockEntity securityBox;
     @GuiSync(0)
     public int permissionMode = 0;
 
     public SecurityStationContainer(int id, final Inventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
 
-        this.securityBox = (SecurityStationTileEntity) monitorable;
+        this.securityBox = (SecurityStationBlockEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
                 this.securityBox.getConfigSlot(), 0), SlotSemantic.BIOMETRIC_CARD);

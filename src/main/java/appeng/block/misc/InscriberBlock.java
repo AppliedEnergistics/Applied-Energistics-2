@@ -31,36 +31,37 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
-import appeng.tile.misc.InscriberTileEntity;
 import appeng.util.InteractionUtil;
 
-public class InscriberBlock extends AEBaseTileBlock<InscriberTileEntity> {
+public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
 
     public InscriberBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 2; // FIXME validate this. a) possibly not required because of getShape b) value
         // range. was 2 in 1.10
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            final InscriberTileEntity tg = this.getTileEntity(w, pos);
+            final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {
-                if (!w.isClientSide()) {
+                if (!level.isClientSide()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                            ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
-                return InteractionResult.sidedSuccess(w.isClientSide());
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;

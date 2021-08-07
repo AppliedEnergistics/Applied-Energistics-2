@@ -61,7 +61,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
@@ -110,7 +110,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean doSpatialTransition(final ItemStack is, final ServerLevel w, final BlockPos min,
+    public boolean doSpatialTransition(final ItemStack is, final ServerLevel level, final BlockPos min,
             final BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
@@ -142,17 +142,17 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.dimension().location(), min, max, Instant.now());
+        TransitionInfo info = new TransitionInfo(level.dimension().location(), min, max, Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {
-            ServerLevel cellWorld = manager.getWorld();
+            ServerLevel cellLevel = manager.getLevel();
 
             BlockPos offset = plot.getOrigin();
 
             this.setStoredDimension(is, plot.getId(), plot.getSize());
-            SpatialStorageHelper.getInstance().swapRegions(w, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
-                    cellWorld,
+            SpatialStorageHelper.getInstance().swapRegions(level, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
+                    cellLevel,
                     offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
             return true;

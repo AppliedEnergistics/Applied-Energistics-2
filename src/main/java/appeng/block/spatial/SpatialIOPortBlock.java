@@ -31,14 +31,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
 import appeng.util.InteractionUtil;
 
-public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
+public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {
 
     public SpatialIOPortBlock() {
         super(defaultProps(Material.METAL));
@@ -46,28 +46,29 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
+        final SpatialIOPortBlockEntity te = this.getBlockEntity(level, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
+        final SpatialIOPortBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

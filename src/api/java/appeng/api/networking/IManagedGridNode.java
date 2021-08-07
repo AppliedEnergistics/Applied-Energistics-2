@@ -55,7 +55,7 @@ public interface IManagedGridNode {
      * Finish creation of the node, which means it'll try to make a connection to adjacent nodes if it's exposed on the
      * host, and it'll be available for connections from other nodes.
      */
-    void create(Level world, @Nullable BlockPos blockPos);
+    void create(Level level, @Nullable BlockPos blockPos);
 
     /**
      * this should be called for each node you create, if you have a nodeData compound to load from, you can store all

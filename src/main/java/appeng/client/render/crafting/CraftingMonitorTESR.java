@@ -28,20 +28,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.client.render.TesrRenderHelper;
-import appeng.tile.crafting.CraftingMonitorTileEntity;
 
 /**
  * Renders the item currently being crafted
  */
 @OnlyIn(Dist.CLIENT)
-public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorTileEntity> {
+public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorBlockEntity> {
 
     public CraftingMonitorTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(CraftingMonitorTileEntity te, float partialTicks, PoseStack matrixStack,
+    public void render(CraftingMonitorBlockEntity te, float partialTicks, PoseStack matrixStack,
             MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();

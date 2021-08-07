@@ -30,18 +30,18 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.SecurityStationTileEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
     private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final SecurityStationTileEntity securityTile;
+    private final SecurityStationBlockEntity blockEntity;
 
-    public SecurityStationInventory(final SecurityStationTileEntity ts) {
-        this.securityTile = ts;
+    public SecurityStationInventory(final SecurityStationBlockEntity ts) {
+        this.blockEntity = ts;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             }
 
             this.getStoredItems().add(input);
-            this.securityTile.inventoryChanged();
+            this.blockEntity.inventoryChanged();
             return null;
         }
         return input;
@@ -62,7 +62,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
-            var grid = this.securityTile.getMainNode().getGrid();
+            var grid = this.blockEntity.getMainNode().getGrid();
             if (grid != null) {
                 return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.SECURITY);
             }
@@ -82,7 +82,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
                 }
 
                 target.setStackSize(0);
-                this.securityTile.inventoryChanged();
+                this.blockEntity.inventoryChanged();
                 return output;
             }
         }
@@ -120,7 +120,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             final GameProfile newUser = tbc.getProfile(input.createItemStack());
 
             final int PlayerID = Api.instance().registries().players().getID(newUser);
-            if (this.securityTile.getOwner() == PlayerID) {
+            if (this.blockEntity.getOwner() == PlayerID) {
                 return false;
             }
 

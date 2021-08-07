@@ -41,6 +41,8 @@ import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -51,8 +53,6 @@ import appeng.helpers.InventoryAction;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.parts.misc.ItemInterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
@@ -98,7 +98,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         VisitorState state = new VisitorState();
         if (grid != null) {
-            visitInterfaceHosts(grid, ItemInterfaceTileEntity.class, state);
+            visitInterfaceHosts(grid, ItemInterfaceBlockEntity.class, state);
             visitInterfaceHosts(grid, ItemInterfacePart.class, state);
         }
 
@@ -257,7 +257,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return new InterfaceTerminalPacket(true, new CompoundTag());
         }
 
-        for (var ih : grid.getActiveMachines(ItemInterfaceTileEntity.class)) {
+        for (var ih : grid.getActiveMachines(ItemInterfaceBlockEntity.class)) {
             final DualityItemInterface dual = ih.getInterfaceDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));

@@ -26,7 +26,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -44,7 +44,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
     public UpgradeInventory(final IAEAppEngInventory parent, final int s) {
         super(null, s, 1);
-        this.setTileEntity(this);
+        this.setBlockEntity(this);
         this.parent = parent;
         this.setFilter(new UpgradeInvFilter());
     }

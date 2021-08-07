@@ -256,7 +256,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     });
                 }
 
-                Platform.notifyBlocksOfNeighbors(this.getTile().getLevel(), this.getTile().getBlockPos());
+                Platform.notifyBlocksOfNeighbors(this.getBlockEntity().getLevel(), this.getBlockEntity().getBlockPos());
                 return true;
             }
         }

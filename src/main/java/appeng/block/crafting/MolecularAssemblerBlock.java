@@ -30,14 +30,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.InteractionUtil;
 
-public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -53,23 +53,23 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
-        return currentState.setValue(POWERED, te.isPowered());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, MolecularAssemblerBlockEntity be) {
+        return currentState.setValue(POWERED, be.isPowered());
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
+        final MolecularAssemblerBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, w, pos, p, hand, hit);
+        return super.use(state, level, pos, p, hand, hit);
     }
 
 }

@@ -58,14 +58,14 @@ public class CachedPlane {
     private final int y_size;
     private final LevelChunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<BlockEntity> tiles = new ArrayList<>();
+    private final List<BlockEntity> blockEntities = new ArrayList<>();
     private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerLevel w, final int minX, final int minY, final int minZ, final int maxX,
+    public CachedPlane(final ServerLevel level, final int minX, final int minY, final int minZ, final int maxX,
             final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
@@ -75,7 +75,7 @@ public class CachedPlane {
             this.matrixBlockState = null;
         }
 
-        this.world = w;
+        this.level = level;
 
         this.x_size = maxX - minX + 1;
         this.y_size = maxY - minY + 1;
@@ -101,7 +101,7 @@ public class CachedPlane {
 
         for (int x = 0; x < this.x_size; x++) {
             for (int z = 0; z < this.z_size; z++) {
-                this.myColumns[x][z] = new Column(w.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
+                this.myColumns[x][z] = new Column(level.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
                         minZ + z & 0xF, minCY, cy_size);
             }
         }
@@ -110,13 +110,14 @@ public class CachedPlane {
 
         for (int cx = 0; cx < this.cx_size; cx++) {
             for (int cz = 0; cz < this.cz_size; cz++) {
-                final List<BlockPos> deadTiles = new ArrayList<>();
+                final List<BlockPos> deadBlockEntities = new ArrayList<>();
 
-                final LevelChunk c = w.getChunk(minCX + cx, minCZ + cz);
+                final LevelChunk c = level.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
-                for (final Entry<BlockPos, BlockEntity> tx : rawTiles) {
+                final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(
+                        c.getBlockEntities().entrySet());
+                for (final Entry<BlockPos, BlockEntity> tx : rawBlockEntities) {
                     final BlockPos cp = tx.getKey();
                     final BlockEntity te = tx.getValue();
 
@@ -124,15 +125,15 @@ public class CachedPlane {
                     if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                             && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
                         if (mr.askToMove(te)) {
-                            this.tiles.add(te);
-                            deadTiles.add(cp);
+                            this.blockEntities.add(te);
+                            deadBlockEntities.add(cp);
                         } else {
                             final BlockStorageData details = new BlockStorageData();
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
 
                             // don't skip air, just let the code replace it...
                             if (details.state.isAir()) {
-                                w.removeBlock(tePOS, false);
+                                level.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());
                             }
@@ -140,12 +141,12 @@ public class CachedPlane {
                     }
                 }
 
-                for (final BlockPos cp : deadTiles) {
+                for (final BlockPos cp : deadBlockEntities) {
                     c.getBlockEntities().remove(cp);
                 }
 
-                final long gameTime = this.getWorld().getGameTime();
-                final ServerTickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
+                final long gameTime = this.getLevel().getGameTime();
+                final ServerTickList<Block> pendingBlockTicks = this.getLevel().getBlockTicks();
                 var pending = pendingBlockTicks.fetchTicksInChunk(c.getPos(), false, true);
                 for (var entry : pending) {
                     final BlockPos tePOS = entry.pos;
@@ -158,9 +159,9 @@ public class CachedPlane {
             }
         }
 
-        for (var te : this.tiles) {
+        for (var te : this.blockEntities) {
             try {
-                this.getWorld().removeBlockEntity(te.getBlockPos());
+                this.getLevel().removeBlockEntity(te.getBlockPos());
             } catch (final Exception e) {
                 AELog.debug(e);
             }
@@ -209,15 +210,17 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final BlockEntity te : this.tiles) {
+            for (final BlockEntity te : this.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
+                dst.addBlockEntity(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset,
+                        tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
-            for (final BlockEntity te : dst.tiles) {
+            for (final BlockEntity te : dst.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
+                this.addBlockEntity(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset,
+                        tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
@@ -252,11 +255,11 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final TickNextTickData<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
+        this.level.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
                 entry.priority);
     }
 
-    private void addTile(final int x, final int y, final int z, final BlockEntity te,
+    private void addBlockEntity(final int x, final int y, final int z, final BlockEntity te,
             final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];
@@ -268,7 +271,7 @@ public class CachedPlane {
 
                 boolean success;
                 try {
-                    success = handler.moveTile(te, savedData, this.world,
+                    success = handler.moveBlockEntity(te, savedData, this.level,
                             new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
                 } catch (final Throwable e) {
                     AELog.debug(e);
@@ -281,7 +284,7 @@ public class CachedPlane {
 
                 mr.doneMoving(te);
             } else {
-                alternateDestination.addTile(x, y, z, te, null, mr);
+                alternateDestination.addBlockEntity(x, y, z, te, null, mr);
             }
         } catch (final Throwable e) {
             AELog.debug(e);
@@ -296,7 +299,7 @@ public class CachedPlane {
         var recoveredEntity = BlockEntity.loadStatic(pos, te.getBlockState(), savedData);
         if (recoveredEntity != null) {
             c.c.addAndRegisterBlockEntity(recoveredEntity);
-            this.world.sendBlockUpdated(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
+            this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), z);
         } else {
             AELog.info("Failed to recover BE %s @ %s", BlockEntityType.getKey(te.getType()), pos);
         }
@@ -304,7 +307,7 @@ public class CachedPlane {
 
     private void updateChunks() {
 
-        LevelLightEngine lightManager = world.getLightEngine();
+        LevelLightEngine lightManager = level.getLightEngine();
 
         // update shit..
         if (lightManager instanceof ThreadedLevelLightEngine serverLightManager) {
@@ -323,24 +326,24 @@ public class CachedPlane {
 
                 final LevelChunk c = this.myChunks[x][z];
 
-                WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
+                WorldData.instance().compassData().service().updateArea(this.getLevel(), c);
 
                 ClientboundLevelChunkPacket cdp = new ClientboundLevelChunkPacket(c);
-                world.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
+                level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.send(cdp));
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        world.getChunkSource().tick(() -> false);
+        level.getChunkSource().tick(() -> false);
     }
 
     List<WorldCoord> getUpdates() {
         return this.updates;
     }
 
-    ServerLevel getWorld() {
-        return this.world;
+    ServerLevel getLevel() {
+        return this.level;
     }
 
     private static class BlockStorageData {

@@ -32,13 +32,13 @@ import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
+import appeng.blockentity.powersink.IExternalPowerSink;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
-import appeng.tile.powersink.IExternalPowerSink;
 
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
 

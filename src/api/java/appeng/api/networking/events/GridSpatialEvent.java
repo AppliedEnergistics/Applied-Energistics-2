@@ -31,11 +31,11 @@ import net.minecraft.world.level.Level;
  */
 public class GridSpatialEvent extends GridEvent {
     /**
-     * The world in which the Spatial I/O tile entity triggering this transition is located.
+     * The level in which the Spatial I/O block entity triggering this transition is located.
      */
-    public final Level spatialIoWorld;
+    public final Level spatialIoLevel;
     /**
-     * The block position at which the Spatial I/O tile entity triggering this transition is located.
+     * The block position at which the Spatial I/O block entity triggering this transition is located.
      */
     public final BlockPos spatialIoPos;
     /**
@@ -45,13 +45,14 @@ public class GridSpatialEvent extends GridEvent {
     private boolean preventTransition;
 
     /**
-     * @param SpatialIO   ( INSTANCE of the SpatialIO block )
-     * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
+     * @param spatialIoLevel Level where the Spatial IO is located
+     * @param spatialIoPos   Position where the Spatial IO is located
+     * @param EnergyUsage    ( the amount of energy that the SpatialIO uses)
      */
-    public GridSpatialEvent(Level spatialIoWorld,
+    public GridSpatialEvent(Level spatialIoLevel,
             BlockPos spatialIoPos,
             double EnergyUsage) {
-        this.spatialIoWorld = spatialIoWorld;
+        this.spatialIoLevel = spatialIoLevel;
         this.spatialIoPos = spatialIoPos;
         this.spatialEnergyUsage = EnergyUsage;
     }

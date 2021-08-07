@@ -101,7 +101,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         final boolean oldHasRedstone = this.hasRedstone;
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
 
@@ -132,14 +132,14 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.getOuterNode().create(getWorld(), getTile().getBlockPos());
+        this.getOuterNode().create(getLevel(), getBlockEntity().getBlockPos());
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
         this.updateInternalState();
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
-        super.setPartHostInfo(side, host, tile);
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+        super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 

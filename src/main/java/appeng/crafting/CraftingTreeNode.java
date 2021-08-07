@@ -46,7 +46,7 @@ public class CraftingTreeNode {
             .createList();
     // parent node.
     private final CraftingTreeProcess parent;
-    private final Level world;
+    private final Level level;
     // what item is this?
     private final IAEItemStack what;
     // what are the crafting patterns for this?
@@ -64,7 +64,7 @@ public class CraftingTreeNode {
         this.what = wat;
         this.parent = par;
         this.slot = slot;
-        this.world = job.getWorld();
+        this.level = job.getLevel();
         this.job = job;
         this.sim = false;
 
@@ -75,7 +75,7 @@ public class CraftingTreeNode {
         }
 
         for (final ICraftingPatternDetails details : cc.getCraftingFor(this.what,
-                this.parent == null ? null : this.parent.details, slot, this.world))// in
+                this.parent == null ? null : this.parent.details, slot, this.level))// in
         // order.
         {
             if (this.parent == null || this.parent.notRecursive(details)) {
@@ -138,7 +138,7 @@ public class CraftingTreeNode {
 
             for (IAEItemStack fuzz : itemList) {
                 if (this.parent.details.isValidItemForSlot(this.getSlot(),
-                        fuzz.copy().setStackSize(1).createItemStack(), this.world)) {
+                        fuzz.copy().setStackSize(1).createItemStack(), this.level)) {
                     fuzz = fuzz.copy();
                     fuzz.setStackSize(l);
 

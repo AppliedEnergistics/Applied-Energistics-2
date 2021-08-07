@@ -39,19 +39,19 @@ public interface ICraftingService extends IGridService {
 
     /**
      * @param whatToCraft requested craft
-     * @param world       crafting world
+     * @param level       crafting level
      * @param slot        slot index
      * @param details     pattern details
      *
      * @return a collection of crafting patterns for the item in question.
      */
     ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
-            ICraftingPatternDetails details, int slot, Level world);
+            ICraftingPatternDetails details, int slot, Level level);
 
     /**
      * Begin calculating a crafting job.
      *
-     * @param world     crafting world
+     * @param level     crafting level
      * @param grid      network
      * @param actionSrc source
      * @param craftWhat result
@@ -60,7 +60,7 @@ public interface ICraftingService extends IGridService {
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingJob> beginCraftingJob(Level world, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
+    Future<ICraftingJob> beginCraftingJob(Level level, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
             ICraftingCallback callback);
 
     /**

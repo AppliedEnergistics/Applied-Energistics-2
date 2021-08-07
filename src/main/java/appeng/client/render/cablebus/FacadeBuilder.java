@@ -141,7 +141,7 @@ public class FacadeBuilder {
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-        BlockAndTintGetter parentWorld = renderState.getWorld();
+        BlockAndTintGetter parentLevel = renderState.getLevel();
         BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
@@ -222,7 +222,7 @@ public class FacadeBuilder {
 
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
             List<AABB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
-            BlockAndTintGetter facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
+            BlockAndTintGetter facadeAccess = new FacadeBlockAccess(parentLevel, pos, side, blockState);
 
             BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
             BakedModel model = dispatcher.getBlockModel(blockState);

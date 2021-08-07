@@ -49,15 +49,15 @@ public class LightningFX extends TextureSheetParticle {
     private final double[] verticesWithUV = new double[3];
     private boolean hasData = false;
 
-    private LightningFX(final ClientLevel w, final double x, final double y, final double z, final double r,
+    private LightningFX(final ClientLevel level, final double x, final double y, final double z, final double r,
             final double g, final double b) {
-        this(w, x, y, z, r, g, b, 6);
+        this(level, x, y, z, r, g, b, 6);
         this.regen();
     }
 
-    protected LightningFX(final ClientLevel w, final double x, final double y, final double z, final double r,
+    protected LightningFX(final ClientLevel level, final double x, final double y, final double z, final double r,
             final double g, final double b, final int maxAge) {
-        super(w, x, y, z, r, g, b);
+        super(level, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
         this.xd = 0;
         this.yd = 0;
@@ -253,9 +253,9 @@ public class LightningFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
+            LightningFX lightningFX = new LightningFX(level, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;
         }

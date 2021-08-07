@@ -34,14 +34,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
 import appeng.util.Platform;
 
-public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorTileEntity>
+public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowthAcceleratorBlockEntity>
         implements IOrientableBlock {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
@@ -52,8 +52,9 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorTileEntity te) {
-        return currentState.setValue(POWERED, te.isPowered());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState,
+            QuartzGrowthAcceleratorBlockEntity be) {
+        return currentState.setValue(POWERED, be.isPowered());
     }
 
     @Override
@@ -64,12 +65,12 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
-        final QuartzGrowthAcceleratorTileEntity cga = this.getTileEntity(w, pos);
+        final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
         if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;
@@ -122,7 +123,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                     break;
             }
 
-            if (!w.getBlockState(pt).isAir()) {
+            if (!level.getBlockState(pt).isAir()) {
                 return;
             }
 

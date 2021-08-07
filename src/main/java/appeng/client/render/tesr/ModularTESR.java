@@ -28,12 +28,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
-import appeng.tile.AEBaseTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class ModularTESR<T extends AEBaseTileEntity> implements BlockEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 
@@ -50,7 +50,7 @@ public class ModularTESR<T extends AEBaseTileEntity> implements BlockEntityRende
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
         for (Renderable<? super T> renderable : this.renderables) {
-            renderable.renderTileEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
+            renderable.renderBlockEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
         }
         ms.popPose();
     }

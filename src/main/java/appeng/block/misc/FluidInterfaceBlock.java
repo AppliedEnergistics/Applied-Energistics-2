@@ -30,32 +30,33 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.FluidInterfaceBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.FluidInterfaceContainer;
-import appeng.tile.misc.FluidInterfaceTileEntity;
 import appeng.util.InteractionUtil;
 
-public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
+public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {
     public FluidInterfaceBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final BlockEntity tg = this.getTileEntity(w, pos);
+        final BlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

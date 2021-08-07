@@ -61,6 +61,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
@@ -75,7 +76,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.PartModel;
-import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -129,7 +129,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 return inventory.getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
             }
 
-            // So this could / can be a design decision. If the tile does support our custom
+            // So this could / can be a design decision. If the block entity does support our custom
             // capability,
             // but it does not return an inventory for the action source, we do NOT fall
             // back to using
@@ -263,7 +263,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = self.getLevel()
                 .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
@@ -338,8 +338,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof ItemInterfaceTileEntity interfaceTileEntity) {
-            targetNode = interfaceTileEntity.getMainNode().getNode();
+        if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {
+            targetNode = interfaceBlockEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);
             if (part instanceof ItemInterfacePart interfacePart) {

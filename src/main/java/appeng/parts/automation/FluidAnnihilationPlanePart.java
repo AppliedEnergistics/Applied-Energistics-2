@@ -98,7 +98,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -126,11 +126,11 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final BlockEntity te = this.getTile();
-        final Level w = te.getLevel();
+        final BlockEntity te = this.getBlockEntity();
+        final Level level = te.getLevel();
         final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
 
-        BlockState blockstate = w.getBlockState(pos);
+        BlockState blockstate = level.getBlockState(pos);
         if (blockstate.getBlock() instanceof BucketPickup) {
             FluidState fluidState = blockstate.getFluidState();
 
@@ -148,12 +148,12 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    var fluidContainer = ((BucketPickup) blockstate.getBlock()).pickupBlock(w, pos, blockstate);
+                    var fluidContainer = ((BucketPickup) blockstate.getBlock()).pickupBlock(level, pos, blockstate);
                     FluidUtil.getFluidContained(fluidContainer).ifPresent(fs -> {
                         this.storeFluid(grid, AEFluidStack.fromFluidStack(fs), true);
                     });
 
-                    AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+                    AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
                             new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),
                                     BlockTransitionEffectPacket.SoundMode.FLUID));
 

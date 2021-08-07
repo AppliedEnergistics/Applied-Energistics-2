@@ -22,13 +22,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.grindstone.GrinderTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.GrinderScreen
@@ -36,10 +36,10 @@ import appeng.tile.grindstone.GrinderTileEntity;
 public class GrinderContainer extends AEBaseContainer {
 
     public static final MenuType<GrinderContainer> TYPE = ContainerTypeBuilder
-            .create(GrinderContainer::new, GrinderTileEntity.class)
+            .create(GrinderContainer::new, GrinderBlockEntity.class)
             .build("grinder");
 
-    public GrinderContainer(int id, final Inventory ip, final GrinderTileEntity grinder) {
+    public GrinderContainer(int id, final Inventory ip, final GrinderBlockEntity grinder) {
         super(TYPE, id, ip, grinder);
 
         IItemHandler inv = grinder.getInternalInventory();

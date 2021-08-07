@@ -42,7 +42,7 @@ import appeng.parts.AEBasePart;
  * Describes how a container the player has opened was originally located. This can be one of three ways:
  *
  * <ul>
- * <li>A tile entity at a given block position.</li>
+ * <li>A block entity at a given block position.</li>
  * <li>A part (i.e. cable bus part) at the side of a given block position.</li>
  * <li>An item held by the player.</li>
  * </ul>
@@ -69,8 +69,8 @@ public final class ContainerLocator {
     private final BlockPos blockPos;
     private final AEPartLocation side;
 
-    private ContainerLocator(Type type, int itemIndex, Level world, BlockPos blockPos, AEPartLocation side) {
-        this(type, itemIndex, world.dimension().location(), blockPos, side);
+    private ContainerLocator(Type type, int itemIndex, Level level, BlockPos blockPos, AEPartLocation side) {
+        this(type, itemIndex, level.dimension().location(), blockPos, side);
     }
 
     private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
@@ -82,16 +82,16 @@ public final class ContainerLocator {
         this.side = side;
     }
 
-    public static ContainerLocator forTileEntity(BlockEntity te) {
+    public static ContainerLocator forBlockEntity(BlockEntity te) {
         if (te.getLevel() == null) {
-            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
         return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
-    public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
+    public static ContainerLocator forBlockEntitySide(BlockEntity te, Direction side) {
         if (te.getLevel() == null) {
-            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
         return new ContainerLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
     }
@@ -134,7 +134,7 @@ public final class ContainerLocator {
     public static ContainerLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
         DimensionalBlockPos pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getWorld(), pos.getPos(), part.getSide());
+        return new ContainerLocator(Type.PART, -1, pos.getLevel(), pos.getPos(), part.getSide());
     }
 
     public boolean hasItemIndex() {

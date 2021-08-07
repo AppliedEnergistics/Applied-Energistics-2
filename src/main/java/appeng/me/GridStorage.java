@@ -35,7 +35,7 @@ public class GridStorage implements IGridStorage {
     private WeakReference<IGrid> internalGrid = null;
 
     /**
-     * for use with world settings
+     * for use with level settings
      *
      * @param id ID of grid storage
      */
@@ -45,7 +45,7 @@ public class GridStorage implements IGridStorage {
     }
 
     /**
-     * for use with world settings
+     * for use with level settings
      *
      * @param data The Grid data.
      * @param id   ID of grid storage

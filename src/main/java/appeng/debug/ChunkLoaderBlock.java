@@ -20,9 +20,9 @@ package appeng.debug;
 
 import net.minecraft.world.level.material.Material;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 
-public class ChunkLoaderBlock extends AEBaseTileBlock<ChunkLoaderTileEntity> {
+public class ChunkLoaderBlock extends AEBaseEntityBlock<ChunkLoaderBlockEntity> {
 
     public ChunkLoaderBlock() {
         super(defaultProps(Material.METAL));

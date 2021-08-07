@@ -24,8 +24,8 @@ package appeng.container;
  * Containers can be opened for various in-game objects which do not derive from a common base-class:
  * <ul>
  * <li>Items in the player inventory (i.e. wireless terminals)</li>
- * <li>Tile Entities in the world (i.e. vibration chamber)</li>
- * <li>Parts that are attached to a multi-block tile entity</li>
+ * <li>Block entities in the level (i.e. vibration chamber)</li>
+ * <li>Parts that are attached to a multi-block block entity</li>
  * </ul>
  * <p/>
  * This class tries to capture all of these cases for container base classes which do not enforce a specific interface

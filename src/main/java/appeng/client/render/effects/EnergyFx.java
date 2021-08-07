@@ -38,9 +38,9 @@ public class EnergyFx extends TextureSheetParticle {
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(final ClientLevel par1World, final double par2, final double par4, final double par6,
+    public EnergyFx(final ClientLevel level, final double par2, final double par4, final double par6,
             final SpriteSet sprite) {
-        super(par1World, par2, par4, par6);
+        super(level, par2, par4, par6);
         this.gravity = 0;
         this.bCol = 1;
         this.gCol = 1;
@@ -109,9 +109,9 @@ public class EnergyFx extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(EnergyParticleData data, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(EnergyParticleData data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
+            EnergyFx result = new EnergyFx(level, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);

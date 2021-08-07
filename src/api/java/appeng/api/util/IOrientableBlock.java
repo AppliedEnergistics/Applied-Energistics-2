@@ -27,15 +27,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 
 /**
- * Implemented on many of AE's non Tile Entity Blocks as a way to get a IOrientable.
+ * Implemented on many of AE's non Block entity Blocks as a way to get a IOrientable.
  */
 public interface IOrientableBlock {
 
     /**
-     * @param world world of block
+     * @param level world of block
      * @param pos   The position of the block.
      *
      * @return a IOrientable if applicable
      */
-    IOrientable getOrientable(BlockGetter world, BlockPos pos);
+    IOrientable getOrientable(BlockGetter level, BlockPos pos);
 }

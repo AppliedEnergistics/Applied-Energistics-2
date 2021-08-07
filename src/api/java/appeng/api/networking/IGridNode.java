@@ -58,7 +58,7 @@ public interface IGridNode {
     <T extends IGridNodeService> T getService(Class<T> serviceClass);
 
     /**
-     * Gets the host of the grid node, which does not necessarily have a representation in the game world. In most
+     * Gets the host of the grid node, which does not necessarily have a representation in the game level. In most
      * cases, this will be the game object that has created the node, for example a {@link BlockEntity} or
      * {@link appeng.api.parts.IPart}, but may also represent something entirely different.
      */
@@ -82,10 +82,10 @@ public interface IGridNode {
     IGrid getGrid();
 
     /**
-     * @return the world the node is located in
+     * @return the level the node is located in
      */
     @Nonnull
-    ServerLevel getWorld();
+    ServerLevel getLevel();
 
     /**
      * @return The externally accessible sides of the host that this grid node has formed a connection through.

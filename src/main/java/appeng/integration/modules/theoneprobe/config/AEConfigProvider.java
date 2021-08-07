@@ -28,20 +28,20 @@ import mcjty.theoneprobe.api.IProbeConfigProvider;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeHitEntityData;
 
-import appeng.tile.AEBaseTileEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class AEConfigProvider implements IProbeConfigProvider {
 
     @Override
-    public void getProbeConfig(IProbeConfig config, Player player, Level world, Entity entity,
+    public void getProbeConfig(IProbeConfig config, Player player, Level level, Entity entity,
             IProbeHitEntityData data) {
         // Still no AE entities.
     }
 
     @Override
-    public void getProbeConfig(IProbeConfig config, Player player, Level world, BlockState blockState,
+    public void getProbeConfig(IProbeConfig config, Player player, Level level, BlockState blockState,
             IProbeHitData data) {
-        if (world.getBlockEntity(data.getPos()) instanceof AEBaseTileEntity) {
+        if (level.getBlockEntity(data.getPos()) instanceof AEBaseBlockEntity) {
             config.setRFMode(0);
         }
     }

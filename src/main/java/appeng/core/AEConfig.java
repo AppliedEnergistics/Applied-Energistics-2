@@ -603,7 +603,7 @@ public final class AEConfig {
 
             builder.push("facades");
             allowBlockEntityFacades = builder.comment(
-                    "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.")
+                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.")
                     .define("allowBlockEntities", false);
             builder.pop();
 

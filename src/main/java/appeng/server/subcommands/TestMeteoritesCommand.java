@@ -82,19 +82,19 @@ public class TestMeteoritesCommand implements ISubCommand {
             player = sender.getPlayerOrException();
         } catch (CommandSyntaxException ignored) {
         }
-        ServerLevel world;
+        ServerLevel level;
         BlockPos centerBlock;
         if (player != null) {
-            world = player.getLevel();
+            level = player.getLevel();
             centerBlock = new BlockPos(player.getX(), 0, player.getZ());
         } else {
-            world = srv.getLevel(Level.OVERWORLD);
-            centerBlock = world.getSharedSpawnPos();
+            level = srv.getLevel(Level.OVERWORLD);
+            centerBlock = level.getSharedSpawnPos();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        ChunkGenerator generator = world.getChunkSource().getGenerator();
+        ChunkGenerator generator = level.getChunkSource().getGenerator();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -104,9 +104,9 @@ public class TestMeteoritesCommand implements ISubCommand {
                 chunksChecked++;
                 ChunkPos cp = new ChunkPos(cx, cz);
                 BlockPos p = new BlockPos(cp.getMinBlockX(), 0, cp.getMinBlockZ());
-                BlockPos nearest = generator.findNearestMapFeature(world, MeteoriteStructure.INSTANCE, p, 0, false);
+                BlockPos nearest = generator.findNearestMapFeature(level, MeteoriteStructure.INSTANCE, p, 0, false);
                 if (nearest != null) {
-                    ChunkAccess chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
+                    ChunkAccess chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
                     MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                     if (piece != null) {
@@ -149,7 +149,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             String state = "not final";
 
             if (force && settings.getFallout() == null) {
-                ChunkAccess chunk = world.getChunk(pos);
+                ChunkAccess chunk = level.getChunk(pos);
                 MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                 if (piece == null) {
                     state = "removed";
@@ -170,10 +170,10 @@ public class TestMeteoritesCommand implements ISubCommand {
             }
 
             MutableComponent msg = new TextComponent(" #" + (i + 1) + " ");
-            msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
+            msg.append(getClickablePosition(level, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = world.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
+            String biomeId = level.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
             Component tooltip = new TextComponent(settings + "\nBiome: ").copy()
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
@@ -183,10 +183,10 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static Component getClickablePosition(ServerLevel world, PlacedMeteoriteSettings settings,
+    private static Component getClickablePosition(ServerLevel level, PlacedMeteoriteSettings settings,
             BlockPos pos) {
         BlockPos tpPos = pos.above((int) Math.ceil(settings.getMeteoriteRadius()));
-        int surfaceY = world.getHeightmapPos(Types.WORLD_SURFACE, tpPos).getY();
+        int surfaceY = level.getHeightmapPos(Types.WORLD_SURFACE, tpPos).getY();
         if (surfaceY > tpPos.getY()) {
             tpPos = new BlockPos(tpPos.getX(), surfaceY, tpPos.getZ());
         }

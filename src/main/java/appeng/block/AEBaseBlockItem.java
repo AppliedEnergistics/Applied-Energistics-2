@@ -39,7 +39,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.tile.AEBaseTileEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 
@@ -52,15 +52,15 @@ public class AEBaseBlockItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+    public final void appendHoverText(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
-        this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
+        this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+    public void addCheckedInformation(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
-        this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
+        this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class AEBaseBlockItem extends BlockItem {
         Direction side = context.getClickedFace();
         Player player = context.getPlayer();
 
-        if (this.blockType instanceof AEBaseTileBlock) {
+        if (this.blockType instanceof AEBaseEntityBlock) {
             if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
                 if (up == Direction.UP || up == Direction.DOWN) {
@@ -132,12 +132,13 @@ public class AEBaseBlockItem extends BlockItem {
             return result;
         }
 
-        if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getLevel(),
+        if (this.blockType instanceof AEBaseEntityBlock && !(this.blockType instanceof LightDetectorBlock)) {
+            final AEBaseBlockEntity blockEntity = ((AEBaseEntityBlock<?>) this.blockType).getBlockEntity(
+                    context.getLevel(),
                     context.getClickedPos());
-            ori = tile;
+            ori = blockEntity;
 
-            if (tile == null) {
+            if (blockEntity == null) {
                 return result;
             }
 
@@ -145,11 +146,11 @@ public class AEBaseBlockItem extends BlockItem {
                 ori.setOrientation(forward, up);
             }
 
-            if (tile instanceof IOwnerAwareTile ownerAwareTile) {
-                ownerAwareTile.setOwner(player);
+            if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware) {
+                ownerAware.setOwner(player);
             }
 
-            tile.onPlacement(context);
+            blockEntity.onPlacement(context);
         } else if (this.blockType instanceof IOrientableBlock) {
             ori.setOrientation(forward, up);
         }

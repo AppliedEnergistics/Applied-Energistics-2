@@ -31,7 +31,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
 /**
- * Allocates and manages plots for spatial storage in the spatial storage world.
+ * Allocates and manages plots for spatial storage in the spatial storage level.
  */
 public final class SpatialStoragePlotManager {
 
@@ -41,22 +41,22 @@ public final class SpatialStoragePlotManager {
     }
 
     /**
-     * Gets the world used to store spatial storage cell's content.
+     * Gets the level used to store spatial storage cell's content.
      */
-    public ServerLevel getWorld() {
+    public ServerLevel getLevel() {
         var server = AppEng.instance().getCurrentServer();
         if (server == null) {
             throw new IllegalStateException("No server is currently running.");
         }
-        ServerLevel world = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
-        if (world == null) {
-            throw new IllegalStateException("The storage cell world is missing.");
+        ServerLevel level = server.getLevel(SpatialStorageDimensionIds.WORLD_ID);
+        if (level == null) {
+            throw new IllegalStateException("The storage cell level is missing.");
         }
-        return world;
+        return level;
     }
 
     private SpatialStorageWorldData getWorldData() {
-        return getWorld().getChunkSource().getDataStorage().computeIfAbsent(
+        return getLevel().getChunkSource().getDataStorage().computeIfAbsent(
                 SpatialStorageWorldData::load,
                 SpatialStorageWorldData::new,
                 SpatialStorageWorldData.ID);
@@ -104,10 +104,10 @@ public final class SpatialStoragePlotManager {
             AELog.info("Clearing spatial storage plot %s (%s -> %s)", plotId, from, to);
 
             // This is slow, but it should usually be just an admin-command
-            ServerLevel world = getWorld();
+            ServerLevel level = getLevel();
             BlockState matrixFrame = AEBlocks.MATRIX_FRAME.block().defaultBlockState();
             for (BlockPos blockPos : BlockPos.betweenClosed(from, to)) {
-                world.setBlockAndUpdate(blockPos, matrixFrame);
+                level.setBlockAndUpdate(blockPos, matrixFrame);
             }
         }
 

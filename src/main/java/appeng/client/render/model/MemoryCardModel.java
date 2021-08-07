@@ -39,7 +39,8 @@ import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 /**
- * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the part/tile.
+ * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the
+ * part/block.
  */
 public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
 

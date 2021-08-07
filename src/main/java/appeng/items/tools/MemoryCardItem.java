@@ -61,7 +61,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
@@ -168,31 +168,31 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
-            Level w = context.getLevel();
-            if (!w.isClientSide()) {
+            Level level = context.getLevel();
+            if (!level.isClientSide()) {
                 this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         } else {
             return super.useOn(context);
         }
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level w, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player) && !w.isClientSide) {
-            this.clearCard(player, w, hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+            this.clearCard(player, level, hand);
         }
 
-        return super.use(w, player, hand);
+        return super.use(level, player, hand);
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return true;
     }
 
-    private void clearCard(final Player player, final Level w, final InteractionHand hand) {
+    private void clearCard(final Player player, final Level level, final InteractionHand hand) {
         final IMemoryCard mem = (IMemoryCard) player.getItemInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getItemInHand(hand).setTag(null);

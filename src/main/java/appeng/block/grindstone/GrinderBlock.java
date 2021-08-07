@@ -29,29 +29,30 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.tile.grindstone.GrinderTileEntity;
 import appeng.util.InteractionUtil;
 
-public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
+public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
 
     public GrinderBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final GrinderTileEntity tg = this.getTileEntity(w, pos);
+        final GrinderBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

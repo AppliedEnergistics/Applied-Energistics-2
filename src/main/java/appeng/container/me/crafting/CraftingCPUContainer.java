@@ -34,13 +34,13 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingTileEntity;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
@@ -48,11 +48,11 @@ import appeng.tile.crafting.CraftingTileEntity;
 public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
     public static final MenuType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
-            .create(CraftingCPUContainer::new, CraftingTileEntity.class)
+            .create(CraftingCPUContainer::new, CraftingBlockEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
-            .withContainerTitle(craftingTileEntity -> {
+            .withContainerTitle(craftingBlockEntity -> {
                 // Use the cluster's custom name instead of the right-clicked block entities one
-                CraftingCPUCluster cluster = craftingTileEntity.getCluster();
+                CraftingCPUCluster cluster = craftingBlockEntity.getCluster();
                 if (cluster != null && cluster.getName() != null) {
                     return cluster.getName();
                 }
@@ -74,8 +74,8 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
             this.grid = null;
         }
 
-        if (te instanceof CraftingTileEntity) {
-            this.setCPU(((CraftingTileEntity) te).getCluster());
+        if (te instanceof CraftingBlockEntity) {
+            this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
 
         if (this.getGrid() == null && isServer()) {

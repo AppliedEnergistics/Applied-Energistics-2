@@ -32,13 +32,13 @@ public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavi
     @Override
     protected ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
         final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
-        final Level world = dispenser.getLevel();
+        final Level level = dispenser.getLevel();
         final int i = dispenser.getPos().getX() + Direction.getStepX();
         final int j = dispenser.getPos().getY() + Direction.getStepY();
         final int k = dispenser.getPos().getZ() + Direction.getStepZ();
-        final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(world, i + 0.5F, j + 0.5F, k + 0.5F,
+        final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, i + 0.5F, j + 0.5F, k + 0.5F,
                 null);
-        world.addFreshEntity(primedTinyTNTEntity);
+        level.addFreshEntity(primedTinyTNTEntity);
         dispensedItem.setCount(dispensedItem.getCount() - 1);
         return dispensedItem;
     }

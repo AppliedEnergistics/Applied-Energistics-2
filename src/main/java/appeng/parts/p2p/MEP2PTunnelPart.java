@@ -113,12 +113,12 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getTile().getBlockPos());
+        this.outerNode.create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
-        super.setPartHostInfo(side, host, tile);
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+        super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
     }
 
@@ -148,7 +148,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             } else {
                 this.connection.markCreate();
             }
-            TickHandler.instance().addCallable(this.getTile().getLevel(), this.connection);
+            TickHandler.instance().addCallable(this.getBlockEntity().getLevel(), this.connection);
 
             return TickRateModulation.SLEEP;
         }
@@ -191,8 +191,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                     connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
                             .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
                 } catch (final FailedConnectionException e) {
-                    final BlockEntity start = this.getTile();
-                    final BlockEntity end = me.getTile();
+                    final BlockEntity start = this.getBlockEntity();
+                    final BlockEntity end = me.getBlockEntity();
 
                     AELog.debug(e);
 

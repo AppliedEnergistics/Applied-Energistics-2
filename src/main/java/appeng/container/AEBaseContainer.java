@@ -75,7 +75,7 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
 
     private final IActionSource mySrc;
-    private final BlockEntity tileEntity;
+    private final BlockEntity blockEntity;
     private final IPart part;
     private final IGuiItemObject guiItem;
     private final DataSynchronization dataSync = new DataSynchronization(this);
@@ -92,11 +92,11 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             final Object host) {
         super(containerType, id);
         this.playerInventory = playerInventory;
-        this.tileEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
+        this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
         this.guiItem = host instanceof IGuiItemObject ? (IGuiItemObject) host : null;
 
-        if (host != null && this.tileEntity == null && this.part == null && this.guiItem == null) {
+        if (host != null && this.blockEntity == null && this.part == null && this.guiItem == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
@@ -108,8 +108,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
             return (IActionHost) this.guiItem;
         }
 
-        if (this.tileEntity instanceof IActionHost) {
-            return (IActionHost) this.tileEntity;
+        if (this.blockEntity instanceof IActionHost) {
+            return (IActionHost) this.blockEntity;
         }
 
         if (this.part instanceof IActionHost) {
@@ -186,8 +186,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     }
 
     public Object getTarget() {
-        if (this.tileEntity != null) {
-            return this.tileEntity;
+        if (this.blockEntity != null) {
+            return this.blockEntity;
         }
         if (this.part != null) {
             return this.part;
@@ -195,8 +195,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
         return this.guiItem;
     }
 
-    public BlockEntity getTileEntity() {
-        return this.tileEntity;
+    public BlockEntity getBlockEntity() {
+        return this.blockEntity;
     }
 
     protected final void createPlayerInventorySlots(Inventory playerInventory) {
@@ -245,8 +245,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     @Override
     public void broadcastChanges() {
         if (isServer()) {
-            if (this.tileEntity != null
-                    && this.tileEntity.getLevel().getBlockEntity(this.tileEntity.getBlockPos()) != this.tileEntity) {
+            if (this.blockEntity != null
+                    && this.blockEntity.getLevel().getBlockEntity(this.blockEntity.getBlockPos()) != this.blockEntity) {
                 this.setValidContainer(false);
             }
 
@@ -432,8 +432,8 @@ public abstract class AEBaseContainer extends AbstractContainerMenu {
     @Override
     public boolean stillValid(final Player PlayerEntity) {
         if (this.isValidContainer()) {
-            if (this.tileEntity instanceof Container) {
-                return ((Container) this.tileEntity).stillValid(PlayerEntity);
+            if (this.blockEntity instanceof Container) {
+                return ((Container) this.blockEntity).stillValid(PlayerEntity);
             }
             return true;
         }

@@ -124,7 +124,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
         @Nullable
         @Override
-        public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world,
+        public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel level,
                 @Nullable LivingEntity entity, int seed) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
@@ -134,12 +134,12 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
                     BakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
-                    realModel = realModel.getOverrides().resolve(realModel, output, world, entity, seed);
+                    realModel = realModel.getOverrides().resolve(realModel, output, level, entity, seed);
                     return new ShiftHoldingModelWrapper(getBaseModel(), realModel);
                 }
             }
 
-            return getBaseModel().getOverrides().resolve(originalModel, stack, world, entity, seed);
+            return getBaseModel().getOverrides().resolve(originalModel, stack, level, entity, seed);
         }
     }
 

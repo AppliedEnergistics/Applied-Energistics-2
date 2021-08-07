@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 public interface ICraftingCallback {
 
     /**
-     * The call back is synchronized with the world you passed as well as all other crafting jobs. This can lead to
+     * The call back is synchronized with the level you passed as well as all other crafting jobs. This can lead to
      * deadlocks in cases like submitting new crafting jobs from the callback itself. However it is not limited to this
      * case and can deadlock in other ones.
      * 
      * It will also be called from a separate crafting thread. If your callback is not thread safe you have to take care
-     * if it yourself. For example by using a thread safe queue and handling it with the tileentity/world/server tick.
+     * if it yourself. For example by using a thread safe queue and handling it with the blockentity/world/server tick.
      *
      * @param job - final job
      */

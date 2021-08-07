@@ -53,7 +53,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getItemInHand(hand), p);
             p.swing(hand);
@@ -157,7 +157,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {

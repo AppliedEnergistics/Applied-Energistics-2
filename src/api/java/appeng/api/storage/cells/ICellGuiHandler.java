@@ -26,7 +26,7 @@ package appeng.api.storage.cells;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;

@@ -54,8 +54,8 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (world.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (level.isClientSide()) {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
 
@@ -77,7 +77,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             return InteractionResultHolder.success(itemStack);
         }
 
-        return super.use(world, player, hand);
+        return super.use(level, player, hand);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         }
 
         ServerPlayer player = (ServerPlayer) context.getPlayer();
-        ServerLevel world = (ServerLevel) context.getLevel();
+        ServerLevel level = (ServerLevel) context.getLevel();
         BlockPos pos = context.getClickedPos();
 
         if (player == null) {
@@ -105,7 +105,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
-        PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(world, pos, coreRadius, craterType,
+        PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(level, pos, coreRadius, craterType,
                 pureCrater, false);
 
         if (spawned == null) {
@@ -120,20 +120,20 @@ public class MeteoritePlacerItem extends AEBaseItem {
         BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
                 pos.getX() + range, pos.getY(), pos.getZ() + range);
 
-        final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
+        final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox);
         placer.place();
 
         player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getBiomeCategory()), Util.NIL_UUID);
+                + " biomeCategory=" + level.getBiome(pos).getBiomeCategory()), Util.NIL_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-            LevelChunk c = world.getChunk(cp.x, cp.z);
+            LevelChunk c = level.getChunk(cp.x, cp.z);
             player.connection.send(new ClientboundLevelChunkPacket(c));
         });
 
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

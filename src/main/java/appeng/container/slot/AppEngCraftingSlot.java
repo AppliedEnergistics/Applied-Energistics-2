@@ -137,8 +137,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level world) {
-        return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world)
+    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
+        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level)
                 .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }

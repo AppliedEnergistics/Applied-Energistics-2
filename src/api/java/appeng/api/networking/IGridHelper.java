@@ -94,7 +94,7 @@ public interface IGridHelper {
      * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
      */
     @Nullable
-    IInWorldGridNodeHost getNodeHost(LevelAccessor world, BlockPos pos);
+    IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos);
 
     /**
      * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making
@@ -105,8 +105,8 @@ public interface IGridHelper {
      * @see #getNodeHost(LevelAccessor, BlockPos)
      */
     @Nullable
-    default IGridNode getExposedNode(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull Direction side) {
-        var host = getNodeHost(world, pos);
+    default IGridNode getExposedNode(@Nonnull LevelAccessor level, @Nonnull BlockPos pos, @Nonnull Direction side) {
+        var host = getNodeHost(level, pos);
         if (host == null) {
             return null;
         }
@@ -124,7 +124,7 @@ public interface IGridHelper {
      * <p/>
      * This method can be called on both server and client.
      *
-     * @param owner    The game object that owns the node, such as a tile entity or {@link appeng.api.parts.IPart}.
+     * @param owner    The game object that owns the node, such as a block entity or {@link appeng.api.parts.IPart}.
      * @param listener A listener that will adapt events sent by the grid node to the owner.
      * @param <T>      The type of the owner.
      * @return The managed grid node.

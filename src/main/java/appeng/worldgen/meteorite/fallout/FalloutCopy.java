@@ -33,36 +33,36 @@ public class FalloutCopy extends Fallout {
     private final BlockState block;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutCopy(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter,
+    public FalloutCopy(final LevelAccessor level, BlockPos pos, final MeteoriteBlockPutter putter,
             final BlockState skyStone) {
         super(putter, skyStone);
         this.putter = putter;
-        this.block = w.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
+        this.block = level.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
     }
 
     @Override
-    public void getRandomFall(final LevelAccessor w, BlockPos pos) {
+    public void getRandomFall(final LevelAccessor level, BlockPos pos) {
         final double a = Math.random();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, this.block);
+            this.putter.put(level, pos, this.block);
         } else {
-            this.getOther(w, pos, a);
+            this.getOther(level, pos, a);
         }
     }
 
-    public void getOther(final LevelAccessor w, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor level, BlockPos pos, final double a) {
 
     }
 
     @Override
-    public void getRandomInset(final LevelAccessor w, BlockPos pos) {
+    public void getRandomInset(final LevelAccessor level, BlockPos pos) {
         final double a = Math.random();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, this.block);
+            this.putter.put(level, pos, this.block);
         } else if (a > AIR_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.AIR.defaultBlockState());
+            this.putter.put(level, pos, Blocks.AIR.defaultBlockState());
         } else {
-            this.getOther(w, pos, a - BLOCK_THRESHOLD_STEP);
+            this.getOther(level, pos, a - BLOCK_THRESHOLD_STEP);
         }
     }
 }

@@ -31,10 +31,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 
-public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
+public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBlockEntity> {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
@@ -51,7 +51,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
@@ -62,31 +62,31 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
-        return currentState.setValue(FORMED, te.isFormed());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, QuantumBridgeBlockEntity be) {
+        return currentState.setValue(FORMED, be.isFormed());
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);
         }
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null) {
             bridge.breakCluster();
         }
 
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
 }

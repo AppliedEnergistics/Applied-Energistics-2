@@ -147,7 +147,7 @@ class MemoryCardBakedModel implements BakedModel {
     public ItemOverrides getOverrides() {
         return new ItemOverrides() {
             @Override
-            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel world,
+            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard) {

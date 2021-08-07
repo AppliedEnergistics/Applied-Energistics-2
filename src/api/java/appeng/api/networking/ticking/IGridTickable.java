@@ -42,8 +42,9 @@ public interface IGridTickable extends IGridNodeService {
     /**
      * Return a valid TickingRequest to tell AE a guide for which type of responsiveness your device wants.
      *
-     * This will be called for your tile any time your tile changes grids, this can happen at any time, so if your using
-     * the sleep feature you may wish to preserve your sleep, in the result of this method. or you can simply reset it.
+     * This will be called for your block entity any time your block entity changes grids, this can happen at any time,
+     * so if your using the sleep feature you may wish to preserve your sleep, in the result of this method. or you can
+     * simply reset it.
      *
      * @return a valid new TickingRequest
      */

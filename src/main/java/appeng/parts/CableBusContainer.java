@@ -73,14 +73,14 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.facade.FacadeContainer;
-import appeng.helpers.AEMultiTile;
+import appeng.helpers.AEMultiBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
+public class CableBusContainer extends CableBusStorage implements AEMultiBlockEntity, ICableBusContainer {
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
     private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);
@@ -200,7 +200,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 }
 
                 this.setCenter((ICablePart) bp);
-                bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getTile());
+                bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getBlockEntity());
 
                 if (player != null) {
                     bp.onPlacement(player, hand, is, side);
@@ -244,7 +244,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 }
 
                 this.setSide(side, bp);
-                bp.setPartHostInfo(side, this, this.getTile());
+                bp.setPartHostInfo(side, this, this.getBlockEntity());
 
                 if (player != null) {
                     bp.onPlacement(player, hand, is, side);
@@ -337,8 +337,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public BlockEntity getTile() {
-        return this.tcb.getTile();
+    public BlockEntity getBlockEntity() {
+        return this.tcb.getBlockEntity();
     }
 
     @Override
@@ -420,7 +420,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
 
             if (!facades.isEmpty()) {
-                final BlockEntity te = this.tcb.getTile();
+                final BlockEntity te = this.tcb.getBlockEntity();
                 Platform.spawnDrops(te.getLevel(), te.getBlockPos(), facades);
             }
         }
@@ -488,7 +488,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     private void updateRedstone() {
-        final BlockEntity te = this.getTile();
+        final BlockEntity te = this.getBlockEntity();
         this.hasRedstone = te.getLevel().getBestNeighborSignal(te.getBlockPos()) != 0 ? YesNo.YES : YesNo.NO;
     }
 
@@ -524,7 +524,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.inWorld = true;
         IS_LOADING.set(true);
 
-        final BlockEntity te = this.getTile();
+        final BlockEntity te = this.getBlockEntity();
 
         // start with the center, then install the side parts into the grid.
         for (int x = 6; x >= 0; x--) {
@@ -677,13 +677,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
-                part.onNeighborChanged(w, pos, neighbor);
+                part.onNeighborChanged(level, pos, neighbor);
             }
         }
 
@@ -704,11 +704,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void animateTick(final Level world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level level, final BlockPos pos, final Random r) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
-                p.animateTick(world, pos, r);
+                p.animateTick(level, pos, r);
             }
         }
     }
@@ -788,7 +788,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         updateBlock |= this.getFacadeContainer().readFromStream(data);
 
-        // Updating tiles may change the collision shape
+        // Updating block entities may change the collision shape
         this.invalidateShapes();
 
         return updateBlock;
@@ -947,8 +947,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // Only use the incoming cable-type of the adjacent block, if it's not a cable bus itself
                 // Dense cables however also respect the adjacent cable-type since their outgoing connection
                 // point would look too big for other cable types
-                final BlockPos adjacentPos = this.getTile().getBlockPos().relative(facing);
-                var adjacentHost = Api.instance().grid().getNodeHost(getTile().getLevel(), adjacentPos);
+                final BlockPos adjacentPos = this.getBlockEntity().getBlockPos().relative(facing);
+                var adjacentHost = Api.instance().grid().getNodeHost(getBlockEntity().getLevel(), adjacentPos);
 
                 if (adjacentHost != null) {
                     var adjacentType = adjacentHost.getCableConnectionType(facing.getOpposite());
@@ -966,7 +966,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             // Collect the number of channels used per side
             // We have to do this even for non-smart cables since a glass cable can display
             // a connection as smart if the
-            // adjacent tile requires it
+            // adjacent block entity requires it
             for (Direction facing : Direction.values()) {
                 int channels = cable.getCableConnectionType().isSmart() ? cable.getChannelsOnSide(facing) : 0;
                 renderState.getChannelsOnSide().put(facing, channels);
@@ -1021,10 +1021,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
-            Level world = getTile().getLevel();
-            if (blockState != null && textureItem != null && world != null) {
+            Level level = getBlockEntity().getLevel();
+            if (blockState != null && textureItem != null && level != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isSolidRender(world, getTile().getBlockPos()));
+                        !facade.getBlockState().isSolidRender(level, getBlockEntity().getBlockPos()));
             }
         }
 

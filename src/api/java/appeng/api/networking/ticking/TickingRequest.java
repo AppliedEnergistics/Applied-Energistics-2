@@ -24,7 +24,7 @@
 package appeng.api.networking.ticking;
 
 /**
- * Describes how your tiles ticking is executed.
+ * Describes how your grid node ticking is executed.
  */
 public class TickingRequest {
 
@@ -38,7 +38,7 @@ public class TickingRequest {
     public final int minTickRate;
 
     /**
-     * the maximum number of ticks that can pass between ticks, if this value is exceeded the tile must tick.
+     * the maximum number of ticks that can pass between ticks, if this value is exceeded the grid node must tick.
      *
      * Valid Values are 1+
      *

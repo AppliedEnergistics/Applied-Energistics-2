@@ -26,7 +26,7 @@ package appeng.api.util;
 import net.minecraft.world.phys.HitResult;
 
 /**
- * Implement on Tile or part to customize if the info gui opens, or an action is preformed.
+ * Implement on block entity or part to customize if the info gui opens, or an action is preformed.
  */
 public interface INetworkToolAgent {
 

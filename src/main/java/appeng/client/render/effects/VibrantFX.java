@@ -31,9 +31,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class VibrantFX extends TextureSheetParticle {
 
-    public VibrantFX(final ClientLevel par1World, final double x, final double y, final double z, final double par8,
+    public VibrantFX(final ClientLevel level, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, SpriteSet sprite) {
-        super(par1World, x, y, z, par8, par10, par12);
+        super(level, x, y, z, par8, par10, par12);
         final float f = this.random.nextFloat() * 0.1F + 0.8F;
         this.rCol = f * 0.7f;
         this.gCol = f * 0.89f;
@@ -88,9 +88,9 @@ public class VibrantFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+            return new VibrantFX(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 

@@ -102,7 +102,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public float getMultiplier(BlockState state, @Nullable Level world, @Nullable BlockPos pos) {
+    public float getMultiplier(BlockState state, @Nullable Level level, @Nullable BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
@@ -114,7 +114,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.dimension() == Level.NETHER) {
+        if (level != null && level.dimension() == Level.NETHER) {
             // In the nether, use Lava as the "normal" fluid
             return state.getFluidState().is(FluidTags.LAVA) ? 1 : 0;
         } else {
@@ -124,12 +124,12 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
     }
 
     public Component getGrowthTooltipItem(ItemStack stack) {
@@ -138,7 +138,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public int getEntityLifespan(final ItemStack itemStack, final Level world) {
+    public int getEntityLifespan(final ItemStack itemStack, final Level level) {
         return Integer.MAX_VALUE;
     }
 
@@ -148,8 +148,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public Entity createEntity(final Level world, final Entity location, final ItemStack itemstack) {
-        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
+    public Entity createEntity(final Level level, final Entity location, final ItemStack itemstack) {
+        final GrowingCrystalEntity egc = new GrowingCrystalEntity(level, location.getX(), location.getY(),
                 location.getZ(), itemstack);
 
         egc.setDeltaMovement(location.getDeltaMovement());

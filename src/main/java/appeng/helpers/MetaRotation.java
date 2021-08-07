@@ -32,11 +32,11 @@ import appeng.decorative.solid.QuartzPillarBlock;
 public class MetaRotation implements IOrientable {
 
     private final Property<Direction> facingProp;
-    private final BlockGetter w;
+    private final BlockGetter level;
     private final BlockPos pos;
 
-    public MetaRotation(final BlockGetter world, final BlockPos pos, final Property<Direction> facingProp) {
-        this.w = world;
+    public MetaRotation(final BlockGetter level, final BlockPos pos, final Property<Direction> facingProp) {
+        this.level = level;
         this.pos = pos;
         this.facingProp = facingProp;
     }
@@ -56,7 +56,7 @@ public class MetaRotation implements IOrientable {
 
     @Override
     public Direction getUp() {
-        final BlockState state = this.w.getBlockState(this.pos);
+        final BlockState state = this.level.getBlockState(this.pos);
 
         if (this.facingProp != null && state.hasProperty(this.facingProp)) {
             return state.getValue(this.facingProp);
@@ -81,17 +81,17 @@ public class MetaRotation implements IOrientable {
 
     @Override
     public void setOrientation(final Direction forward, final Direction up) {
-        if (this.w instanceof Level) {
+        if (this.level instanceof Level) {
             if (this.facingProp != null) {
-                ((Level) this.w).setBlockAndUpdate(this.pos,
-                        this.w.getBlockState(this.pos).setValue(this.facingProp, up));
+                ((Level) this.level).setBlockAndUpdate(this.pos,
+                        this.level.getBlockState(this.pos).setValue(this.facingProp, up));
             } else {
                 // TODO 1.10.2-R - Temp
-                ((Level) this.w).setBlockAndUpdate(this.pos,
-                        this.w.getBlockState(this.pos).setValue(QuartzPillarBlock.AXIS, up.getAxis()));
+                ((Level) this.level).setBlockAndUpdate(this.pos,
+                        this.level.getBlockState(this.pos).setValue(QuartzPillarBlock.AXIS, up.getAxis()));
             }
         } else {
-            throw new IllegalStateException(this.w.getClass().getName() + " received, expected World");
+            throw new IllegalStateException(this.level.getClass().getName() + " received, expected World");
         }
     }
 }

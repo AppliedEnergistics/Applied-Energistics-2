@@ -29,6 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
@@ -37,7 +38,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.NamePressItem;
-import appeng.tile.inventory.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.implementations.QuartzKnifeScreen

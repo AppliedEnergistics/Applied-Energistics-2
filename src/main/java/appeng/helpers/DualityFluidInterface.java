@@ -175,7 +175,7 @@ public class DualityFluidInterface
             });
         }
 
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
@@ -201,7 +201,7 @@ public class DualityFluidInterface
     }
 
     public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this.iHost.getTileEntity());
+        return new DimensionalBlockPos(this.iHost.getBlockEntity());
     }
 
     @SuppressWarnings("unchecked")
@@ -399,8 +399,8 @@ public class DualityFluidInterface
 
     @Override
     public boolean isRemote() {
-        Level world = this.iHost.getTileEntity().getLevel();
-        return world == null || world.isClientSide();
+        Level level = this.iHost.getBlockEntity().getLevel();
+        return level == null || level.isClientSide();
     }
 
     public void writeToNBT(final CompoundTag data) {
@@ -451,9 +451,9 @@ public class DualityFluidInterface
 
     private class InterfaceInventory extends MEMonitorIFluidHandler {
 
-        InterfaceInventory(final DualityFluidInterface tileInterface) {
-            super(tileInterface.tanks);
-            this.setActionSource(new MachineSource(tileInterface.iHost));
+        InterfaceInventory(final DualityFluidInterface iface) {
+            super(iface.tanks);
+            this.setActionSource(new MachineSource(iface.iHost));
         }
 
         @Override
@@ -510,7 +510,7 @@ public class DualityFluidInterface
     }
 
     @Override
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 

@@ -44,10 +44,10 @@ public interface IMovableHandler {
     boolean canHandle(BlockEntityType<?> type);
 
     /**
-     * request that the handler move the the tile from its current location to the new one. the tile has already been
-     * invalidated, and the blocks have already been fully moved.
+     * request that the handler move the block entity from its current location to the new one. the block entity has
+     * already been invalidated, and the blocks have already been fully moved.
      * <p/>
-     * You are responsible for adding the new block entity to the target world, i.e. using
+     * You are responsible for adding the new block entity to the target level, i.e. using
      * {@link Level#setBlockEntity(BlockEntity)}.
      *
      * Potential Example:
@@ -55,22 +55,22 @@ public interface IMovableHandler {
      * <pre>
      * {
      *     &#064;code
-     *     Chunk c = world.getChunkAt(x, z);
-     *     c.setChunkBlockTileEntity(x &amp; 0xF, y + y, z &amp; 0xF, tile);
+     *     Chunk c = level.getChunkAt(x, z);
+     *     c.setChunkBlockBlockentity(x &amp; 0xF, y + y, z &amp; 0xF, blockEntity);
      *
      *     if (c.isChunkLoaded) {
-     *         world.addTileEntity(tile);
-     *         world.markBlockForUpdate(x, y, z);
+     *         level.addBlockentity(blockEntity);
+     *         level.markBlockForUpdate(x, y, z);
      *     }
      * }
      * </pre>
      *
-     * @param entity      to be moved tile
+     * @param entity      to be moved block entity
      * @param savedData   the original entities data saved using {@link BlockEntity#save(CompoundTag)}.
-     * @param world       world of tile
+     * @param level       level of block entity
      * @param newPosition the new location
      * @return True if moving succeeded. If false is returned, AE2 will attempt to recover the original entity.
      */
     @Nullable
-    boolean moveTile(BlockEntity entity, CompoundTag savedData, Level world, BlockPos newPosition);
+    boolean moveBlockEntity(BlockEntity entity, CompoundTag savedData, Level level, BlockPos newPosition);
 }

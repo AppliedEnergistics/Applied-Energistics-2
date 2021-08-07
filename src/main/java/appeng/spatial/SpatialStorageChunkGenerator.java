@@ -46,7 +46,7 @@ import net.minecraft.world.level.levelgen.StructureSettings;
 import appeng.core.definitions.AEBlocks;
 
 /**
- * Chunk generator the spatial storage world.
+ * Chunk generator the spatial storage level.
  */
 public class SpatialStorageChunkGenerator extends ChunkGenerator {
 

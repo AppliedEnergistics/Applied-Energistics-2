@@ -43,8 +43,8 @@ public class CustomEntityItem extends AEBaseItem {
     }
 
     @Override
-    public Entity createEntity(final Level w, final Entity location, final ItemStack itemstack) {
-        ItemEntity eqi = factory.create(w, location.getX(), location.getY(), location.getZ(),
+    public Entity createEntity(final Level level, final Entity location, final ItemStack itemstack) {
+        ItemEntity eqi = factory.create(level, location.getX(), location.getY(), location.getZ(),
                 itemstack);
 
         eqi.setDeltaMovement(location.getDeltaMovement());
@@ -58,7 +58,7 @@ public class CustomEntityItem extends AEBaseItem {
 
     @FunctionalInterface
     public interface EntityFactory {
-        ItemEntity create(Level w, double x, double y, double z, ItemStack is);
+        ItemEntity create(Level level, double x, double y, double z, ItemStack is);
     }
 
 }

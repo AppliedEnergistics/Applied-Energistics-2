@@ -31,7 +31,7 @@ public interface IFluidInterfaceHost extends IActionHost, IUpgradeableHost {
 
     EnumSet<Direction> getTargets();
 
-    BlockEntity getTileEntity();
+    BlockEntity getBlockEntity();
 
     void saveChanges();
 }

@@ -43,7 +43,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public boolean isWorldGenEnabled(WorldGenType type, ServerLevel w) {
+    public boolean isWorldGenEnabled(WorldGenType type, ServerLevel level) {
         return true;
     }
 

@@ -42,46 +42,46 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.ChargerTileEntity;
 import appeng.util.InteractionUtil;
 
-public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
+public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.METAL).noOcclusion());
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (!w.isClientSide()) {
-            final ChargerTileEntity tc = this.getTileEntity(w, pos);
+        if (!level.isClientSide()) {
+            final ChargerBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
                 tc.activate(player);
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -90,9 +90,9 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             return;
         }
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
-        if (tile != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
-                .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
+        if (blockEntity != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
+                .isSameAs(blockEntity.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
             final double yOff = 0.0;
             final double zOff = 0.0;
@@ -108,13 +108,13 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
-        if (tile != null) {
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
+        if (blockEntity != null) {
             final double twoPixels = 2.0 / 16.0;
-            final Direction up = tile.getUp();
-            final Direction forward = tile.getForward();
+            final Direction up = blockEntity.getUp();
+            final Direction forward = blockEntity.getForward();
             final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
                     1.0 - twoPixels, 1.0 - twoPixels);
 
@@ -160,7 +160,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         return Shapes.create(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }

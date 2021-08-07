@@ -56,17 +56,17 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
-        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), w, player, hand);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), level, player, hand);
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         if (getEncryptionKey(stack).isEmpty()) {
             lines.add(GuiText.Unlinked.text());

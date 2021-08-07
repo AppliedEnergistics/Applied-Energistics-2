@@ -54,63 +54,63 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
         if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
-            this.startFuse(world, pos, player);
-            world.removeBlock(pos, false);
+            this.startFuse(level, pos, player);
+            level.removeBlock(pos, false);
             heldItem.hurtAndBreak(1, player, p -> {
                 p.broadcastBreakEvent(handIn);
             }); // FIXME Check if onBroken is equivalent
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         } else {
-            return super.use(state, world, pos, player, handIn, hit);
+            return super.use(state, level, pos, player, handIn, hit);
         }
     }
 
-    public void startFuse(final Level w, final BlockPos pos, final LivingEntity igniter) {
-        if (!w.isClientSide) {
-            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
+    public void startFuse(final Level level, final BlockPos pos, final LivingEntity igniter) {
+        if (!level.isClientSide) {
+            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
-            w.addFreshEntity(primedTinyTNTEntity);
-            w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
+            level.addFreshEntity(primedTinyTNTEntity);
+            level.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
                     primedTinyTNTEntity.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1, 1);
         }
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (world.getBestNeighborSignal(pos) > 0) {
-            this.startFuse(world, pos, null);
-            world.removeBlock(pos, false);
+        if (level.getBestNeighborSignal(pos) > 0) {
+            this.startFuse(level, pos, null);
+            level.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void onPlace(BlockState state, Level w, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onPlace(state, w, pos, oldState, isMoving);
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
 
-        if (w.getBestNeighborSignal(pos) > 0) {
-            this.startFuse(w, pos, null);
-            w.removeBlock(pos, false);
+        if (level.getBestNeighborSignal(pos) > 0) {
+            this.startFuse(level, pos, null);
+            level.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void stepOn(final Level w, final BlockPos pos, BlockState state, final Entity entity) {
-        if (!w.isClientSide && entity instanceof AbstractArrow arrow) {
+    public void stepOn(final Level level, final BlockPos pos, BlockState state, final Entity entity) {
+        if (!level.isClientSide && entity instanceof AbstractArrow arrow) {
 
             if (arrow.isOnFire()) {
                 LivingEntity igniter = null;
@@ -119,8 +119,8 @@ public class TinyTNTBlock extends AEBaseBlock {
                 if (shooter instanceof LivingEntity) {
                     igniter = (LivingEntity) shooter;
                 }
-                this.startFuse(w, pos, igniter);
-                w.removeBlock(pos, false);
+                this.startFuse(level, pos, igniter);
+                level.removeBlock(pos, false);
             }
         }
     }
@@ -131,14 +131,15 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(final Level w, final BlockPos pos, final Explosion exp) {
-        super.wasExploded(w, pos, exp);
-        if (!w.isClientSide) {
-            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
+    public void wasExploded(final Level level, final BlockPos pos, final Explosion exp) {
+        super.wasExploded(level, pos, exp);
+        if (!level.isClientSide) {
+            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getSourceMob());
             primedTinyTNTEntity
-                    .setFuse(w.random.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
-            w.addFreshEntity(primedTinyTNTEntity);
+                    .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
+                            + primedTinyTNTEntity.getFuse() / 8);
+            level.addFreshEntity(primedTinyTNTEntity);
         }
     }
 

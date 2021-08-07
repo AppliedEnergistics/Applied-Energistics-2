@@ -30,11 +30,11 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.spatial.ISpatialService;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
-import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 
@@ -48,11 +48,11 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     private final IGrid myGrid;
     private long powerRequired = 0;
     private double efficiency = 0.0;
-    private ServerLevel captureWorld;
+    private ServerLevel captureLevel;
     private BlockPos captureMin;
     private BlockPos captureMax;
     private boolean isValid = false;
-    private List<SpatialIOPortTileEntity> ioPorts = new ArrayList<>();
+    private List<SpatialIOPortBlockEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
     public SpatialPylonService(final IGrid g) {
@@ -68,20 +68,20 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         this.clusters = new HashMap<>();
         this.ioPorts = new ArrayList<>();
 
-        for (var gm : grid.getMachineNodes(SpatialIOPortTileEntity.class)) {
-            this.ioPorts.add((SpatialIOPortTileEntity) gm.getOwner());
+        for (var gm : grid.getMachineNodes(SpatialIOPortBlockEntity.class)) {
+            this.ioPorts.add((SpatialIOPortBlockEntity) gm.getOwner());
         }
 
-        for (var gm : grid.getMachineNodes(SpatialPylonTileEntity.class)) {
+        for (var gm : grid.getMachineNodes(SpatialPylonBlockEntity.class)) {
             if (gm.meetsChannelRequirements()) {
-                final SpatialPylonCluster c = ((SpatialPylonTileEntity) gm.getOwner()).getCluster();
+                final SpatialPylonCluster c = ((SpatialPylonBlockEntity) gm.getOwner()).getCluster();
                 if (c != null) {
                     this.clusters.put(c, c);
                 }
             }
         }
 
-        this.captureWorld = null;
+        this.captureLevel = null;
         this.isValid = true;
 
         MutableBlockPos minPoint = null;
@@ -89,9 +89,9 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
 
         int pylonBlocks = 0;
         for (final SpatialPylonCluster cl : this.clusters.values()) {
-            if (this.captureWorld == null) {
-                this.captureWorld = cl.getWorld();
-            } else if (this.captureWorld != cl.getWorld()) {
+            if (this.captureLevel == null) {
+                this.captureLevel = cl.setLevel();
+            } else if (this.captureLevel != cl.setLevel()) {
                 continue;
             }
 
@@ -112,7 +112,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
                 minPoint.setZ(Math.min(minPoint.getZ(), cl.getBoundsMin().getZ()));
             }
 
-            pylonBlocks += cl.tileCount();
+            pylonBlocks += cl.size();
         }
 
         this.captureMin = minPoint != null ? minPoint.immutable() : null;
@@ -190,7 +190,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
 
     @Override
     public boolean hasRegion() {
-        return this.captureWorld != null && this.captureMin != null && this.captureMax != null;
+        return this.captureLevel != null && this.captureMin != null && this.captureMax != null;
     }
 
     @Override
@@ -199,8 +199,8 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     }
 
     @Override
-    public ServerLevel getWorld() {
-        return this.captureWorld;
+    public ServerLevel getLevel() {
+        return this.captureLevel;
     }
 
     @Override

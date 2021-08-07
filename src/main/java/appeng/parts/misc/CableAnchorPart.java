@@ -117,7 +117,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -167,7 +167,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
         this.host = host;
         this.mySide = side;
     }
@@ -193,7 +193,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void animateTick(final Level world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level level, final BlockPos pos, final Random r) {
 
     }
 

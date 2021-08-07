@@ -34,7 +34,7 @@ import appeng.integration.modules.theoneprobe.TheOneProbeText;
 public class PowerStateInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;

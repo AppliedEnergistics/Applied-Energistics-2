@@ -23,10 +23,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
-import appeng.tile.storage.SkyChestTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.SkyChestScreen
@@ -34,12 +34,12 @@ import appeng.tile.storage.SkyChestTileEntity;
 public class SkyChestContainer extends AEBaseContainer {
 
     public static final MenuType<SkyChestContainer> TYPE = ContainerTypeBuilder
-            .create(SkyChestContainer::new, SkyChestTileEntity.class)
+            .create(SkyChestContainer::new, SkyChestBlockEntity.class)
             .build("skychest");
 
-    private final SkyChestTileEntity chest;
+    private final SkyChestBlockEntity chest;
 
-    public SkyChestContainer(int id, final Inventory ip, final SkyChestTileEntity chest) {
+    public SkyChestContainer(int id, final Inventory ip, final SkyChestBlockEntity chest) {
         super(TYPE, id, ip, chest);
 
         this.chest = chest;
@@ -58,7 +58,7 @@ public class SkyChestContainer extends AEBaseContainer {
         this.chest.stopOpen(player);
     }
 
-    public SkyChestTileEntity getChest() {
+    public SkyChestBlockEntity getChest() {
         return chest;
     }
 }

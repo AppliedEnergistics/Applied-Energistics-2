@@ -102,7 +102,7 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Requires that the player has a certain permission on the tile to open the container.
+     * Requires that the player has a certain permission on the block entity to open the container.
      */
     public ContainerTypeBuilder<C, I> requirePermission(SecurityPermissions permission) {
         this.requiredPermission = permission;
@@ -131,8 +131,8 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Opens a container that is based around a single tile entity. The tile entity's position is encoded in the packet
-     * buffer.
+     * Opens a container that is based around a single block entity. The block entity's position is encoded in the
+     * packet buffer.
      */
     private C fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
@@ -191,20 +191,20 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
             return null; // No block was clicked
         }
 
-        BlockEntity tileEntity = player.level.getBlockEntity(locator.getBlockPos());
+        BlockEntity blockEntity = player.level.getBlockEntity(locator.getBlockPos());
 
-        // The tile entity itself can host a terminal (i.e. Chest!)
-        if (hostInterface.isInstance(tileEntity)) {
-            return hostInterface.cast(tileEntity);
+        // The block entity itself can host a terminal (i.e. Chest!)
+        if (hostInterface.isInstance(blockEntity)) {
+            return hostInterface.cast(blockEntity);
         }
 
         if (!locator.hasSide()) {
             return null;
         }
 
-        if (tileEntity instanceof IPartHost) {
-            // But it could also be a part attached to the tile entity
-            IPartHost partHost = (IPartHost) tileEntity;
+        if (blockEntity instanceof IPartHost) {
+            // But it could also be a part attached to the block entity
+            IPartHost partHost = (IPartHost) blockEntity;
             IPart part = partHost.getPart(locator.getSide());
             if (part == null) {
                 return null;

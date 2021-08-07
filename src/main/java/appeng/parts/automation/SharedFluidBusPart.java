@@ -67,7 +67,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -106,8 +106,8 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     protected BlockEntity getConnectedTE() {
-        BlockEntity self = this.getHost().getTile();
-        return Platform.getTickingBlockEntity(getWorld(), self.getBlockPos().relative(this.getSide().getDirection()));
+        BlockEntity self = this.getHost().getBlockEntity();
+        return Platform.getTickingBlockEntity(getLevel(), self.getBlockPos().relative(this.getSide().getDirection()));
     }
 
     protected int calculateAmountToSend() {
@@ -180,7 +180,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
             return false;
         }
 
-        var self = this.getHost().getTile();
+        var self = this.getHost().getBlockEntity();
         var targetPos = self.getBlockPos().relative(getSide().getDirection());
 
         return Platform.areBlockEntitiesTicking(self.getLevel(), targetPos);

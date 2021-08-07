@@ -62,27 +62,26 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
-        if (worldIn instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) worldIn;
-            WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
+        if (level instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) level;
+            WorldData.instance().compassData().service().notifyBlockChange(serverLevel, currentPos);
         }
 
-        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
 
-        if (w instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) w;
-            WorldData.instance().compassData().service().notifyBlockChange(serverWorld, pos);
+        if (level instanceof ServerLevel serverLevel) {
+            WorldData.instance().compassData().service().notifyBlockChange(serverLevel, pos);
         }
     }
 

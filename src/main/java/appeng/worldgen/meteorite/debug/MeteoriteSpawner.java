@@ -29,14 +29,14 @@ import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 
 /**
- * Makes decisions about spawning meteorites in the world.
+ * Makes decisions about spawning meteorites in the level.
  */
 public class MeteoriteSpawner {
 
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, BlockPos startPos,
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader level, BlockPos startPos,
             float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
@@ -45,7 +45,7 @@ public class MeteoriteSpawner {
         mutablePos.move(Direction.DOWN, stepSize);
 
         while (mutablePos.getY() > minY) {
-            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, craterType, pureCrater);
+            PlacedMeteoriteSettings spawned = trySpawnMeteorite(level, mutablePos, coreRadius, craterType, pureCrater);
             if (spawned != null) {
                 return spawned;
             }
@@ -57,41 +57,41 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, BlockPos pos, float coreRadius,
+    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader level, BlockPos pos, float coreRadius,
             CraterType craterType, boolean pureCrater) {
-        if (!areSurroundingsSuitable(world, pos)) {
+        if (!areSurroundingsSuitable(level, pos)) {
             return null;
         }
 
         // we can spawn here!
-        int skyMode = countBlockWithSkyLight(world, pos);
+        int skyMode = countBlockWithSkyLight(level, pos);
         boolean placeCrater = skyMode > 10;
 
-        boolean solid = !isAirBelowSpawnPoint(world, pos);
+        boolean solid = !isAirBelowSpawnPoint(level, pos);
 
         if (!solid || placeCrater) {
             // return null;
         }
 
-        // FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
+        // FalloutMode fallout = getFalloutFromBaseBlock(level.getBlockState(pos));
 
         boolean craterLake = false;
 
         return new PlacedMeteoriteSettings(pos, coreRadius, craterType, null, pureCrater, craterLake);
     }
 
-    private static boolean isAirBelowSpawnPoint(LevelReader w, BlockPos pos) {
+    private static boolean isAirBelowSpawnPoint(LevelReader level, BlockPos pos) {
         MutableBlockPos testPos = pos.mutable();
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
-            if (w.isEmptyBlock(testPos)) {
+            if (level.isEmptyBlock(testPos)) {
                 return true;
             }
         }
         return false;
     }
 
-    private int countBlockWithSkyLight(LevelReader w, BlockPos pos) {
+    private int countBlockWithSkyLight(LevelReader level, BlockPos pos) {
         int skyMode = 0;
 
         MutableBlockPos testPos = new MutableBlockPos();
@@ -101,7 +101,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    if (w.canSeeSkyFromBelowWater(testPos)) {
+                    if (level.canSeeSkyFromBelowWater(testPos)) {
                         skyMode++;
                     }
                 }
@@ -110,7 +110,7 @@ public class MeteoriteSpawner {
         return skyMode;
     }
 
-    private boolean areSurroundingsSuitable(LevelReader w, BlockPos pos) {
+    private boolean areSurroundingsSuitable(LevelReader level, BlockPos pos) {
         int realValidBlocks = 0;
 
         MutableBlockPos testPos = new MutableBlockPos();
@@ -120,7 +120,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
-                    Block block = w.getBlockState(testPos).getBlock();
+                    Block block = level.getBlockState(testPos).getBlock();
                     realValidBlocks++;
                 }
             }
@@ -133,7 +133,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    Block testBlk = w.getBlockState(testPos).getBlock();
+                    Block testBlk = level.getBlockState(testPos).getBlock();
                     validBlocks++;
                 }
             }

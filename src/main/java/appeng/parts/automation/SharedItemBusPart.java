@@ -30,7 +30,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -71,7 +71,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -82,8 +82,8 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected InventoryAdaptor getHandler() {
-        final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = Platform.getTickingBlockEntity(getWorld(),
+        final BlockEntity self = this.getHost().getBlockEntity();
+        final BlockEntity target = Platform.getTickingBlockEntity(getLevel(),
                 self.getBlockPos().relative(this.getSide().getDirection()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
@@ -127,7 +127,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
             return false;
         }
 
-        var self = this.getHost().getTile();
+        var self = this.getHost().getBlockEntity();
         var targetPos = self.getBlockPos().relative(getSide().getDirection());
 
         return Platform.areBlockEntitiesTicking(self.getLevel(), targetPos);

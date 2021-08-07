@@ -28,10 +28,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.item.AEItemStack;
 
 public class AssemblerAnimationPacket extends BasePacket {
@@ -64,8 +64,8 @@ public class AssemblerAnimationPacket extends BasePacket {
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
-        if (te instanceof MolecularAssemblerTileEntity) {
-            MolecularAssemblerTileEntity ma = (MolecularAssemblerTileEntity) te;
+        if (te instanceof MolecularAssemblerBlockEntity) {
+            MolecularAssemblerBlockEntity ma = (MolecularAssemblerBlockEntity) te;
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));
         }
     }

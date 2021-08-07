@@ -41,17 +41,17 @@ public interface IOverlayDataSource {
     /**
      * {@link BlockEntity} in case needed for additional data.
      *
-     * @return the tile entity providing the data
+     * @return the block entity providing the data
      */
     @Nonnull
-    BlockEntity getOverlayTileEntity();
+    BlockEntity getOverlayBlockEntity();
 
     /**
-     * The location of the source with world and blockpos
+     * The location of the source with level and blockpos
      * <p>
      * Used as cache key for later lookups.
      * <p>
-     * World is needed to hide the particular render when the player is in another world
+     * World is needed to hide the particular render when the player is in another level
      *
      * @return the location of this source.
      */

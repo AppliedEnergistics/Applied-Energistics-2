@@ -22,7 +22,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
-import appeng.tile.powersink.IExternalPowerSink;
+import appeng.blockentity.powersink.IExternalPowerSink;
 
 /**
  * Adapts an {@link IExternalPowerSink} to Forges {@link IEnergyStorage}.

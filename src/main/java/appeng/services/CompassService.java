@@ -65,9 +65,9 @@ public final class CompassService {
     }
 
     /**
-     * Ensure the a compass service is removed once a world gets unloaded by forge.
+     * Ensure the a compass service is removed once a level gets unloaded by forge.
      *
-     * @param event the event containing the unloaded world.
+     * @param event the event containing the unloaded level.
      */
     // FIXME this is never registered
     @SubscribeEvent
@@ -76,9 +76,9 @@ public final class CompassService {
             return;
         }
 
-        ServerLevel world = (ServerLevel) event.getWorld();
-        if (this.worldSet.containsKey(world)) {
-            final CompassReader compassReader = this.worldSet.remove(world);
+        ServerLevel level = (ServerLevel) event.getWorld();
+        if (this.worldSet.containsKey(level)) {
+            final CompassReader compassReader = this.worldSet.remove(level);
             compassReader.close();
         }
     }
@@ -93,37 +93,35 @@ public final class CompassService {
         }
     }
 
-    public void tryUpdateArea(final ServerLevelAccessor w, ChunkPos chunkPos) {
+    public void tryUpdateArea(final ServerLevelAccessor level, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but
-        // getWorld is
-        // still the server world. We do need to use the world access to get the chunk
-        // in question
-        // though, since during worldgen, it's not comitted to the actual world yet.
-        ChunkAccess chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea(w.getLevel(), chunk);
+        // getLevel is still the server level. We do need to use the level access to get the chunk
+        // in question though, since during worldgen, it's not comitted to the actual level yet.
+        ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z);
+        updateArea(level.getLevel(), chunk);
     }
 
-    public void updateArea(final ServerLevel w, ChunkAccess chunk) {
-        this.updateArea(w, chunk, CHUNK_SIZE);
-        this.updateArea(w, chunk, CHUNK_SIZE + 32);
-        this.updateArea(w, chunk, CHUNK_SIZE + 64);
-        this.updateArea(w, chunk, CHUNK_SIZE + 96);
+    public void updateArea(final ServerLevel level, ChunkAccess chunk) {
+        this.updateArea(level, chunk, CHUNK_SIZE);
+        this.updateArea(level, chunk, CHUNK_SIZE + 32);
+        this.updateArea(level, chunk, CHUNK_SIZE + 64);
+        this.updateArea(level, chunk, CHUNK_SIZE + 96);
 
-        this.updateArea(w, chunk, CHUNK_SIZE + 128);
-        this.updateArea(w, chunk, CHUNK_SIZE + 160);
-        this.updateArea(w, chunk, CHUNK_SIZE + 192);
-        this.updateArea(w, chunk, CHUNK_SIZE + 224);
+        this.updateArea(level, chunk, CHUNK_SIZE + 128);
+        this.updateArea(level, chunk, CHUNK_SIZE + 160);
+        this.updateArea(level, chunk, CHUNK_SIZE + 192);
+        this.updateArea(level, chunk, CHUNK_SIZE + 224);
     }
 
     /**
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
-    public void notifyBlockChange(final ServerLevel w, BlockPos pos) {
-        ChunkAccess chunk = w.getChunk(pos);
-        updateArea(w, chunk, pos.getY());
+    public void notifyBlockChange(final ServerLevel level, BlockPos pos) {
+        ChunkAccess chunk = level.getChunk(pos);
+        updateArea(level, chunk, pos.getY());
     }
 
-    private Future<?> updateArea(final ServerLevel w, ChunkAccess c, int y) {
+    private Future<?> updateArea(final ServerLevel level, ChunkAccess c, int y) {
         this.jobSize++;
 
         final int cdy = y >> 5;
@@ -144,13 +142,13 @@ public final class CompassService {
                     pos.setY(k);
                     final Block blk = c.getBlockState(pos).getBlock();
                     if (blk == skyStoneBlock) {
-                        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, true));
+                        return this.executor.submit(new CMUpdatePost(level, cx, cz, cdy, true));
                     }
                 }
             }
         }
 
-        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, false));
+        return this.executor.submit(new CMUpdatePost(level, cx, cz, cdy, false));
     }
 
     public void kill() {
@@ -170,12 +168,12 @@ public final class CompassService {
         }
     }
 
-    private CompassReader getReader(final ServerLevel world) {
-        CompassReader cr = this.worldSet.get(world);
+    private CompassReader getReader(final ServerLevel level) {
+        CompassReader cr = this.worldSet.get(level);
 
         if (cr == null) {
-            cr = new CompassReader(world);
-            this.worldSet.put(world, cr);
+            cr = new CompassReader(level);
+            this.worldSet.put(level, cr);
         }
 
         return cr;
@@ -197,15 +195,15 @@ public final class CompassService {
 
     private class CMUpdatePost implements Runnable {
 
-        public final ServerLevel world;
+        public final ServerLevel level;
 
         public final int chunkX;
         public final int chunkZ;
         public final int doubleChunkY; // 32 blocks instead of 16.
         public final boolean value;
 
-        public CMUpdatePost(final ServerLevel world, final int cx, final int cz, final int dcy, final boolean val) {
-            this.world = world;
+        public CMUpdatePost(final ServerLevel level, final int cx, final int cz, final int dcy, final boolean val) {
+            this.level = level;
             this.chunkX = cx;
             this.doubleChunkY = dcy;
             this.chunkZ = cz;
@@ -216,7 +214,7 @@ public final class CompassService {
         public void run() {
             CompassService.this.jobSize--;
 
-            final CompassReader cr = CompassService.this.getReader(this.world);
+            final CompassReader cr = CompassService.this.getReader(this.level);
             cr.setHasBeacon(this.chunkX, this.chunkZ, this.doubleChunkY, this.value);
 
             if (CompassService.this.jobSize() < 2) {
@@ -240,14 +238,14 @@ public final class CompassService {
         @Override
         public void run() {
 
-            ServerLevel world = (ServerLevel) this.coord.getWorld();
+            ServerLevel level = (ServerLevel) this.coord.getLevel();
 
             CompassService.this.jobSize--;
 
             final int cx = this.coord.getPos().getX() >> 4;
             final int cz = this.coord.getPos().getZ() >> 4;
 
-            final CompassReader cr = CompassService.this.getReader(world);
+            final CompassReader cr = CompassService.this.getReader(level);
 
             // Am I standing on it?
             if (cr.hasBeacon(cx, cz)) {

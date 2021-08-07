@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.ChestContainer;
@@ -42,7 +43,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.tile.storage.ChestTileEntity;
 
 /**
  * Utility class for sub-screens of other containers that allow returning to the primary container UI.
@@ -58,7 +58,7 @@ public final class AESubScreen {
      */
     public AESubScreen(Object containerHost) {
 
-        if (containerHost instanceof ChestTileEntity) {
+        if (containerHost instanceof ChestBlockEntity) {
             // A chest is also a priority host, but the priority _interface_ can only be
             // opened from the
             // chest ui that doesn't actually show the contents of the inserted cell.

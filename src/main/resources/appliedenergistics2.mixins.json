@@ -10,7 +10,7 @@
     "structure.DimensionStructuresSettingsMixin",
     "structure.ConfiguredStructureFeaturesAccessor",
     "feature.ConfiguredFeaturesAccessor",
-    "feature.WorldLightManagerMixin"
+    "feature.LevelLightEngineMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

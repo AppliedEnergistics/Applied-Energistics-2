@@ -63,15 +63,15 @@ public class TestOreGenCommand implements ISubCommand {
 
         int radius = 1000;
 
-        ServerLevel world;
+        ServerLevel level;
         BlockPos center;
         try {
             ServerPlayer player = sender.getPlayerOrException();
-            world = player.getLevel();
+            level = player.getLevel();
             center = new BlockPos(player.getX(), 0, player.getZ());
         } catch (CommandSyntaxException e) {
-            world = srv.getLevel(Level.OVERWORLD);
-            center = world.getSharedSpawnPos();
+            level = srv.getLevel(Level.OVERWORLD);
+            center = level.getSharedSpawnPos();
         }
 
         ChunkPos tl = new ChunkPos(center.offset(-radius, 0, -radius));
@@ -81,7 +81,7 @@ public class TestOreGenCommand implements ISubCommand {
         for (int cx = tl.x; cx <= br.x; cx++) {
             for (int cz = tl.z; cz <= br.z; cz++) {
                 ChunkPos cp = new ChunkPos(cx, cz);
-                checkChunk(sender, world, cp, stats);
+                checkChunk(sender, level, cp, stats);
             }
         }
 
@@ -99,8 +99,8 @@ public class TestOreGenCommand implements ISubCommand {
         sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
-    private void checkChunk(CommandSourceStack sender, ServerLevel world, ChunkPos cp, Stats stats) {
-        ChunkAccess chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
+    private void checkChunk(CommandSourceStack sender, ServerLevel level, ChunkPos cp, Stats stats) {
+        ChunkAccess chunk = level.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
         if (chunk == null) {
             sendLine(sender, "Skipping chunk %s", cp);
             return;
@@ -114,7 +114,7 @@ public class TestOreGenCommand implements ISubCommand {
             blockPos.setX(x);
             for (int z = cp.getMinBlockZ(); z <= cp.getMaxBlockZ(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < world.getHeight(); y++) {
+                for (int y = 0; y < level.getHeight(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {

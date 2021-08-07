@@ -72,7 +72,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
                 Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
@@ -137,15 +137,15 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level world, final Player player, final InteractionHand hand) {
-        this.disassembleDrive(player.getItemInHand(hand), world, player);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(world.isClientSide()),
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+        this.disassembleDrive(player.getItemInHand(hand), level, player);
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
-    private boolean disassembleDrive(final ItemStack stack, final Level world, final Player player) {
+    private boolean disassembleDrive(final ItemStack stack, final Level level, final Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (world.isClientSide()) {
+            if (level.isClientSide()) {
                 return false;
             }
 

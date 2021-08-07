@@ -62,6 +62,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -70,7 +71,6 @@ import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.LevelEmitterPart;
-import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -80,7 +80,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     private final IManagedGridNode mainNode;
     private final ItemStack is;
-    private BlockEntity tile = null;
+    private BlockEntity blockEntity = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
 
@@ -106,9 +106,9 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     public final boolean isRemote() {
-        return this.tile == null
-                || this.tile.getLevel() == null
-                || this.tile.getLevel().isClientSide();
+        return this.blockEntity == null
+                || this.blockEntity.getLevel() == null
+                || this.blockEntity.getLevel().isClientSide();
     }
 
     public IPartHost getHost() {
@@ -133,8 +133,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public BlockEntity getTile() {
-        return this.tile;
+    public BlockEntity getBlockEntity() {
+        return this.blockEntity;
     }
 
     public IManagedGridNode getMainNode() {
@@ -146,8 +146,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.mainNode.getNode();
     }
 
-    public Level getWorld() {
-        return this.tile.getLevel();
+    public Level getLevel() {
+        return this.blockEntity.getLevel();
     }
 
     @Override
@@ -181,7 +181,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -237,13 +237,13 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void addToWorld() {
-        this.mainNode.create(getWorld(), getTile().getBlockPos());
+        this.mainNode.create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
         this.setSide(side);
-        this.tile = tile;
+        this.blockEntity = blockEntity;
         this.host = host;
     }
 
@@ -254,7 +254,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final Level world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level level, final BlockPos pos, final Random r) {
 
     }
 
@@ -482,8 +482,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
                 var items = List.of(is.copy());
                 nodeOwner.getHost().removePart(nodeOwner.getSide(), false);
-                var tile = nodeOwner.getTile();
-                Platform.spawnDrops(tile.getLevel(), tile.getBlockPos(), items);
+                var blockEntity = nodeOwner.getBlockEntity();
+                Platform.spawnDrops(blockEntity.getLevel(), blockEntity.getBlockPos(), items);
                 is.setCount(0);
             }
         }

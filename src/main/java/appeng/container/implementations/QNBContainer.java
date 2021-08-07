@@ -22,10 +22,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.QNBScreen
@@ -33,11 +33,11 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
 public class QNBContainer extends AEBaseContainer {
 
     public static final MenuType<QNBContainer> TYPE = ContainerTypeBuilder
-            .create(QNBContainer::new, QuantumBridgeTileEntity.class)
+            .create(QNBContainer::new, QuantumBridgeBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("qnb");
 
-    public QNBContainer(int id, final Inventory ip, final QuantumBridgeTileEntity quantumBridge) {
+    public QNBContainer(int id, final Inventory ip, final QuantumBridgeBlockEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,

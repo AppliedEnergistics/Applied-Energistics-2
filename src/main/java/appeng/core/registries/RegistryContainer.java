@@ -49,7 +49,7 @@ public class RegistryContainer implements IRegistryContainer {
     private final IWirelessTermRegistry wireless = new WirelessRegistry();
     private final IGridServiceRegistry gridService = new GridServiceRegistry();
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
-    private final IMovableRegistry movable = new MovableTileRegistry();
+    private final IMovableRegistry movable = new MovableRegistry();
     private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
     private final IPlayerRegistry playerRegistry = new PlayerRegistry();
     private final IPartModels partModels = new PartModels();

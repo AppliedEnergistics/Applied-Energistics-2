@@ -54,13 +54,13 @@ public interface AppEng {
     }
 
     /**
-     * @return A stream of all players in the game. On the client it'll be empty if no world is loaded.
+     * @return A stream of all players in the game. On the client it'll be empty if no level is loaded.
      */
     Collection<ServerPlayer> getPlayers();
 
-    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level w, BasePacket packet);
+    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level, BasePacket packet);
 
-    void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
+    void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
             final double posZ, final Object o);
 
     /**
@@ -74,12 +74,12 @@ public interface AppEng {
     CableRenderMode getCableRenderMode();
 
     /**
-     * Can be used to get the current world the client is in.
+     * Can be used to get the current level the client is in.
      *
-     * @return null if no client world is available (i.e. on a dedicated server)
+     * @return null if no client level is available (i.e. on a dedicated server)
      */
     @Nullable
-    Level getClientWorld();
+    Level getClientLevel();
 
     /**
      * Since in a Minecraft client, multiple servers can be launched and stopped during a single session, the result of

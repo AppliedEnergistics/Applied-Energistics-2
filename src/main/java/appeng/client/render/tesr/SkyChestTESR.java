@@ -43,12 +43,12 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
+public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
@@ -83,18 +83,18 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
     }
 
     @Override
-    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn,
+    public void render(SkyChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
             MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
-        float f = tileEntityIn.getForward().toYRot();
+        float f = blockEntity.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
-        float f1 = tileEntityIn.getOpenNess(partialTicks);
+        float f1 = blockEntity.getOpenNess(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
-        Material material = this.getRenderMaterial(tileEntityIn);
+        Material material = this.getRenderMaterial(blockEntity);
         VertexConsumer ivertexbuilder = material.buffer(bufferIn, RenderType::entityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.lid, this.lock, this.bottom, f1,
                 combinedLightIn, combinedOverlayIn);
@@ -112,10 +112,10 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestTileEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getRenderMaterial(SkyChestTileEntity tileEntity) {
+    protected Material getRenderMaterial(SkyChestBlockEntity blockEntity) {
         SkyChestType type = SkyChestType.BLOCK;
-        if (tileEntity.getLevel() != null) {
-            Block blockType = tileEntity.getBlockState().getBlock();
+        if (blockEntity.getLevel() != null) {
+            Block blockType = blockEntity.getBlockState().getBlock();
 
             if (blockType instanceof SkyChestBlock) {
                 type = ((SkyChestBlock) blockType).type;

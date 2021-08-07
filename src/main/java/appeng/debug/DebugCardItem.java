@@ -45,15 +45,15 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.me.helpers.IGridConnectedTileEntity;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.tile.networking.ControllerTileEntity;
 import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem {
@@ -69,7 +69,7 @@ public class DebugCardItem extends AEBaseItem {
         }
 
         Player player = context.getPlayer();
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
@@ -89,15 +89,15 @@ public class DebugCardItem extends AEBaseItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            var gh = Api.instance().grid().getNodeHost(world, pos);
+            var gh = Api.instance().grid().getNodeHost(level, pos);
             if (gh != null) {
                 this.outputMsg(player, "---------------------------------------------------");
                 var node = (GridNode) gh.getGridNode(side);
                 // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
                 if (node == null) {
-                    if (gh instanceof IGridConnectedTileEntity gridConnectedTileEntity) {
-                        node = (GridNode) gridConnectedTileEntity.getMainNode().getNode();
-                        this.outputMsg(player, "Main node of IGridConnectedTileEntity");
+                    if (gh instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
+                        node = (GridNode) gridConnectedBlockEntity.getMainNode().getNode();
+                        this.outputMsg(player, "Main node of IGridConnectedBlockEntity");
                     }
                 } else {
                     this.outputMsg(player, "Node exposed on side " + side);
@@ -129,7 +129,7 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getOwner() instanceof ControllerTileEntity) {
+                                if (n.getOwner() instanceof ControllerBlockEntity) {
                                     break outer;
                                 }
 
@@ -174,7 +174,7 @@ public class DebugCardItem extends AEBaseItem {
                 this.outputMsg(player, "Not Networked Block");
             }
 
-            var te = world.getBlockEntity(pos);
+            var te = level.getBlockEntity(pos);
             if (te instanceof IPartHost partHost) {
                 final IPart center = partHost.getPart(AEPartLocation.INTERNAL);
                 partHost.markForUpdate();
@@ -200,7 +200,7 @@ public class DebugCardItem extends AEBaseItem {
                 }
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {

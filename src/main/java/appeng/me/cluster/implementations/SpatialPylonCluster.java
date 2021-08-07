@@ -25,23 +25,23 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
-    private final List<SpatialPylonTileEntity> line = new ArrayList<>();
+    private final List<SpatialPylonBlockEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
     private Axis currentAxis = Axis.UNFORMED;
     private boolean isValid;
 
-    public SpatialPylonCluster(ServerLevel world, BlockPos boundsMin, BlockPos boundsMax) {
-        this.world = world;
+    public SpatialPylonCluster(ServerLevel level, BlockPos boundsMin, BlockPos boundsMax) {
+        this.level = level;
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
 
@@ -58,7 +58,7 @@ public class SpatialPylonCluster implements IAECluster {
 
     @Override
     public void updateStatus(final boolean updateGrid) {
-        for (final SpatialPylonTileEntity r : this.getLine()) {
+        for (final SpatialPylonBlockEntity r : this.getLine()) {
             r.recalculateDisplay();
         }
     }
@@ -78,7 +78,7 @@ public class SpatialPylonCluster implements IAECluster {
 
         MBCalculator.setModificationInProgress(this);
         try {
-            for (final SpatialPylonTileEntity r : this.getLine()) {
+            for (final SpatialPylonBlockEntity r : this.getLine()) {
                 r.updateStatus(null);
             }
         } finally {
@@ -87,11 +87,11 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public Iterator<SpatialPylonTileEntity> getTiles() {
+    public Iterator<SpatialPylonBlockEntity> getBlockEntities() {
         return this.getLine().iterator();
     }
 
-    public int tileCount() {
+    public int size() {
         return this.getLine().size();
     }
 
@@ -111,8 +111,8 @@ public class SpatialPylonCluster implements IAECluster {
         this.isValid = isValid;
     }
 
-    public ServerLevel getWorld() {
-        return world;
+    public ServerLevel setLevel() {
+        return level;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.boundsMin;
     }
 
-    List<SpatialPylonTileEntity> getLine() {
+    List<SpatialPylonBlockEntity> getLine() {
         return this.line;
     }
 

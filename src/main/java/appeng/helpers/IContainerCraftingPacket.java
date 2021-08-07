@@ -35,7 +35,7 @@ public interface IContainerCraftingPacket {
 
     /**
      * @param string name of inventory
-     * @return the inventory of the part/tile by name.
+     * @return the inventory of the part/block entity by name.
      */
     IItemHandler getInventoryByName(String string);
 

@@ -35,14 +35,14 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.util.IOrientable;
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ItemInterfaceContainer;
-import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.InteractionUtil;
 
-public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity> {
+public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {
 
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
@@ -57,24 +57,25 @@ public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity>
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ItemInterfaceTileEntity te) {
-        return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ItemInterfaceBlockEntity be) {
+        return currentState.setValue(OMNIDIRECTIONAL, be.isOmniDirectional());
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final ItemInterfaceTileEntity tg = this.getTileEntity(w, pos);
+        final ItemInterfaceBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(ItemInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -86,8 +87,8 @@ public class ItemInterfaceBlock extends AEBaseTileBlock<ItemInterfaceTileEntity>
 
     @Override
     protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
-        if (rotatable instanceof ItemInterfaceTileEntity) {
-            ((ItemInterfaceTileEntity) rotatable).setSide(axis);
+        if (rotatable instanceof ItemInterfaceBlockEntity) {
+            ((ItemInterfaceBlockEntity) rotatable).setSide(axis);
         }
     }
 }

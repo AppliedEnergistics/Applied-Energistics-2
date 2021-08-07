@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 
-public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
+public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
     /**
      * To avoid recursive cluster rebuilds, we use a global field to prevent this from happening. This is set to the
@@ -37,9 +37,9 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     private static WeakReference<IAECluster> modificationInProgress = new WeakReference<>(null);
 
-    protected final TTile target;
+    protected final TBlockEntity target;
 
-    public MBCalculator(final TTile t) {
+    public MBCalculator(final TBlockEntity t) {
         this.target = t;
     }
 
@@ -58,7 +58,7 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final ServerLevel world, final BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(final ServerLevel level, final BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();
@@ -69,21 +69,21 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
             } else {
                 // If the location is outside, only re-check if it would now be considered part
                 // of it
-                recheck = isValidTileAt(world, changedPos.getX(), changedPos.getY(), changedPos.getZ());
+                recheck = isValidBlockEntityAt(level, changedPos.getX(), changedPos.getY(), changedPos.getZ());
             }
         } else {
-            // Always recheck if the tile is not part of a cluster, because the adjacent
-            // block could have previously been a valid tile, but in a wrong placement,
+            // Always recheck if the block entity is not part of a cluster, because the adjacent
+            // block could have previously been a valid block entity, but in a wrong placement,
             // or the other way around.
             recheck = true;
         }
 
         if (recheck) {
-            calculateMultiblock(world, loc);
+            calculateMultiblock(level, loc);
         }
     }
 
-    public void calculateMultiblock(final ServerLevel world, final BlockPos loc) {
+    public void calculateMultiblock(final ServerLevel level, final BlockPos loc) {
         if (isModificationInProgress()) {
             return;
         }
@@ -99,28 +99,28 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
             final MutableBlockPos max = loc.mutable();
 
             // find size of MB structure...
-            while (this.isValidTileAt(world, min.getX() - 1, min.getY(), min.getZ())) {
+            while (this.isValidBlockEntityAt(level, min.getX() - 1, min.getY(), min.getZ())) {
                 min.setX(min.getX() - 1);
             }
-            while (this.isValidTileAt(world, min.getX(), min.getY() - 1, min.getZ())) {
+            while (this.isValidBlockEntityAt(level, min.getX(), min.getY() - 1, min.getZ())) {
                 min.setY(min.getY() - 1);
             }
-            while (this.isValidTileAt(world, min.getX(), min.getY(), min.getZ() - 1)) {
+            while (this.isValidBlockEntityAt(level, min.getX(), min.getY(), min.getZ() - 1)) {
                 min.setZ(min.getZ() - 1);
             }
-            while (this.isValidTileAt(world, max.getX() + 1, max.getY(), max.getZ())) {
+            while (this.isValidBlockEntityAt(level, max.getX() + 1, max.getY(), max.getZ())) {
                 max.setX(max.getX() + 1);
             }
-            while (this.isValidTileAt(world, max.getX(), max.getY() + 1, max.getZ())) {
+            while (this.isValidBlockEntityAt(level, max.getX(), max.getY() + 1, max.getZ())) {
                 max.setY(max.getY() + 1);
             }
-            while (this.isValidTileAt(world, max.getX(), max.getY(), max.getZ() + 1)) {
+            while (this.isValidBlockEntityAt(level, max.getX(), max.getY(), max.getZ() + 1)) {
                 max.setZ(max.getZ() + 1);
             }
 
-            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(world, min, max)) {
+            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(level, min, max)) {
                 try {
-                    if (!this.verifyInternalStructure(world, min, max)) {
+                    if (!this.verifyInternalStructure(level, min, max)) {
                         this.disconnect();
                         return;
                     }
@@ -132,10 +132,10 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 boolean updateGrid = false;
                 TCluster cluster = this.target.getCluster();
                 if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
-                    cluster = this.createCluster(world, min, max);
+                    cluster = this.createCluster(level, min, max);
                     setModificationInProgress(cluster);
                     // NOTE: The following will break existing clusters within the bounds
-                    this.updateTiles(cluster, world, min, max);
+                    this.updateBlockEntities(cluster, level, min, max);
 
                     updateGrid = true;
                 } else {
@@ -162,8 +162,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
                 && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
-    private boolean isValidTileAt(final Level w, final int x, final int y, final int z) {
-        return this.isValidTile(w.getBlockEntity(new BlockPos(x, y, z)));
+    private boolean isValidBlockEntityAt(final Level level, final int x, final int y, final int z) {
+        return this.isValidBlockEntity(level.getBlockEntity(new BlockPos(x, y, z)));
     }
 
     /**
@@ -175,9 +175,10 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    private boolean verifyUnownedRegion(final ServerLevel level, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
-            if (this.verifyUnownedRegionInner(w, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
+            if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(),
+                    max.getZ(),
                     side)) {
                 return false;
             }
@@ -189,14 +190,14 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     /**
      * construct the correct cluster, usually very simple.
      *
-     * @param w   world
-     * @param min min world coord
-     * @param max max world coord
+     * @param level level
+     * @param min   min world coord
+     * @param max   max world coord
      * @return created cluster
      */
-    public abstract TCluster createCluster(ServerLevel w, BlockPos min, BlockPos max);
+    public abstract TCluster createCluster(ServerLevel level, BlockPos min, BlockPos max);
 
-    public abstract boolean verifyInternalStructure(ServerLevel world, BlockPos min, BlockPos max);
+    public abstract boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max);
 
     /**
      * disassembles the multi-block.
@@ -206,24 +207,24 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
     }
 
     /**
-     * configure the multi-block tiles, most of the important stuff is in here.
+     * configure the multi-block block entities, most of the important stuff is in here.
      *
-     * @param c   updated cluster
-     * @param w   in world
-     * @param min min world coord
-     * @param max max world coord
+     * @param c     updated cluster
+     * @param level in level
+     * @param min   min world coord
+     * @param max   max world coord
      */
-    public abstract void updateTiles(TCluster c, ServerLevel w, BlockPos min, BlockPos max);
+    public abstract void updateBlockEntities(TCluster c, ServerLevel level, BlockPos min, BlockPos max);
 
     /**
-     * check if the tile entities are correct for the structure.
+     * check if the block entities are correct for the structure.
      *
-     * @param te to be checked tile entity
-     * @return true if tile entity is valid for structure
+     * @param te to be checked block entity
+     * @return true if block entity is valid for structure
      */
-    public abstract boolean isValidTile(BlockEntity te);
+    public abstract boolean isValidBlockEntity(BlockEntity te);
 
-    private boolean verifyUnownedRegionInner(final ServerLevel w, int minX, int minY, int minZ, int maxX, int maxY,
+    private boolean verifyUnownedRegionInner(final ServerLevel level, int minX, int minY, int minZ, int maxX, int maxY,
             int maxZ,
             final AEPartLocation side) {
         switch (side) {
@@ -256,8 +257,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         }
 
         for (BlockPos p : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
-            final BlockEntity te = w.getBlockEntity(p);
-            if (this.isValidTile(te)) {
+            final BlockEntity te = level.getBlockEntity(p);
+            if (this.isValidBlockEntity(te)) {
                 return true;
             }
         }

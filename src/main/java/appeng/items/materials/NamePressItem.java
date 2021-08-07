@@ -44,9 +44,9 @@ public class NamePressItem extends AEBaseItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final CompoundTag c = stack.getOrCreateTag();
         if (c.contains(TAG_INSCRIBE_NAME)) {

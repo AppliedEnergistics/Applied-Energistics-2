@@ -67,6 +67,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
@@ -83,8 +85,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
-import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -237,9 +237,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
-            final BlockEntity te = w.getBlockEntity(neighbor);
+            final BlockEntity te = level.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
@@ -326,7 +326,7 @@ public class StorageBusPart extends UpgradeablePart
                 return inventory.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             }
 
-            // So this could / can be a design decision. If the tile does support our custom
+            // So this could / can be a design decision. If the block entity does support our custom
             // capability,
             // but it does not return an inventory for the action source, we do NOT fall
             // back to using
@@ -385,7 +385,7 @@ public class StorageBusPart extends UpgradeablePart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = self.getLevel()
                 .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
         final int newHandlerHash = this.createHandlerHash(target);
@@ -466,8 +466,8 @@ public class StorageBusPart extends UpgradeablePart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof ItemInterfaceTileEntity interfaceTileEntity) {
-            targetNode = interfaceTileEntity.getMainNode().getNode();
+        if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {
+            targetNode = interfaceBlockEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);
             if (part instanceof ItemInterfacePart interfacePart) {

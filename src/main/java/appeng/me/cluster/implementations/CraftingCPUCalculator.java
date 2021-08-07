@@ -26,13 +26,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.crafting.CraftingTileEntity;
 
-public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
+public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 
-    public CraftingCPUCalculator(final CraftingTileEntity t) {
+    public CraftingCPUCalculator(final CraftingBlockEntity t) {
         super(t);
     }
 
@@ -54,23 +54,23 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public CraftingCPUCluster createCluster(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public CraftingCPUCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(blockPos);
 
             if (te == null || !te.isValid()) {
                 return false;
             }
 
-            if (!storage && te instanceof CraftingTileEntity) {
-                storage = ((CraftingTileEntity) te).getStorageBytes() > 0;
+            if (!storage && te instanceof CraftingBlockEntity) {
+                storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
             }
         }
 
@@ -78,16 +78,17 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public void updateTiles(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel level, final BlockPos min,
+            final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final CraftingTileEntity te = (CraftingTileEntity) w.getBlockEntity(blockPos);
+            final CraftingBlockEntity te = (CraftingBlockEntity) level.getBlockEntity(blockPos);
             te.updateStatus(c);
-            c.addTile(te);
+            c.addBlockEntity(te);
         }
 
         c.done();
 
-        final Iterator<CraftingTileEntity> i = c.getTiles();
+        final Iterator<CraftingBlockEntity> i = c.getBlockEntities();
         while (i.hasNext()) {
             var gh = i.next();
             var n = gh.getGridNode();
@@ -102,7 +103,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
-        return te instanceof CraftingTileEntity;
+    public boolean isValidBlockEntity(final BlockEntity te) {
+        return te instanceof CraftingBlockEntity;
     }
 }

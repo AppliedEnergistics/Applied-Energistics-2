@@ -77,8 +77,8 @@ public interface ICraftingHelper {
      * Same as {@link #decodePattern(ItemStack, Level, boolean)} with no auto recovery of changed recipe ids.
      */
     @Nullable
-    default ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level world) {
-        return decodePattern(itemStack, world, false);
+    default ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level level) {
+        return decodePattern(itemStack, level, false);
     }
 
     /**
@@ -87,13 +87,13 @@ public interface ICraftingHelper {
      * The item backing the {@link ItemStack} needs to be an item returned by the encode methods of this class.
      *
      * @param itemStack    pattern
-     * @param world        world used to access the {@link RecipeManager}.
+     * @param level        level used to access the {@link RecipeManager}.
      * @param autoRecovery If true, the method will try to recover from changed recipe ids by searching the entire
      *                     recipe manager for a recipe matching the inputs. If this is successful, the given item stack
      *                     will be changed to reflect the new recipe id.
      * @return The pattern details if the pattern could be decoded. Otherwise null.
      */
     @Nullable
-    ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level world, boolean autoRecovery);
+    ICraftingPatternDetails decodePattern(@Nonnull ItemStack itemStack, @Nonnull Level level, boolean autoRecovery);
 
 }

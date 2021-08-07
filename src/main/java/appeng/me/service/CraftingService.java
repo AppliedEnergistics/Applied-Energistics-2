@@ -73,6 +73,8 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
@@ -82,8 +84,6 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.tile.crafting.CraftingStorageTileEntity;
-import appeng.tile.crafting.CraftingTileEntity;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
@@ -172,7 +172,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
         }
     }
@@ -202,7 +202,7 @@ public class CraftingService
             this.updatePatterns();
         }
 
-        if (gridNode.getOwner() instanceof CraftingTileEntity) {
+        if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
         }
     }
@@ -253,8 +253,8 @@ public class CraftingService
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (var tile : this.grid.getMachines(CraftingStorageTileEntity.class)) {
-            final CraftingCPUCluster cluster = tile.getCluster();
+        for (var blockEntity : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
+            final CraftingCPUCluster cluster = blockEntity.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
 
@@ -380,7 +380,7 @@ public class CraftingService
 
     @Override
     public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(final IAEItemStack whatToCraft,
-            final ICraftingPatternDetails details, final int slotIndex, final Level world) {
+            final ICraftingPatternDetails details, final int slotIndex, final Level level) {
         final ImmutableList<ICraftingPatternDetails> res = this.craftableItems.get(whatToCraft);
 
         if (res == null) {
@@ -391,7 +391,7 @@ public class CraftingService
                     // itemstacks
                     if (ais.getItem() == whatToCraft.getItem()
                             && (!ais.getItem().canBeDepleted() || ais.getItemDamage() == whatToCraft.getItemDamage())
-                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), world)) {
+                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), level)) {
                         return this.craftableItems.get(ais);
                     }
                 }
@@ -404,13 +404,13 @@ public class CraftingService
     }
 
     @Override
-    public Future<ICraftingJob> beginCraftingJob(final Level world, final IGrid grid, final IActionSource actionSrc,
+    public Future<ICraftingJob> beginCraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc,
             final IAEItemStack slotItem, final ICraftingCallback cb) {
-        if (world == null || grid == null || actionSrc == null || slotItem == null) {
+        if (level == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingJob job = new CraftingJob(world, grid, actionSrc, slotItem, cb);
+        final CraftingJob job = new CraftingJob(level, grid, actionSrc, slotItem, cb);
 
         return CRAFTING_POOL.submit(job, job);
     }

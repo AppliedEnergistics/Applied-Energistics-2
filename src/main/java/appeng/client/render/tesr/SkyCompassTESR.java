@@ -33,12 +33,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
+import appeng.blockentity.misc.SkyCompassBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
-import appeng.tile.misc.SkyCompassTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassTileEntity> {
+public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity> {
 
     private final BlockRenderDispatcher blockRenderer;
 
@@ -47,7 +47,7 @@ public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassTileEntity>
     }
 
     @Override
-    public void render(SkyCompassTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+    public void render(SkyCompassBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
@@ -81,7 +81,7 @@ public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassTileEntity>
 
     }
 
-    private static float getRotation(SkyCompassTileEntity skyCompass) {
+    private static float getRotation(SkyCompassBlockEntity skyCompass) {
         float rotation;
 
         if (skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN) {

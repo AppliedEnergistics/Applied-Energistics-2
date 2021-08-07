@@ -37,15 +37,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.misc.VibrationChamberTileEntity;
 import appeng.util.InteractionUtil;
 
-public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberTileEntity> {
+public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {
 
     // Indicates that the vibration chamber is currently working
     private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
@@ -56,8 +56,8 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberTileEntity te) {
-        return currentState.setValue(ACTIVE, te.isOn);
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, VibrationChamberBlockEntity be) {
+        return currentState.setValue(ACTIVE, be.isOn);
     }
 
     @Override
@@ -67,31 +67,31 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (!w.isClientSide()) {
-            final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+        if (!level.isClientSide()) {
+            final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
-        final VibrationChamberTileEntity tc = this.getTileEntity(w, pos);
+        final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
         if (tc != null && tc.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
@@ -120,8 +120,8 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             f2 += west_y * (0.3 * ox - 0.15);
             f3 += west_z * (0.3 * ox - 0.15);
 
-            w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-            w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
         }
     }
 }

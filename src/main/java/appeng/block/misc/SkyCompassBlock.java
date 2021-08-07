@@ -33,51 +33,51 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.SkyCompassTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.SkyCompassBlockEntity;
 
-public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
+public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
     public SkyCompassBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
+    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
             final Direction up) {
-        final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(level, pos);
         if (sc != null) {
             return false;
         }
-        return this.canPlaceAt(w, pos, forward.getOpposite());
+        return this.canPlaceAt(level, pos, forward.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockGetter w, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(final BlockGetter level, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.relative(dir);
-        BlockState blockstate = w.getBlockState(test);
-        return blockstate.isFaceSturdy(w, test, dir.getOpposite());
+        BlockState blockstate = level.getBlockState(test);
+        return blockstate.isFaceSturdy(level, test, dir.getOpposite());
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassTileEntity sc = this.getTileEntity(world, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(level, pos);
         final Direction forward = sc.getForward();
-        if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
-            this.dropTorch(world, pos);
+        if (!this.canPlaceAt(level, pos, forward.getOpposite())) {
+            this.dropTorch(level, pos);
         }
     }
 
-    private void dropTorch(final Level w, final BlockPos pos) {
-        final BlockState prev = w.getBlockState(pos);
-        w.destroyBlock(pos, true);
-        w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
+    private void dropTorch(final Level level, final BlockPos pos) {
+        final BlockState prev = level.getBlockState(pos);
+        level.destroyBlock(pos, true);
+        level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
-            if (this.canPlaceAt(w, pos, dir)) {
+            if (this.canPlaceAt(level, pos, dir)) {
                 return true;
             }
         }
@@ -85,13 +85,13 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassTileEntity tile = this.getTileEntity(w, pos);
-        if (tile != null) {
-            final Direction forward = tile.getForward();
+        final SkyCompassBlockEntity blockEntity = this.getBlockEntity(level, pos);
+        if (blockEntity != null) {
+            final Direction forward = blockEntity.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -147,7 +147,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         return Shapes.empty();
     }

@@ -387,5 +387,5 @@
   "waila.appliedenergistics2.Locked": "Încuiat",
   "waila.appliedenergistics2.Showing": "Arătând",
   "waila.appliedenergistics2.Unlocked": "Deschis",
-  "﻿tile.appliedenergistics2.cable_bus.name": "Cabluri AE2 şi/sau Punct"
+  "block.appliedenergistics2.cable_bus": "Cabluri AE2 şi/sau Punct"
 }

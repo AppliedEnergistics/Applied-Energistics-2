@@ -33,21 +33,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.grindstone.CrankBlockEntity;
 import appeng.client.render.FacingToRotation;
-import appeng.tile.grindstone.CrankTileEntity;
 
 /**
  * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
  * normal model.
  */
 @OnlyIn(Dist.CLIENT)
-public class CrankTESR implements BlockEntityRenderer<CrankTileEntity> {
+public class CrankTESR implements BlockEntityRenderer<CrankBlockEntity> {
 
     public CrankTESR(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(CrankTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+    public void render(CrankBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation

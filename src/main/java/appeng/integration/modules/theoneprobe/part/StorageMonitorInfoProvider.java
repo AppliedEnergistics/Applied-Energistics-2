@@ -38,7 +38,7 @@ import appeng.integration.modules.theoneprobe.TheOneProbeText;
 public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
         if (part instanceof IStorageMonitorPart) {
             final IStorageMonitorPart monitor = (IStorageMonitorPart) part;

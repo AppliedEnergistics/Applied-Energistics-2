@@ -24,13 +24,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
+import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.CondenserTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.CondenserScreen
@@ -38,10 +38,10 @@ import appeng.tile.misc.CondenserTileEntity;
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
     public static final MenuType<CondenserContainer> TYPE = ContainerTypeBuilder
-            .create(CondenserContainer::new, CondenserTileEntity.class)
+            .create(CondenserContainer::new, CondenserBlockEntity.class)
             .build("condenser");
 
-    private final CondenserTileEntity condenser;
+    private final CondenserBlockEntity condenser;
     @GuiSync(0)
     public long requiredEnergy = 0;
     @GuiSync(1)
@@ -49,7 +49,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
     @GuiSync(2)
     public CondenserOutput output = CondenserOutput.TRASH;
 
-    public CondenserContainer(int id, final Inventory ip, final CondenserTileEntity condenser) {
+    public CondenserContainer(int id, final Inventory ip, final CondenserBlockEntity condenser) {
         super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 

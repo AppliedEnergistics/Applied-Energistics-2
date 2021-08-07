@@ -37,7 +37,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 
 /**
- * Implemented on AE's TileEntity.
+ * Implemented on AE's block entities.
  *
  * Do Not Implement
  */
@@ -111,9 +111,9 @@ public interface IPartHost extends ICustomCableConnection {
     DimensionalBlockPos getLocation();
 
     /**
-     * @return the tile entity for the host, this can either be an FMP tile, or a AE tile
+     * @return the block entity for the host, this can either be an FMP block entity, or a AE block entity
      */
-    BlockEntity getTile();
+    BlockEntity getBlockEntity();
 
     /**
      * @return the color of the host type ( this is determined by the middle cable. ) if no cable is present, it returns
@@ -143,7 +143,7 @@ public interface IPartHost extends ICustomCableConnection {
     SelectedPart selectPart(Vec3 pos);
 
     /**
-     * can be used by parts to trigger the tile or part to save.
+     * can be used by parts to trigger the block entity or part to save.
      */
     void markForSave();
 
@@ -169,7 +169,7 @@ public interface IPartHost extends ICustomCableConnection {
     Set<LayerFlags> getLayerFlags();
 
     /**
-     * remove host from world...
+     * remove host from level...
      */
     void cleanup();
 
@@ -179,9 +179,9 @@ public interface IPartHost extends ICustomCableConnection {
     void notifyNeighbors();
 
     /**
-     * true if the tile is in the world, other wise false.
+     * true if the block entity is in the world, other wise false.
      *
-     * @return true if tile is in world
+     * @return true if block entity is in world
      */
     boolean isInWorld();
 

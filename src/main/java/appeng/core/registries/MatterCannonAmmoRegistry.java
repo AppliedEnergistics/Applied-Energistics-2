@@ -46,7 +46,7 @@ public class MatterCannonAmmoRegistry implements IMatterCannonAmmoRegistry {
         this.addTagWeight("forge:nuggets/sheep", 32);
         this.addTagWeight("forge:nuggets/fish", 32);
 
-        // real world...
+        // real level...
         this.addTagWeight("forge:nuggets/lithium", 6.941);
         this.addTagWeight("forge:nuggets/beryllium", 9.0122);
         this.addTagWeight("forge:nuggets/boron", 10.811);

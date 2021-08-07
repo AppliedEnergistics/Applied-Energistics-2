@@ -147,33 +147,33 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level world) {
+    protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
         if (this.container instanceof CraftingTermContainer) {
             final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
             final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, world)) {
+            if (recipe != null && recipe.matches(ic, level)) {
                 return containerTerminal.getCurrentRecipe();
             }
         }
 
-        return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
+        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level world) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
         if (this.container instanceof CraftingTermContainer) {
             final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
             final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, world)) {
+            if (recipe != null && recipe.matches(ic, level)) {
                 return containerTerminal.getCurrentRecipe().getRemainingItems(ic);
             }
         }
 
-        return super.getRemainingItems(ic, world);
+        return super.getRemainingItems(ic, level);
     }
 
     private int capCraftingAttempts(final int maxTimesToCraft) {
@@ -191,14 +191,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             Arrays.fill(set, ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            Level world = p.level;
-            if (!world.isClientSide()) {
+            Level level = p.level;
+            if (!level.isClientSide()) {
                 final CraftingContainer ic = new CraftingContainer(new ContainerNull(), 3, 3);
                 for (int x = 0; x < 9; x++) {
                     ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
 
-                final Recipe<CraftingContainer> r = this.findRecipe(ic, world);
+                final Recipe<CraftingContainer> r = this.findRecipe(ic, level);
 
                 if (r == null) {
                     final Item target = request.getItem();
@@ -228,7 +228,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (inv != null) {
                     for (int x = 0; x < this.getPattern().getSlots(); x++) {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
-                            set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, world, r, is, ic,
+                            set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
                                     this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
                                     ViewCellItem.createFilter(this.container.getViewCells()));
                             ic.setItem(x, set[x]);

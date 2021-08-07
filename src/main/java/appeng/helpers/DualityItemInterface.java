@@ -58,7 +58,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.tiles.ICraftingMachine;
+import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -88,6 +88,8 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
@@ -97,8 +99,6 @@ import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
@@ -199,8 +199,8 @@ public class DualityItemInterface
 
     @Override
     public boolean isRemote() {
-        Level world = this.iHost.getTileEntity().getLevel();
-        return world == null || world.isClientSide();
+        Level level = this.iHost.getBlockEntity().getLevel();
+        return level == null || level.isClientSide();
     }
 
     public void writeToNBT(final CompoundTag data) {
@@ -394,7 +394,7 @@ public class DualityItemInterface
             });
         }
 
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
@@ -402,7 +402,7 @@ public class DualityItemInterface
 
     private void addToCraftingList(final ItemStack is) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
-                this.iHost.getTileEntity().getLevel());
+                this.iHost.getBlockEntity().getLevel());
 
         if (details != null) {
             if (this.craftingList == null) {
@@ -460,7 +460,7 @@ public class DualityItemInterface
     }
 
     public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this.iHost.getTileEntity());
+        return new DimensionalBlockPos(this.iHost.getBlockEntity());
     }
 
     public IItemHandler getInternalInventory() {
@@ -493,15 +493,15 @@ public class DualityItemInterface
             return;
         }
 
-        final BlockEntity tile = this.iHost.getTileEntity();
-        final Level w = tile.getLevel();
+        final BlockEntity blockEntity = this.iHost.getBlockEntity();
+        final Level level = blockEntity.getLevel();
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
             ItemStack whatToSend = i.next();
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
+                final BlockEntity te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
                 if (te == null) {
                     continue;
                 }
@@ -628,7 +628,7 @@ public class DualityItemInterface
         var grid = gridProxy.getGrid();
         if (grid != null && this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
             return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                    this.iHost.getTileEntity().getLevel(), grid,
+                    this.iHost.getBlockEntity().getLevel(), grid,
                     grid.getCraftingService(),
                     this.mySource);
         }
@@ -645,7 +645,7 @@ public class DualityItemInterface
     }
 
     @Override
-    public BlockEntity getTile() {
+    public BlockEntity getBlockEntity() {
         return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 
@@ -739,12 +739,12 @@ public class DualityItemInterface
             return false;
         }
 
-        final BlockEntity tile = this.iHost.getTileEntity();
-        final Level w = tile.getLevel();
+        final BlockEntity blockEntity = this.iHost.getBlockEntity();
+        final Level level = blockEntity.getLevel();
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction s : possibleDirections) {
-            var te = w.getBlockEntity(tile.getBlockPos().relative(s));
+            var te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
             if (te instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
@@ -794,13 +794,13 @@ public class DualityItemInterface
 
         if (this.isBlocking()) {
             final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
-            final BlockEntity tile = this.iHost.getTileEntity();
-            final Level w = tile.getLevel();
+            final BlockEntity blockEntity = this.iHost.getBlockEntity();
+            final Level level = blockEntity.getLevel();
 
             boolean allAreBusy = true;
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
+                final BlockEntity te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
                 if (ad != null && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
@@ -880,8 +880,8 @@ public class DualityItemInterface
         if (this.getPart() instanceof IUpgradeableHost) {
             return (IUpgradeableHost) this.getPart();
         }
-        if (this.getTile() instanceof IUpgradeableHost) {
-            return (IUpgradeableHost) this.getTile();
+        if (this.getBlockEntity() instanceof IUpgradeableHost) {
+            return (IUpgradeableHost) this.getBlockEntity();
         }
         return null;
     }
@@ -921,8 +921,8 @@ public class DualityItemInterface
     }
 
     public Component getTermName() {
-        final BlockEntity hostTile = this.iHost.getTileEntity();
-        final Level hostWorld = hostTile.getLevel();
+        final BlockEntity host = this.iHost.getBlockEntity();
+        final Level hostWorld = host.getLevel();
 
         if (((ICustomNameObject) this.iHost).hasCustomInventoryName()) {
             return ((ICustomNameObject) this.iHost).getCustomInventoryName();
@@ -930,21 +930,21 @@ public class DualityItemInterface
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction direction : possibleDirections) {
-            final BlockPos targ = hostTile.getBlockPos().relative(direction);
-            final BlockEntity directedTile = hostWorld.getBlockEntity(targ);
+            final BlockPos targ = host.getBlockPos().relative(direction);
+            final BlockEntity directedBlockEntity = hostWorld.getBlockEntity(targ);
 
-            if (directedTile == null) {
+            if (directedBlockEntity == null) {
                 continue;
             }
 
-            if (directedTile instanceof IInterfaceHost interfaceHost) {
+            if (directedBlockEntity instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
                 }
             }
 
-            final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(directedTile, direction.getOpposite());
-            if (directedTile instanceof ICraftingMachine || adaptor != null) {
+            final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(directedBlockEntity, direction.getOpposite());
+            if (directedBlockEntity instanceof ICraftingMachine || adaptor != null) {
                 if (adaptor != null && !adaptor.hasSlots()) {
                     continue;
                 }
@@ -953,8 +953,8 @@ public class DualityItemInterface
                 final Block directedBlock = directedBlockState.getBlock();
                 ItemStack what = new ItemStack(directedBlock, 1);
                 try {
-                    Vec3 from = new Vec3(hostTile.getBlockPos().getX() + 0.5, hostTile.getBlockPos().getY() + 0.5,
-                            hostTile.getBlockPos().getZ() + 0.5);
+                    Vec3 from = new Vec3(host.getBlockPos().getX() + 0.5, host.getBlockPos().getY() + 0.5,
+                            host.getBlockPos().getZ() + 0.5);
                     from = from.add(direction.getStepX() * 0.501, direction.getStepY() * 0.501,
                             direction.getStepZ() * 0.501);
                     final Vec3 to = from.add(direction.getStepX(), direction.getStepY(),
@@ -962,9 +962,9 @@ public class DualityItemInterface
                     final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)
-                            && hit.getBlockPos().equals(directedTile.getBlockPos())) {
+                            && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
                         final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                directedTile.getBlockPos(), null);
+                                directedBlockEntity.getBlockPos(), null);
                         if (!g.isEmpty()) {
                             what = g;
                         }
@@ -988,7 +988,7 @@ public class DualityItemInterface
     }
 
     public long getSortValue() {
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
     }
 
@@ -1046,8 +1046,8 @@ public class DualityItemInterface
 
     private class InterfaceInventory extends MEMonitorIInventory {
 
-        public InterfaceInventory(final DualityItemInterface tileInterface) {
-            super(new AdaptorItemHandler(tileInterface.storage));
+        public InterfaceInventory(final DualityItemInterface iface) {
+            super(new AdaptorItemHandler(iface.storage));
             this.setActionSource(mySource);
         }
 

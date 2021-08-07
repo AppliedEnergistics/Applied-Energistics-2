@@ -33,14 +33,14 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.InteractionUtil;
 
-public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
+public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -57,25 +57,26 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
-        return currentState.setValue(POWERED, te.isActive());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SecurityStationBlockEntity be) {
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
+        final SecurityStationBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

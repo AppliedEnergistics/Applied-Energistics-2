@@ -55,7 +55,7 @@ public final class Api implements IAppEngApi {
 
     private final ApiPart partHelper;
 
-    // private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
+    // private MovableRegistry MovableRegistry = new MovableRegistry();
     private final IRegistryContainer registryContainer;
     private final IStorageHelper storageHelper;
     private final IGridHelper networkHelper;

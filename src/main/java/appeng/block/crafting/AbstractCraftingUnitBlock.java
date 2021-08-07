@@ -33,14 +33,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.crafting.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingTileEntity;
 import appeng.util.InteractionUtil;
 
-public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
+public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -60,53 +60,53 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
-        BlockEntity te = worldIn.getBlockEntity(currentPos);
+        BlockEntity te = level.getBlockEntity(currentPos);
         if (te != null) {
             te.requestModelDataUpdate();
         }
-        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
-    public void neighborChanged(final BlockState state, final Level worldIn, final BlockPos pos, final Block blockIn,
+    public void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
         }
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final CraftingTileEntity cp = this.getTileEntity(w, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.breakCluster();
         }
 
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final CraftingTileEntity tg = this.getTileEntity(w, pos);
+        final CraftingBlockEntity tg = this.getBlockEntity(level, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, w, pos, p, hand, hit);
+        return super.use(state, level, pos, p, hand, hit);
     }
 
     public enum CraftingUnitType {

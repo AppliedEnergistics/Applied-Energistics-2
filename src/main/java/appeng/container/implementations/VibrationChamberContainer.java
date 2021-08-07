@@ -21,12 +21,12 @@ package appeng.container.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.VibrationChamberTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.VibrationChamberScreen
@@ -34,17 +34,17 @@ import appeng.tile.misc.VibrationChamberTileEntity;
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
     public static final MenuType<VibrationChamberContainer> TYPE = ContainerTypeBuilder
-            .create(VibrationChamberContainer::new, VibrationChamberTileEntity.class)
+            .create(VibrationChamberContainer::new, VibrationChamberBlockEntity.class)
             .build("vibrationchamber");
 
-    private final VibrationChamberTileEntity vibrationChamber;
+    private final VibrationChamberBlockEntity vibrationChamber;
     @GuiSync(0)
     public int burnSpeed = 0;
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
     public VibrationChamberContainer(int id, final Inventory ip,
-            final VibrationChamberTileEntity vibrationChamber) {
+            final VibrationChamberBlockEntity vibrationChamber) {
         super(TYPE, id, ip, vibrationChamber);
         this.vibrationChamber = vibrationChamber;
 
@@ -79,6 +79,6 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     @Override
     public int getMaxProgress() {
-        return VibrationChamberTileEntity.MAX_BURN_SPEED;
+        return VibrationChamberBlockEntity.MAX_BURN_SPEED;
     }
 }

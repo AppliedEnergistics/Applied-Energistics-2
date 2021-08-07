@@ -32,12 +32,12 @@ import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridNode;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.service.helpers.ConnectionWrapper;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
@@ -46,17 +46,17 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
-    private QuantumBridgeTileEntity[] Ring;
+    private QuantumBridgeBlockEntity[] Ring;
     private boolean registered = false;
     private ConnectionWrapper connection;
     private long thisSide;
     private long otherSide;
-    private QuantumBridgeTileEntity center;
+    private QuantumBridgeBlockEntity center;
 
     public QuantumCluster(final BlockPos min, final BlockPos max) {
         this.boundsMin = min.immutable();
         this.boundsMax = max.immutable();
-        this.setRing(new QuantumBridgeTileEntity[8]);
+        this.setRing(new QuantumBridgeBlockEntity[8]);
     }
 
     @SubscribeEvent
@@ -148,16 +148,16 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private boolean canUseNode(final long qe) {
         final QuantumCluster qc = (QuantumCluster) Api.instance().registries().locatable().getLocatableBy(qe);
         if (qc != null) {
-            final Level theWorld = qc.center.getLevel();
+            final Level level = qc.center.getLevel();
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
-                // tile begins ticking normally.
-                if (theWorld.hasChunkAt(qc.center.getBlockPos())) {
-                    final Level cur = theWorld.getServer().getLevel(theWorld.dimension());
+                // block entity begins ticking normally.
+                if (level.hasChunkAt(qc.center.getBlockPos())) {
+                    final Level cur = level.getServer().getLevel(level.dimension());
 
-                    final BlockEntity te = theWorld.getBlockEntity(qc.center.getBlockPos());
-                    return te != qc.center || theWorld != cur;
+                    final BlockEntity te = level.getBlockEntity(qc.center.getBlockPos());
+                    return te != qc.center || level != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
                 }
@@ -218,26 +218,26 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
             this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
 
-            for (final QuantumBridgeTileEntity r : this.getRing()) {
+            for (final QuantumBridgeBlockEntity r : this.getRing()) {
                 r.updateStatus(null, (byte) -1, this.isUpdateStatus());
             }
 
             this.center = null;
-            this.setRing(new QuantumBridgeTileEntity[8]);
+            this.setRing(new QuantumBridgeBlockEntity[8]);
         } finally {
             MBCalculator.setModificationInProgress(null);
         }
     }
 
     @Override
-    public Iterator<QuantumBridgeTileEntity> getTiles() {
+    public Iterator<QuantumBridgeBlockEntity> getBlockEntities() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }
 
-    public boolean isCorner(final QuantumBridgeTileEntity tileQuantumBridge) {
-        return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge
-                || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
+    public boolean isCorner(final QuantumBridgeBlockEntity quantumBridge) {
+        return this.getRing()[0] == quantumBridge || this.getRing()[2] == quantumBridge
+                || this.getRing()[4] == quantumBridge || this.getRing()[6] == quantumBridge;
     }
 
     @Override
@@ -245,11 +245,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         return this.thisSide;
     }
 
-    public QuantumBridgeTileEntity getCenter() {
+    public QuantumBridgeBlockEntity getCenter() {
         return this.center;
     }
 
-    void setCenter(final QuantumBridgeTileEntity c) {
+    void setCenter(final QuantumBridgeBlockEntity c) {
         this.registered = true;
         MinecraftForge.EVENT_BUS.register(this);
         this.center = c;
@@ -263,11 +263,11 @@ public class QuantumCluster implements ILocatable, IAECluster {
         this.updateStatus = updateStatus;
     }
 
-    QuantumBridgeTileEntity[] getRing() {
+    QuantumBridgeBlockEntity[] getRing() {
         return this.Ring;
     }
 
-    private void setRing(final QuantumBridgeTileEntity[] ring) {
+    private void setRing(final QuantumBridgeBlockEntity[] ring) {
         this.Ring = ring;
     }
 
@@ -277,10 +277,10 @@ public class QuantumCluster implements ILocatable, IAECluster {
             return "QuantumCluster{no-center}";
         }
 
-        Level world = center.getLevel();
+        Level level = center.getLevel();
         BlockPos pos = center.getBlockPos();
 
-        return "QuantumCluster{" + world + "," + pos + "}";
+        return "QuantumCluster{" + level + "," + pos + "}";
     }
 
 }

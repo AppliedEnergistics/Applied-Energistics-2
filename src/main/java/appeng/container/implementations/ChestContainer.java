@@ -22,10 +22,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.ChestTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.ChestScreen
@@ -33,11 +33,11 @@ import appeng.tile.storage.ChestTileEntity;
 public class ChestContainer extends AEBaseContainer {
 
     public static final MenuType<ChestContainer> TYPE = ContainerTypeBuilder
-            .create(ChestContainer::new, ChestTileEntity.class)
+            .create(ChestContainer::new, ChestBlockEntity.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("chest");
 
-    public ChestContainer(int id, final Inventory ip, final ChestTileEntity chest) {
+    public ChestContainer(int id, final Inventory ip, final ChestBlockEntity chest) {
         super(TYPE, id, ip, chest);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,

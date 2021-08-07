@@ -37,6 +37,6 @@ public interface IPartProbInfoProvider {
     /**
      * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, Level, IBlockState, IProbeHitData)
      */
-    void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data);
 }

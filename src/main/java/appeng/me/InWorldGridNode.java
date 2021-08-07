@@ -39,19 +39,19 @@ import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
 /**
- * A grid node that is accessible from within the world will also look actively for connections to nodes that are
- * adjacent in the world.
+ * A grid node that is accessible from within the level will also look actively for connections to nodes that are
+ * adjacent in the level.
  */
 public class InWorldGridNode extends GridNode {
 
     private final BlockPos location;
 
-    public <T> InWorldGridNode(ServerLevel world,
+    public <T> InWorldGridNode(ServerLevel level,
             BlockPos location,
             T owner,
             @Nonnull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
-        super(world, owner, listener, flags);
+        super(level, owner, listener, flags);
         this.location = location;
     }
 
@@ -64,11 +64,11 @@ public class InWorldGridNode extends GridNode {
         // Clean up any connections that we might have left over to nodes that we can no longer reach
         cleanupConnections();
 
-        // Find adjacent nodes in the world based on the sides of the host this node is exposed on
+        // Find adjacent nodes in the level based on the sides of the host this node is exposed on
         var pos = new MutableBlockPos();
         sides: for (var direction : exposedOnSides) {
             pos.setWithOffset(location, direction);
-            var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
+            var adjacentNode = (GridNode) gridApi.getExposedNode(getLevel(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;
             }
@@ -108,7 +108,7 @@ public class InWorldGridNode extends GridNode {
 
         for (var direction : newSecurityConnections) {
             pos.setWithOffset(location, direction);
-            var adjacentNode = (GridNode) gridApi.getExposedNode(getWorld(), pos, direction.getOpposite());
+            var adjacentNode = (GridNode) gridApi.getExposedNode(getLevel(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;
             }
@@ -161,7 +161,7 @@ public class InWorldGridNode extends GridNode {
         } catch (SecurityConnectionException e) {
             AELog.debug(e);
             TickHandler.instance().addCallable(
-                    adjacentNode.getWorld(),
+                    adjacentNode.getLevel(),
                     () -> callListener(IGridNodeListener::onSecurityBreak));
 
             return false;

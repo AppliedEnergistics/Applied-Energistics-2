@@ -67,7 +67,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     private IEnergyStorage getAttachedEnergyStorage() {
         LazyOptional<IEnergyStorage> energyStorageOpt = LazyOptional.empty();
         if (this.isActive()) {
-            final BlockEntity self = this.getTile();
+            final BlockEntity self = this.getBlockEntity();
             final BlockEntity te = self.getLevel()
                     .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
 

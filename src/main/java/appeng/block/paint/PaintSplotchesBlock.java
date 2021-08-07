@@ -37,10 +37,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 
-public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
+public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEntity> {
     public PaintSplotchesBlock() {
         super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion().air());
     }
@@ -52,14 +52,14 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return Shapes.empty();
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(level, pos);
 
         if (tp != null) {
             tp.neighborChanged();
@@ -74,8 +74,8 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(level, pos);
 
         if (tp != null) {
             return tp.getLightLevel();

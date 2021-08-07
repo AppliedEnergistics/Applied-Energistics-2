@@ -115,7 +115,7 @@ public final class InteractionUtil {
     }
 
     public static HitResult rayTrace(final Player p, final boolean hitBlocks, final boolean hitEntities) {
-        final Level w = p.getCommandSenderWorld();
+        final Level level = p.getCommandSenderWorld();
 
         final float f = 1.0F;
         float f1 = p.xRotO + (p.getXRot() - p.xRotO) * f;
@@ -141,7 +141,7 @@ public final class InteractionUtil {
         Entity entity = null;
         double closest = 9999999.0D;
         if (hitEntities) {
-            final List<Entity> list = w.getEntities(p, bb);
+            final List<Entity> list = level.getEntities(p, bb);
 
             for (final Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
@@ -173,7 +173,7 @@ public final class InteractionUtil {
         if (hitBlocks) {
             vec = new Vec3(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
-            pos = w.clip(new ClipContext(vec3, vec31, Block.COLLIDER,
+            pos = level.clip(new ClipContext(vec3, vec31, Block.COLLIDER,
                     Fluid.ANY, p));
         }
 

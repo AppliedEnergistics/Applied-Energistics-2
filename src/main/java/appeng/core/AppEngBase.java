@@ -149,7 +149,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addGenericListener(Item.class, this::registerItems);
         modEventBus.addGenericListener(EntityType.class, this::registerEntities);
         modEventBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
-        modEventBus.addGenericListener(BlockEntityType.class, this::registerTileEntities);
+        modEventBus.addGenericListener(BlockEntityType.class, this::registerBlockEntities);
         modEventBus.addGenericListener(MenuType.class, this::registerContainerTypes);
         modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
         modEventBus.addGenericListener(StructureFeature.class, this::registerStructures);
@@ -161,9 +161,9 @@ public abstract class AppEngBase implements AppEng {
         MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onWorldTick);
         MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onUnloadChunk);
-        // Try to go first for world loads since we use it to initialize state
+        // Try to go first for level loads since we use it to initialize state
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, TickHandler.instance()::onLoadWorld);
-        // Try to go last for world unloads since we use it to clean-up state
+        // Try to go last for level unloads since we use it to clean-up state
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onUnloadWorld);
 
         MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
@@ -222,7 +222,7 @@ public abstract class AppEngBase implements AppEng {
         InitItems.init(event.getRegistry());
     }
 
-    public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
+    public void registerBlockEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
         InitBlockEntities.init(event.getRegistry());
     }
 
@@ -288,12 +288,12 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
-            final double dist, final Level w, final BasePacket packet) {
-        if (w.isClientSide()) {
+            final double dist, final Level level, final BasePacket packet) {
+        if (level.isClientSide()) {
             return;
         }
         for (final ServerPlayer o : getPlayers()) {
-            if (o != p && o.level == w) {
+            if (o != p && o.level == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
                 final double dZ = z - o.getZ();

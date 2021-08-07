@@ -24,6 +24,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.InscriberRecipes;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
@@ -31,8 +33,6 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
@@ -40,10 +40,10 @@ import appeng.tile.misc.InscriberTileEntity;
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
     public static final MenuType<InscriberContainer> TYPE = ContainerTypeBuilder
-            .create(InscriberContainer::new, InscriberTileEntity.class)
+            .create(InscriberContainer::new, InscriberBlockEntity.class)
             .build("inscriber");
 
-    private final InscriberTileEntity ti;
+    private final InscriberBlockEntity ti;
 
     private final Slot top;
     private final Slot middle;
@@ -55,7 +55,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberContainer(int id, final Inventory ip, final InscriberTileEntity te) {
+    public InscriberContainer(int id, final Inventory ip, final InscriberBlockEntity te) {
         super(TYPE, id, ip, te);
         this.ti = te;
 

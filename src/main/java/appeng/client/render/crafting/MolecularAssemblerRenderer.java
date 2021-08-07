@@ -39,16 +39,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
-public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
@@ -58,7 +58,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
     }
 
     @Override
-    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, PoseStack ms,
+    public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, PoseStack ms,
             MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
@@ -92,7 +92,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, PoseStack ms,
+    private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, PoseStack ms,
             MultiBufferSource bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getBlockPos().getX() + 0.5f;
         double centerY = molecularAssembler.getBlockPos().getY() + 0.5f;

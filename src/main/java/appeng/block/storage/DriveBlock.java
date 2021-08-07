@@ -29,32 +29,33 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveTileEntity;
 import appeng.util.InteractionUtil;
 
-public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
+public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
 
     public DriveBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final DriveTileEntity tg = this.getTileEntity(w, pos);
+        final DriveBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
-                ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
+            if (!level.isClientSide()) {
+                ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

@@ -109,7 +109,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public Level getClientWorld() {
+    public Level getClientLevel() {
         return Minecraft.getInstance().level;
     }
 
@@ -236,25 +236,25 @@ public class AppEngClient extends AppEngBase {
     // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
     // vanilla particle system
     @Override
-    public void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
+    public void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
             final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:
-                    this.spawnVibrant(world, posX, posY, posZ);
+                    this.spawnVibrant(level, posX, posY, posZ);
                     return;
                 case Energy:
-                    this.spawnEnergy(world, posX, posY, posZ);
+                    this.spawnEnergy(level, posX, posY, posZ);
                     return;
                 case Lightning:
-                    this.spawnLightning(world, posX, posY, posZ);
+                    this.spawnLightning(level, posX, posY, posZ);
                     return;
                 default:
             }
         }
     }
 
-    private void spawnVibrant(final Level w, final double x, final double y, final double z) {
+    private void spawnVibrant(final Level level, final double x, final double y, final double z) {
         if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
@@ -266,7 +266,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnEnergy(final Level w, final double posX, final double posY, final double posZ) {
+    private void spawnEnergy(final Level level, final double posX, final double posY, final double posZ) {
         final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
@@ -276,7 +276,7 @@ public class AppEngClient extends AppEngBase {
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
-    private void spawnLightning(final Level world, final double posX, final double posY, final double posZ) {
+    private void spawnLightning(final Level level, final double posX, final double posY, final double posZ) {
         Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f,
                 0.0f,
                 0.0f);

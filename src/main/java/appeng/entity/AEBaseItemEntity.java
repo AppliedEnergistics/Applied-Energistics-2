@@ -31,18 +31,18 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public abstract class AEBaseItemEntity extends ItemEntity {
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level world) {
-        super(entityType, world);
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level level) {
+        super(entityType, level);
     }
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level world, final double x,
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level level, final double x,
             final double y, final double z, final ItemStack stack) {
-        this(entityType, world);
+        this(entityType, level);
         this.setPos(x, y, z);
         this.setYRot(this.random.nextFloat() * 360.0F);
         this.setDeltaMovement(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setItem(stack);
-        this.lifespan = stack.getEntityLifespan(world);
+        this.lifespan = stack.getEntityLifespan(level);
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AABB region) {

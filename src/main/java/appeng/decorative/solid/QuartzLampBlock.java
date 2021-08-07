@@ -39,7 +39,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -49,7 +49,8 @@ public class QuartzLampBlock extends QuartzGlassBlock {
             final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
 
-            w.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0,
+            level.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+                    0.5 + pos.getZ() + d2, 0,
                     0, 0);
         }
     }

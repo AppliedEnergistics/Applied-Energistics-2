@@ -22,13 +22,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonTileEntity;
 
-public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity, SpatialPylonCluster> {
+public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
 
-    public SpatialPylonCalculator(final SpatialPylonTileEntity t) {
+    public SpatialPylonCalculator(final SpatialPylonBlockEntity t) {
         super(t);
     }
 
@@ -40,15 +40,15 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public SpatialPylonCluster createCluster(ServerLevel w, final BlockPos min, final BlockPos max) {
-        return new SpatialPylonCluster(w, min, max);
+    public SpatialPylonCluster createCluster(ServerLevel level, final BlockPos min, final BlockPos max) {
+        return new SpatialPylonCluster(level, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel level, final BlockPos min, final BlockPos max) {
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -59,16 +59,17 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity,
     }
 
     @Override
-    public void updateTiles(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel level, final BlockPos min,
+            final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getBlockEntity(p);
+            final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) level.getBlockEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);
         }
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
-        return te instanceof SpatialPylonTileEntity;
+    public boolean isValidBlockEntity(final BlockEntity te) {
+        return te instanceof SpatialPylonBlockEntity;
     }
 }

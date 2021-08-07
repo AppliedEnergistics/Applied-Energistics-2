@@ -62,16 +62,16 @@ public final class PartInfoProvider implements IProbeInfoProvider {
     }
 
     @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
-        final BlockEntity te = world.getBlockEntity(data.getPos());
+        final BlockEntity te = level.getBlockEntity(data.getPos());
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, data);
 
         if (maybePart.isPresent()) {
             final IPart part = maybePart.get();
 
             for (final IPartProbInfoProvider provider : this.providers) {
-                provider.addProbeInfo(part, mode, probeInfo, player, world, blockState, data);
+                provider.addProbeInfo(part, mode, probeInfo, player, level, blockState, data);
             }
         }
 

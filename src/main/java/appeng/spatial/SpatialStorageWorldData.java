@@ -34,12 +34,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import appeng.core.AELog;
 
 /**
- * Extra data attached to the spatial storage world.
+ * Extra data attached to the spatial storage level.
  */
 public class SpatialStorageWorldData extends SavedData {
 
     /**
-     * ID of this data when it is attached to a world.
+     * ID of this data when it is attached to a level.
      */
     public static final String ID = "ae2_spatial_storage";
 

@@ -37,13 +37,13 @@ import net.minecraft.world.level.material.FluidState;
  */
 public class FacadeBlockAccess implements BlockAndTintGetter {
 
-    private final BlockAndTintGetter world;
+    private final BlockAndTintGetter level;
     private final BlockPos pos;
     private final Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(BlockAndTintGetter world, BlockPos pos, Direction side, BlockState state) {
-        this.world = world;
+    public FacadeBlockAccess(BlockAndTintGetter level, BlockPos pos, Direction side, BlockState state) {
+        this.level = level;
         this.pos = pos;
         this.side = side;
         this.state = state;
@@ -52,7 +52,7 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
     @Nullable
     @Override
     public BlockEntity getBlockEntity(BlockPos pos) {
-        return this.world.getBlockEntity(pos);
+        return this.level.getBlockEntity(pos);
     }
 
     @Override
@@ -60,37 +60,37 @@ public class FacadeBlockAccess implements BlockAndTintGetter {
         if (this.pos == pos) {
             return this.state;
         }
-        return this.world.getBlockState(pos);
+        return this.level.getBlockState(pos);
     }
 
     @Override
     public FluidState getFluidState(BlockPos pos) {
-        return world.getFluidState(pos);
+        return level.getFluidState(pos);
     }
 
     // This is for diffuse lighting
     @Override
     public float getShade(Direction p_230487_1_, boolean p_230487_2_) {
-        return world.getShade(p_230487_1_, p_230487_2_);
+        return level.getShade(p_230487_1_, p_230487_2_);
     }
 
     @Override
     public LevelLightEngine getLightEngine() {
-        return world.getLightEngine();
+        return level.getLightEngine();
     }
 
     @Override
     public int getBlockTint(BlockPos blockPosIn, ColorResolver colorResolverIn) {
-        return world.getBlockTint(blockPosIn, colorResolverIn);
+        return level.getBlockTint(blockPosIn, colorResolverIn);
     }
 
     @Override
     public int getHeight() {
-        return world.getHeight();
+        return level.getHeight();
     }
 
     @Override
     public int getMinBuildHeight() {
-        return world.getMinBuildHeight();
+        return level.getMinBuildHeight();
     }
 }

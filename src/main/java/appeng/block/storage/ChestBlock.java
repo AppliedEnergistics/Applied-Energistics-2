@@ -34,15 +34,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
-import appeng.tile.storage.ChestTileEntity;
 import appeng.util.InteractionUtil;
 
-public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
+public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
 
     private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
@@ -58,14 +58,14 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestTileEntity te) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ChestBlockEntity be) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
-        if (te.getCellCount() >= 1) {
-            slotState = DriveSlotState.fromCellStatus(te.getCellStatus(0));
+        if (be.getCellCount() >= 1) {
+            slotState = DriveSlotState.fromCellStatus(be.getCellStatus(0));
         }
         // Power-state has to be checked separately
-        if (!te.isPowered() && slotState != DriveSlotState.EMPTY) {
+        if (!be.isPowered() && slotState != DriveSlotState.EMPTY) {
             slotState = DriveSlotState.OFFLINE;
         }
 
@@ -74,22 +74,23 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final ChestTileEntity tg = this.getTileEntity(w, pos);
+        final ChestBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 if (hit.getDirection() == tg.getUp()) {
                     if (!tg.openGui(p)) {
                         p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                     }
                 } else {
                     ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                            ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
             }
 
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;

@@ -60,23 +60,23 @@ public class SpatialStorageHelper {
      * @return teleported entity
      */
     private Entity teleportEntity(Entity entity, final TelDestination link) {
-        final ServerLevel oldWorld;
-        final ServerLevel newWorld;
+        final ServerLevel oldLevel;
+        final ServerLevel newLevel;
 
         try {
-            oldWorld = (ServerLevel) entity.level;
-            newWorld = link.dim;
+            oldLevel = (ServerLevel) entity.level;
+            newLevel = link.dim;
         } catch (final Throwable e) {
             return entity;
         }
 
-        if (oldWorld == null) {
+        if (oldLevel == null) {
             return entity;
         }
-        if (newWorld == null) {
+        if (newLevel == null) {
             return entity;
         }
-        if (newWorld == oldWorld) {
+        if (newLevel == oldLevel) {
             return entity;
         }
 
@@ -95,7 +95,7 @@ public class SpatialStorageHelper {
         // We keep track of all so we can remount them on the other side.
 
         // load the chunk!
-        newWorld.getChunkSource().getChunk(Mth.floor(link.x) >> 4, Mth.floor(link.z) >> 4,
+        newLevel.getChunkSource().getChunk(Mth.floor(link.x) >> 4, Mth.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayer && link.dim.dimension() == SpatialStorageDimensionIds.WORLD_ID) {
@@ -106,13 +106,13 @@ public class SpatialStorageHelper {
                 entity.getXRot());
         entity = entity.changeDimension(link.dim, new ITeleporter() {
             @Override
-            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw,
+            public Entity placeEntity(Entity entity, ServerLevel currentLevel, ServerLevel destLevel, float yaw,
                     Function<Boolean, Entity> repositionEntity) {
                 return repositionEntity.apply(false);
             }
 
             @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld,
+            public PortalInfo getPortalInfo(Entity entity, ServerLevel destLevel,
                     Function<ServerLevel, PortalInfo> defaultPortalInfo) {
                 return portalInfo;
             }
@@ -151,13 +151,13 @@ public class SpatialStorageHelper {
         }
     }
 
-    public void swapRegions(final ServerLevel srcWorld, final int srcX, final int srcY, final int srcZ,
-            final ServerLevel dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
+    public void swapRegions(final ServerLevel srcLevel, final int srcX, final int srcY, final int srcZ,
+            final ServerLevel dstLevel, final int dstX, final int dstY, final int dstZ, final int scaleX,
             final int scaleY, final int scaleZ) {
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                 dstY + scaleY + 1, dstZ + scaleZ + 1,
-                new WrapInMatrixFrame(matrixFrameBlock.defaultBlockState(), dstWorld));
+                new WrapInMatrixFrame(matrixFrameBlock.defaultBlockState(), dstLevel));
 
         final AABB srcBox = new AABB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
                 srcZ + scaleZ + 1);
@@ -165,44 +165,44 @@ public class SpatialStorageHelper {
         final AABB dstBox = new AABB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
                 dstZ + scaleZ + 1);
 
-        final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
+        final CachedPlane cDst = new CachedPlane(dstLevel, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
                 dstZ + scaleZ);
-        final CachedPlane cSrc = new CachedPlane(srcWorld, srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY,
+        final CachedPlane cSrc = new CachedPlane(srcLevel, srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY,
                 srcZ + scaleZ);
 
-        // do nearly all the work... swaps blocks, tiles, and block ticks
+        // do nearly all the work... swaps blocks, block entities, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesOfClass(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesOfClass(Entity.class, dstBox);
+        final List<Entity> srcE = srcLevel.getEntitiesOfClass(Entity.class, srcBox);
+        final List<Entity> dstE = dstLevel.getEntitiesOfClass(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
+            this.teleportEntity(e, new TelDestination(srcLevel, srcBox, e.getX(), e.getY(), e.getZ(),
                     -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(),
+            this.teleportEntity(e, new TelDestination(dstLevel, dstBox, e.getX(), e.getY(), e.getZ(),
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
+            cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getWorld().updateNeighborsAt(wc.getPos(), Blocks.AIR);
+            cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,
-                new TriggerUpdates(srcWorld));
+                new TriggerUpdates(srcLevel));
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1,
-                new TriggerUpdates(dstWorld));
+                new TriggerUpdates(dstLevel));
 
         this.transverseEdges(srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY, srcZ + scaleZ,
-                new TriggerUpdates(srcWorld));
+                new TriggerUpdates(srcLevel));
         this.transverseEdges(dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY, dstZ + scaleZ,
-                new TriggerUpdates(dstWorld));
+                new TriggerUpdates(dstLevel));
     }
 
     private static class TriggerUpdates implements ISpatialVisitor {
@@ -244,11 +244,11 @@ public class SpatialStorageHelper {
         private final double z;
 
         TelDestination(final ServerLevel dimension, final AABB srcBox, final double x, final double y,
-                final double z, final int tileX, final int tileY, final int tileZ) {
+                final double z, final int blockEntityX, final int blockEntityY, final int blockEntityZ) {
             this.dim = dimension;
-            this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
-            this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));
-            this.z = Math.min(srcBox.maxZ - 0.5, Math.max(srcBox.minZ + 0.5, z + tileZ));
+            this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + blockEntityX));
+            this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + blockEntityY));
+            this.z = Math.min(srcBox.maxZ - 0.5, Math.max(srcBox.minZ + 0.5, z + blockEntityZ));
         }
     }
 

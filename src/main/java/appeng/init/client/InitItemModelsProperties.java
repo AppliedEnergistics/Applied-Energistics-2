@@ -44,7 +44,7 @@ public final class InitItemModelsProperties {
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
         ItemProperties.register(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
-                (itemStack, world, entity, seed) -> {
+                (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
                     // re-search its
@@ -65,7 +65,7 @@ public final class InitItemModelsProperties {
 
             AEBaseBlockItemChargeable chargeable = (AEBaseBlockItemChargeable) item;
             ItemProperties.register(chargeable, new ResourceLocation("appliedenergistics2:fill_level"),
-                    (is, world, entity, seed) -> {
+                    (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
 
@@ -80,7 +80,8 @@ public final class InitItemModelsProperties {
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
         ItemProperties.register(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
-                (is, w, p, s) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
+                (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
+                        / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 
 }

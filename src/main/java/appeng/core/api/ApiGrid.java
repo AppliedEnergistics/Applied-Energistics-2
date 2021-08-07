@@ -56,9 +56,9 @@ public class ApiGrid implements IGridHelper {
 
     @Nullable
     @Override
-    public IInWorldGridNodeHost getNodeHost(LevelAccessor world, BlockPos pos) {
-        if (world.hasChunkAt(pos)) {
-            final BlockEntity te = world.getBlockEntity(pos);
+    public IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
+        if (level.hasChunkAt(pos)) {
+            final BlockEntity te = level.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {
                 return host;
             }

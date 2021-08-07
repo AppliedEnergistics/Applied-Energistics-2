@@ -302,13 +302,13 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state,
+            @Nonnull IModelData modelData) {
 
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block
         for (Direction facing : Direction.values()) {
-            if (isGlassBlock(world, pos, facing)) {
+            if (isGlassBlock(level, pos, facing)) {
                 flushWith.add(facing);
             }
         }
@@ -318,8 +318,8 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     }
 
-    private static boolean isGlassBlock(BlockGetter world, BlockPos pos, Direction facing) {
-        return world.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
+    private static boolean isGlassBlock(BlockGetter level, BlockPos pos, Direction facing) {
+        return level.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 
 }

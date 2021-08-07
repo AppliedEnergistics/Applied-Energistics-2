@@ -47,11 +47,11 @@ public interface ICraftingPatternDetails {
     /**
      * @param slotIndex specific slot index
      * @param itemStack item in slot
-     * @param world     crafting world
+     * @param level     crafting level
      *
      * @return if an item can be used in the specific slot for this pattern.
      */
-    boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, Level world);
+    boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, Level level);
 
     /**
      * @return if this pattern is for a Vanilla {@link RecipeType#CRAFTING crafting recipe}.
@@ -127,11 +127,11 @@ public interface ICraftingPatternDetails {
      * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.
      *
      * @param craftingInv inventory
-     * @param world       crafting world
+     * @param level       crafting level
      *
      * @return the crafted ( work bench ) item.
      */
-    ItemStack getOutput(CraftingContainer craftingInv, Level world);
+    ItemStack getOutput(CraftingContainer craftingInv, Level level);
 
     /**
      * Get the priority of this pattern

@@ -51,14 +51,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.tile.storage.SkyChestTileEntity;
 
-public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implements SimpleWaterloggedBlock {
+public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 
     private static final double AABB_OFFSET_BOTTOM = 0.00;
     private static final double AABB_OFFSET_SIDES = 0.06;
@@ -107,28 +107,29 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (!w.isClientSide()) {
-            SkyChestTileEntity tile = getTileEntity(w, pos);
-            if (tile != null) {
-                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
+        if (!level.isClientSide()) {
+            SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
+            if (blockEntity != null) {
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player,
+                        ContainerLocator.forBlockEntity(blockEntity));
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestTileEntity::recheckOpen);
+        level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestBlockEntity::recheckOpen);
 
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        final SkyChestTileEntity sk = this.getTileEntity(worldIn, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final SkyChestBlockEntity sk = this.getBlockEntity(level, pos);
         Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }
@@ -175,13 +176,13 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> implement
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickDelay(world));
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
     }
 }

@@ -23,15 +23,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
 
-public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, QuantumCluster> {
+public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, QuantumCluster> {
 
-    public QuantumCalculator(final QuantumBridgeTileEntity t) {
+    public QuantumCalculator(final QuantumBridgeBlockEntity t) {
         super(t);
     }
 
@@ -50,17 +50,17 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public QuantumCluster createCluster(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public QuantumCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
         return new QuantumCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
 
         byte num = 0;
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -68,10 +68,10 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
 
             num++;
             if (num == 5) {
-                if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_LINK)) {
+                if (!this.isBlockAtLocation(level, p, AEBlocks.QUANTUM_LINK)) {
                     return false;
                 }
-            } else if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_RING)) {
+            } else if (!this.isBlockAtLocation(level, p, AEBlocks.QUANTUM_RING)) {
                 return false;
             }
         }
@@ -79,12 +79,13 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public void updateTiles(final QuantumCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final QuantumCluster c, final ServerLevel level, final BlockPos min,
+            final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getBlockEntity(p);
+            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) level.getBlockEntity(p);
 
             num++;
             final byte flags;
@@ -106,11 +107,11 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
-        return te instanceof QuantumBridgeTileEntity;
+    public boolean isValidBlockEntity(final BlockEntity te) {
+        return te instanceof QuantumBridgeBlockEntity;
     }
 
-    private boolean isBlockAtLocation(final BlockGetter w, final BlockPos pos, final BlockDefinition def) {
-        return def.block() == w.getBlockState(pos).getBlock();
+    private boolean isBlockAtLocation(final BlockGetter level, final BlockPos pos, final BlockDefinition<?> def) {
+        return def.block() == level.getBlockState(pos).getBlock();
     }
 }

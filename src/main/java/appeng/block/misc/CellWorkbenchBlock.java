@@ -29,32 +29,33 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.InteractionUtil;
 
-public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
+public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
 
     public CellWorkbenchBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
+        final CellWorkbenchBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
-                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
+            if (!level.isClientSide()) {
+                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

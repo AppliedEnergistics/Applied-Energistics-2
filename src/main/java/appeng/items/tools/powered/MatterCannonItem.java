@@ -66,6 +66,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -81,7 +82,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.tile.misc.PaintSplotchesTileEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -99,9 +99,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -110,7 +110,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final @Nullable InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p,
+            final @Nullable InteractionHand hand) {
         if (this.getAECurrentPower(p.getItemInHand(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 
@@ -131,21 +132,21 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         IAEItemStack aeAmmo = req.copy();
                         this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
-                        if (w.isClientSide()) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+                        if (level.isClientSide()) {
+                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         }
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
                         if (ammo.isEmpty()) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         }
 
                         aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
                         if (aeAmmo == null) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         }
 
@@ -164,19 +165,19 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         if (penetration <= 0) {
                             final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof PaintBallItem) {
-                                this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
+                                this.shootPaintBalls(type, level, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         } else {
-                            this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
+                            this.standardAmmo(penetration, level, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
                     }
                 } else {
-                    if (!w.isClientSide()) {
+                    if (!level.isClientSide()) {
                         p.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.NIL_UUID);
                     }
-                    return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+                    return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                             p.getItemInHand(hand));
                 }
             }
@@ -184,7 +185,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         return new InteractionResultHolder<>(InteractionResult.FAIL, p.getItemInHand(hand));
     }
 
-    private void shootPaintBalls(final ItemStack type, final Level w, final Player p, final Vec3 Vector3d,
+    private void shootPaintBalls(final ItemStack type, final Level level, final Player p, final Vec3 Vector3d,
             final Vec3 Vector3d1, final Vec3 direction, final double d0, final double d1, final double d2) {
         final AABB bb = new AABB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
                 Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
@@ -192,7 +193,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         Entity entity = null;
         Vec3 entityIntersection = null;
-        final List<Entity> list = w.getEntities(p, bb,
+        final List<Entity> list = level.getEntities(p, bb,
                 e -> !(e instanceof ItemEntity) && e.isAlive());
         double closest = 9999999.0D;
 
@@ -219,7 +220,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         ClipContext rayTraceContext = new ClipContext(Vector3d, Vector3d1, Block.COLLIDER,
                 Fluid.NONE, p);
-        HitResult pos = w.clip(rayTraceContext);
+        HitResult pos = level.clip(rayTraceContext);
 
         final Vec3 vec = new Vec3(d0, d1, d2);
         if (entity != null && pos.getType() != Type.MISS
@@ -230,7 +231,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         }
 
         try {
-            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, level,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == Type.MISS ? 32
                                     : pos.getLocation().distanceToSqr(vec) + 1)));
@@ -264,25 +265,25 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 final Direction side = blockResult.getDirection();
                 final BlockPos hitPos = blockResult.getBlockPos().relative(side);
 
-                if (!Platform.hasPermissions(new DimensionalBlockPos(w, hitPos), p)) {
+                if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitPos), p)) {
                     return;
                 }
 
-                final BlockState whatsThere = w.getBlockState(hitPos);
-                if (whatsThere.getMaterial().isReplaceable() && w.isEmptyBlock(hitPos)) {
-                    w.setBlock(hitPos, AEBlocks.PAINT.block().defaultBlockState(), 3);
+                final BlockState whatsThere = level.getBlockState(hitPos);
+                if (whatsThere.getMaterial().isReplaceable() && level.isEmptyBlock(hitPos)) {
+                    level.setBlock(hitPos, AEBlocks.PAINT.block().defaultBlockState(), 3);
                 }
 
-                final BlockEntity te = w.getBlockEntity(hitPos);
-                if (te instanceof PaintSplotchesTileEntity) {
+                final BlockEntity te = level.getBlockEntity(hitPos);
+                if (te instanceof PaintSplotchesBlockEntity) {
                     final Vec3 hp = pos.getLocation().subtract(hitPos.getX(), hitPos.getY(), hitPos.getZ());
-                    ((PaintSplotchesTileEntity) te).addBlot(type, side.getOpposite(), hp);
+                    ((PaintSplotchesBlockEntity) te).addBlot(type, side.getOpposite(), hp);
                 }
             }
         }
     }
 
-    private void standardAmmo(float penetration, final Level w, final Player p, final Vec3 Vector3d,
+    private void standardAmmo(float penetration, final Level level, final Player p, final Vec3 Vector3d,
             final Vec3 Vector3d1, final Vec3 direction, final double d0, final double d1, final double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
@@ -295,7 +296,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
             Entity entity = null;
             Vec3 entityIntersection = null;
-            final List<Entity> list = w.getEntities(p, bb,
+            final List<Entity> list = level.getEntities(p, bb,
                     e -> !(e instanceof ItemEntity) && e.isAlive());
             double closest = 9999999.0D;
 
@@ -323,7 +324,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             ClipContext rayTraceContext = new ClipContext(Vector3d, Vector3d1,
                     Block.COLLIDER, Fluid.NONE, p);
             final Vec3 vec = new Vec3(d0, d1, d2);
-            HitResult pos = w.clip(rayTraceContext);
+            HitResult pos = level.clip(rayTraceContext);
             if (entity != null && pos.getType() != Type.MISS
                     && pos.getLocation().distanceToSqr(vec) > closest) {
                 pos = new EntityHitResult(entity, entityIntersection);
@@ -332,7 +333,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             try {
-                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, level,
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
                                         : pos.getLocation().distanceToSqr(vec) + 1)));
@@ -371,15 +372,15 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         penetration = 0;
                     } else {
                         BlockPos blockPos = blockResult.getBlockPos();
-                        final BlockState bs = w.getBlockState(blockPos);
+                        final BlockState bs = level.getBlockState(blockPos);
 
-                        final float hardness = bs.getDestroySpeed(w, blockPos) * 9.0f;
+                        final float hardness = bs.getDestroySpeed(level, blockPos) * 9.0f;
                         if (hardness >= 0.0 && penetration > hardness
-                                && Platform.hasPermissions(new DimensionalBlockPos(w, blockPos), p)) {
+                                && Platform.hasPermissions(new DimensionalBlockPos(level, blockPos), p)) {
                             hasDestroyed = true;
                             penetration -= hardness;
                             penetration *= 0.60;
-                            w.destroyBlock(blockPos, true);
+                            level.destroyBlock(blockPos, true);
                         }
                     }
                 }

@@ -74,10 +74,10 @@ public class EncodedPatternItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         this.clearPattern(player.getItemInHand(hand), player);
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
@@ -112,9 +112,9 @@ public class EncodedPatternItem extends AEBaseItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, level);
 
         if (details == null) {
             if (!stack.hasTag()) {
@@ -207,12 +207,12 @@ public class EncodedPatternItem extends AEBaseItem {
             return out;
         }
 
-        final Level w = AppEng.instance().getClientWorld();
-        if (w == null) {
+        final Level level = AppEng.instance().getClientLevel();
+        if (level == null) {
             return ItemStack.EMPTY;
         }
 
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, level);
 
         out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
 

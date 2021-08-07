@@ -55,14 +55,14 @@ public class EraserItem extends AEBaseItem {
         }
 
         final Player player = context.getPlayer();
-        final Level world = context.getLevel();
+        final Level level = context.getLevel();
         final BlockPos pos = context.getClickedPos();
 
         if (player == null) {
             return InteractionResult.PASS;
         }
 
-        final Block state = world.getBlockState(pos).getBlock();
+        final Block state = level.getBlockState(pos).getBlock();
         final boolean bulk = InteractionUtil.isInAlternateUseMode(player);
         final Queue<BlockPos> next = new ArrayDeque<>();
         final Set<BlockPos> closed = new HashSet<>();
@@ -73,15 +73,15 @@ public class EraserItem extends AEBaseItem {
 
         while (blocks < BLOCK_ERASE_LIMIT && next.peek() != null) {
             final BlockPos wc = next.poll();
-            final Block c_state = world.getBlockState(wc).getBlock();
+            final Block c_state = level.getBlockState(wc).getBlock();
             final boolean contains = state == c_state || bulk && commonBlocks.contains(c_state);
 
             closed.add(wc);
 
             if (contains) {
                 blocks++;
-                world.setBlock(wc, Blocks.AIR.defaultBlockState(), 2);
-                world.destroyBlock(wc, false);
+                level.setBlock(wc, Blocks.AIR.defaultBlockState(), 2);
+                level.destroyBlock(wc, false);
 
                 if (isInsideBox(wc, pos)) {
                     for (int x = -1; x <= 1; x++) {
@@ -103,7 +103,7 @@ public class EraserItem extends AEBaseItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {

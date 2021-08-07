@@ -26,8 +26,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -42,9 +42,9 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.Api;
-import appeng.tile.networking.WirelessTileEntity;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
@@ -243,7 +243,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
             this.myWap = null;
 
-            for (var wap : this.targetGrid.getMachines(WirelessTileEntity.class)) {
+            for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
                 if (this.testWap(wap)) {
                     this.myWap = wap;
                 }
@@ -260,7 +260,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
         final DimensionalBlockPos dc = wap.getLocation();
 
-        if (dc.getWorld() == this.myPlayer.level) {
+        if (dc.getLevel() == this.myPlayer.level) {
             var offX = dc.getPos().getX() - this.myPlayer.getX();
             var offY = dc.getPos().getY() - this.myPlayer.getY();
             var offZ = dc.getPos().getZ() - this.myPlayer.getZ();

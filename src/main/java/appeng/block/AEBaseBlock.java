@@ -79,15 +79,15 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final Level worldIn, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
         return 0;
     }
 
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(LevelAccessor w, BlockPos pos, Direction face) {
-        final IOrientable rotatable = this.getOrientable(w, pos);
+    public boolean rotateAroundFaceAxis(LevelAccessor level, BlockPos pos, Direction face) {
+        final IOrientable rotatable = this.getOrientable(level, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
             if (this.hasCustomRotation()) {
@@ -101,7 +101,7 @@ public abstract class AEBaseBlock extends Block {
                     forward = Platform.rotateAround(forward, face);
                     up = Platform.rotateAround(up, face);
 
-                    if (this.isValidOrientation(w, pos, forward, up)) {
+                    if (this.isValidOrientation(level, pos, forward, up)) {
                         rotatable.setOrientation(forward, up);
                         return true;
                     }
@@ -180,15 +180,15 @@ public abstract class AEBaseBlock extends Block {
 
     }
 
-    protected IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
+    protected IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
         if (this instanceof IOrientableBlock) {
             IOrientableBlock orientable = (IOrientableBlock) this;
-            return orientable.getOrientable(w, pos);
+            return orientable.getOrientable(level, pos);
         }
         return null;
     }
 
-    protected boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
+    protected boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
     }

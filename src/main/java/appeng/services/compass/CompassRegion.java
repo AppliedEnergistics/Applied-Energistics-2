@@ -27,13 +27,13 @@ import net.minecraft.world.level.saveddata.SavedData;
 final class CompassRegion {
     private final int lowX;
     private final int lowZ;
-    private final ServerLevel world;
+    private final ServerLevel level;
     private SaveData data;
 
-    public CompassRegion(ServerLevel world, final int cx, final int cz) {
-        Preconditions.checkNotNull(world);
+    public CompassRegion(ServerLevel level, final int cx, final int cz) {
+        Preconditions.checkNotNull(level);
 
-        this.world = world;
+        this.level = level;
 
         final int region_x = cx >> 10;
         final int region_z = cz >> 10;
@@ -92,12 +92,12 @@ final class CompassRegion {
         String name = this.lowX + "_" + this.lowZ;
 
         if (create) {
-            this.data = world.getDataStorage().computeIfAbsent(SaveData::load, SaveData::new, name);
+            this.data = level.getDataStorage().computeIfAbsent(SaveData::load, SaveData::new, name);
             if (this.data.bitmap == null) {
                 this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
             }
         } else {
-            this.data = world.getDataStorage().get(SaveData::load, name);
+            this.data = level.getDataStorage().get(SaveData::load, name);
         }
     }
 

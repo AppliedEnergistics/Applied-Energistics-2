@@ -59,7 +59,7 @@ public class OverlayManager {
         matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
-                .filter(e -> e.getKey().getWorld() == minecraft.level).map(Entry::getValue)
+                .filter(e -> e.getKey().getLevel() == minecraft.level).map(Entry::getValue)
                 .collect(Collectors.toList())) {
             handler.render(matrixStack, buffer);
         }

@@ -24,11 +24,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.helpers.AEMaterials;
-import appeng.tile.spatial.SpatialPylonTileEntity;
 
-public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
+public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity> {
 
     public SpatialPylonBlock() {
         super(defaultProps(AEMaterials.GLASS));
@@ -36,21 +36,21 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
             tsp.neighborChanged(fromPos);
         }
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
             return tsp.getLightValue();
         }
-        return super.getLightEmission(state, world, pos);
+        return super.getLightEmission(state, level, pos);
     }
 
 }

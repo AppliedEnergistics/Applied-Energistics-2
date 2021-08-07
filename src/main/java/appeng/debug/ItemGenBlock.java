@@ -28,24 +28,25 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
 
-public class ItemGenBlock extends AEBaseTileBlock<ItemGenTileEntity> {
+public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
 
     public ItemGenBlock() {
         super(defaultProps(Material.METAL));
     }
 
     @Override
-    public InteractionResult onActivated(Level w, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
+            ItemStack heldItem,
             BlockHitResult hit) {
 
-        BlockEntity tileEntity = w.getBlockEntity(pos);
-        if (tileEntity instanceof ItemGenTileEntity) {
-            ItemGenTileEntity itemGen = (ItemGenTileEntity) tileEntity;
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof ItemGenBlockEntity) {
+            ItemGenBlockEntity itemGen = (ItemGenBlockEntity) blockEntity;
             itemGen.setItem(heldItem.getItem());
 
-            return InteractionResult.sidedSuccess(w.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         return InteractionResult.PASS;

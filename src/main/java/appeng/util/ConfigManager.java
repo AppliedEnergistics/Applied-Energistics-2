@@ -34,8 +34,8 @@ public final class ConfigManager implements IConfigManager {
     private final Map<Settings, Enum<?>> settings = new EnumMap<>(Settings.class);
     private final IConfigManagerHost target;
 
-    public ConfigManager(final IConfigManagerHost tile) {
-        this.target = tile;
+    public ConfigManager(final IConfigManagerHost blockEntity) {
+        this.target = blockEntity;
     }
 
     @Override

@@ -30,8 +30,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
 import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -57,12 +57,12 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
      */
     private int progress_1000 = 0;
 
-    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level world) {
-        super(type, world);
+    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level level) {
+        super(type, level);
     }
 
-    public GrowingCrystalEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
-        super(AEEntities.GROWING_CRYSTAL, w, x, y, z, is);
+    public GrowingCrystalEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+        super(AEEntities.GROWING_CRYSTAL, level, x, y, z, is);
         this.setExtendedLifetime();
     }
 

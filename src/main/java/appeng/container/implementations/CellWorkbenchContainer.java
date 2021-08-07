@@ -36,13 +36,13 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
@@ -54,16 +54,16 @@ import appeng.util.iterators.NullIterator;
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public static final MenuType<CellWorkbenchContainer> TYPE = ContainerTypeBuilder
-            .create(CellWorkbenchContainer::new, CellWorkbenchTileEntity.class)
+            .create(CellWorkbenchContainer::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
 
-    private final CellWorkbenchTileEntity workBench;
+    private final CellWorkbenchBlockEntity workBench;
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
     private ItemStack prevStack = ItemStack.EMPTY;
     private int lastUpgrades = 0;
 
-    public CellWorkbenchContainer(int id, final Inventory ip, final CellWorkbenchTileEntity te) {
+    public CellWorkbenchContainer(int id, final Inventory ip, final CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
         this.workBench = te;
     }

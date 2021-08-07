@@ -62,17 +62,17 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -151,7 +151,8 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level w, final BlockPos pos) {
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
+            final BlockPos pos) {
         return new PortableCellViewer(is, playerInventorySlot);
     }
 

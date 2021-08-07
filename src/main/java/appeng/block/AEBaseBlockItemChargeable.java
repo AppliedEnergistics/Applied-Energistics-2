@@ -47,7 +47,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final Level world, final List<Component> lines,
+    public void addCheckedInformation(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();

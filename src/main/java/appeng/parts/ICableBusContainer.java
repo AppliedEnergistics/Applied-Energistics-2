@@ -50,7 +50,7 @@ public interface ICableBusContainer {
 
     boolean clicked(Player player, InteractionHand hand, Vec3 hitVec);
 
-    void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
@@ -61,7 +61,7 @@ public interface ICableBusContainer {
     boolean isLadder(LivingEntity entity);
 
     @OnlyIn(Dist.CLIENT)
-    void animateTick(Level world, BlockPos pos, Random r);
+    void animateTick(Level level, BlockPos pos, Random r);
 
     int getLightValue();
 

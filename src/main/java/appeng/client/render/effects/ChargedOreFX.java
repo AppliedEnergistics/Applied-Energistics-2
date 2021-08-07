@@ -36,9 +36,9 @@ public class ChargedOreFX extends DustParticle {
     private static final DustParticleOptions PARTICLE_DATA = new DustParticleOptions(new Vector3f(0.21f, 0.61f, 1.0f),
             1.0f);
 
-    private ChargedOreFX(ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+    private ChargedOreFX(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
             SpriteSet spriteSet) {
-        super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
+        super(level, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class ChargedOreFX extends DustParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new ChargedOreFX(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
 }

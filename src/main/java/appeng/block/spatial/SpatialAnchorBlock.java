@@ -33,17 +33,17 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
-import appeng.tile.spatial.SpatialAnchorTileEntity;
 import appeng.util.InteractionUtil;
 
 /**
  * The block for our chunk loader
  */
-public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity> {
+public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -59,25 +59,25 @@ public class SpatialAnchorBlock extends AEBaseTileBlock<SpatialAnchorTileEntity>
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorTileEntity te) {
-        return currentState.setValue(POWERED, te.isActive());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SpatialAnchorBlockEntity be) {
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override
-    public InteractionResult onActivated(final Level worldIn, final BlockPos pos, final Player p,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final SpatialAnchorTileEntity tg = this.getTileEntity(worldIn, pos);
+        final SpatialAnchorBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!worldIn.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(worldIn.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

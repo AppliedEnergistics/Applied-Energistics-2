@@ -80,7 +80,7 @@ public class CableBusRenderState {
     private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
-    private WeakReference<BlockAndTintGetter> world;
+    private WeakReference<BlockAndTintGetter> level;
     private BlockPos pos;
 
     // Contains the bounding boxes of all parts on the cable bus to allow facades to
@@ -152,12 +152,12 @@ public class CableBusRenderState {
         return this.facades;
     }
 
-    public BlockAndTintGetter getWorld() {
-        return this.world.get();
+    public BlockAndTintGetter getLevel() {
+        return this.level.get();
     }
 
-    public void setWorld(BlockAndTintGetter world) {
-        this.world = new WeakReference<>(world);
+    public void setLevel(BlockAndTintGetter level) {
+        this.level = new WeakReference<>(level);
     }
 
     public BlockPos getPos() {

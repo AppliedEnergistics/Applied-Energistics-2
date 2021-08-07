@@ -248,36 +248,34 @@ public class Platform {
         return true;
     }
 
-    public static ItemStack[] getBlockDrops(final Level w, final BlockPos pos) {
+    public static ItemStack[] getBlockDrops(final Level level, final BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
-        // server world
-        if (!(w instanceof ServerLevel)) {
+        // server level
+        if (!(level instanceof ServerLevel serverLevel)) {
             return new ItemStack[0];
         }
 
-        ServerLevel serverWorld = (ServerLevel) w;
+        final BlockState state = level.getBlockState(pos);
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        final BlockState state = w.getBlockState(pos);
-        final BlockEntity tileEntity = w.getBlockEntity(pos);
-
-        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
+        List<ItemStack> out = Block.getDrops(state, serverLevel, pos, blockEntity);
 
         return out.toArray(new ItemStack[0]);
     }
 
     /*
-     * Generates Item entities in the world similar to how items are generally dropped.
+     * Generates Item entities in the level similar to how items are generally dropped.
      */
-    public static void spawnDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
-        if (!w.isClientSide()) {
+    public static void spawnDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+        if (!level.isClientSide()) {
             for (final ItemStack i : drops) {
                 if (!i.isEmpty() && i.getCount() > 0) {
                     final double offset_x = (getRandomInt() % 32 - 16) / 82;
                     final double offset_y = (getRandomInt() % 32 - 16) / 82;
                     final double offset_z = (getRandomInt() % 32 - 16) / 82;
-                    final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
+                    final ItemEntity ei = new ItemEntity(level, 0.5 + offset_x + pos.getX(),
                             0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                    w.addFreshEntity(ei);
+                    level.addFreshEntity(ei);
                 }
             }
         }
@@ -398,16 +396,16 @@ public class Platform {
         return false;
     }
 
-    public static Player getPlayer(final ServerLevel w) {
-        Objects.requireNonNull(w);
+    public static Player getPlayer(final ServerLevel level) {
+        Objects.requireNonNull(level);
 
-        final Player wrp = FAKE_PLAYERS.get(w);
+        final Player wrp = FAKE_PLAYERS.get(level);
         if (wrp != null) {
             return wrp;
         }
 
-        final Player p = FakePlayerFactory.getMinecraft(w);
-        FAKE_PLAYERS.put(w, p);
+        final Player p = FakePlayerFactory.getMinecraft(level);
+        FAKE_PLAYERS.put(level, p);
         return p;
     }
 
@@ -838,7 +836,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity tile) {
+    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity blockEntity) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;
@@ -867,7 +865,8 @@ public class Platform {
                 break;
         }
 
-        player.moveTo(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5,
+        player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
+                blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }
 
@@ -894,7 +893,7 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final Level w, final Recipe<CraftingContainer> r,
+            final IMEMonitor<IAEItemStack> src, final Level level, final Recipe<CraftingContainer> r,
             final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
             final IItemList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
@@ -930,7 +929,7 @@ public class Platform {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
                         ci.setItem(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.isSame(r.assemble(ci), output)) {
+                        if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
@@ -975,9 +974,9 @@ public class Platform {
         return ci;
     }
 
-    public static void notifyBlocksOfNeighbors(final Level world, final BlockPos pos) {
-        if (!world.isClientSide) {
-            TickHandler.instance().addCallable(world, new BlockUpdate(pos));
+    public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
+        if (!level.isClientSide) {
+            TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }
     }
 
@@ -1012,7 +1011,7 @@ public class Platform {
      * Retrieves a BlockEntity from a given position, but only if that particular BlockEntity would be in a state where
      * it would be ticked by the chunk.
      * <p/>
-     * This method also doesn't return a tile entity on the client-side.
+     * This method also doesn't return a block entity on the client-side.
      */
     @Nullable
     public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {

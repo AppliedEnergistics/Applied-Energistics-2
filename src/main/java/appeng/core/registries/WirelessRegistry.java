@@ -71,7 +71,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
     }
 
     @Override
-    public void openWirelessTerminalGui(ItemStack item, BlockGetter world, Player player, InteractionHand hand) {
+    public void openWirelessTerminalGui(ItemStack item, BlockGetter level, Player player, InteractionHand hand) {
         if (player.getCommandSenderWorld().isClientSide()) {
             return;
         }

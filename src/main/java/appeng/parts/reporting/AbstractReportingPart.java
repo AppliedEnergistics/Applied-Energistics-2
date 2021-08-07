@@ -98,7 +98,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -164,7 +164,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        final BlockEntity te = this.getTile();
+        final BlockEntity te = this.getBlockEntity();
 
         if (InteractionUtil.isWrench(player, player.getInventory().getSelected(), te.getBlockPos())) {
             if (!isRemote()) {
@@ -191,10 +191,10 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final BlockEntity te = this.getTile();
-            Level world = te.getLevel();
+            final BlockEntity te = this.getBlockEntity();
+            Level level = te.getLevel();
             BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
-            this.opacity = 255 - world.getBlockState(pos).getLightBlock(world, pos);
+            this.opacity = 255 - level.getBlockState(pos).getLightBlock(level, pos);
         }
 
         return (int) (emit * (this.opacity / 255.0f));

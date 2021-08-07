@@ -39,13 +39,13 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.blockentity.misc.InscriberRecipes;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
-import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.VibrationChamberTileEntity;
 import appeng.util.Platform;
 
 /**
@@ -86,7 +86,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         return this;
     }
 
-    private Level getWorld() {
+    private Level getLevel() {
         return getContainer().getPlayerInventory().player.getCommandSenderWorld();
     }
 
@@ -116,7 +116,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, getWorld());
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, getLevel());
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -136,7 +136,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
+                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -151,9 +151,9 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(getWorld(), stack);
+                return GrinderRecipes.isValidIngredient(getLevel(), stack);
             case FUEL:
-                return VibrationChamberTileEntity.hasBurnTime(stack);
+                return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
@@ -244,7 +244,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
             ItemStack stack = getItem();
-            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
+            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getLevel()) != null;
         }
         return true;
     }
