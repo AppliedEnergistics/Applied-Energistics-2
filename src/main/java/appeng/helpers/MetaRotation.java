@@ -35,8 +35,8 @@ public class MetaRotation implements IOrientable {
     private final BlockGetter w;
     private final BlockPos pos;
 
-    public MetaRotation(final BlockGetter world, final BlockPos pos, final Property<Direction> facingProp) {
-        this.w = world;
+    public MetaRotation(final BlockGetter level, final BlockPos pos, final Property<Direction> facingProp) {
+        this.w = level;
         this.pos = pos;
         this.facingProp = facingProp;
     }

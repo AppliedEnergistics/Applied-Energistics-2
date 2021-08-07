@@ -81,7 +81,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         }
 
         Player player = context.getPlayer();
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
         InteractionHand hand = context.getHand();
@@ -95,7 +95,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         int z = pos.getZ();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            var gridHost = Api.instance().grid().getNodeHost(world, pos);
+            var gridHost = Api.instance().grid().getNodeHost(level, pos);
 
             if (gridHost != null) {
                 final CompoundTag tag = player.getItemInHand(hand).getOrCreateTag();
@@ -103,7 +103,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
-                tag.putString("w", world.dimension().location().toString());
+                tag.putString("w", level.dimension().location().toString());
                 tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
@@ -118,7 +118,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_z = ish.getInt("z");
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
-                final Level src_w = world.getServer()
+                final Level src_w = level.getServer()
                         .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
@@ -178,18 +178,18 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                                 k + rel_z);
 
                                                         final BlockState state = src_w.getBlockState(p);
-                                                        final BlockState prev = world.getBlockState(d);
+                                                        final BlockState prev = level.getBlockState(d);
 
-                                                        world.setBlockAndUpdate(d, state);
+                                                        level.setBlockAndUpdate(d, state);
                                                         if (state.hasBlockEntity()) {
                                                             final BlockEntity ote = src_w.getBlockEntity(p);
                                                             var data = ote.save(new CompoundTag());
                                                             var newBe = BlockEntity.loadStatic(d, state, data);
                                                             if (newBe != null) {
-                                                                world.setBlockEntity(newBe);
+                                                                level.setBlockEntity(newBe);
                                                             }
                                                         }
-                                                        world.sendBlockUpdated(d, prev, state, 3);
+                                                        level.sendBlockUpdated(d, prev, state, 3);
                                                     }
                                                 }
                                             }

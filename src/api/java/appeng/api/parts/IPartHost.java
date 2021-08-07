@@ -169,7 +169,7 @@ public interface IPartHost extends ICustomCableConnection {
     Set<LayerFlags> getLayerFlags();
 
     /**
-     * remove host from world...
+     * remove host from level...
      */
     void cleanup();
 

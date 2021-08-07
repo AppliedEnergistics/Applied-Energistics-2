@@ -29,7 +29,7 @@ import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuild
 import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 
 /**
- * The single biome used within the spatial storage world.
+ * The single biome used within the spatial storage level.
  */
 public class SpatialStorageBiome {
 

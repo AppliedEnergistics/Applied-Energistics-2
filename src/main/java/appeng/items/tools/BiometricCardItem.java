@@ -157,7 +157,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {

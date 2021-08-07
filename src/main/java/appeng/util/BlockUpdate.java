@@ -22,7 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-public class BlockUpdate implements IWorldRunnable {
+public class BlockUpdate implements ILevelRunnable {
     private final BlockPos pos;
 
     BlockUpdate(final BlockPos pos) {
@@ -30,9 +30,9 @@ public class BlockUpdate implements IWorldRunnable {
     }
 
     @Override
-    public void call(Level world) throws Exception {
-        if (world.hasChunkAt(this.pos)) {
-            world.updateNeighborsAt(this.pos, Blocks.AIR);
+    public void call(Level level) throws Exception {
+        if (level.hasChunkAt(this.pos)) {
+            level.updateNeighborsAt(this.pos, Blocks.AIR);
         }
     }
 }

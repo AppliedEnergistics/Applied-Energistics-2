@@ -82,10 +82,10 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, world, pos, neighbor);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
 
-        final LightDetectorBlockEntity tld = this.getBlockEntity(world, pos);
+        final LightDetectorBlockEntity tld = this.getBlockEntity(level, pos);
         if (tld != null) {
             tld.updateLight();
         }
@@ -112,7 +112,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
         // FIXME: We should / rather MUST use state here because at startup, this gets
-        // called without a world
+        // called without a level
 
         final Direction up = this.getOrientable(w, pos).getUp();
         final double xOff = -0.3 * up.getStepX();
@@ -129,11 +129,11 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final Direction up = this.getOrientable(world, pos).getUp();
-        if (!this.canPlaceAt(world, pos, up.getOpposite())) {
-            this.dropTorch(world, pos);
+        final Direction up = this.getOrientable(level, pos).getUp();
+        if (!this.canPlaceAt(level, pos, up.getOpposite())) {
+            this.dropTorch(level, pos);
         }
     }
 
@@ -177,13 +177,13 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickDelay(world));
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
     }
 }

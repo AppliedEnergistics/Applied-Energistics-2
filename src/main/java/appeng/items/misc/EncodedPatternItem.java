@@ -112,9 +112,9 @@ public class EncodedPatternItem extends AEBaseItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, level);
 
         if (details == null) {
             if (!stack.hasTag()) {
@@ -207,7 +207,7 @@ public class EncodedPatternItem extends AEBaseItem {
             return out;
         }
 
-        final Level w = AppEng.instance().getClientWorld();
+        final Level w = AppEng.instance().getClientLevel();
         if (w == null) {
             return ItemStack.EMPTY;
         }

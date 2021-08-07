@@ -106,7 +106,7 @@ public class CraftAmountContainer extends AEBaseContainer {
         return h.getActionableNode().getGrid();
     }
 
-    public Level getWorld() {
+    public Level getLevel() {
         return this.getPlayerInventory().player.level;
     }
 
@@ -152,7 +152,7 @@ public class CraftAmountContainer extends AEBaseContainer {
             Future<ICraftingJob> futureJob = null;
             try {
                 final ICraftingService cg = g.getService(ICraftingService.class);
-                futureJob = cg.beginCraftingJob(getWorld(), getGrid(), getActionSrc(),
+                futureJob = cg.beginCraftingJob(getLevel(), getGrid(), getActionSrc(),
                         this.itemToCreate, null);
 
                 final ContainerLocator locator = getLocator();

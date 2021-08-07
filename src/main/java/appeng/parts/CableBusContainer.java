@@ -704,11 +704,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     @Override
-    public void animateTick(final Level world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level level, final BlockPos pos, final Random r) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
-                p.animateTick(world, pos, r);
+                p.animateTick(level, pos, r);
             }
         }
     }
@@ -1021,10 +1021,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             final ItemStack textureItem = facade.getTextureItem();
             final BlockState blockState = facade.getBlockState();
 
-            Level world = getBlockEntity().getLevel();
-            if (blockState != null && textureItem != null && world != null) {
+            Level level = getBlockEntity().getLevel();
+            if (blockState != null && textureItem != null && level != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isSolidRender(world, getBlockEntity().getBlockPos()));
+                        !facade.getBlockState().isSolidRender(level, getBlockEntity().getBlockPos()));
             }
         }
 

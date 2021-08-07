@@ -114,7 +114,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return true;
     }
 

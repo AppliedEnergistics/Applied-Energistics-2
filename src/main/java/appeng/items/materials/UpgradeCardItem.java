@@ -59,9 +59,9 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> lines,
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final Upgrades u = this.getType(stack);
         if (u != null) {

@@ -46,8 +46,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
     private int delay = 0;
     private int transformTime = 0;
 
-    public ChargedQuartzEntity(EntityType<? extends ChargedQuartzEntity> entityType, Level world) {
-        super(entityType, world);
+    public ChargedQuartzEntity(EntityType<? extends ChargedQuartzEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
     public ChargedQuartzEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {

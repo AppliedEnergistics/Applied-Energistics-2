@@ -53,14 +53,14 @@ public final class InscriberRecipes {
     /**
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
-    public static Iterable<InscriberRecipe> getRecipes(Level world) {
-        Collection<Recipe<Container>> unfilteredRecipes = world.getRecipeManager().byType(InscriberRecipe.TYPE)
+    public static Iterable<InscriberRecipe> getRecipes(Level level) {
+        Collection<Recipe<Container>> unfilteredRecipes = level.getRecipeManager().byType(InscriberRecipe.TYPE)
                 .values();
         return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
     }
 
     @Nullable
-    public static InscriberRecipe findRecipe(Level world, ItemStack input, ItemStack plateA, ItemStack plateB,
+    public static InscriberRecipe findRecipe(Level level, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
             boolean isNameA = AEItems.NAME_PRESS.isSameAs(plateA);
@@ -73,7 +73,7 @@ public final class InscriberRecipes {
             }
         }
 
-        for (final InscriberRecipe recipe : getRecipes(world)) {
+        for (final InscriberRecipe recipe : getRecipes(level)) {
             // The recipe can be flipped at will
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
@@ -119,8 +119,8 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses. Both the given
      * combination and the reverse will be searched.
      */
-    public static boolean isValidOptionalIngredientCombination(Level world, ItemStack pressA, ItemStack pressB) {
-        for (InscriberRecipe recipe : getRecipes(world)) {
+    public static boolean isValidOptionalIngredientCombination(Level level, ItemStack pressA, ItemStack pressB) {
+        for (InscriberRecipe recipe : getRecipes(level)) {
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
                     || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
                 return true;
@@ -134,8 +134,8 @@ public final class InscriberRecipes {
      * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient. Bottom and
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
-    public static boolean isValidOptionalIngredient(Level world, ItemStack is) {
-        for (InscriberRecipe recipe : getRecipes(world)) {
+    public static boolean isValidOptionalIngredient(Level level, ItemStack is) {
+        for (InscriberRecipe recipe : getRecipes(level)) {
             if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;
             }

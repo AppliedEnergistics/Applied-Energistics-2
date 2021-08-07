@@ -107,7 +107,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected BlockEntity getConnectedTE() {
         BlockEntity self = this.getHost().getBlockEntity();
-        return Platform.getTickingBlockEntity(getWorld(), self.getBlockPos().relative(this.getSide().getDirection()));
+        return Platform.getTickingBlockEntity(getLevel(), self.getBlockPos().relative(this.getSide().getDirection()));
     }
 
     protected int calculateAmountToSend() {

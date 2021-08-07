@@ -73,8 +73,8 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
     public void render(ChestBlockEntity chest, float partialTicks, PoseStack matrices, MultiBufferSource buffers,
                        int combinedLight, int combinedOverlay) {
 
-        Level world = chest.getLevel();
-        if (world == null) {
+        Level level = chest.getLevel();
+        if (level == null) {
             return;
         }
 
@@ -108,7 +108,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
         // We "fake" the position here to make it use the light-value in front of the
         // drive
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
-        blockRenderer.tesselateBlock(world, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer,
+        blockRenderer.tesselateBlock(level, rotatedModel, chest.getBlockState(), chest.getBlockPos(), matrices, buffer,
                 false,
                 new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 

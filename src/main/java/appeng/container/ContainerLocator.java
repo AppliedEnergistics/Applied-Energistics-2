@@ -69,8 +69,8 @@ public final class ContainerLocator {
     private final BlockPos blockPos;
     private final AEPartLocation side;
 
-    private ContainerLocator(Type type, int itemIndex, Level world, BlockPos blockPos, AEPartLocation side) {
-        this(type, itemIndex, world.dimension().location(), blockPos, side);
+    private ContainerLocator(Type type, int itemIndex, Level level, BlockPos blockPos, AEPartLocation side) {
+        this(type, itemIndex, level.dimension().location(), blockPos, side);
     }
 
     private ContainerLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
@@ -84,14 +84,14 @@ public final class ContainerLocator {
 
     public static ContainerLocator forBlockEntity(BlockEntity te) {
         if (te.getLevel() == null) {
-            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
         return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
     public static ContainerLocator forBlockEntitySide(BlockEntity te, Direction side) {
         if (te.getLevel() == null) {
-            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
         return new ContainerLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
     }

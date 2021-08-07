@@ -57,10 +57,10 @@ public interface ISpatialStorageCell {
     int getAllocatedPlotId(ItemStack is);
 
     /**
-     * Perform a spatial swap with the contents of the cell, and the world.
+     * Perform a spatial swap with the contents of the cell, and the level.
      *
      * @param is       spatial storage cell
-     * @param w        world of spatial
+     * @param w        level of spatial
      * @param min      min coord
      * @param max      max coord
      * @param playerId owner of current grid or -1

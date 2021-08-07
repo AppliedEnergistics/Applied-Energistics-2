@@ -185,17 +185,17 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
         ItemStack heldItem;
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
 
             if (InteractionUtil.isWrench(player, heldItem, pos) && InteractionUtil.isInAlternateUseMode(player)) {
-                final BlockState blockState = world.getBlockState(pos);
+                final BlockState blockState = level.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
-                final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+                final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
 
                 if (blockEntity == null) {
                     return InteractionResult.FAIL;
@@ -205,7 +205,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     return InteractionResult.FAIL;
                 }
 
-                final ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
+                final ItemStack[] itemDropCandidates = Platform.getBlockDrops(level, pos);
                 final ItemStack op = new ItemStack(this);
 
                 for (final ItemStack ol : itemDropCandidates) {
@@ -217,17 +217,17 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     }
                 }
 
-                if (block.removedByPlayer(blockState, world, pos, player, false, world.getFluidState(pos))) {
+                if (block.removedByPlayer(blockState, level, pos, player, false, level.getFluidState(pos))) {
                     final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
-                    Platform.spawnDrops(world, pos, itemsToDrop);
-                    world.removeBlock(pos, false);
+                    Platform.spawnDrops(level, pos, itemsToDrop);
+                    level.removeBlock(pos, false);
                 }
 
                 return InteractionResult.FAIL;
             }
 
             if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
-                final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+                final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
 
                 if (blockEntity == null) {
                     return InteractionResult.FAIL;
@@ -253,11 +253,11 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     }
                 }
 
-                return InteractionResult.sidedSuccess(world.isClientSide());
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
 
-        return this.onActivated(world, pos, player, hand, player.getItemInHand(hand), hit);
+        return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,

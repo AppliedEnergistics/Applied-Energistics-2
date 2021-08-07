@@ -49,7 +49,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s, %s]";
 
     private final MECraftingInventory original;
-    private final Level world;
+    private final Level level;
     private final IItemList<IAEItemStack> crafting = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
     private final IItemList<IAEItemStack> missing = Api.instance().storage()
@@ -69,13 +69,13 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    private Level wrapWorld(final Level w) {
+    private Level wrapLevel(final Level w) {
         return w;
     }
 
     public CraftingJob(final Level w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
             final ICraftingCallback callback) {
-        this.world = this.wrapWorld(w);
+        this.level = this.wrapLevel(w);
         this.output = what.copy();
         this.actionSrc = actionSrc;
 
@@ -123,7 +123,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
     public void run() {
         try {
             try {
-                TickHandler.instance().registerCraftingSimulation(this.world, this);
+                TickHandler.instance().registerCraftingSimulation(this.level, this);
                 this.handlePausing();
 
                 final Stopwatch timer = Stopwatch.createStarted();
@@ -259,8 +259,8 @@ public class CraftingJob implements Runnable, ICraftingJob {
         return this.done;
     }
 
-    Level getWorld() {
-        return this.world;
+    Level getLevel() {
+        return this.level;
     }
 
     /**

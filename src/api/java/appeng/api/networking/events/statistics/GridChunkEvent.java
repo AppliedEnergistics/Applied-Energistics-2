@@ -33,16 +33,16 @@ import net.minecraft.world.level.ChunkPos;
  */
 public abstract class GridChunkEvent extends GridStatisticsEvent {
 
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final ChunkPos chunkPos;
 
-    public GridChunkEvent(ServerLevel world, ChunkPos chunkPos) {
-        this.world = world;
+    public GridChunkEvent(ServerLevel level, ChunkPos chunkPos) {
+        this.level = level;
         this.chunkPos = chunkPos;
     }
 
-    public ServerLevel getWorld() {
-        return world;
+    public ServerLevel getLevel() {
+        return level;
     }
 
     public ChunkPos getChunkPos() {
@@ -54,8 +54,8 @@ public abstract class GridChunkEvent extends GridStatisticsEvent {
      */
     public static class GridChunkAdded extends GridChunkEvent {
 
-        public GridChunkAdded(ServerLevel world, ChunkPos chunkPos) {
-            super(world, chunkPos);
+        public GridChunkAdded(ServerLevel level, ChunkPos chunkPos) {
+            super(level, chunkPos);
         }
 
     }
@@ -65,8 +65,8 @@ public abstract class GridChunkEvent extends GridStatisticsEvent {
      */
     public static class GridChunkRemoved extends GridChunkEvent {
 
-        public GridChunkRemoved(ServerLevel world, ChunkPos chunkPos) {
-            super(world, chunkPos);
+        public GridChunkRemoved(ServerLevel level, ChunkPos chunkPos) {
+            super(level, chunkPos);
         }
 
     }

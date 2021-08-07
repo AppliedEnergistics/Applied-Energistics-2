@@ -109,7 +109,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public Level getClientWorld() {
+    public Level getClientLevel() {
         return Minecraft.getInstance().level;
     }
 
@@ -236,18 +236,18 @@ public class AppEngClient extends AppEngBase {
     // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
     // vanilla particle system
     @Override
-    public void spawnEffect(final EffectType effect, final Level world, final double posX, final double posY,
+    public void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
             final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:
-                    this.spawnVibrant(world, posX, posY, posZ);
+                    this.spawnVibrant(level, posX, posY, posZ);
                     return;
                 case Energy:
-                    this.spawnEnergy(world, posX, posY, posZ);
+                    this.spawnEnergy(level, posX, posY, posZ);
                     return;
                 case Lightning:
-                    this.spawnLightning(world, posX, posY, posZ);
+                    this.spawnLightning(level, posX, posY, posZ);
                     return;
                 default:
             }
@@ -276,7 +276,7 @@ public class AppEngClient extends AppEngBase {
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
-    private void spawnLightning(final Level world, final double posX, final double posY, final double posZ) {
+    private void spawnLightning(final Level level, final double posX, final double posY, final double posZ) {
         Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f,
                 0.0f,
                 0.0f);

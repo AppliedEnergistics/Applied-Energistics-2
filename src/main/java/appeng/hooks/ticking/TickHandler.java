@@ -57,7 +57,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.util.IWorldRunnable;
+import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
 
 public class TickHandler {
@@ -68,9 +68,9 @@ public class TickHandler {
     private static final int TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS = 25;
 
     private static final TickHandler INSTANCE = new TickHandler();
-    private final Queue<IWorldRunnable> serverQueue = new ArrayDeque<>();
+    private final Queue<ILevelRunnable> serverQueue = new ArrayDeque<>();
     private final Multimap<LevelAccessor, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final Map<LevelAccessor, Queue<IWorldRunnable>> callQueue = new HashMap<>();
+    private final Map<LevelAccessor, Queue<ILevelRunnable>> callQueue = new HashMap<>();
     private final ServerBlockEntityRepo blockEntities = new ServerBlockEntityRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
@@ -106,27 +106,27 @@ public class TickHandler {
     }
 
     /**
-     * Add a server or world callback which gets called the next time the queue is ticked.
+     * Add a server or level callback which gets called the next time the queue is ticked.
      * <p>
      * Callbacks on the client are not support.
      * <p>
-     * Using null as world will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
+     * Using null as level will queue it into the global {@link ServerTickEvent}, otherwise it will be ticked with the
      * corresponding {@link WorldTickEvent}.
      *
-     * @param w null or the specific {@link Level}
+     * @param level null or the specific {@link Level}
      * @param c the callback
      */
-    public void addCallable(final LevelAccessor w, IWorldRunnable c) {
-        Preconditions.checkArgument(w == null || !w.isClientSide(), "Can only register serverside callbacks");
+    public void addCallable(LevelAccessor level, ILevelRunnable c) {
+        Preconditions.checkArgument(level == null || !level.isClientSide(), "Can only register serverside callbacks");
 
-        if (w == null) {
+        if (level == null) {
             this.serverQueue.add(c);
         } else {
-            Queue<IWorldRunnable> queue = this.callQueue.get(w);
+            Queue<ILevelRunnable> queue = this.callQueue.get(level);
 
             if (queue == null) {
                 queue = new ArrayDeque<>();
-                this.callQueue.put(w, queue);
+                this.callQueue.put(level, queue);
             }
 
             queue.add(c);
@@ -192,21 +192,21 @@ public class TickHandler {
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         if (!ev.getWorld().isClientSide()) {
-            this.blockEntities.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
+            this.blockEntities.removeChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
         }
     }
 
     /**
-     * Handle a newly loaded world and setup defaults when necessary.
+     * Handle a newly loaded level and setup defaults when necessary.
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
         if (!ev.getWorld().isClientSide()) {
-            this.blockEntities.addWorld(ev.getWorld());
+            this.blockEntities.addLevel(ev.getWorld());
         }
     }
 
     /**
-     * Handle a world unload and tear down related data structures.
+     * Handle a level unload and tear down related data structures.
      */
     public void onUnloadWorld(final WorldEvent.Unload ev) {
         // for no there is no reason to care about this on the client...
@@ -216,7 +216,7 @@ public class TickHandler {
             this.grids.updateNetworks();
             for (final Grid g : this.grids.getNetworks()) {
                 for (var n : g.getNodes()) {
-                    if (n.getWorld() == ev.getWorld()) {
+                    if (n.getLevel() == ev.getWorld()) {
                         toDestroy.add((GridNode) n);
                     }
                 }
@@ -226,7 +226,7 @@ public class TickHandler {
                 n.destroy();
             }
 
-            this.blockEntities.removeWorld(ev.getWorld());
+            this.blockEntities.removeLevel(ev.getWorld());
             this.callQueue.remove(ev.getWorld());
         }
     }
@@ -251,7 +251,7 @@ public class TickHandler {
     /**
      * Tick a single {@link Level}
      * <p>
-     * This can happen multiple times per world, but each world should only be ticked once per minecraft tick.
+     * This can happen multiple times per level, but each level should only be ticked once per minecraft tick.
      */
     public void onWorldTick(final WorldTickEvent ev) {
         var level = ev.world;
@@ -263,7 +263,7 @@ public class TickHandler {
         }
 
         if (ev.phase == Phase.START) {
-            final Queue<IWorldRunnable> queue = this.callQueue.get(level);
+            final Queue<ILevelRunnable> queue = this.callQueue.get(level);
             processQueueElementsRemaining += this.processQueue(queue, level);
         } else if (ev.phase == Phase.END) {
             this.simulateCraftingJobs(level);
@@ -291,7 +291,7 @@ public class TickHandler {
                 g.update();
             }
 
-            // cross world queue.
+            // cross level queue.
             processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
 
             if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
@@ -302,20 +302,20 @@ public class TickHandler {
         }
     }
 
-    public void registerCraftingSimulation(final Level world, final CraftingJob craftingJob) {
-        Preconditions.checkArgument(!world.isClientSide, "Trying to register a crafting job for a client-world");
+    public void registerCraftingSimulation(final Level level, final CraftingJob craftingJob) {
+        Preconditions.checkArgument(!level.isClientSide, "Trying to register a crafting job for a client-level");
 
         synchronized (this.craftingJobs) {
-            this.craftingJobs.put(world, craftingJob);
+            this.craftingJobs.put(level, craftingJob);
         }
     }
 
     /**
      * Simulates the current crafting requests before they user can submit them to be processed.
      */
-    private void simulateCraftingJobs(LevelAccessor world) {
+    private void simulateCraftingJobs(LevelAccessor level) {
         synchronized (this.craftingJobs) {
-            final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
+            final Collection<CraftingJob> jobSet = this.craftingJobs.get(level);
 
             if (!jobSet.isEmpty()) {
                 final int jobSize = jobSet.size();
@@ -335,25 +335,25 @@ public class TickHandler {
     }
 
     /**
-     * Ready the block entities in this world. server-side only.
+     * Ready the block entities in this level. server-side only.
      */
-    private void readyBlockEntities(ServerLevel world) {
-        var chunkProvider = world.getChunkSource();
+    private void readyBlockEntities(ServerLevel level) {
+        var chunkProvider = level.getChunkSource();
 
-        var worldQueue = blockEntities.getBlockEntities(world);
+        var levelQueue = blockEntities.getBlockEntities(level);
 
         // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
-        long[] workSet = worldQueue.keySet().toLongArray();
+        long[] workSet = levelQueue.keySet().toLongArray();
 
         for (long packedChunkPos : workSet) {
             // Readies all of our block entities in this chunk as soon as it can tick BEs
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
-            if (world.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
+            if (level.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
                 // Take the currently waiting block entities for this chunk and ready them all. Should more block entities be added to
                 // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.
-                var chunkQueue = worldQueue.remove(packedChunkPos);
+                var chunkQueue = levelQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
                     AELog.warn("Chunk %s was unloaded while we were readying block entities", new ChunkPos(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
@@ -387,15 +387,15 @@ public class TickHandler {
     }
 
     /**
-     * Process the {@link IWorldRunnable} queue in this {@link Level}
+     * Process the {@link ILevelRunnable} queue in this {@link Level}
      * <p>
      * This has a hard limit of about 50 ms before deferring further processing into the next tick.
      *
      * @param queue the queue to process
-     * @param world the world in which the queue is processed or null for the server queue
+     * @param level the level in which the queue is processed or null for the server queue
      * @return the amount of remaining callbacks
      */
-    private int processQueue(final Queue<IWorldRunnable> queue, final Level world) {
+    private int processQueue(final Queue<ILevelRunnable> queue, final Level level) {
         if (queue == null) {
             return 0;
         }
@@ -406,7 +406,7 @@ public class TickHandler {
         while (!queue.isEmpty()) {
             try {
                 // call the first queue element.
-                queue.poll().call(world);
+                queue.poll().call(level);
                 this.processQueueElementsProcessed++;
 
                 if (sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {

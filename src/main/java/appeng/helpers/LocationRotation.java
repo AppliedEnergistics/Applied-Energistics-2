@@ -30,8 +30,8 @@ public class LocationRotation implements IOrientable {
     private final int y;
     private final int z;
 
-    public LocationRotation(final BlockGetter world, final int x, final int y, final int z) {
-        this.w = world;
+    public LocationRotation(final BlockGetter level, final int x, final int y, final int z) {
+        this.w = level;
         this.x = x;
         this.y = y;
         this.z = z;

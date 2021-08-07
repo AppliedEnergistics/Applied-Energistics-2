@@ -41,8 +41,8 @@ import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
 /**
- * Adds the storage cell world dimension type as a built-in dimension type. This can be registered as a JSON file as
- * well, but doing so will trigger an experimental feature warning when the world is being loaded.
+ * Adds the storage cell level dimension type as a built-in dimension type. This can be registered as a JSON file as
+ * well, but doing so will trigger an experimental feature warning when the level is being loaded.
  */
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {

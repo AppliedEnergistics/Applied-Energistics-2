@@ -75,24 +75,24 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
         return InteractionResult.PASS;
     }
 
-    private void dropCrank(final Level world, final BlockPos pos) {
-        world.destroyBlock(pos, true);
-        world.sendBlockUpdated(pos, this.defaultBlockState(), world.getBlockState(pos), 3);
+    private void dropCrank(final Level level, final BlockPos pos) {
+        level.destroyBlock(pos, true);
+        level.sendBlockUpdated(pos, this.defaultBlockState(), level.getBlockState(pos), 3);
     }
 
     @Override
-    public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state,
+    public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state,
             final LivingEntity placer, final ItemStack stack) {
-        final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+        final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
-            final Direction mnt = this.findCrankable(world, pos);
+            final Direction mnt = this.findCrankable(level, pos);
             Direction forward = Direction.UP;
             if (mnt == Direction.UP || mnt == Direction.DOWN) {
                 forward = Direction.SOUTH;
             }
             blockEntity.setOrientation(forward, mnt.getOpposite());
         } else {
-            this.dropCrank(world, pos);
+            this.dropCrank(level, pos);
         }
     }
 
@@ -103,18 +103,18 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
         return !(te instanceof CrankBlockEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
 
-    private Direction findCrankable(final BlockGetter world, final BlockPos pos) {
+    private Direction findCrankable(final BlockGetter level, final BlockPos pos) {
         for (final Direction dir : Direction.values()) {
-            if (this.isCrankable(world, pos, dir)) {
+            if (this.isCrankable(level, pos, dir)) {
                 return dir;
             }
         }
         return null;
     }
 
-    private boolean isCrankable(final BlockGetter world, final BlockPos pos, final Direction offset) {
+    private boolean isCrankable(final BlockGetter level, final BlockPos pos, final Direction offset) {
         final BlockPos o = pos.relative(offset);
-        final BlockEntity te = world.getBlockEntity(o);
+        final BlockEntity te = level.getBlockEntity(o);
 
         return te instanceof ICrankable && ((ICrankable) te).canCrankAttach(offset.getOpposite());
     }
@@ -125,15 +125,15 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+        final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
-            if (!this.isCrankable(world, pos, blockEntity.getUp().getOpposite())) {
-                this.dropCrank(world, pos);
+            if (!this.isCrankable(level, pos, blockEntity.getUp().getOpposite())) {
+                this.dropCrank(level, pos);
             }
         } else {
-            this.dropCrank(world, pos);
+            this.dropCrank(level, pos);
         }
     }
 
@@ -142,14 +142,14 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
         return this.findCrankable(w, pos) != null;
     }
 
-    private Direction getUp(BlockGetter world, BlockPos pos) {
-        CrankBlockEntity crank = getBlockEntity(world, pos);
+    private Direction getUp(BlockGetter level, BlockPos pos) {
+        CrankBlockEntity crank = getBlockEntity(level, pos);
         return crank != null ? crank.getUp() : null;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        Direction up = getUp(world, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Direction up = getUp(level, pos);
 
         if (up == null) {
             return Shapes.empty();

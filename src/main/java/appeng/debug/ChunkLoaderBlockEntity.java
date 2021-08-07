@@ -39,10 +39,10 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ServerT
     public void onLoad() {
         super.onLoad();
 
-        Level world = getLevel();
-        if (world instanceof ServerLevel) {
+        Level level = getLevel();
+        if (level instanceof ServerLevel) {
             ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, true);
+            ((ServerLevel) level).setChunkForced(chunkPos.x, chunkPos.z, true);
         }
     }
 
@@ -50,22 +50,22 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ServerT
     public void setRemoved() {
         super.setRemoved();
 
-        Level world = getLevel();
-        if (world instanceof ServerLevel) {
+        Level level = getLevel();
+        if (level instanceof ServerLevel) {
             ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            ((ServerLevel) world).setChunkForced(chunkPos.x, chunkPos.z, false);
+            ((ServerLevel) level).setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 
     @Override
     public void serverTick() {
         // Validate the force-status
-        var serverWorld = (ServerLevel) getLevel();
+        var serverLevel = (ServerLevel) getLevel();
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
 
-        if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
-            AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension());
-            serverWorld.setChunkForced(chunkPos.x, chunkPos.z, false);
+        if (!serverLevel.getForcedChunks().contains(chunkPos.toLong())) {
+            AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverLevel.dimension());
+            serverLevel.setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 }

@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Defines properties for how the sky in the spatial storage world is rendered.
+ * Defines properties for how the sky in the spatial storage level is rendered.
  */
 @OnlyIn(Dist.CLIENT)
 public class SpatialStorageSkyProperties {

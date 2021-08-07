@@ -83,7 +83,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(final Level world, final BlockPos pos, final Explosion explosion) {
+    public void wasExploded(final Level level, final BlockPos pos, final Explosion explosion) {
         // Don't explode.
     }
 
@@ -98,7 +98,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean canEntityDestroy(final BlockState state, final BlockGetter world, final BlockPos pos,
+    public boolean canEntityDestroy(final BlockState state, final BlockGetter level, final BlockPos pos,
             final Entity entity) {
         return false;
     }

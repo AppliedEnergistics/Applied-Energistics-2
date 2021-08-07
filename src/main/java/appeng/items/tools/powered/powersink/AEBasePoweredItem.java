@@ -54,7 +54,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;

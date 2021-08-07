@@ -86,7 +86,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         return this;
     }
 
-    private Level getWorld() {
+    private Level getLevel() {
         return getContainer().getPlayerInventory().player.getCommandSenderWorld();
     }
 
@@ -116,7 +116,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, getWorld());
+                final ICraftingPatternDetails de = crafting.decodePattern(stack, getLevel());
                 if (de != null) {
                     return de.isCraftable();
                 }
@@ -136,7 +136,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return true;
                 }
 
-                return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
+                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
 
             case INSCRIBER_INPUT:
                 return true;/*
@@ -151,7 +151,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.isSameAs(stack);
             case ORE:
-                return GrinderRecipes.isValidIngredient(getWorld(), stack);
+                return GrinderRecipes.isValidIngredient(getLevel(), stack);
             case FUEL:
                 return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:
@@ -244,7 +244,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
             ItemStack stack = getItem();
-            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getWorld()) != null;
+            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getLevel()) != null;
         }
         return true;
     }

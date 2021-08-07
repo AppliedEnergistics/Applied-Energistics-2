@@ -86,7 +86,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
         final boolean zz = this.checkController(this.worldPosition.relative(Direction.NORTH))
                 && this.checkController(this.worldPosition.relative(Direction.SOUTH));
 
-        // int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
+        // int meta = level.getBlockMetadata( xCoord, yCoord, zCoord );
         // boolean hasPower = meta > 0;
         // boolean isConflict = meta == 2;
 

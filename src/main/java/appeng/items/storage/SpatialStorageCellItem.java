@@ -61,7 +61,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
@@ -146,13 +146,13 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         manager.setLastTransition(plot.getId(), info);
 
         try {
-            ServerLevel cellWorld = manager.getWorld();
+            ServerLevel cellLevel = manager.getLevel();
 
             BlockPos offset = plot.getOrigin();
 
             this.setStoredDimension(is, plot.getId(), plot.getSize());
             SpatialStorageHelper.getInstance().swapRegions(w, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
-                    cellWorld,
+                    cellLevel,
                     offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
             return true;

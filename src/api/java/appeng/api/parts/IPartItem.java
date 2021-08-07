@@ -38,9 +38,9 @@ import net.minecraft.world.item.ItemStack;
  * <code>
  *
  * {@literal @}Override
- * public default ActionResultType onItemUse(ItemStack is, PlayerEntity player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+ * public default ActionResultType onItemUse(ItemStack is, PlayerEntity player, World level, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
  *	{
- *		return Api.INSTANCE.partHelper().placeBus( is, pos, side, player, hand, world );
+ *		return Api.INSTANCE.partHelper().placeBus( is, pos, side, player, hand, level );
  *	}
  * </code>
  * </pre>

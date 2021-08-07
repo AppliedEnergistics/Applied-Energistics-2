@@ -40,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.hooks.ticking.TickHandler;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.util.IWorldRunnable;
+import appeng.util.ILevelRunnable;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -51,7 +51,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-    private final IWorldRunnable transitionCallback = world -> transition();
+    private final ILevelRunnable transitionCallback = level -> transition();
 
     public SpatialIOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -109,7 +109,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     private void transition() throws Exception {
-        if (!(this.level instanceof ServerLevel serverWorld)) {
+        if (!(this.level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -141,7 +141,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
                         playerId = node.getOwningPlayerId();
                     }
 
-                    boolean success = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
+                    boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),
                             playerId);
                     if (success) {
                         energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);

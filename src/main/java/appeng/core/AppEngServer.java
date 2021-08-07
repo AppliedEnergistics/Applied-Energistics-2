@@ -27,12 +27,12 @@ import appeng.client.EffectType;
  */
 public class AppEngServer extends AppEngBase {
     @Override
-    public Level getClientWorld() {
+    public Level getClientLevel() {
         return null;
     }
 
     @Override
-    public void spawnEffect(EffectType effect, Level world, double posX, double posY, double posZ, Object o) {
+    public void spawnEffect(EffectType effect, Level level, double posX, double posY, double posZ, Object o) {
         // Spawning client-side effects on a server is impossible
     }
 }

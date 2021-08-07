@@ -58,7 +58,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final ServerLevel world, final BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(final ServerLevel level, final BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();
@@ -69,7 +69,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
             } else {
                 // If the location is outside, only re-check if it would now be considered part
                 // of it
-                recheck = isValidBlockEntityAt(world, changedPos.getX(), changedPos.getY(), changedPos.getZ());
+                recheck = isValidBlockEntityAt(level, changedPos.getX(), changedPos.getY(), changedPos.getZ());
             }
         } else {
             // Always recheck if the block entity is not part of a cluster, because the adjacent
@@ -79,11 +79,11 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         }
 
         if (recheck) {
-            calculateMultiblock(world, loc);
+            calculateMultiblock(level, loc);
         }
     }
 
-    public void calculateMultiblock(final ServerLevel world, final BlockPos loc) {
+    public void calculateMultiblock(final ServerLevel level, final BlockPos loc) {
         if (isModificationInProgress()) {
             return;
         }
@@ -99,28 +99,28 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
             final MutableBlockPos max = loc.mutable();
 
             // find size of MB structure...
-            while (this.isValidBlockEntityAt(world, min.getX() - 1, min.getY(), min.getZ())) {
+            while (this.isValidBlockEntityAt(level, min.getX() - 1, min.getY(), min.getZ())) {
                 min.setX(min.getX() - 1);
             }
-            while (this.isValidBlockEntityAt(world, min.getX(), min.getY() - 1, min.getZ())) {
+            while (this.isValidBlockEntityAt(level, min.getX(), min.getY() - 1, min.getZ())) {
                 min.setY(min.getY() - 1);
             }
-            while (this.isValidBlockEntityAt(world, min.getX(), min.getY(), min.getZ() - 1)) {
+            while (this.isValidBlockEntityAt(level, min.getX(), min.getY(), min.getZ() - 1)) {
                 min.setZ(min.getZ() - 1);
             }
-            while (this.isValidBlockEntityAt(world, max.getX() + 1, max.getY(), max.getZ())) {
+            while (this.isValidBlockEntityAt(level, max.getX() + 1, max.getY(), max.getZ())) {
                 max.setX(max.getX() + 1);
             }
-            while (this.isValidBlockEntityAt(world, max.getX(), max.getY() + 1, max.getZ())) {
+            while (this.isValidBlockEntityAt(level, max.getX(), max.getY() + 1, max.getZ())) {
                 max.setY(max.getY() + 1);
             }
-            while (this.isValidBlockEntityAt(world, max.getX(), max.getY(), max.getZ() + 1)) {
+            while (this.isValidBlockEntityAt(level, max.getX(), max.getY(), max.getZ() + 1)) {
                 max.setZ(max.getZ() + 1);
             }
 
-            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(world, min, max)) {
+            if (this.checkMultiblockScale(min, max) && this.verifyUnownedRegion(level, min, max)) {
                 try {
-                    if (!this.verifyInternalStructure(world, min, max)) {
+                    if (!this.verifyInternalStructure(level, min, max)) {
                         this.disconnect();
                         return;
                     }
@@ -132,10 +132,10 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 boolean updateGrid = false;
                 TCluster cluster = this.target.getCluster();
                 if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
-                    cluster = this.createCluster(world, min, max);
+                    cluster = this.createCluster(level, min, max);
                     setModificationInProgress(cluster);
                     // NOTE: The following will break existing clusters within the bounds
-                    this.updateBlockEntities(cluster, world, min, max);
+                    this.updateBlockEntities(cluster, level, min, max);
 
                     updateGrid = true;
                 } else {
@@ -189,14 +189,14 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     /**
      * construct the correct cluster, usually very simple.
      *
-     * @param w   world
+     * @param w   level
      * @param min min world coord
      * @param max max world coord
      * @return created cluster
      */
     public abstract TCluster createCluster(ServerLevel w, BlockPos min, BlockPos max);
 
-    public abstract boolean verifyInternalStructure(ServerLevel world, BlockPos min, BlockPos max);
+    public abstract boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max);
 
     /**
      * disassembles the multi-block.
@@ -209,7 +209,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      * configure the multi-block block entities, most of the important stuff is in here.
      *
      * @param c   updated cluster
-     * @param w   in world
+     * @param w   in level
      * @param min min world coord
      * @param max max world coord
      */

@@ -37,8 +37,9 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
  * <p/>
  * See: https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/4891
  */
+// TODO 1.17: Check if this bugfix is still needed.
 @Mixin(LevelLightEngine.class)
-public class WorldLightManagerMixin {
+public class LevelLightEngineMixin {
     @Inject(method = "onBlockEmissionIncrease", at = @At("HEAD"), cancellable = true)
     public void onBlockEmissionIncrease(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
         if (lightLevel == 0) {

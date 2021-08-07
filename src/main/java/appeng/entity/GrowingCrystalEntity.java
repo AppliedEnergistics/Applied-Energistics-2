@@ -57,8 +57,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
      */
     private int progress_1000 = 0;
 
-    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level world) {
-        super(type, world);
+    public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level level) {
+        super(type, level);
     }
 
     public GrowingCrystalEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {

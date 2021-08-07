@@ -64,18 +64,18 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
         if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
-            this.startFuse(world, pos, player);
-            world.removeBlock(pos, false);
+            this.startFuse(level, pos, player);
+            level.removeBlock(pos, false);
             heldItem.hurtAndBreak(1, player, p -> {
                 p.broadcastBreakEvent(handIn);
             }); // FIXME Check if onBroken is equivalent
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         } else {
-            return super.use(state, world, pos, player, handIn, hit);
+            return super.use(state, level, pos, player, handIn, hit);
         }
     }
 
@@ -90,11 +90,11 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (world.getBestNeighborSignal(pos) > 0) {
-            this.startFuse(world, pos, null);
-            world.removeBlock(pos, false);
+        if (level.getBestNeighborSignal(pos) > 0) {
+            this.startFuse(level, pos, null);
+            level.removeBlock(pos, false);
         }
     }
 

@@ -82,13 +82,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     private void notifyNeighbors() {
-        final Level world = this.getBlockEntity().getLevel();
+        final Level level = this.getBlockEntity().getLevel();
 
-        Platform.notifyBlocksOfNeighbors(world, this.getBlockEntity().getBlockPos());
+        Platform.notifyBlocksOfNeighbors(level, this.getBlockEntity().getBlockPos());
 
         // and this cause sometimes it can go thought walls.
         for (final Direction face : Direction.values()) {
-            Platform.notifyBlocksOfNeighbors(world, this.getBlockEntity().getBlockPos().relative(face));
+            Platform.notifyBlocksOfNeighbors(level, this.getBlockEntity().getBlockPos().relative(face));
         }
     }
 

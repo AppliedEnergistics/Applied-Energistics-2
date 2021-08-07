@@ -83,7 +83,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean canBeRotated() {
-        return true;// return BlockCraftingUnit.checkType( world.getBlockMetadata( xCoord, yCoord,
+        return true;// return BlockCraftingUnit.checkType( level.getBlockMetadata( xCoord, yCoord,
         // zCoord ),
         // BlockCraftingUnit.BASE_MONITOR );
     }
@@ -111,14 +111,14 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void onReady() {
         super.onReady();
         this.getMainNode().setVisualRepresentation(this.getItemFromBlockEntity());
-        if (level instanceof ServerLevel serverWorld) {
-            this.calc.calculateMultiblock(serverWorld, worldPosition);
+        if (level instanceof ServerLevel serverLevel) {
+            this.calc.calculateMultiblock(serverLevel, worldPosition);
         }
     }
 
     public void updateMultiBlock(BlockPos changedPos) {
-        if (level instanceof ServerLevel serverWorld) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, worldPosition, changedPos);
+        if (level instanceof ServerLevel serverLevel) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, worldPosition, changedPos);
         }
     }
 
@@ -339,9 +339,9 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return connections;
     }
 
-    private boolean isConnected(BlockGetter world, BlockPos pos, Direction side) {
+    private boolean isConnected(BlockGetter level, BlockPos pos, Direction side) {
         BlockPos adjacentPos = pos.relative(side);
-        return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
+        return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }
 
     /**

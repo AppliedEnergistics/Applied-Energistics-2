@@ -56,5 +56,5 @@ public interface IWirelessTermRegistry {
     /**
      * opens the wireless terminal gui, the wireless terminal item, must be in the active slot on the tool bar.
      */
-    void openWirelessTerminalGui(ItemStack item, BlockGetter world, Player player, InteractionHand hand);
+    void openWirelessTerminalGui(ItemStack item, BlockGetter level, Player player, InteractionHand hand);
 }

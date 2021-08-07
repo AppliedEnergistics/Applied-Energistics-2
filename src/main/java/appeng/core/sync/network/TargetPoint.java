@@ -31,26 +31,26 @@ public class TargetPoint {
     public final double y;
     public final double z;
     public final double r2;
-    public final Level world;
+    public final Level level;
 
-    public TargetPoint(double x, double y, double z, double r2, Level world) {
-        this(null, x, y, z, r2, world);
+    public TargetPoint(double x, double y, double z, double r2, Level level) {
+        this(null, x, y, z, r2, level);
     }
 
-    public TargetPoint(ServerPlayer excluded, double x, double y, double z, double r2, Level world) {
+    public TargetPoint(ServerPlayer excluded, double x, double y, double z, double r2, Level level) {
         this.excluded = excluded;
         this.x = x;
         this.y = y;
         this.z = z;
         this.r2 = r2;
-        this.world = world;
+        this.level = level;
     }
 
-    public static TargetPoint at(double x, double y, double z, double r2, Level world) {
-        return new TargetPoint(x, y, z, r2, world);
+    public static TargetPoint at(double x, double y, double z, double r2, Level level) {
+        return new TargetPoint(x, y, z, r2, level);
     }
 
-    public static TargetPoint at(ServerPlayer excluded, double x, double y, double z, double r2, Level world) {
-        return new TargetPoint(excluded, x, y, z, r2, world);
+    public static TargetPoint at(ServerPlayer excluded, double x, double y, double z, double r2, Level level) {
+        return new TargetPoint(excluded, x, y, z, r2, level);
     }
 }

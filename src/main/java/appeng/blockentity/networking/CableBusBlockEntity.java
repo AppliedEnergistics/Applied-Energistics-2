@@ -315,13 +315,13 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Nonnull
     @Override
     public IModelData getModelData() {
-        Level world = getLevel();
-        if (world == null) {
+        Level level = getLevel();
+        if (level == null) {
             return EmptyModelData.INSTANCE;
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
-        renderState.setWorld(world);
+        renderState.setLevel(level);
         renderState.setPos(worldPosition);
         return new ModelDataMap.Builder().withInitial(CableBusRenderState.PROPERTY, renderState).build();
 

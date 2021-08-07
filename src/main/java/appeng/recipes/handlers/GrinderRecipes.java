@@ -34,8 +34,8 @@ public final class GrinderRecipes {
      * Search all available Grinder recipes for a recipe matching the given input or null;
      */
     @Nullable
-    public static GrinderRecipe findForInput(Level world, ItemStack input) {
-        for (Recipe<Container> recipe : world.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
+    public static GrinderRecipe findForInput(Level level, ItemStack input) {
+        for (Recipe<Container> recipe : level.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(input) && input.getCount() >= grinderRecipe.getIngredientCount()) {
                 return grinderRecipe;
@@ -47,8 +47,8 @@ public final class GrinderRecipes {
     /**
      * Checks if the given item stack is an ingredient in any grinder recipe, disregarding its current size.
      */
-    public static boolean isValidIngredient(Level world, ItemStack stack) {
-        for (Recipe<Container> recipe : world.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
+    public static boolean isValidIngredient(Level level, ItemStack stack) {
+        for (Recipe<Container> recipe : level.getRecipeManager().byType(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(stack)) {
                 return true;

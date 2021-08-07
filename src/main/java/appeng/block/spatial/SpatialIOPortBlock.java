@@ -46,9 +46,9 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortBlockEntity te = this.getBlockEntity(world, pos);
+        final SpatialIOPortBlockEntity te = this.getBlockEntity(level, pos);
         if (te != null) {
             te.updateRedstoneState();
         }

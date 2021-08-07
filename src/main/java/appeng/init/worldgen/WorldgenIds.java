@@ -25,7 +25,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import appeng.core.AppEng;
 
 /**
- * IDS used for world generation features.
+ * IDS used for level generation features.
  */
 final class WorldgenIds {
 

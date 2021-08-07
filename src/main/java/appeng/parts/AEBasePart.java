@@ -146,7 +146,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.mainNode.getNode();
     }
 
-    public Level getWorld() {
+    public Level getLevel() {
         return this.blockEntity.getLevel();
     }
 
@@ -237,7 +237,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void addToWorld() {
-        this.mainNode.create(getWorld(), getBlockEntity().getBlockPos());
+        this.mainNode.create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override

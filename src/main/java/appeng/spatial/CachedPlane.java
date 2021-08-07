@@ -60,7 +60,7 @@ public class CachedPlane {
     private final Column[][] myColumns;
     private final List<BlockEntity> blockEntities = new ArrayList<>();
     private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
@@ -75,7 +75,7 @@ public class CachedPlane {
             this.matrixBlockState = null;
         }
 
-        this.world = w;
+        this.level = w;
 
         this.x_size = maxX - minX + 1;
         this.y_size = maxY - minY + 1;
@@ -144,8 +144,8 @@ public class CachedPlane {
                     c.getBlockEntities().remove(cp);
                 }
 
-                final long gameTime = this.getWorld().getGameTime();
-                final ServerTickList<Block> pendingBlockTicks = this.getWorld().getBlockTicks();
+                final long gameTime = this.getLevel().getGameTime();
+                final ServerTickList<Block> pendingBlockTicks = this.getLevel().getBlockTicks();
                 var pending = pendingBlockTicks.fetchTicksInChunk(c.getPos(), false, true);
                 for (var entry : pending) {
                     final BlockPos tePOS = entry.pos;
@@ -160,7 +160,7 @@ public class CachedPlane {
 
         for (var te : this.blockEntities) {
             try {
-                this.getWorld().removeBlockEntity(te.getBlockPos());
+                this.getLevel().removeBlockEntity(te.getBlockPos());
             } catch (final Exception e) {
                 AELog.debug(e);
             }
@@ -252,7 +252,7 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final TickNextTickData<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
+        this.level.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
                 entry.priority);
     }
 
@@ -268,7 +268,7 @@ public class CachedPlane {
 
                 boolean success;
                 try {
-                    success = handler.moveBlockEntity(te, savedData, this.world,
+                    success = handler.moveBlockEntity(te, savedData, this.level,
                             new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
                 } catch (final Throwable e) {
                     AELog.debug(e);
@@ -296,7 +296,7 @@ public class CachedPlane {
         var recoveredEntity = BlockEntity.loadStatic(pos, te.getBlockState(), savedData);
         if (recoveredEntity != null) {
             c.c.addAndRegisterBlockEntity(recoveredEntity);
-            this.world.sendBlockUpdated(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
+            this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), z);
         } else {
             AELog.info("Failed to recover BE %s @ %s", BlockEntityType.getKey(te.getType()), pos);
         }
@@ -304,7 +304,7 @@ public class CachedPlane {
 
     private void updateChunks() {
 
-        LevelLightEngine lightManager = world.getLightEngine();
+        LevelLightEngine lightManager = level.getLightEngine();
 
         // update shit..
         if (lightManager instanceof ThreadedLevelLightEngine serverLightManager) {
@@ -323,24 +323,24 @@ public class CachedPlane {
 
                 final LevelChunk c = this.myChunks[x][z];
 
-                WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
+                WorldData.instance().compassData().service().updateArea(this.getLevel(), c);
 
                 ClientboundLevelChunkPacket cdp = new ClientboundLevelChunkPacket(c);
-                world.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
+                level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.send(cdp));
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        world.getChunkSource().tick(() -> false);
+        level.getChunkSource().tick(() -> false);
     }
 
     List<WorldCoord> getUpdates() {
         return this.updates;
     }
 
-    ServerLevel getWorld() {
-        return this.world;
+    ServerLevel getLevel() {
+        return this.level;
     }
 
     private static class BlockStorageData {

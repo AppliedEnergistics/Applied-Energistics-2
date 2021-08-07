@@ -113,7 +113,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getBlockEntity().getBlockPos());
+        this.outerNode.create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override

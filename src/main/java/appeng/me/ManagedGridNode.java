@@ -66,7 +66,7 @@ public class ManagedGridNode implements IManagedGridNode {
         private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
         private double idlePowerUsage = 1.0;
         private int owner = -1; // ME player id of owner
-        private Level world;
+        private Level level;
         private BlockPos pos;
         private boolean inWorldNode;
 
@@ -79,10 +79,10 @@ public class ManagedGridNode implements IManagedGridNode {
             GridNode node;
             if (inWorldNode) {
                 Preconditions.checkState(pos != null, "No position was set for an in-world node");
-                node = new InWorldGridNode((ServerLevel) world, pos, logicalHost, listener, flags);
+                node = new InWorldGridNode((ServerLevel) level, pos, logicalHost, listener, flags);
                 node.setExposedOnSides(exposedOnSides);
             } else {
-                node = new GridNode((ServerLevel) world, logicalHost, listener, flags);
+                node = new GridNode((ServerLevel) level, logicalHost, listener, flags);
             }
             node.setGridColor(gridColor);
             node.setOwningPlayerId(owner);
@@ -150,11 +150,11 @@ public class ManagedGridNode implements IManagedGridNode {
     public void create(Level level, @Nullable BlockPos blockPos) {
         // We can only ready up if the init-data still exists
         var initData = getInitData();
-        initData.world = level;
+        initData.level = level;
         initData.pos = blockPos;
         this.initData = null;
 
-        if (this.node == null && !initData.world.isClientSide()) {
+        if (this.node == null && !initData.level.isClientSide()) {
             createNode(initData);
         }
     }

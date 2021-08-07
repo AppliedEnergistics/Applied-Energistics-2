@@ -84,8 +84,8 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     @Override
     public void onReady() {
         super.onReady();
-        if (level instanceof ServerLevel serverWorld) {
-            this.calc.calculateMultiblock(serverWorld, worldPosition);
+        if (level instanceof ServerLevel serverLevel) {
+            this.calc.calculateMultiblock(serverLevel, worldPosition);
         }
     }
 
@@ -96,8 +96,8 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     public void neighborChanged(BlockPos changedPos) {
-        if (level instanceof ServerLevel serverWorld) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, worldPosition, changedPos);
+        if (level instanceof ServerLevel serverLevel) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, worldPosition, changedPos);
         }
     }
 

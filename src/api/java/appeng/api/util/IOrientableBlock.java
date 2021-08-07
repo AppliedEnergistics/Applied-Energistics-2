@@ -32,10 +32,10 @@ import net.minecraft.world.level.BlockGetter;
 public interface IOrientableBlock {
 
     /**
-     * @param world world of block
+     * @param level world of block
      * @param pos   The position of the block.
      *
      * @return a IOrientable if applicable
      */
-    IOrientable getOrientable(BlockGetter world, BlockPos pos);
+    IOrientable getOrientable(BlockGetter level, BlockPos pos);
 }

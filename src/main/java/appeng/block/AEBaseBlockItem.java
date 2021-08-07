@@ -52,15 +52,15 @@ public class AEBaseBlockItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+    public final void appendHoverText(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
-        this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
+        this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final Level world, final List<Component> toolTip,
+    public void addCheckedInformation(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
-        this.blockType.appendHoverText(itemStack, world, toolTip, advancedTooltips);
+        this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips);
     }
 
     @Override

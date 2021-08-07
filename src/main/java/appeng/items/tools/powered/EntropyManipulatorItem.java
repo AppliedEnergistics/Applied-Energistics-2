@@ -211,7 +211,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     /**
-     * The entropy manipulator in heat-mode can directly smelt in-world blocks and drop the smelted results, but only if
+     * The entropy manipulator in heat-mode can directly smelt in-level blocks and drop the smelted results, but only if
      * all drops of the block have smelting recipes.
      */
     private boolean performInWorldSmelting(ItemStack item, Level w, Player p, BlockPos pos, Block block) {
@@ -272,9 +272,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Nullable
-    private static EntropyRecipe findRecipe(Level world, EntropyMode mode, BlockState blockState,
+    private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (Recipe<Container> recipe : world.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
+        for (Recipe<Container> recipe : level.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
             EntropyRecipe entropyRecipe = (EntropyRecipe) recipe;
 
             if (entropyRecipe.matches(mode, blockState, fluidState)) {

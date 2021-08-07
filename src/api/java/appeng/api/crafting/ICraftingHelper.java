@@ -87,7 +87,7 @@ public interface ICraftingHelper {
      * The item backing the {@link ItemStack} needs to be an item returned by the encode methods of this class.
      *
      * @param itemStack    pattern
-     * @param level        world used to access the {@link RecipeManager}.
+     * @param level        level used to access the {@link RecipeManager}.
      * @param autoRecovery If true, the method will try to recover from changed recipe ids by searching the entire
      *                     recipe manager for a recipe matching the inputs. If this is successful, the given item stack
      *                     will be changed to reflect the new recipe id.

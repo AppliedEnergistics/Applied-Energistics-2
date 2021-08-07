@@ -288,7 +288,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * same as Block.animateTick, for but parts.
      *
-     * @param level world of block
+     * @param level level of block
      * @param pos   location of block
      * @param r     random
      */

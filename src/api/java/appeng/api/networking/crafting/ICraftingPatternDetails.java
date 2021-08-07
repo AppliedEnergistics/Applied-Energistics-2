@@ -47,7 +47,7 @@ public interface ICraftingPatternDetails {
     /**
      * @param slotIndex specific slot index
      * @param itemStack item in slot
-     * @param level     crafting world
+     * @param level     crafting level
      *
      * @return if an item can be used in the specific slot for this pattern.
      */
@@ -127,7 +127,7 @@ public interface ICraftingPatternDetails {
      * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.
      *
      * @param craftingInv inventory
-     * @param level       crafting world
+     * @param level       crafting level
      *
      * @return the crafted ( work bench ) item.
      */

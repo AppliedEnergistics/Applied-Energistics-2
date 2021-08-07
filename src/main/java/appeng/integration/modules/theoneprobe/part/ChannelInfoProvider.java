@@ -34,7 +34,7 @@ import appeng.parts.networking.IUsedChannelProvider;
 public class ChannelInfoProvider implements IPartProbInfoProvider {
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
         if (part instanceof IUsedChannelProvider) {
             IUsedChannelProvider usedChannelProvider = (IUsedChannelProvider) part;

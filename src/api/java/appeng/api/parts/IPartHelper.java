@@ -39,7 +39,7 @@ public interface IPartHelper {
      * @param pos    pos of part
      * @param side   side which the part should be on
      * @param player player placing part
-     * @param level  part in world
+     * @param level  part in level
      *
      * @return true if placing was successful
      */

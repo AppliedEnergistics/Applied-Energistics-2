@@ -64,9 +64,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         if (getEncryptionKey(stack).isEmpty()) {
             lines.add(GuiText.Unlinked.text());

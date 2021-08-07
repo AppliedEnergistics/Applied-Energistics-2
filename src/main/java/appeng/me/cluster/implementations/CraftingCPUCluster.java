@@ -671,7 +671,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                                             fuzz.setStackSize(input[x].getStackSize());
 
                                             if (details.isValidItemForSlot(x, fuzz.createItemStack(),
-                                                    this.getWorld())) {
+                                                    this.getLevel())) {
                                                 final IAEItemStack ais = this.inventory.extractItems(fuzz,
                                                         Actionable.MODULATE, this.machineSrc);
                                                 final ItemStack is = ais == null ? ItemStack.EMPTY
@@ -731,7 +731,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             }
 
                             if (details.isCraftable()) {
-                                CraftingEvent.fireAutoCraftingEvent(getWorld(), details, ic);
+                                CraftingEvent.fireAutoCraftingEvent(getLevel(), details, ic);
 
                                 for (int x = 0; x < ic.getContainerSize(); x++) {
                                     final ItemStack output = Platform.getContainerItem(ic.getItem(x));
@@ -1130,7 +1130,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             ICraftingHelper craftingHelper = Api.instance().crafting();
             if (craftingHelper.isEncodedPattern(pattern)) {
                 final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
-                        this.getWorld());
+                        this.getLevel());
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
                     tp.value = item.getLong("craftingProgress");
@@ -1182,7 +1182,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return out;
     }
 
-    private Level getWorld() {
+    private Level getLevel() {
         return this.getCore().getLevel();
     }
 

@@ -199,8 +199,8 @@ public class DualityItemInterface
 
     @Override
     public boolean isRemote() {
-        Level world = this.iHost.getBlockEntity().getLevel();
-        return world == null || world.isClientSide();
+        Level level = this.iHost.getBlockEntity().getLevel();
+        return level == null || level.isClientSide();
     }
 
     public void writeToNBT(final CompoundTag data) {

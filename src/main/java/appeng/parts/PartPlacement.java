@@ -76,7 +76,7 @@ public class PartPlacement {
     private boolean wasCanceled = false;
 
     public static InteractionResult place(final ItemStack held, final BlockPos pos, Direction side,
-            final Player player, final InteractionHand hand, final Level world, PlaceType pass, final int depth) {
+            final Player player, final InteractionHand hand, final Level level, PlaceType pass, final int depth) {
         if (depth > 3) {
             return InteractionResult.FAIL;
         }
@@ -85,16 +85,16 @@ public class PartPlacement {
         final LookDirection dir = InteractionUtil.getPlayerRay(player);
         ClipContext rtc = new ClipContext(dir.getA(), dir.getB(), ClipContext.Block.OUTLINE,
                 Fluid.NONE, player);
-        final BlockHitResult mop = world.clip(rtc);
+        final BlockHitResult mop = level.clip(rtc);
         BlockPlaceContext useContext = new BlockPlaceContext(new UseOnContext(player, hand, mop));
 
         if (!held.isEmpty() && InteractionUtil.isWrench(player, held, pos)
                 && InteractionUtil.isInAlternateUseMode(player)) {
-            if (!Platform.hasPermissions(new DimensionalBlockPos(world, pos), player)) {
+            if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), player)) {
                 return InteractionResult.FAIL;
             }
 
-            final BlockEntity blockEntity = world.getBlockEntity(pos);
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
             IPartHost host = null;
 
             if (blockEntity instanceof IPartHost) {
@@ -102,7 +102,7 @@ public class PartPlacement {
             }
 
             if (host != null) {
-                if (!world.isClientSide) {
+                if (!level.isClientSide) {
                     if (mop.getType() == Type.BLOCK) {
                         final List<ItemStack> is = new ArrayList<>();
                         final SelectedPart sp = selectPart(player, host,
@@ -120,11 +120,11 @@ public class PartPlacement {
                         if (sp.facade != null) {
                             is.add(sp.facade.getItemStack());
                             host.getFacadeContainer().removeFacade(host, sp.side);
-                            Platform.notifyBlocksOfNeighbors(world, pos);
+                            Platform.notifyBlocksOfNeighbors(level, pos);
                         }
 
                         if (!is.isEmpty()) {
-                            Platform.spawnDrops(world, pos, is);
+                            Platform.spawnDrops(level, pos, is);
                         }
                     }
                 } else {
@@ -132,13 +132,13 @@ public class PartPlacement {
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
-                return InteractionResult.sidedSuccess(world.isClientSide());
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
 
             return InteractionResult.FAIL;
         }
 
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         IPartHost host = null;
 
         if (blockEntity instanceof IPartHost) {
@@ -149,7 +149,7 @@ public class PartPlacement {
             final IFacadePart fp = isFacade(held, AEPartLocation.fromFacing(side));
             if (fp != null) {
                 if (host != null) {
-                    if (!world.isClientSide) {
+                    if (!level.isClientSide) {
                         if (host.getPart(AEPartLocation.INTERNAL) == null) {
                             return InteractionResult.FAIL;
                         }
@@ -173,24 +173,24 @@ public class PartPlacement {
                         player.swing(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                        return InteractionResult.sidedSuccess(world.isClientSide());
+                        return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 }
                 return InteractionResult.FAIL;
             }
         }
 
-        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && world.isEmptyBlock(pos)) {
+        if (held.isEmpty() && host != null && InteractionUtil.isInAlternateUseMode(player) && level.isEmptyBlock(pos)) {
             if (mop.getType() == Type.BLOCK) {
                 Vec3 hitVec = mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
                         -mop.getBlockPos().getZ());
                 final SelectedPart sPart = selectPart(player, host, hitVec);
                 if (sPart != null && sPart.part != null && sPart.part.onShiftActivate(player, hand, hitVec)) {
-                    if (world.isClientSide()) {
+                    if (level.isClientSide()) {
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     }
-                    return InteractionResult.sidedSuccess(world.isClientSide());
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }
@@ -205,19 +205,19 @@ public class PartPlacement {
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
-            BlockState blockState = world.getBlockState(pos);
+            BlockState blockState = level.getBlockState(pos);
             // FIXME isReplacable on the block state allows for more control, but requires
             // an item use context
             if (!blockState.isAir() && !blockState.canBeReplaced(useContext)) {
                 offset = side;
-                if (!world.isClientSide()) {
+                if (!level.isClientSide()) {
                     side = side.getOpposite();
                 }
             }
 
             te_pos = offset == null ? pos : pos.relative(offset);
 
-            blockEntity = world.getBlockEntity(te_pos);
+            blockEntity = level.getBlockEntity(te_pos);
             if (blockEntity instanceof IPartHost) {
                 host = (IPartHost) blockEntity;
             }
@@ -228,18 +228,18 @@ public class PartPlacement {
 
             boolean hostIsNotPresent = host == null;
             BlockState multiPartBlockState = multiPartBlock.defaultBlockState();
-            boolean canMultiPartBePlaced = multiPartBlockState.canSurvive(world, te_pos);
+            boolean canMultiPartBePlaced = multiPartBlockState.canSurvive(level, te_pos);
 
             // We cannot override the item stack of normal use context, so we use this hack
             BlockPlaceContext mpUseCtx = new BlockPlaceContext(
-                    new DirectionalPlaceContext(world, te_pos, side, multiPartStack, side));
+                    new DirectionalPlaceContext(level, te_pos, side, multiPartStack, side));
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
             if (hostIsNotPresent && canMultiPartBePlaced
                     && multiPartBlockItem.place(mpUseCtx).consumesAction()) {
-                if (!world.isClientSide) {
-                    blockEntity = world.getBlockEntity(te_pos);
+                if (!level.isClientSide) {
+                    blockEntity = level.getBlockEntity(te_pos);
 
                     if (blockEntity instanceof IPartHost) {
                         host = (IPartHost) blockEntity;
@@ -250,7 +250,7 @@ public class PartPlacement {
                     player.swing(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                    return InteractionResult.sidedSuccess(world.isClientSide());
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
                 return InteractionResult.FAIL;
@@ -265,11 +265,11 @@ public class PartPlacement {
             if (pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM) {
                 te_pos = pos.relative(side);
 
-                final BlockState blkState = world.getBlockState(te_pos);
+                final BlockState blkState = level.getBlockState(te_pos);
 
                 // FIXME: this is always true (host was de-referenced above)
                 if (blkState.isAir() || blkState.canBeReplaced(useContext) || host != null) {
-                    return place(held, te_pos, side.getOpposite(), player, hand, world,
+                    return place(held, te_pos, side.getOpposite(), player, hand, level,
                             pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
                                     : PlaceType.PLACE_ITEM,
                             depth + 1);
@@ -278,7 +278,7 @@ public class PartPlacement {
             return InteractionResult.PASS;
         }
 
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             if (mop.getType() != Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
                         mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
@@ -297,10 +297,10 @@ public class PartPlacement {
 
             final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
             if (mySide != null) {
-                BlockState blockState = world.getBlockState(pos);
-                final SoundType ss = multiPart.block().getSoundType(blockState, world, pos, player);
+                BlockState blockState = level.getBlockState(pos);
+                final SoundType ss = multiPart.block().getSoundType(blockState, level, pos, player);
 
-                world.playSound(null, pos, ss.getPlaceSound(), SoundSource.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
+                level.playSound(null, pos, ss.getPlaceSound(), SoundSource.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                         ss.getPitch() * 0.8F);
 
                 if (!player.isCreative()) {
@@ -314,7 +314,7 @@ public class PartPlacement {
         } else {
             player.swing(hand);
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private static float getEyeOffset(final Player p) {

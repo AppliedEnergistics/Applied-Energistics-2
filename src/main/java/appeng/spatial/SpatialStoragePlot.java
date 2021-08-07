@@ -29,7 +29,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.util.Constants;
 
 /**
- * A plot inside the storage cell world that is assigned to a specific storage cell.
+ * A plot inside the storage cell level that is assigned to a specific storage cell.
  */
 public class SpatialStoragePlot {
 
@@ -167,7 +167,7 @@ public class SpatialStoragePlot {
     }
 
     /**
-     * Returns the filename of the region in the world save containing this plot.
+     * Returns the filename of the region in the level save containing this plot.
      */
     public String getRegionFilename() {
         BlockPos origin = this.getOrigin();

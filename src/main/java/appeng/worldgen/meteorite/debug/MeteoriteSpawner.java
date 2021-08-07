@@ -29,14 +29,14 @@ import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 
 /**
- * Makes decisions about spawning meteorites in the world.
+ * Makes decisions about spawning meteorites in the level.
  */
 public class MeteoriteSpawner {
 
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader world, BlockPos startPos,
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader level, BlockPos startPos,
             float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
@@ -45,7 +45,7 @@ public class MeteoriteSpawner {
         mutablePos.move(Direction.DOWN, stepSize);
 
         while (mutablePos.getY() > minY) {
-            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, craterType, pureCrater);
+            PlacedMeteoriteSettings spawned = trySpawnMeteorite(level, mutablePos, coreRadius, craterType, pureCrater);
             if (spawned != null) {
                 return spawned;
             }
@@ -57,23 +57,23 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader world, BlockPos pos, float coreRadius,
+    public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader level, BlockPos pos, float coreRadius,
             CraterType craterType, boolean pureCrater) {
-        if (!areSurroundingsSuitable(world, pos)) {
+        if (!areSurroundingsSuitable(level, pos)) {
             return null;
         }
 
         // we can spawn here!
-        int skyMode = countBlockWithSkyLight(world, pos);
+        int skyMode = countBlockWithSkyLight(level, pos);
         boolean placeCrater = skyMode > 10;
 
-        boolean solid = !isAirBelowSpawnPoint(world, pos);
+        boolean solid = !isAirBelowSpawnPoint(level, pos);
 
         if (!solid || placeCrater) {
             // return null;
         }
 
-        // FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
+        // FalloutMode fallout = getFalloutFromBaseBlock(level.getBlockState(pos));
 
         boolean craterLake = false;
 

@@ -108,7 +108,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private void teleportBack(CommandSourceStack source) {
 
         if (source.getLevel().dimension() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage world."));
+            throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage level."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());
@@ -242,10 +242,10 @@ public class SpatialStorageCommand implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
 
-        // Test if the storage world has gone missing, which has occurred in the past. Instead of just not
+        // Test if the storage level has gone missing, which has occurred in the past. Instead of just not
         // printing anything or a non-descript error, give the user some hint as to what's happening.
         try {
-            SpatialStoragePlotManager.INSTANCE.getWorld();
+            SpatialStoragePlotManager.INSTANCE.getLevel();
         } catch (IllegalStateException e) {
             sender.sendSuccess(new TextComponent("The spatial I/O level is missing: " + e.getMessage()), true);
             return;
@@ -333,7 +333,7 @@ public class SpatialStorageCommand implements ISubCommand {
      */
     private static SpatialStoragePlot getCurrentPlot(CommandSourceStack source) {
         if (source.getLevel().dimension() != SpatialStorageDimensionIds.WORLD_ID) {
-            throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage world."));
+            throw new CommandRuntimeException(new TextComponent("Must be within the spatial storage level."));
         }
 
         BlockPos playerPos = new BlockPos(source.getPosition());

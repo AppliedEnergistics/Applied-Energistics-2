@@ -84,22 +84,22 @@ public final class PlaneConnectionHelper {
         boolean left = false, right = false, down = false, up = false;
 
         if (hostBlockEntity != null) {
-            Level world = hostBlockEntity.getLevel();
+            Level level = hostBlockEntity.getLevel();
             BlockPos pos = hostBlockEntity.getBlockPos();
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(facingRight.getOpposite())))) {
                 left = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight)))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(facingRight)))) {
                 right = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingUp.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(facingUp.getOpposite())))) {
                 down = true;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingUp)))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(facingUp)))) {
                 up = true;
             }
         }
@@ -118,26 +118,26 @@ public final class PlaneConnectionHelper {
 
         BlockEntity hostEntity = getHostBlockEntity();
         if (hostEntity != null) {
-            Level world = hostEntity.getLevel();
+            Level level = hostEntity.getLevel();
 
             final BlockPos pos = hostEntity.getBlockPos();
 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(e.getOpposite())))) {
                 minX = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(e)))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(e)))) {
                 maxX = 16;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(u.getOpposite())))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(u.getOpposite())))) {
                 minY = 0;
             }
 
-            if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(u)))) {
+            if (isCompatiblePlaneAdjacent(level.getBlockEntity(pos.relative(u)))) {
                 maxY = 16;
             }
         }

@@ -60,14 +60,14 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     @Override
     public void removeNode(final IGridNode node) {
         if (node instanceof InWorldGridNode inWorldNode) {
-            this.removeChunk(inWorldNode.getWorld(), inWorldNode.getLocation());
+            this.removeChunk(inWorldNode.getLevel(), inWorldNode.getLocation());
         }
     }
 
     @Override
     public void addNode(final IGridNode node) {
         if (node instanceof InWorldGridNode inWorldNode) {
-            this.addChunk(inWorldNode.getWorld(), inWorldNode.getLocation());
+            this.addChunk(inWorldNode.getLevel(), inWorldNode.getLocation());
         }
     }
 
@@ -80,18 +80,18 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      *
      * @return
      */
-    public Set<LevelAccessor> worlds() {
+    public Set<LevelAccessor> getLevels() {
         return this.chunks.keySet();
     }
 
     /**
-     * A set of chunks this grid spans in a specific world.
+     * A set of chunks this grid spans in a specific level.
      *
-     * @param world
+     * @param level
      * @return
      */
-    public Set<ChunkPos> chunks(LevelAccessor world) {
-        return this.chunks.get(world).elementSet();
+    public Set<ChunkPos> chunks(LevelAccessor level) {
+        return this.chunks.get(level).elementSet();
     }
 
     public Map<LevelAccessor, Multiset<ChunkPos>> getChunks() {
@@ -101,18 +101,18 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     /**
      * Mark the chunk of the {@link BlockPos} as location of the network.
      *
-     * @param world
+     * @param level
      * @param pos
      * @return
      */
-    private boolean addChunk(LevelAccessor world, BlockPos pos) {
+    private boolean addChunk(LevelAccessor level, BlockPos pos) {
         final ChunkPos position = new ChunkPos(pos);
 
-        if (!this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerLevel) world, position));
+        if (!this.getChunks(level).contains(position)) {
+            this.grid.postEvent(new GridChunkEvent.GridChunkAdded((ServerLevel) level, position));
         }
 
-        return this.getChunks(world).add(position);
+        return this.getChunks(level).add(position);
     }
 
     /**
@@ -121,35 +121,35 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * This uses a {@link Multiset} to ensure it will only marked as no longer containing a grid once all other
      * gridnodes are removed as well.
      *
-     * @param world
+     * @param level
      * @param pos
      * @return
      */
-    private boolean removeChunk(LevelAccessor world, BlockPos pos) {
+    private boolean removeChunk(LevelAccessor level, BlockPos pos) {
         final ChunkPos position = new ChunkPos(pos);
-        boolean ret = this.getChunks(world).remove(position);
+        boolean ret = this.getChunks(level).remove(position);
 
-        if (ret && !this.getChunks(world).contains(position)) {
-            this.grid.postEvent(new GridChunkEvent.GridChunkRemoved((ServerLevel) world, position));
+        if (ret && !this.getChunks(level).contains(position)) {
+            this.grid.postEvent(new GridChunkEvent.GridChunkRemoved((ServerLevel) level, position));
         }
 
-        this.clearWorld(world);
+        this.clearLevel(level);
 
         return ret;
     }
 
-    private Multiset<ChunkPos> getChunks(LevelAccessor world) {
-        return this.chunks.computeIfAbsent(world, w -> HashMultiset.create());
+    private Multiset<ChunkPos> getChunks(LevelAccessor level) {
+        return this.chunks.computeIfAbsent(level, w -> HashMultiset.create());
     }
 
     /**
-     * Cleanup the map in case a whole world is unloaded
+     * Cleanup the map in case a whole level is unloaded
      *
-     * @param world
+     * @param level
      */
-    private void clearWorld(LevelAccessor world) {
-        if (this.chunks.get(world).isEmpty()) {
-            this.chunks.remove(world);
+    private void clearLevel(LevelAccessor level) {
+        if (this.chunks.get(level).isEmpty()) {
+            this.chunks.remove(level);
         }
     }
 }

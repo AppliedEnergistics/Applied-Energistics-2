@@ -114,9 +114,9 @@ public class ApiCrafting implements ICraftingHelper {
         }
     }
 
-    private boolean attemptRecovery(EncodedPatternItem patternItem, ItemStack itemStack, Level world) {
+    private boolean attemptRecovery(EncodedPatternItem patternItem, ItemStack itemStack, Level level) {
 
-        RecipeManager recipeManager = world.getRecipeManager();
+        RecipeManager recipeManager = level.getRecipeManager();
 
         List<IAEItemStack> ingredients = patternItem.getIngredients(itemStack);
         List<IAEItemStack> products = patternItem.getProducts(itemStack);
@@ -134,7 +134,7 @@ public class ApiCrafting implements ICraftingHelper {
             testInventory.setItem(x, gs);
         }
 
-        CraftingRecipe potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, world)
+        CraftingRecipe potentialRecipe = recipeManager.getRecipeFor(RecipeType.CRAFTING, testInventory, level)
                 .orElse(null);
 
         // Check that it matches the expected output

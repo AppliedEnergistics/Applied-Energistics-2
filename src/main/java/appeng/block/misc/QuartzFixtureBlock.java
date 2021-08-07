@@ -110,11 +110,11 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         boolean oddPlacement = (pos.getX() + pos.getY() + pos.getZ()) % 2 != 0;
         blockstate = blockstate.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
-        LevelReader iworldreader = context.getLevel();
+        LevelReader levelReader = context.getLevel();
         Direction[] adirection = context.getNearestLookingDirections();
 
         for (Direction direction : adirection) {
-            if (canPlaceAt(iworldreader, pos, direction)) {
+            if (canPlaceAt(levelReader, pos, direction)) {
                 return blockstate.setValue(FACING, direction.getOpposite());
             }
         }
@@ -125,15 +125,15 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickDelay(world));
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(level));
         }
 
         Direction fixtureFacing = blockState.getValue(FACING);
-        if (facing.getOpposite() == fixtureFacing && !canPlaceAt(world, currentPos, facing)) {
+        if (facing.getOpposite() == fixtureFacing && !canPlaceAt(level, currentPos, facing)) {
             return Blocks.AIR.defaultBlockState();
         }
         return blockState;
@@ -184,11 +184,11 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     // FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final Direction up = this.getOrientable(world, pos).getUp();
-        if (!this.canPlaceAt(world, pos, up.getOpposite())) {
-            this.dropTorch(world, pos);
+        final Direction up = this.getOrientable(level, pos).getUp();
+        if (!this.canPlaceAt(level, pos, up.getOpposite())) {
+            this.dropTorch(level, pos);
         }
     }
 

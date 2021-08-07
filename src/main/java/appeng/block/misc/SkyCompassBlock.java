@@ -59,12 +59,12 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(level, pos);
         final Direction forward = sc.getForward();
-        if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
-            this.dropTorch(world, pos);
+        if (!this.canPlaceAt(level, pos, forward.getOpposite())) {
+            this.dropTorch(level, pos);
         }
     }
 

@@ -42,7 +42,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
     private static final int STATE_INPUT = 2;
 
     @Override
-    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
         if (part instanceof P2PTunnelPart) {
             final P2PTunnelPart tunnel = (P2PTunnelPart) part;

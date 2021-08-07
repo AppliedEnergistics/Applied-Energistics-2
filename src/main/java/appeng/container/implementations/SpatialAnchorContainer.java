@@ -94,8 +94,8 @@ public class SpatialAnchorContainer extends AEBaseContainer {
                 HashMap<LevelAccessor, Integer> stats = new HashMap<>();
 
                 for (var machine : grid.getMachines(SpatialAnchorBlockEntity.class)) {
-                    LevelAccessor world = machine.getLevel();
-                    stats.merge(world, machine.countLoadedChunks(), Math::max);
+                    LevelAccessor level = machine.getLevel();
+                    stats.merge(level, machine.countLoadedChunks(), Math::max);
                 }
 
                 this.allLoadedChunks = stats.values().stream().reduce(Integer::sum).orElse(0);

@@ -32,9 +32,9 @@ import appeng.api.util.AEPartLocation;
 
 public class MatterCannonFX extends TextureSheetParticle {
 
-    public MatterCannonFX(final ClientLevel par1World, final double x, final double y, final double z,
+    public MatterCannonFX(final ClientLevel level, final double x, final double y, final double z,
             SpriteSet sprite) {
-        super(par1World, x, y, z);
+        super(level, x, y, z);
         this.gravity = 0;
         this.bCol = 1;
         this.gCol = 1;
@@ -85,9 +85,9 @@ public class MatterCannonFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType data, ClientLevel world, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new MatterCannonFX(world, x, y, z, spriteSet);
+            return new MatterCannonFX(level, x, y, z, spriteSet);
         }
     }
 

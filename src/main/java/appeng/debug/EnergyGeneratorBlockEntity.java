@@ -48,11 +48,11 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
 
     @Override
     public void serverTick() {
-        Level world = this.getLevel();
+        Level level = this.getLevel();
 
         int tier = 1;
         for (Direction facing : Direction.values()) {
-            final BlockEntity te = world.getBlockEntity(this.getBlockPos().relative(facing));
+            final BlockEntity te = level.getBlockEntity(this.getBlockPos().relative(facing));
 
             if (te instanceof EnergyGeneratorBlockEntity) {
                 tier++;

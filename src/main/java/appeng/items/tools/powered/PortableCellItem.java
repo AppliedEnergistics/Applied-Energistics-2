@@ -70,9 +70,9 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, world, lines, advancedTooltips);
+        super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

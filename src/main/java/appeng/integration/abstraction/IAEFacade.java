@@ -35,19 +35,19 @@ import team.chisel.ctm.api.IFacade;
  */
 public interface IAEFacade extends IFacade {
 
-    BlockState getFacadeState(BlockGetter world, BlockPos pos, @Nullable Direction side);
+    BlockState getFacadeState(BlockGetter level, BlockPos pos, @Nullable Direction side);
 
     @Nonnull
     @Override
-    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side) {
-        return getFacadeState(world, pos, side);
+    default BlockState getFacade(@Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nullable Direction side) {
+        return getFacadeState(level, pos, side);
     }
 
     @Nonnull
     @Override
-    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side,
+    default BlockState getFacade(@Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nullable Direction side,
             @Nonnull BlockPos connection) {
-        return getFacadeState(world, pos, side);
+        return getFacadeState(level, pos, side);
     }
 
 }

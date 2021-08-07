@@ -370,7 +370,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     /**
      * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
      *
-     * @param level     world
+     * @param level     level
      * @param pos   block position
      * @param drops drops of block entity
      */
@@ -445,8 +445,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
      * Checks if this block entity is remote (we are running on the logical client side).
      */
     public boolean isRemote() {
-        Level world = getLevel();
-        return world == null || world.isClientSide();
+        Level level = getLevel();
+        return level == null || level.isClientSide();
     }
 
     public void disableDrops() {

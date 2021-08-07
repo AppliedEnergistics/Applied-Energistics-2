@@ -148,16 +148,16 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private boolean canUseNode(final long qe) {
         final QuantumCluster qc = (QuantumCluster) Api.instance().registries().locatable().getLocatableBy(qe);
         if (qc != null) {
-            final Level theWorld = qc.center.getLevel();
+            final Level level = qc.center.getLevel();
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
                 // block entity begins ticking normally.
-                if (theWorld.hasChunkAt(qc.center.getBlockPos())) {
-                    final Level cur = theWorld.getServer().getLevel(theWorld.dimension());
+                if (level.hasChunkAt(qc.center.getBlockPos())) {
+                    final Level cur = level.getServer().getLevel(level.dimension());
 
-                    final BlockEntity te = theWorld.getBlockEntity(qc.center.getBlockPos());
-                    return te != qc.center || theWorld != cur;
+                    final BlockEntity te = level.getBlockEntity(qc.center.getBlockPos());
+                    return te != qc.center || level != cur;
                 } else {
                     AELog.warn("Found a registered QNB with serial %s whose chunk seems to be unloaded: %s", qe, qc);
                 }
@@ -277,10 +277,10 @@ public class QuantumCluster implements ILocatable, IAECluster {
             return "QuantumCluster{no-center}";
         }
 
-        Level world = center.getLevel();
+        Level level = center.getLevel();
         BlockPos pos = center.getBlockPos();
 
-        return "QuantumCluster{" + world + "," + pos + "}";
+        return "QuantumCluster{" + level + "," + pos + "}";
     }
 
 }

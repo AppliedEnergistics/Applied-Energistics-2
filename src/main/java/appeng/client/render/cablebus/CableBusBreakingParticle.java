@@ -33,9 +33,9 @@ public class CableBusBreakingParticle extends TextureSheetParticle {
     private final float uCoord;
     private final float vCoord;
 
-    public CableBusBreakingParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY,
+    public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, double speedX, double speedY,
             double speedZ, TextureAtlasSprite sprite) {
-        super(world, x, y, z, speedX, speedY, speedZ);
+        super(level, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.gravity = 1.0F;
         this.quadSize /= 2.0F;
@@ -43,8 +43,8 @@ public class CableBusBreakingParticle extends TextureSheetParticle {
         this.vCoord = this.random.nextFloat() * 3.0F;
     }
 
-    public CableBusBreakingParticle(ClientLevel world, double x, double y, double z, TextureAtlasSprite sprite) {
-        this(world, x, y, z, 0, 0, 0, sprite);
+    public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
+        this(level, x, y, z, 0, 0, 0, sprite);
     }
 
     @Override

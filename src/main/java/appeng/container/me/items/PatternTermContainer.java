@@ -138,15 +138,15 @@ public class PatternTermContainer extends ItemTerminalContainer
     }
 
     private ItemStack getAndUpdateOutput() {
-        final Level world = this.getPlayerInventory().player.level;
+        final Level level = this.getPlayerInventory().player.level;
         final CraftingContainer ic = new CraftingContainer(this, 3, 3);
 
         for (int x = 0; x < ic.getContainerSize(); x++) {
             ic.setItem(x, this.craftingGridInv.getStackInSlot(x));
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
+        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
+            this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
             this.currentRecipeCraftingMode = this.craftingMode;
         }
 

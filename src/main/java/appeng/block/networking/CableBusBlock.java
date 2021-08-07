@@ -146,8 +146,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity) {
-        return this.cb(world, pos).isLadder(entity);
+    public boolean isLadder(BlockState state, LevelReader level, BlockPos pos, LivingEntity entity) {
+        return this.cb(level, pos).isLadder(entity);
     }
 
     @Override
@@ -158,16 +158,16 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player,
+    public boolean removedByPlayer(BlockState state, Level level, BlockPos pos, Player player,
             boolean willHarvest, FluidState fluid) {
         if (player.getAbilities().instabuild) {
-            final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+            final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
             if (blockEntity != null) {
                 blockEntity.disableDrops();
             }
             // maybe ray trace?
         }
-        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
+        return super.removedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     // TODO-1.17 This hook was removed from Forge with replacement and may be unnecessary
@@ -181,10 +181,10 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos,
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
             Player player) {
         final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
-        final SelectedPart sp = this.cb(world, pos).selectPart(v3);
+        final SelectedPart sp = this.cb(level, pos).selectPart(v3);
 
         if (sp.part != null) {
             return sp.part.getItemStack(PartItemStack.PICK);
@@ -196,10 +196,10 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        if (!world.isClientSide()) {
-            this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
+        if (!level.isClientSide()) {
+            this.cb(level, pos).onNeighborChanged(level, pos, fromPos);
         }
     }
 
@@ -261,10 +261,10 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 : InteractionResult.PASS;
     }
 
-    public boolean recolorBlock(final BlockGetter world, final BlockPos pos, final Direction side,
+    public boolean recolorBlock(final BlockGetter level, final BlockPos pos, final Direction side,
             final DyeColor color, final Player who) {
         try {
-            return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
+            return this.cb(level, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
         } catch (final Throwable ignored) {
         }
         return false;
@@ -277,9 +277,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public BlockState getFacadeState(BlockGetter world, BlockPos pos, Direction side) {
+    public BlockState getFacadeState(BlockGetter level, BlockPos pos, Direction side) {
         if (side != null) {
-            IFacadeContainer container = this.fc(world, pos);
+            IFacadeContainer container = this.fc(level, pos);
             if (container != null) {
                 IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(side));
                 if (facade != null) {
@@ -287,7 +287,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 }
             }
         }
-        return world.getBlockState(pos);
+        return level.getBlockState(pos);
     }
 
     @Override
@@ -338,14 +338,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
-                    Fluids.WATER.getTickDelay(world));
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER,
+                    Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(blockState, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
@@ -353,7 +353,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         consumer.accept(new IBlockRenderProperties() {
 
             @Override
-            public boolean addHitEffects(final BlockState state, final Level world, final HitResult target,
+            public boolean addHitEffects(final BlockState state, final Level level, final HitResult target,
                     final ParticleEngine effectRenderer) {
 
                 // Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -368,7 +368,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y,
                         target.getLocation().z);
 
-                ICableBusContainer cb = cb(world, blockPos);
+                ICableBusContainer cb = cb(level, blockPos);
 
                 // Our built-in model has the actual baked sprites we need
                 BakedModel model = Minecraft.getInstance().getBlockRenderer()
@@ -392,16 +392,16 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                     // FIXME: Check how this looks, probably like shit, maybe provide parts the
                     // ability to supply particle textures???
                     effectRenderer.add(
-                            new CableBusBreakingParticle((ClientLevel) world, x, y, z, texture).scale(0.8F));
+                            new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture).scale(0.8F));
                 }
 
                 return true;
             }
 
             @Override
-            public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos,
+            public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos,
                     ParticleEngine effectRenderer) {
-                ICableBusContainer cb = cb(world, pos);
+                ICableBusContainer cb = cb(level, pos);
 
                 // Our built-in model has the actual baked sprites we need
                 BakedModel model = Minecraft.getInstance().getBlockRenderer()
@@ -433,7 +433,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
                                 // FIXME: Check how this looks, probably like shit, maybe provide parts the
                                 // ability to supply particle textures???
-                                Particle effect = new CableBusBreakingParticle((ClientLevel) world, x, y, z,
+                                Particle effect = new CableBusBreakingParticle((ClientLevel) level, x, y, z,
                                         x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
                                 effectRenderer.add(effect);
                             }

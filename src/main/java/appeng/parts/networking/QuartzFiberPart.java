@@ -94,7 +94,7 @@ public class QuartzFiberPart extends AEBasePart {
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.outerNode.create(getWorld(), getBlockEntity().getBlockPos());
+        this.outerNode.create(getLevel(), getBlockEntity().getBlockPos());
     }
 
     @Override

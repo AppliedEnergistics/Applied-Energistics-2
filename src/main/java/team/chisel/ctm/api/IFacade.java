@@ -19,12 +19,12 @@ public interface IFacade {
      */
     @Nonnull
     @Deprecated
-    BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side);
+    BlockState getFacade(@Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nullable Direction side);
 
     /**
      * Gets the blockstate this facade appears as.
      *
-     * @param world      {@link Level}
+     * @param level      {@link Level}
      * @param pos        The Blocks position
      * @param side       The side being rendered, NOT the side being connected from.
      *                   <p>
@@ -33,9 +33,9 @@ public interface IFacade {
      * @return The blockstate which your block appears as.
      */
     @Nonnull
-    default BlockState getFacade(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nullable Direction side,
+    default BlockState getFacade(@Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nullable Direction side,
                                  @Nonnull BlockPos connection) {
-        return getFacade(world, pos, side);
+        return getFacade(level, pos, side);
     }
 
 }

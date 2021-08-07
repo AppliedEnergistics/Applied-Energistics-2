@@ -250,23 +250,21 @@ public class Platform {
 
     public static ItemStack[] getBlockDrops(final Level w, final BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
-        // server world
-        if (!(w instanceof ServerLevel)) {
+        // server level
+        if (!(w instanceof ServerLevel serverLevel)) {
             return new ItemStack[0];
         }
-
-        ServerLevel serverWorld = (ServerLevel) w;
 
         final BlockState state = w.getBlockState(pos);
         final BlockEntity blockEntity = w.getBlockEntity(pos);
 
-        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, blockEntity);
+        List<ItemStack> out = Block.getDrops(state, serverLevel, pos, blockEntity);
 
         return out.toArray(new ItemStack[0]);
     }
 
     /*
-     * Generates Item entities in the world similar to how items are generally dropped.
+     * Generates Item entities in the level similar to how items are generally dropped.
      */
     public static void spawnDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
         if (!w.isClientSide()) {
@@ -975,9 +973,9 @@ public class Platform {
         return ci;
     }
 
-    public static void notifyBlocksOfNeighbors(final Level world, final BlockPos pos) {
-        if (!world.isClientSide) {
-            TickHandler.instance().addCallable(world, new BlockUpdate(pos));
+    public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
+        if (!level.isClientSide) {
+            TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }
     }
 

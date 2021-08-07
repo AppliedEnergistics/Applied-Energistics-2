@@ -34,7 +34,7 @@ import appeng.services.compass.CompassThreadFactory;
 /**
  * Singleton access to anything related to world-based data.
  * <p>
- * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded,
+ * Data will change depending which level is loaded. Will probably not affect SMP at all since only one level is loaded,
  * but SSP more, cause they play on different worlds.
  *
  * @author thatsIch
@@ -80,15 +80,15 @@ public final class WorldData implements IWorldData {
     }
 
     /**
-     * @return ae2 data related to a specific world
-     * @deprecated do not use singletons which are dependent on specific world state
+     * @return ae2 data related to a specific level
+     * @deprecated do not use singletons which are dependent on specific level state
      */
     @Deprecated
     @Nonnull
     public synchronized static IWorldData instance() {
         // The overworld is lazily loaded, meaning we cannot access it right away
         // when the server is starting, but the first time the instance is accessed,
-        // we create the actual world data
+        // we create the actual level data
         if (instance == null) {
             if (server == null) {
                 throw new IllegalStateException("No server set.");

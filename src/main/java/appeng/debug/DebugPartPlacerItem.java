@@ -54,8 +54,8 @@ public class DebugPartPlacerItem extends AEBaseItem {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Level world = context.getLevel();
-        if (world.isClientSide()) {
+        Level level = context.getLevel();
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
 
@@ -71,7 +71,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             return InteractionResult.FAIL;
         }
 
-        BlockEntity te = world.getBlockEntity(pos);
+        BlockEntity te = level.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new TextComponent("Right-click something that will accept parts"),
                     Util.NIL_UUID);
@@ -100,11 +100,11 @@ public class DebugPartPlacerItem extends AEBaseItem {
             }
 
             nextPos = nextPos.offset(offset);
-            if (!world.setBlockAndUpdate(nextPos, te.getBlockState())) {
+            if (!level.setBlockAndUpdate(nextPos, te.getBlockState())) {
                 continue;
             }
 
-            BlockEntity t = world.getBlockEntity(nextPos);
+            BlockEntity t = level.getBlockEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }
@@ -120,7 +120,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             }
         }
 
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
 }

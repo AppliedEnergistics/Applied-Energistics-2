@@ -33,14 +33,14 @@ import net.minecraft.world.level.Level;
  * @since rv3
  */
 @FunctionalInterface
-public interface IWorldRunnable {
+public interface ILevelRunnable {
     /**
      * Similar to {@link Callable#call()}
      *
-     * @param world this param is given to not hold a reference to the world but let the caller handle it. Do not expect
-     *              a world here thus can be <tt>null</tt>.
+     * @param level this param is given to not hold a reference to the level but let the caller handle it. Do not expect
+     *              a level here thus can be <tt>null</tt>.
      * @throws Exception if the call fails
      * @see Runnable#run()
      */
-    void call(@Nullable Level world) throws Exception;
+    void call(@Nullable Level level) throws Exception;
 }

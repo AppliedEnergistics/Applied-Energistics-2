@@ -253,8 +253,8 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     public void neighborUpdate(BlockPos fromPos) {
-        if (level instanceof ServerLevel serverWorld) {
-            this.calc.updateMultiblockAfterNeighborUpdate(serverWorld, this.worldPosition, fromPos);
+        if (level instanceof ServerLevel serverLevel) {
+            this.calc.updateMultiblockAfterNeighborUpdate(serverLevel, this.worldPosition, fromPos);
         }
     }
 

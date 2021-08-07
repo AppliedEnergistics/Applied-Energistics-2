@@ -84,7 +84,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
      * rudimentary connected texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world,
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
@@ -97,12 +97,12 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         int z = pos.getZ();
 
         // Detect whether controllers are on both sides of the x, y, and z axes
-        final boolean xx = this.getBlockEntity(world, x - 1, y, z) != null
-                && this.getBlockEntity(world, x + 1, y, z) != null;
-        final boolean yy = this.getBlockEntity(world, x, y - 1, z) != null
-                && this.getBlockEntity(world, x, y + 1, z) != null;
-        final boolean zz = this.getBlockEntity(world, x, y, z - 1) != null
-                && this.getBlockEntity(world, x, y, z + 1) != null;
+        final boolean xx = this.getBlockEntity(level, x - 1, y, z) != null
+                && this.getBlockEntity(level, x + 1, y, z) != null;
+        final boolean yy = this.getBlockEntity(level, x, y - 1, z) != null
+                && this.getBlockEntity(level, x, y + 1, z) != null;
+        final boolean zz = this.getBlockEntity(level, x, y, z - 1) != null
+                && this.getBlockEntity(level, x, y, z + 1) != null;
 
         if (xx && !yy && !zz) {
             type = ControllerRenderType.column_x;
@@ -115,7 +115,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 
             // While i'd like this to be based on the blockstate randomization feature, this
             // generates
-            // an alternating pattern based on world position, so this is not 100% doable
+            // an alternating pattern based on level position, so this is not 100% doable
             // with blockstates.
             if (v == 0) {
                 type = ControllerRenderType.inside_a;
@@ -128,9 +128,9 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final ControllerBlockEntity tc = this.getBlockEntity(world, pos);
+        final ControllerBlockEntity tc = this.getBlockEntity(level, pos);
         if (tc != null) {
             tc.onNeighborChange(false);
         }

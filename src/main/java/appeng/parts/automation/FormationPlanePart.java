@@ -346,9 +346,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return ItemFormationPlaneContainer.TYPE;
     }
 
-    private int countEntitesAround(Level world, BlockPos pos) {
+    private int countEntitesAround(Level level, BlockPos pos) {
         final AABB t = new AABB(pos).inflate(8);
-        final List<Entity> list = world.getEntitiesOfClass(Entity.class, t);
+        final List<Entity> list = level.getEntitiesOfClass(Entity.class, t);
 
         return list.size();
     }
@@ -362,9 +362,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     private static class PlaneDirectionalPlaceContext extends BlockPlaceContext {
         private final Direction lookDirection;
 
-        public PlaneDirectionalPlaceContext(Level world, Player player, BlockPos pos, Direction lookDirection,
+        public PlaneDirectionalPlaceContext(Level level, Player player, BlockPos pos, Direction lookDirection,
                 ItemStack itemStack, Direction facing) {
-            super(world, player, InteractionHand.MAIN_HAND, itemStack,
+            super(level, player, InteractionHand.MAIN_HAND, itemStack,
                     new BlockHitResult(Vec3.atBottomCenterOf(pos), facing, pos, false));
             this.lookDirection = lookDirection;
         }

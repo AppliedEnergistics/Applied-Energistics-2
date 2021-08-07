@@ -55,10 +55,10 @@ public class ChunkLoadingService implements LoadingValidationCallback {
     }
 
     @Override
-    public void validateTickets(ServerLevel world, TicketHelper ticketHelper) {
+    public void validateTickets(ServerLevel level, TicketHelper ticketHelper) {
         // Iterate over all blockpos registered as chunk loader to initialize them
         ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
-            BlockEntity blockEntity = world.getBlockEntity(blockPos);
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
@@ -73,17 +73,17 @@ public class ChunkLoadingService implements LoadingValidationCallback {
         });
     }
 
-    public boolean forceChunk(ServerLevel world, BlockPos owner, ChunkPos position, boolean ticking) {
+    public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, true, true);
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, true, true);
         }
 
         return false;
     }
 
-    public boolean releaseChunk(ServerLevel world, BlockPos owner, ChunkPos position, boolean ticking) {
+    public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
         if (running) {
-            return ForgeChunkManager.forceChunk(world, AppEng.MOD_ID, owner, position.x, position.z, false, true);
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, false, true);
         }
 
         return false;

@@ -40,7 +40,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
 
     public static void register() {
         // THIS MUST BE CALLED otherwise the static initializer above will not run,
-        // unless world generation is actually invoked, which means that chunks may
+        // unless level generation is actually invoked, which means that chunks may
         // be loaded without this being registered as a structure piece!
     }
 
@@ -96,13 +96,13 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_,
+    public boolean postProcess(WorldGenLevel level, StructureFeatureManager p_230383_2_,
             ChunkGenerator chunkGeneratorIn,
             Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
-        MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
+        MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range
+        WorldData.instance().compassData().service().tryUpdateArea(level, chunkPos); // FIXME: We know the y-range
         // here...
         return true;
     }

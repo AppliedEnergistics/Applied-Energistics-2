@@ -46,7 +46,7 @@ public class CraftingTreeProcess {
     private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
     private final int depth;
     boolean possible = true;
-    private Level world;
+    private Level level;
     private long crafts = 0;
     private boolean containerItems;
     private boolean limitQty;
@@ -59,7 +59,7 @@ public class CraftingTreeProcess {
         this.details = details;
         this.job = job;
         this.depth = depth;
-        final Level world = job.getWorld();
+        final Level level = job.getLevel();
 
         if (details.isCraftable()) {
             final IAEItemStack[] list = details.getSparseInputs();
@@ -70,7 +70,7 @@ public class CraftingTreeProcess {
                 ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
-            CraftingEvent.fireAutoCraftingEvent(world, details, ic);
+            CraftingEvent.fireAutoCraftingEvent(level, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 final ItemStack g = ic.getItem(x);
@@ -170,7 +170,7 @@ public class CraftingTreeProcess {
                 ic.setItem(entry.getKey().getSlot(), stack.createItemStack());
             }
 
-            CraftingEvent.fireAutoCraftingEvent(world, details, ic);
+            CraftingEvent.fireAutoCraftingEvent(level, details, ic);
 
             for (int x = 0; x < ic.getContainerSize(); x++) {
                 ItemStack is = ic.getItem(x);

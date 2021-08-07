@@ -173,13 +173,13 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     public void chunkAdded(final GridChunkAdded changed) {
-        if (changed.getWorld() == this.getServerWorld()) {
+        if (changed.getLevel() == this.getServerLevel()) {
             this.force(changed.getChunkPos());
         }
     }
 
     public void chunkRemoved(final GridChunkRemoved changed) {
-        if (changed.getWorld() == this.getServerWorld()) {
+        if (changed.getLevel() == this.getServerLevel()) {
             this.release(changed.getChunkPos(), true);
             // Need to wake up the anchor to potentially perform another cleanup
             this.wakeUp();
@@ -306,7 +306,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         }
 
         Multiset<ChunkPos> requiredChunks = grid.getService(StatisticsService.class).getChunks()
-                .get(this.getServerWorld());
+                .get(this.getServerLevel());
 
         // Release all chunks, which are no longer part of the network.s
         for (Iterator<ChunkPos> iterator = chunks.iterator(); iterator.hasNext();) {
@@ -336,8 +336,8 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
             return false;
         }
 
-        ServerLevel world = this.getServerWorld();
-        boolean forced = ChunkLoadingService.getInstance().forceChunk(world, this.getBlockPos(), chunkPos, true);
+        ServerLevel level = this.getServerLevel();
+        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos, true);
 
         if (forced) {
             this.chunks.add(chunkPos);
@@ -350,8 +350,8 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     private boolean release(ChunkPos chunkPos, boolean remove) {
-        ServerLevel world = this.getServerWorld();
-        boolean removed = ChunkLoadingService.getInstance().releaseChunk(world, this.getBlockPos(), chunkPos, true);
+        ServerLevel level = this.getServerLevel();
+        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos, true);
 
         if (removed && remove) {
             this.chunks.remove(chunkPos);
@@ -366,7 +366,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     private void forceAll() {
         getMainNode().ifPresent(grid -> {
             var statistics = grid.getService(StatisticsService.class);
-            for (ChunkPos chunkPos : statistics.getChunks().get(this.getServerWorld())
+            for (ChunkPos chunkPos : statistics.getChunks().get(this.getServerLevel())
                     .elementSet()) {
                 this.force(chunkPos);
             }
@@ -380,7 +380,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         this.chunks.clear();
     }
 
-    private ServerLevel getServerWorld() {
+    private ServerLevel getServerLevel() {
         if (this.getLevel() instanceof ServerLevel) {
             return (ServerLevel) this.getLevel();
         }
@@ -389,7 +389,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean prepareToMove() {
-        // Just in case there are still some chunks left, as the world will change.F
+        // Just in case there are still some chunks left, as the level will change.F
         this.releaseAll();
 
         return true;

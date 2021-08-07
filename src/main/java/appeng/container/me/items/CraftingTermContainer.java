@@ -97,9 +97,9 @@ public class CraftingTermContainer extends ItemTerminalContainer implements ICon
             ic.setItem(x, this.craftingSlots[x].getItem());
         }
 
-        Level world = this.getPlayerInventory().player.level;
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, world).orElse(null);
+        Level level = this.getPlayerInventory().player.level;
+        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
+            this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
         }
 
         if (this.currentRecipe == null) {

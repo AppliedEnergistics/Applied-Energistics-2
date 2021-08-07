@@ -36,21 +36,21 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
             tsp.neighborChanged(fromPos);
         }
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(level, pos);
         if (tsp != null) {
             return tsp.getLightValue();
         }
-        return super.getLightEmission(state, world, pos);
+        return super.getLightEmission(state, level, pos);
     }
 
 }

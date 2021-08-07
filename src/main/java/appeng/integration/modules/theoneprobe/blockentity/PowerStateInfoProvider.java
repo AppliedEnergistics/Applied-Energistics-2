@@ -34,7 +34,7 @@ public class PowerStateInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level world, BlockState blockState, IProbeHitData data) {
+                             Level level, BlockState blockState, IProbeHitData data) {
         if (blockEntity instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) blockEntity;
 

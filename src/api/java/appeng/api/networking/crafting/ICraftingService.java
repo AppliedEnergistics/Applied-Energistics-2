@@ -39,7 +39,7 @@ public interface ICraftingService extends IGridService {
 
     /**
      * @param whatToCraft requested craft
-     * @param level       crafting world
+     * @param level       crafting level
      * @param slot        slot index
      * @param details     pattern details
      *
@@ -51,7 +51,7 @@ public interface ICraftingService extends IGridService {
     /**
      * Begin calculating a crafting job.
      *
-     * @param level     crafting world
+     * @param level     crafting level
      * @param grid      network
      * @param actionSrc source
      * @param craftWhat result

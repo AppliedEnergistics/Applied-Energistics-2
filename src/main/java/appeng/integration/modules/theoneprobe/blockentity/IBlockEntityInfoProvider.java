@@ -37,6 +37,6 @@ public interface IBlockEntityInfoProvider {
     /**
      * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, Player, Level, BlockState, IProbeHitData)
      */
-    void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
+    void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
                       BlockState blockState, IProbeHitData data);
 }

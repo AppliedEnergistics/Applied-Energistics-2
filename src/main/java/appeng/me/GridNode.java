@@ -60,7 +60,7 @@ import appeng.core.worlddata.WorldData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IGridNode, IPathItem {
-    private final ServerLevel world;
+    private final ServerLevel level;
     /**
      * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
      * part.
@@ -95,11 +95,11 @@ public class GridNode implements IGridNode, IPathItem {
     protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
     private ClassToInstanceMap<IGridNodeService> services;
 
-    public <T> GridNode(@Nonnull ServerLevel world,
+    public <T> GridNode(@Nonnull ServerLevel level,
             @Nonnull T owner,
             @Nonnull IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
-        this.world = world;
+        this.level = level;
         this.owner = owner;
         this.listener = listener;
         this.flags = EnumSet.copyOf(flags);
@@ -616,8 +616,8 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Nonnull
     @Override
-    public ServerLevel getWorld() {
-        return world;
+    public ServerLevel getLevel() {
+        return level;
     }
 
     @Override

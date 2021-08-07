@@ -31,7 +31,7 @@ import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
     private final List<SpatialPylonBlockEntity> line = new ArrayList<>();
@@ -40,8 +40,8 @@ public class SpatialPylonCluster implements IAECluster {
     private Axis currentAxis = Axis.UNFORMED;
     private boolean isValid;
 
-    public SpatialPylonCluster(ServerLevel world, BlockPos boundsMin, BlockPos boundsMax) {
-        this.world = world;
+    public SpatialPylonCluster(ServerLevel level, BlockPos boundsMin, BlockPos boundsMax) {
+        this.level = level;
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
 
@@ -111,8 +111,8 @@ public class SpatialPylonCluster implements IAECluster {
         this.isValid = isValid;
     }
 
-    public ServerLevel getWorld() {
-        return world;
+    public ServerLevel setLevel() {
+        return level;
     }
 
     @Override

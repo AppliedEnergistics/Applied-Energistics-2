@@ -32,7 +32,7 @@ public interface ISpatialService extends IGridService {
 
     /**
      * @return true if a region is defined at all, it doesn't have to be valid, but all points must be in the same
-     *         world.
+     *         level.
      */
     boolean hasRegion();
 
@@ -42,9 +42,9 @@ public interface ISpatialService extends IGridService {
     boolean isValidRegion();
 
     /**
-     * @return The world that the spatial region is in.
+     * @return The level that the spatial region is in.
      */
-    Level getWorld();
+    Level getLevel();
 
     /**
      * @return the minimum anchor point for the spatial region.

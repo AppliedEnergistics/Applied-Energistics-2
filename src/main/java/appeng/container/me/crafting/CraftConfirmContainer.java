@@ -215,7 +215,7 @@ public class CraftConfirmContainer extends AEBaseContainer implements CraftingCP
         }
     }
 
-    public Level getWorld() {
+    public Level getLevel() {
         return this.getPlayerInventory().player.level;
     }
 

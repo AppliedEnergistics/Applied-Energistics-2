@@ -120,7 +120,7 @@ public class NetworkHandler {
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         Packet<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
         getServer().getPlayerList().broadcast(point.excluded, point.x, point.y, point.z, point.r2,
-                point.world.dimension(), pkt);
+                point.level.dimension(), pkt);
     }
 
     public void sendToServer(final BasePacket message) {

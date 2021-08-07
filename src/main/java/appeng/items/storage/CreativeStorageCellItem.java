@@ -71,7 +71,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> lines,
+    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));

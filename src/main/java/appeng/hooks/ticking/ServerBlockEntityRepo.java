@@ -36,7 +36,7 @@ import appeng.blockentity.AEBaseBlockEntity;
  */
 class ServerBlockEntityRepo {
 
-    // Mapping is world -> encoded chunk pos -> block entities waiting to be initialized
+    // Mapping is level -> encoded chunk pos -> block entities waiting to be initialized
     private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseBlockEntity>>> blockEntities = new Object2ObjectOpenHashMap<>();
 
     /**
@@ -50,38 +50,38 @@ class ServerBlockEntityRepo {
      * Add a new block entity to be initializes in a later tick.
      */
     synchronized void addBlockEntity(AEBaseBlockEntity blockEntity) {
-        final LevelAccessor world = blockEntity.getLevel();
+        final LevelAccessor level = blockEntity.getLevel();
         final int x = blockEntity.getBlockPos().getX() >> 4;
         final int z = blockEntity.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.get(world);
+        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.get(level);
 
         worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(blockEntity);
     }
 
     /**
-     * Sets up the necessary defaults when a new world is loaded
+     * Sets up the necessary defaults when a new level is loaded
      */
-    synchronized void addWorld(LevelAccessor world) {
-        this.blockEntities.computeIfAbsent(world, key -> new Long2ObjectOpenHashMap<>());
+    synchronized void addLevel(LevelAccessor level) {
+        this.blockEntities.computeIfAbsent(level, key -> new Long2ObjectOpenHashMap<>());
     }
 
     /**
-     * Tears down data related to a now unloaded world
+     * Tears down data related to a now unloaded level
      */
-    synchronized void removeWorld(LevelAccessor world) {
-        this.blockEntities.remove(world);
+    synchronized void removeLevel(LevelAccessor level) {
+        this.blockEntities.remove(level);
     }
 
     /**
-     * Removes a unloaded chunk within a world.
+     * Removes a unloaded chunk within a level.
      * <p>
      * There is no related addWorldChunk. The necessary queue will be created once the first block entity is added to a chunk to
      * save memory.
      */
-    synchronized void removeWorldChunk(LevelAccessor world, long chunkPos) {
-        Map<Long, List<AEBaseBlockEntity>> queue = this.blockEntities.get(world);
+    synchronized void removeChunk(LevelAccessor level, long chunkPos) {
+        Map<Long, List<AEBaseBlockEntity>> queue = this.blockEntities.get(level);
         if (queue != null) {
             queue.remove(chunkPos);
         }
@@ -90,8 +90,8 @@ class ServerBlockEntityRepo {
     /**
      * Get the block entities needing to be initialized in this specific {@link LevelAccessor}.
      */
-    public Long2ObjectMap<List<AEBaseBlockEntity>> getBlockEntities(LevelAccessor world) {
-        return blockEntities.get(world);
+    public Long2ObjectMap<List<AEBaseBlockEntity>> getBlockEntities(LevelAccessor level) {
+        return blockEntities.get(level);
     }
 
 }
