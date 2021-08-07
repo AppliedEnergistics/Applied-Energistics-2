@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.InscriberContainer;
+import appeng.menu.implementations.InscriberMenu;
 import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
@@ -58,7 +58,7 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
             final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {
                 if (!level.isClientSide()) {
-                    ContainerOpener.openContainer(InscriberContainer.TYPE, p,
+                    ContainerOpener.openContainer(InscriberMenu.TYPE, p,
                             ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide());

@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.DriveContainer;
+import appeng.menu.implementations.DriveMenu;
 import appeng.util.InteractionUtil;
 
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
@@ -53,7 +53,7 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
         final DriveBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
+                ContainerOpener.openContainer(DriveMenu.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

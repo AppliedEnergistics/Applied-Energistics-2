@@ -25,14 +25,14 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.menu.implementations.WirelessContainer;
+import appeng.menu.implementations.WirelessMenu;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
-public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
+public class WirelessScreen extends AEBaseScreen<WirelessMenu> {
 
-    public WirelessScreen(WirelessContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public WirelessScreen(WirelessMenu container, Inventory playerInventory, Component title,
+                          ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }

@@ -36,7 +36,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.CableBusBlock;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.networktool.NetworkToolContainer;
+import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.sync.BasePacket;
@@ -140,7 +140,7 @@ public class ClickPacket extends BasePacket {
                             new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, pos, false));
                     tnt.serverSideToolLogic(useContext);
                 } else {
-                    ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,
+                    ContainerOpener.openContainer(NetworkToolMenu.TYPE, player,
                             ContainerLocator.forHand(player, hand));
                 }
             }

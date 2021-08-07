@@ -31,7 +31,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.fluids.FluidTerminalContainer;
+import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.core.Api;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
@@ -44,7 +44,7 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
     @Override
     public void openChestGui(final Player player, final IChestOrDrive chest, final ICellHandler cellHandler,
             final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
-        ContainerOpener.openContainer(FluidTerminalContainer.TYPE, player,
+        ContainerOpener.openContainer(FluidTerminalMenu.TYPE, player,
                 ContainerLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

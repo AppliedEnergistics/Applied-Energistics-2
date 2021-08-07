@@ -22,14 +22,14 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.util.inv.WrapperInvItemHandler;
 
 public class CraftingMatrixSlot extends AppEngSlot {
-    private final AEBaseContainer c;
+    private final AEBaseMenu c;
     private final Container wrappedInventory;
 
-    public CraftingMatrixSlot(final AEBaseContainer c, final IItemHandler inv, final int invSlot) {
+    public CraftingMatrixSlot(final AEBaseMenu c, final IItemHandler inv, final int invSlot) {
         super(inv, invSlot);
         this.c = c;
         this.wrappedInventory = new WrapperInvItemHandler(inv);

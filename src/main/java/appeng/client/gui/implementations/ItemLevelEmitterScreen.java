@@ -34,9 +34,9 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.ItemLevelEmitterContainer;
+import appeng.menu.implementations.ItemLevelEmitterMenu;
 
-public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterContainer> {
+public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMenu> {
 
     private final SettingToggleButton<LevelType> levelMode;
     private final SettingToggleButton<YesNo> craftingMode;
@@ -44,8 +44,8 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterCo
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public ItemLevelEmitterScreen(ItemLevelEmitterContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public ItemLevelEmitterScreen(ItemLevelEmitterMenu container, Inventory playerInventory, Component title,
+                                  ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.levelMode = new ServerSettingToggleButton<>(Settings.LEVEL_TYPE,

@@ -70,7 +70,7 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.ItemLevelEmitterContainer;
+import appeng.menu.implementations.ItemLevelEmitterMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -390,7 +390,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemLevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(ItemLevelEmitterMenu.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }

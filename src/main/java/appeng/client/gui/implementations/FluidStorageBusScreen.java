@@ -32,7 +32,7 @@ import appeng.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.FluidStorageBusContainer;
+import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.util.fluid.IAEFluidTank;
@@ -42,13 +42,13 @@ import appeng.util.fluid.IAEFluidTank;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusContainer> {
+public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu> {
 
     private final SettingToggleButton<AccessRestriction> rwMode;
     private final SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public FluidStorageBusScreen(FluidStorageBusMenu container, Inventory playerInventory,
+                                 Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank config = this.menu.getFluidConfigInventory();

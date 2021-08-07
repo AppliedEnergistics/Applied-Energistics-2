@@ -23,12 +23,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.SkyChestContainer;
+import appeng.menu.implementations.SkyChestMenu;
 
-public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
+public class SkyChestScreen extends AEBaseScreen<SkyChestMenu> {
 
-    public SkyChestScreen(SkyChestContainer container, Inventory playerInv, Component title,
-            ScreenStyle style) {
+    public SkyChestScreen(SkyChestMenu container, Inventory playerInv, Component title,
+                          ScreenStyle style) {
         super(container, playerInv, title, style);
     }
 

@@ -29,16 +29,16 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
-import appeng.menu.implementations.PriorityContainer;
+import appeng.menu.implementations.PriorityMenu;
 
-public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
+public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
 
     private final AESubScreen subGui;
 
     private final NumberEntryWidget priority;
 
-    public PriorityScreen(PriorityContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public PriorityScreen(PriorityMenu container, Inventory playerInventory, Component title,
+                          ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.subGui = new AESubScreen(container.getPriorityHost());
         this.subGui.addBackButton("back", widgets);

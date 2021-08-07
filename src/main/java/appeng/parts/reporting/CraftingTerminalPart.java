@@ -30,8 +30,8 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartModel;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.menu.me.items.CraftingTermContainer;
-import appeng.menu.me.items.ItemTerminalContainer;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -80,9 +80,9 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     @Override
     public MenuType<?> getContainerType(final Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
-            return CraftingTermContainer.TYPE;
+            return CraftingTermMenu.TYPE;
         }
-        return ItemTerminalContainer.TYPE;
+        return ItemTerminalMenu.TYPE;
     }
 
     @Override

@@ -30,9 +30,9 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
-import appeng.menu.implementations.VibrationChamberContainer;
+import appeng.menu.implementations.VibrationChamberMenu;
 
-public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
+public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
 
     // Burn indicator similar to the "flame" in a vanilla furnace
     private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
@@ -40,8 +40,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     // "Progress-bar" that indicates the energy generation rate
     private final ProgressBar generationRateBar;
 
-    public VibrationChamberScreen(VibrationChamberContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public VibrationChamberScreen(VibrationChamberMenu container, Inventory playerInventory,
+                                  Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),

@@ -42,7 +42,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.menu.ContainerNull;
-import appeng.menu.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermMenu;
 import appeng.core.Api;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
@@ -148,8 +148,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
-        if (this.container instanceof CraftingTermContainer) {
-            final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
+        if (this.container instanceof CraftingTermMenu) {
+            final CraftingTermMenu containerTerminal = (CraftingTermMenu) this.container;
             final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, level)) {
@@ -164,8 +164,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // refactoring.
     @Override
     protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
-        if (this.container instanceof CraftingTermContainer) {
-            final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
+        if (this.container instanceof CraftingTermMenu) {
+            final CraftingTermMenu containerTerminal = (CraftingTermMenu) this.container;
             final Recipe<CraftingContainer> recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, level)) {

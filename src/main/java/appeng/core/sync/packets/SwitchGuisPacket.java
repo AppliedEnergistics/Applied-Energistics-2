@@ -26,7 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
 import appeng.core.sync.BasePacket;
@@ -55,8 +55,8 @@ public class SwitchGuisPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseContainer) {
-            final AEBaseContainer bc = (AEBaseContainer) c;
+        if (c instanceof AEBaseMenu) {
+            final AEBaseMenu bc = (AEBaseMenu) c;
             final ContainerLocator locator = bc.getLocator();
             if (locator != null) {
                 ContainerOpener.openContainer(newGui, player, locator);

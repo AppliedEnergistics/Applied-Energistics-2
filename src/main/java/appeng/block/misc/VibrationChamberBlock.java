@@ -41,7 +41,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.VibrationChamberContainer;
+import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.core.AEConfig;
 import appeng.util.InteractionUtil;
 
@@ -77,7 +77,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
         if (!level.isClientSide()) {
             final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
-                ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
+                ContainerOpener.openContainer(VibrationChamberMenu.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }

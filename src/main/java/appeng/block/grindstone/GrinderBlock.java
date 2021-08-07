@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.GrinderContainer;
+import appeng.menu.implementations.GrinderMenu;
 import appeng.util.InteractionUtil;
 
 public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
@@ -49,7 +49,7 @@ public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
         final GrinderBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(GrinderContainer.TYPE, p,
+                ContainerOpener.openContainer(GrinderMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

@@ -29,13 +29,13 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
-import appeng.menu.me.crafting.CraftAmountContainer;
+import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.core.localization.GuiText;
 
 /**
  * When requesting to auto-craft, this dialog allows the player to enter the desired number of items to craft.
  */
-public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
+public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
     private final Button next;
 
@@ -43,8 +43,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private boolean initialAmountInitialized;
 
-    public CraftAmountScreen(CraftAmountContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public CraftAmountScreen(CraftAmountMenu container, Inventory playerInventory, Component title,
+                             ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);

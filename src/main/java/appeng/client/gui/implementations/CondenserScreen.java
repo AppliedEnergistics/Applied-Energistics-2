@@ -29,15 +29,15 @@ import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.CondenserContainer;
+import appeng.menu.implementations.CondenserMenu;
 import appeng.core.localization.GuiText;
 
-public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
+public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
 
     private final SettingToggleButton<CondenserOutput> mode;
 
-    public CondenserScreen(CondenserContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public CondenserScreen(CondenserMenu container, Inventory playerInventory, Component title,
+                           ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.menu.getOutput());

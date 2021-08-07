@@ -34,7 +34,7 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.QuartzKnifeContainer;
+import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
@@ -53,7 +53,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         if (!level.isClientSide() && player != null) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
+            ContainerOpener.openContainer(QuartzKnifeMenu.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
@@ -62,7 +62,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
         if (!level.isClientSide()) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+            ContainerOpener.openContainer(QuartzKnifeMenu.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swing(hand);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),

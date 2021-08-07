@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPartModel;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.InterfaceTerminalContainer;
+import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -50,7 +50,7 @@ public class InterfaceTerminalPart extends AbstractDisplayPart {
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !isRemote()) {
-            ContainerOpener.openContainer(InterfaceTerminalContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(InterfaceTerminalMenu.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }

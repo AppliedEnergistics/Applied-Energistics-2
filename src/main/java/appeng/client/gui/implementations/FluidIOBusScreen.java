@@ -30,7 +30,7 @@ import appeng.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.FluidIOBusContainer;
+import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.parts.automation.FluidExportBusPart;
 import appeng.parts.automation.FluidImportBusPart;
 import appeng.util.fluid.IAEFluidTank;
@@ -39,12 +39,12 @@ import appeng.util.fluid.IAEFluidTank;
  * @see FluidImportBusPart
  * @see FluidExportBusPart
  */
-public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusContainer> {
+public class FluidIOBusScreen extends UpgradeableScreen<FluidIOBusMenu> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
-    public FluidIOBusScreen(FluidIOBusContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public FluidIOBusScreen(FluidIOBusMenu container, Inventory playerInventory, Component title,
+                            ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank inv = this.menu.getFluidConfigInventory();

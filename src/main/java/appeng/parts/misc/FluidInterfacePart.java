@@ -48,7 +48,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.FluidInterfaceContainer;
+import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -132,7 +132,7 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(FluidInterfaceMenu.TYPE, p, ContainerLocator.forPart(this));
         }
 
         return true;
@@ -206,7 +206,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public MenuType<?> getContainerType() {
-        return FluidInterfaceContainer.TYPE;
+        return FluidInterfaceMenu.TYPE;
     }
 
     @Override

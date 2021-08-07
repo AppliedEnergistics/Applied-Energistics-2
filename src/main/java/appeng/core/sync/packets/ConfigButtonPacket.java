@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.EnumCycler;
@@ -60,8 +60,8 @@ public final class ConfigButtonPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseContainer) {
-            final AEBaseContainer baseContainer = (AEBaseContainer) sender.containerMenu;
+        if (sender.containerMenu instanceof AEBaseMenu) {
+            final AEBaseMenu baseContainer = (AEBaseMenu) sender.containerMenu;
             if (baseContainer.getTarget() instanceof IConfigurableObject) {
                 final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
                 Enum setting = cm.getSetting(this.option);

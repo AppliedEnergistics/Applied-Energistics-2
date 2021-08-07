@@ -32,7 +32,7 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.items.WirelessTermContainer;
+import appeng.menu.me.items.WirelessTermMenu;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 
@@ -96,7 +96,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (handler.hasPower(player, 0.5, item)) {
-            ContainerOpener.openContainer(WirelessTermContainer.TYPE, player, ContainerLocator.forHand(player, hand));
+            ContainerOpener.openContainer(WirelessTermMenu.TYPE, player, ContainerLocator.forHand(player, hand));
         } else {
             player.sendMessage(PlayerMessages.DeviceNotPowered.get(), Util.NIL_UUID);
         }

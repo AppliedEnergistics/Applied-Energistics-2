@@ -34,7 +34,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.FluidInterfaceBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.FluidInterfaceContainer;
+import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {
@@ -53,7 +53,7 @@ public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEn
         final BlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
+                ContainerOpener.openContainer(FluidInterfaceMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

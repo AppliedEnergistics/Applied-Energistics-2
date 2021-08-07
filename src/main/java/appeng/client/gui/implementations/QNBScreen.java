@@ -23,11 +23,11 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.QNBContainer;
+import appeng.menu.implementations.QNBMenu;
 
-public class QNBScreen extends AEBaseScreen<QNBContainer> {
+public class QNBScreen extends AEBaseScreen<QNBMenu> {
 
-    public QNBScreen(QNBContainer container, Inventory playerInventory, Component title, ScreenStyle style) {
+    public QNBScreen(QNBMenu container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 

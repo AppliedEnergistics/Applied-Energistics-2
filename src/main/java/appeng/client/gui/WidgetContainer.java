@@ -42,7 +42,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
-import appeng.menu.implementations.PriorityContainer;
+import appeng.menu.implementations.PriorityMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -261,7 +261,7 @@ public class WidgetContainer {
     }
 
     private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityContainer.TYPE));
+        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityMenu.TYPE));
     }
 
     @Nullable

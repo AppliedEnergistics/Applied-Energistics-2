@@ -37,7 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.crafting.CraftingCPUContainer;
+import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {
@@ -99,7 +99,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
+                ContainerOpener.openContainer(CraftingCPUMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 

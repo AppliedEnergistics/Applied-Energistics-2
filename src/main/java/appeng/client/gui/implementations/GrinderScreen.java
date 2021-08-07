@@ -23,12 +23,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.GrinderContainer;
+import appeng.menu.implementations.GrinderMenu;
 
-public class GrinderScreen extends AEBaseScreen<GrinderContainer> {
+public class GrinderScreen extends AEBaseScreen<GrinderMenu> {
 
-    public GrinderScreen(GrinderContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public GrinderScreen(GrinderMenu container, Inventory playerInventory, Component title,
+                         ScreenStyle style) {
         super(container, playerInventory, title, style);
     }
 

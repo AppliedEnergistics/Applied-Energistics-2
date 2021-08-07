@@ -53,7 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.ItemIOBusContainer;
+import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -197,7 +197,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemIOBusContainer.EXPORT_TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(ItemIOBusMenu.EXPORT_TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }

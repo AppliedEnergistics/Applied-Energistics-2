@@ -41,7 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.items.ItemTerminalContainer;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
@@ -116,7 +116,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public MenuType<?> getContainerType(final Player player) {
-        return ItemTerminalContainer.TYPE;
+        return ItemTerminalMenu.TYPE;
     }
 
     @Override

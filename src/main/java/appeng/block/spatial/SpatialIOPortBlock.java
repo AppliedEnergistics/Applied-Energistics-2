@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.SpatialIOPortContainer;
+import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.util.InteractionUtil;
 
 public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {
@@ -65,7 +65,7 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
         final SpatialIOPortBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
+                ContainerOpener.openContainer(SpatialIOPortMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

@@ -20,6 +20,7 @@ package appeng.client.gui.me.interfaceterminal;
 
 import javax.annotation.Nonnull;
 
+import appeng.menu.implementations.InterfaceTerminalMenu;
 import net.minecraft.network.chat.Component;
 
 import appeng.blockentity.inventory.AppEngInternalInventory;
@@ -36,7 +37,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
 
     /**
      * Identifier for this interface on the server-side. See
-     * {@link appeng.menu.implementations.InterfaceTerminalContainer}
+     * {@link InterfaceTerminalMenu}
      */
     private final long serverId;
 

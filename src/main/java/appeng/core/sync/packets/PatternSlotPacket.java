@@ -27,7 +27,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.me.items.PatternTermContainer;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -96,8 +96,8 @@ public class PatternSlotPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof PatternTermContainer) {
-            final PatternTermContainer patternTerminal = (PatternTermContainer) sender.containerMenu;
+        if (sender.containerMenu instanceof PatternTermMenu) {
+            final PatternTermMenu patternTerminal = (PatternTermMenu) sender.containerMenu;
             patternTerminal.craftOrGetItem(this);
         }
     }

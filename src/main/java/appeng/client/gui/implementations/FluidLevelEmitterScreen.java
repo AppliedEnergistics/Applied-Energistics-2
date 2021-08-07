@@ -32,16 +32,16 @@ import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.FluidLevelEmitterContainer;
+import appeng.menu.implementations.FluidLevelEmitterMenu;
 
-public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
+public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterMenu> {
 
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     private final NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public FluidLevelEmitterScreen(FluidLevelEmitterMenu container, Inventory playerInventory,
+                                   Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);

@@ -68,7 +68,7 @@ import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.VerticalButtonBar;
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -84,7 +84,7 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 
-public abstract class AEBaseScreen<T extends AEBaseContainer> extends AbstractContainerScreen<T> {
+public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 

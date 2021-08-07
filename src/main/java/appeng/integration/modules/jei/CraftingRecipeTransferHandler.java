@@ -37,18 +37,18 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.item.AEItemStack;
 
-public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {
+public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermMenu> {
 
-    CraftingRecipeTransferHandler(Class<CraftingTermContainer> containerClass, IRecipeTransferHandlerHelper helper) {
+    CraftingRecipeTransferHandler(Class<CraftingTermMenu> containerClass, IRecipeTransferHandlerHelper helper) {
         super(containerClass, helper);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermContainer container, Recipe<?> recipe,
-            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+    protected IRecipeTransferError doTransferRecipe(CraftingTermMenu container, Recipe<?> recipe,
+                                                    IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients
         // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory

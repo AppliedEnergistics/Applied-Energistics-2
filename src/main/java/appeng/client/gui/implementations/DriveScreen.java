@@ -23,12 +23,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.DriveContainer;
+import appeng.menu.implementations.DriveMenu;
 
-public class DriveScreen extends AEBaseScreen<DriveContainer> {
+public class DriveScreen extends AEBaseScreen<DriveMenu> {
 
-    public DriveScreen(DriveContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public DriveScreen(DriveMenu container, Inventory playerInventory, Component title,
+                       ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

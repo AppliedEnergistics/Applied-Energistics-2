@@ -29,11 +29,11 @@ import net.minecraft.world.item.ItemStack;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.menu.implementations.ChestContainer;
-import appeng.menu.me.items.CraftingTermContainer;
-import appeng.menu.me.items.ItemTerminalContainer;
-import appeng.menu.me.items.PatternTermContainer;
-import appeng.menu.me.items.WirelessTermContainer;
+import appeng.menu.implementations.ChestMenu;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.WirelessTermMenu;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.sync.network.NetworkHandler;
@@ -64,23 +64,23 @@ public final class AESubScreen {
             // chest ui that doesn't actually show the contents of the inserted cell.
             IPriorityHost priorityHost = (IPriorityHost) containerHost;
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
-            this.previousContainerType = ChestContainer.TYPE;
+            this.previousContainerType = ChestMenu.TYPE;
         } else if (containerHost instanceof IPriorityHost) {
             IPriorityHost priorityHost = (IPriorityHost) containerHost;
             this.previousContainerIcon = priorityHost.getItemStackRepresentation();
             this.previousContainerType = priorityHost.getContainerType();
         } else if (containerHost instanceof WirelessTerminalGuiObject) {
             this.previousContainerIcon = AEItems.WIRELESS_TERMINAL.stack();
-            this.previousContainerType = WirelessTermContainer.TYPE;
+            this.previousContainerType = WirelessTermMenu.TYPE;
         } else if (containerHost instanceof ItemTerminalPart) {
             this.previousContainerIcon = AEParts.TERMINAL.stack();
-            this.previousContainerType = ItemTerminalContainer.TYPE;
+            this.previousContainerType = ItemTerminalMenu.TYPE;
         } else if (containerHost instanceof CraftingTerminalPart) {
             this.previousContainerIcon = AEParts.CRAFTING_TERMINAL.stack();
-            this.previousContainerType = CraftingTermContainer.TYPE;
+            this.previousContainerType = CraftingTermMenu.TYPE;
         } else if (containerHost instanceof PatternTerminalPart) {
             this.previousContainerIcon = AEParts.PATTERN_TERMINAL.stack();
-            this.previousContainerType = PatternTermContainer.TYPE;
+            this.previousContainerType = PatternTermMenu.TYPE;
         } else {
             this.previousContainerIcon = null;
             this.previousContainerType = null;

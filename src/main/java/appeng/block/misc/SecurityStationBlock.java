@@ -37,7 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.SecurityStationContainer;
+import appeng.menu.implementations.SecurityStationMenu;
 import appeng.util.InteractionUtil;
 
 public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {
@@ -72,7 +72,7 @@ public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlock
         final SecurityStationBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
+                ContainerOpener.openContainer(SecurityStationMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 

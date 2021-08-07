@@ -42,7 +42,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.WirelessContainer;
+import appeng.menu.implementations.WirelessMenu;
 import appeng.helpers.AEMaterials;
 import appeng.util.InteractionUtil;
 
@@ -90,7 +90,7 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(WirelessContainer.TYPE, player,
+                ContainerOpener.openContainer(WirelessMenu.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

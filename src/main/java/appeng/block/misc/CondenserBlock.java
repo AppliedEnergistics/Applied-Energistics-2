@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.CondenserContainer;
+import appeng.menu.implementations.CondenserMenu;
 import appeng.util.InteractionUtil;
 
 public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
@@ -53,7 +53,7 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
         if (!level.isClientSide()) {
             final CondenserBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
-                ContainerOpener.openContainer(CondenserContainer.TYPE, player,
+                ContainerOpener.openContainer(CondenserMenu.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }

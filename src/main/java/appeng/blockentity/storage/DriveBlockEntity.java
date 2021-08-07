@@ -63,7 +63,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
-import appeng.menu.implementations.DriveContainer;
+import appeng.menu.implementations.DriveMenu;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
@@ -438,7 +438,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Override
     public MenuType<?> getContainerType() {
-        return DriveContainer.TYPE;
+        return DriveMenu.TYPE;
     }
 
 }

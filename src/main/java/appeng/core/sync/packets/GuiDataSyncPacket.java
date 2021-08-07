@@ -26,7 +26,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -62,16 +62,16 @@ public class GuiDataSyncPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo manager, final Player player) {
         AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseContainer && c.containerId == this.windowId) {
-            ((AEBaseContainer) c).receiveServerSyncData(this);
+        if (c instanceof AEBaseMenu && c.containerId == this.windowId) {
+            ((AEBaseMenu) c).receiveServerSyncData(this);
         }
     }
 
     @Override
     public void serverPacketData(INetworkInfo manager, Player player) {
         AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseContainer && c.containerId == this.windowId) {
-            ((AEBaseContainer) c).receiveClientAction(this);
+        if (c instanceof AEBaseMenu && c.containerId == this.windowId) {
+            ((AEBaseMenu) c).receiveClientAction(this);
         }
     }
 

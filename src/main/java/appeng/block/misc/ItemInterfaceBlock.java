@@ -39,7 +39,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.ItemInterfaceContainer;
+import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.util.InteractionUtil;
 
 public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {
@@ -72,7 +72,7 @@ public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEnti
         final ItemInterfaceBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(ItemInterfaceContainer.TYPE, p,
+                ContainerOpener.openContainer(ItemInterfaceMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

@@ -31,7 +31,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.me.items.ItemTerminalContainer;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.core.Api;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
@@ -44,7 +44,7 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
     public <T extends IAEStack<T>> void openChestGui(final Player player, final IChestOrDrive chest,
             final ICellHandler cellHandler,
             final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
-        ContainerOpener.openContainer(ItemTerminalContainer.TYPE, player,
+        ContainerOpener.openContainer(ItemTerminalMenu.TYPE, player,
                 ContainerLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

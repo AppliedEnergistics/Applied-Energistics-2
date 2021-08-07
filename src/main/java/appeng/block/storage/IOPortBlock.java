@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.IOPortContainer;
+import appeng.menu.implementations.IOPortMenu;
 import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
@@ -65,7 +65,7 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
         final IOPortBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(IOPortContainer.TYPE, p,
+                ContainerOpener.openContainer(IOPortMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

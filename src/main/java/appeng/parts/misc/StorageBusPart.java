@@ -72,7 +72,7 @@ import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.ItemStorageBusContainer;
+import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -259,7 +259,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(ItemStorageBusContainer.TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(ItemStorageBusMenu.TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }
@@ -526,6 +526,6 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public MenuType<?> getContainerType() {
-        return ItemStorageBusContainer.TYPE;
+        return ItemStorageBusMenu.TYPE;
     }
 }

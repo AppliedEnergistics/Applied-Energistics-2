@@ -24,14 +24,14 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.menu.implementations.SpatialIOPortContainer;
+import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
-public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
+public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortMenu> {
 
-    public SpatialIOPortScreen(SpatialIOPortContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public SpatialIOPortScreen(SpatialIOPortMenu container, Inventory playerInventory,
+                               Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
     }

@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.CellWorkbenchContainer;
+import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.util.InteractionUtil;
 
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
@@ -53,7 +53,7 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
         final CellWorkbenchBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
+                ContainerOpener.openContainer(CellWorkbenchMenu.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

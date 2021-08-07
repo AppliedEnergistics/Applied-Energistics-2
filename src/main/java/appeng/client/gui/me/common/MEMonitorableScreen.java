@@ -69,8 +69,8 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.MEMonitorableContainer;
-import appeng.menu.me.crafting.CraftingStatusContainer;
+import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
@@ -86,7 +86,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableContainer<T>>
+public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableMenu<T>>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerHost {
 
     private static final int MIN_ROWS = 3;
@@ -187,7 +187,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     private void showCraftingStatus() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(CraftingStatusContainer.TYPE));
+        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(CraftingStatusMenu.TYPE));
     }
 
     private int getSlotsPerRow() {

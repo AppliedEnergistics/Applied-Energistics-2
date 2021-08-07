@@ -56,7 +56,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.InterfaceTerminalContainer;
+import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEngClient;
@@ -66,7 +66,7 @@ import appeng.helpers.DualityItemInterface;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 
-public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalContainer> {
+public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu> {
 
     private static final int GUI_WIDTH = 195;
 
@@ -136,8 +136,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private AETextField searchField;
     private int numLines = 0;
 
-    public InterfaceTerminalScreen(InterfaceTerminalContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public InterfaceTerminalScreen(InterfaceTerminalMenu container, Inventory playerInventory,
+                                   Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.imageWidth = GUI_WIDTH;

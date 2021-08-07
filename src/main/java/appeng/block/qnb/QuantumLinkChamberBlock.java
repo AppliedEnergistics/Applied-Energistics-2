@@ -42,7 +42,7 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.QNBContainer;
+import appeng.menu.implementations.QNBMenu;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
@@ -84,7 +84,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
         final QuantumBridgeBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
+                ContainerOpener.openContainer(QNBMenu.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

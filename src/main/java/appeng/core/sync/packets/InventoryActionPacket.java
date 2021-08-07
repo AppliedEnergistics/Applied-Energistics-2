@@ -25,7 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
@@ -89,7 +89,7 @@ public class InventoryActionPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseContainer baseContainer) {
+        if (sender.containerMenu instanceof AEBaseMenu baseContainer) {
             if (action == InventoryAction.SET_FILTER) {
                 baseContainer.setFilter(this.slot, this.slotItem);
             } else {

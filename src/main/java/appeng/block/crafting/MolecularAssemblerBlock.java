@@ -34,7 +34,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.MolecularAssemblerContainer;
+import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {
@@ -63,7 +63,7 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
         final MolecularAssemblerBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
+                ContainerOpener.openContainer(MolecularAssemblerMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

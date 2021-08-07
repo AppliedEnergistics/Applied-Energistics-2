@@ -37,14 +37,14 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.UpgradeableContainer;
+import appeng.menu.implementations.UpgradeableMenu;
 import appeng.core.localization.GuiText;
 
 /**
  * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
  * toolbox to more easily install/remove upgrades.
  */
-public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScreen<T> {
+public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T> {
 
     public UpgradeableScreen(T container, Inventory playerInventory, Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);

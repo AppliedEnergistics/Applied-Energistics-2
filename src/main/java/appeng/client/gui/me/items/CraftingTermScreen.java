@@ -24,16 +24,16 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
-import appeng.menu.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermMenu;
 
 /**
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
  * the crafting terminal itself.
  */
-public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermContainer> {
+public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermMenu> {
 
-    public CraftingTermScreen(CraftingTermContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public CraftingTermScreen(CraftingTermMenu container, Inventory playerInventory,
+                              Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> container.clearCraftingGrid());

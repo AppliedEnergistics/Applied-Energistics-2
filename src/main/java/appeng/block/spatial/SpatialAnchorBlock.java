@@ -37,7 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.SpatialAnchorContainer;
+import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.util.InteractionUtil;
 
 /**
@@ -74,7 +74,7 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
         final SpatialAnchorBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
+                ContainerOpener.openContainer(SpatialAnchorMenu.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

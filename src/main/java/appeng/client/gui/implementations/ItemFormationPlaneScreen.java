@@ -28,15 +28,15 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.ItemFormationPlaneContainer;
+import appeng.menu.implementations.ItemFormationPlaneMenu;
 
-public class ItemFormationPlaneScreen extends UpgradeableScreen<ItemFormationPlaneContainer> {
+public class ItemFormationPlaneScreen extends UpgradeableScreen<ItemFormationPlaneMenu> {
 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final SettingToggleButton<YesNo> placeMode;
 
-    public ItemFormationPlaneScreen(ItemFormationPlaneContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public ItemFormationPlaneScreen(ItemFormationPlaneMenu container, Inventory playerInventory,
+                                    Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.placeMode = new ServerSettingToggleButton<>(Settings.PLACE_BLOCK,

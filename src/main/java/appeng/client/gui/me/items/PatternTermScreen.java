@@ -31,12 +31,12 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.menu.SlotSemantic;
-import appeng.menu.me.items.PatternTermContainer;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
-public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> {
+public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 
@@ -55,8 +55,8 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermContainer> 
     private final ActionButton substitutionsEnabledBtn;
     private final ActionButton substitutionsDisabledBtn;
 
-    public PatternTermScreen(PatternTermContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public PatternTermScreen(PatternTermMenu container, Inventory playerInventory,
+                             Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.tabCraftButton = new TabButton(

@@ -46,7 +46,7 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
 import appeng.core.AELog;
@@ -61,7 +61,7 @@ import appeng.util.Platform;
  *
  * @param <C>
  */
-public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
+public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
 
     private final Class<I> hostInterface;
 
@@ -91,13 +91,13 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
         this.factory = factory;
     }
 
-    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory,
-            Class<I> hostInterface) {
+    public static <C extends AEBaseMenu, I> ContainerTypeBuilder<C, I> create(ContainerFactory<C, I> factory,
+                                                                              Class<I> hostInterface) {
         return new ContainerTypeBuilder<>(hostInterface, factory);
     }
 
-    public static <C extends AEBaseContainer, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory,
-            Class<I> hostInterface) {
+    public static <C extends AEBaseMenu, I> ContainerTypeBuilder<C, I> create(TypedContainerFactory<C, I> factory,
+                                                                              Class<I> hostInterface) {
         return new ContainerTypeBuilder<>(hostInterface, factory);
     }
 

@@ -53,7 +53,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.menu.me.items.PatternTermContainer;
+import appeng.menu.me.items.PatternTermMenu;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -347,8 +347,8 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     private void handleProcessing(AbstractContainerMenu con, IContainerCraftingPacket cct, Recipe<?> recipe) {
-        if (con instanceof PatternTermContainer) {
-            PatternTermContainer patternTerm = (PatternTermContainer) con;
+        if (con instanceof PatternTermMenu) {
+            PatternTermMenu patternTerm = (PatternTermMenu) con;
             if (!patternTerm.craftingMode) {
                 final IItemHandler output = cct.getInventoryByName("output");
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());

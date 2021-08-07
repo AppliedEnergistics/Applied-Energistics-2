@@ -43,7 +43,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.menu.implementations.FluidIOBusContainer;
+import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -80,7 +80,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
 
     @Override
     protected MenuType<?> getContainerType() {
-        return FluidIOBusContainer.EXPORT_TYPE;
+        return FluidIOBusMenu.EXPORT_TYPE;
     }
 
     @Override

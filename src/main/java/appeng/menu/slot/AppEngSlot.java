@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.client.gui.Icon;
-import appeng.menu.AEBaseContainer;
+import appeng.menu.AEBaseMenu;
 import appeng.core.AELog;
 import appeng.util.helpers.ItemHandlerUtil;
 
@@ -41,7 +41,7 @@ public class AppEngSlot extends Slot {
     private final int invSlot;
 
     private boolean isDraggable = true;
-    private AEBaseContainer container = null;
+    private AEBaseMenu container = null;
 
     /**
      * Shows an icon from the icon sprite-sheet in the background of this slot.
@@ -206,11 +206,11 @@ public class AppEngSlot extends Slot {
         this.isDraggable = isDraggable;
     }
 
-    protected AEBaseContainer getContainer() {
+    protected AEBaseMenu getContainer() {
         return this.container;
     }
 
-    public void setContainer(final AEBaseContainer myContainer) {
+    public void setContainer(final AEBaseMenu myContainer) {
         this.container = myContainer;
     }
 

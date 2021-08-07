@@ -92,8 +92,8 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
-import appeng.menu.me.fluids.FluidTerminalContainer;
-import appeng.menu.me.items.ItemTerminalContainer;
+import appeng.menu.me.fluids.FluidTerminalMenu;
+import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
@@ -811,11 +811,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                return ItemTerminalContainer.TYPE;
+                return ItemTerminalMenu.TYPE;
             }
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {
-                return FluidTerminalContainer.TYPE;
+                return FluidTerminalMenu.TYPE;
             }
         }
         return null;

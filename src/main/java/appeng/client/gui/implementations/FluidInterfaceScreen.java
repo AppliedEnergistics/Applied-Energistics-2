@@ -25,14 +25,14 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.FluidTankWidget;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.FluidInterfaceContainer;
+import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.helpers.DualityFluidInterface;
 import appeng.util.fluid.IAEFluidTank;
 
-public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
+public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceMenu> {
 
-    public FluidInterfaceScreen(FluidInterfaceContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public FluidInterfaceScreen(FluidInterfaceMenu container, Inventory playerInventory,
+                                Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         final IAEFluidTank configFluids = this.menu.getFluidConfigInventory();

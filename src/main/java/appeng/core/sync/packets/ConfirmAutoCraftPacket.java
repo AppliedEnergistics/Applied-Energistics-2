@@ -23,7 +23,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.menu.me.crafting.CraftAmountContainer;
+import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -50,8 +50,8 @@ public class ConfirmAutoCraftPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
-        if (player.containerMenu instanceof CraftAmountContainer) {
-            final CraftAmountContainer cca = (CraftAmountContainer) player.containerMenu;
+        if (player.containerMenu instanceof CraftAmountMenu) {
+            final CraftAmountMenu cca = (CraftAmountMenu) player.containerMenu;
             cca.confirm(amount, autoStart);
         }
     }

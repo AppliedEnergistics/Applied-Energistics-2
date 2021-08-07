@@ -55,7 +55,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.menu.ContainerLocator;
 import appeng.menu.ContainerOpener;
-import appeng.menu.implementations.SkyChestContainer;
+import appeng.menu.implementations.SkyChestMenu;
 import appeng.core.definitions.AEBlockEntities;
 
 public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
@@ -113,7 +113,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         if (!level.isClientSide()) {
             SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {
-                ContainerOpener.openContainer(SkyChestContainer.TYPE, player,
+                ContainerOpener.openContainer(SkyChestMenu.TYPE, player,
                         ContainerLocator.forBlockEntity(blockEntity));
             }
         }

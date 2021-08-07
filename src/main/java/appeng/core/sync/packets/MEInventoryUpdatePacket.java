@@ -43,7 +43,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.IncrementalUpdateHelper;
-import appeng.menu.me.common.MEMonitorableContainer;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -75,7 +75,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         this.list = new ArrayList<>(itemCount);
 
         // We need to access the current screen to know which storage channel was used to serialize this data
-        MEMonitorableContainer<T> container = getContainer();
+        MEMonitorableMenu<T> container = getContainer();
         if (container != null) {
             IStorageChannel<T> storageChannel = container.getStorageChannel();
             for (int i = 0; i < itemCount; i++) {
@@ -85,7 +85,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     }
 
     @SuppressWarnings("unchecked")
-    private MEMonitorableContainer<T> getContainer() {
+    private MEMonitorableMenu<T> getContainer() {
         // This is slightly dangerous since it accesses the game thread from the network thread,
         // but reading the current menu is atomic (reference field), and from then the window id
         // and storage channel are immutable.
@@ -96,15 +96,15 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         }
 
         AbstractContainerMenu currentContainer = player.containerMenu;
-        if (!(currentContainer instanceof MEMonitorableContainer)) {
+        if (!(currentContainer instanceof MEMonitorableMenu)) {
             // Ignore a packet for a screen that has already been closed
             return null;
         }
 
         // If the window id matches, this unsafe cast should actually be safe
-        MEMonitorableContainer<?> meContainer = (MEMonitorableContainer<?>) currentContainer;
+        MEMonitorableMenu<?> meContainer = (MEMonitorableMenu<?>) currentContainer;
         if (meContainer.containerId == windowId) {
-            return (MEMonitorableContainer<T>) meContainer;
+            return (MEMonitorableMenu<T>) meContainer;
         }
 
         return null;
@@ -253,7 +253,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final Player player) {
-        MEMonitorableContainer<T> container = getContainer();
+        MEMonitorableMenu<T> container = getContainer();
         if (container == null) {
             AELog.info("Ignoring ME inventory update packet because the target menu isn't open.");
             return;

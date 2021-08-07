@@ -25,14 +25,14 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
-import appeng.menu.implementations.MolecularAssemblerContainer;
+import appeng.menu.implementations.MolecularAssemblerMenu;
 
-public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerContainer> {
+public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssemblerMenu> {
 
     private final ProgressBar pb;
 
-    public MolecularAssemblerScreen(MolecularAssemblerContainer container, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public MolecularAssemblerScreen(MolecularAssemblerMenu container, Inventory playerInventory,
+                                    Component title, ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);

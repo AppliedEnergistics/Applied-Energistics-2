@@ -34,9 +34,9 @@ public final class ContainerOpener {
     private ContainerOpener() {
     }
 
-    private static final Map<MenuType<? extends AEBaseContainer>, Opener> registry = new HashMap<>();
+    private static final Map<MenuType<? extends AEBaseMenu>, Opener> registry = new HashMap<>();
 
-    public static <T extends AEBaseContainer> void addOpener(MenuType<T> type, Opener opener) {
+    public static <T extends AEBaseMenu> void addOpener(MenuType<T> type, Opener opener) {
         registry.put(type, opener);
     }
 

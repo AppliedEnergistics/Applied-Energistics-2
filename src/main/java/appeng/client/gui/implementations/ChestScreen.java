@@ -23,12 +23,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.implementations.ChestContainer;
+import appeng.menu.implementations.ChestMenu;
 
-public class ChestScreen extends AEBaseScreen<ChestContainer> {
+public class ChestScreen extends AEBaseScreen<ChestMenu> {
 
-    public ChestScreen(ChestContainer container, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public ChestScreen(ChestMenu container, Inventory playerInventory, Component title,
+                       ScreenStyle style) {
         super(container, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
