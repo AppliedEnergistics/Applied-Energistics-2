@@ -231,7 +231,7 @@ public final class Blitter {
         return color(r, g, b);
     }
 
-    public void blit(PoseStack matrices, int zIndex) {
+    public void blit(PoseStack poseStack, int zIndex) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.texture);
 
@@ -260,7 +260,7 @@ public final class Blitter {
             y2 += srcRect.getHeight();
         }
 
-        Matrix4f matrix = matrices.last().pose();
+        Matrix4f matrix = poseStack.last().pose();
 
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);

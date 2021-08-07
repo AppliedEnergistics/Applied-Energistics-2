@@ -93,11 +93,11 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
     }
 
     @Override
-    public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
-        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         // Draw the encoding-box on the right
-        encodingBg.dest(offsetX + imageWidth + 3, offsetY).blit(matrixStack, getBlitOffset());
+        encodingBg.dest(offsetX + imageWidth + 3, offsetY).blit(poseStack, getBlitOffset());
     }
 
     @Override

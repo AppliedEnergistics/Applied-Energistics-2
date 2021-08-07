@@ -62,7 +62,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();
@@ -85,7 +85,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
                 srcW -= diff;
             }
 
-            blitter.src(srcX, srcY, srcW, srcH).dest(destX, destY).blit(matrices, getBlitOffset());
+            blitter.src(srcX, srcY, srcW, srcH).dest(destX, destY).blit(poseStack, getBlitOffset());
         }
     }
 

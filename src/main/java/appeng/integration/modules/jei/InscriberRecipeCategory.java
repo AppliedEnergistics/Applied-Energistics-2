@@ -111,7 +111,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public void draw(InscriberRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        this.progress.draw(matrixStack);
+    public void draw(InscriberRecipe recipe, PoseStack poseStack, double mouseX, double mouseY) {
+        this.progress.draw(poseStack);
     }
 }

@@ -63,11 +63,11 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
     }
 
     @Override
-    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
-        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        this.priority.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.priority.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
 }

@@ -51,20 +51,20 @@ public class OverlayManager {
     public void renderWorldLastEvent(RenderWorldLastEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
         BufferSource buffer = minecraft.renderBuffers().bufferSource();
-        PoseStack matrixStack = event.getMatrixStack();
+        PoseStack poseStack = event.getMatrixStack();
 
-        matrixStack.pushPose();
+        poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
-        matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+        poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (OverlayRenderer handler : overlayHandlers.entrySet().stream()
                 .filter(e -> e.getKey().getLevel() == minecraft.level).map(Entry::getValue)
                 .collect(Collectors.toList())) {
-            handler.render(matrixStack, buffer);
+            handler.render(poseStack, buffer);
         }
 
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
     public OverlayRenderer showArea(IOverlayDataSource source) {

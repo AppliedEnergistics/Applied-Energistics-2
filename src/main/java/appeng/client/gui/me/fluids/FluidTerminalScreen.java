@@ -64,16 +64,16 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void renderGridInventoryEntry(PoseStack matrices, int x, int y,
+    protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
             GridInventoryEntry<IAEFluidStack> entry) {
         IAEFluidStack fs = entry.getStack();
         FluidBlitter.create(fs.getFluidStack())
                 .dest(x, y, 16, 16)
-                .blit(matrices, getBlitOffset());
+                .blit(poseStack, getBlitOffset());
     }
 
     @Override
-    protected void renderGridInventoryEntryTooltip(PoseStack matrices, GridInventoryEntry<IAEFluidStack> entry, int x,
+    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<IAEFluidStack> entry, int x,
             int y) {
         IAEFluidStack fluidStack = entry.getStack();
         String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
@@ -86,7 +86,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
         list.add(new TextComponent(formattedAmount));
         list.add(new TextComponent(modName));
 
-        this.renderComponentToolTip(matrices, list, x, y, this.font);
+        this.renderComponentToolTip(poseStack, list, x, y, this.font);
     }
 
     @Override

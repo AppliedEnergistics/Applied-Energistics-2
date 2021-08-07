@@ -135,14 +135,14 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        this.progress.draw(matrixStack);
-        this.iconTrash.draw(matrixStack);
-        this.iconButton.draw(matrixStack);
+    public void draw(CondenserOutput recipe, PoseStack poseStack, double mouseX, double mouseY) {
+        this.progress.draw(poseStack);
+        this.iconTrash.draw(poseStack);
+        this.iconButton.draw(poseStack);
 
         IDrawable buttonIcon = this.buttonIcons.get(recipe);
         if (buttonIcon != null) {
-            buttonIcon.draw(matrixStack);
+            buttonIcon.draw(poseStack);
         }
     }
 

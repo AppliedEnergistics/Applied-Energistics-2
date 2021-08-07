@@ -50,7 +50,7 @@ final class IconDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int xOffset, int yOffset) {
-        blitter.dest(x + xOffset, y + yOffset).blit(matrixStack, 0);
+    public void draw(PoseStack poseStack, int xOffset, int yOffset) {
+        blitter.dest(x + xOffset, y + yOffset).blit(poseStack, 0);
     }
 }

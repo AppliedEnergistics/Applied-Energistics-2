@@ -60,7 +60,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, final int x, final int y, float partial) {
+    public void renderButton(PoseStack poseStack, final int x, final int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -72,11 +72,11 @@ public class TabButton extends Button implements ITooltip {
                 backdrop = this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_FOCUS : Icon.TAB_BUTTON_BACKGROUND;
             }
 
-            backdrop.getBlitter().dest(this.x, this.y).blit(matrixStack, getBlitOffset());
+            backdrop.getBlitter().dest(this.x, this.y).blit(poseStack, getBlitOffset());
 
             final int offsetX = this.hideEdge ? 1 : 0;
             if (this.icon != null) {
-                this.icon.getBlitter().dest(offsetX + this.x + 3, this.y + 3).blit(matrixStack, getBlitOffset());
+                this.icon.getBlitter().dest(offsetX + this.x + 3, this.y + 3).blit(poseStack, getBlitOffset());
             }
 
             if (this.item != null) {

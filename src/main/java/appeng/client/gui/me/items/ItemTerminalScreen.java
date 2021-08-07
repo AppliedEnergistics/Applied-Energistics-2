@@ -64,12 +64,12 @@ public class ItemTerminalScreen<C extends MEMonitorableMenu<IAEItemStack>>
     }
 
     @Override
-    protected void renderGridInventoryEntry(PoseStack matrices, int x, int y,
+    protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
             GridInventoryEntry<IAEItemStack> entry) {
         // Annoying but easier than trying to splice into render item
         ItemStack displayStack = entry.getStack().asItemStackRepresentation();
         SimpleContainer displayInv = new SimpleContainer(displayStack);
-        super.renderSlot(matrices, new Slot(displayInv, 0, x, y));
+        super.renderSlot(poseStack, new Slot(displayInv, 0, x, y));
     }
 
     @Override

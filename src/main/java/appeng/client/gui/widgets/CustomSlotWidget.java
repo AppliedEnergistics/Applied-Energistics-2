@@ -52,7 +52,7 @@ public abstract class CustomSlotWidget extends GuiComponent implements ITooltip 
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+    public abstract void drawContent(PoseStack poseStack, final Minecraft mc, final int mouseX, final int mouseY,
             final float partialTicks);
 
     @Override

@@ -75,7 +75,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
         int x = 0;
         int y = 0;
@@ -94,7 +94,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
             int itemX = cellX + CELL_WIDTH - 17;
             int itemY = cellY + 1;
 
-            drawMachineCount(matrixStack, itemX, cellY, entry.getCount());
+            drawMachineCount(poseStack, itemX, cellY, entry.getCount());
 
             this.drawItem(itemX, itemY, entry.getDisplay());
 
@@ -118,12 +118,12 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
         if (tooltip != null) {
             // We need to relativize the offset because the matrix stack is currently "pushed" to the local coordinates
-            this.drawTooltip(matrixStack, mouseX - offsetX, mouseY - offsetY, tooltip);
+            this.drawTooltip(poseStack, mouseX - offsetX, mouseY - offsetY, tooltip);
         }
     }
 
     // x,y is upper left corner of related machine icon (which is 16x16)
-    private void drawMachineCount(PoseStack matrixStack, int x, int y, long count) {
+    private void drawMachineCount(PoseStack poseStack, int x, int y, long count) {
         String str;
         if (count >= 10000) {
             str = Long.toString(count / 1000) + 'k';
@@ -136,15 +136,15 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
         float textHeight = this.font.lineHeight / 2.0f;
 
         // Draw the count at half-size
-        matrixStack.pushPose();
-        matrixStack.translate(
+        poseStack.pushPose();
+        poseStack.translate(
                 x - 1 - textWidth,
                 y + (CELL_HEIGHT - textHeight) / 2.0f,
                 0);
-        matrixStack.scale(0.5f, 0.5f, 0.5f);
-        this.font.draw(matrixStack, str, 0, 0,
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        this.font.draw(poseStack, str, 0, 0,
                 style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB());
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
     public void processServerUpdate(NetworkStatus status) {

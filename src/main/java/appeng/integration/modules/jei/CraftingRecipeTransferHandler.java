@@ -122,9 +122,9 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         }
 
         @Override
-        public void showError(PoseStack matrixStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
+        public void showError(PoseStack poseStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
                 int recipeY) {
-            this.parent.showError(matrixStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
+            this.parent.showError(poseStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
         }
 
     }
