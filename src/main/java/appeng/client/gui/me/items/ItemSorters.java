@@ -50,15 +50,11 @@ final class ItemSorters {
     public static final Comparator<IAEItemStack> SIZE_DESC = SIZE_ASC.reversed();
 
     public static Comparator<IAEItemStack> getComparator(SortOrder order, SortDir dir) {
-        switch (order) {
-            default:
-            case NAME:
-                return dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
-            case AMOUNT:
-                return dir == SortDir.ASCENDING ? SIZE_ASC : SIZE_DESC;
-            case MOD:
-                return dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;
-        }
+        return switch (order) {
+            case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
+            case AMOUNT -> dir == SortDir.ASCENDING ? SIZE_ASC : SIZE_DESC;
+            case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;
+        };
     }
 
 }

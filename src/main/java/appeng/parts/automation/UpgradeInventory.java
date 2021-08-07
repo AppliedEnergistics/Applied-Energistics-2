@@ -64,22 +64,15 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
             this.updateUpgradeInfo();
         }
 
-        switch (u) {
-            case CAPACITY:
-                return this.capacityUpgrades;
-            case FUZZY:
-                return this.fuzzyUpgrades;
-            case REDSTONE:
-                return this.redstoneUpgrades;
-            case SPEED:
-                return this.speedUpgrades;
-            case INVERTER:
-                return this.inverterUpgrades;
-            case CRAFTING:
-                return this.craftingUpgrades;
-            default:
-                return 0;
-        }
+        return switch (u) {
+            case CAPACITY -> this.capacityUpgrades;
+            case FUZZY -> this.fuzzyUpgrades;
+            case REDSTONE -> this.redstoneUpgrades;
+            case SPEED -> this.speedUpgrades;
+            case INVERTER -> this.inverterUpgrades;
+            case CRAFTING -> this.craftingUpgrades;
+            default -> 0;
+        };
     }
 
     public abstract int getMaxInstalled(Upgrades upgrades);

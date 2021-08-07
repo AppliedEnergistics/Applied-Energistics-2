@@ -1013,17 +1013,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         IAEItemStack is;
 
         switch (storage2) {
-            case STORAGE:
-                is = this.inventory.getItemList().findPrecise(what);
-                break;
-            case ACTIVE:
-                is = this.waitingFor.findPrecise(what);
-                break;
-            case PENDING:
-
+            case STORAGE -> is = this.inventory.getItemList().findPrecise(what);
+            case ACTIVE -> is = this.waitingFor.findPrecise(what);
+            case PENDING -> {
                 is = what.copy();
                 is.setStackSize(0);
-
                 for (final Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet()) {
                     for (final IAEItemStack ais : t.getKey().getOutputs()) {
                         if (ais.equals(is)) {
@@ -1031,11 +1025,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                         }
                     }
                 }
-
-                break;
-            default:
-            case ALL:
-                throw new IllegalStateException("Invalid Operation");
+            }
+            case ALL -> throw new IllegalStateException("Invalid Operation");
         }
 
         if (is != null) {

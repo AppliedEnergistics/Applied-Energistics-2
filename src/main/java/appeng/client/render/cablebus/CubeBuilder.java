@@ -111,42 +111,42 @@ public class CubeBuilder {
         }
 
         switch (face) {
-            case DOWN:
+            case DOWN -> {
                 this.putVertexTR(builder, face, x2, y1, z1, uv);
                 this.putVertexBR(builder, face, x2, y1, z2, uv);
                 this.putVertexBL(builder, face, x1, y1, z2, uv);
                 this.putVertexTL(builder, face, x1, y1, z1, uv);
-                break;
-            case UP:
+            }
+            case UP -> {
                 this.putVertexTL(builder, face, x1, y2, z1, uv);
                 this.putVertexBL(builder, face, x1, y2, z2, uv);
                 this.putVertexBR(builder, face, x2, y2, z2, uv);
                 this.putVertexTR(builder, face, x2, y2, z1, uv);
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 this.putVertexBR(builder, face, x2, y2, z1, uv);
                 this.putVertexTR(builder, face, x2, y1, z1, uv);
                 this.putVertexTL(builder, face, x1, y1, z1, uv);
                 this.putVertexBL(builder, face, x1, y2, z1, uv);
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 this.putVertexBL(builder, face, x1, y2, z2, uv);
                 this.putVertexTL(builder, face, x1, y1, z2, uv);
                 this.putVertexTR(builder, face, x2, y1, z2, uv);
                 this.putVertexBR(builder, face, x2, y2, z2, uv);
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 this.putVertexTL(builder, face, x1, y1, z1, uv);
                 this.putVertexTR(builder, face, x1, y1, z2, uv);
                 this.putVertexBR(builder, face, x1, y2, z2, uv);
                 this.putVertexBL(builder, face, x1, y2, z1, uv);
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 this.putVertexBR(builder, face, x2, y2, z1, uv);
                 this.putVertexBL(builder, face, x2, y2, z2, uv);
                 this.putVertexTL(builder, face, x2, y1, z2, uv);
                 this.putVertexTR(builder, face, x2, y1, z1, uv);
-                break;
+            }
         }
 
         this.output.add(builder.build());
@@ -158,42 +158,42 @@ public class CubeBuilder {
         UvVector uv = new UvVector();
 
         switch (face) {
-            case DOWN:
+            case DOWN -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(z1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(z2 * 16);
-                break;
-            case UP:
+            }
+            case UP -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(z1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(z2 * 16);
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 uv.u1 = texture.getU(z1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(z2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 uv.u1 = texture.getU(z2 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(z1 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
+            }
         }
 
         return uv;
@@ -203,42 +203,42 @@ public class CubeBuilder {
             float y2, float z2) {
         UvVector uv = new UvVector();
         switch (face) {
-            case DOWN:
+            case DOWN -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(16 - z1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(16 - z2 * 16);
-                break;
-            case UP:
+            }
+            case UP -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(z1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(z2 * 16);
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 uv.u1 = texture.getU(16 - x1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(16 - x2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 uv.u1 = texture.getU(x1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(x2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 uv.u1 = texture.getU(z1 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(z2 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 uv.u1 = texture.getU(16 - z2 * 16);
                 uv.v1 = texture.getV(16 - y1 * 16);
                 uv.u2 = texture.getU(16 - z1 * 16);
                 uv.v2 = texture.getV(16 - y2 * 16);
-                break;
+            }
         }
         return uv;
     }
@@ -248,23 +248,22 @@ public class CubeBuilder {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            default:
-            case 0:
+            case 0 -> {
                 u = uv.u1;
                 v = uv.v1;
-                break;
-            case 1: // 90° clockwise
+            }
+            case 1 -> { // 90° clockwise
                 u = uv.u1;
                 v = uv.v2;
-                break;
-            case 2: // 180° clockwise
+            }
+            case 2 -> { // 180° clockwise
                 u = uv.u2;
                 v = uv.v2;
-                break;
-            case 3: // 270° clockwise
+            }
+            case 3 -> { // 270° clockwise
                 u = uv.u2;
                 v = uv.v1;
-                break;
+            }
         }
 
         this.putVertex(builder, face, x, y, z, u, v);
@@ -275,23 +274,22 @@ public class CubeBuilder {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            default:
-            case 0:
+            case 0 -> {
                 u = uv.u2;
                 v = uv.v1;
-                break;
-            case 1: // 90° clockwise
+            }
+            case 1 -> { // 90° clockwise
                 u = uv.u1;
                 v = uv.v1;
-                break;
-            case 2: // 180° clockwise
+            }
+            case 2 -> { // 180° clockwise
                 u = uv.u1;
                 v = uv.v2;
-                break;
-            case 3: // 270° clockwise
+            }
+            case 3 -> { // 270° clockwise
                 u = uv.u2;
                 v = uv.v2;
-                break;
+            }
         }
         this.putVertex(builder, face, x, y, z, u, v);
     }
@@ -303,23 +301,22 @@ public class CubeBuilder {
         float v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            default:
-            case 0:
+            case 0 -> {
                 u = uv.u2;
                 v = uv.v2;
-                break;
-            case 1: // 90° clockwise
+            }
+            case 1 -> { // 90° clockwise
                 u = uv.u2;
                 v = uv.v1;
-                break;
-            case 2: // 180° clockwise
+            }
+            case 2 -> { // 180° clockwise
                 u = uv.u1;
                 v = uv.v1;
-                break;
-            case 3: // 270° clockwise
+            }
+            case 3 -> { // 270° clockwise
                 u = uv.u1;
                 v = uv.v2;
-                break;
+            }
         }
 
         this.putVertex(builder, face, x, y, z, u, v);
@@ -332,23 +329,22 @@ public class CubeBuilder {
         float v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            default:
-            case 0:
+            case 0 -> {
                 u = uv.u1;
                 v = uv.v2;
-                break;
-            case 1: // 90° clockwise
+            }
+            case 1 -> { // 90° clockwise
                 u = uv.u2;
                 v = uv.v2;
-                break;
-            case 2: // 180° clockwise
+            }
+            case 2 -> { // 180° clockwise
                 u = uv.u2;
                 v = uv.v1;
-                break;
-            case 3: // 270° clockwise
+            }
+            case 3 -> { // 270° clockwise
                 u = uv.u1;
                 v = uv.v1;
-                break;
+            }
         }
 
         this.putVertex(builder, face, x, y, z, u, v);

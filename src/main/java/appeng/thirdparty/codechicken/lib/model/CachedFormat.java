@@ -95,27 +95,27 @@ public class CachedFormat {
                     break;
                 case UV:
                     switch (element.getIndex()) {
-                        case 0:
+                        case 0 -> {
                             if (hasUV) {
                                 throw new IllegalStateException("Found 2 UV elements..");
                             }
                             hasUV = true;
                             uvIndex = i;
-                            break;
-                        case 1:
+                        }
+                        case 1 -> {
                             if (hasOverlay) {
                                 throw new IllegalStateException("Found 2 Overlay elements..");
                             }
                             hasOverlay = true;
                             overlayIndex = i;
-                            break;
-                        case 2:
+                        }
+                        case 2 -> {
                             if (hasLightMap) {
                                 throw new IllegalStateException("Found 2 LightMap elements..");
                             }
                             hasLightMap = true;
                             lightMapIndex = i;
-                            break;
+                        }
                     }
                     break;
             }

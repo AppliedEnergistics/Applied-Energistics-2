@@ -41,17 +41,12 @@ public enum AccessRestriction {
     }
 
     private AccessRestriction getPermByBit(final int bit) {
-        switch (bit) {
-            default:
-            case 0:
-                return NO_ACCESS;
-            case 1:
-                return READ;
-            case 2:
-                return WRITE;
-            case 3:
-                return READ_WRITE;
-        }
+        return switch (bit) {
+            case 0 -> NO_ACCESS;
+            case 1 -> READ;
+            case 2 -> WRITE;
+            case 3 -> READ_WRITE;
+        };
     }
 
     public AccessRestriction addPermissions(final AccessRestriction ar) {

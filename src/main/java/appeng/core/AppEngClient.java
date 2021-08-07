@@ -217,15 +217,11 @@ public class AppEngClient extends AppEngBase {
     }
 
     public boolean shouldAddParticles(final Random r) {
-        switch (Minecraft.getInstance().options.particles) {
-            default:
-            case ALL:
-                return true;
-            case DECREASED:
-                return r.nextBoolean();
-            case MINIMAL:
-                return false;
-        }
+        return switch (Minecraft.getInstance().options.particles) {
+            case ALL -> true;
+            case DECREASED -> r.nextBoolean();
+            case MINIMAL -> false;
+        };
     }
 
     @Override

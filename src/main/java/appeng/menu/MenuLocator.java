@@ -170,49 +170,43 @@ public final class MenuLocator {
 
     public void write(FriendlyByteBuf buf) {
         switch (type) {
-            case PLAYER_INVENTORY:
+            case PLAYER_INVENTORY -> {
                 buf.writeByte(0);
                 buf.writeInt(itemIndex);
-                break;
-            case PLAYER_INVENTORY_WITH_BLOCK_CONTEXT:
+            }
+            case PLAYER_INVENTORY_WITH_BLOCK_CONTEXT -> {
                 buf.writeByte(1);
                 buf.writeInt(itemIndex);
                 buf.writeResourceLocation(worldId);
                 buf.writeBlockPos(blockPos);
                 buf.writeByte(side.ordinal());
-                break;
-            case BLOCK:
+            }
+            case BLOCK -> {
                 buf.writeByte(2);
                 buf.writeResourceLocation(worldId);
                 buf.writeBlockPos(blockPos);
-                break;
-            case PART:
+            }
+            case PART -> {
                 buf.writeByte(3);
                 buf.writeResourceLocation(worldId);
                 buf.writeBlockPos(blockPos);
                 buf.writeByte(side.ordinal());
-                break;
-            default:
-                throw new IllegalStateException("Unsupported MenuLocator type: " + type);
+            }
+            default -> throw new IllegalStateException("Unsupported MenuLocator type: " + type);
         }
     }
 
     public static MenuLocator read(FriendlyByteBuf buf) {
         byte type = buf.readByte();
-        switch (type) {
-            case 0:
-                return new MenuLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
-            case 1:
-                return new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
-                        buf.readResourceLocation(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
-            case 2:
-                return new MenuLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
-            case 3:
-                return new MenuLocator(Type.PART, -1, buf.readResourceLocation(), buf.readBlockPos(),
-                        AEPartLocation.values()[buf.readByte()]);
-            default:
-                throw new DecoderException("ContainerLocator type out of range: " + type);
-        }
+        return switch (type) {
+            case 0 -> new MenuLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
+            case 1 -> new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
+                    buf.readResourceLocation(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
+            case 2 -> new MenuLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
+            case 3 -> new MenuLocator(Type.PART, -1, buf.readResourceLocation(), buf.readBlockPos(),
+                    AEPartLocation.values()[buf.readByte()]);
+            default -> throw new DecoderException("ContainerLocator type out of range: " + type);
+        };
     }
 
     @Override

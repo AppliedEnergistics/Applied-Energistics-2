@@ -65,15 +65,11 @@ public class MetaRotation implements IOrientable {
         // TODO 1.10.2-R - Temp
         if (state.hasProperty(QuartzPillarBlock.AXIS)) {
             Axis a = state.getValue(QuartzPillarBlock.AXIS);
-            switch (a) {
-                case X:
-                    return Direction.EAST;
-                case Z:
-                    return Direction.SOUTH;
-                default:
-                case Y:
-                    return Direction.UP;
-            }
+            return switch (a) {
+                case X -> Direction.EAST;
+                case Z -> Direction.SOUTH;
+                case Y -> Direction.UP;
+            };
         }
 
         return Direction.UP;

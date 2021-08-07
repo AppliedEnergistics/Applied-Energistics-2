@@ -191,26 +191,13 @@ public class FacadeBuilder {
                                 tmpBB = AEAxisAlignedBB.fromBounds(facadeBox);
                             }
                             switch (face) {
-                                case DOWN:
-                                    tmpBB.minY += offset;
-                                    break;
-                                case UP:
-                                    tmpBB.maxY -= offset;
-                                    break;
-                                case NORTH:
-                                    tmpBB.minZ += offset;
-                                    break;
-                                case SOUTH:
-                                    tmpBB.maxZ -= offset;
-                                    break;
-                                case WEST:
-                                    tmpBB.minX += offset;
-                                    break;
-                                case EAST:
-                                    tmpBB.maxX -= offset;
-                                    break;
-                                default:
-                                    throw new RuntimeException("Switch falloff. " + String.valueOf(face));
+                                case DOWN -> tmpBB.minY += offset;
+                                case UP -> tmpBB.maxY -= offset;
+                                case NORTH -> tmpBB.minZ += offset;
+                                case SOUTH -> tmpBB.maxZ -= offset;
+                                case WEST -> tmpBB.minX += offset;
+                                case EAST -> tmpBB.maxX -= offset;
+                                default -> throw new RuntimeException("Switch falloff. " + String.valueOf(face));
                             }
                         }
                     }
@@ -409,30 +396,25 @@ public class FacadeBuilder {
         }
         List<AABB> boxes = new ArrayList<>();
         switch (axis) {
-            case Y:
+            case Y -> {
                 boxes.add(new AABB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
                 boxes.add(new AABB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
-
                 boxes.add(new AABB(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
                 boxes.add(new AABB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
-
-                break;
-            case Z:
+            }
+            case Z -> {
                 boxes.add(new AABB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
                 boxes.add(new AABB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
-
                 boxes.add(new AABB(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
                 boxes.add(new AABB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
-
-                break;
-            case X:
+            }
+            case X -> {
                 boxes.add(new AABB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
                 boxes.add(new AABB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
-
                 boxes.add(new AABB(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
                 boxes.add(new AABB(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
-                break;
-            default:
+            }
+            default ->
                 // should never happen.
                 throw new RuntimeException("switch falloff. " + String.valueOf(axis));
         }

@@ -257,21 +257,20 @@ public final class MeteoritePlacer {
                 final int secondary = Math.max(1, (int) (Math.random() * 3));
                 for (int zz = 0; zz < secondary; zz++) {
                     switch ((int) (Math.random() * 1000) % 3) {
-                        case 0:
+                        case 0 -> {
                             final int amount = (int) (Math.random() * SKYSTONE_SPAWN_LIMIT + 1);
                             ap.addItems(new ItemStack(skyStoneItem, amount));
-                            break;
-                        case 1:
+                        }
+                        case 1 -> {
                             final List<ItemStack> possibles = new ArrayList<>();
                             possibles.add(new ItemStack(Items.GOLD_NUGGET));
-
                             ItemStack nugget = Platform.pickRandom(possibles);
                             if (nugget != null && !nugget.isEmpty()) {
                                 nugget = nugget.copy();
                                 nugget.setCount((int) (Math.random() * 12) + 1);
                                 ap.addItems(nugget);
                             }
-                            break;
+                        }
                     }
                 }
             }
@@ -405,17 +404,12 @@ public final class MeteoritePlacer {
     }
 
     private Fallout getFallout(LevelAccessor level, BlockPos pos, FalloutMode mode) {
-        switch (mode) {
-            case SAND:
-                return new FalloutSand(level, pos, this.putter, this.skyStone);
-            case TERRACOTTA:
-                return new FalloutCopy(level, pos, this.putter, this.skyStone);
-            case ICE_SNOW:
-                return new FalloutSnow(level, pos, this.putter, this.skyStone);
-            case DEFAULT:
-            default:
-                return new Fallout(this.putter, this.skyStone);
-        }
+        return switch (mode) {
+            case SAND -> new FalloutSand(level, pos, this.putter, this.skyStone);
+            case TERRACOTTA -> new FalloutCopy(level, pos, this.putter, this.skyStone);
+            case ICE_SNOW -> new FalloutSnow(level, pos, this.putter, this.skyStone);
+            default -> new Fallout(this.putter, this.skyStone);
+        };
     }
 
 }

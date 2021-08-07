@@ -50,21 +50,14 @@ final class RenderHelper {
 
             float offset = facing.getAxisDirection() == AxisDirection.NEGATIVE ? 0 : 1;
 
-            switch (facing.getAxis()) {
-                default:
-                case X:
-                    corners = Lists.newArrayList(new Vec3(offset, 1, 1), new Vec3(offset, 0, 1),
-                            new Vec3(offset, 0, 0), new Vec3(offset, 1, 0));
-                    break;
-                case Y:
-                    corners = Lists.newArrayList(new Vec3(1, offset, 1), new Vec3(1, offset, 0),
-                            new Vec3(0, offset, 0), new Vec3(0, offset, 1));
-                    break;
-                case Z:
-                    corners = Lists.newArrayList(new Vec3(0, 1, offset), new Vec3(0, 0, offset),
-                            new Vec3(1, 0, offset), new Vec3(1, 1, offset));
-                    break;
-            }
+            corners = switch (facing.getAxis()) {
+                case X -> Lists.newArrayList(new Vec3(offset, 1, 1), new Vec3(offset, 0, 1),
+                        new Vec3(offset, 0, 0), new Vec3(offset, 1, 0));
+                case Y -> Lists.newArrayList(new Vec3(1, offset, 1), new Vec3(1, offset, 0),
+                        new Vec3(0, offset, 0), new Vec3(0, offset, 1));
+                case Z -> Lists.newArrayList(new Vec3(0, 1, offset), new Vec3(0, 0, offset),
+                        new Vec3(1, 0, offset), new Vec3(1, 1, offset));
+            };
 
             if (facing.getAxisDirection() == AxisDirection.NEGATIVE) {
                 corners = Lists.reverse(corners);
@@ -77,14 +70,10 @@ final class RenderHelper {
     }
 
     private static Vec3 adjust(Vec3 vec, Axis axis, double delta) {
-        switch (axis) {
-            default:
-            case X:
-                return new Vec3(vec.x + delta, vec.y, vec.z);
-            case Y:
-                return new Vec3(vec.x, vec.y + delta, vec.z);
-            case Z:
-                return new Vec3(vec.x, vec.y, vec.z + delta);
-        }
+        return switch (axis) {
+            case X -> new Vec3(vec.x + delta, vec.y, vec.z);
+            case Y -> new Vec3(vec.x, vec.y + delta, vec.z);
+            case Z -> new Vec3(vec.x, vec.y, vec.z + delta);
+        };
     }
 }

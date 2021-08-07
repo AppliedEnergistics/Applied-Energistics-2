@@ -30,16 +30,12 @@ public interface StateMatcher {
     static StateMatcher read(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         MatcherType type = buffer.readEnum(MatcherType.class);
 
-        switch (type) {
-            case SINGLE:
-                return SingleValueMatcher.readFromPacket(stateDefinition, buffer);
-            case MULTIPLE:
-                return MultipleValuesMatcher.readFromPacket(stateDefinition, buffer);
-            case RANGE:
-                return RangeValueMatcher.readFromPacket(stateDefinition, buffer);
-        }
+        return switch (type) {
+            case SINGLE -> SingleValueMatcher.readFromPacket(stateDefinition, buffer);
+            case MULTIPLE -> MultipleValuesMatcher.readFromPacket(stateDefinition, buffer);
+            case RANGE -> RangeValueMatcher.readFromPacket(stateDefinition, buffer);
+        };
 
-        return null;
     }
 
     enum MatcherType {

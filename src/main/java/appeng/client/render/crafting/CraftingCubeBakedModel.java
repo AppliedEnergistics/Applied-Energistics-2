@@ -91,21 +91,18 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
         // On the axis of the side that we're currently drawing, extend the dimensions
         // out to the outer face of the block
         switch (side) {
-            case DOWN:
-            case UP:
+            case DOWN, UP -> {
                 y1 = 0;
                 y2 = 16;
-                break;
-            case NORTH:
-            case SOUTH:
+            }
+            case NORTH, SOUTH -> {
                 z1 = 0;
                 z2 = 16;
-                break;
-            case WEST:
-            case EAST:
+            }
+            case WEST, EAST -> {
                 x1 = 0;
                 x2 = 16;
-                break;
+            }
         }
 
         this.addInnerCube(side, state, extraData, builder, x1, y1, z1, x2, y2, z2);
@@ -152,30 +149,30 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
                 float x1 = 0, y1 = 0, z1 = 0, x2 = 16, y2 = 16, z2 = 16;
 
                 switch (a) {
-                    case DOWN:
+                    case DOWN -> {
                         y1 = 0;
                         y2 = 3;
-                        break;
-                    case UP:
+                    }
+                    case UP -> {
                         y1 = 13.0f;
                         y2 = 16;
-                        break;
-                    case WEST:
+                    }
+                    case WEST -> {
                         x1 = 0;
                         x2 = 3;
-                        break;
-                    case EAST:
+                    }
+                    case EAST -> {
                         x1 = 13;
                         x2 = 16;
-                        break;
-                    case NORTH:
+                    }
+                    case NORTH -> {
                         z1 = 0;
                         z2 = 3;
-                        break;
-                    case SOUTH:
+                    }
+                    case SOUTH -> {
                         z1 = 13;
                         z2 = 16;
-                        break;
+                    }
                 }
 
                 // Constraint the stripe in the two directions perpendicular to a in case there
@@ -191,24 +188,12 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
                     if (!connections.contains(cornerCandidate)) {
                         // There's a cap in this direction
                         switch (cornerCandidate) {
-                            case DOWN:
-                                y1 = 3;
-                                break;
-                            case UP:
-                                y2 = 13;
-                                break;
-                            case NORTH:
-                                z1 = 3;
-                                break;
-                            case SOUTH:
-                                z2 = 13;
-                                break;
-                            case WEST:
-                                x1 = 3;
-                                break;
-                            case EAST:
-                                x2 = 13;
-                                break;
+                            case DOWN -> y1 = 3;
+                            case UP -> y2 = 13;
+                            case NORTH -> z1 = 3;
+                            case SOUTH -> z2 = 13;
+                            case WEST -> x1 = 3;
+                            case EAST -> x2 = 13;
                         }
                     }
                 }

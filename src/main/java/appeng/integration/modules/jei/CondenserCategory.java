@@ -94,14 +94,11 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     private ItemStack getOutput(CondenserOutput recipe) {
-        switch (recipe) {
-            case MATTER_BALLS:
-                return AEItems.MATTER_BALL.stack();
-            case SINGULARITY:
-                return AEItems.SINGULARITY.stack();
-            default:
-                return ItemStack.EMPTY;
-        }
+        return switch (recipe) {
+            case MATTER_BALLS -> AEItems.MATTER_BALL.stack();
+            case SINGULARITY -> AEItems.SINGULARITY.stack();
+            default -> ItemStack.EMPTY;
+        };
     }
 
     @Override

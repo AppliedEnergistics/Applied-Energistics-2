@@ -122,13 +122,10 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
             }
         }
 
-        switch (type) {
-            case STONE:
-                return TEXTURE_STONE;
-            default:
-            case BLOCK:
-                return TEXTURE_BLOCK;
-        }
+        return switch (type) {
+            case STONE -> TEXTURE_STONE;
+            case BLOCK -> TEXTURE_BLOCK;
+        };
     }
 
     public static void registerTextures(TextureStitchEvent.Pre evt) {

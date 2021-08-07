@@ -37,18 +37,13 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
     protected ItemStack getItemFromBlockEntity() {
         final int storage = getStorageBytes() / KILO_SCALAR;
 
-        switch (storage) {
-            case 1:
-                return AEBlocks.CRAFTING_STORAGE_1K.stack();
-            case 4:
-                return AEBlocks.CRAFTING_STORAGE_4K.stack();
-            case 16:
-                return AEBlocks.CRAFTING_STORAGE_16K.stack();
-            case 64:
-                return AEBlocks.CRAFTING_STORAGE_64K.stack();
-            default:
-                return super.getItemFromBlockEntity();
-        }
+        return switch (storage) {
+            case 1 -> AEBlocks.CRAFTING_STORAGE_1K.stack();
+            case 4 -> AEBlocks.CRAFTING_STORAGE_4K.stack();
+            case 16 -> AEBlocks.CRAFTING_STORAGE_16K.stack();
+            case 64 -> AEBlocks.CRAFTING_STORAGE_64K.stack();
+            default -> super.getItemFromBlockEntity();
+        };
     }
 
     @Override
@@ -70,16 +65,11 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
         final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
                 .getBlockState(this.worldPosition)
                 .getBlock();
-        switch (unit.type) {
-            default:
-            case STORAGE_1K:
-                return 1024;
-            case STORAGE_4K:
-                return 4 * 1024;
-            case STORAGE_16K:
-                return 16 * 1024;
-            case STORAGE_64K:
-                return 64 * 1024;
-        }
+        return switch (unit.type) {
+            case STORAGE_1K -> 1024;
+            case STORAGE_4K -> 4 * 1024;
+            case STORAGE_16K -> 16 * 1024;
+            case STORAGE_64K -> 64 * 1024;
+        };
     }
 }
