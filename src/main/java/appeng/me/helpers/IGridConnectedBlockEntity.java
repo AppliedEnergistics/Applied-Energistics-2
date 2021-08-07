@@ -31,7 +31,7 @@ import appeng.block.IOwnerAwareBlockEntity;
 import appeng.blockentity.AEBaseBlockEntity;
 
 /**
- * Interface implemented by the various AE2 block entities that connect to the grid, to support callbacks from the tile
+ * Interface implemented by the various AE2 block entities that connect to the grid, to support callbacks from the block
  * entities main grid node.
  */
 public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlockEntity {
@@ -49,7 +49,7 @@ public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlock
     }
 
     /**
-     * Used to break the tile when the grid detects a security violation. Implemented in
+     * Used to break the block entity when the grid detects a security violation. Implemented in
      * {@link AEBaseBlockEntity#securityBreak()}
      */
     void securityBreak();

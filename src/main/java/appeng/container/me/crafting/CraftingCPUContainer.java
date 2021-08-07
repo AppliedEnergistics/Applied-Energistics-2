@@ -50,9 +50,9 @@ public class CraftingCPUContainer extends AEBaseContainer implements IMEMonitorH
     public static final MenuType<CraftingCPUContainer> TYPE = ContainerTypeBuilder
             .create(CraftingCPUContainer::new, CraftingBlockEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
-            .withContainerTitle(craftingTileEntity -> {
+            .withContainerTitle(craftingBlockEntity -> {
                 // Use the cluster's custom name instead of the right-clicked block entities one
-                CraftingCPUCluster cluster = craftingTileEntity.getCluster();
+                CraftingCPUCluster cluster = craftingBlockEntity.getCluster();
                 if (cluster != null && cluster.getName() != null) {
                     return cluster.getName();
                 }

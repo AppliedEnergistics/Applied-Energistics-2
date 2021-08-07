@@ -451,9 +451,9 @@ public class DualityFluidInterface
 
     private class InterfaceInventory extends MEMonitorIFluidHandler {
 
-        InterfaceInventory(final DualityFluidInterface tileInterface) {
-            super(tileInterface.tanks);
-            this.setActionSource(new MachineSource(tileInterface.iHost));
+        InterfaceInventory(final DualityFluidInterface iface) {
+            super(iface.tanks);
+            this.setActionSource(new MachineSource(iface.iHost));
         }
 
         @Override

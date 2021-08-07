@@ -47,7 +47,7 @@ public final class PlaneConnectionHelper {
      * Gets on which sides this part has adjacent planes that it visually connects to
      */
     public PlaneConnections getConnections() {
-        BlockEntity hostTileEntity = getHostTileEntity();
+        BlockEntity hostBlockEntity = getHostBlockEntity();
         AEPartLocation side = part.getSide();
 
         final Direction facingRight, facingUp;
@@ -83,9 +83,9 @@ public final class PlaneConnectionHelper {
 
         boolean left = false, right = false, down = false, up = false;
 
-        if (hostTileEntity != null) {
-            Level world = hostTileEntity.getLevel();
-            BlockPos pos = hostTileEntity.getBlockPos();
+        if (hostBlockEntity != null) {
+            Level world = hostBlockEntity.getLevel();
+            BlockPos pos = hostBlockEntity.getBlockPos();
 
             if (isCompatiblePlaneAdjacent(world.getBlockEntity(pos.relative(facingRight.getOpposite())))) {
                 left = true;
@@ -116,11 +116,11 @@ public final class PlaneConnectionHelper {
         int maxX = 15;
         int maxY = 15;
 
-        BlockEntity hostTile = getHostTileEntity();
-        if (hostTile != null) {
-            Level world = hostTile.getLevel();
+        BlockEntity hostEntity = getHostBlockEntity();
+        if (hostEntity != null) {
+            Level world = hostEntity.getLevel();
 
-            final BlockPos pos = hostTile.getBlockPos();
+            final BlockPos pos = hostEntity.getBlockPos();
 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
@@ -150,21 +150,21 @@ public final class PlaneConnectionHelper {
      * Call this when an adjacent block has changed since the connections need to be recalculated.
      */
     public void updateConnections() {
-        BlockEntity hostTile = getHostTileEntity();
-        if (hostTile != null) {
-            hostTile.requestModelDataUpdate();
+        BlockEntity host = getHostBlockEntity();
+        if (host != null) {
+            host.requestModelDataUpdate();
         }
     }
 
-    private boolean isCompatiblePlaneAdjacent(@Nullable BlockEntity adjacentTileEntity) {
-        if (adjacentTileEntity instanceof IPartHost) {
-            final IPart p = ((IPartHost) adjacentTileEntity).getPart(part.getSide());
+    private boolean isCompatiblePlaneAdjacent(@Nullable BlockEntity adjacentBlockEntity) {
+        if (adjacentBlockEntity instanceof IPartHost) {
+            final IPart p = ((IPartHost) adjacentBlockEntity).getPart(part.getSide());
             return p != null && p.getClass() == part.getClass();
         }
         return false;
     }
 
-    private BlockEntity getHostTileEntity() {
+    private BlockEntity getHostBlockEntity() {
         IPartHost host = part.getHost();
         if (host != null) {
             return host.getBlockEntity();

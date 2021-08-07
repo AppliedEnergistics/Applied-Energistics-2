@@ -94,11 +94,11 @@ public class PartPlacement {
                 return InteractionResult.FAIL;
             }
 
-            final BlockEntity tile = world.getBlockEntity(pos);
+            final BlockEntity blockEntity = world.getBlockEntity(pos);
             IPartHost host = null;
 
-            if (tile instanceof IPartHost) {
-                host = (IPartHost) tile;
+            if (blockEntity instanceof IPartHost) {
+                host = (IPartHost) blockEntity;
             }
 
             if (host != null) {
@@ -138,11 +138,11 @@ public class PartPlacement {
             return InteractionResult.FAIL;
         }
 
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         IPartHost host = null;
 
-        if (tile instanceof IPartHost) {
-            host = (IPartHost) tile;
+        if (blockEntity instanceof IPartHost) {
+            host = (IPartHost) blockEntity;
         }
 
         if (!held.isEmpty()) {
@@ -217,9 +217,9 @@ public class PartPlacement {
 
             te_pos = offset == null ? pos : pos.relative(offset);
 
-            tile = world.getBlockEntity(te_pos);
-            if (tile instanceof IPartHost) {
-                host = (IPartHost) tile;
+            blockEntity = world.getBlockEntity(te_pos);
+            if (blockEntity instanceof IPartHost) {
+                host = (IPartHost) blockEntity;
             }
 
             ItemStack multiPartStack = multiPart.stack();
@@ -239,10 +239,10 @@ public class PartPlacement {
             if (hostIsNotPresent && canMultiPartBePlaced
                     && multiPartBlockItem.place(mpUseCtx).consumesAction()) {
                 if (!world.isClientSide) {
-                    tile = world.getBlockEntity(te_pos);
+                    blockEntity = world.getBlockEntity(te_pos);
 
-                    if (tile instanceof IPartHost) {
-                        host = (IPartHost) tile;
+                    if (blockEntity instanceof IPartHost) {
+                        host = (IPartHost) blockEntity;
                     }
 
                     pass = PlaceType.INTERACT_SECOND_PASS;

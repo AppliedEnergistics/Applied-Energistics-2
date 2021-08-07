@@ -152,7 +152,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
-                // tile begins ticking normally.
+                // block entity begins ticking normally.
                 if (theWorld.hasChunkAt(qc.center.getBlockPos())) {
                     final Level cur = theWorld.getServer().getLevel(theWorld.dimension());
 
@@ -235,9 +235,9 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }
 
-    public boolean isCorner(final QuantumBridgeBlockEntity tileQuantumBridge) {
-        return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge
-                || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
+    public boolean isCorner(final QuantumBridgeBlockEntity quantumBridge) {
+        return this.getRing()[0] == quantumBridge || this.getRing()[2] == quantumBridge
+                || this.getRing()[4] == quantumBridge || this.getRing()[6] == quantumBridge;
     }
 
     @Override

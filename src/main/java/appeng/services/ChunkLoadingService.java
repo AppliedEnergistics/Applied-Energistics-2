@@ -58,12 +58,12 @@ public class ChunkLoadingService implements LoadingValidationCallback {
     public void validateTickets(ServerLevel world, TicketHelper ticketHelper) {
         // Iterate over all blockpos registered as chunk loader to initialize them
         ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
-            BlockEntity tileEntity = world.getBlockEntity(blockPos);
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
 
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
-            if (tileEntity instanceof SpatialAnchorBlockEntity) {
-                SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) tileEntity;
+            if (blockEntity instanceof SpatialAnchorBlockEntity) {
+                SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) blockEntity;
                 for (Long chunk : chunks.getSecond()) {
                     anchor.registerChunk(new ChunkPos(chunk.longValue()));
                 }

@@ -112,7 +112,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
                 minPoint.setZ(Math.min(minPoint.getZ(), cl.getBoundsMin().getZ()));
             }
 
-            pylonBlocks += cl.tileCount();
+            pylonBlocks += cl.size();
         }
 
         this.captureMin = minPoint != null ? minPoint.immutable() : null;

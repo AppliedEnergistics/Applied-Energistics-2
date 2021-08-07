@@ -38,9 +38,9 @@ public final class ChargerTESR {
     public static BlockEntityRendererProvider<ChargerBlockEntity> FACTORY = context -> new ModularTESR<>(
             new ItemRenderable<>(ChargerTESR::getRenderedItem));
 
-    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity tile) {
+    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity blockEntity) {
         Transformation transform = new Transformation(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
-        return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);
+        return new ImmutablePair<>(blockEntity.getInternalInventory().getStackInSlot(0), transform);
     }
 
 }

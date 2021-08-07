@@ -111,9 +111,9 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!w.isClientSide()) {
-            SkyChestBlockEntity tile = getBlockEntity(w, pos);
-            if (tile != null) {
-                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forBlockEntity(tile));
+            SkyChestBlockEntity blockEntity = getBlockEntity(w, pos);
+            if (blockEntity != null) {
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forBlockEntity(blockEntity));
             }
         }
 

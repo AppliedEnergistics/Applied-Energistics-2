@@ -37,10 +37,10 @@ import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 public class CraftingMonitorInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+    public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
                              Level world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof CraftingMonitorBlockEntity) {
-            final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) tile;
+        if (blockEntity instanceof CraftingMonitorBlockEntity) {
+            final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) blockEntity;
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {

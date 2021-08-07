@@ -33,10 +33,10 @@ import appeng.blockentity.AEBaseBlockEntity;
 public class PowerStateInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+    public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
                              Level world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof IPowerChannelState) {
-            final IPowerChannelState state = (IPowerChannelState) tile;
+        if (blockEntity instanceof IPowerChannelState) {
+            final IPowerChannelState state = (IPowerChannelState) blockEntity;
 
             final boolean isActive = state.isActive();
             final boolean isPowered = state.isPowered();

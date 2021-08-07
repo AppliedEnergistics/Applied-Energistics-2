@@ -258,9 +258,9 @@ public class Platform {
         ServerLevel serverWorld = (ServerLevel) w;
 
         final BlockState state = w.getBlockState(pos);
-        final BlockEntity tileEntity = w.getBlockEntity(pos);
+        final BlockEntity blockEntity = w.getBlockEntity(pos);
 
-        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
+        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, blockEntity);
 
         return out.toArray(new ItemStack[0]);
     }
@@ -838,7 +838,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity tile) {
+    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity blockEntity) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;
@@ -867,7 +867,7 @@ public class Platform {
                 break;
         }
 
-        player.moveTo(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5,
+        player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5, blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
     }
 

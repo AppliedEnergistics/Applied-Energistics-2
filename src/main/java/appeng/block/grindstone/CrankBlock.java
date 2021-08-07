@@ -64,9 +64,9 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
             return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
-        final CrankBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null) {
-            if (tile.power()) {
+        final CrankBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null) {
+            if (blockEntity.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
@@ -83,14 +83,14 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     @Override
     public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state,
             final LivingEntity placer, final ItemStack stack) {
-        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
-        if (tile != null) {
+        final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+        if (blockEntity != null) {
             final Direction mnt = this.findCrankable(world, pos);
             Direction forward = Direction.UP;
             if (mnt == Direction.UP || mnt == Direction.DOWN) {
                 forward = Direction.SOUTH;
             }
-            tile.setOrientation(forward, mnt.getOpposite());
+            blockEntity.setOrientation(forward, mnt.getOpposite());
         } else {
             this.dropCrank(world, pos);
         }
@@ -127,9 +127,9 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
-        if (tile != null) {
-            if (!this.isCrankable(world, pos, tile.getUp().getOpposite())) {
+        final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+        if (blockEntity != null) {
+            if (!this.isCrankable(world, pos, blockEntity.getUp().getOpposite())) {
                 this.dropCrank(world, pos);
             }
         } else {

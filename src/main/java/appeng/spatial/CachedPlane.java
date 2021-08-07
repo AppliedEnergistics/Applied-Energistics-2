@@ -58,7 +58,7 @@ public class CachedPlane {
     private final int y_size;
     private final LevelChunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<BlockEntity> tiles = new ArrayList<>();
+    private final List<BlockEntity> blockEntities = new ArrayList<>();
     private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
     private final ServerLevel world;
     private final IMovableRegistry reg = Api.instance().registries().movable();
@@ -110,13 +110,13 @@ public class CachedPlane {
 
         for (int cx = 0; cx < this.cx_size; cx++) {
             for (int cz = 0; cz < this.cz_size; cz++) {
-                final List<BlockPos> deadTiles = new ArrayList<>();
+                final List<BlockPos> deadBlockEntities = new ArrayList<>();
 
                 final LevelChunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getBlockEntities().entrySet());
-                for (final Entry<BlockPos, BlockEntity> tx : rawTiles) {
+                final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(c.getBlockEntities().entrySet());
+                for (final Entry<BlockPos, BlockEntity> tx : rawBlockEntities) {
                     final BlockPos cp = tx.getKey();
                     final BlockEntity te = tx.getValue();
 
@@ -124,8 +124,8 @@ public class CachedPlane {
                     if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                             && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
                         if (mr.askToMove(te)) {
-                            this.tiles.add(te);
-                            deadTiles.add(cp);
+                            this.blockEntities.add(te);
+                            deadBlockEntities.add(cp);
                         } else {
                             final BlockStorageData details = new BlockStorageData();
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
@@ -140,7 +140,7 @@ public class CachedPlane {
                     }
                 }
 
-                for (final BlockPos cp : deadTiles) {
+                for (final BlockPos cp : deadBlockEntities) {
                     c.getBlockEntities().remove(cp);
                 }
 
@@ -158,7 +158,7 @@ public class CachedPlane {
             }
         }
 
-        for (var te : this.tiles) {
+        for (var te : this.blockEntities) {
             try {
                 this.getWorld().removeBlockEntity(te.getBlockPos());
             } catch (final Exception e) {
@@ -209,15 +209,15 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final BlockEntity te : this.tiles) {
+            for (final BlockEntity te : this.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
+                dst.addBlockEntity(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
-            for (final BlockEntity te : dst.tiles) {
+            for (final BlockEntity te : dst.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
+                this.addBlockEntity(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
@@ -256,8 +256,8 @@ public class CachedPlane {
                 entry.priority);
     }
 
-    private void addTile(final int x, final int y, final int z, final BlockEntity te,
-            final CachedPlane alternateDestination, final IMovableRegistry mr) {
+    private void addBlockEntity(final int x, final int y, final int z, final BlockEntity te,
+                                final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];
 
@@ -281,7 +281,7 @@ public class CachedPlane {
 
                 mr.doneMoving(te);
             } else {
-                alternateDestination.addTile(x, y, z, te, null, mr);
+                alternateDestination.addBlockEntity(x, y, z, te, null, mr);
             }
         } catch (final Throwable e) {
             AELog.debug(e);

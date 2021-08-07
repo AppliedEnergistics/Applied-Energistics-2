@@ -133,11 +133,11 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         if (this.blockType instanceof AEBaseEntityBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseBlockEntity tile = ((AEBaseEntityBlock<?>) this.blockType).getBlockEntity(context.getLevel(),
+            final AEBaseBlockEntity blockEntity = ((AEBaseEntityBlock<?>) this.blockType).getBlockEntity(context.getLevel(),
                     context.getClickedPos());
-            ori = tile;
+            ori = blockEntity;
 
-            if (tile == null) {
+            if (blockEntity == null) {
                 return result;
             }
 
@@ -145,11 +145,11 @@ public class AEBaseBlockItem extends BlockItem {
                 ori.setOrientation(forward, up);
             }
 
-            if (tile instanceof IOwnerAwareBlockEntity ownerAwareTile) {
-                ownerAwareTile.setOwner(player);
+            if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware) {
+                ownerAware.setOwner(player);
             }
 
-            tile.onPlacement(context);
+            blockEntity.onPlacement(context);
         } else if (this.blockType instanceof IOrientableBlock) {
             ori.setOrientation(forward, up);
         }

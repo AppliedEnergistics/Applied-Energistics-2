@@ -83,7 +83,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
         super(blockEntityType, pos, blockState);
     }
 
-    public static void registerTileItem(BlockEntityType<?> type, final Item wat) {
+    public static void registerBlockEntityItem(BlockEntityType<?> type, final Item wat) {
         REPRESENTATIVE_ITEMS.put(type, wat);
     }
 
@@ -159,8 +159,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     }
 
     /**
-     * Deferred tile-initialization when tiles actually start first ticking in a chunk. The tile needs to override
-     * {@link #clearRemoved()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
+     * Deferred initialization when block entities actually start first ticking in a chunk. The block entity needs to
+     * override {@link #clearRemoved()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
      */
     public void onReady() {
     }
@@ -208,7 +208,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     }
 
     /**
-     * Handles tile entites that are being sent to the client as part of a full chunk.
+     * Handles block entities that are being sent to the client as part of a full chunk.
      */
     @Override
     public CompoundTag getUpdateTag() {
@@ -225,7 +225,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     }
 
     /**
-     * Handles tile entites that are being received by the client as part of a full chunk.
+     * Handles block entities that are being received by the client as part of a full chunk.
      */
     @Override
     public void handleUpdateTag(CompoundTag tag) {
@@ -271,8 +271,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
                 // Let the block update it's own state with our internal state changes
                 BlockState currentState = getBlockState();
                 if (currentState.getBlock() instanceof AEBaseEntityBlock) {
-                    AEBaseEntityBlock<?> tileBlock = (AEBaseEntityBlock<?>) currentState.getBlock();
-                    BlockState newState = tileBlock.getBlockEntityBlockState(currentState, this);
+                    AEBaseEntityBlock<?> block = (AEBaseEntityBlock<?>) currentState.getBlock();
+                    BlockState newState = block.getBlockEntityBlockState(currentState, this);
                     if (currentState != newState) {
                         AELog.blockUpdate(this.worldPosition, currentState, newState, this);
                         this.level.setBlockAndUpdate(worldPosition, newState);
@@ -290,7 +290,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     /**
      * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
      *
-     * @return true if tile can be rotated
+     * @return true if block entity can be rotated
      */
     @Override
     public boolean canBeRotated() {

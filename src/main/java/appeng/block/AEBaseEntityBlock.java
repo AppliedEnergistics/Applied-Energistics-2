@@ -151,9 +151,9 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public int getAnalogOutputSignal(BlockState state, final Level w, final BlockPos pos) {
         final BlockEntity te = this.getBlockEntity(w, pos);
         if (te instanceof AEBaseInvBlockEntity) {
-            AEBaseInvBlockEntity invTile = (AEBaseInvBlockEntity) te;
-            if (invTile.getInternalInventory().getSlots() > 0) {
-                return ItemHandlerHelper.calcRedstoneFromInventory(invTile.getInternalInventory());
+            AEBaseInvBlockEntity invBlockEntity = (AEBaseInvBlockEntity) te;
+            if (invBlockEntity.getInternalInventory().getSlots() > 0) {
+                return ItemHandlerHelper.calcRedstoneFromInventory(invBlockEntity.getInternalInventory());
             }
         }
         return 0;
@@ -163,8 +163,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public boolean triggerEvent(final BlockState state, final Level worldIn, final BlockPos pos, final int eventID,
             final int eventParam) {
         super.triggerEvent(state, worldIn, pos, eventID, eventParam);
-        final BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        return tileentity != null ? tileentity.triggerEvent(eventID, eventParam) : false;
+        final BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        return blockEntity != null ? blockEntity.triggerEvent(eventID, eventParam) : false;
     }
 
     @Override
@@ -195,13 +195,13 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
-                final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
+                final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
 
-                if (tile == null) {
+                if (blockEntity == null) {
                     return InteractionResult.FAIL;
                 }
 
-                if (tile instanceof CableBusBlockEntity || tile instanceof SkyChestBlockEntity) {
+                if (blockEntity instanceof CableBusBlockEntity || blockEntity instanceof SkyChestBlockEntity) {
                     return InteractionResult.FAIL;
                 }
 
@@ -210,7 +210,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
                 for (final ItemStack ol : itemDropCandidates) {
                     if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                        final CompoundTag tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
+                        final CompoundTag tag = blockEntity.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
                         if (tag != null) {
                             ol.setTag(tag);
                         }
@@ -226,18 +226,17 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                 return InteractionResult.FAIL;
             }
 
-            if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
-                final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
-                final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
+            if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
+                final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
 
-                if (tileEntity == null) {
+                if (blockEntity == null) {
                     return InteractionResult.FAIL;
                 }
 
                 final String name = this.getDescriptionId();
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
-                    final CompoundTag data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
+                    final CompoundTag data = blockEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
@@ -247,7 +246,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     final CompoundTag data = memoryCard.getData(heldItem);
 
                     if (this.getDescriptionId().equals(savedName)) {
-                        tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                        blockEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
@@ -273,9 +272,9 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     /**
-     * Returns the BlockState based on the given BlockState while considering the state of the given TileEntity.
+     * Returns the BlockState based on the given BlockState while considering the state of the given block entity.
      * <p>
-     * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
+     * If the given block entity is not of the right type for this block, the state is returned unchanged, this is also
      * the case if the given block state does not belong to this block.
      */
     public final BlockState getBlockEntityBlockState(BlockState current, BlockEntity te) {

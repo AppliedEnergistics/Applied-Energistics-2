@@ -69,11 +69,11 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
             } else {
                 // If the location is outside, only re-check if it would now be considered part
                 // of it
-                recheck = isValidTileAt(world, changedPos.getX(), changedPos.getY(), changedPos.getZ());
+                recheck = isValidBlockEntityAt(world, changedPos.getX(), changedPos.getY(), changedPos.getZ());
             }
         } else {
-            // Always recheck if the tile is not part of a cluster, because the adjacent
-            // block could have previously been a valid tile, but in a wrong placement,
+            // Always recheck if the block entity is not part of a cluster, because the adjacent
+            // block could have previously been a valid block entity, but in a wrong placement,
             // or the other way around.
             recheck = true;
         }
@@ -99,22 +99,22 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
             final MutableBlockPos max = loc.mutable();
 
             // find size of MB structure...
-            while (this.isValidTileAt(world, min.getX() - 1, min.getY(), min.getZ())) {
+            while (this.isValidBlockEntityAt(world, min.getX() - 1, min.getY(), min.getZ())) {
                 min.setX(min.getX() - 1);
             }
-            while (this.isValidTileAt(world, min.getX(), min.getY() - 1, min.getZ())) {
+            while (this.isValidBlockEntityAt(world, min.getX(), min.getY() - 1, min.getZ())) {
                 min.setY(min.getY() - 1);
             }
-            while (this.isValidTileAt(world, min.getX(), min.getY(), min.getZ() - 1)) {
+            while (this.isValidBlockEntityAt(world, min.getX(), min.getY(), min.getZ() - 1)) {
                 min.setZ(min.getZ() - 1);
             }
-            while (this.isValidTileAt(world, max.getX() + 1, max.getY(), max.getZ())) {
+            while (this.isValidBlockEntityAt(world, max.getX() + 1, max.getY(), max.getZ())) {
                 max.setX(max.getX() + 1);
             }
-            while (this.isValidTileAt(world, max.getX(), max.getY() + 1, max.getZ())) {
+            while (this.isValidBlockEntityAt(world, max.getX(), max.getY() + 1, max.getZ())) {
                 max.setY(max.getY() + 1);
             }
-            while (this.isValidTileAt(world, max.getX(), max.getY(), max.getZ() + 1)) {
+            while (this.isValidBlockEntityAt(world, max.getX(), max.getY(), max.getZ() + 1)) {
                 max.setZ(max.getZ() + 1);
             }
 
@@ -162,7 +162,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
-    private boolean isValidTileAt(final Level w, final int x, final int y, final int z) {
+    private boolean isValidBlockEntityAt(final Level w, final int x, final int y, final int z) {
         return this.isValidBlockEntity(w.getBlockEntity(new BlockPos(x, y, z)));
     }
 
@@ -206,7 +206,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     }
 
     /**
-     * configure the multi-block tiles, most of the important stuff is in here.
+     * configure the multi-block block entities, most of the important stuff is in here.
      *
      * @param c   updated cluster
      * @param w   in world

@@ -197,7 +197,7 @@ public final class AEBlockEntities {
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
-        AEBaseBlockEntity.registerTileItem(type, blockDefinitions[0].asItem());
+        AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());
 
         // If the block entity classes implement specific interfaces, automatically register them
         // as tickers with the blocks that create that entity.
@@ -215,8 +215,8 @@ public final class AEBlockEntities {
         }
 
         for (var block : blocks) {
-            AEBaseEntityBlock<T> baseTileBlock = (AEBaseEntityBlock<T>) block;
-            baseTileBlock.setBlockEntity(entityClass, supplier, clientTicker, serverTicker);
+            AEBaseEntityBlock<T> baseBlock = (AEBaseEntityBlock<T>) block;
+            baseBlock.setBlockEntity(entityClass, supplier, clientTicker, serverTicker);
         }
 
         return type;

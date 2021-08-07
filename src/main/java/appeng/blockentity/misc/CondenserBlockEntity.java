@@ -324,7 +324,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     /**
-     * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is
+     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is
      * to enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method
      * to make sure a condenser is only ever used if an item can't go anywhere else.
      */

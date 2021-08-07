@@ -134,8 +134,8 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
     @Nonnull
     @Override
     public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
-        return this.parent.getModelData(world, pos, state, tileData);
+            @Nonnull IModelData modelData) {
+        return this.parent.getModelData(world, pos, state, modelData);
     }
 
     public static class VertexRotator extends QuadGatheringTransformer {

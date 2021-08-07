@@ -149,7 +149,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addGenericListener(Item.class, this::registerItems);
         modEventBus.addGenericListener(EntityType.class, this::registerEntities);
         modEventBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
-        modEventBus.addGenericListener(BlockEntityType.class, this::registerTileEntities);
+        modEventBus.addGenericListener(BlockEntityType.class, this::registerBlockEntities);
         modEventBus.addGenericListener(MenuType.class, this::registerContainerTypes);
         modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
         modEventBus.addGenericListener(StructureFeature.class, this::registerStructures);
@@ -222,7 +222,7 @@ public abstract class AppEngBase implements AppEng {
         InitItems.init(event.getRegistry());
     }
 
-    public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
+    public void registerBlockEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
         InitBlockEntities.init(event.getRegistry());
     }
 

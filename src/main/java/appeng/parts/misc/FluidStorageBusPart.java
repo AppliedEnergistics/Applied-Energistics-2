@@ -129,7 +129,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 return inventory.getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
             }
 
-            // So this could / can be a design decision. If the tile does support our custom
+            // So this could / can be a design decision. If the block entity does support our custom
             // capability,
             // but it does not return an inventory for the action source, we do NOT fall
             // back to using
@@ -338,8 +338,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IGridNode targetNode = null;
 
-        if (target instanceof ItemInterfaceBlockEntity interfaceTileEntity) {
-            targetNode = interfaceTileEntity.getMainNode().getNode();
+        if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {
+            targetNode = interfaceBlockEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
             final Object part = ((IPartHost) target).getPart(side);
             if (part instanceof ItemInterfacePart interfacePart) {

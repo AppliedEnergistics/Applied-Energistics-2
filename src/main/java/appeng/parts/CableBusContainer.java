@@ -788,7 +788,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
         updateBlock |= this.getFacadeContainer().readFromStream(data);
 
-        // Updating tiles may change the collision shape
+        // Updating block entities may change the collision shape
         this.invalidateShapes();
 
         return updateBlock;
@@ -966,7 +966,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             // Collect the number of channels used per side
             // We have to do this even for non-smart cables since a glass cable can display
             // a connection as smart if the
-            // adjacent tile requires it
+            // adjacent block entity requires it
             for (Direction facing : Direction.values()) {
                 int channels = cable.getCableConnectionType().isSmart() ? cable.getChannelsOnSide(facing) : 0;
                 renderState.getChannelsOnSide().put(facing, channels);

@@ -62,7 +62,7 @@ import appeng.me.pathfinding.IPathItem;
 public class GridNode implements IGridNode, IPathItem {
     private final ServerLevel world;
     /**
-     * This is the logical host of the node, which could be any object. In many cases this will be a tile-entity or
+     * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
      * part.
      */
     @Nonnull

@@ -89,7 +89,7 @@ public enum GuiText {
     // Used in a terminal to indicate that an item is craftable
     SmallFontCraft, LargeFontCraft,
 
-    // Used in a ME Interface when no appropriate TileEntity was detected near it
+    // Used in a ME Interface when no appropriate block entity was detected near it
     Nothing;
 
     private final String root;

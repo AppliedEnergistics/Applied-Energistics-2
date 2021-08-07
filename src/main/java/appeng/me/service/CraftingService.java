@@ -253,8 +253,8 @@ public class CraftingService
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (var tile : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
-            final CraftingCPUCluster cluster = tile.getCluster();
+        for (var blockEntity : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
+            final CraftingCPUCluster cluster = blockEntity.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
 

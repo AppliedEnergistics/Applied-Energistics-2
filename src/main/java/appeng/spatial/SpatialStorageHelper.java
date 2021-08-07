@@ -170,7 +170,7 @@ public class SpatialStorageHelper {
         final CachedPlane cSrc = new CachedPlane(srcWorld, srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY,
                 srcZ + scaleZ);
 
-        // do nearly all the work... swaps blocks, tiles, and block ticks
+        // do nearly all the work... swaps blocks, block entities, and block ticks
         cSrc.swap(cDst);
 
         final List<Entity> srcE = srcWorld.getEntitiesOfClass(Entity.class, srcBox);
@@ -244,11 +244,11 @@ public class SpatialStorageHelper {
         private final double z;
 
         TelDestination(final ServerLevel dimension, final AABB srcBox, final double x, final double y,
-                final double z, final int tileX, final int tileY, final int tileZ) {
+                final double z, final int blockEntityX, final int blockEntityY, final int blockEntityZ) {
             this.dim = dimension;
-            this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
-            this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));
-            this.z = Math.min(srcBox.maxZ - 0.5, Math.max(srcBox.minZ + 0.5, z + tileZ));
+            this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + blockEntityX));
+            this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + blockEntityY));
+            this.z = Math.min(srcBox.maxZ - 0.5, Math.max(srcBox.minZ + 0.5, z + blockEntityZ));
         }
     }
 

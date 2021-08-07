@@ -38,7 +38,7 @@ import appeng.blockentity.ServerTickingBlockEntity;
 
 public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, IEnergyStorage {
     /**
-     * The base energy injected each tick. Adjacent TileEnergyGenerators will increase it to pow(base, #generators).
+     * The base energy injected each tick. Adjacent energy generators will increase it to pow(base, #generators).
      */
     private static final int BASE_ENERGY = 8;
 

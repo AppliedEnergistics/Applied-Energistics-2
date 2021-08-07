@@ -44,9 +44,9 @@ public class CableBusColor implements BlockColor {
         AEColor busColor = AEColor.TRANSPARENT;
 
         if (worldIn != null && pos != null) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof CableBusBlockEntity) {
-                CableBusContainer container = ((CableBusBlockEntity) tileEntity).getCableBus();
+            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+            if (blockEntity instanceof CableBusBlockEntity) {
+                CableBusContainer container = ((CableBusBlockEntity) blockEntity).getCableBus();
                 busColor = container.getColor();
             }
         }

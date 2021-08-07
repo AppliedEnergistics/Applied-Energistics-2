@@ -32,7 +32,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import appeng.blockentity.AEBaseBlockEntity;
 
 /**
- * A class to hold data related to ticking tiles.
+ * A class to hold data related to ticking block entities.
  */
 class ServerBlockEntityRepo {
 
@@ -47,17 +47,17 @@ class ServerBlockEntityRepo {
     }
 
     /**
-     * Add a new tile to be initializes in a later tick.
+     * Add a new block entity to be initializes in a later tick.
      */
-    synchronized void addBlockEntity(AEBaseBlockEntity tile) {
-        final LevelAccessor world = tile.getLevel();
-        final int x = tile.getBlockPos().getX() >> 4;
-        final int z = tile.getBlockPos().getZ() >> 4;
+    synchronized void addBlockEntity(AEBaseBlockEntity blockEntity) {
+        final LevelAccessor world = blockEntity.getLevel();
+        final int x = blockEntity.getBlockPos().getX() >> 4;
+        final int z = blockEntity.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
         Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.get(world);
 
-        worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(tile);
+        worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(blockEntity);
     }
 
     /**
@@ -77,7 +77,7 @@ class ServerBlockEntityRepo {
     /**
      * Removes a unloaded chunk within a world.
      * <p>
-     * There is no related addWorldChunk. The necessary queue will be created once the first tile is added to a chunk to
+     * There is no related addWorldChunk. The necessary queue will be created once the first block entity is added to a chunk to
      * save memory.
      */
     synchronized void removeWorldChunk(LevelAccessor world, long chunkPos) {
@@ -88,7 +88,7 @@ class ServerBlockEntityRepo {
     }
 
     /**
-     * Get the tiles needing to be initialized in this specific {@link LevelAccessor}.
+     * Get the block entities needing to be initialized in this specific {@link LevelAccessor}.
      */
     public Long2ObjectMap<List<AEBaseBlockEntity>> getBlockEntities(LevelAccessor world) {
         return blockEntities.get(world);

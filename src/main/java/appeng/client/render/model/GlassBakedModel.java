@@ -303,7 +303,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     @Nonnull
     @Override
     public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
+            @Nonnull IModelData modelData) {
 
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block

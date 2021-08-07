@@ -161,9 +161,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player,
             boolean willHarvest, FluidState fluid) {
         if (player.getAbilities().instabuild) {
-            final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
-            if (tile != null) {
-                tile.disableDrops();
+            final AEBaseBlockEntity blockEntity = this.getBlockEntity(world, pos);
+            if (blockEntity != null) {
+                blockEntity.disableDrops();
             }
             // maybe ray trace?
         }

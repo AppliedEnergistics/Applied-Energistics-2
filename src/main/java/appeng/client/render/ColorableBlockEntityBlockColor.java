@@ -30,7 +30,7 @@ import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 
 /**
- * Automatically exposes the color of a colorable tile using tint indices 0-2
+ * Automatically exposes the color of a colorable block entity using tint indices 0-2
  */
 public class ColorableBlockEntityBlockColor implements BlockColor {
 

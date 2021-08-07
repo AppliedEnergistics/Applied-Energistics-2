@@ -90,9 +90,9 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             return;
         }
 
-        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
-                .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
+                .isSameAs(blockEntity.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
             final double yOff = 0.0;
             final double zOff = 0.0;
@@ -110,11 +110,11 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
-        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null) {
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null) {
             final double twoPixels = 2.0 / 16.0;
-            final Direction up = tile.getUp();
-            final Direction forward = tile.getForward();
+            final Direction up = blockEntity.getUp();
+            final Direction forward = blockEntity.getForward();
             final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
                     1.0 - twoPixels, 1.0 - twoPixels);
 

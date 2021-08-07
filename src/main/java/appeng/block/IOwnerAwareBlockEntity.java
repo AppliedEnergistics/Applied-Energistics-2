@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Player;
 public interface IOwnerAwareBlockEntity {
 
     /**
-     * Called when the tile is created by a player placing it.
+     * Called when the block entity is created by a player placing it.
      */
     void setOwner(Player owner);
 

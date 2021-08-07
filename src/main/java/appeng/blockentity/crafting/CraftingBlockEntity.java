@@ -145,7 +145,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
         final BlockState current = this.level.getBlockState(this.worldPosition);
 
-        // The tile might try to update while being destroyed
+        // The block entity might try to update while being destroyed
         if (current.getBlock() instanceof AbstractCraftingUnitBlock) {
             final BlockState newState = current.setValue(AbstractCraftingUnitBlock.POWERED, power)
                     .setValue(AbstractCraftingUnitBlock.FORMED, formed);
@@ -346,7 +346,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     /**
      * When the block state changes (i.e. becoming formed or unformed), we need to update the model data since it
-     * contains connections to neighboring tiles.
+     * contains connections to neighboring block entities.
      */
     @Override
     public void setBlockState(BlockState p_155251_) {

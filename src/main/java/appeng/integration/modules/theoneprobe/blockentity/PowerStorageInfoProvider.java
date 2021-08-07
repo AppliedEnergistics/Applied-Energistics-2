@@ -35,10 +35,10 @@ import appeng.util.Platform;
 public class PowerStorageInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, Player player,
+    public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
                              Level world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof IAEPowerStorage) {
-            final IAEPowerStorage storage = (IAEPowerStorage) tile;
+        if (blockEntity instanceof IAEPowerStorage) {
+            final IAEPowerStorage storage = (IAEPowerStorage) blockEntity;
             final double maxPower = storage.getAEMaxPower();
 
             if (maxPower > 0) {

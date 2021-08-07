@@ -493,15 +493,15 @@ public class DualityItemInterface
             return;
         }
 
-        final BlockEntity tile = this.iHost.getBlockEntity();
-        final Level w = tile.getLevel();
+        final BlockEntity blockEntity = this.iHost.getBlockEntity();
+        final Level w = blockEntity.getLevel();
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
             ItemStack whatToSend = i.next();
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
+                final BlockEntity te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
                 if (te == null) {
                     continue;
                 }
@@ -739,12 +739,12 @@ public class DualityItemInterface
             return false;
         }
 
-        final BlockEntity tile = this.iHost.getBlockEntity();
-        final Level w = tile.getLevel();
+        final BlockEntity blockEntity = this.iHost.getBlockEntity();
+        final Level w = blockEntity.getLevel();
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction s : possibleDirections) {
-            var te = w.getBlockEntity(tile.getBlockPos().relative(s));
+            var te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
             if (te instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
@@ -794,13 +794,13 @@ public class DualityItemInterface
 
         if (this.isBlocking()) {
             final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
-            final BlockEntity tile = this.iHost.getBlockEntity();
-            final Level w = tile.getLevel();
+            final BlockEntity blockEntity = this.iHost.getBlockEntity();
+            final Level w = blockEntity.getLevel();
 
             boolean allAreBusy = true;
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(tile.getBlockPos().relative(s));
+                final BlockEntity te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
                 if (ad != null && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
@@ -921,8 +921,8 @@ public class DualityItemInterface
     }
 
     public Component getTermName() {
-        final BlockEntity hostTile = this.iHost.getBlockEntity();
-        final Level hostWorld = hostTile.getLevel();
+        final BlockEntity host = this.iHost.getBlockEntity();
+        final Level hostWorld = host.getLevel();
 
         if (((ICustomNameObject) this.iHost).hasCustomInventoryName()) {
             return ((ICustomNameObject) this.iHost).getCustomInventoryName();
@@ -930,21 +930,21 @@ public class DualityItemInterface
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction direction : possibleDirections) {
-            final BlockPos targ = hostTile.getBlockPos().relative(direction);
-            final BlockEntity directedTile = hostWorld.getBlockEntity(targ);
+            final BlockPos targ = host.getBlockPos().relative(direction);
+            final BlockEntity directedBlockEntity = hostWorld.getBlockEntity(targ);
 
-            if (directedTile == null) {
+            if (directedBlockEntity == null) {
                 continue;
             }
 
-            if (directedTile instanceof IInterfaceHost interfaceHost) {
+            if (directedBlockEntity instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
                 }
             }
 
-            final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(directedTile, direction.getOpposite());
-            if (directedTile instanceof ICraftingMachine || adaptor != null) {
+            final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(directedBlockEntity, direction.getOpposite());
+            if (directedBlockEntity instanceof ICraftingMachine || adaptor != null) {
                 if (adaptor != null && !adaptor.hasSlots()) {
                     continue;
                 }
@@ -953,8 +953,8 @@ public class DualityItemInterface
                 final Block directedBlock = directedBlockState.getBlock();
                 ItemStack what = new ItemStack(directedBlock, 1);
                 try {
-                    Vec3 from = new Vec3(hostTile.getBlockPos().getX() + 0.5, hostTile.getBlockPos().getY() + 0.5,
-                            hostTile.getBlockPos().getZ() + 0.5);
+                    Vec3 from = new Vec3(host.getBlockPos().getX() + 0.5, host.getBlockPos().getY() + 0.5,
+                            host.getBlockPos().getZ() + 0.5);
                     from = from.add(direction.getStepX() * 0.501, direction.getStepY() * 0.501,
                             direction.getStepZ() * 0.501);
                     final Vec3 to = from.add(direction.getStepX(), direction.getStepY(),
@@ -962,9 +962,9 @@ public class DualityItemInterface
                     final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)
-                            && hit.getBlockPos().equals(directedTile.getBlockPos())) {
+                            && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
                         final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                directedTile.getBlockPos(), null);
+                                directedBlockEntity.getBlockPos(), null);
                         if (!g.isEmpty()) {
                             what = g;
                         }
@@ -1046,8 +1046,8 @@ public class DualityItemInterface
 
     private class InterfaceInventory extends MEMonitorIInventory {
 
-        public InterfaceInventory(final DualityItemInterface tileInterface) {
-            super(new AdaptorItemHandler(tileInterface.storage));
+        public InterfaceInventory(final DualityItemInterface iface) {
+            super(new AdaptorItemHandler(iface.storage));
             this.setActionSource(mySource);
         }
 

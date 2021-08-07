@@ -60,13 +60,12 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
             BlockState blockState, IProbeHitData data) {
-        final BlockEntity tile = world.getBlockEntity(data.getPos());
+        final BlockEntity blockEntity = world.getBlockEntity(data.getPos());
 
-        if (tile instanceof AEBaseBlockEntity) {
-            final AEBaseBlockEntity aeBaseTile = (AEBaseBlockEntity) tile;
+        if (blockEntity instanceof final AEBaseBlockEntity aeBlockEntity) {
 
             for (final IBlockEntityInfoProvider provider : this.providers) {
-                provider.addProbeInfo(aeBaseTile, mode, probeInfo, player, world, blockState, data);
+                provider.addProbeInfo(aeBlockEntity, mode, probeInfo, player, world, blockState, data);
             }
         }
     }

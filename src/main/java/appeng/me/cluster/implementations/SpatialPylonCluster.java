@@ -91,7 +91,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.getLine().iterator();
     }
 
-    public int tileCount() {
+    public int size() {
         return this.getLine().size();
     }
 

@@ -101,9 +101,9 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null) {
-            final Direction forward = tile.getForward();
+        final WirelessBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null) {
+            final Direction forward = blockEntity.getForward();
 
             double minX = 0;
             double minY = 0;
@@ -161,9 +161,9 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
-        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null) {
-            final Direction forward = tile.getForward();
+        final WirelessBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null) {
+            final Direction forward = blockEntity.getForward();
 
             double minX = 0;
             double minY = 0;

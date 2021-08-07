@@ -104,18 +104,18 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         // We only support the default state for facades. Sorry.
         BlockState blockState = block.defaultBlockState();
 
-        final boolean areTileEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
+        final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
         final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();
-        final boolean isTileEntity = defaultState.hasBlockEntity();
+        final boolean isBlockEntity = defaultState.hasBlockEntity();
         final boolean isFullCube = defaultState.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 
-        final boolean isTileEntityAllowed = !isTileEntity || areTileEntitiesEnabled && isWhiteListed;
+        final boolean isBlockEntityAllowed = !isBlockEntity || areBlockEntitiesEnabled && isWhiteListed;
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
 
-        if (isModel && isTileEntityAllowed && isBlockAllowed) {
+        if (isModel && isBlockEntityAllowed && isBlockAllowed) {
             if (returnItem) {
                 return itemStack;
             }

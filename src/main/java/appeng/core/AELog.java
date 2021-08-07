@@ -259,13 +259,13 @@ public final class AELog {
      * @param pos
      * @param currentState
      * @param newState
-     * @param aeBaseTile
+     * @param blockEntity
      * @see AELog#log(Level, String, Object...)
      */
     public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState,
-            @Nonnull BlockState newState, @Nonnull final AEBaseBlockEntity aeBaseTile) {
+            @Nonnull BlockState newState, @Nonnull final AEBaseBlockEntity blockEntity) {
         if (AEConfig.instance().isBlockUpdateLogEnabled()) {
-            info(BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState);
+            info(BLOCK_UPDATE, blockEntity.getClass().getName(), pos, currentState, newState);
         }
     }
 

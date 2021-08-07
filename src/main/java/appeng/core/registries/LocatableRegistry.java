@@ -42,8 +42,8 @@ public final class LocatableRegistry implements ILocatableRegistry {
     private void updateLocatable(final LocatableEventAnnounce e) {
         // TODO 1.17: Break compat and add isRemote() or getWorld() to ILocatable
         if (e.target instanceof BlockEntity) {
-            BlockEntity tileEntity = (BlockEntity) e.target;
-            if (tileEntity.getLevel() == null || tileEntity.getLevel().isClientSide()) {
+            BlockEntity blockEntity = (BlockEntity) e.target;
+            if (blockEntity.getLevel() == null || blockEntity.getLevel().isClientSide()) {
                 return;
             }
         } else if (Platform.isClient()) {

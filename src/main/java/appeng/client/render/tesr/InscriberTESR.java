@@ -59,25 +59,25 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
     }
 
     @Override
-    public void render(InscriberBlockEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers,
+    public void render(InscriberBlockEntity blockEntity, float partialTicks, PoseStack ms, MultiBufferSource buffers,
                        int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
         ms.pushPose();
         ms.translate(0.5F, 0.5F, 0.5F);
-        FacingToRotation.get(tile.getForward(), tile.getUp()).push(ms);
+        FacingToRotation.get(blockEntity.getForward(), blockEntity.getUp()).push(ms);
         ms.translate(-0.5F, -0.5F, -0.5F);
 
         // render sides of stamps
 
         long absoluteProgress = 0;
 
-        if (tile.isSmash()) {
+        if (blockEntity.isSmash()) {
             final long currentTime = System.currentTimeMillis();
-            absoluteProgress = currentTime - tile.getClientStart();
+            absoluteProgress = currentTime - blockEntity.getClientStart();
             if (absoluteProgress > 800) {
-                tile.setSmash(false);
+                blockEntity.setSmash(false);
             }
         }
 
@@ -142,16 +142,16 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
         // render items.
 
-        IItemHandler tileInv = tile.getInternalInventory();
+        IItemHandler inv = blockEntity.getInternalInventory();
 
         int items = 0;
-        if (!tileInv.getStackInSlot(0).isEmpty()) {
+        if (!inv.getStackInSlot(0).isEmpty()) {
             items++;
         }
-        if (!tileInv.getStackInSlot(1).isEmpty()) {
+        if (!inv.getStackInSlot(1).isEmpty()) {
             items++;
         }
-        if (!tileInv.getStackInSlot(2).isEmpty()) {
+        if (!inv.getStackInSlot(2).isEmpty()) {
             items++;
         }
 
@@ -161,10 +161,10 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             // consumed, see below)
             renderPresses = false;
 
-            ItemStack is = tileInv.getStackInSlot(3);
+            ItemStack is = inv.getStackInSlot(3);
 
             if (is.isEmpty()) {
-                final InscriberRecipe ir = tile.getTask();
+                final InscriberRecipe ir = blockEntity.getTask();
                 if (ir != null) {
                     // The "PRESS" type will consume the presses so they should not render after
                     // completing
@@ -176,12 +176,12 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay);
         } else {
             renderPresses = true;
-            this.renderItem(ms, tileInv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, inv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay);
         }
 
         if (renderPresses) {
-            this.renderItem(ms, tileInv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay);
-            this.renderItem(ms, tileInv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, inv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, inv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay);
         }
 
         ms.popPose();

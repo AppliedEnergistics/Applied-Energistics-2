@@ -89,9 +89,9 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile != null) {
-            final Direction forward = tile.getForward();
+        final SkyCompassBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        if (blockEntity != null) {
+            final Direction forward = blockEntity.getForward();
 
             double minX = 0;
             double minY = 0;

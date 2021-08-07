@@ -95,8 +95,8 @@ public class DebugCardItem extends AEBaseItem {
                 var node = (GridNode) gh.getGridNode(side);
                 // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
                 if (node == null) {
-                    if (gh instanceof IGridConnectedBlockEntity gridConnectedTileEntity) {
-                        node = (GridNode) gridConnectedTileEntity.getMainNode().getNode();
+                    if (gh instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
+                        node = (GridNode) gridConnectedBlockEntity.getMainNode().getNode();
                         this.outputMsg(player, "Main node of IGridConnectedBlockEntity");
                     }
                 } else {

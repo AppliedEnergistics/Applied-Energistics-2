@@ -71,7 +71,7 @@ public class TickHandler {
     private final Queue<IWorldRunnable> serverQueue = new ArrayDeque<>();
     private final Multimap<LevelAccessor, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<LevelAccessor, Queue<IWorldRunnable>> callQueue = new HashMap<>();
-    private final ServerBlockEntityRepo tiles = new ServerBlockEntityRepo();
+    private final ServerBlockEntityRepo blockEntities = new ServerBlockEntityRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
     private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
@@ -138,13 +138,13 @@ public class TickHandler {
      * <p>
      * Must be called on the server.
      *
-     * @param tile to be added, must be not null
+     * @param blockEntity to be added, must be not null
      */
-    public void addInit(final AEBaseBlockEntity tile) {
+    public void addInit(final AEBaseBlockEntity blockEntity) {
         // for no there is no reason to care about this on the client...
-        if (!tile.getLevel().isClientSide()) {
-            Objects.requireNonNull(tile);
-            this.tiles.addBlockEntity(tile);
+        if (!blockEntity.getLevel().isClientSide()) {
+            Objects.requireNonNull(blockEntity);
+            this.blockEntities.addBlockEntity(blockEntity);
         }
     }
 
@@ -181,18 +181,18 @@ public class TickHandler {
 
     public void shutdown() {
         Platform.assertServerThread();
-        this.tiles.clear();
+        this.blockEntities.clear();
         this.grids.clear();
     }
 
     /**
      * Handles a chunk being unloaded (on the server)
      * <p>
-     * Removes any pending initialization callbacks for tile-entities in that chunk.
+     * Removes any pending initialization callbacks for block entities in that chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
         if (!ev.getWorld().isClientSide()) {
-            this.tiles.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
+            this.blockEntities.removeWorldChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
         }
     }
 
@@ -201,7 +201,7 @@ public class TickHandler {
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
         if (!ev.getWorld().isClientSide()) {
-            this.tiles.addWorld(ev.getWorld());
+            this.blockEntities.addWorld(ev.getWorld());
         }
     }
 
@@ -226,7 +226,7 @@ public class TickHandler {
                 n.destroy();
             }
 
-            this.tiles.removeWorld(ev.getWorld());
+            this.blockEntities.removeWorld(ev.getWorld());
             this.callQueue.remove(ev.getWorld());
         }
     }
@@ -335,12 +335,12 @@ public class TickHandler {
     }
 
     /**
-     * Ready the tiles in this world. server-side only.
+     * Ready the block entities in this world. server-side only.
      */
     private void readyBlockEntities(ServerLevel world) {
         var chunkProvider = world.getChunkSource();
 
-        var worldQueue = tiles.getBlockEntities(world);
+        var worldQueue = blockEntities.getBlockEntities(world);
 
         // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
@@ -350,7 +350,7 @@ public class TickHandler {
             // Readies all of our block entities in this chunk as soon as it can tick BEs
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
             if (world.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
-                // Take the currently waiting tiles for this chunk and ready them all. Should more tiles be added to
+                // Take the currently waiting block entities for this chunk and ready them all. Should more block entities be added to
                 // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.
                 var chunkQueue = worldQueue.remove(packedChunkPos);
