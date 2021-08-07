@@ -67,7 +67,7 @@ public class ValidationIcon extends IconButton {
     }
 
     @Override
-    public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
+    public void renderToolTip(PoseStack poseStack, int mouseX, int mouseY) {
         if (this.tooltip.isEmpty()) {
             return;
         }
@@ -78,6 +78,6 @@ public class ValidationIcon extends IconButton {
             return;
         }
 
-        screen.renderComponentTooltip(matrices, this.tooltip, x, y);
+        screen.renderComponentTooltip(poseStack, this.tooltip, x, y);
     }
 }

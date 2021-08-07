@@ -56,7 +56,7 @@ public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity
         BakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(blockState);
 
         // FIXME: Rotation was previously handled by an auto rotating model I think, but
-        // FIXME: Should be handled using matrices instead
+        // FIXME: Should be handled using poseStack instead
         Direction forward = te.getForward();
         Direction up = te.getUp();
         // This ensures the needle isn't flipped by the model rotator. Since the model

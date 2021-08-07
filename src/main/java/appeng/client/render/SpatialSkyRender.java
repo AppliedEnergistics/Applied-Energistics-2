@@ -52,7 +52,7 @@ public class SpatialSkyRender {
             new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
             new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
-    public void render(PoseStack matrixStack, Matrix4f projectionMatrix) {
+    public void render(PoseStack poseStack, Matrix4f projectionMatrix) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;
@@ -68,18 +68,18 @@ public class SpatialSkyRender {
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
-            matrixStack.pushPose();
-            matrixStack.mulPose(rotation);
+            poseStack.pushPose();
+            poseStack.mulPose(rotation);
 
             // This is very similar to how the End sky is rendered, just untextured
-            Matrix4f matrix4f = matrixStack.last().pose();
+            Matrix4f matrix4f = poseStack.last().pose();
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             buffer.vertex(matrix4f, -100.0f, -100.0f, -100.0f).color(0f, 0f, 0f, 1f).endVertex();
             buffer.vertex(matrix4f, -100.0f, -100.0f, 100.0f).color(0f, 0f, 0f, 1f).endVertex();
             buffer.vertex(matrix4f, 100.0f, -100.0f, 100.0f).color(0f, 0f, 0f, 1f).endVertex();
             buffer.vertex(matrix4f, 100.0f, -100.0f, -100.0f).color(0f, 0f, 0f, 1f).endVertex();
             tessellator.end();
-            matrixStack.popPose();
+            poseStack.popPose();
         }
 
         // Cycle the sparkles between 0 and 0.25 color value over 2 seconds
@@ -92,7 +92,7 @@ public class SpatialSkyRender {
             RenderSystem.defaultBlendFunc();
 
             RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
-            sparkleBuffer.drawWithShader(matrixStack.last().pose(), projectionMatrix,
+            sparkleBuffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
                     GameRenderer.getPositionColorShader());
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         }

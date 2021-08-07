@@ -40,18 +40,18 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
     }
 
     @Override
-    public void renderBlockEntityAt(T te, float partialTicks, PoseStack matrixStack,
+    public void renderBlockEntityAt(T te, float partialTicks, PoseStack poseStack,
             MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
         Pair<ItemStack, Transformation> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
             if (pair.getRight() != null) {
-                pair.getRight().push(matrixStack);
+                pair.getRight().push(poseStack);
             } else {
-                matrixStack.pushPose();
+                poseStack.pushPose();
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
-                    TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers, 0);
-            matrixStack.popPose();
+                    TransformType.GROUND, combinedLight, combinedOverlay, poseStack, buffers, 0);
+            poseStack.popPose();
         }
     }
 

@@ -131,11 +131,11 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     }
 
     @Override
-    public void drawBG(PoseStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
-        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         Blitter modeBg = this.menu.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
-        modeBg.dest(leftPos + 9, topPos + imageHeight - 164).blit(matrixStack, getBlitOffset());
+        modeBg.dest(leftPos + 9, topPos + imageHeight - 164).blit(poseStack, getBlitOffset());
     }
 
 }

@@ -240,8 +240,8 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         getLongValue().ifPresent(currentValue -> setValue(currentValue + i));
     }
 
-    public void render(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
-        this.textField.render(matrices, mouseX, mouseY, partialTicks);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        this.textField.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     private void validate() {

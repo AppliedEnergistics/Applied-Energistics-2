@@ -116,9 +116,9 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     @Override
-    public void drawForegroundLayer(PoseStack matrices, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
         // Draw the track (nice for debugging)
-        // fill(matrices, displayX, displayY, this.displayX + width, this.displayY +
+        // fill(poseStack, displayX, displayY, this.displayX + width, this.displayY +
         // height, 0xffff0000);
 
         int yOffset;
@@ -131,7 +131,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
             image = ENABLED;
         }
 
-        image.dest(this.displayX, this.displayY + yOffset).blit(matrices, zIndex);
+        image.dest(this.displayX, this.displayY + yOffset).blit(poseStack, zIndex);
     }
 
     /**

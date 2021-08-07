@@ -174,7 +174,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
     }
 
     @Override
-    public void drawFG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
@@ -202,7 +202,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
 
                     name = this.font.plainSubstrByWidth(name, TEXT_MAX_WIDTH, true);
 
-                    this.font.draw(matrixStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
+                    this.font.draw(poseStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
                 }
             }
@@ -262,12 +262,12 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
     }
 
     @Override
-    public void drawBG(PoseStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
 
         // Draw the top of the dialog
-        blit(matrixStack, offsetX, offsetY, HEADER_BBOX);
+        blit(poseStack, offsetX, offsetY, HEADER_BBOX);
 
         final int scrollLevel = scrollbar.getCurrentScroll();
         boolean isInvLine;
@@ -275,7 +275,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
         int currentY = offsetY + GUI_HEADER_HEIGHT;
 
         // Draw the footer now so slots will draw on top of it
-        blit(matrixStack, offsetX, currentY + this.numLines * ROW_HEIGHT, FOOTER_BBOX);
+        blit(poseStack, offsetX, currentY + this.numLines * ROW_HEIGHT, FOOTER_BBOX);
 
         for (int i = 0; i < this.numLines; ++i) {
             // Draw the dialog background for this row
@@ -292,14 +292,14 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
             }
 
             Rect2i bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
-            blit(matrixStack, offsetX, currentY, bbox);
+            blit(poseStack, offsetX, currentY, bbox);
 
             currentY += ROW_HEIGHT;
         }
 
         // Draw search field.
         if (this.searchField != null) {
-            this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
+            this.searchField.render(poseStack, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -553,8 +553,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
      *
      * @see GuiComponent#blit(PoseStack, int, int, int, int, int, int)
      */
-    private void blit(PoseStack matrixStack, int offsetX, int offsetY, Rect2i srcRect) {
-        blit(matrixStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
+    private void blit(PoseStack poseStack, int offsetX, int offsetY, Rect2i srcRect) {
+        blit(poseStack, offsetX, offsetY, srcRect.getX(), srcRect.getY(), srcRect.getWidth(), srcRect.getHeight());
     }
 
 }

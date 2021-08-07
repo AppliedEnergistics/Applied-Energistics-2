@@ -64,7 +64,7 @@ public abstract class AbstractTableRenderer<T> {
         this.lineHeight = this.fontRenderer.lineHeight * TEXT_SCALE;
     }
 
-    public final void render(PoseStack matrixStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
+    public final void render(PoseStack poseStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
@@ -85,7 +85,7 @@ public abstract class AbstractTableRenderer<T> {
 
                 int background = getEntryBackgroundColor(entry);
                 if (background != 0) {
-                    GuiComponent.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
+                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
                 List<Component> lines = getEntryDescription(entry);
@@ -100,16 +100,16 @@ public abstract class AbstractTableRenderer<T> {
                 // Position the item at the right side of the cell with a 3px margin
                 int itemX = cellX + CELL_WIDTH - 19;
 
-                matrixStack.pushPose();
-                matrixStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
+                poseStack.pushPose();
+                poseStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
-                    fontRenderer.draw(matrixStack, line,
+                    fontRenderer.draw(poseStack, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
                             textY * INV_TEXT_SCALE, textColor);
                     textY += lineHeight + LINE_SPACING;
                 }
-                matrixStack.popPose();
+                poseStack.popPose();
 
                 ItemStack is = getEntryItem(entry);
 
@@ -118,7 +118,7 @@ public abstract class AbstractTableRenderer<T> {
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {
-                    GuiComponent.fill(matrixStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
+                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
@@ -129,7 +129,7 @@ public abstract class AbstractTableRenderer<T> {
         }
 
         if (tooltipLines != null) {
-            screen.drawTooltip(matrixStack, mouseX, mouseY, tooltipLines);
+            screen.drawTooltip(poseStack, mouseX, mouseY, tooltipLines);
         }
     }
 

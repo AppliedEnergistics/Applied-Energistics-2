@@ -82,21 +82,21 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D.
      */
-    public static void renderItem2d(PoseStack matrixStack, MultiBufferSource buffers, ItemStack itemStack,
+    public static void renderItem2d(PoseStack poseStack, MultiBufferSource buffers, ItemStack itemStack,
             float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
-            matrixStack.pushPose();
+            poseStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
-            matrixStack.translate(0, 0, 0.01f);
+            poseStack.translate(0, 0, 0.01f);
             // The Z-scaling by 0.0002 causes the model to be visually "flattened"
             // This cannot replace a proper projection, but it's cheap and gives the desired
             // effect at least from head-on
-            matrixStack.scale(scale, scale, 0.0002f);
+            poseStack.scale(scale, scale, 0.0002f);
 
             Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, TransformType.GUI,
-                    combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers, 0);
+                    combinedLightIn, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);
 
-            matrixStack.popPose();
+            poseStack.popPose();
 
         }
     }
@@ -104,17 +104,17 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D and the given text below it.
      *
-     * @param matrixStack
+     * @param poseStack
      * @param buffers
      * @param spacing           Specifies how far apart the item and the item stack amount are rendered.
      * @param combinedLightIn
      * @param combinedOverlayIn
      */
-    public static void renderItem2dWithAmount(PoseStack matrixStack, MultiBufferSource buffers,
+    public static void renderItem2dWithAmount(PoseStack poseStack, MultiBufferSource buffers,
             IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
         final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
-        TesrRenderHelper.renderItem2d(matrixStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
+        TesrRenderHelper.renderItem2d(poseStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
 
         final long stackSize = itemStack.getStackSize();
         final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
@@ -122,14 +122,14 @@ public class TesrRenderHelper {
         // Render the item count
         final Font fr = Minecraft.getInstance().font;
         final int width = fr.width(renderedStackSize);
-        matrixStack.pushPose();
-        matrixStack.translate(0.0f, spacing, 0.02f);
-        matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
-        matrixStack.scale(0.5f, 0.5f, 0);
-        matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.drawInBatch(renderedStackSize, 0, 0, -1, false, matrixStack.last().pose(), buffers, false, 0,
+        poseStack.pushPose();
+        poseStack.translate(0.0f, spacing, 0.02f);
+        poseStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
+        poseStack.scale(0.5f, 0.5f, 0);
+        poseStack.translate(-0.5f * width, 0.0f, 0.5f);
+        fr.drawInBatch(renderedStackSize, 0, 0, -1, false, poseStack.last().pose(), buffers, false, 0,
                 15728880);
-        matrixStack.popPose();
+        poseStack.popPose();
 
     }
 }

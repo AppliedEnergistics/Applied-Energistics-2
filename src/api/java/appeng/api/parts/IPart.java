@@ -82,7 +82,7 @@ public interface IPart extends ICustomCableConnection {
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
     @OnlyIn(Dist.CLIENT)
-    default void renderDynamic(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers,
+    default void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
 

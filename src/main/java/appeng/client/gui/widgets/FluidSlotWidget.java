@@ -52,13 +52,13 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     }
 
     @Override
-    public void drawContent(PoseStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY,
+    public void drawContent(PoseStack poseStack, final Minecraft mc, final int mouseX, final int mouseY,
             final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             FluidBlitter.create(fs.getFluidStack())
                     .dest(getTooltipAreaX(), getTooltipAreaY(), getTooltipAreaWidth(), getTooltipAreaHeight())
-                    .blit(matrixStack, getBlitOffset());
+                    .blit(poseStack, getBlitOffset());
         }
     }
 
