@@ -31,10 +31,10 @@ import net.minecraft.world.level.LevelAccessor;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
-import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen

@@ -24,6 +24,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.InscriberRecipes;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
@@ -31,8 +33,6 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.blockentity.misc.InscriberRecipes;
-import appeng.blockentity.misc.InscriberBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen

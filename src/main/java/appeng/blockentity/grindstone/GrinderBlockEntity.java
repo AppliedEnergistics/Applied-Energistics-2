@@ -30,11 +30,11 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.implementations.blockentities.ICrankable;
+import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipes;
-import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;

@@ -28,9 +28,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
-import appeng.blockentity.AEBaseBlockEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRenderer<T> {

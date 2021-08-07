@@ -73,6 +73,8 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
@@ -82,8 +84,6 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.blockentity.crafting.CraftingStorageBlockEntity;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
@@ -405,7 +405,7 @@ public class CraftingService
 
     @Override
     public Future<ICraftingJob> beginCraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc,
-                                                 final IAEItemStack slotItem, final ICraftingCallback cb) {
+            final IAEItemStack slotItem, final ICraftingCallback cb) {
         if (level == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }

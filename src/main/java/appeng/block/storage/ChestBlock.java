@@ -35,11 +35,11 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
-import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {

@@ -38,6 +38,7 @@ import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.Api;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
@@ -48,7 +49,6 @@ import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
-import appeng.blockentity.networking.ControllerBlockEntity;
 
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 

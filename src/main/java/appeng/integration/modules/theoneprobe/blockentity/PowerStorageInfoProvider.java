@@ -28,15 +28,15 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.util.Platform;
 
 public class PowerStorageInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level level, BlockState blockState, IProbeHitData data) {
+            Level level, BlockState blockState, IProbeHitData data) {
         if (blockEntity instanceof IAEPowerStorage) {
             final IAEPowerStorage storage = (IAEPowerStorage) blockEntity;
             final double maxPower = storage.getAEMaxPower();

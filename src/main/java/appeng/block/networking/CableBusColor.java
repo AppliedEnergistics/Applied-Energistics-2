@@ -29,8 +29,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
-import appeng.parts.CableBusContainer;
 import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.parts.CableBusContainer;
 
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).

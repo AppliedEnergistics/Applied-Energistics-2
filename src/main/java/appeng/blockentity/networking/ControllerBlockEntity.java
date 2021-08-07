@@ -38,8 +38,8 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
-import appeng.core.Api;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.core.Api;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 

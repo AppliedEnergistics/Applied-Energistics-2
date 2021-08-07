@@ -24,13 +24,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
+import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.blockentity.misc.CondenserBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.CondenserScreen

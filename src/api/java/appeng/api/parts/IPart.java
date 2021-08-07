@@ -216,7 +216,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * called by the Part host to keep your part informed.
      *
-     * @param host part side
+     * @param host        part side
      * @param blockEntity block entity of part
      */
     void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity blockEntity);

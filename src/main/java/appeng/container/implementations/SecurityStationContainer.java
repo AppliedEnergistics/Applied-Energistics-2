@@ -29,14 +29,14 @@ import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
+import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 

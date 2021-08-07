@@ -29,11 +29,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
+import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {

@@ -45,11 +45,11 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.blockentity.misc.CondenserBlockEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 

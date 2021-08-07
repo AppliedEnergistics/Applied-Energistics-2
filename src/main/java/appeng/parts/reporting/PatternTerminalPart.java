@@ -31,13 +31,13 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 

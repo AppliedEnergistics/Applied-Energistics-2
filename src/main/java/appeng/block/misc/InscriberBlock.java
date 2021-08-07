@@ -32,10 +32,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
-import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {

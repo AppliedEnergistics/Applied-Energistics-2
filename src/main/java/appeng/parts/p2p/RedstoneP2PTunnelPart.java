@@ -129,7 +129,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                 }
 
                 this.power = b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide);
-                this.power = Math.max(this.power, b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide));
+                this.power = Math.max(this.power,
+                        b.getSignal(state, this.getBlockEntity().getLevel(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

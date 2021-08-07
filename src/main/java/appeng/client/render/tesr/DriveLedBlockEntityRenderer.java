@@ -28,9 +28,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
-import appeng.blockentity.storage.DriveBlockEntity;
 
 /**
  * Renders the drive cell status indicators.
@@ -43,7 +43,7 @@ public class DriveLedBlockEntityRenderer implements BlockEntityRenderer<DriveBlo
 
     @Override
     public void render(DriveBlockEntity drive, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");

@@ -30,10 +30,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {

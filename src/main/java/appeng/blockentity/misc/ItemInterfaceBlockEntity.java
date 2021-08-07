@@ -44,6 +44,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.container.implementations.ItemInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
@@ -51,7 +52,6 @@ import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
@@ -66,7 +66,8 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         }
     };
 
-    private final DualityItemInterface duality = new DualityItemInterface(this.getMainNode(), this, getItemFromBlockEntity());
+    private final DualityItemInterface duality = new DualityItemInterface(this.getMainNode(), this,
+            getItemFromBlockEntity());
 
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;

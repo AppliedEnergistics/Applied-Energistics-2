@@ -46,8 +46,8 @@ public class GridSpatialEvent extends GridEvent {
 
     /**
      * @param spatialIoLevel Level where the Spatial IO is located
-     * @param spatialIoPos Position where the Spatial IO is located
-     * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
+     * @param spatialIoPos   Position where the Spatial IO is located
+     * @param EnergyUsage    ( the amount of energy that the SpatialIO uses)
      */
     public GridSpatialEvent(Level spatialIoLevel,
             BlockPos spatialIoPos,

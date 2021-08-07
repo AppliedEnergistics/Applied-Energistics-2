@@ -43,11 +43,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEItems;
-import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {

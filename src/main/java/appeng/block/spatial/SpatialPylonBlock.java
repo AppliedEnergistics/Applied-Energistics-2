@@ -25,8 +25,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.helpers.AEMaterials;
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
+import appeng.helpers.AEMaterials;
 
 public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity> {
 

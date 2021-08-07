@@ -27,11 +27,11 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.blockentity.storage.IOPortBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.IOPortScreen

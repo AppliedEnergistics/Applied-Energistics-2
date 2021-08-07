@@ -60,6 +60,8 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -73,8 +75,6 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.me.service.CraftingService;
-import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 

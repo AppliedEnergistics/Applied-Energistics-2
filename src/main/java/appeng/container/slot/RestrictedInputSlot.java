@@ -39,13 +39,13 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.blockentity.misc.InscriberRecipes;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
-import appeng.blockentity.misc.InscriberRecipes;
-import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.util.Platform;
 
 /**

@@ -30,11 +30,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.AEBaseBlockEntity;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 

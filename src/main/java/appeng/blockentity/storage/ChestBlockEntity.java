@@ -88,6 +88,9 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.container.me.fluids.FluidTerminalContainer;
 import appeng.container.me.items.ItemTerminalContainer;
@@ -97,9 +100,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -111,7 +111,8 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableBlockEntity, ServerTickingBlockEntity,
+        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableBlockEntity,
+        ServerTickingBlockEntity,
         ICellProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
@@ -777,8 +778,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == Api
-                        .instance().storage().getStorageChannel(IItemStorageChannel.class);
+                return ChestBlockEntity.this.cellHandler != null
+                        && ChestBlockEntity.this.cellHandler.getChannel() == Api
+                                .instance().storage().getStorageChannel(IItemStorageChannel.class);
             }
             return false;
         }

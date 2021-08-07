@@ -31,11 +31,11 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
+import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {

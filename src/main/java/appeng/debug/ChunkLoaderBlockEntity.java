@@ -25,9 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.core.AELog;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.core.AELog;
 
 public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity {
 

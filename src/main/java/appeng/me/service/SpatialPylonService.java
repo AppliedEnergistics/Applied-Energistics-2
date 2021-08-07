@@ -30,11 +30,11 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.spatial.ISpatialService;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
-import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 

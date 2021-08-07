@@ -34,13 +34,13 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerTypeBuilder;
 import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen

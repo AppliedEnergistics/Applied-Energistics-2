@@ -51,11 +51,11 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.InvOperation;
@@ -324,9 +324,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     /**
-     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is
-     * to enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method
-     * to make sure a condenser is only ever used if an item can't go anywhere else.
+     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
+     * enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to
+     * make sure a condenser is only ever used if an item can't go anywhere else.
      */
     private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
         private final CondenserItemInventory itemInventory = new CondenserItemInventory(CondenserBlockEntity.this);

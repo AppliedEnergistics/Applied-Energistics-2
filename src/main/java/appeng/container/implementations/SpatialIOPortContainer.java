@@ -24,12 +24,12 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.spatial.ISpatialService;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SpatialIOPortScreen

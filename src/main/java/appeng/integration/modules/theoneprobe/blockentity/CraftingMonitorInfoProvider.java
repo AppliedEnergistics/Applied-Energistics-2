@@ -30,15 +30,15 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
 
 public class CraftingMonitorInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level level, BlockState blockState, IProbeHitData data) {
+            Level level, BlockState blockState, IProbeHitData data) {
         if (blockEntity instanceof CraftingMonitorBlockEntity) {
             final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) blockEntity;
             final IAEItemStack displayStack = monitor.getJobProgress();

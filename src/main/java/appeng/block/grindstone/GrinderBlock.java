@@ -30,10 +30,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {

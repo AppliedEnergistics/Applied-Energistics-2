@@ -22,10 +22,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.blockentity.storage.ChestBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.ChestScreen

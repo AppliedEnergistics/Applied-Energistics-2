@@ -36,8 +36,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.client.render.cablebus.CubeBuilder;
 import appeng.blockentity.crafting.CraftingCubeModelData;
+import appeng.client.render.cablebus.CubeBuilder;
 import appeng.util.Platform;
 
 /**

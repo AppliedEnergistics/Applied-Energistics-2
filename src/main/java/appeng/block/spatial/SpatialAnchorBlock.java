@@ -34,10 +34,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
-import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.util.InteractionUtil;
 
 /**

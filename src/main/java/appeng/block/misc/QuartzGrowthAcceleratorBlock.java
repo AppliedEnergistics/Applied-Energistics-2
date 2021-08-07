@@ -35,10 +35,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.util.Platform;
 
 public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowthAcceleratorBlockEntity>
@@ -52,7 +52,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowth
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, QuartzGrowthAcceleratorBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState,
+            QuartzGrowthAcceleratorBlockEntity be) {
         return currentState.setValue(POWERED, be.isPowered());
     }
 

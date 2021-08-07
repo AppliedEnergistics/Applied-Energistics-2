@@ -36,10 +36,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ItemInterfaceContainer;
-import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {

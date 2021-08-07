@@ -36,10 +36,10 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.core.AEConfig;
-import appeng.core.definitions.AEItems;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.core.AEConfig;
+import appeng.core.definitions.AEItems;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 

@@ -44,9 +44,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
-import appeng.blockentity.misc.LightDetectorBlockEntity;
 
 public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity> implements IOrientableBlock {
 

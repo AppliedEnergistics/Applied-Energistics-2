@@ -45,6 +45,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
@@ -53,7 +54,6 @@ import appeng.me.GridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem {

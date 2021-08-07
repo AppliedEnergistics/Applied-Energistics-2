@@ -30,8 +30,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.helpers.AEMaterials;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
+import appeng.helpers.AEMaterials;
 
 public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
 

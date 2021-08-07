@@ -38,6 +38,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
@@ -45,7 +46,6 @@ import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
-import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {

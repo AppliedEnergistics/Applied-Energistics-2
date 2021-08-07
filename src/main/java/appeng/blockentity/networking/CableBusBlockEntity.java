@@ -51,11 +51,11 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.hooks.ticking.TickHandler;
 import appeng.parts.CableBusContainer;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlockEntity {

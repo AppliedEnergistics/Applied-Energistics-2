@@ -51,8 +51,8 @@ import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
-import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.util.InteractionUtil;
@@ -61,6 +61,7 @@ import appeng.util.SettingsFrom;
 
 /**
  * Base class for blocks that have a {@link BlockEntity}.
+ * 
  * @param <T> The type of {@link BlockEntity} or this block.
  */
 public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements EntityBlock {
@@ -82,9 +83,9 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     // TODO : Was this change needed?
     public void setBlockEntity(final Class<T> blockEntityClass,
-                               BlockEntityType.BlockEntitySupplier<T> blockEntityFactory,
-                               BlockEntityTicker<T> clientTicker,
-                               BlockEntityTicker<T> serverTicker) {
+            BlockEntityType.BlockEntitySupplier<T> blockEntityFactory,
+            BlockEntityTicker<T> clientTicker,
+            BlockEntityTicker<T> serverTicker) {
         this.blockEntityClass = blockEntityClass;
         this.blockEntityFactory = blockEntityFactory;
         this.serverTicker = serverTicker;

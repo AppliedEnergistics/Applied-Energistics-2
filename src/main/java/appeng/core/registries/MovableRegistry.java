@@ -32,9 +32,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import appeng.api.movable.IMovableBlockEntity;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.movable.IMovableBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;

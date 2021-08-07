@@ -32,13 +32,13 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AppEng;
 import appeng.integration.modules.theoneprobe.blockentity.ChargerInfoProvider;
 import appeng.integration.modules.theoneprobe.blockentity.CraftingMonitorInfoProvider;
 import appeng.integration.modules.theoneprobe.blockentity.IBlockEntityInfoProvider;
 import appeng.integration.modules.theoneprobe.blockentity.PowerStateInfoProvider;
 import appeng.integration.modules.theoneprobe.blockentity.PowerStorageInfoProvider;
-import appeng.blockentity.AEBaseBlockEntity;
 
 public final class BlockEntityInfoProvider implements IProbeInfoProvider {
     private final List<IBlockEntityInfoProvider> providers;

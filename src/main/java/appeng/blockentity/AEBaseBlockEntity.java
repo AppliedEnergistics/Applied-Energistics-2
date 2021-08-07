@@ -57,13 +57,13 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.fluid.AEFluidInventory;
@@ -370,7 +370,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     /**
      * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
      *
-     * @param level     level
+     * @param level level
      * @param pos   block position
      * @param drops drops of block entity
      */

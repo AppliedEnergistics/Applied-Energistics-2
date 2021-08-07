@@ -42,10 +42,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 

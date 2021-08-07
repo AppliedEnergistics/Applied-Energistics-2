@@ -56,12 +56,12 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.core.Api;
 import appeng.me.service.StatisticsService;
 import appeng.services.ChunkLoadingService;
-import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 

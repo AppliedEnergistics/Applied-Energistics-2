@@ -27,6 +27,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
@@ -36,7 +37,6 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen

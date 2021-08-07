@@ -22,9 +22,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
 
@@ -59,7 +59,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min,
+            final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(p);
             te.updateStatus(c);

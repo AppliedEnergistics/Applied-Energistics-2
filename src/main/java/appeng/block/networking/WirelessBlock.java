@@ -39,11 +39,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;
 import appeng.helpers.AEMaterials;
-import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {

@@ -46,12 +46,12 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.block.storage.DriveSlotsState;
+import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.definitions.AEBlocks;
-import appeng.blockentity.storage.ChestBlockEntity;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
@@ -71,7 +71,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
 
     @Override
     public void render(ChestBlockEntity chest, float partialTicks, PoseStack matrices, MultiBufferSource buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         Level level = chest.getLevel();
         if (level == null) {

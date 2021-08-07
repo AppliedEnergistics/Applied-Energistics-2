@@ -44,8 +44,8 @@ public interface IMovableHandler {
     boolean canHandle(BlockEntityType<?> type);
 
     /**
-     * request that the handler move the block entity from its current location to the new one. the block entity has already been
-     * invalidated, and the blocks have already been fully moved.
+     * request that the handler move the block entity from its current location to the new one. the block entity has
+     * already been invalidated, and the blocks have already been fully moved.
      * <p/>
      * You are responsible for adding the new block entity to the target level, i.e. using
      * {@link Level#setBlockEntity(BlockEntity)}.

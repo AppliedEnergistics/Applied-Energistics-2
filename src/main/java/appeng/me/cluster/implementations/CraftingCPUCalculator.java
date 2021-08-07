@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 
@@ -78,7 +78,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min,
+            final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);

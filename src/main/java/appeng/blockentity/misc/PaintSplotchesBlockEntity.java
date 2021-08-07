@@ -44,9 +44,9 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 import appeng.block.paint.PaintSplotches;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.helpers.Splotch;
 import appeng.items.misc.PaintBallItem;
-import appeng.blockentity.AEBaseBlockEntity;
 
 public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 

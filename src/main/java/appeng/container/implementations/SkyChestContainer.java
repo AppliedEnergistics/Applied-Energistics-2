@@ -23,10 +23,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
-import appeng.blockentity.storage.SkyChestBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SkyChestScreen

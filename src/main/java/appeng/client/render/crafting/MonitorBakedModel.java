@@ -25,9 +25,9 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
+import appeng.blockentity.crafting.CraftingMonitorModelData;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.client.render.model.AEModelData;
-import appeng.blockentity.crafting.CraftingMonitorModelData;
 
 /**
  * The baked model for the crafting monitor. Please note that this model doesn't handle the item being displayed. That

@@ -43,8 +43,8 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
-import appeng.core.AppEng;
 import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
@@ -84,7 +84,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     @Override
     public void render(SkyChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
-                       MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         float f = blockEntity.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);

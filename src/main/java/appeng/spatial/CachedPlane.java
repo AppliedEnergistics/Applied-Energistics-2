@@ -115,7 +115,8 @@ public class CachedPlane {
                 final LevelChunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(c.getBlockEntities().entrySet());
+                final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(
+                        c.getBlockEntities().entrySet());
                 for (final Entry<BlockPos, BlockEntity> tx : rawBlockEntities) {
                     final BlockPos cp = tx.getKey();
                     final BlockEntity te = tx.getValue();
@@ -211,13 +212,15 @@ public class CachedPlane {
 
             for (final BlockEntity te : this.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                dst.addBlockEntity(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
+                dst.addBlockEntity(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset,
+                        tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
             for (final BlockEntity te : dst.blockEntities) {
                 final BlockPos tePOS = te.getBlockPos();
-                this.addBlockEntity(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
+                this.addBlockEntity(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset,
+                        tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
             }
 
@@ -257,7 +260,7 @@ public class CachedPlane {
     }
 
     private void addBlockEntity(final int x, final int y, final int z, final BlockEntity te,
-                                final CachedPlane alternateDestination, final IMovableRegistry mr) {
+            final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];
 

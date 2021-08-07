@@ -77,8 +77,8 @@ class ServerBlockEntityRepo {
     /**
      * Removes a unloaded chunk within a level.
      * <p>
-     * There is no related addWorldChunk. The necessary queue will be created once the first block entity is added to a chunk to
-     * save memory.
+     * There is no related addWorldChunk. The necessary queue will be created once the first block entity is added to a
+     * chunk to save memory.
      */
     synchronized void removeChunk(LevelAccessor level, long chunkPos) {
         Map<Long, List<AEBaseBlockEntity>> queue = this.blockEntities.get(level);

@@ -27,9 +27,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.Api;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.grid.AENetworkBlockEntity;
 
 public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
 

@@ -27,8 +27,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.client.render.renderable.ItemRenderable;
 import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.client.render.renderable.ItemRenderable;
 
 public final class ChargerTESR {
 

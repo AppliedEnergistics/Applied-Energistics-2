@@ -38,11 +38,11 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.util.InteractionUtil;
 
 public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {

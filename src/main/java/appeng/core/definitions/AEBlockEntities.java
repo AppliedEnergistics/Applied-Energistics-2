@@ -34,18 +34,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.core.AppEng;
-import appeng.debug.ChunkLoaderBlockEntity;
-import appeng.debug.CubeGeneratorBlockEntity;
-import appeng.debug.EnergyGeneratorBlockEntity;
-import appeng.debug.ItemGenBlockEntity;
-import appeng.debug.PhantomNodeBlockEntity;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.blockentity.grindstone.CrankBlockEntity;
 import appeng.blockentity.grindstone.GrinderBlockEntity;
@@ -76,6 +70,12 @@ import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.core.AppEng;
+import appeng.debug.ChunkLoaderBlockEntity;
+import appeng.debug.CubeGeneratorBlockEntity;
+import appeng.debug.EnergyGeneratorBlockEntity;
+import appeng.debug.ItemGenBlockEntity;
+import appeng.debug.PhantomNodeBlockEntity;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
@@ -86,7 +86,8 @@ public final class AEBlockEntities {
             GrinderBlockEntity::new, AEBlocks.GRINDSTONE);
     public static final BlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
             CrankBlockEntity::new, AEBlocks.CRANK);
-    public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber", InscriberBlockEntity.class,
+    public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
+            InscriberBlockEntity.class,
             InscriberBlockEntity::new, AEBlocks.INSCRIBER);
     public static final BlockEntityType<WirelessBlockEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
             WirelessBlockEntity.class, WirelessBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
@@ -120,7 +121,8 @@ public final class AEBlockEntities {
             CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new, AEBlocks.CELL_WORKBENCH);
     public static final BlockEntityType<IOPortBlockEntity> IO_PORT = create("io_port", IOPortBlockEntity.class,
             IOPortBlockEntity::new, AEBlocks.IO_PORT);
-    public static final BlockEntityType<CondenserBlockEntity> CONDENSER = create("condenser", CondenserBlockEntity.class,
+    public static final BlockEntityType<CondenserBlockEntity> CONDENSER = create("condenser",
+            CondenserBlockEntity.class,
             CondenserBlockEntity::new, AEBlocks.CONDENSER);
     public static final BlockEntityType<EnergyAcceptorBlockEntity> ENERGY_ACCEPTOR = create("energy_acceptor",
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
@@ -178,9 +180,9 @@ public final class AEBlockEntities {
     @SuppressWarnings("unchecked")
     @SafeVarargs
     private static <T extends AEBaseBlockEntity> BlockEntityType<T> create(String shortId,
-                                                                           Class<T> entityClass,
-                                                                           BlockEntityFactory<T> factory,
-                                                                           BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
+            Class<T> entityClass,
+            BlockEntityFactory<T> factory,
+            BlockDefinition<? extends AEBaseEntityBlock<?>>... blockDefinitions) {
         Preconditions.checkArgument(blockDefinitions.length > 0);
 
         ResourceLocation id = AppEng.makeId(shortId);

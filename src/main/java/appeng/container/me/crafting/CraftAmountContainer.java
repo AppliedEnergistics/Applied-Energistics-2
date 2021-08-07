@@ -38,6 +38,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
@@ -49,7 +50,6 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen

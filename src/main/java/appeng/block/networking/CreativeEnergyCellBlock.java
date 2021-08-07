@@ -19,8 +19,8 @@
 package appeng.block.networking;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.helpers.AEMaterials;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
+import appeng.helpers.AEMaterials;
 
 public class CreativeEnergyCellBlock extends AEBaseEntityBlock<CreativeEnergyCellBlockEntity> {
 

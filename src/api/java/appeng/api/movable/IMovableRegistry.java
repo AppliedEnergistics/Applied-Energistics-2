@@ -39,10 +39,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
  *
  * The movement process is as follows,
  *
- * 1. IMovableBlockEntity.prepareToMove() or Blockentity.invalidate() depending on your opt-in method. 2. The block entity will be
- * removed from the world. 3. Its world, coordinates will be changed. *** this can be overridden with a IMovableHandler
- * *** 4. It will then be re-added to the world, or a new world. 5. Blockentity.clearRemoved() 6. IMovableBlockEntity.doneMoving
- * ( if you implemented IMovableBlockEntity )
+ * 1. IMovableBlockEntity.prepareToMove() or Blockentity.invalidate() depending on your opt-in method. 2. The block
+ * entity will be removed from the world. 3. Its world, coordinates will be changed. *** this can be overridden with a
+ * IMovableHandler *** 4. It will then be re-added to the world, or a new world. 5. Blockentity.clearRemoved() 6.
+ * IMovableBlockEntity.doneMoving ( if you implemented IMovableBlockEntity )
  *
  * Please note, this is a 100% white list only feature, I will never opt in any non-vanilla, non-AE blocks. If you do
  * not want to support your block entities being moved, you don't have to do anything.

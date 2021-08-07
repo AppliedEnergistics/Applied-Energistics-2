@@ -27,14 +27,14 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.implementations.IPowerChannelState;
-import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
 
 public class PowerStateInfoProvider implements IBlockEntityInfoProvider {
 
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
-                             Level level, BlockState blockState, IProbeHitData data) {
+            Level level, BlockState blockState, IProbeHitData data) {
         if (blockEntity instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) blockEntity;
 

@@ -28,8 +28,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.render.TesrRenderHelper;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
+import appeng.client.render.TesrRenderHelper;
 
 /**
  * Renders the item currently being crafted
@@ -42,7 +42,7 @@ public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorB
 
     @Override
     public void render(CraftingMonitorBlockEntity te, float partialTicks, PoseStack matrixStack,
-                       MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
+            MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

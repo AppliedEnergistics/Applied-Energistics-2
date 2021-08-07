@@ -45,9 +45,9 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.block.AEBaseEntityBlock;
-import appeng.core.stats.AeStats;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.grindstone.CrankBlockEntity;
+import appeng.core.stats.AeStats;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 

@@ -48,12 +48,12 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.util.Platform;
 import appeng.util.iterators.ChainedIterator;
 

@@ -29,12 +29,12 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartModel;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.container.me.items.CraftingTermContainer;
 import appeng.container.me.items.ItemTerminalContainer;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {

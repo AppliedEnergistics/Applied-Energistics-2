@@ -32,12 +32,12 @@ import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridNode;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.service.helpers.ConnectionWrapper;
-import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {

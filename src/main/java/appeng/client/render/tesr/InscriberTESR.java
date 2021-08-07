@@ -40,10 +40,10 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.features.InscriberProcessType;
+import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.blockentity.misc.InscriberBlockEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
@@ -60,7 +60,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
     @Override
     public void render(InscriberBlockEntity blockEntity, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         // render inscriber
 

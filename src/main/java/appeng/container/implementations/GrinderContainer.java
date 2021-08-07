@@ -22,13 +22,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.blockentity.grindstone.GrinderBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.GrinderScreen

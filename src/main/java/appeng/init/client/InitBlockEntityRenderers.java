@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorTESR;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.tesr.ChargerTESR;
@@ -32,7 +33,6 @@ import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.blockentity.networking.CableBusTESR;
 
 @OnlyIn(Dist.CLIENT)
 public final class InitBlockEntityRenderers {

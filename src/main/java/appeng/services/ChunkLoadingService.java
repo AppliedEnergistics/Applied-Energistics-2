@@ -28,8 +28,8 @@ import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
 import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
-import appeng.core.AppEng;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
+import appeng.core.AppEng;
 
 public class ChunkLoadingService implements LoadingValidationCallback {
 

@@ -40,9 +40,9 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
+import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.capabilities.Capabilities;
 import appeng.helpers.ForgeEnergyAdapter;
-import appeng.blockentity.AEBaseInvBlockEntity;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         implements IAEPowerStorage, IExternalPowerSink {

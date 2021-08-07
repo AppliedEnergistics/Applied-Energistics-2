@@ -54,14 +54,14 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
@@ -421,7 +421,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     /**
      * Adds the items in the upgrade slots to the drop list.
      *
-     * @param level     level
+     * @param level level
      * @param pos   pos of block entity
      * @param drops drops of block entity
      */

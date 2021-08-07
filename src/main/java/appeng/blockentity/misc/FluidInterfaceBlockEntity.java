@@ -41,6 +41,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.container.implementations.FluidInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
@@ -49,7 +50,6 @@ import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.blockentity.grid.AENetworkBlockEntity;
 
 public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {

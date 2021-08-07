@@ -34,7 +34,7 @@ public class CableBusTESR implements BlockEntityRenderer<CableBusBlockEntity> {
 
     @Override
     public void render(CableBusBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

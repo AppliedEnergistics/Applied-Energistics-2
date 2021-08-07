@@ -48,6 +48,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.LogicalSide;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -56,7 +57,6 @@ import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
 
@@ -114,7 +114,7 @@ public class TickHandler {
      * corresponding {@link WorldTickEvent}.
      *
      * @param level null or the specific {@link Level}
-     * @param c the callback
+     * @param c     the callback
      */
     public void addCallable(LevelAccessor level, ILevelRunnable c) {
         Preconditions.checkArgument(level == null || !level.isClientSide(), "Can only register serverside callbacks");
@@ -350,12 +350,14 @@ public class TickHandler {
             // Readies all of our block entities in this chunk as soon as it can tick BEs
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
             if (level.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
-                // Take the currently waiting block entities for this chunk and ready them all. Should more block entities be added to
+                // Take the currently waiting block entities for this chunk and ready them all. Should more block
+                // entities be added to
                 // this chunk while we're working on it, a new list will be added automatically and we'll work on this
                 // chunk again next tick.
                 var chunkQueue = levelQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
-                    AELog.warn("Chunk %s was unloaded while we were readying block entities", new ChunkPos(packedChunkPos));
+                    AELog.warn("Chunk %s was unloaded while we were readying block entities",
+                            new ChunkPos(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 

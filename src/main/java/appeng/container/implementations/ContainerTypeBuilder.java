@@ -131,8 +131,8 @@ public final class ContainerTypeBuilder<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Opens a container that is based around a single block entity. The block entity's position is encoded in the packet
-     * buffer.
+     * Opens a container that is based around a single block entity. The block entity's position is encoded in the
+     * packet buffer.
      */
     private C fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));

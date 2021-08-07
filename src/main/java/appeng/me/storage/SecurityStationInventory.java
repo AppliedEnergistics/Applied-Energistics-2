@@ -30,9 +30,9 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
-import appeng.blockentity.misc.SecurityStationBlockEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
