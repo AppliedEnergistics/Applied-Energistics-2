@@ -194,14 +194,14 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         boolean worked = false;
 
         final BlockEntity te = this.getHost().getBlockEntity();
-        final Level w = te.getLevel();
+        final Level level = te.getLevel();
         final AEPartLocation side = this.getSide();
 
         final BlockPos placePos = te.getBlockPos().relative(side.getDirection());
 
-        if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
+        if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
-                final Player player = Platform.getPlayer((ServerLevel) w);
+                final Player player = Platform.getPlayer((ServerLevel) level);
                 Platform.configurePlayer(player, side, this.getBlockEntity());
                 // Seems to work without...
                 // Hand hand = player.getActiveHand();
@@ -213,7 +213,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
                     Direction lookDirection = side.getDirection();
-                    PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(w, player, placePos,
+                    PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(level, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
                     i.useOn(context);
@@ -226,7 +226,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 // Seems to work without... Safe keeping
                 // player.setHeldItem(hand, ItemStack.EMPTY);
             } else {
-                final int sum = this.countEntitesAround(w, placePos);
+                final int sum = this.countEntitesAround(level, placePos);
 
                 // Disable spawning once there is a certain amount of entities in an area.
                 if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
@@ -234,7 +234,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                     if (type == Actionable.MODULATE) {
                         is.setCount((int) maxStorage);
-                        if (!spawnItemEntity(w, te, side, is)) {
+                        if (!spawnItemEntity(level, te, side, is)) {
                             // revert in case something prevents spawning.
                             worked = false;
                         }
@@ -244,7 +244,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             }
         }
 
-        this.blocked = !w.getBlockState(placePos).getMaterial().isReplaceable();
+        this.blocked = !level.getBlockState(placePos).getMaterial().isReplaceable();
 
         if (worked) {
             final IAEItemStack out = input.copy();
@@ -258,7 +258,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return input;
     }
 
-    private static boolean spawnItemEntity(Level w, BlockEntity te, AEPartLocation side, ItemStack is) {
+    private static boolean spawnItemEntity(Level level, BlockEntity te, AEPartLocation side, ItemStack is) {
         // The center of the block the plane is located in
         final double centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -266,11 +266,11 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Create an ItemEntity already at the position of the plane.
         // We don't know the final position, but need it for its size.
-        Entity entity = new ItemEntity(w, centerX, centerY, centerZ, is.copy());
+        Entity entity = new ItemEntity(level, centerX, centerY, centerZ, is.copy());
 
         // Replace it if there is a custom entity
         if (is.getItem().hasCustomEntity(is)) {
-            Entity result = is.getItem().createEntity(w, entity, is);
+            Entity result = is.getItem().createEntity(level, entity, is);
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != null) {
@@ -313,7 +313,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         entity.setDeltaMovement(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible
-        if (!w.addFreshEntity(entity)) {
+        if (!level.addFreshEntity(entity)) {
             entity.discard();
             return false;
         }

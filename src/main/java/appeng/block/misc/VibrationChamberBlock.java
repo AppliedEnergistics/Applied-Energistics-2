@@ -67,31 +67,31 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (!w.isClientSide()) {
-            final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
+        if (!level.isClientSide()) {
+            final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
-        final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
+        final VibrationChamberBlockEntity tc = this.getBlockEntity(level, pos);
         if (tc != null && tc.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
@@ -120,8 +120,8 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
             f2 += west_y * (0.3 * ox - 0.15);
             f3 += west_z * (0.3 * ox - 0.15);
 
-            w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-            w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
         }
     }
 }

@@ -77,7 +77,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     private String customName;
     private Direction forward = Direction.NORTH;
     private Direction up = Direction.UP;
-    private boolean markDirtyQueued = false;
+    private boolean setChangedQueued = false;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -379,7 +379,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
 
     }
 
-    public void getNoDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getNoDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
 
     }
 
@@ -465,16 +465,16 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
             this.setChanged();
         } else {
             this.level.blockEntityChanged(this.worldPosition);
-            if (!this.markDirtyQueued) {
-                TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
-                this.markDirtyQueued = true;
+            if (!this.setChangedQueued) {
+                TickHandler.instance().addCallable(null, this::setChangedAtEndOfTick);
+                this.setChangedQueued = true;
             }
         }
     }
 
-    private Object markDirtyAtEndOfTick(final Level w) {
+    private Object setChangedAtEndOfTick(final Level level) {
         this.setChanged();
-        this.markDirtyQueued = false;
+        this.setChangedQueued = false;
         return null;
     }
 

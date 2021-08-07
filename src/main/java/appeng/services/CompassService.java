@@ -93,35 +93,35 @@ public final class CompassService {
         }
     }
 
-    public void tryUpdateArea(final ServerLevelAccessor w, ChunkPos chunkPos) {
+    public void tryUpdateArea(final ServerLevelAccessor level, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but
         // getLevel is still the server level. We do need to use the level access to get the chunk
         // in question though, since during worldgen, it's not comitted to the actual level yet.
-        ChunkAccess chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea(w.getLevel(), chunk);
+        ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z);
+        updateArea(level.getLevel(), chunk);
     }
 
-    public void updateArea(final ServerLevel w, ChunkAccess chunk) {
-        this.updateArea(w, chunk, CHUNK_SIZE);
-        this.updateArea(w, chunk, CHUNK_SIZE + 32);
-        this.updateArea(w, chunk, CHUNK_SIZE + 64);
-        this.updateArea(w, chunk, CHUNK_SIZE + 96);
+    public void updateArea(final ServerLevel level, ChunkAccess chunk) {
+        this.updateArea(level, chunk, CHUNK_SIZE);
+        this.updateArea(level, chunk, CHUNK_SIZE + 32);
+        this.updateArea(level, chunk, CHUNK_SIZE + 64);
+        this.updateArea(level, chunk, CHUNK_SIZE + 96);
 
-        this.updateArea(w, chunk, CHUNK_SIZE + 128);
-        this.updateArea(w, chunk, CHUNK_SIZE + 160);
-        this.updateArea(w, chunk, CHUNK_SIZE + 192);
-        this.updateArea(w, chunk, CHUNK_SIZE + 224);
+        this.updateArea(level, chunk, CHUNK_SIZE + 128);
+        this.updateArea(level, chunk, CHUNK_SIZE + 160);
+        this.updateArea(level, chunk, CHUNK_SIZE + 192);
+        this.updateArea(level, chunk, CHUNK_SIZE + 224);
     }
 
     /**
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
-    public void notifyBlockChange(final ServerLevel w, BlockPos pos) {
-        ChunkAccess chunk = w.getChunk(pos);
-        updateArea(w, chunk, pos.getY());
+    public void notifyBlockChange(final ServerLevel level, BlockPos pos) {
+        ChunkAccess chunk = level.getChunk(pos);
+        updateArea(level, chunk, pos.getY());
     }
 
-    private Future<?> updateArea(final ServerLevel w, ChunkAccess c, int y) {
+    private Future<?> updateArea(final ServerLevel level, ChunkAccess c, int y) {
         this.jobSize++;
 
         final int cdy = y >> 5;
@@ -142,13 +142,13 @@ public final class CompassService {
                     pos.setY(k);
                     final Block blk = c.getBlockState(pos).getBlock();
                     if (blk == skyStoneBlock) {
-                        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, true));
+                        return this.executor.submit(new CMUpdatePost(level, cx, cz, cdy, true));
                     }
                 }
             }
         }
 
-        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, false));
+        return this.executor.submit(new CMUpdatePost(level, cx, cz, cdy, false));
     }
 
     public void kill() {

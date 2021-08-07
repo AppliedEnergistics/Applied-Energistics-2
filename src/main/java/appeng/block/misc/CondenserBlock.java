@@ -43,21 +43,21 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (!w.isClientSide()) {
-            final CondenserBlockEntity tc = this.getBlockEntity(w, pos);
+        if (!level.isClientSide()) {
+            final CondenserBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

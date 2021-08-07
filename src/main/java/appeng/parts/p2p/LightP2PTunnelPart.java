@@ -92,9 +92,9 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         }
 
         final BlockEntity te = this.getBlockEntity();
-        final Level w = te.getLevel();
+        final Level level = te.getLevel();
 
-        final int newLevel = w.getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
+        final int newLevel = level.getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide().getDirection()));
 
         if (this.lastValue != newLevel && this.getMainNode().isActive()) {
             this.lastValue = newLevel;
@@ -107,7 +107,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput() && pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();

@@ -288,12 +288,12 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
-            final double dist, final Level w, final BasePacket packet) {
-        if (w.isClientSide()) {
+                                    final double dist, final Level level, final BasePacket packet) {
+        if (level.isClientSide()) {
             return;
         }
         for (final ServerPlayer o : getPlayers()) {
-            if (o != p && o.level == w) {
+            if (o != p && o.level == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
                 final double dZ = z - o.getZ();

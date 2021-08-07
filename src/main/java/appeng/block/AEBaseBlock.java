@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.util.IOrientable;
@@ -86,8 +88,8 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(LevelAccessor w, BlockPos pos, Direction face) {
-        final IOrientable rotatable = this.getOrientable(w, pos);
+    public boolean rotateAroundFaceAxis(LevelAccessor level, BlockPos pos, Direction face) {
+        final IOrientable rotatable = this.getOrientable(level, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
             if (this.hasCustomRotation()) {
@@ -101,7 +103,7 @@ public abstract class AEBaseBlock extends Block {
                     forward = Platform.rotateAround(forward, face);
                     up = Platform.rotateAround(up, face);
 
-                    if (this.isValidOrientation(w, pos, forward, up)) {
+                    if (this.isValidOrientation(level, pos, forward, up)) {
                         rotatable.setOrientation(forward, up);
                         return true;
                     }
@@ -180,15 +182,15 @@ public abstract class AEBaseBlock extends Block {
 
     }
 
-    protected IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
+    protected IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
         if (this instanceof IOrientableBlock) {
             IOrientableBlock orientable = (IOrientableBlock) this;
-            return orientable.getOrientable(w, pos);
+            return orientable.getOrientable(level, pos);
         }
         return null;
     }
 
-    protected boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
+    protected boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
     }

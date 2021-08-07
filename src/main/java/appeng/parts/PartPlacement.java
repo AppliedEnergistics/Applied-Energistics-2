@@ -367,8 +367,8 @@ public class PartPlacement {
             if (mop instanceof BlockHitResult && mop.getLocation().distanceTo(vec3) < d0) {
                 BlockHitResult brtr = (BlockHitResult) mop;
 
-                final Level w = event.getEntity().level;
-                final BlockEntity te = w.getBlockEntity(brtr.getBlockPos());
+                final Level level = event.getEntity().level;
+                final BlockEntity te = level.getBlockEntity(brtr.getBlockPos());
                 if (te instanceof IPartHost && this.wasCanceled) {
                     event.setCanceled(true);
                 }
@@ -390,9 +390,9 @@ public class PartPlacement {
             this.placing.set(event);
 
             final ItemStack held = event.getPlayer().getItemInHand(event.getHand());
-            Level w = event.getWorld();
+            Level level = event.getWorld();
             if (place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    w, PlaceType.INTERACT_FIRST_PASS, 0) == InteractionResult.sidedSuccess(w.isClientSide())) {
+                    level, PlaceType.INTERACT_FIRST_PASS, 0) == InteractionResult.sidedSuccess(level.isClientSide())) {
                 event.setCanceled(true);
                 this.wasCanceled = true;
             }

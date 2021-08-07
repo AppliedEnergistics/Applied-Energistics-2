@@ -40,15 +40,15 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public SpatialPylonCluster createCluster(ServerLevel w, final BlockPos min, final BlockPos max) {
-        return new SpatialPylonCluster(w, min, max);
+    public SpatialPylonCluster createCluster(ServerLevel level, final BlockPos min, final BlockPos max) {
+        return new SpatialPylonCluster(level, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel level, final BlockPos min, final BlockPos max) {
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -59,10 +59,10 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel level, final BlockPos min,
+                                    final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(p);
+            final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) level.getBlockEntity(p);
             te.updateStatus(c);
             c.getLine().add(te);
         }

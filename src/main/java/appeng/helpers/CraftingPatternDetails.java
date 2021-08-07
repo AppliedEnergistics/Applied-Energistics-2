@@ -81,7 +81,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final IAEItemStack pattern;
     private int priority = 0;
 
-    public CraftingPatternDetails(final IAEItemStack is, final Level w) {
+    public CraftingPatternDetails(final IAEItemStack is, final Level level) {
         Preconditions.checkArgument(is.getItem() instanceof EncodedPatternItem,
                 "itemStack is not a ICraftingPatternItem");
 
@@ -114,7 +114,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.isCraftable) {
-            Recipe<?> recipe = w.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+            Recipe<?> recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
 
             if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");

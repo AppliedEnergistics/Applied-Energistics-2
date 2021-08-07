@@ -237,9 +237,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
-            final BlockEntity te = w.getBlockEntity(neighbor);
+            final BlockEntity te = level.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {

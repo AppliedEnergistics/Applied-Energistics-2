@@ -37,15 +37,15 @@ public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(Level w, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
-            BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItem,
+                                         BlockHitResult hit) {
 
-        BlockEntity blockEntity = w.getBlockEntity(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof ItemGenBlockEntity) {
             ItemGenBlockEntity itemGen = (ItemGenBlockEntity) blockEntity;
             itemGen.setItem(heldItem.getItem());
 
-            return InteractionResult.sidedSuccess(w.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         return InteractionResult.PASS;

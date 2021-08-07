@@ -101,8 +101,8 @@ public class TickHandler {
         return this.cliPlayerColors;
     }
 
-    public void addCallable(final LevelAccessor w, Runnable c) {
-        addCallable(w, ignored -> c.run());
+    public void addCallable(final LevelAccessor level, Runnable c) {
+        addCallable(level, ignored -> c.run());
     }
 
     /**

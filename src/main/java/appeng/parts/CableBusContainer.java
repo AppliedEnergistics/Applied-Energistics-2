@@ -677,13 +677,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
-                part.onNeighborChanged(w, pos, neighbor);
+                part.onNeighborChanged(level, pos, neighbor);
             }
         }
 

@@ -74,14 +74,13 @@ public class ReplicatorCardItem extends AEBaseItem {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Level w = context.getLevel();
-        if (w.isClientSide()) {
+        Level level = context.getLevel();
+        if (level.isClientSide()) {
             // Needed, otherwise client will trigger onItemRightClick also on server...
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         Player player = context.getPlayer();
-        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
         InteractionHand hand = context.getHand();
@@ -212,7 +211,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private void outputMsg(final Entity player, final String string) {

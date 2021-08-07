@@ -110,16 +110,16 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level w = context.getLevel();
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         ItemStack is = context.getItemInHand();
         Direction side = context.getClickedFace();
         Player p = context.getPlayer(); // This can be null
-        if (p == null && w instanceof ServerLevel) {
-            p = Platform.getPlayer((ServerLevel) w);
+        if (p == null && level instanceof ServerLevel) {
+            p = Platform.getPlayer((ServerLevel) level);
         }
 
-        final Block blk = w.getBlockState(pos).getBlock();
+        final Block blk = level.getBlockState(pos).getBlock();
 
         ItemStack paintBall = this.getColor(is);
 
@@ -136,13 +136,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 paintBall = ItemStack.EMPTY;
             }
 
-            if (p != null && !Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
+            if (p != null && !Platform.hasPermissions(new DimensionalBlockPos(level, pos), p)) {
                 return InteractionResult.FAIL;
             }
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final BlockEntity te = w.getBlockEntity(pos);
+                final BlockEntity te = level.getBlockEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableBlockEntity && p != null && this.getAECurrentPower(is) > powerPerUse
                         && ((IColorableBlockEntity) te).getColor() != AEColor.TRANSPARENT) {
@@ -150,29 +150,29 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return InteractionResult.sidedSuccess(w.isClientSide());
+                        return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 }
 
                 // clean paint balls..
-                final Block testBlk = w.getBlockState(pos.relative(side)).getBlock();
-                final BlockEntity painted = w.getBlockEntity(pos.relative(side));
+                final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
+                final BlockEntity painted = level.getBlockEntity(pos.relative(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesBlockEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                    return InteractionResult.sidedSuccess(w.isClientSide());
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
 
                 if (color != null && this.getAECurrentPower(is) > powerPerUse
-                        && color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, w, pos, color, p)) {
+                        && color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, level, pos, color, p)) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                             new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                    return InteractionResult.sidedSuccess(w.isClientSide());
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }
@@ -307,9 +307,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
     }
 
-    private boolean recolourBlock(final Block blk, final Direction side, final Level w, final BlockPos pos,
+    private boolean recolourBlock(final Block blk, final Direction side, final Level level, final BlockPos pos,
             final AEColor newColor, @Nullable final Player p) {
-        final BlockState state = w.getBlockState(pos);
+        final BlockState state = level.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
@@ -318,14 +318,14 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 newState = copyProp(state, newState, prop);
             }
 
-            return w.setBlockAndUpdate(pos, newState);
+            return level.setBlockAndUpdate(pos, newState);
         }
 
         if (blk instanceof CableBusBlock && p != null) {
-            return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
+            return ((CableBusBlock) blk).recolorBlock(level, pos, side, newColor.dye, p);
         }
 
-        BlockEntity be = w.getBlockEntity(pos);
+        BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof IColorableBlockEntity ct) {
             if (ct.getColor() != newColor) {
                 ct.recolourBlock(side, newColor, p);

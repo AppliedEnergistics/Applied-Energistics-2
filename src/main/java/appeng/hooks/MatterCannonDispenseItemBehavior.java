@@ -49,14 +49,14 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
 
             final MatterCannonItem tm = (MatterCannonItem) i;
 
-            final Level w = dispenser.getLevel();
-            if (w instanceof ServerLevel) {
-                final Player p = Platform.getPlayer((ServerLevel) w);
+            final Level level = dispenser.getLevel();
+            if (level instanceof ServerLevel) {
+                final Player p = Platform.getPlayer((ServerLevel) level);
                 Platform.configurePlayer(p, dir, dispenser.getEntity());
 
                 p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
-                dispensedItem = tm.use(w, p, null).getObject();
+                dispensedItem = tm.use(level, p, null).getObject();
             }
         }
         return dispensedItem;

@@ -72,10 +72,10 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public int getSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final Direction side) {
-        if (w instanceof Level && this.getBlockEntity(w, pos).isReady()) {
+    public int getSignal(final BlockState state, final BlockGetter level, final BlockPos pos, final Direction side) {
+        if (level instanceof Level && this.getBlockEntity(level, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
-            return ((Level) w).getMaxLocalRawBrightness(pos) - 6;
+            return ((Level) level).getMaxLocalRawBrightness(pos) - 6;
         }
 
         return 0;
@@ -97,24 +97,24 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
-            final Direction up) {
-        return this.canPlaceAt(w, pos, up.getOpposite());
+    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
+                                      final Direction up) {
+        return this.canPlaceAt(level, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockGetter w, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(final BlockGetter level, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.relative(dir);
-        BlockState blockstate = w.getBlockState(test);
-        return blockstate.isFaceSturdy(w, test, dir.getOpposite());
+        BlockState blockstate = level.getBlockState(test);
+        return blockstate.isFaceSturdy(level, test, dir.getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 
         // FIXME: We should / rather MUST use state here because at startup, this gets
         // called without a level
 
-        final Direction up = this.getOrientable(w, pos).getUp();
+        final Direction up = this.getOrientable(level, pos).getUp();
         final double xOff = -0.3 * up.getStepX();
         final double yOff = -0.3 * up.getStepY();
         final double zOff = -0.3 * up.getStepZ();
@@ -137,16 +137,16 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
         }
     }
 
-    private void dropTorch(final Level w, final BlockPos pos) {
-        final BlockState prev = w.getBlockState(pos);
-        w.destroyBlock(pos, true);
-        w.sendBlockUpdated(pos, prev, w.getBlockState(pos), 3);
+    private void dropTorch(final Level level, final BlockPos pos) {
+        final BlockState prev = level.getBlockState(pos);
+        level.destroyBlock(pos, true);
+        level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader w, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
-            if (this.canPlaceAt(w, pos, dir)) {
+            if (this.canPlaceAt(level, pos, dir)) {
                 return true;
             }
         }
@@ -154,8 +154,8 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
-        return new MetaRotation(w, pos, BlockStateProperties.FACING);
+    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+        return new MetaRotation(level, pos, BlockStateProperties.FACING);
     }
 
     @Override

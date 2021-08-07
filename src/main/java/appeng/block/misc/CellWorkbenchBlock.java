@@ -43,18 +43,18 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final CellWorkbenchBlockEntity tg = this.getBlockEntity(w, pos);
+        final CellWorkbenchBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

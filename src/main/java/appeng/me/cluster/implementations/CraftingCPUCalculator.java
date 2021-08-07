@@ -54,16 +54,16 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public CraftingCPUCluster createCluster(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public CraftingCPUCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(blockPos);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -78,10 +78,10 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel level, final BlockPos min,
+                                    final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
+            final CraftingBlockEntity te = (CraftingBlockEntity) level.getBlockEntity(blockPos);
             te.updateStatus(c);
             c.addBlockEntity(te);
         }

@@ -51,16 +51,16 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            final InscriberBlockEntity tg = this.getBlockEntity(w, pos);
+            final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {
-                if (!w.isClientSide()) {
+                if (!level.isClientSide()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
                             ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
-                return InteractionResult.sidedSuccess(w.isClientSide());
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;

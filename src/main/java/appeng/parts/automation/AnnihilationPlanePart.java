@@ -127,7 +127,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             this.refresh();
         } else {
@@ -277,16 +277,16 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             var grid = getMainNode().getGrid();
             if (grid != null) {
                 final BlockEntity te = this.getBlockEntity();
-                final ServerLevel w = (ServerLevel) te.getLevel();
+                final ServerLevel level = (ServerLevel) te.getLevel();
 
                 final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
                 final IEnergyService energy = grid.getEnergyService();
 
-                final BlockState blockState = w.getBlockState(pos);
-                if (this.canHandleBlock(w, pos, blockState)) {
+                final BlockState blockState = level.getBlockState(pos);
+                if (this.canHandleBlock(level, pos, blockState)) {
                     // Query the loot-table and get a potential outcome of the loot-table evaluation
-                    final List<ItemStack> items = this.obtainBlockDrops(w, pos);
-                    final float requiredPower = this.calculateEnergyUsage(w, pos, items);
+                    final List<ItemStack> items = this.obtainBlockDrops(level, pos);
+                    final float requiredPower = this.calculateEnergyUsage(level, pos, items);
 
                     final boolean hasPower = energy.extractAEPower(requiredPower, Actionable.SIMULATE,
                             PowerMultiplier.CONFIG) > requiredPower - 0.1;
@@ -294,7 +294,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                     if (hasPower && canStore) {
                         if (modulate) {
-                            performBreakBlock(w, pos, blockState, energy, requiredPower, items);
+                            performBreakBlock(level, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
                             TickHandler.instance().addCallable(this.getBlockEntity().getLevel(),
@@ -310,10 +310,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return TickRateModulation.IDLE;
     }
 
-    private void performBreakBlock(ServerLevel w, BlockPos pos, BlockState blockState, IEnergyService energy,
+    private void performBreakBlock(ServerLevel level, BlockPos pos, BlockState blockState, IEnergyService energy,
             float requiredPower, List<ItemStack> items) {
 
-        if (!this.breakBlockAndStoreExtraItems(w, pos)) {
+        if (!this.breakBlockAndStoreExtraItems(level, pos)) {
             // We failed to actually replace the block with air or it already was the case
             return;
         }
@@ -323,13 +323,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             // If inserting the item fully was not possible, drop it as an item entity instead if the storage clears up,
             // we'll pick it up that way
             if (overflow != null) {
-                Platform.spawnDrops(w, pos, Collections.singletonList(overflow.createItemStack()));
+                Platform.spawnDrops(level, pos, Collections.singletonList(overflow.createItemStack()));
             }
         }
 
         energy.extractAEPower(requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-        AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+        AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
                 new BlockTransitionEffectPacket(pos, blockState, this.getSide().getOpposite(),
                         BlockTransitionEffectPacket.SoundMode.NONE));
     }
@@ -353,7 +353,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    private boolean canHandleBlock(final ServerLevel w, final BlockPos pos, final BlockState state) {
+    private boolean canHandleBlock(final ServerLevel level, final BlockPos pos, final BlockState state) {
         if (state.isAir()) {
             return false;
         }
@@ -364,17 +364,17 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final Material material = state.getMaterial();
         // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
-        final float hardness = state.getDestroySpeed(w, pos);
+        final float hardness = state.getDestroySpeed(level, pos);
         final boolean ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
-        return !ignoreAirAndFluids && hardness >= 0f && w.hasChunkAt(pos)
-                && w.mayInteract(Platform.getPlayer(w), pos);
+        return !ignoreAirAndFluids && hardness >= 0f && level.hasChunkAt(pos)
+                && level.mayInteract(Platform.getPlayer(level), pos);
     }
 
-    protected List<ItemStack> obtainBlockDrops(final ServerLevel w, final BlockPos pos) {
-        final Entity fakePlayer = FakePlayerFactory.getMinecraft(w);
-        final BlockState state = w.getBlockState(pos);
-        final BlockEntity te = w.getBlockEntity(pos);
+    protected List<ItemStack> obtainBlockDrops(final ServerLevel level, final BlockPos pos) {
+        final Entity fakePlayer = FakePlayerFactory.getMinecraft(level);
+        final BlockState state = level.getBlockState(pos);
+        final BlockEntity te = level.getBlockEntity(pos);
 
         ItemStack harvestTool = createHarvestTool(state);
 
@@ -383,15 +383,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             harvestTool = ItemStack.EMPTY;
         }
 
-        return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
+        return Block.getDrops(state, level, pos, te, fakePlayer, harvestTool);
     }
 
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    protected float calculateEnergyUsage(final ServerLevel w, final BlockPos pos, final List<ItemStack> items) {
-        final BlockState state = w.getBlockState(pos);
-        final float hardness = state.getDestroySpeed(w, pos);
+    protected float calculateEnergyUsage(final ServerLevel level, final BlockPos pos, final List<ItemStack> items) {
+        final BlockState state = level.getBlockState(pos);
+        final float hardness = state.getDestroySpeed(level, pos);
 
         float requiredEnergy = 1 + hardness;
         for (final ItemStack is : items) {
@@ -431,9 +431,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return canStore;
     }
 
-    private boolean breakBlockAndStoreExtraItems(final ServerLevel w, final BlockPos pos) {
+    private boolean breakBlockAndStoreExtraItems(final ServerLevel level, final BlockPos pos) {
         // Kill the block, but signal no drops
-        if (!w.destroyBlock(pos, false)) {
+        if (!level.destroyBlock(pos, false)) {
             // The block was no longer there
             return false;
         }
@@ -441,7 +441,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
         // this (bad practice, really)
         final AABB box = new AABB(pos).inflate(0.2);
-        for (final Object ei : w.getEntitiesOfClass(ItemEntity.class, box)) {
+        for (final Object ei : level.getEntitiesOfClass(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;
                 this.storeEntityItem(entityItem);

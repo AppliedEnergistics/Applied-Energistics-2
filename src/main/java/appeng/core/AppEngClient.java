@@ -254,7 +254,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnVibrant(final Level w, final double x, final double y, final double z) {
+    private void spawnVibrant(final Level level, final double x, final double y, final double z) {
         if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
@@ -266,7 +266,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnEnergy(final Level w, final double posX, final double posY, final double posZ) {
+    private void spawnEnergy(final Level level, final double posX, final double posY, final double posZ) {
         final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;

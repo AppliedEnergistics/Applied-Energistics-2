@@ -94,13 +94,13 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Nullable
-    public T getBlockEntity(final BlockGetter w, final int x, final int y, final int z) {
-        return this.getBlockEntity(w, new BlockPos(x, y, z));
+    public T getBlockEntity(final BlockGetter level, final int x, final int y, final int z) {
+        return this.getBlockEntity(level, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getBlockEntity(final BlockGetter w, final BlockPos pos) {
-        final BlockEntity te = w.getBlockEntity(pos);
+    public T getBlockEntity(final BlockGetter level, final BlockPos pos) {
+        final BlockEntity te = level.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.blockEntityClass != null && this.blockEntityClass.isInstance(te)) {
             return this.blockEntityClass.cast(te);
@@ -126,31 +126,31 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final AEBaseBlockEntity te = this.getBlockEntity(w, pos);
+        final AEBaseBlockEntity te = this.getBlockEntity(level, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
-                te.getDrops(w, pos, drops);
+                te.getDrops(level, pos, drops);
             } else {
-                te.getNoDrops(w, pos, drops);
+                te.getNoDrops(level, pos, drops);
             }
 
             // Cry ;_; ...
-            Platform.spawnDrops(w, pos, drops);
+            Platform.spawnDrops(level, pos, drops);
         }
 
         // super will remove the TE, as it is not an instance of BlockContainer
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final Level w, final BlockPos pos) {
-        final BlockEntity te = this.getBlockEntity(w, pos);
+    public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
+        final BlockEntity te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity) {
             AEBaseInvBlockEntity invBlockEntity = (AEBaseInvBlockEntity) te;
             if (invBlockEntity.getInternalInventory().getSlots() > 0) {
@@ -169,14 +169,14 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public void setPlacedBy(final Level w, final BlockPos pos, final BlockState state, final LivingEntity placer,
+    public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
         // than a translation component, since our custom naming cannot handle
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
-        AEBaseBlockEntity te = this.getBlockEntity(w, pos);
+        AEBaseBlockEntity te = this.getBlockEntity(level, pos);
         if (te != null && is.hasCustomHoverName()) {
             Component displayName = is.getHoverName();
             if (displayName instanceof TextComponent) {
@@ -261,15 +261,15 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
-        return this.getBlockEntity(w, pos);
+    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+        return this.getBlockEntity(level, pos);
     }
 
     /**

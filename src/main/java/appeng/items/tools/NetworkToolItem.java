@@ -73,8 +73,8 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
-        if (w.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+        if (level.isClientSide()) {
             final HitResult mop = AppEng.instance().getCurrentMouseOver();
 
             if (mop == null || mop.getType() == Type.MISS) {
@@ -82,15 +82,15 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Level w = context.getLevel();
+        Level level = context.getLevel();
         final BlockHitResult mop = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
                 context.getClickedPos(), context.isInside());
-        final BlockEntity te = w.getBlockEntity(context.getClickedPos());
+        final BlockEntity te = level.getBlockEntity(context.getClickedPos());
 
         if (te instanceof IPartHost) {
             final SelectedPart part = ((IPartHost) te).selectPart(mop.getLocation());
@@ -106,11 +106,11 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             return InteractionResult.FAIL;
         }
 
-        if (w.isClientSide()) {
+        if (level.isClientSide()) {
             NetworkHandler.instance().sendToServer(new ClickPacket(context));
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
@@ -121,23 +121,23 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     public boolean serverSideToolLogic(UseOnContext useContext) {
         BlockPos pos = useContext.getClickedPos();
         Player p = useContext.getPlayer();
-        Level w = p.level;
+        Level level = p.level;
         InteractionHand hand = useContext.getHand();
         Direction side = useContext.getClickedFace();
 
-        if (!Platform.hasPermissions(new DimensionalBlockPos(w, pos), p)) {
+        if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), p)) {
             return false;
         }
 
         // The network tool has special behavior for machines hosting world-accessible nodes
-        var nodeHost = Api.instance().grid().getNodeHost(w, pos);
+        var nodeHost = Api.instance().grid().getNodeHost(level, pos);
 
-        var bs = w.getBlockState(pos);
+        var bs = level.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            if (nodeHost == null && bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
-                bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
+            if (nodeHost == null && bs.rotate(level, pos, Rotation.CLOCKWISE_90) != bs) {
+                bs.neighborChanged(level, pos, Blocks.AIR, pos, false);
                 p.swing(hand);
-                return !w.isClientSide;
+                return !level.isClientSide;
             }
         }
 
@@ -156,7 +156,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             return true;
         } else {
             BlockHitResult rtr = new BlockHitResult(useContext.getClickLocation(), side, pos, false);
-            bs.use(w, p, hand, rtr);
+            bs.use(level, p, hand, rtr);
         }
 
         return false;

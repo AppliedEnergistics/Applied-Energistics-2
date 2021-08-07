@@ -50,7 +50,7 @@ public interface ICableBusContainer {
 
     boolean clicked(Player player, InteractionHand hand, Vec3 hitVec);
 
-    void onNeighborChanged(BlockGetter w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 

@@ -248,15 +248,15 @@ public class Platform {
         return true;
     }
 
-    public static ItemStack[] getBlockDrops(final Level w, final BlockPos pos) {
+    public static ItemStack[] getBlockDrops(final Level level, final BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
         // server level
-        if (!(w instanceof ServerLevel serverLevel)) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return new ItemStack[0];
         }
 
-        final BlockState state = w.getBlockState(pos);
-        final BlockEntity blockEntity = w.getBlockEntity(pos);
+        final BlockState state = level.getBlockState(pos);
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverLevel, pos, blockEntity);
 
@@ -266,16 +266,16 @@ public class Platform {
     /*
      * Generates Item entities in the level similar to how items are generally dropped.
      */
-    public static void spawnDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
-        if (!w.isClientSide()) {
+    public static void spawnDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+        if (!level.isClientSide()) {
             for (final ItemStack i : drops) {
                 if (!i.isEmpty() && i.getCount() > 0) {
                     final double offset_x = (getRandomInt() % 32 - 16) / 82;
                     final double offset_y = (getRandomInt() % 32 - 16) / 82;
                     final double offset_z = (getRandomInt() % 32 - 16) / 82;
-                    final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
+                    final ItemEntity ei = new ItemEntity(level, 0.5 + offset_x + pos.getX(),
                             0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                    w.addFreshEntity(ei);
+                    level.addFreshEntity(ei);
                 }
             }
         }
@@ -396,16 +396,16 @@ public class Platform {
         return false;
     }
 
-    public static Player getPlayer(final ServerLevel w) {
-        Objects.requireNonNull(w);
+    public static Player getPlayer(final ServerLevel level) {
+        Objects.requireNonNull(level);
 
-        final Player wrp = FAKE_PLAYERS.get(w);
+        final Player wrp = FAKE_PLAYERS.get(level);
         if (wrp != null) {
             return wrp;
         }
 
-        final Player p = FakePlayerFactory.getMinecraft(w);
-        FAKE_PLAYERS.put(w, p);
+        final Player p = FakePlayerFactory.getMinecraft(level);
+        FAKE_PLAYERS.put(level, p);
         return p;
     }
 
@@ -893,7 +893,7 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final Level w, final Recipe<CraftingContainer> r,
+            final IMEMonitor<IAEItemStack> src, final Level level, final Recipe<CraftingContainer> r,
             final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
             final IItemList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
@@ -929,7 +929,7 @@ public class Platform {
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
                         ci.setItem(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.isSame(r.assemble(ci), output)) {
+                        if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {

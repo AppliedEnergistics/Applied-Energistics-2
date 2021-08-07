@@ -50,8 +50,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         super(entityType, level);
     }
 
-    public ChargedQuartzEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
-        super(AEEntities.CHARGED_QUARTZ, w, x, y, z, is);
+    public ChargedQuartzEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+        super(AEEntities.CHARGED_QUARTZ, level, x, y, z, is);
     }
 
     @Override

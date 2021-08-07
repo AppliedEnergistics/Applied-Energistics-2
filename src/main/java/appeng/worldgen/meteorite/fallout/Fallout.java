@@ -38,33 +38,33 @@ public class Fallout {
         return 0;
     }
 
-    public void getRandomFall(final LevelAccessor w, BlockPos pos) {
+    public void getRandomFall(final LevelAccessor level, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
+            this.putter.put(level, pos, Blocks.STONE.defaultBlockState());
         } else if (a > 0.8) {
-            this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
+            this.putter.put(level, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.7) {
-            this.putter.put(w, pos, Blocks.DIRT.defaultBlockState());
+            this.putter.put(level, pos, Blocks.DIRT.defaultBlockState());
         } else {
-            this.putter.put(w, pos, Blocks.GRAVEL.defaultBlockState());
+            this.putter.put(level, pos, Blocks.GRAVEL.defaultBlockState());
         }
     }
 
-    public void getRandomInset(final LevelAccessor w, BlockPos pos) {
+    public void getRandomInset(final LevelAccessor level, BlockPos pos) {
         final double a = Math.random();
         if (a > 0.9) {
-            this.putter.put(w, pos, Blocks.COBBLESTONE.defaultBlockState());
+            this.putter.put(level, pos, Blocks.COBBLESTONE.defaultBlockState());
         } else if (a > 0.8) {
-            this.putter.put(w, pos, Blocks.STONE.defaultBlockState());
+            this.putter.put(level, pos, Blocks.STONE.defaultBlockState());
         } else if (a > 0.7) {
-            this.putter.put(w, pos, Blocks.GRASS_BLOCK.defaultBlockState());
+            this.putter.put(level, pos, Blocks.GRASS_BLOCK.defaultBlockState());
         } else if (a > 0.6) {
-            this.putter.put(w, pos, this.skyStone);
+            this.putter.put(level, pos, this.skyStone);
         } else if (a > 0.5) {
-            this.putter.put(w, pos, Blocks.GRAVEL.defaultBlockState());
+            this.putter.put(level, pos, Blocks.GRAVEL.defaultBlockState());
         } else {
-            this.putter.put(w, pos, Blocks.AIR.defaultBlockState());
+            this.putter.put(level, pos, Blocks.AIR.defaultBlockState());
         }
     }
 }

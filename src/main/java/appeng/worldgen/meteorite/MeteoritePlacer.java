@@ -404,14 +404,14 @@ public final class MeteoritePlacer {
         }
     }
 
-    private Fallout getFallout(LevelAccessor w, BlockPos pos, FalloutMode mode) {
+    private Fallout getFallout(LevelAccessor level, BlockPos pos, FalloutMode mode) {
         switch (mode) {
             case SAND:
-                return new FalloutSand(w, pos, this.putter, this.skyStone);
+                return new FalloutSand(level, pos, this.putter, this.skyStone);
             case TERRACOTTA:
-                return new FalloutCopy(w, pos, this.putter, this.skyStone);
+                return new FalloutCopy(level, pos, this.putter, this.skyStone);
             case ICE_SNOW:
-                return new FalloutSnow(w, pos, this.putter, this.skyStone);
+                return new FalloutSnow(level, pos, this.putter, this.skyStone);
             case DEFAULT:
             default:
                 return new Fallout(this.putter, this.skyStone);

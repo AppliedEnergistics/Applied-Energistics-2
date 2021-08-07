@@ -40,8 +40,8 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.isCorner()) {
             return SHAPE_CORNER;
         } else if (bridge != null && bridge.isFormed()) {

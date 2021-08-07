@@ -39,7 +39,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

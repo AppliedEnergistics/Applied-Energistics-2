@@ -64,27 +64,27 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random rand) {
-        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
-            AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+            AppEng.instance().spawnEffect(EffectType.Energy, level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     null);
         }
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
+        final QuantumBridgeBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;

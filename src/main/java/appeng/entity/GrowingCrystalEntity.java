@@ -61,8 +61,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         super(type, level);
     }
 
-    public GrowingCrystalEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
-        super(AEEntities.GROWING_CRYSTAL, w, x, y, z, is);
+    public GrowingCrystalEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+        super(AEEntities.GROWING_CRYSTAL, level, x, y, z, is);
         this.setExtendedLifetime();
     }
 

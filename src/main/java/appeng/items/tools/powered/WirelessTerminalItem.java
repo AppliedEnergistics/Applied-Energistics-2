@@ -56,9 +56,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player player, final InteractionHand hand) {
-        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), w, player, hand);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()),
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), level, player, hand);
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 

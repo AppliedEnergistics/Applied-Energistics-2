@@ -73,14 +73,14 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
 
-        if (w instanceof ServerLevel serverLevel) {
+        if (level instanceof ServerLevel serverLevel) {
             WorldData.instance().compassData().service().notifyBlockChange(serverLevel, pos);
         }
     }

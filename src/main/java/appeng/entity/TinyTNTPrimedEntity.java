@@ -62,11 +62,11 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
         this.blocksBuilding = true;
     }
 
-    public TinyTNTPrimedEntity(final Level w, final double x, final double y, final double z,
+    public TinyTNTPrimedEntity(final Level level, final double x, final double y, final double z,
             final LivingEntity igniter) {
-        super(AEEntities.TINY_TNT_PRIMED, w);
+        super(AEEntities.TINY_TNT_PRIMED, level);
         this.setPos(x, y, z);
-        double d0 = w.random.nextDouble() * ((float) Math.PI * 2F);
+        double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);
         this.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
         this.setFuse(80);
         this.xo = x;

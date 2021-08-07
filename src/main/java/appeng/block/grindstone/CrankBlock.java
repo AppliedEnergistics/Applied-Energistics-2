@@ -56,20 +56,20 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (player instanceof FakePlayer || player == null) {
-            this.dropCrank(w, pos);
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            this.dropCrank(level, pos);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        final CrankBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        final CrankBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
             if (blockEntity.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;
@@ -97,10 +97,10 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
-            final Direction up) {
-        final BlockEntity te = w.getBlockEntity(pos);
-        return !(te instanceof CrankBlockEntity) || this.isCrankable(w, pos, up.getOpposite());
+    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
+                                      final Direction up) {
+        final BlockEntity te = level.getBlockEntity(pos);
+        return !(te instanceof CrankBlockEntity) || this.isCrankable(level, pos, up.getOpposite());
     }
 
     private Direction findCrankable(final BlockGetter level, final BlockPos pos) {
@@ -138,8 +138,8 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader w, BlockPos pos) {
-        return this.findCrankable(w, pos) != null;
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return this.findCrankable(level, pos) != null;
     }
 
     private Direction getUp(BlockGetter level, BlockPos pos) {

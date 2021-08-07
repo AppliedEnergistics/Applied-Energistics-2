@@ -80,7 +80,7 @@ public final class InitItemModelsProperties {
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
         ItemProperties.register(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
-                (is, w, p, s) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
+                (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 
 }

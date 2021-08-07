@@ -74,11 +74,11 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final ChestBlockEntity tg = this.getBlockEntity(w, pos);
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        final ChestBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 if (hit.getDirection() == tg.getUp()) {
                     if (!tg.openGui(p)) {
                         p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
@@ -89,7 +89,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
                 }
             }
 
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;

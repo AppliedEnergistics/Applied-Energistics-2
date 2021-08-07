@@ -30,9 +30,9 @@ public class FalloutSnow extends FalloutCopy {
     private static final double ICE_THRESHOLD = 0.5;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSnow(final LevelAccessor w, BlockPos pos, final MeteoriteBlockPutter putter,
+    public FalloutSnow(final LevelAccessor level, BlockPos pos, final MeteoriteBlockPutter putter,
             final BlockState skyStone) {
-        super(w, pos, putter, skyStone);
+        super(level, pos, putter, skyStone);
         this.putter = putter;
     }
 
@@ -42,11 +42,11 @@ public class FalloutSnow extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor w, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor level, BlockPos pos, final double a) {
         if (a > SNOW_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.SNOW.defaultBlockState());
+            this.putter.put(level, pos, Blocks.SNOW.defaultBlockState());
         } else if (a > ICE_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.ICE.defaultBlockState());
+            this.putter.put(level, pos, Blocks.ICE.defaultBlockState());
         }
     }
 }

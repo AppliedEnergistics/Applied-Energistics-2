@@ -58,7 +58,7 @@ public interface AppEng {
      */
     Collection<ServerPlayer> getPlayers();
 
-    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level w, BasePacket packet);
+    void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level, BasePacket packet);
 
     void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
             final double posZ, final Object o);

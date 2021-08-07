@@ -79,34 +79,34 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public void onRemove(BlockState state, Level w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final CraftingBlockEntity cp = this.getBlockEntity(w, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.breakCluster();
         }
 
-        super.onRemove(state, w, pos, newState, isMoving);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final CraftingBlockEntity tg = this.getBlockEntity(w, pos);
+        final CraftingBlockEntity tg = this.getBlockEntity(level, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p) && tg.isFormed() && tg.isActive()) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, w, pos, p, hand, hit);
+        return super.use(state, level, pos, p, hand, hit);
     }
 
     public enum CraftingUnitType {

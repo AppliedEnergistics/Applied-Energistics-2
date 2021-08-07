@@ -41,12 +41,12 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
     private static int randTickSeed = 0;
 
-    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, final Level w) {
-        super(entityType, w);
+    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, final Level level) {
+        super(entityType, level);
     }
 
-    public SingularityEntity(final Level w, final double x, final double y, final double z, final ItemStack is) {
-        super(AEEntities.SINGULARITY, w, x, y, z, is);
+    public SingularityEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+        super(AEEntities.SINGULARITY, level, x, y, z, is);
     }
 
     @Override

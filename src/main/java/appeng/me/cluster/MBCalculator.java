@@ -162,8 +162,8 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
-    private boolean isValidBlockEntityAt(final Level w, final int x, final int y, final int z) {
-        return this.isValidBlockEntity(w.getBlockEntity(new BlockPos(x, y, z)));
+    private boolean isValidBlockEntityAt(final Level level, final int x, final int y, final int z) {
+        return this.isValidBlockEntity(level.getBlockEntity(new BlockPos(x, y, z)));
     }
 
     /**
@@ -175,9 +175,9 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    private boolean verifyUnownedRegion(final ServerLevel level, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
-            if (this.verifyUnownedRegionInner(w, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
+            if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
                     side)) {
                 return false;
             }
@@ -189,12 +189,12 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     /**
      * construct the correct cluster, usually very simple.
      *
-     * @param w   level
+     * @param level   level
      * @param min min world coord
      * @param max max world coord
      * @return created cluster
      */
-    public abstract TCluster createCluster(ServerLevel w, BlockPos min, BlockPos max);
+    public abstract TCluster createCluster(ServerLevel level, BlockPos min, BlockPos max);
 
     public abstract boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max);
 
@@ -209,11 +209,11 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      * configure the multi-block block entities, most of the important stuff is in here.
      *
      * @param c   updated cluster
-     * @param w   in level
+     * @param level   in level
      * @param min min world coord
      * @param max max world coord
      */
-    public abstract void updateBlockEntities(TCluster c, ServerLevel w, BlockPos min, BlockPos max);
+    public abstract void updateBlockEntities(TCluster c, ServerLevel level, BlockPos min, BlockPos max);
 
     /**
      * check if the block entities are correct for the structure.
@@ -223,7 +223,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      */
     public abstract boolean isValidBlockEntity(BlockEntity te);
 
-    private boolean verifyUnownedRegionInner(final ServerLevel w, int minX, int minY, int minZ, int maxX, int maxY,
+    private boolean verifyUnownedRegionInner(final ServerLevel level, int minX, int minY, int minZ, int maxX, int maxY,
             int maxZ,
             final AEPartLocation side) {
         switch (side) {
@@ -256,7 +256,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         }
 
         for (BlockPos p : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
-            final BlockEntity te = w.getBlockEntity(p);
+            final BlockEntity te = level.getBlockEntity(p);
             if (this.isValidBlockEntity(te)) {
                 return true;
             }

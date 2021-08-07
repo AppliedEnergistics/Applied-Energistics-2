@@ -52,8 +52,8 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected float calculateEnergyUsage(final ServerLevel w, final BlockPos pos, final List<ItemStack> items) {
-        final float requiredEnergy = super.calculateEnergyUsage(w, pos, items);
+    protected float calculateEnergyUsage(final ServerLevel level, final BlockPos pos, final List<ItemStack> items) {
+        final float requiredEnergy = super.calculateEnergyUsage(level, pos, items);
 
         return requiredEnergy * SILK_TOUCH_FACTOR;
     }

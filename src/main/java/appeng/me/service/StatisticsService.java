@@ -139,7 +139,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
     }
 
     private Multiset<ChunkPos> getChunks(LevelAccessor level) {
-        return this.chunks.computeIfAbsent(level, w -> HashMultiset.create());
+        return this.chunks.computeIfAbsent(level, l -> HashMultiset.create());
     }
 
     /**

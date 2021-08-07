@@ -69,13 +69,13 @@ public class CraftingJob implements Runnable, ICraftingJob {
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    private Level wrapLevel(final Level w) {
-        return w;
+    private Level wrapLevel(final Level level) {
+        return level;
     }
 
-    public CraftingJob(final Level w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
+    public CraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what,
             final ICraftingCallback callback) {
-        this.level = this.wrapLevel(w);
+        this.level = this.wrapLevel(level);
         this.output = what.copy();
         this.actionSrc = actionSrc;
 

@@ -60,12 +60,12 @@ public interface ISpatialStorageCell {
      * Perform a spatial swap with the contents of the cell, and the level.
      *
      * @param is       spatial storage cell
-     * @param w        level of spatial
+     * @param level        level of spatial
      * @param min      min coord
      * @param max      max coord
      * @param playerId owner of current grid or -1
      *
      * @return success of transition
      */
-    boolean doSpatialTransition(ItemStack is, ServerLevel w, BlockPos min, BlockPos max, int playerId);
+    boolean doSpatialTransition(ItemStack is, ServerLevel level, BlockPos min, BlockPos max, int playerId);
 }

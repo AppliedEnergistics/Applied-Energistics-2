@@ -53,7 +53,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getItemInHand(hand), p);
             p.swing(hand);

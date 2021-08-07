@@ -74,7 +74,7 @@ public final class DisassembleRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull final CraftingContainer inv, @Nonnull final Level w) {
+    public boolean matches(@Nonnull final CraftingContainer inv, @Nonnull final Level level) {
         return !this.getOutput(inv).isEmpty();
     }
 

@@ -110,8 +110,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean doSpatialTransition(final ItemStack is, final ServerLevel w, final BlockPos min,
-            final BlockPos max, int playerId) {
+    public boolean doSpatialTransition(final ItemStack is, final ServerLevel level, final BlockPos min,
+                                       final BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;
@@ -142,7 +142,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(w.dimension().location(), min, max, Instant.now());
+        TransitionInfo info = new TransitionInfo(level.dimension().location(), min, max, Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {
@@ -151,7 +151,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             BlockPos offset = plot.getOrigin();
 
             this.setStoredDimension(is, plot.getId(), plot.getSize());
-            SpatialStorageHelper.getInstance().swapRegions(w, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
+            SpatialStorageHelper.getInstance().swapRegions(level, min.getX() + 1, min.getY() + 1, min.getZ() + 1,
                     cellLevel,
                     offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 

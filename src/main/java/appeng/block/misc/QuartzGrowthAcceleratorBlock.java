@@ -65,12 +65,12 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowth
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
-        final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(w, pos);
+        final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
         if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;
@@ -123,7 +123,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowth
                     break;
             }
 
-            if (!w.getBlockState(pt).isAir()) {
+            if (!level.getBlockState(pt).isAir()) {
                 return;
             }
 

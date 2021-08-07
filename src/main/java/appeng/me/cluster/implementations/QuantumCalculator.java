@@ -50,17 +50,17 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public QuantumCluster createCluster(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public QuantumCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
         return new QuantumCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
 
         byte num = 0;
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -68,10 +68,10 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
 
             num++;
             if (num == 5) {
-                if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_LINK)) {
+                if (!this.isBlockAtLocation(level, p, AEBlocks.QUANTUM_LINK)) {
                     return false;
                 }
-            } else if (!this.isBlockAtLocation(w, p, AEBlocks.QUANTUM_RING)) {
+            } else if (!this.isBlockAtLocation(level, p, AEBlocks.QUANTUM_RING)) {
                 return false;
             }
         }
@@ -79,13 +79,13 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public void updateBlockEntities(final QuantumCluster c, final ServerLevel w, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(final QuantumCluster c, final ServerLevel level, final BlockPos min,
+                                    final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getBlockEntity(p);
+            final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) level.getBlockEntity(p);
 
             num++;
             final byte flags;
@@ -111,7 +111,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
         return te instanceof QuantumBridgeBlockEntity;
     }
 
-    private boolean isBlockAtLocation(final BlockGetter w, final BlockPos pos, final BlockDefinition def) {
-        return def.block() == w.getBlockState(pos).getBlock();
+    private boolean isBlockAtLocation(final BlockGetter level, final BlockPos pos, final BlockDefinition<?> def) {
+        return def.block() == level.getBlockState(pos).getBlock();
     }
 }

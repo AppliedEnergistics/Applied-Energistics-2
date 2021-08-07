@@ -119,12 +119,12 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
 
         final BlockEntity te = this.getHost().getBlockEntity();
-        final Level w = te.getLevel();
+        final Level level = te.getLevel();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getBlockPos().relative(side.getDirection());
-        final BlockState state = w.getBlockState(pos);
+        final BlockState state = level.getBlockState(pos);
 
-        if (this.canReplace(w, state, pos)) {
+        if (this.canReplace(level, state, pos)) {
             if (type == Actionable.MODULATE) {
                 final FluidStack fs = input.getFluidStack();
                 fs.setAmount(FluidAttributes.BUCKET_VOLUME);
@@ -132,8 +132,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                 final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
                 tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
 
-                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) w);
-                if (!FluidUtil.tryPlaceFluid(fakePlayer, w, InteractionHand.MAIN_HAND, pos, tank, fs)) {
+                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) level);
+                if (!FluidUtil.tryPlaceFluid(fakePlayer, level, InteractionHand.MAIN_HAND, pos, tank, fs)) {
                     return input;
                 }
             }
@@ -145,8 +145,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return input;
     }
 
-    private boolean canReplace(Level w, BlockState state, BlockPos pos) {
-        return state.getMaterial().isReplaceable() && w.getFluidState(pos).isEmpty() && !state.getMaterial().isLiquid();
+    private boolean canReplace(Level level, BlockState state, BlockPos pos) {
+        return state.getMaterial().isReplaceable() && level.getFluidState(pos).isEmpty() && !state.getMaterial().isLiquid();
     }
 
     @Override

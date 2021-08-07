@@ -494,14 +494,14 @@ public class DualityItemInterface
         }
 
         final BlockEntity blockEntity = this.iHost.getBlockEntity();
-        final Level w = blockEntity.getLevel();
+        final Level level = blockEntity.getLevel();
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
             ItemStack whatToSend = i.next();
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
+                final BlockEntity te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
                 if (te == null) {
                     continue;
                 }
@@ -740,11 +740,11 @@ public class DualityItemInterface
         }
 
         final BlockEntity blockEntity = this.iHost.getBlockEntity();
-        final Level w = blockEntity.getLevel();
+        final Level level = blockEntity.getLevel();
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
         for (final Direction s : possibleDirections) {
-            var te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
+            var te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
             if (te instanceof IInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.gridProxy.getGrid())) {
                     continue;
@@ -795,12 +795,12 @@ public class DualityItemInterface
         if (this.isBlocking()) {
             final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
             final BlockEntity blockEntity = this.iHost.getBlockEntity();
-            final Level w = blockEntity.getLevel();
+            final Level level = blockEntity.getLevel();
 
             boolean allAreBusy = true;
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = w.getBlockEntity(blockEntity.getBlockPos().relative(s));
+                final BlockEntity te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
                 if (ad != null && ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {

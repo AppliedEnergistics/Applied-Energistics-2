@@ -38,9 +38,9 @@ public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBeha
             final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             final IBlockTool tm = (IBlockTool) i;
 
-            final Level w = dispenser.getLevel();
-            if (w instanceof ServerLevel) {
-                UseOnContext context = new DirectionalPlaceContext(w, dispenser.getPos().relative(direction),
+            final Level level = dispenser.getLevel();
+            if (level instanceof ServerLevel) {
+                UseOnContext context = new DirectionalPlaceContext(level, dispenser.getPos().relative(direction),
                         direction, dispensedItem, direction.getOpposite());
                 tm.useOn(context);
             }

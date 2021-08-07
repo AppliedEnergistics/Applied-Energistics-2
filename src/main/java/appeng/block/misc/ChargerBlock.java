@@ -62,26 +62,26 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (!w.isClientSide()) {
-            final ChargerBlockEntity tc = this.getBlockEntity(w, pos);
+        if (!level.isClientSide()) {
+            final ChargerBlockEntity tc = this.getBlockEntity(level, pos);
             if (tc != null) {
                 tc.activate(player);
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random r) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -90,7 +90,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             return;
         }
 
-        final ChargerBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
                 .isSameAs(blockEntity.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
@@ -108,9 +108,9 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 
-        final ChargerBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
             final double twoPixels = 2.0 / 16.0;
             final Direction up = blockEntity.getUp();

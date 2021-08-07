@@ -84,24 +84,24 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level w, BlockPos pos, Player player, InteractionHand hand,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
-        final WirelessBlockEntity tg = this.getBlockEntity(w, pos);
+        final WirelessBlockEntity tg = this.getBlockEntity(level, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
-            if (!w.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(w.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.use(state, w, pos, player, hand, hit);
+        return super.use(state, level, pos, player, hand, hit);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        final WirelessBlockEntity blockEntity = this.getBlockEntity(w, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final WirelessBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
             final Direction forward = blockEntity.getForward();
 
@@ -159,9 +159,9 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 
-        final WirelessBlockEntity blockEntity = this.getBlockEntity(w, pos);
+        final WirelessBlockEntity blockEntity = this.getBlockEntity(level, pos);
         if (blockEntity != null) {
             final Direction forward = blockEntity.getForward();
 

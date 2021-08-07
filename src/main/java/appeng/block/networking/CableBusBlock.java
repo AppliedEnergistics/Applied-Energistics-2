@@ -111,13 +111,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader w, BlockPos pos, BlockPos neighbor) {
-        this.cb(w, pos).onNeighborChanged(w, pos, neighbor);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        this.cb(level, pos).onNeighborChanged(level, pos, neighbor);
     }
 
     @Override
-    public int getSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final Direction side) {
-        return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
+    public int getSignal(final BlockState state, final BlockGetter level, final BlockPos pos, final Direction side) {
+        return this.cb(level, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
@@ -128,13 +128,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void entityInside(BlockState state, Level w, BlockPos pos, Entity entityIn) {
-        this.cb(w, pos).onEntityCollision(entityIn);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityIn) {
+        this.cb(level, pos).onEntityCollision(entityIn);
     }
 
     @Override
-    public int getDirectSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final Direction side) {
-        return this.cb(w, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
+    public int getDirectSignal(final BlockState state, final BlockGetter level, final BlockPos pos, final Direction side) {
+        return this.cb(level, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
@@ -171,13 +171,13 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     // TODO-1.17 This hook was removed from Forge with replacement and may be unnecessary
-    public boolean canConnectRedstone(BlockGetter w, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
         // TODO: Verify this.
         if (side == null) {
             return false;
         }
 
-        return this.cb(w, pos).canConnectRedstone(side.getOpposite());
+        return this.cb(level, pos).canConnectRedstone(side.getOpposite());
     }
 
     @Override
@@ -203,8 +203,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
     }
 
-    private ICableBusContainer cb(final BlockGetter w, final BlockPos pos) {
-        final BlockEntity te = w.getBlockEntity(pos);
+    private ICableBusContainer cb(final BlockGetter level, final BlockPos pos) {
+        final BlockEntity te = level.getBlockEntity(pos);
         ICableBusContainer out = null;
 
         if (te instanceof CableBusBlockEntity) {
@@ -215,8 +215,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Nullable
-    private IFacadeContainer fc(final BlockGetter w, final BlockPos pos) {
-        final BlockEntity te = w.getBlockEntity(pos);
+    private IFacadeContainer fc(final BlockGetter level, final BlockPos pos) {
+        final BlockEntity te = level.getBlockEntity(pos);
         IFacadeContainer out = null;
 
         if (te instanceof CableBusBlockEntity) {
@@ -250,14 +250,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(w, pos).activate(player, hand, hitInBlock)
-                ? InteractionResult.sidedSuccess(w.isClientSide())
+        return this.cb(level, pos).activate(player, hand, hitInBlock)
+                ? InteractionResult.sidedSuccess(level.isClientSide())
                 : InteractionResult.PASS;
     }
 
@@ -291,8 +291,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        CableBusBlockEntity te = getBlockEntity(w, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        CableBusBlockEntity te = getBlockEntity(level, pos);
         if (te == null) {
             return Shapes.empty();
         } else {
@@ -301,8 +301,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        CableBusBlockEntity te = getBlockEntity(w, pos);
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        CableBusBlockEntity te = getBlockEntity(level, pos);
         if (te == null) {
             return Shapes.empty();
         } else {

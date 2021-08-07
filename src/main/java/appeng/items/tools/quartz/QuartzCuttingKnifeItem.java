@@ -51,21 +51,21 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        Level w = context.getLevel();
-        if (!w.isClientSide() && player != null) {
+        Level level = context.getLevel();
+        if (!level.isClientSide() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level w, final Player p, final InteractionHand hand) {
-        if (!w.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+        if (!level.isClientSide()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swing(hand);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(w.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), p.getItemInHand(hand));
     }
 
     @Override

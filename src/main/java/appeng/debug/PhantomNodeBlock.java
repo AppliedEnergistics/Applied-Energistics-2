@@ -38,12 +38,12 @@ public class PhantomNodeBlock extends AEBaseEntityBlock<PhantomNodeBlockEntity> 
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final PhantomNodeBlockEntity tpn = this.getBlockEntity(w, pos);
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        final PhantomNodeBlockEntity tpn = this.getBlockEntity(level, pos);
         tpn.triggerCrashMode();
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
 }

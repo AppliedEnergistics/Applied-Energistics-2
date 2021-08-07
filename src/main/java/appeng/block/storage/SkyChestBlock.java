@@ -107,18 +107,18 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(final Level w, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (!w.isClientSide()) {
-            SkyChestBlockEntity blockEntity = getBlockEntity(w, pos);
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
+                                         final InteractionHand hand,
+                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {
                 ContainerOpener.openContainer(SkyChestContainer.TYPE, player,
                         ContainerLocator.forBlockEntity(blockEntity));
             }
         }
 
-        return InteractionResult.sidedSuccess(w.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

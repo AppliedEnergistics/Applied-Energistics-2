@@ -25,13 +25,13 @@ import appeng.api.util.IOrientable;
 
 public class LocationRotation implements IOrientable {
 
-    private final BlockGetter w;
+    private final BlockGetter level;
     private final int x;
     private final int y;
     private final int z;
 
     public LocationRotation(final BlockGetter level, final int x, final int y, final int z) {
-        this.w = level;
+        this.level = level;
         this.x = x;
         this.y = y;
         this.z = z;

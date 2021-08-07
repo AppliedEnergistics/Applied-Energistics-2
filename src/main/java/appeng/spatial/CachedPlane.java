@@ -65,7 +65,7 @@ public class CachedPlane {
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerLevel w, final int minX, final int minY, final int minZ, final int maxX,
+    public CachedPlane(final ServerLevel level, final int minX, final int minY, final int minZ, final int maxX,
             final int maxY, final int maxZ) {
 
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
@@ -75,7 +75,7 @@ public class CachedPlane {
             this.matrixBlockState = null;
         }
 
-        this.level = w;
+        this.level = level;
 
         this.x_size = maxX - minX + 1;
         this.y_size = maxY - minY + 1;
@@ -101,7 +101,7 @@ public class CachedPlane {
 
         for (int x = 0; x < this.x_size; x++) {
             for (int z = 0; z < this.z_size; z++) {
-                this.myColumns[x][z] = new Column(w.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
+                this.myColumns[x][z] = new Column(level.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
                         minZ + z & 0xF, minCY, cy_size);
             }
         }
@@ -112,7 +112,7 @@ public class CachedPlane {
             for (int cz = 0; cz < this.cz_size; cz++) {
                 final List<BlockPos> deadBlockEntities = new ArrayList<>();
 
-                final LevelChunk c = w.getChunk(minCX + cx, minCZ + cz);
+                final LevelChunk c = level.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
                 final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(
@@ -133,7 +133,7 @@ public class CachedPlane {
 
                             // don't skip air, just let the code replace it...
                             if (details.state.isAir()) {
-                                w.removeBlock(tePOS, false);
+                                level.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());
                             }
