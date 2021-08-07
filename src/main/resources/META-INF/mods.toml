@@ -10,7 +10,7 @@ license="See GitHub repository for details"
 
 [[mods]]
 modId="appliedenergistics2"
-version="${version}"
+version="0.0.0"
 displayName="Applied Energistics 2"
 description="A Mod about Matter, Energy and using them to conquer the world.."
 
