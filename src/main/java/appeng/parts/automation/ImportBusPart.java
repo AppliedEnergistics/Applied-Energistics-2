@@ -43,7 +43,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.IOBusContainer;
+import appeng.container.implementations.ItemIOBusContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -118,7 +118,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            ContainerOpener.openContainer(IOBusContainer.IMPORT_TYPE, player, ContainerLocator.forPart(this));
+            ContainerOpener.openContainer(ItemIOBusContainer.IMPORT_TYPE, player, ContainerLocator.forPart(this));
         }
         return true;
     }

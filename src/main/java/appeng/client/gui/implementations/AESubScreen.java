@@ -40,8 +40,8 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.CraftingTerminalPart;
+import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.parts.reporting.TerminalPart;
 import appeng.tile.storage.ChestTileEntity;
 
 /**
@@ -72,7 +72,7 @@ public final class AESubScreen {
         } else if (containerHost instanceof WirelessTerminalGuiObject) {
             this.previousContainerIcon = AEItems.WIRELESS_TERMINAL.stack();
             this.previousContainerType = WirelessTermContainer.TYPE;
-        } else if (containerHost instanceof TerminalPart) {
+        } else if (containerHost instanceof ItemTerminalPart) {
             this.previousContainerIcon = AEParts.TERMINAL.stack();
             this.previousContainerType = ItemTerminalContainer.TYPE;
         } else if (containerHost instanceof CraftingTerminalPart) {

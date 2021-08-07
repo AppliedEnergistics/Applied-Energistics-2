@@ -65,16 +65,16 @@ import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.fluids.helper.IConfigurableFluidInventory;
-import appeng.fluids.parts.FluidLevelEmitterPart;
-import appeng.fluids.util.AEFluidInventory;
+import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
+import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.LevelEmitterPart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import appeng.util.fluid.AEFluidInventory;
 
 public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
 

@@ -27,7 +27,7 @@ import appeng.api.implementations.IUpgradeableHost;
 
 public interface IInterfaceHost extends IUpgradeableHost {
 
-    DualityInterface getInterfaceDuality();
+    DualityItemInterface getInterfaceDuality();
 
     EnumSet<Direction> getTargets();
 

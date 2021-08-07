@@ -30,13 +30,13 @@ import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CustomSlotWidget;
+import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.FakeSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.fluids.client.gui.widgets.FluidSlotWidget;
-import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
+import appeng.util.fluid.AEFluidStack;
 
 /**
  * JEI allows ingredients to be dragged from a JEI panel onto compatible slots to set filters and the like without

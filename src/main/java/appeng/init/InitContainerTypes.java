@@ -25,14 +25,20 @@ import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.ChestContainer;
 import appeng.container.implementations.CondenserContainer;
 import appeng.container.implementations.DriveContainer;
-import appeng.container.implementations.FormationPlaneContainer;
+import appeng.container.implementations.FluidFormationPlaneContainer;
+import appeng.container.implementations.FluidIOBusContainer;
+import appeng.container.implementations.FluidInterfaceContainer;
+import appeng.container.implementations.FluidLevelEmitterContainer;
+import appeng.container.implementations.FluidStorageBusContainer;
 import appeng.container.implementations.GrinderContainer;
-import appeng.container.implementations.IOBusContainer;
 import appeng.container.implementations.IOPortContainer;
 import appeng.container.implementations.InscriberContainer;
-import appeng.container.implementations.InterfaceContainer;
 import appeng.container.implementations.InterfaceTerminalContainer;
-import appeng.container.implementations.LevelEmitterContainer;
+import appeng.container.implementations.ItemFormationPlaneContainer;
+import appeng.container.implementations.ItemIOBusContainer;
+import appeng.container.implementations.ItemInterfaceContainer;
+import appeng.container.implementations.ItemLevelEmitterContainer;
+import appeng.container.implementations.ItemStorageBusContainer;
 import appeng.container.implementations.MolecularAssemblerContainer;
 import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.QNBContainer;
@@ -41,7 +47,6 @@ import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.container.implementations.SpatialAnchorContainer;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.container.implementations.StorageBusContainer;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.container.implementations.WirelessContainer;
 import appeng.container.me.crafting.CraftAmountContainer;
@@ -56,11 +61,6 @@ import appeng.container.me.items.PatternTermContainer;
 import appeng.container.me.items.WirelessTermContainer;
 import appeng.container.me.networktool.NetworkStatusContainer;
 import appeng.container.me.networktool.NetworkToolContainer;
-import appeng.fluids.container.FluidFormationPlaneContainer;
-import appeng.fluids.container.FluidIOBusContainer;
-import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.container.FluidLevelEmitterContainer;
-import appeng.fluids.container.FluidStorageBusContainer;
 
 public final class InitContainerTypes {
 
@@ -78,13 +78,13 @@ public final class InitContainerTypes {
                 CraftingStatusContainer.TYPE,
                 CraftingTermContainer.TYPE,
                 DriveContainer.TYPE,
-                FormationPlaneContainer.TYPE,
+                ItemFormationPlaneContainer.TYPE,
                 GrinderContainer.TYPE,
                 InscriberContainer.TYPE,
-                InterfaceContainer.TYPE,
+                ItemInterfaceContainer.TYPE,
                 InterfaceTerminalContainer.TYPE,
                 IOPortContainer.TYPE,
-                LevelEmitterContainer.TYPE,
+                ItemLevelEmitterContainer.TYPE,
                 MolecularAssemblerContainer.TYPE,
                 ItemTerminalContainer.TYPE,
                 MEPortableCellContainer.TYPE,
@@ -98,9 +98,9 @@ public final class InitContainerTypes {
                 SkyChestContainer.TYPE,
                 SpatialIOPortContainer.TYPE,
                 SpatialAnchorContainer.TYPE,
-                StorageBusContainer.TYPE,
-                IOBusContainer.EXPORT_TYPE,
-                IOBusContainer.IMPORT_TYPE,
+                ItemStorageBusContainer.TYPE,
+                ItemIOBusContainer.EXPORT_TYPE,
+                ItemIOBusContainer.IMPORT_TYPE,
                 VibrationChamberContainer.TYPE,
                 WirelessContainer.TYPE,
                 WirelessTermContainer.TYPE,

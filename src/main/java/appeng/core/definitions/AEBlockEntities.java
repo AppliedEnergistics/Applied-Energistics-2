@@ -40,7 +40,6 @@ import appeng.debug.CubeGeneratorTileEntity;
 import appeng.debug.EnergyGeneratorTileEntity;
 import appeng.debug.ItemGenTileEntity;
 import appeng.debug.PhantomNodeTileEntity;
-import appeng.fluids.tile.FluidInterfaceTileEntity;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.ClientTickingBlockEntity;
 import appeng.tile.ServerTickingBlockEntity;
@@ -53,8 +52,9 @@ import appeng.tile.grindstone.GrinderTileEntity;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.tile.misc.ChargerTileEntity;
 import appeng.tile.misc.CondenserTileEntity;
+import appeng.tile.misc.FluidInterfaceTileEntity;
 import appeng.tile.misc.InscriberTileEntity;
-import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.ItemInterfaceTileEntity;
 import appeng.tile.misc.LightDetectorTileEntity;
 import appeng.tile.misc.PaintSplotchesTileEntity;
 import appeng.tile.misc.QuartzGrowthAcceleratorTileEntity;
@@ -111,8 +111,9 @@ public final class AEBlockEntities {
             DriveTileEntity::new, AEBlocks.DRIVE);
     public static final BlockEntityType<ChestTileEntity> CHEST = create("chest", ChestTileEntity.class,
             ChestTileEntity::new, AEBlocks.CHEST);
-    public static final BlockEntityType<InterfaceTileEntity> INTERFACE = create("interface", InterfaceTileEntity.class,
-            InterfaceTileEntity::new, AEBlocks.ITEM_INTERFACE);
+    public static final BlockEntityType<ItemInterfaceTileEntity> INTERFACE = create("interface",
+            ItemInterfaceTileEntity.class,
+            ItemInterfaceTileEntity::new, AEBlocks.ITEM_INTERFACE);
     public static final BlockEntityType<FluidInterfaceTileEntity> FLUID_INTERFACE = create("fluid_interface",
             FluidInterfaceTileEntity.class, FluidInterfaceTileEntity::new, AEBlocks.FLUID_INTERFACE);
     public static final BlockEntityType<CellWorkbenchTileEntity> CELL_WORKBENCH = create("cell_workbench",

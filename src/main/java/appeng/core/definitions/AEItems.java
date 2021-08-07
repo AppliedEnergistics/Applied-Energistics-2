@@ -44,8 +44,6 @@ import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
-import appeng.fluids.items.BasicFluidStorageCell;
-import appeng.fluids.items.FluidDummyItem;
 import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
@@ -53,9 +51,11 @@ import appeng.items.materials.StorageComponentItem;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.misc.EncodedPatternItem;
+import appeng.items.misc.FluidDummyItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.parts.FacadeItem;
-import appeng.items.storage.BasicStorageCellItem;
+import appeng.items.storage.BasicFluidStorageCell;
+import appeng.items.storage.BasicItemStorageCellItem;
 import appeng.items.storage.CreativeStorageCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.ViewCellItem;
@@ -230,10 +230,10 @@ public final class AEItems {
     public static final ItemDefinition<CreativeStorageCellItem> CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeStorageCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
     public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
-    public static final ItemDefinition<BasicStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
-    public static final ItemDefinition<BasicStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
-    public static final ItemDefinition<BasicStorageCellItem> CELL16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128));
-    public static final ItemDefinition<BasicStorageCellItem> CELL64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCellItem(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512));
+    public static final ItemDefinition<BasicItemStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
+    public static final ItemDefinition<BasicItemStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
+    public static final ItemDefinition<BasicItemStorageCellItem> CELL16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128));
+    public static final ItemDefinition<BasicItemStorageCellItem> CELL64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512));
 
     public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8));
     public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32));

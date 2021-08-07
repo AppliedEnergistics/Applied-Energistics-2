@@ -27,8 +27,8 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.container.me.crafting.CraftAmountContainer;
 import appeng.core.localization.GuiText;
 
