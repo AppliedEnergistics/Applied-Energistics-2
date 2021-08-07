@@ -29,12 +29,12 @@ import appeng.core.definitions.AEBlocks;
 public class CraftingStorageBlockEntity extends CraftingBlockEntity {
     private static final int KILO_SCALAR = 1024;
 
-    public CraftingStorageBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CraftingStorageBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
-    protected ItemStack getItemFromTile() {
+    protected ItemStack getItemFromBlockEntity() {
         final int storage = getStorageBytes() / KILO_SCALAR;
 
         switch (storage) {
@@ -47,7 +47,7 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             case 64:
                 return AEBlocks.CRAFTING_STORAGE_64K.stack();
             default:
-                return super.getItemFromTile();
+                return super.getItemFromBlockEntity();
         }
     }
 

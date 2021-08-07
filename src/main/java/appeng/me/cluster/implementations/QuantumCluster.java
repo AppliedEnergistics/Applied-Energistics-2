@@ -230,7 +230,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
-    public Iterator<QuantumBridgeBlockEntity> getTiles() {
+    public Iterator<QuantumBridgeBlockEntity> getBlockEntities() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }

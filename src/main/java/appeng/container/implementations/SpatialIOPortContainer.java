@@ -76,7 +76,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
         if (isServer()) {
             this.delay++;
 
-            var gridNode = ((SpatialIOPortBlockEntity) getTileEntity()).getGridNode();
+            var gridNode = ((SpatialIOPortBlockEntity) getBlockEntity()).getGridNode();
             var grid = gridNode != null ? gridNode.getGrid() : null;
 
             if (this.delay > 15 && grid != null) {

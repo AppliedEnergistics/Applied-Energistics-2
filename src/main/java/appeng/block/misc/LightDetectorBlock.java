@@ -73,7 +73,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
 
     @Override
     public int getSignal(final BlockState state, final BlockGetter w, final BlockPos pos, final Direction side) {
-        if (w instanceof Level && this.getTileEntity(w, pos).isReady()) {
+        if (w instanceof Level && this.getBlockEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((Level) w).getMaxLocalRawBrightness(pos) - 6;
         }
@@ -85,7 +85,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, world, pos, neighbor);
 
-        final LightDetectorBlockEntity tld = this.getTileEntity(world, pos);
+        final LightDetectorBlockEntity tld = this.getBlockEntity(world, pos);
         if (tld != null) {
             tld.updateLight();
         }

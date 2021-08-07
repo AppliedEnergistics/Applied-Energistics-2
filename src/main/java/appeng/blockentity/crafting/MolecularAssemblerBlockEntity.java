@@ -98,8 +98,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @OnlyIn(Dist.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public MolecularAssemblerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
 
         this.getMainNode()
                 .setIdlePowerUsage(0.0)

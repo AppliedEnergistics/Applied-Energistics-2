@@ -49,10 +49,10 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
             return InteractionResult.PASS;
         }
 
-        final CellWorkbenchBlockEntity tg = this.getTileEntity(w, pos);
+        final CellWorkbenchBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
-                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
+                ContainerOpener.openContainer(CellWorkbenchContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

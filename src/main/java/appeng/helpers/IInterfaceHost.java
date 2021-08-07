@@ -31,7 +31,7 @@ public interface IInterfaceHost extends IUpgradeableHost {
 
     EnumSet<Direction> getTargets();
 
-    BlockEntity getTileEntity();
+    BlockEntity getBlockEntity();
 
     void saveChanges();
 }

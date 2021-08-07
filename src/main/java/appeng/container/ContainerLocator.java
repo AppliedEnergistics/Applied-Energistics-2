@@ -82,14 +82,14 @@ public final class ContainerLocator {
         this.side = side;
     }
 
-    public static ContainerLocator forTileEntity(BlockEntity te) {
+    public static ContainerLocator forBlockEntity(BlockEntity te) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }
         return new ContainerLocator(Type.BLOCK, -1, te.getLevel(), te.getBlockPos(), null);
     }
 
-    public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
+    public static ContainerLocator forBlockEntitySide(BlockEntity te, Direction side) {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }

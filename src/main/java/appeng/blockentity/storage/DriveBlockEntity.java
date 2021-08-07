@@ -107,8 +107,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
      */
     private int state = 0;
 
-    public DriveBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.mySrc = new MachineSource(this);
         this.getMainNode()
                 .addService(ICellProvider.class, this)

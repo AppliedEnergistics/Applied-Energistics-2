@@ -97,8 +97,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     private final IItemHandlerModifiable inv = new WrapperChainedItemHandler(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
-    public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public InscriberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
 
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))

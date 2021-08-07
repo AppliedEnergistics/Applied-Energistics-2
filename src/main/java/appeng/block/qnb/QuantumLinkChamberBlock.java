@@ -65,7 +65,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(final BlockState state, final Level w, final BlockPos pos, final Random rand) {
-        final QuantumBridgeBlockEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
             AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     null);
@@ -79,10 +79,10 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             return InteractionResult.PASS;
         }
 
-        final QuantumBridgeBlockEntity tg = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
-                ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
+                ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

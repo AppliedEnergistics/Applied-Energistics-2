@@ -31,8 +31,8 @@ import appeng.blockentity.ServerTickingBlockEntity;
 
 public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity {
 
-    public ChunkLoaderBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ChunkLoaderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

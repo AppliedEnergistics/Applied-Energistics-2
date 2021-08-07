@@ -79,7 +79,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public void updateTiles(final QuantumCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final QuantumCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 
@@ -106,7 +106,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
+    public boolean isValidBlockEntity(final BlockEntity te) {
         return te instanceof QuantumBridgeBlockEntity;
     }
 

@@ -41,13 +41,13 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
-            .setVisualRepresentation(getItemFromTile())
+            .setVisualRepresentation(getItemFromBlockEntity())
             .addService(IAEPowerStorage.class, this)
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkPowerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AENetworkPowerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     protected IManagedGridNode createMainNode() {

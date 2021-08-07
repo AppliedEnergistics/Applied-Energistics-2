@@ -26,8 +26,8 @@ import appeng.blockentity.AEBaseBlockEntity;
 
 public class SkyCompassBlockEntity extends AEBaseBlockEntity {
 
-    public SkyCompassBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public SkyCompassBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
 }

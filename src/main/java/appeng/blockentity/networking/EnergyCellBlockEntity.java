@@ -45,8 +45,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     private byte currentMeta = -1;
 
-    public EnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public EnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .addService(IAEPowerStorage.class, this);

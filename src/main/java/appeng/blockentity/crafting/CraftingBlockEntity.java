@@ -65,15 +65,15 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CraftingBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
     @Override
-    protected ItemStack getItemFromTile() {
+    protected ItemStack getItemFromBlockEntity() {
         if (isAccelerator()) {
             return AEBlocks.CRAFTING_ACCELERATOR.stack();
         } else {
@@ -110,7 +110,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     @Override
     public void onReady() {
         super.onReady();
-        this.getMainNode().setVisualRepresentation(this.getItemFromTile());
+        this.getMainNode().setVisualRepresentation(this.getItemFromBlockEntity());
         if (level instanceof ServerLevel serverWorld) {
             this.calc.calculateMultiblock(serverWorld, worldPosition);
         }
@@ -241,7 +241,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
             final LinkedList<BlockPos> places = new LinkedList<>();
 
-            final Iterator<CraftingBlockEntity> i = this.cluster.getTiles();
+            final Iterator<CraftingBlockEntity> i = this.cluster.getBlockEntities();
             while (i.hasNext()) {
                 final CraftingBlockEntity h = i.next();
                 if (h == this) {
@@ -359,7 +359,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         if (this.getCluster() == null) {
             return new ChainedIterator<>();
         }
-        return Iterators.transform(this.getCluster().getTiles(), CraftingBlockEntity::getGridNode);
+        return Iterators.transform(this.getCluster().getBlockEntities(), CraftingBlockEntity::getGridNode);
     }
 
 }

@@ -97,12 +97,12 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         int z = pos.getZ();
 
         // Detect whether controllers are on both sides of the x, y, and z axes
-        final boolean xx = this.getTileEntity(world, x - 1, y, z) != null
-                && this.getTileEntity(world, x + 1, y, z) != null;
-        final boolean yy = this.getTileEntity(world, x, y - 1, z) != null
-                && this.getTileEntity(world, x, y + 1, z) != null;
-        final boolean zz = this.getTileEntity(world, x, y, z - 1) != null
-                && this.getTileEntity(world, x, y, z + 1) != null;
+        final boolean xx = this.getBlockEntity(world, x - 1, y, z) != null
+                && this.getBlockEntity(world, x + 1, y, z) != null;
+        final boolean yy = this.getBlockEntity(world, x, y - 1, z) != null
+                && this.getBlockEntity(world, x, y + 1, z) != null;
+        final boolean zz = this.getBlockEntity(world, x, y, z - 1) != null
+                && this.getBlockEntity(world, x, y, z + 1) != null;
 
         if (xx && !yy && !zz) {
             type = ControllerRenderType.column_x;
@@ -130,7 +130,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final ControllerBlockEntity tc = this.getTileEntity(world, pos);
+        final ControllerBlockEntity tc = this.getBlockEntity(world, pos);
         if (tc != null) {
             tc.onNeighborChange(false);
         }

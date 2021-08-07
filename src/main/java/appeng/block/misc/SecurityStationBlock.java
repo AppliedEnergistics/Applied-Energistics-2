@@ -57,8 +57,8 @@ public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlock
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationBlockEntity te) {
-        return currentState.setValue(POWERED, te.isActive());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SecurityStationBlockEntity be) {
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override
@@ -68,11 +68,11 @@ public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlock
             return InteractionResult.PASS;
         }
 
-        final SecurityStationBlockEntity tg = this.getTileEntity(w, pos);
+        final SecurityStationBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(SecurityStationContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
 
             return InteractionResult.sidedSuccess(w.isClientSide());

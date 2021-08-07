@@ -39,7 +39,7 @@ import appeng.blockentity.AEBaseBlockEntity;
 public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
-            .setVisualRepresentation(getItemFromTile())
+            .setVisualRepresentation(getItemFromBlockEntity())
             .setInWorldNode(true)
             .setTagName("proxy");
 
@@ -47,8 +47,8 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
         return Api.instance().grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE);
     }
 
-    public AENetworkBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AENetworkBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

@@ -77,7 +77,7 @@ public class SpatialAnchorContainer extends AEBaseContainer {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getTileEntity();
+            SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getBlockEntity();
             this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 
             var gridNode = anchor.getGridNode();

@@ -65,12 +65,12 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, WirelessBlockEntity te) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, WirelessBlockEntity be) {
         State teState = State.OFF;
 
-        if (te.isActive()) {
+        if (be.isActive()) {
             teState = State.HAS_CHANNEL;
-        } else if (te.isPowered()) {
+        } else if (be.isPowered()) {
             teState = State.ON;
         }
 
@@ -86,12 +86,12 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     @Override
     public InteractionResult use(BlockState state, Level w, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
-        final WirelessBlockEntity tg = this.getTileEntity(w, pos);
+        final WirelessBlockEntity tg = this.getBlockEntity(w, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }
@@ -101,7 +101,7 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        final WirelessBlockEntity tile = this.getTileEntity(w, pos);
+        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 
@@ -161,7 +161,7 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
-        final WirelessBlockEntity tile = this.getTileEntity(w, pos);
+        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

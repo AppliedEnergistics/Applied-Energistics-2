@@ -45,6 +45,6 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
     public void openChestGui(final Player player, final IChestOrDrive chest, final ICellHandler cellHandler,
             final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
         ContainerOpener.openContainer(FluidTerminalContainer.TYPE, player,
-                ContainerLocator.forTileEntitySide((BlockEntity) chest, chest.getUp()));
+                ContainerLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

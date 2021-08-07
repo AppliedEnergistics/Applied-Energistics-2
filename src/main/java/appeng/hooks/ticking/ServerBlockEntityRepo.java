@@ -37,25 +37,25 @@ import appeng.blockentity.AEBaseBlockEntity;
 class ServerBlockEntityRepo {
 
     // Mapping is world -> encoded chunk pos -> block entities waiting to be initialized
-    private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseBlockEntity>>> tiles = new Object2ObjectOpenHashMap<>();
+    private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseBlockEntity>>> blockEntities = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
      */
     void clear() {
-        this.tiles.clear();
+        this.blockEntities.clear();
     }
 
     /**
      * Add a new tile to be initializes in a later tick.
      */
-    synchronized void addTile(AEBaseBlockEntity tile) {
+    synchronized void addBlockEntity(AEBaseBlockEntity tile) {
         final LevelAccessor world = tile.getLevel();
         final int x = tile.getBlockPos().getX() >> 4;
         final int z = tile.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.tiles.get(world);
+        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.get(world);
 
         worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(tile);
     }
@@ -64,14 +64,14 @@ class ServerBlockEntityRepo {
      * Sets up the necessary defaults when a new world is loaded
      */
     synchronized void addWorld(LevelAccessor world) {
-        this.tiles.computeIfAbsent(world, key -> new Long2ObjectOpenHashMap<>());
+        this.blockEntities.computeIfAbsent(world, key -> new Long2ObjectOpenHashMap<>());
     }
 
     /**
      * Tears down data related to a now unloaded world
      */
     synchronized void removeWorld(LevelAccessor world) {
-        this.tiles.remove(world);
+        this.blockEntities.remove(world);
     }
 
     /**
@@ -81,7 +81,7 @@ class ServerBlockEntityRepo {
      * save memory.
      */
     synchronized void removeWorldChunk(LevelAccessor world, long chunkPos) {
-        Map<Long, List<AEBaseBlockEntity>> queue = this.tiles.get(world);
+        Map<Long, List<AEBaseBlockEntity>> queue = this.blockEntities.get(world);
         if (queue != null) {
             queue.remove(chunkPos);
         }
@@ -90,8 +90,8 @@ class ServerBlockEntityRepo {
     /**
      * Get the tiles needing to be initialized in this specific {@link LevelAccessor}.
      */
-    public Long2ObjectMap<List<AEBaseBlockEntity>> getTiles(LevelAccessor world) {
-        return tiles.get(world);
+    public Long2ObjectMap<List<AEBaseBlockEntity>> getBlockEntities(LevelAccessor world) {
+        return blockEntities.get(world);
     }
 
 }

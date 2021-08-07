@@ -66,13 +66,13 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         }
     };
 
-    private final DualityItemInterface duality = new DualityItemInterface(this.getMainNode(), this, getItemFromTile());
+    private final DualityItemInterface duality = new DualityItemInterface(this.getMainNode(), this, getItemFromBlockEntity());
 
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public ItemInterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ItemInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         return this;
     }
 

@@ -54,8 +54,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
     private boolean isValid = false;
 
-    public ControllerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
         this.getMainNode().setIdlePowerUsage(3);

@@ -111,9 +111,9 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!w.isClientSide()) {
-            SkyChestBlockEntity tile = getTileEntity(w, pos);
+            SkyChestBlockEntity tile = getBlockEntity(w, pos);
             if (tile != null) {
-                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
+                ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forBlockEntity(tile));
             }
         }
 
@@ -128,7 +128,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        final SkyChestBlockEntity sk = this.getTileEntity(worldIn, pos);
+        final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
         Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }

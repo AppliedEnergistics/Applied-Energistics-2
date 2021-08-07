@@ -42,8 +42,8 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements CommonTicking
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CrankBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

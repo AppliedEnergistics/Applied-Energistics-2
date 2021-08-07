@@ -216,7 +216,7 @@ public final class AEBlockEntities {
 
         for (var block : blocks) {
             AEBaseEntityBlock<T> baseTileBlock = (AEBaseEntityBlock<T>) block;
-            baseTileBlock.setTileEntity(entityClass, supplier, clientTicker, serverTicker);
+            baseTileBlock.setBlockEntity(entityClass, supplier, clientTicker, serverTicker);
         }
 
         return type;

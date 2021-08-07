@@ -133,7 +133,7 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         if (this.blockType instanceof AEBaseEntityBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseBlockEntity tile = ((AEBaseEntityBlock<?>) this.blockType).getTileEntity(context.getLevel(),
+            final AEBaseBlockEntity tile = ((AEBaseEntityBlock<?>) this.blockType).getBlockEntity(context.getLevel(),
                     context.getClickedPos());
             ori = tile;
 

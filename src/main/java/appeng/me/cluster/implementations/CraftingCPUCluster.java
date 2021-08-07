@@ -87,7 +87,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final int[] usedOps = new int[3];
     private final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<>();
     // INSTANCE sate
-    private final List<CraftingBlockEntity> tiles = new ArrayList<>();
+    private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
     private final List<CraftingBlockEntity> storage = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
     private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
@@ -160,7 +160,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     @Override
     public void updateStatus(final boolean updateGrid) {
-        for (final CraftingBlockEntity r : this.tiles) {
+        for (final CraftingBlockEntity r : this.blockEntities) {
             r.updateSubType(true);
         }
     }
@@ -179,7 +179,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         try {
             boolean posted = false;
 
-            for (final CraftingBlockEntity r : this.tiles) {
+            for (final CraftingBlockEntity r : this.blockEntities) {
                 final IGridNode n = r.getActionableNode();
                 if (n != null && !posted) {
                     final IGrid g = n.getGrid();
@@ -199,18 +199,18 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public Iterator<CraftingBlockEntity> getTiles() {
-        return this.tiles.iterator();
+    public Iterator<CraftingBlockEntity> getBlockEntities() {
+        return this.blockEntities.iterator();
     }
 
-    void addTile(final CraftingBlockEntity te) {
+    void addBlockEntity(final CraftingBlockEntity te) {
         if (this.machineSrc == null || te.isCoreBlock()) {
             this.machineSrc = new MachineSource(te);
         }
 
         te.setCoreBlock(false);
         te.saveChanges();
-        this.tiles.add(0, te);
+        this.blockEntities.add(0, te);
 
         if (te.isStorage()) {
             this.availableStorage += te.getStorageBytes();
@@ -433,7 +433,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     private IGrid getGrid() {
-        for (final CraftingBlockEntity r : this.tiles) {
+        for (final CraftingBlockEntity r : this.blockEntities) {
             final IGridNode gn = r.getActionableNode();
             if (gn != null) {
                 return gn.getGrid();
@@ -1152,7 +1152,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     public void updateName() {
         this.myName = null;
-        for (final CraftingBlockEntity te : this.tiles) {
+        for (final CraftingBlockEntity te : this.blockEntities) {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {

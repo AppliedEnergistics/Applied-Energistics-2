@@ -79,8 +79,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     public static void registerTileItem(BlockEntityType<?> type, final Item wat) {
@@ -102,7 +102,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     }
 
     @Nonnull
-    protected ItemStack getItemFromTile() {
+    protected ItemStack getItemFromBlockEntity() {
         final Item item = REPRESENTATIVE_ITEMS.get(getType());
         if (item == null) {
             return ItemStack.EMPTY;
@@ -272,7 +272,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
                 BlockState currentState = getBlockState();
                 if (currentState.getBlock() instanceof AEBaseEntityBlock) {
                     AEBaseEntityBlock<?> tileBlock = (AEBaseEntityBlock<?>) currentState.getBlock();
-                    BlockState newState = tileBlock.getTileEntityBlockState(currentState, this);
+                    BlockState newState = tileBlock.getBlockEntityBlockState(currentState, this);
                     if (currentState != newState) {
                         AELog.blockUpdate(this.worldPosition, currentState, newState, this);
                         this.level.setBlockAndUpdate(worldPosition, newState);

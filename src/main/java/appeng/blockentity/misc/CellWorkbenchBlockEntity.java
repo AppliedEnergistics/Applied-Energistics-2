@@ -54,8 +54,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private IItemHandler cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CellWorkbenchBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
     }

@@ -45,7 +45,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
     @Override
     public boolean isValidOrientation(final LevelAccessor w, final BlockPos pos, final Direction forward,
             final Direction up) {
-        final SkyCompassBlockEntity sc = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(w, pos);
         if (sc != null) {
             return false;
         }
@@ -61,7 +61,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassBlockEntity sc = this.getTileEntity(world, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
         final Direction forward = sc.getForward();
         if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
             this.dropTorch(world, pos);
@@ -89,7 +89,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassBlockEntity tile = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

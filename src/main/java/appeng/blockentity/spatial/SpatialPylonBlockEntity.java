@@ -68,8 +68,8 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     private SpatialPylonCluster cluster;
     private boolean didHaveLight = false;
 
-    public SpatialPylonBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public SpatialPylonBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK)
                 .setIdlePowerUsage(0.5)
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
@@ -227,6 +227,6 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         if (this.getCluster() == null) {
             return new ChainedIterator<>();
         }
-        return Iterators.transform(this.getCluster().getTiles(), SpatialPylonBlockEntity::getGridNode);
+        return Iterators.transform(this.getCluster().getBlockEntities(), SpatialPylonBlockEntity::getGridNode);
     }
 }

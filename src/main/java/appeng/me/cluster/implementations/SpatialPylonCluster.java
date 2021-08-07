@@ -87,7 +87,7 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public Iterator<SpatialPylonBlockEntity> getTiles() {
+    public Iterator<SpatialPylonBlockEntity> getBlockEntities() {
         return this.getLine().iterator();
     }
 

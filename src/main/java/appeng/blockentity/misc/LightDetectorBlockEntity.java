@@ -31,8 +31,8 @@ public class LightDetectorBlockEntity extends AEBaseBlockEntity implements Commo
     private int lastCheck = 30;
     private int lastLight = 0;
 
-    public LightDetectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public LightDetectorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     public boolean isReady() {

@@ -54,7 +54,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider {
 
     @Override
     public String getID() {
-        return AppEng.MOD_ID + ":TileInfoProvider";
+        return AppEng.MOD_ID + ":BlockEntityInfoProvider";
     }
 
     @Override

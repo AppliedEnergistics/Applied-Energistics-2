@@ -63,8 +63,8 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
 
-    public FluidInterfaceBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public FluidInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         return this;
     }
 

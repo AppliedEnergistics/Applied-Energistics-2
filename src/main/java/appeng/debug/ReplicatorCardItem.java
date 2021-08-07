@@ -108,7 +108,7 @@ public class ReplicatorCardItem extends AEBaseItem {
 
                 this.outputMsg(player, "Set replicator source");
             } else {
-                this.outputMsg(player, "This is not a Grid Tile.");
+                this.outputMsg(player, "This does not host a grid node");
             }
         } else {
             final CompoundTag ish = player.getItemInHand(hand).getTag();

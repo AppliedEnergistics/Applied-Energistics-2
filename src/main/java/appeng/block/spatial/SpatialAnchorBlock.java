@@ -59,8 +59,8 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SpatialAnchorBlockEntity te) {
-        return currentState.setValue(POWERED, te.isActive());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SpatialAnchorBlockEntity be) {
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override
@@ -71,11 +71,11 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
             return InteractionResult.PASS;
         }
 
-        final SpatialAnchorBlockEntity tg = this.getTileEntity(worldIn, pos);
+        final SpatialAnchorBlockEntity tg = this.getBlockEntity(worldIn, pos);
         if (tg != null) {
             if (!worldIn.isClientSide()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(worldIn.isClientSide());
         }

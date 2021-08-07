@@ -42,8 +42,8 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public EnergyGeneratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

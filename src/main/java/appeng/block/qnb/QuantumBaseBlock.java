@@ -62,14 +62,14 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeBlockEntity te) {
-        return currentState.setValue(FORMED, te.isFormed());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, QuantumBridgeBlockEntity be) {
+        return currentState.setValue(FORMED, be.isFormed());
     }
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final QuantumBridgeBlockEntity bridge = this.getTileEntity(world, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate(fromPos);
         }
@@ -81,7 +81,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
             return; // Just a block state change
         }
 
-        final QuantumBridgeBlockEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null) {
             bridge.breakCluster();
         }

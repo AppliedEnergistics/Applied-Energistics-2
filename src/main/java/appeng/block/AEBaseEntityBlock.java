@@ -81,10 +81,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     // TODO : Was this change needed?
-    public void setTileEntity(final Class<T> blockEntityClass,
-            BlockEntityType.BlockEntitySupplier<T> blockEntityFactory,
-            BlockEntityTicker<T> clientTicker,
-            BlockEntityTicker<T> serverTicker) {
+    public void setBlockEntity(final Class<T> blockEntityClass,
+                               BlockEntityType.BlockEntitySupplier<T> blockEntityFactory,
+                               BlockEntityTicker<T> clientTicker,
+                               BlockEntityTicker<T> serverTicker) {
         this.blockEntityClass = blockEntityClass;
         this.blockEntityFactory = blockEntityFactory;
         this.serverTicker = serverTicker;
@@ -93,12 +93,12 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Nullable
-    public T getTileEntity(final BlockGetter w, final int x, final int y, final int z) {
-        return this.getTileEntity(w, new BlockPos(x, y, z));
+    public T getBlockEntity(final BlockGetter w, final int x, final int y, final int z) {
+        return this.getBlockEntity(w, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getTileEntity(final BlockGetter w, final BlockPos pos) {
+    public T getBlockEntity(final BlockGetter w, final BlockPos pos) {
         final BlockEntity te = w.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.blockEntityClass != null && this.blockEntityClass.isInstance(te)) {
@@ -130,7 +130,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             return; // Just a block state change
         }
 
-        final AEBaseBlockEntity te = this.getTileEntity(w, pos);
+        final AEBaseBlockEntity te = this.getBlockEntity(w, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
@@ -149,7 +149,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     @Override
     public int getAnalogOutputSignal(BlockState state, final Level w, final BlockPos pos) {
-        final BlockEntity te = this.getTileEntity(w, pos);
+        final BlockEntity te = this.getBlockEntity(w, pos);
         if (te instanceof AEBaseInvBlockEntity) {
             AEBaseInvBlockEntity invTile = (AEBaseInvBlockEntity) te;
             if (invTile.getInternalInventory().getSlots() > 0) {
@@ -175,7 +175,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         // than a translation component, since our custom naming cannot handle
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
-        AEBaseBlockEntity te = this.getTileEntity(w, pos);
+        AEBaseBlockEntity te = this.getBlockEntity(w, pos);
         if (te != null && is.hasCustomHoverName()) {
             Component displayName = is.getHoverName();
             if (displayName instanceof TextComponent) {
@@ -195,7 +195,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
-                final AEBaseBlockEntity tile = this.getTileEntity(world, pos);
+                final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
 
                 if (tile == null) {
                     return InteractionResult.FAIL;
@@ -228,7 +228,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
                 final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
-                final AEBaseBlockEntity tileEntity = this.getTileEntity(world, pos);
+                final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
 
                 if (tileEntity == null) {
                     return InteractionResult.FAIL;
@@ -269,7 +269,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     @Override
     public IOrientable getOrientable(final BlockGetter w, final BlockPos pos) {
-        return this.getTileEntity(w, pos);
+        return this.getBlockEntity(w, pos);
     }
 
     /**
@@ -278,21 +278,21 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
      * If the given TileEntity is not of the right type for this block, the state is returned unchanged, this is also
      * the case if the given block state does not belong to this block.
      */
-    public final BlockState getTileEntityBlockState(BlockState current, BlockEntity te) {
+    public final BlockState getBlockEntityBlockState(BlockState current, BlockEntity te) {
         if (current.getBlock() != this || !blockEntityClass.isInstance(te)) {
             return current;
         }
 
-        return updateBlockStateFromTileEntity(current, blockEntityClass.cast(te));
+        return updateBlockStateFromBlockEntity(current, blockEntityClass.cast(te));
     }
 
     /**
-     * Reimplement this in subclasses to allow tile-entities to update the state of their block when their own state
+     * Reimplement this in subclasses to allow block entities to update the state of their block when their own state
      * changes.
      * <p>
-     * It is guaranteed that te is not-null and the block of the given block state is this exact block instance.
+     * It is guaranteed that be is not-null and the block of the given block state is this exact block instance.
      */
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, T be) {
         return currentState;
     }
 

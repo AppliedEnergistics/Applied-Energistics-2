@@ -64,8 +64,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
     private int oldLV = -1; // on re-calculate light when it changes
 
-    public CableBusBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CableBusBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             ret = true;
         }
 
-        this.updateTileSetting();
+        this.updateBlockEntitySettings();
         return ret || c;
     }
 
@@ -104,9 +104,9 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     /**
-     * Changes this tile to the TESR version if any of the parts require dynamic rendering.
+     * Changes this block entity to the TESR version if any of the parts require dynamic rendering.
      */
-    protected void updateTileSetting() {
+    protected void updateBlockEntitySettings() {
         // FIXME: potentially invalidate voxel shape cache?
     }
 

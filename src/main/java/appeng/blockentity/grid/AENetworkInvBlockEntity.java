@@ -39,12 +39,12 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
-            .setVisualRepresentation(this.getItemFromTile())
+            .setVisualRepresentation(this.getItemFromBlockEntity())
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    public AENetworkInvBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AENetworkInvBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     protected IManagedGridNode createMainNode() {

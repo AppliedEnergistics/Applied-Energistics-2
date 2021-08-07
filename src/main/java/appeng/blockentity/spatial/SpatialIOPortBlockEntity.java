@@ -53,8 +53,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     private final IWorldRunnable transitionCallback = world -> transition();
 
-    public SpatialIOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public SpatialIOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 

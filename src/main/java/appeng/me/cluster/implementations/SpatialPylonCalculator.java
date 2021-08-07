@@ -59,7 +59,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public void updateTiles(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(p);
             te.updateStatus(c);
@@ -68,7 +68,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
+    public boolean isValidBlockEntity(final BlockEntity te) {
         return te instanceof SpatialPylonBlockEntity;
     }
 }

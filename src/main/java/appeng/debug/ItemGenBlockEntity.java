@@ -51,8 +51,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     private Item filter = Items.AIR;
     private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
 
-    public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ItemGenBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             for (final Item item : ForgeRegistries.ITEMS) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);

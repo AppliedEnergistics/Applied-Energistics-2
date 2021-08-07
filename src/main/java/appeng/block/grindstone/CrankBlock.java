@@ -64,7 +64,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
             return InteractionResult.sidedSuccess(w.isClientSide());
         }
 
-        final CrankBlockEntity tile = this.getTileEntity(w, pos);
+        final CrankBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
@@ -83,7 +83,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     @Override
     public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state,
             final LivingEntity placer, final ItemStack stack) {
-        final AEBaseBlockEntity tile = this.getTileEntity(world, pos);
+        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
         if (tile != null) {
             final Direction mnt = this.findCrankable(world, pos);
             Direction forward = Direction.UP;
@@ -127,7 +127,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final AEBaseBlockEntity tile = this.getTileEntity(world, pos);
+        final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
         if (tile != null) {
             if (!this.isCrankable(world, pos, tile.getUp().getOpposite())) {
                 this.dropCrank(world, pos);
@@ -143,7 +143,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     }
 
     private Direction getUp(BlockGetter world, BlockPos pos) {
-        CrankBlockEntity crank = getTileEntity(world, pos);
+        CrankBlockEntity crank = getBlockEntity(world, pos);
         return crank != null ? crank.getUp() : null;
     }
 

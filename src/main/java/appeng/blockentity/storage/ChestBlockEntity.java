@@ -142,8 +142,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private Item cellItem = Items.AIR;
     private double idlePowerUsage;
 
-    public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getMainNode()
                 .addService(ICellProvider.class, this)

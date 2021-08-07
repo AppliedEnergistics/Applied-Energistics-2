@@ -59,7 +59,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final PaintSplotchesBlockEntity tp = this.getTileEntity(world, pos);
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(world, pos);
 
         if (tp != null) {
             tp.neighborChanged();
@@ -75,7 +75,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        final PaintSplotchesBlockEntity tp = this.getTileEntity(world, pos);
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(world, pos);
 
         if (tp != null) {
             return tp.getLightLevel();

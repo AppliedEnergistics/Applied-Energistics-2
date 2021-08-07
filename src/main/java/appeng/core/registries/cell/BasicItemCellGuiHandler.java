@@ -45,6 +45,6 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
             final ICellHandler cellHandler,
             final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
         ContainerOpener.openContainer(ItemTerminalContainer.TYPE, player,
-                ContainerLocator.forTileEntitySide((BlockEntity) chest, chest.getUp()));
+                ContainerLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

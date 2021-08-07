@@ -51,8 +51,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CraftingMonitorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    protected ItemStack getItemFromTile() {
+    protected ItemStack getItemFromBlockEntity() {
         return AEBlocks.CRAFTING_MONITOR.stack();
     }
 

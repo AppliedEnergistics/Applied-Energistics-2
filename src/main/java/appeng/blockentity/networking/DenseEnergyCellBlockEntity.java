@@ -26,8 +26,8 @@ public class DenseEnergyCellBlockEntity extends EnergyCellBlockEntity {
 
     private final static double MAX_STORED = 200000 * 8;
 
-    public DenseEnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public DenseEnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(MAX_STORED);
     }
 

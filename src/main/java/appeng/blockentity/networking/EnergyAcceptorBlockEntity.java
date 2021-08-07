@@ -33,8 +33,8 @@ import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
 
-    public EnergyAcceptorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public EnergyAcceptorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setIdlePowerUsage(0.0);
         this.setInternalMaxPower(0);
     }

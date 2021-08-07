@@ -97,7 +97,7 @@ public class DebugCardItem extends AEBaseItem {
                 if (node == null) {
                     if (gh instanceof IGridConnectedBlockEntity gridConnectedTileEntity) {
                         node = (GridNode) gridConnectedTileEntity.getMainNode().getNode();
-                        this.outputMsg(player, "Main node of IGridConnectedTileEntity");
+                        this.outputMsg(player, "Main node of IGridConnectedBlockEntity");
                     }
                 } else {
                     this.outputMsg(player, "Node exposed on side " + side);

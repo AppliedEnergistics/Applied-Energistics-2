@@ -199,7 +199,7 @@ public class DualityItemInterface
 
     @Override
     public boolean isRemote() {
-        Level world = this.iHost.getTileEntity().getLevel();
+        Level world = this.iHost.getBlockEntity().getLevel();
         return world == null || world.isClientSide();
     }
 
@@ -394,7 +394,7 @@ public class DualityItemInterface
             });
         }
 
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
@@ -402,7 +402,7 @@ public class DualityItemInterface
 
     private void addToCraftingList(final ItemStack is) {
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
-                this.iHost.getTileEntity().getLevel());
+                this.iHost.getBlockEntity().getLevel());
 
         if (details != null) {
             if (this.craftingList == null) {
@@ -460,7 +460,7 @@ public class DualityItemInterface
     }
 
     public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this.iHost.getTileEntity());
+        return new DimensionalBlockPos(this.iHost.getBlockEntity());
     }
 
     public IItemHandler getInternalInventory() {
@@ -493,7 +493,7 @@ public class DualityItemInterface
             return;
         }
 
-        final BlockEntity tile = this.iHost.getTileEntity();
+        final BlockEntity tile = this.iHost.getBlockEntity();
         final Level w = tile.getLevel();
 
         final Iterator<ItemStack> i = this.waitingToSend.iterator();
@@ -628,7 +628,7 @@ public class DualityItemInterface
         var grid = gridProxy.getGrid();
         if (grid != null && this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
             return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                    this.iHost.getTileEntity().getLevel(), grid,
+                    this.iHost.getBlockEntity().getLevel(), grid,
                     grid.getCraftingService(),
                     this.mySource);
         }
@@ -739,7 +739,7 @@ public class DualityItemInterface
             return false;
         }
 
-        final BlockEntity tile = this.iHost.getTileEntity();
+        final BlockEntity tile = this.iHost.getBlockEntity();
         final Level w = tile.getLevel();
 
         final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
@@ -794,7 +794,7 @@ public class DualityItemInterface
 
         if (this.isBlocking()) {
             final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
-            final BlockEntity tile = this.iHost.getTileEntity();
+            final BlockEntity tile = this.iHost.getBlockEntity();
             final Level w = tile.getLevel();
 
             boolean allAreBusy = true;
@@ -921,7 +921,7 @@ public class DualityItemInterface
     }
 
     public Component getTermName() {
-        final BlockEntity hostTile = this.iHost.getTileEntity();
+        final BlockEntity hostTile = this.iHost.getBlockEntity();
         final Level hostWorld = hostTile.getLevel();
 
         if (((ICustomNameObject) this.iHost).hasCustomInventoryName()) {
@@ -988,7 +988,7 @@ public class DualityItemInterface
     }
 
     public long getSortValue() {
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
     }
 

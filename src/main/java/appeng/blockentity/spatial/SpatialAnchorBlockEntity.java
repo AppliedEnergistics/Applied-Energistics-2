@@ -91,8 +91,8 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     private boolean displayOverlay = false;
     private boolean isActive = false;
 
-    public SpatialAnchorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public SpatialAnchorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
         this.manager.registerSetting(Settings.OVERLAY_MODE, YesNo.NO);
@@ -158,7 +158,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public BlockEntity getOverlayTileEntity() {
+    public BlockEntity getOverlayBlockEntity() {
         return this;
     }
 

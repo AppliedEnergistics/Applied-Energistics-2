@@ -149,7 +149,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         return super.getHost().getBlockEntity();
     }
 

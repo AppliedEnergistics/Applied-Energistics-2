@@ -41,8 +41,8 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements IAEAppEngInventory {
 
-    public AEBaseInvBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AEBaseInvBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

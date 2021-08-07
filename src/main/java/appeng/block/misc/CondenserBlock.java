@@ -51,10 +51,10 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
         }
 
         if (!w.isClientSide()) {
-            final CondenserBlockEntity tc = this.getTileEntity(w, pos);
+            final CondenserBlockEntity tc = this.getBlockEntity(w, pos);
             if (tc != null && !InteractionUtil.isInAlternateUseMode(player)) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 

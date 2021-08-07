@@ -38,7 +38,7 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialPylonBlockEntity tsp = this.getTileEntity(world, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
         if (tsp != null) {
             tsp.neighborChanged(fromPos);
         }
@@ -46,7 +46,7 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        final SpatialPylonBlockEntity tsp = this.getTileEntity(world, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
         if (tsp != null) {
             return tsp.getLightValue();
         }

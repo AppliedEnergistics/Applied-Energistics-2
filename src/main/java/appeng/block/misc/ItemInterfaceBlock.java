@@ -57,8 +57,8 @@ public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEnti
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ItemInterfaceBlockEntity te) {
-        return currentState.setValue(OMNIDIRECTIONAL, te.isOmniDirectional());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ItemInterfaceBlockEntity be) {
+        return currentState.setValue(OMNIDIRECTIONAL, be.isOmniDirectional());
     }
 
     @Override
@@ -68,11 +68,11 @@ public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEnti
             return InteractionResult.PASS;
         }
 
-        final ItemInterfaceBlockEntity tg = this.getTileEntity(w, pos);
+        final ItemInterfaceBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(ItemInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

@@ -52,8 +52,8 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     private int clientFlags = 0;
 
-    public WirelessBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public WirelessBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));

@@ -95,8 +95,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public IOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);

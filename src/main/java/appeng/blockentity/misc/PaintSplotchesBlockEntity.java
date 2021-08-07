@@ -57,8 +57,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public PaintSplotchesBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

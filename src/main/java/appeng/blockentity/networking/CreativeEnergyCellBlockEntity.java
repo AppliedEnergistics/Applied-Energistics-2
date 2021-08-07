@@ -32,8 +32,8 @@ import appeng.blockentity.grid.AENetworkBlockEntity;
 
 public class CreativeEnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
 
-    public CreativeEnergyCellBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CreativeEnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .addService(IAEPowerStorage.class, this);

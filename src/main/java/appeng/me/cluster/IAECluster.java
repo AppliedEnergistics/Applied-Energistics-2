@@ -45,5 +45,5 @@ public interface IAECluster {
      */
     boolean isDestroyed();
 
-    Iterator<? extends BlockEntity> getTiles();
+    Iterator<? extends BlockEntity> getBlockEntities();
 }

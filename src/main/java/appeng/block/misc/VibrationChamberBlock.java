@@ -56,8 +56,8 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, VibrationChamberBlockEntity te) {
-        return currentState.setValue(ACTIVE, te.isOn);
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, VibrationChamberBlockEntity be) {
+        return currentState.setValue(ACTIVE, be.isOn);
     }
 
     @Override
@@ -75,10 +75,10 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
         }
 
         if (!w.isClientSide()) {
-            final VibrationChamberBlockEntity tc = this.getTileEntity(w, pos);
+            final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
             if (tc != null) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tc, hit.getDirection()));
             }
         }
 
@@ -91,7 +91,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
             return;
         }
 
-        final VibrationChamberBlockEntity tc = this.getTileEntity(w, pos);
+        final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
         if (tc != null && tc.isOn) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;

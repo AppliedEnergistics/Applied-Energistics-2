@@ -62,8 +62,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     // client side..
     public boolean isOn;
 
-    public VibrationChamberBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public VibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .setFlags()

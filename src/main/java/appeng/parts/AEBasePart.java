@@ -80,7 +80,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     private final IManagedGridNode mainNode;
     private final ItemStack is;
-    private BlockEntity tile = null;
+    private BlockEntity blockEntity = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
 
@@ -106,9 +106,9 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     public final boolean isRemote() {
-        return this.tile == null
-                || this.tile.getLevel() == null
-                || this.tile.getLevel().isClientSide();
+        return this.blockEntity == null
+                || this.blockEntity.getLevel() == null
+                || this.blockEntity.getLevel().isClientSide();
     }
 
     public IPartHost getHost() {
@@ -134,7 +134,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public BlockEntity getBlockEntity() {
-        return this.tile;
+        return this.blockEntity;
     }
 
     public IManagedGridNode getMainNode() {
@@ -147,7 +147,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     public Level getWorld() {
-        return this.tile.getLevel();
+        return this.blockEntity.getLevel();
     }
 
     @Override
@@ -243,7 +243,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     @Override
     public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
         this.setSide(side);
-        this.tile = blockEntity;
+        this.blockEntity = blockEntity;
         this.host = host;
     }
 

@@ -175,7 +175,7 @@ public class DualityFluidInterface
             });
         }
 
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
@@ -201,7 +201,7 @@ public class DualityFluidInterface
     }
 
     public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this.iHost.getTileEntity());
+        return new DimensionalBlockPos(this.iHost.getBlockEntity());
     }
 
     @SuppressWarnings("unchecked")
@@ -399,7 +399,7 @@ public class DualityFluidInterface
 
     @Override
     public boolean isRemote() {
-        Level world = this.iHost.getTileEntity().getLevel();
+        Level world = this.iHost.getBlockEntity().getLevel();
         return world == null || world.isClientSide();
     }
 

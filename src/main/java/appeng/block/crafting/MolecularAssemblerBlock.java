@@ -53,18 +53,18 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerBlockEntity te) {
-        return currentState.setValue(POWERED, te.isPowered());
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, MolecularAssemblerBlockEntity be) {
+        return currentState.setValue(POWERED, be.isPowered());
     }
 
     @Override
     public InteractionResult use(BlockState state, Level w, BlockPos pos, Player p, InteractionHand hand,
             BlockHitResult hit) {
-        final MolecularAssemblerBlockEntity tg = this.getTileEntity(w, pos);
+        final MolecularAssemblerBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

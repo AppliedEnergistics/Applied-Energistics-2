@@ -49,11 +49,11 @@ public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEn
             return InteractionResult.PASS;
         }
 
-        final BlockEntity tg = this.getTileEntity(w, pos);
+        final BlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

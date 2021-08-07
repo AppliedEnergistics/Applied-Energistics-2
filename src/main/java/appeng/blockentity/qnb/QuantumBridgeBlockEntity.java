@@ -66,8 +66,8 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public QuantumBridgeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
         this.getMainNode().setIdlePowerUsage(22);

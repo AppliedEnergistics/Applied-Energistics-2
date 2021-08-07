@@ -42,8 +42,8 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
     private int countdown = 20 * 10;
     private Player who = null;
 
-    public CubeGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public CubeGeneratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

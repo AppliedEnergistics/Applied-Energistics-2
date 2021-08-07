@@ -78,16 +78,16 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public void updateTiles(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
+    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel w, final BlockPos min, final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);
-            c.addTile(te);
+            c.addBlockEntity(te);
         }
 
         c.done();
 
-        final Iterator<CraftingBlockEntity> i = c.getTiles();
+        final Iterator<CraftingBlockEntity> i = c.getBlockEntities();
         while (i.hasNext()) {
             var gh = i.next();
             var n = gh.getGridNode();
@@ -102,7 +102,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public boolean isValidTile(final BlockEntity te) {
+    public boolean isValidBlockEntity(final BlockEntity te) {
         return te instanceof CraftingBlockEntity;
     }
 }

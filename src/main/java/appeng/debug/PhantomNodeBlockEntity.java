@@ -36,8 +36,8 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
     private IManagedGridNode proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public PhantomNodeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
         super.onReady();
         this.proxy = Api.instance().grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
-                .setVisualRepresentation(getItemFromTile());
+                .setVisualRepresentation(getItemFromBlockEntity());
         this.proxy.create(level, worldPosition);
         this.crashMode = true;
     }

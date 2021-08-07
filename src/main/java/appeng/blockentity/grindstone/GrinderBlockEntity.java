@@ -49,8 +49,8 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
     private int points;
 
-    public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public GrinderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
     }
 
     @Override

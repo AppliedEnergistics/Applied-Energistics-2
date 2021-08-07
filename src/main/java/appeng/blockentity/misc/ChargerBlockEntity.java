@@ -61,8 +61,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
-    public ChargerBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public ChargerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setFlags()

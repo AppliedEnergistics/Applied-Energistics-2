@@ -49,10 +49,10 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
             return InteractionResult.PASS;
         }
 
-        final DriveBlockEntity tg = this.getTileEntity(w, pos);
+        final DriveBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
-                ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
+                ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

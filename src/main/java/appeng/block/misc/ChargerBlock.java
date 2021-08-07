@@ -70,7 +70,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
         }
 
         if (!w.isClientSide()) {
-            final ChargerBlockEntity tc = this.getTileEntity(w, pos);
+            final ChargerBlockEntity tc = this.getBlockEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
@@ -90,7 +90,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             return;
         }
 
-        final ChargerBlockEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
                 .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
             final double xOff = 0.0;
@@ -110,7 +110,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
 
-        final ChargerBlockEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final double twoPixels = 2.0 / 16.0;
             final Direction up = tile.getUp();

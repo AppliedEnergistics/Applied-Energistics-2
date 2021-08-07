@@ -48,7 +48,7 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortBlockEntity te = this.getTileEntity(world, pos);
+        final SpatialIOPortBlockEntity te = this.getBlockEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -61,11 +61,11 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
             return InteractionResult.PASS;
         }
 
-        final SpatialIOPortBlockEntity tg = this.getTileEntity(w, pos);
+        final SpatialIOPortBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

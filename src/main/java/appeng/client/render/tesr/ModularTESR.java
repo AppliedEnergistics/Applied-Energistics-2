@@ -50,7 +50,7 @@ public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRend
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
         for (Renderable<? super T> renderable : this.renderables) {
-            renderable.renderTileEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
+            renderable.renderBlockEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
         }
         ms.popPose();
     }

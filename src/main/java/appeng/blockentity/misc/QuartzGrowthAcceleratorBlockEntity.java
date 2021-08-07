@@ -38,8 +38,8 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
 
     private boolean hasPower = false;
 
-    public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags();
         this.getMainNode().setIdlePowerUsage(8);

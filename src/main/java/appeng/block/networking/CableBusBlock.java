@@ -161,7 +161,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player,
             boolean willHarvest, FluidState fluid) {
         if (player.getAbilities().instabuild) {
-            final AEBaseBlockEntity tile = this.getTileEntity(world, pos);
+            final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
             if (tile != null) {
                 tile.disableDrops();
             }
@@ -292,7 +292,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        CableBusBlockEntity te = getTileEntity(w, pos);
+        CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return Shapes.empty();
         } else {
@@ -302,7 +302,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext context) {
-        CableBusBlockEntity te = getTileEntity(w, pos);
+        CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return Shapes.empty();
         } else {
@@ -311,12 +311,12 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, CableBusBlockEntity te) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, CableBusBlockEntity be) {
         if (currentState.getBlock() != this) {
             return currentState;
         }
-        int lightLevel = te.getCableBus().getLightValue();
-        return super.updateBlockStateFromTileEntity(currentState, te).setValue(LIGHT_LEVEL, lightLevel);
+        int lightLevel = be.getCableBus().getLightValue();
+        return super.updateBlockStateFromBlockEntity(currentState, be).setValue(LIGHT_LEVEL, lightLevel);
     }
 
     @Override

@@ -38,10 +38,10 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final SecurityStationBlockEntity securityTile;
+    private final SecurityStationBlockEntity blockEntity;
 
     public SecurityStationInventory(final SecurityStationBlockEntity ts) {
-        this.securityTile = ts;
+        this.blockEntity = ts;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             }
 
             this.getStoredItems().add(input);
-            this.securityTile.inventoryChanged();
+            this.blockEntity.inventoryChanged();
             return null;
         }
         return input;
@@ -62,7 +62,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     private boolean hasPermission(final IActionSource src) {
         if (src.player().isPresent()) {
-            var grid = this.securityTile.getMainNode().getGrid();
+            var grid = this.blockEntity.getMainNode().getGrid();
             if (grid != null) {
                 return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.SECURITY);
             }
@@ -82,7 +82,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
                 }
 
                 target.setStackSize(0);
-                this.securityTile.inventoryChanged();
+                this.blockEntity.inventoryChanged();
                 return output;
             }
         }
@@ -120,7 +120,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             final GameProfile newUser = tbc.getProfile(input.createItemStack());
 
             final int PlayerID = Api.instance().registries().players().getID(newUser);
-            if (this.securityTile.getOwner() == PlayerID) {
+            if (this.blockEntity.getOwner() == PlayerID) {
                 return false;
             }
 

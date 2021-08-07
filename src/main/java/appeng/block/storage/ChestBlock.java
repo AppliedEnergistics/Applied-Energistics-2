@@ -58,14 +58,14 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestBlockEntity te) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ChestBlockEntity be) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
-        if (te.getCellCount() >= 1) {
-            slotState = DriveSlotState.fromCellStatus(te.getCellStatus(0));
+        if (be.getCellCount() >= 1) {
+            slotState = DriveSlotState.fromCellStatus(be.getCellStatus(0));
         }
         // Power-state has to be checked separately
-        if (!te.isPowered() && slotState != DriveSlotState.EMPTY) {
+        if (!be.isPowered() && slotState != DriveSlotState.EMPTY) {
             slotState = DriveSlotState.OFFLINE;
         }
 
@@ -76,7 +76,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     @Override
     public InteractionResult onActivated(final Level w, final BlockPos pos, final Player p, final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final ChestBlockEntity tg = this.getTileEntity(w, pos);
+        final ChestBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!w.isClientSide()) {
                 if (hit.getDirection() == tg.getUp()) {
@@ -85,7 +85,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
                     }
                 } else {
                     ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                            ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
                 }
             }
 

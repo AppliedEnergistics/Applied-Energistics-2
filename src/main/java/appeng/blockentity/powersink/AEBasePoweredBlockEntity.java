@@ -60,8 +60,8 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     // Cache the optional to not continuously re-allocate it or the supplier
     private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-    public AEBasePoweredBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState blockState) {
-        super(tileEntityTypeIn, pos, blockState);
+    public AEBasePoweredBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
     }

@@ -144,7 +144,7 @@ public class TickHandler {
         // for no there is no reason to care about this on the client...
         if (!tile.getLevel().isClientSide()) {
             Objects.requireNonNull(tile);
-            this.tiles.addTile(tile);
+            this.tiles.addBlockEntity(tile);
         }
     }
 
@@ -267,7 +267,7 @@ public class TickHandler {
             processQueueElementsRemaining += this.processQueue(queue, level);
         } else if (ev.phase == Phase.END) {
             this.simulateCraftingJobs(level);
-            this.readyTiles(serverLevel);
+            this.readyBlockEntities(serverLevel);
         }
     }
 
@@ -337,10 +337,10 @@ public class TickHandler {
     /**
      * Ready the tiles in this world. server-side only.
      */
-    private void readyTiles(ServerLevel world) {
+    private void readyBlockEntities(ServerLevel world) {
         var chunkProvider = world.getChunkSource();
 
-        var worldQueue = tiles.getTiles(world);
+        var worldQueue = tiles.getBlockEntities(world);
 
         // Make a copy because this set may be modified
         // when new chunks are loaded by an onReady call below
@@ -355,7 +355,7 @@ public class TickHandler {
                 // chunk again next tick.
                 var chunkQueue = worldQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
-                    AELog.warn("Chunk %s was unloaded while we were readying tiles", new ChunkPos(packedChunkPos));
+                    AELog.warn("Chunk %s was unloaded while we were readying block entities", new ChunkPos(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 

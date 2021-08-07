@@ -48,7 +48,7 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final IOPortBlockEntity te = this.getTileEntity(world, pos);
+        final IOPortBlockEntity te = this.getBlockEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -61,11 +61,11 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
             return InteractionResult.PASS;
         }
 
-        final IOPortBlockEntity tg = this.getTileEntity(w, pos);
+        final IOPortBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (!w.isClientSide()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getDirection()));
+                        ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(w.isClientSide());
         }

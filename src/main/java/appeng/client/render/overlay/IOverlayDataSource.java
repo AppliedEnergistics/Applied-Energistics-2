@@ -44,7 +44,7 @@ public interface IOverlayDataSource {
      * @return the block entity providing the data
      */
     @Nonnull
-    BlockEntity getOverlayTileEntity();
+    BlockEntity getOverlayBlockEntity();
 
     /**
      * The location of the source with world and blockpos

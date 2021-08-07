@@ -43,7 +43,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size, final int maxStack,
             IAEItemFilter filter) {
         super(size);
-        this.setTileEntity(inventory);
+        this.setBlockEntity(inventory);
         this.setFilter(filter);
         this.maxStack = new int[size];
         Arrays.fill(this.maxStack, maxStack);
@@ -118,8 +118,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
                 }
             }
 
-            this.getTileEntity().onChangeInventory(this, slot, op, oldStack, newStack);
-            this.getTileEntity().saveChanges();
+            this.getBlockEntity().onChangeInventory(this, slot, op, oldStack, newStack);
+            this.getBlockEntity().saveChanges();
             this.previousStack = ItemStack.EMPTY;
             this.dirtyFlag = false;
         }
@@ -173,11 +173,11 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         this.enableClientEvents = enableClientEvents;
     }
 
-    private IAEAppEngInventory getTileEntity() {
+    private IAEAppEngInventory getBlockEntity() {
         return this.te;
     }
 
-    public void setTileEntity(final IAEAppEngInventory te) {
+    public void setBlockEntity(final IAEAppEngInventory te) {
         this.te = te;
     }
 }
