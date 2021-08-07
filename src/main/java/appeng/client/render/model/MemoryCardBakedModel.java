@@ -150,8 +150,7 @@ class MemoryCardBakedModel implements BakedModel {
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
                 try {
-                    if (stack.getItem() instanceof IMemoryCard) {
-                        final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
+                    if (stack.getItem() instanceof IMemoryCard memoryCard) {
                         final AEColor[] colors = memoryCard.getColorCode(stack);
 
                         return MemoryCardBakedModel.this.modelCache.get(new CacheKey(colors),

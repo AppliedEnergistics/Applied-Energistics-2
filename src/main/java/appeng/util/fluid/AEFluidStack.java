@@ -183,11 +183,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     @Override
     public boolean equals(final Object other) {
-        if (other instanceof AEFluidStack) {
-            final AEFluidStack is = (AEFluidStack) other;
+        if (other instanceof AEFluidStack is) {
             return is.fluid == this.fluid && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.tagCompound);
-        } else if (other instanceof FluidStack) {
-            final FluidStack is = (FluidStack) other;
+        } else if (other instanceof FluidStack is) {
             return is.getFluid() == this.fluid
                     && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.getTag());
         }

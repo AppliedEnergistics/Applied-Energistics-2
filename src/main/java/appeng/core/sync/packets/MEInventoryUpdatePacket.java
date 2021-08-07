@@ -96,13 +96,12 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         }
 
         AbstractContainerMenu currentMenu = player.containerMenu;
-        if (!(currentMenu instanceof MEMonitorableMenu)) {
+        if (!(currentMenu instanceof MEMonitorableMenu<?>meMenu)) {
             // Ignore a packet for a screen that has already been closed
             return null;
         }
 
         // If the window id matches, this unsafe cast should actually be safe
-        MEMonitorableMenu<?> meMenu = (MEMonitorableMenu<?>) currentMenu;
         if (meMenu.containerId == windowId) {
             return (MEMonitorableMenu<T>) meMenu;
         }

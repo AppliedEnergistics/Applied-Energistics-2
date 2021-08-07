@@ -151,8 +151,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     @Override
     public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
         final BlockEntity te = this.getBlockEntity(level, pos);
-        if (te instanceof AEBaseInvBlockEntity) {
-            AEBaseInvBlockEntity invBlockEntity = (AEBaseInvBlockEntity) te;
+        if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
             if (invBlockEntity.getInternalInventory().getSlots() > 0) {
                 return ItemHandlerHelper.calcRedstoneFromInventory(invBlockEntity.getInternalInventory());
             }

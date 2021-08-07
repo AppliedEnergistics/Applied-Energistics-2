@@ -69,11 +69,10 @@ final class AESharedItemStack {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof AESharedItemStack)) {
+        if (!(obj instanceof AESharedItemStack other)) {
             return false;
         }
 
-        final AESharedItemStack other = (AESharedItemStack) obj;
         Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
         Preconditions.checkArgument(other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
 

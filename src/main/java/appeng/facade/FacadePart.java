@@ -82,8 +82,7 @@ public class FacadePart implements IFacadePart {
         final Item maybeFacade = this.facade.getItem();
 
         // AE Facade
-        if (maybeFacade instanceof IFacadeItem) {
-            final IFacadeItem facade = (IFacadeItem) maybeFacade;
+        if (maybeFacade instanceof IFacadeItem facade) {
 
             return facade.getTextureItem(this.facade);
         }
@@ -96,8 +95,7 @@ public class FacadePart implements IFacadePart {
         final Item maybeFacade = this.facade.getItem();
 
         // AE Facade
-        if (maybeFacade instanceof IFacadeItem) {
-            final IFacadeItem facade = (IFacadeItem) maybeFacade;
+        if (maybeFacade instanceof IFacadeItem facade) {
 
             return facade.getTextureBlockState(this.facade);
         }

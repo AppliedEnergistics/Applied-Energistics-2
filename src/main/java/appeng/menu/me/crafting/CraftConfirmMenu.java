@@ -266,8 +266,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMe
 
     public void goBack() {
         Player player = getPlayerInventory().player;
-        if (player instanceof ServerPlayer) {
-            ServerPlayer serverPlayer = (ServerPlayer) player;
+        if (player instanceof ServerPlayer serverPlayer) {
             if (itemToCreate != null) {
                 CraftAmountMenu.open(serverPlayer, getLocator(), itemToCreate, (int) itemToCreate.getStackSize());
             }

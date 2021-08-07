@@ -64,8 +64,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
-        if (te instanceof MolecularAssemblerBlockEntity) {
-            MolecularAssemblerBlockEntity ma = (MolecularAssemblerBlockEntity) te;
+        if (te instanceof MolecularAssemblerBlockEntity ma) {
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));
         }
     }

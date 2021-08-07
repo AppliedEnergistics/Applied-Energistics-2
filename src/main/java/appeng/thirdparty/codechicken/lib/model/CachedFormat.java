@@ -127,10 +127,9 @@ public class CachedFormat {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof CachedFormat)) {
+        if (!(obj instanceof CachedFormat other)) {
             return false;
         }
-        CachedFormat other = (CachedFormat) obj;
         return other.elementCount == this.elementCount && //
                 other.positionIndex == this.positionIndex && //
                 other.normalIndex == this.normalIndex && //

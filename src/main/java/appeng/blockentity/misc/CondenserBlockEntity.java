@@ -104,8 +104,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     public double getStorage() {
         final ItemStack is = this.storageSlot.getStackInSlot(0);
-        if (!is.isEmpty() && is.getItem() instanceof IStorageComponent) {
-            final IStorageComponent sc = (IStorageComponent) is.getItem();
+        if (!is.isEmpty() && is.getItem() instanceof IStorageComponent sc) {
             if (sc.isStorageComponent(is)) {
                 return sc.getBytes(is) * BYTE_MULTIPLIER;
             }

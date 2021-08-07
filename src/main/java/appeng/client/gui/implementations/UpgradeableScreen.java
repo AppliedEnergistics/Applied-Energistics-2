@@ -67,8 +67,7 @@ public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T
         Item item;
         if (host instanceof IPart) {
             item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
-        } else if (host instanceof BlockEntity) {
-            BlockEntity te = (BlockEntity) host;
+        } else if (host instanceof BlockEntity te) {
             item = te.getBlockState().getBlock().asItem();
         } else {
             return Collections.emptyList();

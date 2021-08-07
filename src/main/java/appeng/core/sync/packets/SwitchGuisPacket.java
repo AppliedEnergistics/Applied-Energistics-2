@@ -55,8 +55,7 @@ public class SwitchGuisPacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final Player player) {
         final AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseMenu) {
-            final AEBaseMenu bc = (AEBaseMenu) c;
+        if (c instanceof AEBaseMenu bc) {
             final MenuLocator locator = bc.getLocator();
             if (locator != null) {
                 MenuOpener.open(newGui, player, locator);

@@ -364,8 +364,7 @@ public class PartPlacement {
             final double d0 = mc.gameMode.getPickRange();
             final Vec3 vec3 = mc.getCameraEntity().getEyePosition(f);
 
-            if (mop instanceof BlockHitResult && mop.getLocation().distanceTo(vec3) < d0) {
-                BlockHitResult brtr = (BlockHitResult) mop;
+            if (mop instanceof BlockHitResult brtr && mop.getLocation().distanceTo(vec3) < d0) {
 
                 final Level level = event.getEntity().level;
                 final BlockEntity te = level.getBlockEntity(brtr.getBlockPos());

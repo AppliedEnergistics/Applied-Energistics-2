@@ -400,8 +400,7 @@ public class StorageBusPart extends UpgradeablePart
         if (target != null) {
             IMEInventory<IAEItemStack> inv = this.getInventoryWrapper(target);
 
-            if (inv instanceof MEMonitorIInventory) {
-                final MEMonitorIInventory h = (MEMonitorIInventory) inv;
+            if (inv instanceof MEMonitorIInventory h) {
                 h.setMode((StorageFilter) this.getConfigManager().getSetting(Settings.STORAGE_FILTER));
             }
 

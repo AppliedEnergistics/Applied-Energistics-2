@@ -88,8 +88,7 @@ public class CraftAmountMenu extends AEBaseMenu {
             int initialAmount) {
         MenuOpener.open(CraftAmountMenu.TYPE, player, locator);
 
-        if (player.containerMenu instanceof CraftAmountMenu) {
-            CraftAmountMenu cca = (CraftAmountMenu) player.containerMenu;
+        if (player.containerMenu instanceof CraftAmountMenu cca) {
             cca.setItemToCraft(itemToCraft, initialAmount);
             cca.broadcastChanges();
         }
@@ -135,8 +134,7 @@ public class CraftAmountMenu extends AEBaseMenu {
         }
 
         final Object target = getTarget();
-        if (target instanceof IActionHost) {
-            final IActionHost ah = (IActionHost) target;
+        if (target instanceof IActionHost ah) {
             final IGridNode gn = ah.getActionableNode();
             if (gn == null) {
                 return;
@@ -160,8 +158,7 @@ public class CraftAmountMenu extends AEBaseMenu {
                     Player player = this.getPlayerInventory().player;
                     MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
-                    if (player.containerMenu instanceof CraftConfirmMenu) {
-                        final CraftConfirmMenu ccc = (CraftConfirmMenu) player.containerMenu;
+                    if (player.containerMenu instanceof CraftConfirmMenu ccc) {
                         ccc.setAutoStart(autoStart);
                         ccc.setItemToCreate(this.itemToCreate.copy());
                         ccc.setJob(futureJob);

@@ -202,9 +202,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return null;
         }
 
-        if (blockEntity instanceof IPartHost) {
+        if (blockEntity instanceof IPartHost partHost) {
             // But it could also be a part attached to the block entity
-            IPartHost partHost = (IPartHost) blockEntity;
             IPart part = partHost.getPart(locator.getSide());
             if (part == null) {
                 return null;
@@ -233,8 +232,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return null;
         }
 
-        if (it.getItem() instanceof IGuiItem) {
-            IGuiItem guiItem = (IGuiItem) it.getItem();
+        if (it.getItem() instanceof IGuiItem guiItem) {
             // Optionally contains the block the item was used on to open the menu
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
             IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.level, blockPos);
@@ -304,8 +302,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     private Component getDefaultMenuTitle(I accessInterface) {
-        if (accessInterface instanceof ICustomNameObject) {
-            ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
+        if (accessInterface instanceof ICustomNameObject customNameObject) {
             if (customNameObject.hasCustomInventoryName()) {
                 return customNameObject.getCustomInventoryName();
             }

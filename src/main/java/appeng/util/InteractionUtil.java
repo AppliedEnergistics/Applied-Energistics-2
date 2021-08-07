@@ -64,8 +64,7 @@ public final class InteractionUtil {
 
             }
 
-            if (eq.getItem() instanceof IAEWrench) {
-                final IAEWrench wrench = (IAEWrench) eq.getItem();
+            if (eq.getItem() instanceof IAEWrench wrench) {
                 return wrench.canWrench(eq, player, pos);
             }
         }

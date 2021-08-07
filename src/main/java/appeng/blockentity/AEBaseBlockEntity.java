@@ -270,8 +270,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
                 boolean alreadyUpdated = false;
                 // Let the block update it's own state with our internal state changes
                 BlockState currentState = getBlockState();
-                if (currentState.getBlock() instanceof AEBaseEntityBlock) {
-                    AEBaseEntityBlock<?> block = (AEBaseEntityBlock<?>) currentState.getBlock();
+                if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
                     BlockState newState = block.getBlockEntityBlockState(currentState, this);
                     if (currentState != newState) {
                         AELog.blockUpdate(this.worldPosition, currentState, newState, this);
@@ -337,15 +336,13 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
             }
         }
 
-        if (this instanceof IPriorityHost) {
-            final IPriorityHost pHost = (IPriorityHost) this;
+        if (this instanceof IPriorityHost pHost) {
             pHost.setPriority(compound.getInt("priority"));
         }
 
         if (this instanceof ISegmentedInventory) {
             final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
-            if (inv instanceof AppEngInternalAEInventory) {
-                final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+            if (inv instanceof AppEngInternalAEInventory target) {
                 final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
                 for (int x = 0; x < tmp.getSlots(); x++) {
@@ -356,8 +353,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
 
         if (this instanceof IConfigurableFluidInventory) {
             final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory) {
-                final AEFluidInventory target = (AEFluidInventory) tank;
+            if (tank instanceof AEFluidInventory target) {
                 final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
                 for (int x = 0; x < tmp.getSlots(); x++) {
@@ -405,8 +401,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
             }
         }
 
-        if (this instanceof IPriorityHost) {
-            final IPriorityHost pHost = (IPriorityHost) this;
+        if (this instanceof IPriorityHost pHost) {
             output.putInt("priority", pHost.getPriority());
         }
 

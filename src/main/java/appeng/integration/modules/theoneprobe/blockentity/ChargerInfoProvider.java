@@ -38,8 +38,7 @@ public class ChargerInfoProvider implements IBlockEntityInfoProvider {
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
             Level level, BlockState blockState, IProbeHitData data) {
-        if (blockEntity instanceof ChargerBlockEntity) {
-            final ChargerBlockEntity charger = (ChargerBlockEntity) blockEntity;
+        if (blockEntity instanceof ChargerBlockEntity charger) {
             final IItemHandler chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 

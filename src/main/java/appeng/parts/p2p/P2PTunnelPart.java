@@ -169,8 +169,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         final ItemStack is = player.getItemInHand(hand);
 
         final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
-        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
-            final IMemoryCard mc = (IMemoryCard) is.getItem();
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
             final CompoundTag data = mc.getData(is);
 
             final ItemStack newType = ItemStack.of(data);
@@ -183,8 +182,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                     final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
                     final IPart newBus = this.getHost().getPart(dir);
 
-                    if (newBus instanceof P2PTunnelPart) {
-                        final P2PTunnelPart<?> newTunnel = (P2PTunnelPart<?>) newBus;
+                    if (newBus instanceof P2PTunnelPart<?>newTunnel) {
                         newTunnel.setOutput(true);
 
                         newTunnel.getMainNode().ifPresent(grid -> {
@@ -246,8 +244,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
                 final IPart newBus = this.getHost().getPart(dir);
 
-                if (newBus instanceof P2PTunnelPart) {
-                    final P2PTunnelPart newTunnel = (P2PTunnelPart) newBus;
+                if (newBus instanceof P2PTunnelPart newTunnel) {
                     newTunnel.setOutput(oldOutput);
                     newTunnel.onTunnelNetworkChange();
 
@@ -267,12 +264,11 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     @Override
     public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         final ItemStack is = player.getInventory().getSelected();
-        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
             if (isRemote()) {
                 return true;
             }
 
-            final IMemoryCard mc = (IMemoryCard) is.getItem();
             final CompoundTag data = mc.getData(is);
             final short storedFrequency = data.getShort("freq");
 

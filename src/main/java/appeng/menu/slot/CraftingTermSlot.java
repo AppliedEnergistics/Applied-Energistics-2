@@ -148,7 +148,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
-        if (this.menu instanceof final CraftingTermMenu terminalMenu) {
+        if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, level)) {

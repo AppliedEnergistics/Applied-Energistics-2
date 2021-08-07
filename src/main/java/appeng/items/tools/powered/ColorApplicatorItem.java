@@ -210,7 +210,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return AEColor.TRANSPARENT;
         }
 
-        if (paintBall.getItem() instanceof final PaintBallItem ipb) {
+        if (paintBall.getItem() instanceof PaintBallItem ipb) {
             return ipb.getColor();
         } else {
             for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {

@@ -58,13 +58,12 @@ public class MEInteractionPacket extends BasePacket {
 
     @Override
     public void serverPacketData(INetworkInfo manager, Player player) {
-        if (player.containerMenu instanceof IMEInteractionHandler) {
+        if (player.containerMenu instanceof IMEInteractionHandler handler) {
             // The open screen has changed since the client sent the packet
             if (player.containerMenu.containerId != windowId) {
                 return;
             }
 
-            IMEInteractionHandler handler = (IMEInteractionHandler) player.containerMenu;
             handler.handleInteraction(serial, action);
         }
     }

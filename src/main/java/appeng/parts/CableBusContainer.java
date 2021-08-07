@@ -137,8 +137,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             return true;
         }
 
-        if (is.getItem() instanceof IPartItem) {
-            final IPartItem<?> bi = (IPartItem<?>) is.getItem();
+        if (is.getItem() instanceof IPartItem<?>bi) {
 
             is = is.copy();
             is.setCount(1);
@@ -175,8 +174,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     @Override
     public AEPartLocation addPart(ItemStack is, final AEPartLocation side, final @Nullable Player player,
             final @Nullable InteractionHand hand) {
-        if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem) {
-            final IPartItem<?> bi = (IPartItem<?>) is.getItem();
+        if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem<?>bi) {
 
             is = is.copy();
             is.setCount(1);

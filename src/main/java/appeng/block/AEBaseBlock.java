@@ -181,8 +181,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     protected IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
-        if (this instanceof IOrientableBlock) {
-            IOrientableBlock orientable = (IOrientableBlock) this;
+        if (this instanceof IOrientableBlock orientable) {
             return orientable.getOrientable(level, pos);
         }
         return null;

@@ -37,8 +37,7 @@ public class PowerStorageInfoProvider implements IBlockEntityInfoProvider {
     @Override
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
             Level level, BlockState blockState, IProbeHitData data) {
-        if (blockEntity instanceof IAEPowerStorage) {
-            final IAEPowerStorage storage = (IAEPowerStorage) blockEntity;
+        if (blockEntity instanceof IAEPowerStorage storage) {
             final double maxPower = storage.getAEMaxPower();
 
             if (maxPower > 0) {

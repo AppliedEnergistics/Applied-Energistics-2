@@ -204,8 +204,7 @@ public class JEIPlugin implements IModPlugin {
                         // The following code allows the player to show recipes involving fluids in AE fluid terminals
                         // or AE
                         // fluid tanks shown in fluid interfaces and other UI.
-                        if (containerScreen instanceof AEBaseScreen) {
-                            AEBaseScreen<?> baseScreen = (AEBaseScreen<?>) containerScreen;
+                        if (containerScreen instanceof AEBaseScreen<?>baseScreen) {
                             return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
                         }
 

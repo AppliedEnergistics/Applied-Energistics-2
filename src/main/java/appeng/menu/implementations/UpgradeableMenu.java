@@ -138,8 +138,7 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
         this.checkToolbox();
 
         for (final Object o : this.slots) {
-            if (o instanceof OptionalFakeSlot) {
-                final OptionalFakeSlot fs = (OptionalFakeSlot) o;
+            if (o instanceof OptionalFakeSlot fs) {
                 if (!fs.isSlotEnabled() && !fs.getDisplayStack().isEmpty()) {
                     fs.clearStack();
                 }
