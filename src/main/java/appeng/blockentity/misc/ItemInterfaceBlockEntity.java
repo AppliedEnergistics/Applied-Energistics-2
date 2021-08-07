@@ -45,7 +45,7 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.container.implementations.ItemInterfaceContainer;
+import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
@@ -258,6 +258,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public MenuType<?> getContainerType() {
-        return ItemInterfaceContainer.TYPE;
+        return ItemInterfaceMenu.TYPE;
     }
 }

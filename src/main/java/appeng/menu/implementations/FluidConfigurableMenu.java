@@ -37,8 +37,8 @@ import appeng.util.fluid.IAEFluidTank;
 public abstract class FluidConfigurableMenu extends UpgradeableMenu implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableMenu(MenuType<?> containerType, int id, Inventory ip, IUpgradeableHost te) {
-        super(containerType, id, ip, te);
+    public FluidConfigurableMenu(MenuType<?> menuType, int id, Inventory ip, IUpgradeableHost te) {
+        super(menuType, id, ip, te);
     }
 
     public abstract IAEFluidTank getFluidConfigInventory();

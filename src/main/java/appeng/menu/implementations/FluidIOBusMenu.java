@@ -47,8 +47,8 @@ public class FluidIOBusMenu extends FluidConfigurableMenu {
 
     private final SharedFluidBusPart bus;
 
-    public FluidIOBusMenu(MenuType<?> containerType, int id, Inventory ip, SharedFluidBusPart bus) {
-        super(containerType, id, ip, bus);
+    public FluidIOBusMenu(MenuType<?> menuType, int id, Inventory ip, SharedFluidBusPart bus) {
+        super(menuType, id, ip, bus);
         this.bus = bus;
     }
 

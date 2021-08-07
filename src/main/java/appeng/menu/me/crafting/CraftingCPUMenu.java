@@ -64,8 +64,8 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
 
-    public CraftingCPUMenu(MenuType<?> containerType, int id, final Inventory ip, final Object te) {
-        super(containerType, id, ip, te);
+    public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
+        super(menuType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
         if (host != null && host.getActionableNode() != null) {

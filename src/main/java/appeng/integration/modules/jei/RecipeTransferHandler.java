@@ -40,9 +40,9 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
-import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket;
 
-abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IContainerCraftingPacket>
+abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
         implements IRecipeTransferHandler<T> {
 
     private final Class<T> containerClass;

@@ -54,7 +54,7 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
-import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.reporting.PatternTerminalPart;
@@ -68,7 +68,7 @@ import appeng.util.item.AEItemStack;
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
 public class PatternTermMenu extends ItemTerminalMenu
-        implements IOptionalSlotHost, IContainerCraftingPacket {
+        implements IOptionalSlotHost, IMenuCraftingPacket {
 
     public static MenuType<PatternTermMenu> TYPE = ContainerTypeBuilder
             .create(PatternTermMenu::new, ITerminalHost.class)

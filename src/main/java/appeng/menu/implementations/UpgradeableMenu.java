@@ -61,9 +61,9 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
     private int tbSlot;
     private NetworkToolViewer tbInventory;
 
-    public UpgradeableMenu(MenuType<?> containerType, int id, final Inventory ip,
+    public UpgradeableMenu(MenuType<?> menuType, int id, final Inventory ip,
                            final IUpgradeableHost te) {
-        super(containerType, id, ip, te);
+        super(menuType, id, ip, te);
         this.upgradeable = te;
 
         final Container pi = this.getPlayerInventory();

@@ -42,7 +42,7 @@ import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
-import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInvItemHandler;
@@ -53,7 +53,7 @@ import appeng.util.inv.WrapperInvItemHandler;
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */
-public class CraftingTermMenu extends ItemTerminalMenu implements IContainerCraftingPacket {
+public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingPacket {
 
     public static final MenuType<CraftingTermMenu> TYPE = ContainerTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)

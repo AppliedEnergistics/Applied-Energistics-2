@@ -29,7 +29,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.packets.PatternSlotPacket;
-import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket;
 
 public class PatternTermSlot extends CraftingTermSlot {
 
@@ -39,7 +39,7 @@ public class PatternTermSlot extends CraftingTermSlot {
     public PatternTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
             final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
             final IOptionalSlotHost h, final int groupNumber,
-            final IContainerCraftingPacket c) {
+            final IMenuCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);
 
         this.host = h;

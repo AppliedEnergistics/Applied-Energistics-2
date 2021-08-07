@@ -57,9 +57,9 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public ItemTerminalMenu(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
+    public ItemTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
                             boolean bindInventory) {
-        super(containerType, id, ip, host, bindInventory,
+        super(menuType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
     }
 

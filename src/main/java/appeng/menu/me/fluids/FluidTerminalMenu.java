@@ -58,9 +58,9 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public FluidTerminalMenu(MenuType<?> containerType, int id, Inventory ip, ITerminalHost host,
+    public FluidTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
                              boolean bindInventory) {
-        super(containerType, id, ip, host, bindInventory,
+        super(menuType, id, ip, host, bindInventory,
                 Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
     }
 

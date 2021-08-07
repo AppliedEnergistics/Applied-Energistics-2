@@ -48,8 +48,8 @@ public class ItemIOBusMenu extends UpgradeableMenu {
             .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
-    public ItemIOBusMenu(MenuType<?> containerType, int id, Inventory ip, SharedItemBusPart te) {
-        super(containerType, id, ip, te);
+    public ItemIOBusMenu(MenuType<?> menuType, int id, Inventory ip, SharedItemBusPart te) {
+        super(menuType, id, ip, te);
     }
 
     @Override

@@ -113,10 +113,10 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
     @Nullable
     private IClientRepo<T> clientRepo;
 
-    public MEMonitorableMenu(MenuType<?> containerType, int id, Inventory ip,
+    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
                              final ITerminalHost host, final boolean bindInventory,
                              IStorageChannel<T> storageChannel) {
-        super(containerType, id, ip, host);
+        super(menuType, id, ip, host);
 
         this.storageChannel = storageChannel;
 

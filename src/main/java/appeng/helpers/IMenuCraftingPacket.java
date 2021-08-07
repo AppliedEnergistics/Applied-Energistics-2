@@ -26,7 +26,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 
-public interface IContainerCraftingPacket {
+public interface IMenuCraftingPacket {
 
     /**
      * @return gain access to network infrastructure.

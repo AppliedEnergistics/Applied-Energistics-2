@@ -88,9 +88,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private ContainerLocator locator;
     private int ticksSinceCheck = 900;
 
-    public AEBaseMenu(MenuType<?> containerType, int id, final Inventory playerInventory,
+    public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
                       final Object host) {
-        super(containerType, id);
+        super(menuType, id);
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;

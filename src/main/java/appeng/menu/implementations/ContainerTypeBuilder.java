@@ -78,11 +78,11 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
     @Nullable
     private InitialDataDeserializer<C, I> initialDataDeserializer;
 
-    private MenuType<C> containerType;
+    private MenuType<C> menuType;
 
     private ContainerTypeBuilder(Class<I> hostInterface, TypedContainerFactory<C, I> typedFactory) {
         this.hostInterface = hostInterface;
-        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(containerType, windowId, playerInv,
+        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(menuType, windowId, playerInv,
                 accessObj);
     }
 
@@ -257,12 +257,12 @@ public final class ContainerTypeBuilder<C extends AEBaseMenu, I> {
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
     public MenuType<C> build(String id) {
-        Preconditions.checkState(containerType == null, "build was already called");
+        Preconditions.checkState(menuType == null, "build was already called");
 
-        containerType = IForgeContainerType.create(this::fromNetwork);
-        containerType.setRegistryName(AppEng.MOD_ID, id);
-        ContainerOpener.addOpener(containerType, this::open);
-        return containerType;
+        menuType = IForgeContainerType.create(this::fromNetwork);
+        menuType.setRegistryName(AppEng.MOD_ID, id);
+        ContainerOpener.addOpener(menuType, this::open);
+        return menuType;
     }
 
     @FunctionalInterface
