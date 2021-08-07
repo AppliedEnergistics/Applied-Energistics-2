@@ -75,9 +75,9 @@ public class LightningArcFX extends LightningFX {
         }
 
         @Override
-        public Particle createParticle(LightningArcParticleData data, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(LightningArcParticleData data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            TextureSheetParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+            TextureSheetParticle lightningFX = new LightningArcFX(level, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.pickSprite(this.spriteSet);
             return lightningFX;

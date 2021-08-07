@@ -92,7 +92,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level worldIn, final BlockPos pos, final Random rand) {
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
         // cancel out lightning
     }
 
@@ -123,7 +123,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         return Shapes.empty();
     }

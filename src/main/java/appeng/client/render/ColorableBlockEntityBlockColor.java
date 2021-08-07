@@ -37,12 +37,12 @@ public class ColorableBlockEntityBlockColor implements BlockColor {
     public static final ColorableBlockEntityBlockColor INSTANCE = new ColorableBlockEntityBlockColor();
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos,
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
             int tintIndex) {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
-        if (worldIn != null && pos != null) {
-            BlockEntity te = worldIn.getBlockEntity(pos);
+        if (level != null && pos != null) {
+            BlockEntity te = level.getBlockEntity(pos);
             if (te instanceof IColorableBlockEntity) {
                 color = ((IColorableBlockEntity) te).getColor();
             }

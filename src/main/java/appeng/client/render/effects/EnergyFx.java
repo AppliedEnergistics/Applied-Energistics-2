@@ -109,9 +109,9 @@ public class EnergyFx extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(EnergyParticleData data, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(EnergyParticleData data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
+            EnergyFx result = new EnergyFx(level, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);

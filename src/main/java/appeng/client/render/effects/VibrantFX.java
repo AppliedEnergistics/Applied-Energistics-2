@@ -88,9 +88,9 @@ public class VibrantFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+            return new VibrantFX(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 

@@ -60,19 +60,19 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
-        BlockEntity te = worldIn.getBlockEntity(currentPos);
+        BlockEntity te = level.getBlockEntity(currentPos);
         if (te != null) {
             te.requestModelDataUpdate();
         }
-        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
-    public void neighborChanged(final BlockState state, final Level worldIn, final BlockPos pos, final Block blockIn,
+    public void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingBlockEntity cp = this.getBlockEntity(worldIn, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);
         }

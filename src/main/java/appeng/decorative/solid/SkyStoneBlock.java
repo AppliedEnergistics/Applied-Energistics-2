@@ -62,14 +62,14 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
-        if (worldIn instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) worldIn;
+        if (level instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel) level;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
         }
 
-        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override

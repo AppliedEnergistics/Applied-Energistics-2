@@ -57,8 +57,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
 
     private LivingEntity placedBy;
 
-    public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, Level worldIn) {
-        super(type, worldIn);
+    public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, Level level) {
+        super(type, level);
         this.blocksBuilding = true;
     }
 

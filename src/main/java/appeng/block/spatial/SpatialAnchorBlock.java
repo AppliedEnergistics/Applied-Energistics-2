@@ -64,20 +64,20 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(final Level worldIn, final BlockPos pos, final Player p,
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
 
-        final SpatialAnchorBlockEntity tg = this.getBlockEntity(worldIn, pos);
+        final SpatialAnchorBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
-            if (!worldIn.isClientSide()) {
+            if (!level.isClientSide()) {
                 ContainerOpener.openContainer(SpatialAnchorContainer.TYPE, p,
                         ContainerLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
-            return InteractionResult.sidedSuccess(worldIn.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }

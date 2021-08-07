@@ -134,9 +134,9 @@ public class CraftingFx extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType data, ClientLevel worldIn, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType data, ClientLevel level, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            return new CraftingFx(worldIn, x, y, z, spriteSet);
+            return new CraftingFx(level, x, y, z, spriteSet);
         }
     }
 

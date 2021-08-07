@@ -39,12 +39,12 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 public class CableBusColor implements BlockColor {
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos, int color) {
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int color) {
 
         AEColor busColor = AEColor.TRANSPARENT;
 
-        if (worldIn != null && pos != null) {
-            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        if (level != null && pos != null) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof CableBusBlockEntity) {
                 CableBusContainer container = ((CableBusBlockEntity) blockEntity).getCableBus();
                 busColor = container.getColor();

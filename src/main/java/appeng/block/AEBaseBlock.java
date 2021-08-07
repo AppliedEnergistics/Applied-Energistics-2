@@ -79,7 +79,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final Level worldIn, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
         return 0;
     }
 

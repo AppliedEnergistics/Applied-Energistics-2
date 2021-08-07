@@ -160,10 +160,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public boolean triggerEvent(final BlockState state, final Level worldIn, final BlockPos pos, final int eventID,
+    public boolean triggerEvent(final BlockState state, final Level level, final BlockPos pos, final int eventID,
             final int eventParam) {
-        super.triggerEvent(state, worldIn, pos, eventID, eventParam);
-        final BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        super.triggerEvent(state, level, pos, eventID, eventParam);
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
         return blockEntity != null ? blockEntity.triggerEvent(eventID, eventParam) : false;
     }
 

@@ -106,8 +106,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level worldIn, final BlockPos pos, final Random rand) {
-        this.cb(worldIn, pos).animateTick(worldIn, pos, rand);
+    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
+        this.cb(level, pos).animateTick(level, pos, rand);
     }
 
     @Override
@@ -227,15 +227,15 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) {
-        if (worldIn.isClientSide()) {
+    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
+        if (level.isClientSide()) {
             final HitResult rtr = Minecraft.getInstance().hitResult;
             if (rtr instanceof BlockHitResult) {
                 BlockHitResult brtr = (BlockHitResult) rtr;
                 if (brtr.getBlockPos().equals(pos)) {
                     final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
 
-                    if (this.cb(worldIn, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
+                    if (this.cb(level, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
                         NetworkHandler.instance()
                                 .sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
                                         (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
@@ -245,8 +245,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
     }
 
-    public void onBlockClickPacket(Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, Vec3 hitVec) {
-        this.cb(worldIn, pos).clicked(playerIn, hand, hitVec);
+    public void onBlockClickPacket(Level level, BlockPos pos, Player playerIn, InteractionHand hand, Vec3 hitVec) {
+        this.cb(level, pos).clicked(playerIn, hand, hitVec);
     }
 
     @Override

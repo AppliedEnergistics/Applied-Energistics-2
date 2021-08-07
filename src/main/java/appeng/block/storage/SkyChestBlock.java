@@ -127,8 +127,8 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        final SkyChestBlockEntity sk = this.getBlockEntity(worldIn, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final SkyChestBlockEntity sk = this.getBlockEntity(level, pos);
         Direction up = sk != null ? sk.getUp() : Direction.UP;
         return SHAPES.get(up);
     }

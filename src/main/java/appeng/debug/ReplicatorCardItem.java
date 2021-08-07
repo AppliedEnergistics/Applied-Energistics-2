@@ -53,8 +53,8 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-        if (!worldIn.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+        if (!level.isClientSide()) {
             final CompoundTag tag = playerIn.getItemInHand(handIn).getOrCreateTag();
             final int replications;
 
@@ -69,7 +69,7 @@ public class ReplicatorCardItem extends AEBaseItem {
             playerIn.sendMessage(new TextComponent(replications + 1 + "³ Replications"), Util.NIL_UUID);
         }
 
-        return super.use(worldIn, playerIn, handIn);
+        return super.use(level, playerIn, handIn);
     }
 
     @Override

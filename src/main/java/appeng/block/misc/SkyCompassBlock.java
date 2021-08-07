@@ -147,7 +147,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos,
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         return Shapes.empty();
     }
