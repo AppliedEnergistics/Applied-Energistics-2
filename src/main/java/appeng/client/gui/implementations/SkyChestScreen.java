@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.implementations.SkyChestContainer;
+import appeng.menu.implementations.SkyChestContainer;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 

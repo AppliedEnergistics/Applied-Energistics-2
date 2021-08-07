@@ -39,9 +39,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.VibrationChamberContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
 import appeng.util.InteractionUtil;
 

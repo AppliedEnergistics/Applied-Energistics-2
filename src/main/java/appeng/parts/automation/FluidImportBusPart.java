@@ -43,7 +43,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.implementations.FluidIOBusContainer;
+import appeng.menu.implementations.FluidIOBusContainer;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;

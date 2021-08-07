@@ -35,9 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.crafting.CraftingCPUContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.me.crafting.CraftingCPUContainer;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseEntityBlock<T> {

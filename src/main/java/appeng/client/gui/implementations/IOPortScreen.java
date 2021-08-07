@@ -30,7 +30,7 @@ import appeng.api.config.Settings;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.IOPortContainer;
+import appeng.menu.implementations.IOPortContainer;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 

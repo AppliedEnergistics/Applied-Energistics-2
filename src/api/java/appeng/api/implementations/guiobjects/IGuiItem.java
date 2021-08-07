@@ -35,7 +35,7 @@ import net.minecraft.world.level.Level;
 public interface IGuiItem {
     /**
      *
-     * @param is                  The item used to open the container.
+     * @param is                  The item used to open the menu.
      * @param playerInventorySlot The slot in the player's inventory the item is in.
      * @param level               The level the player is in.
      * @param pos                 If the item was used on a block in the world, has that block's position. Null if no

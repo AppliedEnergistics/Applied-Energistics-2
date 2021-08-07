@@ -32,9 +32,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.MolecularAssemblerContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.MolecularAssemblerContainer;
 import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {

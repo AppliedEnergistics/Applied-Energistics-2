@@ -33,7 +33,7 @@ import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.container.implementations.SecurityStationContainer;
+import appeng.menu.implementations.SecurityStationContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 

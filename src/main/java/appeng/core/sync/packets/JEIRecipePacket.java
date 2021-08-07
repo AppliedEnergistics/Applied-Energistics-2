@@ -53,7 +53,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.me.items.PatternTermContainer;
+import appeng.menu.me.items.PatternTermContainer;
 import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;

@@ -28,7 +28,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.SpatialAnchorContainer;
+import appeng.menu.implementations.SpatialAnchorContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 

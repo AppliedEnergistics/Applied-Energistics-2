@@ -63,7 +63,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
-import appeng.container.implementations.DriveContainer;
+import appeng.menu.implementations.DriveContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;

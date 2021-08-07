@@ -33,9 +33,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.InscriberContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.InscriberContainer;
 import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {

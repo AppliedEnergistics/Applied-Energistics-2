@@ -37,7 +37,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.container.implementations.SkyChestContainer;
+import appeng.menu.implementations.SkyChestContainer;
 import appeng.util.inv.InvOperation;
 
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)

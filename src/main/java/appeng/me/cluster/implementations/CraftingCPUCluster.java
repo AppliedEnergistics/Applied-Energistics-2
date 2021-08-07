@@ -62,7 +62,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.container.ContainerNull;
+import appeng.menu.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;

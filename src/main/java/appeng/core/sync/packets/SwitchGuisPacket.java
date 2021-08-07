@@ -26,9 +26,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
+import appeng.menu.AEBaseContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 

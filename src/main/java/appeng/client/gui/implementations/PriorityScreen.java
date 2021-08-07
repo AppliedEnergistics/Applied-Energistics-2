@@ -29,7 +29,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
-import appeng.container.implementations.PriorityContainer;
+import appeng.menu.implementations.PriorityContainer;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 

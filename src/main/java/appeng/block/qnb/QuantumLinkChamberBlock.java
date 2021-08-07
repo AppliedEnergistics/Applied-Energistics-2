@@ -40,9 +40,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.QNBContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;

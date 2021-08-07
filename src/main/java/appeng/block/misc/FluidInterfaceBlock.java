@@ -32,9 +32,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.FluidInterfaceBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.FluidInterfaceContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.FluidInterfaceContainer;
 import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {

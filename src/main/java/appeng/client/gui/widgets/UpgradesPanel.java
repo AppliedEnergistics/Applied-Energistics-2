@@ -38,7 +38,7 @@ import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Rects;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
-import appeng.container.slot.AppEngSlot;
+import appeng.menu.slot.AppEngSlot;
 
 /**
  * A panel that can draw a dynamic number of upgrade slots in a vertical layout.

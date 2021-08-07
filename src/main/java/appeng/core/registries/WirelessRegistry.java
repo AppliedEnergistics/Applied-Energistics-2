@@ -30,9 +30,9 @@ import net.minecraft.world.level.BlockGetter;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.items.WirelessTermContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.me.items.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 

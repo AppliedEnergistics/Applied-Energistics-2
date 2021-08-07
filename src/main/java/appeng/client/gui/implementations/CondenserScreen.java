@@ -29,7 +29,7 @@ import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.CondenserContainer;
+import appeng.menu.implementations.CondenserContainer;
 import appeng.core.localization.GuiText;
 
 public class CondenserScreen extends AEBaseScreen<CondenserContainer> {

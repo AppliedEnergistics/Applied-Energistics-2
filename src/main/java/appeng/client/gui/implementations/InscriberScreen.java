@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
-import appeng.container.implementations.InscriberContainer;
+import appeng.menu.implementations.InscriberContainer;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberContainer> {
 

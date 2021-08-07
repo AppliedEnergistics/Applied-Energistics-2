@@ -29,11 +29,11 @@ import net.minecraft.world.item.ItemStack;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
-import appeng.container.implementations.ChestContainer;
-import appeng.container.me.items.CraftingTermContainer;
-import appeng.container.me.items.ItemTerminalContainer;
-import appeng.container.me.items.PatternTermContainer;
-import appeng.container.me.items.WirelessTermContainer;
+import appeng.menu.implementations.ChestContainer;
+import appeng.menu.me.items.CraftingTermContainer;
+import appeng.menu.me.items.ItemTerminalContainer;
+import appeng.menu.me.items.PatternTermContainer;
+import appeng.menu.me.items.WirelessTermContainer;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.sync.network.NetworkHandler;
@@ -45,7 +45,7 @@ import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 
 /**
- * Utility class for sub-screens of other containers that allow returning to the primary container UI.
+ * Utility class for sub-screens of other containers that allow returning to the primary menu UI.
  */
 public final class AESubScreen {
 
@@ -53,7 +53,7 @@ public final class AESubScreen {
     private final ItemStack previousContainerIcon;
 
     /**
-     * Based on the container we're opening for, try to determine what it's "primary" GUI would be so that we can go
+     * Based on the menu we're opening for, try to determine what it's "primary" GUI would be so that we can go
      * back to it.
      */
     public AESubScreen(Object containerHost) {

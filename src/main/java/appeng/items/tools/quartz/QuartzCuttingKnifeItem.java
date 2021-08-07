@@ -32,9 +32,9 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.QuartzKnifeContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;

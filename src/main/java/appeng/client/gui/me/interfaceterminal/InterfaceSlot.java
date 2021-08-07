@@ -21,7 +21,7 @@ package appeng.client.gui.me.interfaceterminal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.container.slot.AppEngSlot;
+import appeng.menu.slot.AppEngSlot;
 import appeng.items.misc.EncodedPatternItem;
 
 /**

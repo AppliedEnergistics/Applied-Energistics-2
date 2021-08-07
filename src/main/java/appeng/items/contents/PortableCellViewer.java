@@ -35,7 +35,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-import appeng.container.interfaces.IInventorySlotAware;
+import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.core.Api;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.util.ConfigManager;

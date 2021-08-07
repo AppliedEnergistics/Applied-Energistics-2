@@ -23,7 +23,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.container.AEBaseContainer;
+import appeng.menu.AEBaseContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 

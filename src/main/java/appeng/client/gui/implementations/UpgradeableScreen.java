@@ -36,8 +36,8 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.UpgradeableContainer;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.UpgradeableContainer;
 import appeng.core.localization.GuiText;
 
 /**

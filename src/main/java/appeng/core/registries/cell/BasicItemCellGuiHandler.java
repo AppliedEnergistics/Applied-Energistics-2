@@ -29,9 +29,9 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.me.items.ItemTerminalContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.me.items.ItemTerminalContainer;
 import appeng.core.Api;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {

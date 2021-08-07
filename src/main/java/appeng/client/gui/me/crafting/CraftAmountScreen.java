@@ -29,7 +29,7 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
-import appeng.container.me.crafting.CraftAmountContainer;
+import appeng.menu.me.crafting.CraftAmountContainer;
 import appeng.core.localization.GuiText;
 
 /**

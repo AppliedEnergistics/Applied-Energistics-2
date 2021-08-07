@@ -42,7 +42,7 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.container.implementations.FluidInterfaceContainer;
+import appeng.menu.implementations.FluidInterfaceContainer;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityFluidInterface;

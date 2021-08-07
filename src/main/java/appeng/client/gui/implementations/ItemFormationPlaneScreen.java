@@ -28,7 +28,7 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.ItemFormationPlaneContainer;
+import appeng.menu.implementations.ItemFormationPlaneContainer;
 
 public class ItemFormationPlaneScreen extends UpgradeableScreen<ItemFormationPlaneContainer> {
 

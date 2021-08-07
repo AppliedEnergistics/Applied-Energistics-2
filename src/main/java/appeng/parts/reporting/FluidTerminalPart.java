@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.container.me.fluids.FluidTerminalContainer;
+import appeng.menu.me.fluids.FluidTerminalContainer;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;

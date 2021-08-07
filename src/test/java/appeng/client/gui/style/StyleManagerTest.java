@@ -34,7 +34,7 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import appeng.client.gui.MockResourceManager;
-import appeng.container.SlotSemantic;
+import appeng.menu.SlotSemantic;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StyleManagerTest {

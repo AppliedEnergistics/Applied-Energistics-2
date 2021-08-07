@@ -33,9 +33,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.SpatialIOPortContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.SpatialIOPortContainer;
 import appeng.util.InteractionUtil;
 
 public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {

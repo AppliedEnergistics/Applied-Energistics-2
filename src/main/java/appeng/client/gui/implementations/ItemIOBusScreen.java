@@ -30,7 +30,7 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.ItemIOBusContainer;
+import appeng.menu.implementations.ItemIOBusContainer;
 import appeng.parts.automation.ExportBusPart;
 
 public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusContainer> {

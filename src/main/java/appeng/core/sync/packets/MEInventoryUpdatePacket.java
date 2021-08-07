@@ -40,10 +40,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.container.me.common.GridInventoryEntry;
-import appeng.container.me.common.IClientRepo;
-import appeng.container.me.common.IncrementalUpdateHelper;
-import appeng.container.me.common.MEMonitorableContainer;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
+import appeng.menu.me.common.IncrementalUpdateHelper;
+import appeng.menu.me.common.MEMonitorableContainer;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -87,7 +87,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     @SuppressWarnings("unchecked")
     private MEMonitorableContainer<T> getContainer() {
         // This is slightly dangerous since it accesses the game thread from the network thread,
-        // but reading the current container is atomic (reference field), and from then the window id
+        // but reading the current menu is atomic (reference field), and from then the window id
         // and storage channel are immutable.
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
@@ -255,7 +255,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final Player player) {
         MEMonitorableContainer<T> container = getContainer();
         if (container == null) {
-            AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+            AELog.info("Ignoring ME inventory update packet because the target menu isn't open.");
             return;
         }
 

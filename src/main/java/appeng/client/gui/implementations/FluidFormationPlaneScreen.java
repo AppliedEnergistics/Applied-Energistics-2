@@ -24,8 +24,8 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.OptionalFluidSlotWidget;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.FluidFormationPlaneContainer;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.FluidFormationPlaneContainer;
 import appeng.util.fluid.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {

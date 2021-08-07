@@ -31,7 +31,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.FluidSlotWidget;
-import appeng.container.implementations.IFluidSyncContainer;
+import appeng.menu.implementations.IFluidSyncContainer;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.fluid.AEFluidStack;
@@ -42,7 +42,7 @@ import appeng.util.fluid.AEFluidStack;
  * <p/>
  * The key used in for synchronization is {@link FluidSlotWidget#getId()}.
  * <p/>
- * The container on both sides of the synchronization must implement {@link IFluidSyncContainer}.
+ * The menu on both sides of the synchronization must implement {@link IFluidSyncContainer}.
  */
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;

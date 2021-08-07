@@ -37,7 +37,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermContainer;
 import appeng.util.item.AEItemStack;
 
 public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermContainer> {

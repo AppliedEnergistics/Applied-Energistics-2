@@ -33,9 +33,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.IOPortBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.IOPortContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.IOPortContainer;
 import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {

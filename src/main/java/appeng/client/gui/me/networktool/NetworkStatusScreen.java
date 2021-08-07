@@ -31,9 +31,9 @@ import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.container.me.networktool.MachineGroup;
-import appeng.container.me.networktool.NetworkStatus;
-import appeng.container.me.networktool.NetworkStatusContainer;
+import appeng.menu.me.networktool.MachineGroup;
+import appeng.menu.me.networktool.NetworkStatus;
+import appeng.menu.me.networktool.NetworkStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 

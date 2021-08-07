@@ -56,7 +56,7 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
-import appeng.container.ContainerNull;
+import appeng.menu.ContainerNull;
 import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;

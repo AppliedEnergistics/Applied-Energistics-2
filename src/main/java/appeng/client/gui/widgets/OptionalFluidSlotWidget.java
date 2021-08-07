@@ -20,8 +20,8 @@ package appeng.client.gui.widgets;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.Point;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.IOptionalSlotHost;
+import appeng.menu.slot.IOptionalSlot;
+import appeng.menu.slot.IOptionalSlotHost;
 import appeng.util.fluid.IAEFluidTank;
 
 public class OptionalFluidSlotWidget extends FluidSlotWidget implements IOptionalSlot {

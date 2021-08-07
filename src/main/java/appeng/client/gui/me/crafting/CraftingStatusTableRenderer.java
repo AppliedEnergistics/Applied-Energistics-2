@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
-import appeng.container.me.crafting.CraftingStatusEntry;
+import appeng.menu.me.crafting.CraftingStatusEntry;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;

@@ -19,7 +19,7 @@
 package appeng.client.gui.layout;
 
 import appeng.client.Point;
-import appeng.container.implementations.ItemIOBusContainer;
+import appeng.menu.implementations.ItemIOBusContainer;
 
 public enum SlotGridLayout {
 

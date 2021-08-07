@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.implementations.DriveContainer;
+import appeng.menu.implementations.DriveContainer;
 
 public class DriveScreen extends AEBaseScreen<DriveContainer> {
 

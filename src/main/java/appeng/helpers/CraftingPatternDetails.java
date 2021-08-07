@@ -49,7 +49,7 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerNull;
+import appeng.menu.ContainerNull;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;

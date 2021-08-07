@@ -36,7 +36,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
 
     /**
      * Identifier for this interface on the server-side. See
-     * {@link appeng.container.implementations.InterfaceTerminalContainer}
+     * {@link appeng.menu.implementations.InterfaceTerminalContainer}
      */
     private final long serverId;
 

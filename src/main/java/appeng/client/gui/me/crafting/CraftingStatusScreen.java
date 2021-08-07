@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.me.crafting.CraftingStatusContainer;
+import appeng.menu.me.crafting.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;

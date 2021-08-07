@@ -34,7 +34,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.implementations.ItemLevelEmitterContainer;
+import appeng.menu.implementations.ItemLevelEmitterContainer;
 
 public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterContainer> {
 

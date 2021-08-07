@@ -37,9 +37,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ItemInterfaceContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.ItemInterfaceContainer;
 import appeng.util.InteractionUtil;
 
 public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {

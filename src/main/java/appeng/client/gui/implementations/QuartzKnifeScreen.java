@@ -32,7 +32,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.implementations.QuartzKnifeContainer;
+import appeng.menu.implementations.QuartzKnifeContainer;
 import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;

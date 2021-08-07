@@ -40,9 +40,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.WirelessBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.WirelessContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.WirelessContainer;
 import appeng.helpers.AEMaterials;
 import appeng.util.InteractionUtil;
 

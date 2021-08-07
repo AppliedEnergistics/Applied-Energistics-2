@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.api.config.ActionItems;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
-import appeng.container.me.items.CraftingTermContainer;
+import appeng.menu.me.items.CraftingTermContainer;
 
 /**
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in

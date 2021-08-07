@@ -24,8 +24,8 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.FluidTankWidget;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.FluidInterfaceContainer;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.FluidInterfaceContainer;
 import appeng.helpers.DualityFluidInterface;
 import appeng.util.fluid.IAEFluidTank;
 

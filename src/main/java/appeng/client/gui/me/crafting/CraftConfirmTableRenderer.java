@@ -25,7 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.container.me.crafting.CraftingPlanSummaryEntry;
+import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
 import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;
 

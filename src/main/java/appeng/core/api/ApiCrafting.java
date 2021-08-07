@@ -37,7 +37,7 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerNull;
+import appeng.menu.ContainerNull;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;

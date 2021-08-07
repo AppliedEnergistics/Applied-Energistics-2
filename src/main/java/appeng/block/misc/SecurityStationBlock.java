@@ -35,9 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.SecurityStationContainer;
+import appeng.menu.ContainerLocator;
+import appeng.menu.ContainerOpener;
+import appeng.menu.implementations.SecurityStationContainer;
 import appeng.util.InteractionUtil;
 
 public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {

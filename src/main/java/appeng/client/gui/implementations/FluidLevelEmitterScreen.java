@@ -31,8 +31,8 @@ import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.container.SlotSemantic;
-import appeng.container.implementations.FluidLevelEmitterContainer;
+import appeng.menu.SlotSemantic;
+import appeng.menu.implementations.FluidLevelEmitterContainer;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 

@@ -23,8 +23,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.container.me.crafting.CraftConfirmContainer;
-import appeng.container.me.crafting.CraftingPlanSummary;
+import appeng.menu.me.crafting.CraftConfirmContainer;
+import appeng.menu.me.crafting.CraftingPlanSummary;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 

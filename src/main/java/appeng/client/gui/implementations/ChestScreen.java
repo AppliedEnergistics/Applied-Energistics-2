@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.container.implementations.ChestContainer;
+import appeng.menu.implementations.ChestContainer;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 

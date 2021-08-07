@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.container.implementations.SpatialIOPortContainer;
+import appeng.menu.implementations.SpatialIOPortContainer;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
