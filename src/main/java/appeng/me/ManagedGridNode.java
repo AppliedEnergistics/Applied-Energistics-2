@@ -147,10 +147,10 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void create(Level world, @Nullable BlockPos blockPos) {
+    public void create(Level level, @Nullable BlockPos blockPos) {
         // We can only ready up if the init-data still exists
         var initData = getInitData();
-        initData.world = world;
+        initData.world = level;
         initData.pos = blockPos;
         this.initData = null;
 

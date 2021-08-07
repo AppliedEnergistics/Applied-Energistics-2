@@ -305,8 +305,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
-        super.getDrops(w, pos, drops);
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+        super.getDrops(level, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
             final ItemStack is = this.upgrades.getStackInSlot(h);

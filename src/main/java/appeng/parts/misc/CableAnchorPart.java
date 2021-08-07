@@ -193,7 +193,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void animateTick(final Level world, final BlockPos pos, final Random r) {
+    public void animateTick(final Level level, final BlockPos pos, final Random r) {
 
     }
 

@@ -38,25 +38,25 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public final class DimensionalBlockPos {
 
     @Nonnull
-    private final Level world;
+    private final Level level;
 
     @Nonnull
     private final BlockPos pos;
 
     public DimensionalBlockPos(DimensionalBlockPos coordinate) {
-        this(coordinate.getWorld(), coordinate.pos);
+        this(coordinate.getLevel(), coordinate.pos);
     }
 
     public DimensionalBlockPos(BlockEntity blockentity) {
         this(blockentity.getLevel(), blockentity.getBlockPos());
     }
 
-    public DimensionalBlockPos(Level world, BlockPos pos) {
-        this(world, pos.getX(), pos.getY(), pos.getZ());
+    public DimensionalBlockPos(Level level, BlockPos pos) {
+        this(level, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public DimensionalBlockPos(Level world, int x, int y, int z) {
-        this.world = Objects.requireNonNull(world, "world");
+    public DimensionalBlockPos(Level level, int x, int y, int z) {
+        this.level = Objects.requireNonNull(level, "level");
         this.pos = new BlockPos(x, y, z);
     }
 
@@ -67,26 +67,26 @@ public final class DimensionalBlockPos {
         if (o == null || getClass() != o.getClass())
             return false;
         DimensionalBlockPos that = (DimensionalBlockPos) o;
-        return world.equals(that.world) && pos.equals(that.pos);
+        return level.equals(that.level) && pos.equals(that.pos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(world, pos);
+        return Objects.hash(level, pos);
     }
 
     @Override
     public String toString() {
-        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getWorld().dimension().location();
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getLevel().dimension().location();
     }
 
     public boolean isInWorld(final LevelAccessor world) {
-        return this.world == world;
+        return this.level == world;
     }
 
     @Nonnull
-    public Level getWorld() {
-        return this.world;
+    public Level getLevel() {
+        return this.level;
     }
 
     @Nonnull

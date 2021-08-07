@@ -288,11 +288,11 @@ public interface IPart extends ICustomCableConnection {
     /**
      * same as Block.animateTick, for but parts.
      *
-     * @param world world of block
+     * @param level world of block
      * @param pos   location of block
      * @param r     random
      */
-    void animateTick(Level world, BlockPos pos, Random r);
+    void animateTick(Level level, BlockPos pos, Random r);
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.

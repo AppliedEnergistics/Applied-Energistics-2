@@ -35,9 +35,9 @@ public interface IBlockEntityDrops {
      * implemented on AE's block entities, Gets a list of drops that the entity will normally drop, this doesn't include
      * the block itself.
      *
-     * @param world world of block entity
+     * @param level world of block entity
      * @param pos   location of the block
      * @param drops drops of block entity
      */
-    void getDrops(Level world, BlockPos pos, List<ItemStack> drops);
+    void getDrops(Level level, BlockPos pos, List<ItemStack> drops);
 }

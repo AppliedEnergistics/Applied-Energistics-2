@@ -380,7 +380,7 @@ public class CraftingService
 
     @Override
     public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(final IAEItemStack whatToCraft,
-            final ICraftingPatternDetails details, final int slotIndex, final Level world) {
+            final ICraftingPatternDetails details, final int slotIndex, final Level level) {
         final ImmutableList<ICraftingPatternDetails> res = this.craftableItems.get(whatToCraft);
 
         if (res == null) {
@@ -391,7 +391,7 @@ public class CraftingService
                     // itemstacks
                     if (ais.getItem() == whatToCraft.getItem()
                             && (!ais.getItem().canBeDepleted() || ais.getItemDamage() == whatToCraft.getItemDamage())
-                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), world)) {
+                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), level)) {
                         return this.craftableItems.get(ais);
                     }
                 }
@@ -404,13 +404,13 @@ public class CraftingService
     }
 
     @Override
-    public Future<ICraftingJob> beginCraftingJob(final Level world, final IGrid grid, final IActionSource actionSrc,
-            final IAEItemStack slotItem, final ICraftingCallback cb) {
-        if (world == null || grid == null || actionSrc == null || slotItem == null) {
+    public Future<ICraftingJob> beginCraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc,
+                                                 final IAEItemStack slotItem, final ICraftingCallback cb) {
+        if (level == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingJob job = new CraftingJob(world, grid, actionSrc, slotItem, cb);
+        final CraftingJob job = new CraftingJob(level, grid, actionSrc, slotItem, cb);
 
         return CRAFTING_POOL.submit(job, job);
     }

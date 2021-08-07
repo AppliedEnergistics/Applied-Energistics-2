@@ -39,13 +39,13 @@ public interface IPartHelper {
      * @param pos    pos of part
      * @param side   side which the part should be on
      * @param player player placing part
-     * @param world  part in world
+     * @param level  part in world
      *
      * @return true if placing was successful
      */
     // TODO, this should probably take ItemStack + ItemUseContext
     InteractionResult placeBus(ItemStack is, BlockPos pos, Direction side, Player player, InteractionHand hand,
-            Level world);
+            Level level);
 
     /**
      * @return the render mode

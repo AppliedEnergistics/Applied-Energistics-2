@@ -421,13 +421,13 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     /**
      * Adds the items in the upgrade slots to the drop list.
      *
-     * @param w     world
+     * @param level     world
      * @param pos   pos of block entity
      * @param drops drops of block entity
      */
     @Override
-    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
-        super.getDrops(w, pos, drops);
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+        super.getDrops(level, pos, drops);
 
         for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {
             final ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeIndex);

@@ -151,7 +151,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level w, final BlockPos pos) {
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level, final BlockPos pos) {
         return new PortableCellViewer(is, playerInventorySlot);
     }
 

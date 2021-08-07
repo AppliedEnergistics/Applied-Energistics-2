@@ -89,7 +89,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level world,
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
             final BlockPos pos) {
         return new QuartzKnifeObj(is);
     }

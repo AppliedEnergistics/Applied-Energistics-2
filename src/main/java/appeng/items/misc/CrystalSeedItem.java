@@ -102,7 +102,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public float getMultiplier(BlockState state, @Nullable Level world, @Nullable BlockPos pos) {
+    public float getMultiplier(BlockState state, @Nullable Level level, @Nullable BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
         String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
@@ -114,7 +114,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         }
 
         // Check for the normal supported fluid
-        if (world != null && world.dimension() == Level.NETHER) {
+        if (level != null && level.dimension() == Level.NETHER) {
             // In the nether, use Lava as the "normal" fluid
             return state.getFluidState().is(FluidTags.LAVA) ? 1 : 0;
         } else {

@@ -82,8 +82,8 @@ public class ApiCrafting implements ICraftingHelper {
     }
 
     @Override
-    public ICraftingPatternDetails decodePattern(final ItemStack is, final Level world, boolean autoRecovery) {
-        if (is == null || world == null) {
+    public ICraftingPatternDetails decodePattern(final ItemStack is, final Level level, boolean autoRecovery) {
+        if (is == null || level == null) {
             return null;
         }
 
@@ -97,8 +97,8 @@ public class ApiCrafting implements ICraftingHelper {
         // based on the stored inputs/outputs if that happens.
         ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
         if (recipeId != null) {
-            Recipe<?> recipe = world.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
-            if (!(recipe instanceof CraftingRecipe) && (!autoRecovery || !attemptRecovery(patternItem, is, world))) {
+            Recipe<?> recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+            if (!(recipe instanceof CraftingRecipe) && (!autoRecovery || !attemptRecovery(patternItem, is, level))) {
                 return null;
             }
         }
@@ -107,7 +107,7 @@ public class ApiCrafting implements ICraftingHelper {
         IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
 
         try {
-            return new CraftingPatternDetails(ais, world);
+            return new CraftingPatternDetails(ais, level);
         } catch (IllegalStateException e) {
             AELog.warn("Could not decode an invalid pattern %s: %s", is, e);
             return null;

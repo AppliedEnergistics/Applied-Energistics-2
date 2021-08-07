@@ -80,7 +80,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         final IItemHandler inv = this.getInternalInventory();
 
         for (int l = 0; l < inv.getSlots(); l++) {

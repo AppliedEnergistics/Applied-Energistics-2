@@ -370,12 +370,12 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     /**
      * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
      *
-     * @param w     world
+     * @param level     world
      * @param pos   block position
      * @param drops drops of block entity
      */
     @Override
-    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
 
     }
 

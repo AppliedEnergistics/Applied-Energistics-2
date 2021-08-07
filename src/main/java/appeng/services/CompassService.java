@@ -240,7 +240,7 @@ public final class CompassService {
         @Override
         public void run() {
 
-            ServerLevel world = (ServerLevel) this.coord.getWorld();
+            ServerLevel world = (ServerLevel) this.coord.getLevel();
 
             CompassService.this.jobSize--;
 

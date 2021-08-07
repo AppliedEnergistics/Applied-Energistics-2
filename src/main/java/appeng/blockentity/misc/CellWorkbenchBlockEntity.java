@@ -199,8 +199,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void getDrops(final Level w, final BlockPos pos, final List<ItemStack> drops) {
-        super.getDrops(w, pos, drops);
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+        super.getDrops(level, pos, drops);
 
         if (this.cell.getStackInSlot(0) != null) {
             drops.add(this.cell.getStackInSlot(0));

@@ -159,7 +159,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public synchronized boolean isValidItemForSlot(final int slotIndex, final ItemStack i, final Level w) {
+    public synchronized boolean isValidItemForSlot(final int slotIndex, final ItemStack i, final Level level) {
         if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
@@ -188,7 +188,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             return false;
         }
 
-        if (this.standardRecipe.matches(this.testFrame, w)) {
+        if (this.standardRecipe.matches(this.testFrame, level)) {
             final ItemStack testOutput = this.standardRecipe.assemble(this.testFrame);
 
             if (Platform.itemComparisons().isSameItem(this.correctOutput, testOutput)) {
@@ -324,13 +324,13 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public ItemStack getOutput(final CraftingContainer craftingInv, final Level w) {
+    public ItemStack getOutput(final CraftingContainer craftingInv, final Level level) {
         if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
         for (int x = 0; x < craftingInv.getContainerSize(); x++) {
-            if (!this.isValidItemForSlot(x, craftingInv.getItem(x), w)) {
+            if (!this.isValidItemForSlot(x, craftingInv.getItem(x), level)) {
                 return ItemStack.EMPTY;
             }
         }

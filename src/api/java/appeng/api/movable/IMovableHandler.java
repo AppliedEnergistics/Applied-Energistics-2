@@ -67,10 +67,10 @@ public interface IMovableHandler {
      *
      * @param entity      to be moved block entity
      * @param savedData   the original entities data saved using {@link BlockEntity#save(CompoundTag)}.
-     * @param world       world of block entity
+     * @param level       world of block entity
      * @param newPosition the new location
      * @return True if moving succeeded. If false is returned, AE2 will attempt to recover the original entity.
      */
     @Nullable
-    boolean moveBlockEntity(BlockEntity entity, CompoundTag savedData, Level world, BlockPos newPosition);
+    boolean moveBlockEntity(BlockEntity entity, CompoundTag savedData, Level level, BlockPos newPosition);
 }

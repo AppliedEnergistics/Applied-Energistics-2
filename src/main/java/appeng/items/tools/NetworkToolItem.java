@@ -63,13 +63,13 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public NetworkToolViewer getGuiObject(final ItemStack is, int playerInventorySlot, final Level world,
+    public NetworkToolViewer getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
             final BlockPos pos) {
         if (pos == null) {
-            return new NetworkToolViewer(is, null, world.isClientSide());
+            return new NetworkToolViewer(is, null, level.isClientSide());
         }
-        var host = Api.instance().grid().getNodeHost(world, pos);
-        return new NetworkToolViewer(is, host, world.isClientSide());
+        var host = Api.instance().grid().getNodeHost(level, pos);
+        return new NetworkToolViewer(is, host, level.isClientSide());
     }
 
     @Override
