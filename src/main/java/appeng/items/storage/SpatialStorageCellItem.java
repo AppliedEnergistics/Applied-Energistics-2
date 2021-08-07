@@ -111,7 +111,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public boolean doSpatialTransition(final ItemStack is, final ServerLevel level, final BlockPos min,
-                                       final BlockPos max, int playerId) {
+            final BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;

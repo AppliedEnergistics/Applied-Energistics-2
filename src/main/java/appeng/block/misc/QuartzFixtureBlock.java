@@ -141,7 +141,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     @Override
     public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-                                      final Direction up) {
+            final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(level, pos, up.getOpposite());

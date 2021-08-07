@@ -146,7 +146,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     private boolean canReplace(Level level, BlockState state, BlockPos pos) {
-        return state.getMaterial().isReplaceable() && level.getFluidState(pos).isEmpty() && !state.getMaterial().isLiquid();
+        return state.getMaterial().isReplaceable() && level.getFluidState(pos).isEmpty()
+                && !state.getMaterial().isLiquid();
     }
 
     @Override

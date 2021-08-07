@@ -104,7 +104,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
+                p.getItemInHand(hand));
     }
 
     @Override
@@ -224,7 +225,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         CraftingContainer tempInv = new CraftingContainer(new ContainerNull(), 1, 1);
         for (final ItemStack i : stack) {
             tempInv.setItem(0, i);
-            Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv, level);
+            Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
+                    level);
 
             if (!recipe.isPresent()) {
                 return false;

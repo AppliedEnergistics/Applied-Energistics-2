@@ -110,7 +110,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final @Nullable InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p,
+            final @Nullable InteractionHand hand) {
         if (this.getAECurrentPower(p.getItemInHand(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 

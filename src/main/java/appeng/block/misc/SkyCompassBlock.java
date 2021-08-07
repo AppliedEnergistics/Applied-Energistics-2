@@ -44,7 +44,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
     @Override
     public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-                                      final Direction up) {
+            final Direction up) {
         final SkyCompassBlockEntity sc = this.getBlockEntity(level, pos);
         if (sc != null) {
             return false;

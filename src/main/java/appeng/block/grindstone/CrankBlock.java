@@ -57,8 +57,8 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
     @Override
     public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-                                         final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -98,7 +98,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
     @Override
     public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-                                      final Direction up) {
+            final Direction up) {
         final BlockEntity te = level.getBlockEntity(pos);
         return !(te instanceof CrankBlockEntity) || this.isCrankable(level, pos, up.getOpposite());
     }

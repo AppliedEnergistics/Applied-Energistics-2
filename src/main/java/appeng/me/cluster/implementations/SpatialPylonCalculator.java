@@ -60,7 +60,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
 
     @Override
     public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel level, final BlockPos min,
-                                    final BlockPos max) {
+            final BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) level.getBlockEntity(p);
             te.updateStatus(c);

@@ -65,7 +65,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swing(hand);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), p.getItemInHand(hand));
+        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
+                p.getItemInHand(hand));
     }
 
     @Override

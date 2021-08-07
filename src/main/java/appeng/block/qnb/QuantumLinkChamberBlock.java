@@ -67,14 +67,16 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
-            AppEng.instance().spawnEffect(EffectType.Energy, level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+            AppEng.instance().spawnEffect(EffectType.Energy, level, pos.getX() + 0.5, pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
                     null);
         }
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }

@@ -177,7 +177,8 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
 
     private boolean verifyUnownedRegion(final ServerLevel level, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
-            if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
+            if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(),
+                    max.getZ(),
                     side)) {
                 return false;
             }
@@ -189,9 +190,9 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     /**
      * construct the correct cluster, usually very simple.
      *
-     * @param level   level
-     * @param min min world coord
-     * @param max max world coord
+     * @param level level
+     * @param min   min world coord
+     * @param max   max world coord
      * @return created cluster
      */
     public abstract TCluster createCluster(ServerLevel level, BlockPos min, BlockPos max);
@@ -208,10 +209,10 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     /**
      * configure the multi-block block entities, most of the important stuff is in here.
      *
-     * @param c   updated cluster
-     * @param level   in level
-     * @param min min world coord
-     * @param max max world coord
+     * @param c     updated cluster
+     * @param level in level
+     * @param min   min world coord
+     * @param max   max world coord
      */
     public abstract void updateBlockEntities(TCluster c, ServerLevel level, BlockPos min, BlockPos max);
 

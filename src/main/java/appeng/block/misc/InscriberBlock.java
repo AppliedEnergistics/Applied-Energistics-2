@@ -51,8 +51,9 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (!InteractionUtil.isInAlternateUseMode(p)) {
             final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {

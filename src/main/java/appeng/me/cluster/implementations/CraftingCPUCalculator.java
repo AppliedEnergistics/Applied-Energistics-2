@@ -79,7 +79,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
 
     @Override
     public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel level, final BlockPos min,
-                                    final BlockPos max) {
+            final BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final CraftingBlockEntity te = (CraftingBlockEntity) level.getBlockEntity(blockPos);
             te.updateStatus(c);

@@ -80,7 +80,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
 
     @Override
     public void updateBlockEntities(final QuantumCluster c, final ServerLevel level, final BlockPos min,
-                                    final BlockPos max) {
+            final BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 

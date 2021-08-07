@@ -43,8 +43,9 @@ public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p, final InteractionHand hand,
-                                         final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
+            final InteractionHand hand,
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         final GrinderBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {

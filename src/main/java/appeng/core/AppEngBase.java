@@ -288,7 +288,7 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
-                                    final double dist, final Level level, final BasePacket packet) {
+            final double dist, final Level level, final BasePacket packet) {
         if (level.isClientSide()) {
             return;
         }
