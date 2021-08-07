@@ -34,7 +34,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.blockentity.misc.SkyCompassBlockEntity;
 
 public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 

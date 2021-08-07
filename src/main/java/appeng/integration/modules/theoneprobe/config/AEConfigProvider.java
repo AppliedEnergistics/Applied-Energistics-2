@@ -28,7 +28,7 @@ import mcjty.theoneprobe.api.IProbeConfigProvider;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeHitEntityData;
 
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class AEConfigProvider implements IProbeConfigProvider {
 

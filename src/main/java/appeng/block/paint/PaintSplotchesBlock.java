@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 
 public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEntity> {
     public PaintSplotchesBlock() {

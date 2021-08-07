@@ -27,7 +27,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 
 public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, QuantumCluster> {
 

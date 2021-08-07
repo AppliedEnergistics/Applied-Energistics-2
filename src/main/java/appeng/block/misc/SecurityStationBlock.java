@@ -37,7 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {

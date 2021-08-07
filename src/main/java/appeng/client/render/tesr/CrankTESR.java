@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
-import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.blockentity.grindstone.CrankBlockEntity;
 
 /**
  * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a

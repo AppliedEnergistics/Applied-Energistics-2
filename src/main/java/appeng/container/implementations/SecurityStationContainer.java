@@ -35,8 +35,8 @@ import appeng.container.me.items.ItemTerminalContainer;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.SecurityStationBlockEntity;
+import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 

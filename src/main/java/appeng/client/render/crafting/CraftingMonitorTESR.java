@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 
 /**
  * Renders the item currently being crafted

@@ -36,7 +36,7 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen

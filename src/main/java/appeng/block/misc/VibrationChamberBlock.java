@@ -42,7 +42,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.util.InteractionUtil;
 
 public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {

@@ -48,7 +48,7 @@ import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
 
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 

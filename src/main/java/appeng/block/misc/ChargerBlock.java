@@ -47,7 +47,7 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {

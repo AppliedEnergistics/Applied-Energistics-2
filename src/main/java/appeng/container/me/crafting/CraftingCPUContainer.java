@@ -40,7 +40,7 @@ import appeng.container.me.common.IncrementalUpdateHelper;
 import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen

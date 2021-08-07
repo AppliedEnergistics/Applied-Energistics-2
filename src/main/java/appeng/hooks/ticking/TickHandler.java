@@ -56,7 +56,7 @@ import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.IWorldRunnable;
 import appeng.util.Platform;
 

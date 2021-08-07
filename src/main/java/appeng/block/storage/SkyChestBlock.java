@@ -56,7 +56,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SkyChestContainer;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 
 public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 

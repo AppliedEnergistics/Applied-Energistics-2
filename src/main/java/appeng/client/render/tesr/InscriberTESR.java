@@ -43,7 +43,7 @@ import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.tile.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.InscriberBlockEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)

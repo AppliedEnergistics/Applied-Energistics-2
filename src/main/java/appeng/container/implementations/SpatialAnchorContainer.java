@@ -34,7 +34,7 @@ import appeng.api.config.YesNo;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.me.service.StatisticsService;
-import appeng.tile.spatial.SpatialAnchorBlockEntity;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SpatialAnchorScreen

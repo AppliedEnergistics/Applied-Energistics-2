@@ -33,8 +33,8 @@ import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 

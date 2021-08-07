@@ -49,7 +49,7 @@ import appeng.client.gui.Icon;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.blockentity.misc.CondenserBlockEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 

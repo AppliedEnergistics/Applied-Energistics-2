@@ -73,8 +73,8 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.me.service.CraftingService;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 

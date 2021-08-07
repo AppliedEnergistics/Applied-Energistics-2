@@ -43,7 +43,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {

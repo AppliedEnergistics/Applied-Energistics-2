@@ -38,7 +38,7 @@ import appeng.helpers.ForgeEnergyAdapter;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
-import appeng.tile.powersink.IExternalPowerSink;
+import appeng.blockentity.powersink.IExternalPowerSink;
 
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
 

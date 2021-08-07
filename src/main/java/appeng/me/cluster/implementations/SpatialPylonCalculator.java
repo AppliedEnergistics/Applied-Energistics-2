@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
 

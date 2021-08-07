@@ -20,7 +20,7 @@ package appeng.block.crafting;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import appeng.tile.crafting.CraftingStorageBlockEntity;
+import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 
 public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageBlockEntity> {
 

@@ -37,7 +37,7 @@ import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.service.helpers.ConnectionWrapper;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {

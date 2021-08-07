@@ -28,7 +28,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.GrinderScreen

@@ -26,7 +26,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.VibrationChamberScreen

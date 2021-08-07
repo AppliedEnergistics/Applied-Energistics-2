@@ -31,7 +31,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.util.item.AEItemStack;
 
 public class AssemblerAnimationPacket extends BasePacket {

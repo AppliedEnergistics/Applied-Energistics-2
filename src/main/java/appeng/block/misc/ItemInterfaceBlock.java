@@ -39,7 +39,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ItemInterfaceContainer;
-import appeng.tile.misc.ItemInterfaceBlockEntity;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {

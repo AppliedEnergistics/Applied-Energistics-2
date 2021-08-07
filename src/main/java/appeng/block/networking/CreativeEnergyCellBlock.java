@@ -20,7 +20,7 @@ package appeng.block.networking;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.helpers.AEMaterials;
-import appeng.tile.networking.CreativeEnergyCellBlockEntity;
+import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
 
 public class CreativeEnergyCellBlock extends AEBaseEntityBlock<CreativeEnergyCellBlockEntity> {
 

@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
 
 public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 

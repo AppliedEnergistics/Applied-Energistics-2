@@ -42,7 +42,7 @@ import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
+import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;

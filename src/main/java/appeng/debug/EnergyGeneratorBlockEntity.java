@@ -33,8 +33,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import appeng.tile.AEBaseBlockEntity;
-import appeng.tile.ServerTickingBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.blockentity.ServerTickingBlockEntity;
 
 public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, IEnergyStorage {
     /**

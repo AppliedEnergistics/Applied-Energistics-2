@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
-import appeng.tile.misc.CondenserBlockEntity;
+import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {

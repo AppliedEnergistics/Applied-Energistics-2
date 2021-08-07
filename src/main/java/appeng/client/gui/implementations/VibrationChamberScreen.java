@@ -30,7 +30,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 

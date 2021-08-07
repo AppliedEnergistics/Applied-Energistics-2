@@ -21,7 +21,7 @@ package appeng.block.networking;
 import net.minecraft.world.level.material.Material;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.networking.EnergyAcceptorBlockEntity;
+import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 
 public class EnergyAcceptorBlock extends AEBaseEntityBlock<EnergyAcceptorBlockEntity> {
 

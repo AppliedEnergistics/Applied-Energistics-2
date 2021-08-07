@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class GrinderBlock extends AEBaseEntityBlock<GrinderBlockEntity> {

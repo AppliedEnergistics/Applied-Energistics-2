@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEntity> {

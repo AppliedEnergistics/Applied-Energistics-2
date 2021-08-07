@@ -28,7 +28,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public final class AELog {

@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRenderer<T> {

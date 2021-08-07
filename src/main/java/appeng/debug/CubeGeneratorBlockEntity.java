@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.core.AppEng;
-import appeng.tile.AEBaseBlockEntity;
-import appeng.tile.ServerTickingBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity {

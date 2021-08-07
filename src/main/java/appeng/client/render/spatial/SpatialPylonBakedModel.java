@@ -36,7 +36,7 @@ import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.

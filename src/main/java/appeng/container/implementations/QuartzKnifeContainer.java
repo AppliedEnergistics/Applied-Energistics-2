@@ -37,7 +37,7 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.NamePressItem;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.implementations.QuartzKnifeScreen

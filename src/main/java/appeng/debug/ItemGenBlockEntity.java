@@ -40,7 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {
 

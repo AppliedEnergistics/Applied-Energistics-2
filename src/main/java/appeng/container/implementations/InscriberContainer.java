@@ -31,8 +31,8 @@ import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.InscriberRecipes;
+import appeng.blockentity.misc.InscriberBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen

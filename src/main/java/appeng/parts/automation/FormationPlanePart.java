@@ -71,7 +71,7 @@ import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;

@@ -30,7 +30,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 

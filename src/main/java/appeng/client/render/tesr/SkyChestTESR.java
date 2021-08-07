@@ -44,7 +44,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)

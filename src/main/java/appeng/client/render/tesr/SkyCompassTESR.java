@@ -35,7 +35,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.blockentity.misc.SkyCompassBlockEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity> {

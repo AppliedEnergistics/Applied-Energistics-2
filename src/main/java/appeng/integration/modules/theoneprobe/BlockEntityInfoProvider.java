@@ -33,21 +33,21 @@ import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.core.AppEng;
-import appeng.integration.modules.theoneprobe.tile.ChargerInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.CraftingMonitorInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.IBlockEntityProbInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.PowerStateInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.PowerStorageInfoProvider;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.integration.modules.theoneprobe.blockentity.ChargerInfoProvider;
+import appeng.integration.modules.theoneprobe.blockentity.CraftingMonitorInfoProvider;
+import appeng.integration.modules.theoneprobe.blockentity.IBlockEntityInfoProvider;
+import appeng.integration.modules.theoneprobe.blockentity.PowerStateInfoProvider;
+import appeng.integration.modules.theoneprobe.blockentity.PowerStorageInfoProvider;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public final class BlockEntityInfoProvider implements IProbeInfoProvider {
-    private final List<IBlockEntityProbInfoProvider> providers;
+    private final List<IBlockEntityInfoProvider> providers;
 
     public BlockEntityInfoProvider() {
-        final IBlockEntityProbInfoProvider charger = new ChargerInfoProvider();
-        final IBlockEntityProbInfoProvider energyCell = new CraftingMonitorInfoProvider();
-        final IBlockEntityProbInfoProvider craftingBlock = new PowerStateInfoProvider();
-        final IBlockEntityProbInfoProvider craftingMonitor = new PowerStorageInfoProvider();
+        final IBlockEntityInfoProvider charger = new ChargerInfoProvider();
+        final IBlockEntityInfoProvider energyCell = new CraftingMonitorInfoProvider();
+        final IBlockEntityInfoProvider craftingBlock = new PowerStateInfoProvider();
+        final IBlockEntityInfoProvider craftingMonitor = new PowerStorageInfoProvider();
 
         this.providers = Lists.newArrayList(charger, energyCell, craftingBlock, craftingMonitor);
     }
@@ -65,7 +65,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider {
         if (tile instanceof AEBaseBlockEntity) {
             final AEBaseBlockEntity aeBaseTile = (AEBaseBlockEntity) tile;
 
-            for (final IBlockEntityProbInfoProvider provider : this.providers) {
+            for (final IBlockEntityInfoProvider provider : this.providers) {
                 provider.addProbeInfo(aeBaseTile, mode, probeInfo, player, world, blockState, data);
             }
         }

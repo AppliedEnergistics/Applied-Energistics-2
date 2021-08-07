@@ -34,7 +34,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.FluidInterfaceContainer;
-import appeng.tile.misc.FluidInterfaceBlockEntity;
+import appeng.blockentity.misc.FluidInterfaceBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {

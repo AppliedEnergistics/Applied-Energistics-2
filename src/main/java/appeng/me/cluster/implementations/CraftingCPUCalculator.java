@@ -28,7 +28,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 

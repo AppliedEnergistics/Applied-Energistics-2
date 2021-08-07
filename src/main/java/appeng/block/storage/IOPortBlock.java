@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
-import appeng.tile.storage.IOPortBlockEntity;
+import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {

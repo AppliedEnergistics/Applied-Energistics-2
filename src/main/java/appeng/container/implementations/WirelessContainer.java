@@ -27,7 +27,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AEConfig;
-import appeng.tile.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.WirelessScreen

@@ -32,7 +32,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 
 public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBlockEntity> {
 

@@ -51,7 +51,7 @@ import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.definitions.AEBlocks;
-import appeng.tile.storage.ChestBlockEntity;
+import appeng.blockentity.storage.ChestBlockEntity;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the

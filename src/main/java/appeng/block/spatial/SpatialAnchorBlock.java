@@ -37,7 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialAnchorContainer;
-import appeng.tile.spatial.SpatialAnchorBlockEntity;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.util.InteractionUtil;
 
 /**

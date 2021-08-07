@@ -43,7 +43,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 
 /**
  * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using

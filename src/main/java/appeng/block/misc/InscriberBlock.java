@@ -35,7 +35,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InscriberContainer;
-import appeng.tile.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {

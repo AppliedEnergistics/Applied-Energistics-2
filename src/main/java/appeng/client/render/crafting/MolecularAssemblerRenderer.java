@@ -42,7 +42,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.

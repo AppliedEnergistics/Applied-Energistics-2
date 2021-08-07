@@ -26,7 +26,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.AppEngSlot;
-import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.SkyChestScreen

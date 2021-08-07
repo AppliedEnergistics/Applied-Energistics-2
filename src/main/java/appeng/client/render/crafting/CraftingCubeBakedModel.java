@@ -37,7 +37,7 @@ import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.tile.crafting.CraftingCubeModelData;
+import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.util.Platform;
 
 /**

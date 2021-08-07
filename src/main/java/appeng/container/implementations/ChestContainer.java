@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.ChestBlockEntity;
+import appeng.blockentity.storage.ChestBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.ChestScreen

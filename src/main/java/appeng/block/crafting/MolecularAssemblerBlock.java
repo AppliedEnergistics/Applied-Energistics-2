@@ -34,7 +34,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.tile.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemblerBlockEntity> {

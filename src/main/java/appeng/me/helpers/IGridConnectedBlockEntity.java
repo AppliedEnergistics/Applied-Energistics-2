@@ -28,7 +28,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.block.IOwnerAwareBlockEntity;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 /**
  * Interface implemented by the various AE2 block entities that connect to the grid, to support callbacks from the tile

@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {

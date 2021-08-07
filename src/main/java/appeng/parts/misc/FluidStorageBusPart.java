@@ -75,7 +75,7 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.PartModel;
-import appeng.tile.misc.ItemInterfaceBlockEntity;
+import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;

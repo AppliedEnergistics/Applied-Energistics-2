@@ -81,7 +81,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;

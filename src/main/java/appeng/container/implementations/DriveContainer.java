@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.container.AEBaseContainer;
 import appeng.container.SlotSemantic;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.DriveBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.DriveScreen

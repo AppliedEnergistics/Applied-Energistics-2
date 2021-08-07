@@ -27,7 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonBlockEntity;
+import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 

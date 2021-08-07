@@ -33,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchBlockEntity;
+import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {

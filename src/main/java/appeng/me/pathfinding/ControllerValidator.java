@@ -22,7 +22,7 @@ import net.minecraft.core.BlockPos;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
 
 public class ControllerValidator implements IGridVisitor {
 

@@ -32,7 +32,7 @@ import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.tile.networking.CableBusTESR;
+import appeng.blockentity.networking.CableBusTESR;
 
 @OnlyIn(Dist.CLIENT)
 public final class InitBlockEntityRenderers {

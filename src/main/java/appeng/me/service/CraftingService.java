@@ -82,8 +82,8 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
-import appeng.tile.crafting.CraftingStorageBlockEntity;
-import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.blockentity.crafting.CraftingStorageBlockEntity;
+import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,

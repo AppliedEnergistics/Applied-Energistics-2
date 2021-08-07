@@ -70,7 +70,7 @@ import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.LevelEmitterPart;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;

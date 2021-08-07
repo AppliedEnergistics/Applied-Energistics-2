@@ -41,7 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.me.items.ItemTerminalContainer;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;

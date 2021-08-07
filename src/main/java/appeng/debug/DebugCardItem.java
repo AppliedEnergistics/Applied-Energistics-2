@@ -53,7 +53,7 @@ import appeng.me.GridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.tile.networking.ControllerBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class DebugCardItem extends AEBaseItem {

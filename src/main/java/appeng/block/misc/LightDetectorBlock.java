@@ -46,7 +46,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
-import appeng.tile.misc.LightDetectorBlockEntity;
+import appeng.blockentity.misc.LightDetectorBlockEntity;
 
 public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity> implements IOrientableBlock {
 

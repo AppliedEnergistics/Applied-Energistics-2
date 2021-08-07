@@ -45,7 +45,7 @@ import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {

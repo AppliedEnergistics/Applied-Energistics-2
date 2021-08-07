@@ -39,7 +39,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.tile.AEBaseBlockEntity;
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 

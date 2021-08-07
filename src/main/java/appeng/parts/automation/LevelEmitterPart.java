@@ -74,7 +74,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 

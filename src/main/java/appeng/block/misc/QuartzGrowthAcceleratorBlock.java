@@ -38,7 +38,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.tile.misc.QuartzGrowthAcceleratorBlockEntity;
+import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.util.Platform;
 
 public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowthAcceleratorBlockEntity>

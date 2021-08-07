@@ -44,8 +44,8 @@ import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
-import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.misc.InscriberRecipes;
+import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.util.Platform;
 
 /**

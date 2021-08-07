@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
-import appeng.tile.storage.DriveBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
 
 /**
  * Renders the drive cell status indicators.

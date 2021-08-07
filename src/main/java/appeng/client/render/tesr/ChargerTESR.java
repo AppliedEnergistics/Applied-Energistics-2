@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.render.renderable.ItemRenderable;
-import appeng.tile.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.ChargerBlockEntity;
 
 public final class ChargerTESR {
 

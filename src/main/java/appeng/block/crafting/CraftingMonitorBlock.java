@@ -20,7 +20,7 @@ package appeng.block.crafting;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
     public CraftingMonitorBlock(BlockBehaviour.Properties props) {

@@ -29,7 +29,7 @@ import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import appeng.core.AppEng;
-import appeng.tile.spatial.SpatialAnchorBlockEntity;
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 
 public class ChunkLoadingService implements LoadingValidationCallback {
 

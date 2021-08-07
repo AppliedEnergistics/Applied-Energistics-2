@@ -31,7 +31,7 @@ import appeng.container.SlotSemantic;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.IOPortBlockEntity;
+import appeng.blockentity.storage.IOPortBlockEntity;
 
 /**
  * @see appeng.client.gui.implementations.IOPortScreen

@@ -42,7 +42,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.tile.storage.ChestBlockEntity;
+import appeng.blockentity.storage.ChestBlockEntity;
 
 /**
  * Utility class for sub-screens of other containers that allow returning to the primary container UI.

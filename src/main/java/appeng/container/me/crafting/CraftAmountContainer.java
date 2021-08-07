@@ -49,7 +49,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.blockentity.inventory.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
