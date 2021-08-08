@@ -241,15 +241,9 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         long itemsToMove = 256;
 
         switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
-            case 1:
-                itemsToMove *= 2;
-                break;
-            case 2:
-                itemsToMove *= 4;
-                break;
-            case 3:
-                itemsToMove *= 8;
-                break;
+            case 1 -> itemsToMove *= 2;
+            case 2 -> itemsToMove *= 4;
+            case 3 -> itemsToMove *= 8;
         }
 
         var grid = getMainNode().getGrid();

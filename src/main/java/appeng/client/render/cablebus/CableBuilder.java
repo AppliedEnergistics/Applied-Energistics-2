@@ -79,26 +79,14 @@ class CableBuilder {
     }
 
     static Material getConnectionTexture(AECableType cableType, AEColor color) {
-        String textureFolder;
-        switch (cableType) {
-            case GLASS:
-                textureFolder = "part/cable/glass/";
-                break;
-            case COVERED:
-                textureFolder = "part/cable/covered/";
-                break;
-            case SMART:
-                textureFolder = "part/cable/smart/";
-                break;
-            case DENSE_COVERED:
-                textureFolder = "part/cable/dense_covered/";
-                break;
-            case DENSE_SMART:
-                textureFolder = "part/cable/dense_smart/";
-                break;
-            default:
-                throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
-        }
+        String textureFolder = switch (cableType) {
+            case GLASS -> "part/cable/glass/";
+            case COVERED -> "part/cable/covered/";
+            case SMART -> "part/cable/smart/";
+            case DENSE_COVERED -> "part/cable/dense_covered/";
+            case DENSE_SMART -> "part/cable/dense_smart/";
+            default -> throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
+        };
 
         return new Material(TextureAtlas.LOCATION_BLOCKS,
                 new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase(Locale.ROOT)));
@@ -133,15 +121,9 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
 
         switch (coreType) {
-            case GLASS:
-                cubeBuilder.addCube(6, 6, 6, 10, 10, 10);
-                break;
-            case COVERED:
-                cubeBuilder.addCube(5, 5, 5, 11, 11, 11);
-                break;
-            case DENSE:
-                cubeBuilder.addCube(3, 3, 3, 13, 13, 13);
-                break;
+            case GLASS -> cubeBuilder.addCube(6, 6, 6, 10, 10, 10);
+            case COVERED -> cubeBuilder.addCube(5, 5, 5, 11, 11, 11);
+            case DENSE -> cubeBuilder.addCube(3, 3, 3, 13, 13, 13);
         }
     }
 
@@ -164,24 +146,12 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(6, 0, 6, 10, 6, 10);
-                break;
-            case EAST:
-                cubeBuilder.addCube(10, 6, 6, 16, 10, 10);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(6, 6, 0, 10, 10, 6);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(6, 6, 10, 10, 10, 16);
-                break;
-            case UP:
-                cubeBuilder.addCube(6, 10, 6, 10, 16, 10);
-                break;
-            case WEST:
-                cubeBuilder.addCube(0, 6, 6, 6, 10, 10);
-                break;
+            case DOWN -> cubeBuilder.addCube(6, 0, 6, 10, 6, 10);
+            case EAST -> cubeBuilder.addCube(10, 6, 6, 16, 10, 10);
+            case NORTH -> cubeBuilder.addCube(6, 6, 0, 10, 10, 6);
+            case SOUTH -> cubeBuilder.addCube(6, 6, 10, 10, 10, 16);
+            case UP -> cubeBuilder.addCube(6, 10, 6, 10, 16, 10);
+            case WEST -> cubeBuilder.addCube(0, 6, 6, 6, 10, 10);
         }
     }
 
@@ -197,18 +167,9 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
-            case UP:
-                cubeBuilder.addCube(6, 0, 6, 10, 16, 10);
-                break;
-            case NORTH:
-            case SOUTH:
-                cubeBuilder.addCube(6, 6, 0, 10, 10, 16);
-                break;
-            case EAST:
-            case WEST:
-                cubeBuilder.addCube(0, 6, 6, 16, 10, 10);
-                break;
+            case DOWN, UP -> cubeBuilder.addCube(6, 0, 6, 10, 16, 10);
+            case NORTH, SOUTH -> cubeBuilder.addCube(6, 6, 0, 10, 10, 16);
+            case EAST, WEST -> cubeBuilder.addCube(0, 6, 6, 16, 10, 10);
         }
     }
 
@@ -226,24 +187,12 @@ class CableBuilder {
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 6, 10);
-                break;
-            case EAST:
-                cubeBuilder.addCube(10, 6, 6, 16 - distanceFromEdge, 10, 10);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 6);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(6, 6, 10, 10, 10, 16 - distanceFromEdge);
-                break;
-            case UP:
-                cubeBuilder.addCube(6, 10, 6, 10, 16 - distanceFromEdge, 10);
-                break;
-            case WEST:
-                cubeBuilder.addCube(distanceFromEdge, 6, 6, 6, 10, 10);
-                break;
+            case DOWN -> cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 6, 10);
+            case EAST -> cubeBuilder.addCube(10, 6, 6, 16 - distanceFromEdge, 10, 10);
+            case NORTH -> cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 6);
+            case SOUTH -> cubeBuilder.addCube(6, 6, 10, 10, 10, 16 - distanceFromEdge);
+            case UP -> cubeBuilder.addCube(6, 10, 6, 10, 16 - distanceFromEdge, 10);
+            case WEST -> cubeBuilder.addCube(distanceFromEdge, 6, 6, 6, 10, 10);
         }
     }
 
@@ -279,27 +228,24 @@ class CableBuilder {
 
     private static void setStraightCableUVs(CubeBuilder cubeBuilder, Direction facing, int x, int y) {
         switch (facing) {
-            case DOWN:
-            case UP:
+            case DOWN, UP -> {
                 cubeBuilder.setCustomUv(Direction.NORTH, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.EAST, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.SOUTH, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.WEST, x, 0, y, x);
-                break;
-            case EAST:
-            case WEST:
+            }
+            case EAST, WEST -> {
                 cubeBuilder.setCustomUv(Direction.UP, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.DOWN, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.NORTH, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.SOUTH, 0, x, x, y);
-                break;
-            case NORTH:
-            case SOUTH:
+            }
+            case NORTH, SOUTH -> {
                 cubeBuilder.setCustomUv(Direction.UP, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.DOWN, x, 0, y, x);
                 cubeBuilder.setCustomUv(Direction.EAST, 0, x, x, y);
                 cubeBuilder.setCustomUv(Direction.WEST, 0, x, x, y);
-                break;
+            }
         }
     }
 
@@ -554,24 +500,12 @@ class CableBuilder {
 
     private static void addDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(4, 0, 4, 12, 5, 12);
-                break;
-            case EAST:
-                cubeBuilder.addCube(11, 4, 4, 16, 12, 12);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(4, 4, 0, 12, 12, 5);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(4, 4, 11, 12, 12, 16);
-                break;
-            case UP:
-                cubeBuilder.addCube(4, 11, 4, 12, 16, 12);
-                break;
-            case WEST:
-                cubeBuilder.addCube(0, 4, 4, 5, 12, 12);
-                break;
+            case DOWN -> cubeBuilder.addCube(4, 0, 4, 12, 5, 12);
+            case EAST -> cubeBuilder.addCube(11, 4, 4, 16, 12, 12);
+            case NORTH -> cubeBuilder.addCube(4, 4, 0, 12, 12, 5);
+            case SOUTH -> cubeBuilder.addCube(4, 4, 11, 12, 12, 16);
+            case UP -> cubeBuilder.addCube(4, 11, 4, 12, 16, 12);
+            case WEST -> cubeBuilder.addCube(0, 4, 4, 5, 12, 12);
         }
     }
 
@@ -580,28 +514,25 @@ class CableBuilder {
     // for the given direction
     private static void addStraightDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-            case UP:
+            case DOWN, UP -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.addCube(3, 0, 3, 13, 16, 13);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
-                break;
-            case EAST:
-            case WEST:
+            }
+            case EAST, WEST -> {
                 cubeBuilder.setUvRotation(Direction.SOUTH, 3);
                 cubeBuilder.setUvRotation(Direction.NORTH, 3);
                 cubeBuilder.addCube(0, 3, 3, 16, 13, 13);
                 cubeBuilder.setUvRotation(Direction.SOUTH, 0);
                 cubeBuilder.setUvRotation(Direction.NORTH, 0);
-                break;
-            case NORTH:
-            case SOUTH:
+            }
+            case NORTH, SOUTH -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.setUvRotation(Direction.WEST, 3);
                 cubeBuilder.addCube(3, 3, 0, 13, 13, 16);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
                 cubeBuilder.setUvRotation(Direction.WEST, 0);
-                break;
+            }
         }
     }
 
@@ -610,24 +541,12 @@ class CableBuilder {
     // to the given face
     private static void addCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(6, 0, 6, 10, 5, 10);
-                break;
-            case EAST:
-                cubeBuilder.addCube(11, 6, 6, 16, 10, 10);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(6, 6, 0, 10, 10, 5);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(6, 6, 11, 10, 10, 16);
-                break;
-            case UP:
-                cubeBuilder.addCube(6, 11, 6, 10, 16, 10);
-                break;
-            case WEST:
-                cubeBuilder.addCube(0, 6, 6, 5, 10, 10);
-                break;
+            case DOWN -> cubeBuilder.addCube(6, 0, 6, 10, 5, 10);
+            case EAST -> cubeBuilder.addCube(11, 6, 6, 16, 10, 10);
+            case NORTH -> cubeBuilder.addCube(6, 6, 0, 10, 10, 5);
+            case SOUTH -> cubeBuilder.addCube(6, 6, 11, 10, 10, 16);
+            case UP -> cubeBuilder.addCube(6, 11, 6, 10, 16, 10);
+            case WEST -> cubeBuilder.addCube(0, 6, 6, 5, 10, 10);
         }
     }
 
@@ -636,51 +555,36 @@ class CableBuilder {
     // for the given direction
     private static void addStraightCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-            case UP:
+            case DOWN, UP -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.addCube(5, 0, 5, 11, 16, 11);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
-                break;
-            case EAST:
-            case WEST:
+            }
+            case EAST, WEST -> {
                 cubeBuilder.setUvRotation(Direction.SOUTH, 3);
                 cubeBuilder.setUvRotation(Direction.NORTH, 3);
                 cubeBuilder.addCube(0, 5, 5, 16, 11, 11);
                 cubeBuilder.setUvRotation(Direction.SOUTH, 0);
                 cubeBuilder.setUvRotation(Direction.NORTH, 0);
-                break;
-            case NORTH:
-            case SOUTH:
+            }
+            case NORTH, SOUTH -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.setUvRotation(Direction.WEST, 3);
                 cubeBuilder.addCube(5, 5, 0, 11, 11, 16);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
                 cubeBuilder.setUvRotation(Direction.WEST, 0);
-                break;
+            }
         }
     }
 
     private static void addCoveredCableSizedCube(Direction facing, int distanceFromEdge, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 5, 10);
-                break;
-            case EAST:
-                cubeBuilder.addCube(11, 6, 6, 16 - distanceFromEdge, 10, 10);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 5);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(6, 6, 11, 10, 10, 16 - distanceFromEdge);
-                break;
-            case UP:
-                cubeBuilder.addCube(6, 11, 6, 10, 16 - distanceFromEdge, 10);
-                break;
-            case WEST:
-                cubeBuilder.addCube(distanceFromEdge, 6, 6, 5, 10, 10);
-                break;
+            case DOWN -> cubeBuilder.addCube(6, distanceFromEdge, 6, 10, 5, 10);
+            case EAST -> cubeBuilder.addCube(11, 6, 6, 16 - distanceFromEdge, 10, 10);
+            case NORTH -> cubeBuilder.addCube(6, 6, distanceFromEdge, 10, 10, 5);
+            case SOUTH -> cubeBuilder.addCube(6, 6, 11, 10, 10, 16 - distanceFromEdge);
+            case UP -> cubeBuilder.addCube(6, 11, 6, 10, 16 - distanceFromEdge, 10);
+            case WEST -> cubeBuilder.addCube(distanceFromEdge, 6, 6, 5, 10, 10);
         }
     }
 
@@ -691,24 +595,12 @@ class CableBuilder {
      */
     private void addBigCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
-            case DOWN:
-                cubeBuilder.addCube(5, 0, 5, 11, 4, 11);
-                break;
-            case EAST:
-                cubeBuilder.addCube(12, 5, 5, 16, 11, 11);
-                break;
-            case NORTH:
-                cubeBuilder.addCube(5, 5, 0, 11, 11, 4);
-                break;
-            case SOUTH:
-                cubeBuilder.addCube(5, 5, 12, 11, 11, 16);
-                break;
-            case UP:
-                cubeBuilder.addCube(5, 12, 5, 11, 16, 11);
-                break;
-            case WEST:
-                cubeBuilder.addCube(0, 5, 5, 4, 11, 11);
-                break;
+            case DOWN -> cubeBuilder.addCube(5, 0, 5, 11, 4, 11);
+            case EAST -> cubeBuilder.addCube(12, 5, 5, 16, 11, 11);
+            case NORTH -> cubeBuilder.addCube(5, 5, 0, 11, 11, 4);
+            case SOUTH -> cubeBuilder.addCube(5, 5, 12, 11, 11, 16);
+            case UP -> cubeBuilder.addCube(5, 12, 5, 11, 16, 11);
+            case WEST -> cubeBuilder.addCube(0, 5, 5, 4, 11, 11);
         }
     }
 

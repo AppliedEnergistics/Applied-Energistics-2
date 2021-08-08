@@ -96,16 +96,12 @@ public final class InitItemColors {
             return -1;
         }
 
-        switch (idx) {
-            case 1:
-                return col.blackVariant;
-            case 2:
-                return col.mediumVariant;
-            case 3:
-                return col.whiteVariant;
-            default:
-                return -1;
-        }
+        return switch (idx) {
+            case 1 -> col.blackVariant;
+            case 2 -> col.mediumVariant;
+            case 3 -> col.whiteVariant;
+            default -> -1;
+        };
     }
 
     private static int getDummyFluidItemColor(ItemStack stack, int tintIndex) {

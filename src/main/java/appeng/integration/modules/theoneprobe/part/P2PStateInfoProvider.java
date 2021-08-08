@@ -68,15 +68,9 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
             }
 
             switch (state) {
-                case STATE_UNLINKED:
-                    probeInfo.text(TheOneProbeText.P2P_UNLINKED.getTranslationComponent());
-                    break;
-                case STATE_OUTPUT:
-                    probeInfo.text(TheOneProbeText.P2P_OUTPUT.getTranslationComponent());
-                    break;
-                case STATE_INPUT:
-                    probeInfo.text(getOutputText(outputCount));
-                    break;
+                case STATE_UNLINKED -> probeInfo.text(TheOneProbeText.P2P_UNLINKED.getTranslationComponent());
+                case STATE_OUTPUT -> probeInfo.text(TheOneProbeText.P2P_OUTPUT.getTranslationComponent());
+                case STATE_INPUT -> probeInfo.text(getOutputText(outputCount));
             }
 
             final short freq = tunnel.getFrequency();

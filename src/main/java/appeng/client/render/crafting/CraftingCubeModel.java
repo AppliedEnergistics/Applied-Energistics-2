@@ -77,41 +77,29 @@ class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
         TextureAtlasSprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
 
-        switch (this.type) {
-            case UNIT:
-                return new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE));
-            case ACCELERATOR:
-            case STORAGE_1K:
-            case STORAGE_4K:
-            case STORAGE_16K:
-            case STORAGE_64K:
-                return new LightBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
-                        getLightTexture(spriteGetter, this.type));
-            case MONITOR:
-                return new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE),
-                        spriteGetter.apply(MONITOR_BASE), spriteGetter.apply(MONITOR_LIGHT_DARK),
-                        spriteGetter.apply(MONITOR_LIGHT_MEDIUM), spriteGetter.apply(MONITOR_LIGHT_BRIGHT));
-            default:
-                throw new IllegalArgumentException("Unsupported crafting unit type: " + this.type);
-        }
+        return switch (this.type) {
+            case UNIT -> new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE));
+            case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K -> new LightBakedModel(ringCorner,
+                    ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
+                    getLightTexture(spriteGetter, this.type));
+            case MONITOR -> new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE),
+                    spriteGetter.apply(MONITOR_BASE), spriteGetter.apply(MONITOR_LIGHT_DARK),
+                    spriteGetter.apply(MONITOR_LIGHT_MEDIUM), spriteGetter.apply(MONITOR_LIGHT_BRIGHT));
+            default -> throw new IllegalArgumentException("Unsupported crafting unit type: " + this.type);
+        };
     }
 
     private static TextureAtlasSprite getLightTexture(Function<Material, TextureAtlasSprite> textureGetter,
             AbstractCraftingUnitBlock.CraftingUnitType type) {
-        switch (type) {
-            case ACCELERATOR:
-                return textureGetter.apply(ACCELERATOR_LIGHT);
-            case STORAGE_1K:
-                return textureGetter.apply(STORAGE_1K_LIGHT);
-            case STORAGE_4K:
-                return textureGetter.apply(STORAGE_4K_LIGHT);
-            case STORAGE_16K:
-                return textureGetter.apply(STORAGE_16K_LIGHT);
-            case STORAGE_64K:
-                return textureGetter.apply(STORAGE_64K_LIGHT);
-            default:
-                throw new IllegalArgumentException("Crafting unit type " + type + " does not use a light texture.");
-        }
+        return switch (type) {
+            case ACCELERATOR -> textureGetter.apply(ACCELERATOR_LIGHT);
+            case STORAGE_1K -> textureGetter.apply(STORAGE_1K_LIGHT);
+            case STORAGE_4K -> textureGetter.apply(STORAGE_4K_LIGHT);
+            case STORAGE_16K -> textureGetter.apply(STORAGE_16K_LIGHT);
+            case STORAGE_64K -> textureGetter.apply(STORAGE_64K_LIGHT);
+            default -> throw new IllegalArgumentException(
+                    "Crafting unit type " + type + " does not use a light texture.");
+        };
     }
 
     private static Material texture(String name) {

@@ -355,24 +355,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.reboot = false;
         int speed = 10;
         switch (this.upgrades.getInstalledUpgrades(Upgrades.SPEED)) {
-            case 0:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 10, 1.0);
-                break;
-            case 1:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 13, 1.3);
-                break;
-            case 2:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 17, 1.7);
-                break;
-            case 3:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 20, 2.0);
-                break;
-            case 4:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 25, 2.5);
-                break;
-            case 5:
-                this.progress += this.userPower(ticksSinceLastCall, speed = 50, 5.0);
-                break;
+            case 0 -> this.progress += this.userPower(ticksSinceLastCall, speed = 10, 1.0);
+            case 1 -> this.progress += this.userPower(ticksSinceLastCall, speed = 13, 1.3);
+            case 2 -> this.progress += this.userPower(ticksSinceLastCall, speed = 17, 1.7);
+            case 3 -> this.progress += this.userPower(ticksSinceLastCall, speed = 20, 2.0);
+            case 4 -> this.progress += this.userPower(ticksSinceLastCall, speed = 25, 2.5);
+            case 5 -> this.progress += this.userPower(ticksSinceLastCall, speed = 50, 5.0);
         }
 
         if (this.progress >= 100) {

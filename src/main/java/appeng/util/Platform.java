@@ -175,25 +175,19 @@ public class Platform {
         final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
-        switch (west_x + west_y * 2 + west_z * 3) {
-            case 1:
-                return Direction.EAST;
-            case -1:
-                return Direction.WEST;
+        return switch (west_x + west_y * 2 + west_z * 3) {
+            case 1 -> Direction.EAST;
+            case -1 -> Direction.WEST;
+            case 2 -> Direction.UP;
+            case -2 -> Direction.DOWN;
+            case 3 -> Direction.SOUTH;
+            case -3 -> Direction.NORTH;
+            default ->
 
-            case 2:
-                return Direction.UP;
-            case -2:
-                return Direction.DOWN;
+                // something is better then nothing?
+                Direction.NORTH;
+        };
 
-            case 3:
-                return Direction.SOUTH;
-            case -3:
-                return Direction.NORTH;
-        }
-
-        // something is better then nothing?
-        return Direction.NORTH;
     }
 
     /**

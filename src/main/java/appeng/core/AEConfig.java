@@ -247,18 +247,13 @@ public final class AEConfig {
      * Guaranteed to have 4 entries.
      */
     public int[] getNumberEntrySteps(NumberEntryType type) {
-        switch (type) {
-            case CRAFT_ITEM_COUNT:
-                return craftByStacks;
-            case PRIORITY:
-                return priorityByStacks;
-            case LEVEL_ITEM_COUNT:
-                return levelByStacks;
-            case LEVEL_FLUID_VOLUME:
-                return levelByMillibuckets;
-            default:
-                throw new IllegalArgumentException("Unknown number entry: " + type);
-        }
+        return switch (type) {
+            case CRAFT_ITEM_COUNT -> craftByStacks;
+            case PRIORITY -> priorityByStacks;
+            case LEVEL_ITEM_COUNT -> levelByStacks;
+            case LEVEL_FLUID_VOLUME -> levelByMillibuckets;
+            default -> throw new IllegalArgumentException("Unknown number entry: " + type);
+        };
     }
 
     public PowerUnits getSelectedPowerUnit() {

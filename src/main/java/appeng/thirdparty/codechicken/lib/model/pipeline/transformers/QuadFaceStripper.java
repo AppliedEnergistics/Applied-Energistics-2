@@ -79,7 +79,7 @@ public class QuadFaceStripper extends QuadTransformer {
             Direction.AxisDirection dir = this.quad.orientation.getAxisDirection();
             Vertex[] vertices = this.quad.vertices;
             switch (this.quad.orientation.getAxis()) {
-                case X: {
+                case X -> {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxX : this.bounds.minX);
                     float x1 = vertices[0].vec[0];
                     float x2 = vertices[1].vec[0];
@@ -87,7 +87,7 @@ public class QuadFaceStripper extends QuadTransformer {
                     float x4 = vertices[3].vec[0];
                     return x1 != x2 || x2 != x3 || x3 != x4 || x4 != bound;
                 }
-                case Y: {
+                case Y -> {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxY : this.bounds.minY);
                     float y1 = vertices[0].vec[1];
                     float y2 = vertices[1].vec[1];
@@ -95,7 +95,7 @@ public class QuadFaceStripper extends QuadTransformer {
                     float y4 = vertices[3].vec[1];
                     return y1 != y2 || y2 != y3 || y3 != y4 || y4 != bound;
                 }
-                case Z: {
+                case Z -> {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxZ : this.bounds.minZ);
                     float z1 = vertices[0].vec[2];
                     float z2 = vertices[1].vec[2];

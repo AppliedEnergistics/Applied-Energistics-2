@@ -147,17 +147,11 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private ItemStack getOutput() {
 
-        switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
-            case MATTER_BALLS:
-                return AEItems.MATTER_BALL.stack();
-
-            case SINGULARITY:
-                return AEItems.SINGULARITY.stack();
-
-            case TRASH:
-            default:
-                return ItemStack.EMPTY;
-        }
+        return switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
+            case MATTER_BALLS -> AEItems.MATTER_BALL.stack();
+            case SINGULARITY -> AEItems.SINGULARITY.stack();
+            default -> ItemStack.EMPTY;
+        };
     }
 
     public double getRequiredPower() {

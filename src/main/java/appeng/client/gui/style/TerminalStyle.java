@@ -228,13 +228,10 @@ public class TerminalStyle {
     }
 
     public StackSizeRenderer getStackSizeRenderer() {
-        switch (stackSizeStyle) {
-            default:
-            case ITEMS:
-                return new StackSizeRenderer();
-            case FLUIDS:
-                return new FluidStackSizeRenderer();
-        }
+        return switch (stackSizeStyle) {
+            case ITEMS -> new StackSizeRenderer();
+            case FLUIDS -> new FluidStackSizeRenderer();
+        };
     }
 
     public void validate() {

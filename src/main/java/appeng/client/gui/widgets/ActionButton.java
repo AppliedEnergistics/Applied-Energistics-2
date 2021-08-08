@@ -38,38 +38,37 @@ public class ActionButton extends IconButton {
         ButtonToolTips displayName;
         ButtonToolTips displayValue;
         switch (action) {
-            case WRENCH:
+            case WRENCH -> {
                 icon = Icon.WRENCH;
                 displayName = ButtonToolTips.PartitionStorage;
                 displayValue = ButtonToolTips.PartitionStorageHint;
-                break;
-            case CLOSE:
+            }
+            case CLOSE -> {
                 icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Clear;
                 displayValue = ButtonToolTips.ClearSettings;
-                break;
-            case STASH:
+            }
+            case STASH -> {
                 icon = Icon.CLEAR;
                 displayName = ButtonToolTips.Stash;
                 displayValue = ButtonToolTips.StashDesc;
-                break;
-            case ENCODE:
+            }
+            case ENCODE -> {
                 icon = Icon.WHITE_ARROW_DOWN;
                 displayName = ButtonToolTips.Encode;
                 displayValue = ButtonToolTips.EncodeDescription;
-                break;
-            case ENABLE_SUBSTITUTION:
+            }
+            case ENABLE_SUBSTITUTION -> {
                 icon = Icon.SUBSTITUTION_ENABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescEnabled;
-                break;
-            case DISABLE_SUBSTITUTION:
+            }
+            case DISABLE_SUBSTITUTION -> {
                 icon = Icon.SUBSTITUTION_DISABLED;
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescDisabled;
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown ActionItem: " + action);
+            }
+            default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 
         setMessage(buildMessage(displayName, displayValue));

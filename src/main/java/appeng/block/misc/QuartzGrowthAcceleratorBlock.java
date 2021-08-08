@@ -97,30 +97,26 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowth
             BlockPos pt = null;
 
             switch (r.nextInt(4)) {
-                case 0:
+                case 0 -> {
                     dx = 0.6;
                     dz = d1;
                     pt = new BlockPos(x + west.getStepX(), y + west.getStepY(), z + west.getStepZ());
-
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     dx = d1;
                     dz += 0.6;
                     pt = new BlockPos(x + forward.getStepX(), y + forward.getStepY(), z + forward.getStepZ());
-
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     dx = d1;
                     dz = -0.6;
                     pt = new BlockPos(x - forward.getStepX(), y - forward.getStepY(), z - forward.getStepZ());
-
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     dx = -0.6;
                     dz = d1;
                     pt = new BlockPos(x - west.getStepX(), y - west.getStepY(), z - west.getStepZ());
-
-                    break;
+                }
             }
 
             if (!level.getBlockState(pt).isAir()) {

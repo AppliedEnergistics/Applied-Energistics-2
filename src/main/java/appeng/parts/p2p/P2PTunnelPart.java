@@ -199,42 +199,21 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
         } else if (tt != null) // attunement
         {
-            final ItemStack newType;
-
-            switch (tt) {
-                case LIGHT:
-                    newType = AEParts.LIGHT_P2P_TUNNEL.stack();
-                    break;
-
-                case FE_POWER:
-                    newType = AEParts.FE_P2P_TUNNEL.stack();
-                    break;
-
-                case FLUID:
-                    newType = AEParts.FLUID_P2P_TUNNEL.stack();
-                    break;
-
-                case ITEM:
-                    newType = AEParts.ITEM_P2P_TUNNEL.stack();
-                    break;
-
-                case ME:
-                    newType = AEParts.ME_P2P_TUNNEL.stack();
-                    break;
-
-                case REDSTONE:
-                    newType = AEParts.REDSTONE_P2P_TUNNEL.stack();
-                    break;
+            final ItemStack newType = switch (tt) {
+                case LIGHT -> AEParts.LIGHT_P2P_TUNNEL.stack();
+                case FE_POWER -> AEParts.FE_P2P_TUNNEL.stack();
+                case FLUID -> AEParts.FLUID_P2P_TUNNEL.stack();
+                case ITEM -> AEParts.ITEM_P2P_TUNNEL.stack();
+                case ME -> AEParts.ME_P2P_TUNNEL.stack();
+                case REDSTONE -> AEParts.REDSTONE_P2P_TUNNEL.stack();
 
                 /*
                  * case COMPUTER_MESSAGE: for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet()
                  * ) { newType = stack; } break;
                  */
 
-                default:
-                    newType = ItemStack.EMPTY;
-                    break;
-            }
+                default -> ItemStack.EMPTY;
+            };
 
             if (!newType.isEmpty() && !ItemStack.isSame(newType, this.getItemStack())) {
                 final boolean oldOutput = this.isOutput();

@@ -164,22 +164,15 @@ class GlassBakedModel implements IDynamicBakedModel {
      * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
      */
     private static int makeBitmask(GlassState state, Direction side) {
-        switch (side) {
-            case DOWN:
-                return makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
-            case UP:
-                return makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
-            case NORTH:
-                return makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
-            case SOUTH:
-                return makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
-            case WEST:
-                return makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
-            case EAST:
-                return makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
-            default:
-                throw new IllegalArgumentException("Unsupported side!");
-        }
+        return switch (side) {
+            case DOWN -> makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
+            case UP -> makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
+            case NORTH -> makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
+            case SOUTH -> makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
+            case WEST -> makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
+            case EAST -> makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
+            default -> throw new IllegalArgumentException("Unsupported side!");
+        };
     }
 
     private static int makeBitmask(GlassState state, Direction up, Direction right, Direction down, Direction left) {

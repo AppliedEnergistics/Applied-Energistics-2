@@ -57,19 +57,13 @@ public enum DriveSlotState implements StringRepresentable {
     }
 
     public static DriveSlotState fromCellStatus(CellState cellStatus) {
-        switch (cellStatus) {
-            default:
-            case ABSENT:
-                return DriveSlotState.EMPTY;
-            case EMPTY:
-                return DriveSlotState.ONLINE;
-            case NOT_EMPTY:
-                return DriveSlotState.NOT_EMPTY;
-            case TYPES_FULL:
-                return DriveSlotState.TYPES_FULL;
-            case FULL:
-                return DriveSlotState.FULL;
-        }
+        return switch (cellStatus) {
+            case ABSENT -> DriveSlotState.EMPTY;
+            case EMPTY -> DriveSlotState.ONLINE;
+            case NOT_EMPTY -> DriveSlotState.NOT_EMPTY;
+            case TYPES_FULL -> DriveSlotState.TYPES_FULL;
+            case FULL -> DriveSlotState.FULL;
+        };
     }
 
 }
