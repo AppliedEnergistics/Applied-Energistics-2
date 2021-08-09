@@ -30,10 +30,7 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.IStorageChannel;
@@ -68,29 +65,6 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         // because the storage channel is only known to the open container.
         bufferedClientSideData = data;
         bufferedClientSideData.retain();
-    }
-
-    @SuppressWarnings("unchecked")
-    private MEMonitorableContainer<T> getContainer(int windowId) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null) {
-            // Probably a race-condition when the player already has left the game
-            return null;
-        }
-
-        Container currentContainer = player.openContainer;
-        if (!(currentContainer instanceof MEMonitorableContainer)) {
-            // Ignore a packet for a screen that has already been closed
-            return null;
-        }
-
-        // If the window id matches, this unsafe cast should actually be safe
-        MEMonitorableContainer<?> meContainer = (MEMonitorableContainer<?>) currentContainer;
-        if (meContainer.windowId == windowId) {
-            return (MEMonitorableContainer<T>) meContainer;
-        }
-
-        return null;
     }
 
     // api
@@ -232,6 +206,7 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
         return new Builder<>(windowId, fullUpdate);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
@@ -242,10 +217,22 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
             List<GridInventoryEntry<T>> list = new ArrayList<>(itemCount);
 
             // We need to access the current screen to know which storage channel was used to serialize this data
-            MEMonitorableContainer<T> container = getContainer(windowId);
-            if (container == null) {
-                AELog.info("Ignoring ME inventory update packet because the target container isn't open.");
+            MEMonitorableContainer<T> container;
+            // Ignore a packet for a screen that has already been closed
+            if (player.openContainer == null) {
+                AELog.info("Ignoring ME inventory update since no container is currently opened.");
                 return;
+            } else if (!(player.openContainer instanceof MEMonitorableContainer)) {
+                AELog.info("Ignoring ME inventory update since the current container is now: %s",
+                        player.openContainer);
+                return;
+            } else if (player.openContainer.windowId != windowId) {
+                AELog.info("Ignoring ME inventory update since window-id doesn't match: %d != %d",
+                        player.openContainer.windowId, windowId);
+                return;
+            } else {
+                // If the window id matches, this unsafe cast should actually be safe
+                container = (MEMonitorableContainer<T>) player.openContainer;
             }
 
             IStorageChannel<T> storageChannel = container.getStorageChannel();
