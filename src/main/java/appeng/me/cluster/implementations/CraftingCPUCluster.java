@@ -1026,7 +1026,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                     }
                 }
             }
-            case ALL -> throw new IllegalStateException("Invalid Operation");
+            default -> throw new IllegalStateException("Invalid Operation");
         }
 
         if (is != null) {

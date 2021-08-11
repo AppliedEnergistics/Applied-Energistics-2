@@ -59,7 +59,7 @@ Your game object should notify the managed node about the following events:
 ### In-World Nodes
 
 The main type of grid node are in-world grid nodes. They need to know their location and world when being created with
-`IManagedGridNode.create(World, BlockPos)`. External connections are automatically attempt to connect with adjacent
+`IManagedGridNode.create(Level, BlockPos)`. External connections are automatically attempt to connect with adjacent
 in-world grid nodes by AE2 itself and do not need further handling.
 
 In-world nodes can be selectively exposed on specific sides, or on all sides.

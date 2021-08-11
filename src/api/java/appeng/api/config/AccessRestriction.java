@@ -46,6 +46,7 @@ public enum AccessRestriction {
             case 1 -> READ;
             case 2 -> WRITE;
             case 3 -> READ_WRITE;
+            default -> NO_ACCESS;
         };
     }
 

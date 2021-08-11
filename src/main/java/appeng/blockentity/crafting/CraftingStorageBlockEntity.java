@@ -70,6 +70,7 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             case STORAGE_4K -> 4 * 1024;
             case STORAGE_16K -> 16 * 1024;
             case STORAGE_64K -> 64 * 1024;
+            default -> 0;
         };
     }
 }

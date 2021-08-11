@@ -95,7 +95,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     protected int calculateItemsToSend() {
         return switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
-            case 0 -> 1;
+            default -> 1;
             case 1 -> 8;
             case 2 -> 32;
             case 3 -> 64;

@@ -248,7 +248,7 @@ public class CubeBuilder {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            case 0 -> {
+            default -> {
                 u = uv.u1;
                 v = uv.v1;
             }
@@ -274,7 +274,7 @@ public class CubeBuilder {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            case 0 -> {
+            default -> {
                 u = uv.u2;
                 v = uv.v1;
             }
@@ -301,7 +301,7 @@ public class CubeBuilder {
         float v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            case 0 -> {
+            default -> {
                 u = uv.u2;
                 v = uv.v2;
             }
@@ -329,7 +329,7 @@ public class CubeBuilder {
         float v;
 
         switch (this.uvRotations[face.ordinal()]) {
-            case 0 -> {
+            default -> {
                 u = uv.u1;
                 v = uv.v2;
             }
