@@ -27,10 +27,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
@@ -144,7 +143,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 
         if (!simulate) {
             if (existing.isEmpty()) {
-                this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                this.inv[slot] = StorageChannels.items()
                         .createStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
@@ -181,7 +180,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     @Override
     public void setStackInSlot(final int slot, final ItemStack newItemStack) {
         ItemStack oldStack = this.getStackInSlot(slot).copy();
-        this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+        this.inv[slot] = StorageChannels.items()
                 .createStack(newItemStack);
 
         if (this.te != null && !this.te.isRemote()) {

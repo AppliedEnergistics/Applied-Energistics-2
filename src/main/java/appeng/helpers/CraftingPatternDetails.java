@@ -47,9 +47,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.NullMenu;
 import appeng.util.Platform;
@@ -123,8 +122,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.standardRecipe = (CraftingRecipe) recipe;
             this.correctOutput = this.standardRecipe.assemble(this.crafting);
 
-            out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                    .createStack(this.correctOutput));
+            out.add(StorageChannels.items().createStack(this.correctOutput));
         } else {
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;

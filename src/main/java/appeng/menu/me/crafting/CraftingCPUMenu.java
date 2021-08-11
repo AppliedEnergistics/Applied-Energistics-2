@@ -31,11 +31,10 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.core.Api;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.menu.AEBaseMenu;
@@ -98,7 +97,7 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
             this.cpu = (CraftingCPUCluster) c;
 
             // Initially send all items as a full-update to the client when the CPU changes
-            IItemList<IAEItemStack> allItems = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            IItemList<IAEItemStack> allItems = StorageChannels.items()
                     .createList();
             this.cpu.getListOfItem(allItems, CraftingItemList.ALL);
             for (IAEItemStack stack : allItems) {

@@ -32,10 +32,9 @@ import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.core.Api;
 import appeng.menu.SlotSemantic;
@@ -171,7 +170,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
         final ItemStack is = getWorkbenchItem();
         final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
                 ? ((IStorageCell<?>) is.getItem()).getChannel()
-                : Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+                : StorageChannels.items();
 
         Iterator<? extends IAEStack<?>> i = iterateCellItems(is, channel);
 
@@ -191,8 +190,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
             IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
         if (cellInv != null) {
-            final IItemList<T> list = cellInv.getAvailableItems(channel.createList());
-            return list.iterator();
+            return cellInv.getAvailableItems().iterator();
         } else {
             return new NullIterator<>();
         }

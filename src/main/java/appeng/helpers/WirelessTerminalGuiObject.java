@@ -36,7 +36,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -85,7 +85,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                     this.sg = this.targetGrid.getService(IStorageService.class);
                     if (this.sg != null) {
                         this.itemStorage = this.sg
-                                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                                .getInventory(StorageChannels.items());
                     }
                 }
             }
@@ -197,7 +197,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         if (this.itemStorage != null) {
             return this.itemStorage.getChannel();
         }
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

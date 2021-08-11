@@ -25,8 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.core.Api;
+import appeng.api.storage.StorageChannels;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IMenuCraftingPacket;
@@ -48,7 +47,7 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     public BasePacket getRequest(final boolean shift) {
         return new PatternSlotPacket(this.getPattern(),
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getItem()),
+                StorageChannels.items().createStack(this.getItem()),
                 shift);
     }
 

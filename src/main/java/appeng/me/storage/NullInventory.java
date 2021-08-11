@@ -23,10 +23,9 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 
 public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
 
@@ -47,7 +46,7 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 
     @Override
     public IStorageChannel getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

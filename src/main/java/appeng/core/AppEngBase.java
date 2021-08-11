@@ -175,6 +175,9 @@ public abstract class AppEngBase implements AppEng {
         MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
     }
 
+    private void setupRegistries(RegistryEvent.NewRegistry e) {
+    }
+
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
             if (err != null) {

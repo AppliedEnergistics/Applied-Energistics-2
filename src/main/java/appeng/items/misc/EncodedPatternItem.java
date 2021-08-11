@@ -48,7 +48,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -253,7 +253,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
-            in.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+            in.add(StorageChannels.items().createStack(gs));
         }
 
         return in;
@@ -275,7 +275,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
             Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
 
-            out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+            out.add(StorageChannels.items().createStack(gs));
         }
 
         return out;

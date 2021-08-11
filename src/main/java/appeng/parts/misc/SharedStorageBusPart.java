@@ -29,11 +29,10 @@ import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.UpgradeablePart;
 
@@ -75,7 +74,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
      * @return Storage channel
      */
     public IStorageChannel getStorageChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     protected abstract void resetCache();

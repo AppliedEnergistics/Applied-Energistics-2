@@ -31,10 +31,9 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
@@ -92,7 +91,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

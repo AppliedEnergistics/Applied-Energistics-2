@@ -25,18 +25,16 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
 
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> {
 
-    private final IItemList<IAEItemStack> itemListCache = Api.instance().storage()
-            .getStorageChannel(IItemStorageChannel.class).createList();
+    private final IItemList<IAEItemStack> itemListCache = StorageChannels.items().createList();
 
     protected CreativeCellInventory(final ItemStack o) {
         final CellConfig cc = new CellConfig(o);
@@ -51,7 +49,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
 
     public static ICellInventoryHandler getCell(final ItemStack o) {
         return new BasicCellInventoryHandler(new CreativeCellInventory(o),
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
     }
 
     @Override
@@ -84,7 +82,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
 
     @Override
     public IStorageChannel getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

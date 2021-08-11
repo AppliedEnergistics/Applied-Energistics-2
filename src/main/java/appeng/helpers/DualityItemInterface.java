@@ -80,8 +80,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -129,9 +128,9 @@ public class DualityItemInterface
     private final AppEngInternalInventory storage = new AppEngInternalInventory(this, NUMBER_OF_STORAGE_SLOTS);
     private final AppEngInternalInventory patterns = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
     private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<IAEItemStack>(), Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            new NullInventory<IAEItemStack>(), StorageChannels.items());
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<IAEFluidStack>(), Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+            new NullInventory<IAEFluidStack>(), StorageChannels.fluids());
     private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
     private int priority;
@@ -355,7 +354,7 @@ public class DualityItemInterface
         final ItemStack stored = this.storage.getStackInSlot(slot);
 
         if (req == null && !stored.isEmpty()) {
-            final IAEItemStack work = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            final IAEItemStack work = StorageChannels.items()
                     .createStack(stored);
             this.requireWork[slot] = work.setStackSize(-work.getStackSize());
             return;
@@ -374,7 +373,7 @@ public class DualityItemInterface
             } else
             // Stored != null; dispose!
             {
-                final IAEItemStack work = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                final IAEItemStack work = StorageChannels.items()
                         .createStack(stored);
                 this.requireWork[slot] = work.setStackSize(-work.getStackSize());
                 return;
@@ -420,7 +419,7 @@ public class DualityItemInterface
     @Override
     public boolean canInsert(final ItemStack stack) {
         final IAEItemStack out = this.destination.injectItems(
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(stack),
+                StorageChannels.items().createStack(stack),
                 Actionable.SIMULATE, null);
         if (out == null) {
             return true;
@@ -444,9 +443,9 @@ public class DualityItemInterface
         var grid = gridProxy.getGrid();
         if (grid != null) {
             this.items.setInternal(grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+                    .getInventory(StorageChannels.items()));
             this.fluids.setInternal(grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)));
+                    .getInventory(StorageChannels.fluids()));
         } else {
             this.items.setInternal(new NullInventory<>());
             this.fluids.setInternal(new NullInventory<>());
@@ -565,7 +564,7 @@ public class DualityItemInterface
         }
 
         this.destination = grid.getStorageService()
-                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(StorageChannels.items());
         var src = grid.getEnergyService();
 
         if (this.craftingTracker.isBusy(slot)) {
@@ -651,13 +650,13 @@ public class DualityItemInterface
 
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == StorageChannels.items()) {
             if (this.hasConfig()) {
                 return (IMEMonitor<T>) new InterfaceInventory(this);
             }
 
             return (IMEMonitor<T>) this.items;
-        } else if (channel == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)) {
+        } else if (channel == StorageChannels.fluids()) {
             if (this.hasConfig()) {
                 return null;
             }
@@ -725,7 +724,7 @@ public class DualityItemInterface
 
             @Override
             public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-                if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+                if (channel == StorageChannels.items()) {
                     return (IMEMonitor<T>) new InterfaceInventory(di);
                 }
                 return null;

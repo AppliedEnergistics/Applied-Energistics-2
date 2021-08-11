@@ -60,8 +60,8 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
@@ -70,7 +70,6 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
@@ -219,7 +218,7 @@ public class StorageBusPart extends UpgradeablePart
         if (this.getMainNode().isActive()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getStorageService().postAlterationOfStoredItems(
-                        Api.instance().storage().getStorageChannel(IItemStorageChannel.class), change, this.mySrc);
+                        StorageChannels.items(), change, this.mySrc);
             });
         }
     }
@@ -288,7 +287,7 @@ public class StorageBusPart extends UpgradeablePart
         this.resetCacheLogic = 0;
 
         final IMEInventory<IAEItemStack> in = this.getInternalHandler();
-        IItemList<IAEItemStack> before = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+        IItemList<IAEItemStack> before = StorageChannels.items()
                 .createList();
         if (in != null) {
             before = in.getAvailableItems(before);
@@ -302,7 +301,7 @@ public class StorageBusPart extends UpgradeablePart
         final IMEInventory<IAEItemStack> out = this.getInternalHandler();
 
         if (in != out) {
-            IItemList<IAEItemStack> after = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            IItemList<IAEItemStack> after = StorageChannels.items()
                     .createList();
             if (out != null) {
                 after = out.getAvailableItems(after);
@@ -323,7 +322,7 @@ public class StorageBusPart extends UpgradeablePart
             IStorageMonitorableAccessor accessor = accessorOpt.orElse(null);
             IStorageMonitorable inventory = accessor.getInventory(this.mySrc);
             if (inventory != null) {
-                return inventory.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                return inventory.getInventory(StorageChannels.items());
             }
 
             // So this could / can be a design decision. If the block entity does support our custom
@@ -413,15 +412,14 @@ public class StorageBusPart extends UpgradeablePart
                 this.checkInterfaceVsStorageBus(target, this.getSide().getOpposite());
 
                 this.handler = new MEInventoryHandler<IAEItemStack>(inv,
-                        Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                        StorageChannels.items());
 
                 this.handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
                 this.handler.setWhitelist(this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                         : IncludeExclude.WHITELIST);
                 this.handler.setPriority(this.priority);
 
-                final IItemList<IAEItemStack> priorityList = Api.instance().storage()
-                        .getStorageChannel(IItemStorageChannel.class).createList();
+                final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
                 final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
                 for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
@@ -485,7 +483,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == StorageChannels.items()) {
             final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
                     : null;
             if (out != null) {

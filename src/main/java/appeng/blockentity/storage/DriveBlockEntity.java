@@ -20,7 +20,6 @@ package appeng.blockentity.storage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
@@ -51,13 +50,11 @@ import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -83,10 +80,10 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, 10);
     private final ICellHandler[] handlersBySlot = new ICellHandler[10];
-    private final DriveWatcher<IAEItemStack>[] invBySlot = new DriveWatcher[10];
+    private final DriveWatcher<?>[] invBySlot = new DriveWatcher[10];
     private final IActionSource mySrc;
     private boolean isCached = false;
-    private Map<IStorageChannel<? extends IAEStack<?>>, List<IMEInventoryHandler>> inventoryHandlers;
+    private Map<IStorageChannel<?>, List<IMEInventoryHandler>> inventoryHandlers;
     private int priority = 0;
     private boolean wasActive = false;
     // This is only used on the client
@@ -328,9 +325,9 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     private void updateState() {
         if (!this.isCached) {
-            final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = Api.instance().storage()
-                    .storageChannels();
-            storageChannels.forEach(channel -> this.inventoryHandlers.put(channel, new ArrayList<>(10)));
+            for (var channel : StorageChannels.getAll()) {
+                this.inventoryHandlers.put(channel, new ArrayList<>(10));
+            }
 
             double power = 2.0;
 
@@ -343,16 +340,15 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                     this.handlersBySlot[x] = Api.instance().registries().cell().getHandler(is);
 
                     if (this.handlersBySlot[x] != null) {
-                        for (IStorageChannel<? extends IAEStack<?>> channel : storageChannels) {
+                        for (var channel : StorageChannels.getAll()) {
 
-                            ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory(is, this::saveChanges,
-                                    channel);
+                            var cell = this.handlersBySlot[x].getCellInventory(is, this::saveChanges, channel);
 
                             if (cell != null) {
                                 this.inv.setHandler(x, cell);
                                 power += this.handlersBySlot[x].cellIdleDrain(is, cell);
 
-                                final DriveWatcher<IAEItemStack> ih = new DriveWatcher(cell, is, this.handlersBySlot[x],
+                                final DriveWatcher<?> ih = new DriveWatcher<>(cell, is, this.handlersBySlot[x],
                                         this::blinkCell);
                                 ih.setPriority(this.priority);
                                 this.invBySlot[x] = ih;

@@ -58,10 +58,9 @@ import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusBlock;
@@ -124,7 +123,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         ItemStack paintBall = this.getColor(is);
 
         final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
         if (inv != null) {
             final IAEItemStack option = inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.SIMULATE,
                     new BaseActionSource());
@@ -241,10 +240,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         ItemStack newColor = ItemStack.EMPTY;
 
         final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
         if (inv != null) {
-            final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
-                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+            var itemList = inv.getAvailableItems();
             if (anchor.isEmpty()) {
                 final IAEItemStack firstItem = itemList.getFirstItem();
                 if (firstItem != null) {
@@ -359,7 +357,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
 
         Api.instance().client().addCellInformation(cdi, lines);
     }
@@ -404,7 +402,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

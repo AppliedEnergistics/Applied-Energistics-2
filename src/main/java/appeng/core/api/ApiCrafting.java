@@ -35,10 +35,9 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.CraftingPatternDetails;
 import appeng.items.misc.EncodedPatternItem;
@@ -104,7 +103,7 @@ public class ApiCrafting implements ICraftingHelper {
         }
 
         // We use the shared itemstack for an identity lookup.
-        IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
+        IAEItemStack ais = StorageChannels.items().createStack(is);
 
         try {
             return new CraftingPatternDetails(ais, level);

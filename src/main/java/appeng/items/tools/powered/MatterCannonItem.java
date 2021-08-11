@@ -60,10 +60,9 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
@@ -104,7 +103,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
 
         Api.instance().client().addCellInformation(cdi, lines);
     }
@@ -121,10 +120,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             final ICellInventoryHandler<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(
-                    p.getItemInHand(hand), null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    p.getItemInHand(hand), null, StorageChannels.items());
             if (inv != null) {
-                final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
-                        Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+                var itemList = inv.getAvailableItems();
                 IAEItemStack req = itemList.getFirstItem();
                 if (req instanceof IAEItemStack) {
                     shots = Math.min(shots, (int) req.getStackSize());
@@ -458,6 +456,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 }

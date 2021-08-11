@@ -27,7 +27,7 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
@@ -36,8 +36,7 @@ import appeng.core.definitions.AEItems;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
-    private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
-            .getStorageChannel(IItemStorageChannel.class).createList();
+    private final IItemList<IAEItemStack> storedItems = StorageChannels.items().createList();
     private final SecurityStationBlockEntity blockEntity;
 
     public SecurityStationInventory(final SecurityStationBlockEntity ts) {
@@ -100,7 +99,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     @Override
     public IStorageChannel getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

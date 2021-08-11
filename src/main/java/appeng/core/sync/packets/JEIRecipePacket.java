@@ -51,9 +51,8 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
@@ -176,7 +175,7 @@ public class JEIRecipePacket extends BasePacket {
         final IItemHandler playerInventory = cct.getInventoryByName("player");
 
         final IMEMonitor<IAEItemStack> storage = inv
-                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(StorageChannels.items());
         final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
         final NonNullList<Ingredient> ingredients = this.ensure3by3CraftingMatrix(recipe);
 

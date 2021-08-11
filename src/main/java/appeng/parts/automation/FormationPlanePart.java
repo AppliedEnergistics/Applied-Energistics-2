@@ -59,13 +59,12 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.MEInventoryHandler;
@@ -89,7 +88,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this,
-            Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            StorageChannels.items());
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
 
     public FormationPlanePart(final ItemStack is) {
@@ -107,8 +106,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
         this.myHandler.setPriority(this.getPriority());
 
-        final IItemList<IAEItemStack> priorityList = Api.instance().storage()
-                .getStorageChannel(IItemStorageChannel.class).createList();
+        final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
         final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
         for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
@@ -171,7 +169,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
         if (this.getMainNode().isActive()
-                && channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+                && channel == StorageChannels.items()) {
             final List<IMEInventoryHandler> handler = new ArrayList<>(1);
             handler.add(this.myHandler);
             return handler;
@@ -322,7 +320,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

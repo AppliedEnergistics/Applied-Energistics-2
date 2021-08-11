@@ -38,7 +38,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.Api;
@@ -308,7 +308,7 @@ public class PatternTermMenu extends ItemTerminalMenu
             }
 
             final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(StorageChannels.items());
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
             final ItemStack is = r.assemble(ic);

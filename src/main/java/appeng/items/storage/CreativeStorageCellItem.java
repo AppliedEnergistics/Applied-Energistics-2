@@ -31,9 +31,9 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
@@ -74,7 +74,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
 
         if (inventory instanceof ICellInventoryHandler) {
             final CellConfig cc = new CellConfig(stack);

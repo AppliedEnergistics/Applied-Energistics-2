@@ -25,9 +25,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.FluidCellConfig;
 import appeng.util.InventoryAdaptor;
@@ -61,7 +60,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 
     @Override
     public IStorageChannel<IAEFluidStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return StorageChannels.fluids();
     }
 
     @Override

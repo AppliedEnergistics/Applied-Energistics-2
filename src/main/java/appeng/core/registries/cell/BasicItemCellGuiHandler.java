@@ -25,11 +25,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.Api;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
@@ -37,7 +36,7 @@ import appeng.menu.me.items.ItemTerminalMenu;
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
     public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return channel == StorageChannels.items();
     }
 
     @Override

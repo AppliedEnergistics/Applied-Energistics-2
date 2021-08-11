@@ -48,7 +48,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -57,7 +57,6 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -479,8 +478,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
 
             final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
-                final String displayName = Platform.getItemDisplayName(Api.instance().storage()
-                        .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()
+                final String displayName = Platform
+                        .getItemDisplayName(StorageChannels.items().createStack(parsedItemStack)).getString()
                         .toLowerCase();
                 if (displayName.contains(searchTerm)) {
                     return true;

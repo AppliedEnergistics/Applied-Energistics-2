@@ -38,10 +38,9 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
@@ -99,7 +98,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         final IMEMonitor<IAEItemStack> inv = this.storage
-                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(StorageChannels.items());
         final int howManyPerCraft = this.getItem().getCount();
         int maxTimesToCraft = 0;
 

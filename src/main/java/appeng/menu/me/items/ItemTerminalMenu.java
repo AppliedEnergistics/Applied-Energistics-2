@@ -27,10 +27,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.helpers.InventoryAction;
 import appeng.menu.MenuLocator;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -60,7 +59,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     public ItemTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                StorageChannels.items());
     }
 
     @Override
@@ -94,7 +93,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 var isg = getCarried();
 
                 if (!isg.isEmpty() && releaseQty > 0) {
-                    IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    IAEItemStack ais = StorageChannels.items()
                             .createStack(isg);
                     ais.setStackSize(1);
                     final IAEItemStack extracted = ais.copy();
@@ -257,7 +256,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
         }
 
         final IAEItemStack ais = Platform.poweredInsert(powerSource, monitor,
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(input),
+                StorageChannels.items().createStack(input),
                 this.getActionSource());
         return ais == null ? ItemStack.EMPTY : ais.createItemStack();
     }

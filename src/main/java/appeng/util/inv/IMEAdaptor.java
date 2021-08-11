@@ -28,10 +28,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.util.InventoryAdaptor;
 import appeng.util.item.AEItemStack;
 
@@ -57,8 +55,7 @@ public class IMEAdaptor extends InventoryAdaptor {
     }
 
     private IItemList<IAEItemStack> getList() {
-        return this.target
-                .getAvailableItems(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+        return this.target.getAvailableItems();
     }
 
     @Override

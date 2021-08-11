@@ -84,6 +84,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -722,7 +723,7 @@ public class Platform {
             ItemStack removedCell,
             ItemStack addedCell,
             IActionSource src) {
-        for (var channel : Api.instance().storage().storageChannels()) {
+        for (var channel : StorageChannels.getAll()) {
             postWholeCellChanges(service, channel, removedCell, addedCell, src);
         }
     }

@@ -25,9 +25,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.items.PatternTermMenu;
@@ -76,7 +75,7 @@ public class PatternSlotPacket extends BasePacket {
 
         this.writeItem(slotItem, data);
         for (int x = 0; x < 9; x++) {
-            this.pattern[x] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            this.pattern[x] = StorageChannels.items()
                     .createStack(pat.getStackInSlot(x));
             this.writeItem(this.pattern[x], data);
         }

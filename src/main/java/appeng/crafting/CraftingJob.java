@@ -37,11 +37,10 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob {
@@ -50,10 +49,8 @@ public class CraftingJob implements Runnable, ICraftingJob {
 
     private final MECraftingInventory original;
     private final Level level;
-    private final IItemList<IAEItemStack> crafting = Api.instance().storage()
-            .getStorageChannel(IItemStorageChannel.class).createList();
-    private final IItemList<IAEItemStack> missing = Api.instance().storage()
-            .getStorageChannel(IItemStorageChannel.class).createList();
+    private final IItemList<IAEItemStack> crafting = StorageChannels.items().createList();
+    private final IItemList<IAEItemStack> missing = StorageChannels.items().createList();
     private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
@@ -83,7 +80,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         final ICraftingService cc = grid.getService(ICraftingService.class);
         final IStorageService sg = grid.getService(IStorageService.class);
         this.original = new MECraftingInventory(
-                sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
+                sg.getInventory(StorageChannels.items()), actionSrc,
                 false, false, false);
 
         this.setTree(this.getCraftingTree(cc, what));

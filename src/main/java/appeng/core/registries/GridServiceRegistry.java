@@ -40,7 +40,7 @@ public final class GridServiceRegistry implements IGridServiceRegistry {
     private final List<GridCacheRegistration<?>> registry = new ArrayList<>();
 
     @Override
-    public synchronized final <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
+    public synchronized <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
             Class<T> implClass) {
         if (isRegistered(publicInterface)) {
             throw new IllegalArgumentException(

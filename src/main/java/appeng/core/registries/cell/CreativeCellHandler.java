@@ -21,12 +21,11 @@ package appeng.core.registries.cell;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.core.Api;
 import appeng.items.storage.CreativeStorageCellItem;
 import appeng.me.storage.CreativeCellInventory;
 
@@ -40,7 +39,7 @@ public final class CreativeCellHandler implements ICellHandler {
     @Override
     public ICellInventoryHandler getCellInventory(final ItemStack is, final ISaveProvider container,
             final IStorageChannel channel) {
-        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class) && !is.isEmpty()
+        if (channel == StorageChannels.items() && !is.isEmpty()
                 && is.getItem() instanceof CreativeStorageCellItem) {
             return CreativeCellInventory.getCell(is);
         }

@@ -53,10 +53,9 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
@@ -181,7 +180,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     private boolean storeFluid(IGrid grid, IAEFluidStack stack, boolean modulate) {
         final IStorageService storage = grid.getStorageService();
         final IMEInventory<IAEFluidStack> inv = storage
-                .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                .getInventory(StorageChannels.fluids());
 
         if (modulate) {
             var energy = grid.getEnergyService();

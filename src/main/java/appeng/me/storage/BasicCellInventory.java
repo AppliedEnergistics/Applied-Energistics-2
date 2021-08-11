@@ -101,10 +101,9 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
         return null;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static boolean isCellEmpty(ICellInventory inv) {
+    private static boolean isCellEmpty(ICellInventory<?> inv) {
         if (inv != null) {
-            return inv.getAvailableItems(inv.getChannel().createList()).isEmpty();
+            return inv.getAvailableItems().isEmpty();
         }
         return true;
     }
