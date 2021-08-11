@@ -40,9 +40,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.definitions.AEItems;
@@ -154,7 +152,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     this.getChannel());
             if (inv != null && playerInventory.getSelected() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
-                final IItemList<IAEItemStack> list = inv.getAvailableItems(this.getChannel().createList());
+                var list = inv.getAvailableItems();
                 if (list.isEmpty() && ia != null) {
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 

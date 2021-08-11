@@ -50,8 +50,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -59,7 +58,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
@@ -92,9 +90,9 @@ public class DualityFluidInterface
     private int priority;
 
     private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<IAEItemStack>(), Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            new NullInventory<IAEItemStack>(), StorageChannels.items());
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<IAEFluidStack>(), Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+            new NullInventory<IAEFluidStack>(), StorageChannels.fluids());
 
     public DualityFluidInterface(final IManagedGridNode mainNode, final IFluidInterfaceHost ih) {
         this.gridProxy = mainNode
@@ -126,13 +124,13 @@ public class DualityFluidInterface
 
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == StorageChannels.items()) {
             if (this.hasConfig()) {
                 return null;
             }
 
             return (IMEMonitor<T>) this.items;
-        } else if (channel == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)) {
+        } else if (channel == StorageChannels.fluids()) {
             if (this.hasConfig()) {
                 return (IMEMonitor<T>) new InterfaceInventory(this);
             }
@@ -185,9 +183,9 @@ public class DualityFluidInterface
         var grid = gridProxy.getGrid();
         if (grid != null) {
             this.items.setInternal(grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+                    .getInventory(StorageChannels.items()));
             this.fluids.setInternal(grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)));
+                    .getInventory(StorageChannels.fluids()));
         } else {
             this.items.setInternal(new NullInventory<>());
             this.fluids.setInternal(new NullInventory<>());
@@ -310,7 +308,7 @@ public class DualityFluidInterface
         var grid = this.gridProxy.getGrid();
         if (grid != null) {
             final IMEInventory<IAEFluidStack> dest = grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                    .getInventory(StorageChannels.fluids());
             final IEnergySource src = grid.getEnergyService();
 
             if (work.getStackSize() > 0) {

@@ -75,14 +75,13 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -217,8 +216,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 if (cellHandler != null) {
                     idlePowerUsage = 1.0;
 
-                    for (IStorageChannel channel : Api.instance().storage().storageChannels()) {
-                        final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is,
+                    for (var channel : StorageChannels.getAll()) {
+                        var newCell = cellHandler.getCellInventory(is,
                                 this::saveChanges,
                                 channel);
                         if (newCell != null) {
@@ -231,8 +230,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                     this.getMainNode().setIdlePowerUsage(idlePowerUsage);
                     this.accessor = new Accessor();
 
-                    if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
-                            .getStorageChannel(IFluidStorageChannel.class)) {
+                    if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.fluids()) {
                         this.fluidHandler = new FluidHandler();
                     }
                 }
@@ -464,8 +462,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (!ItemHandlerUtil.isEmpty(this.inputInventory)) {
             this.updateHandler();
 
-            if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
-                    .getStorageChannel(IItemStorageChannel.class)) {
+            if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
                 final IAEItemStack returns = Platform.poweredInsert(this, this.cellHandler,
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
@@ -692,8 +689,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class FluidHandler implements IFluidHandler, IFluidTank {
 
         private boolean canAcceptLiquids() {
-            return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == Api
-                    .instance().storage().getStorageChannel(IFluidStorageChannel.class);
+            return ChestBlockEntity.this.cellHandler != null
+                    && ChestBlockEntity.this.cellHandler.getChannel() == StorageChannels.fluids();
         }
 
         @Nonnull
@@ -779,8 +776,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
                 return ChestBlockEntity.this.cellHandler != null
-                        && ChestBlockEntity.this.cellHandler.getChannel() == Api
-                                .instance().storage().getStorageChannel(IItemStorageChannel.class);
+                        && ChestBlockEntity.this.cellHandler.getChannel() == StorageChannels.items();
             }
             return false;
         }
@@ -809,12 +805,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public MenuType<?> getMenuType() {
         this.updateHandler();
         if (this.cellHandler != null) {
-            if (this.cellHandler.getChannel() == Api.instance().storage()
-                    .getStorageChannel(IItemStorageChannel.class)) {
+            if (this.cellHandler.getChannel() == StorageChannels.items()) {
                 return ItemTerminalMenu.TYPE;
             }
-            if (this.cellHandler.getChannel() == Api.instance().storage()
-                    .getStorageChannel(IFluidStorageChannel.class)) {
+            if (this.cellHandler.getChannel() == StorageChannels.fluids()) {
                 return FluidTerminalMenu.TYPE;
             }
         }

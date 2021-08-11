@@ -32,11 +32,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.client.gui.implementations.ItemStorageBusScreen;
-import appeng.core.Api;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
@@ -129,9 +126,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu {
 
         Iterator<IAEItemStack> i = new NullIterator<>();
         if (cellInv != null) {
-            final IItemList<IAEItemStack> list = cellInv.getAvailableItems(
-                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
-            i = list.iterator();
+            i = cellInv.getAvailableItems().iterator();
         }
 
         for (int x = 0; x < inv.getSlots(); x++) {

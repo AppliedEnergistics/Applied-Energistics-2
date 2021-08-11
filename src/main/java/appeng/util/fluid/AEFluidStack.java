@@ -35,9 +35,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.FluidDummyItem;
 import appeng.util.Platform;
@@ -155,7 +154,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     @Override
     public IStorageChannel<IAEFluidStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return StorageChannels.fluids();
     }
 
     @Override

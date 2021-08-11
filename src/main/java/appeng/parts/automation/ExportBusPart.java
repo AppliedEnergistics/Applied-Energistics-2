@@ -48,10 +48,9 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
@@ -126,7 +125,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         if (grid != null) {
             final InventoryAdaptor destination = this.getHandler();
             final IMEMonitor<IAEItemStack> inv = grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(StorageChannels.items());
             final IEnergyService energy = grid.getEnergyService();
             final ICraftingService cg = grid.getCraftingService();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);

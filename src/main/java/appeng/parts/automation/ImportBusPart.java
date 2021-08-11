@@ -38,10 +38,9 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -89,10 +88,10 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         var grid = getMainNode().getGrid();
         if (grid != null) {
             var inv = grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(StorageChannels.items());
 
             final IAEItemStack out = inv.injectItems(
-                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(stack),
+                    StorageChannels.items().createStack(stack),
                     Actionable.SIMULATE, this.source);
             if (out == null) {
                 return true;
@@ -144,7 +143,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
                 this.itemsToSend = this.calculateItemsToSend();
 
                 var inv = grid.getStorageService()
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                        .getInventory(StorageChannels.items());
                 var energy = grid.getEnergyService();
 
                 boolean Configured = false;
@@ -189,7 +188,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         }
 
         if (!newItems.isEmpty()) {
-            final IAEItemStack aeStack = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            final IAEItemStack aeStack = StorageChannels.items()
                     .createStack(newItems);
             final IAEItemStack failed = Platform.poweredInsert(energy, inv, aeStack, this.source);
 

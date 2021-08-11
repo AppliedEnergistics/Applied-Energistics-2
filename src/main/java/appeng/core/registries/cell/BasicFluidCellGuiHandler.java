@@ -25,11 +25,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.Api;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.fluids.FluidTerminalMenu;
@@ -38,7 +37,7 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return channel == StorageChannels.fluids();
     }
 
     @Override

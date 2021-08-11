@@ -50,6 +50,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
@@ -257,7 +258,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             if (!is.isEmpty()) {
                 boolean shouldMove = true;
 
-                for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+                for (var c : StorageChannels.getAll()) {
                     if (itemsToMove > 0) {
                         final IMEMonitor<? extends IAEStack<?>> network = grid.getStorageService()
                                 .getInventory(c);
@@ -303,7 +304,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             this.currentCell = is;
             this.cachedInventories = new IdentityHashMap<>();
 
-            for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+            for (var c : StorageChannels.getAll()) {
                 this.cachedInventories.put(c, Api.instance().registries().cell().getCellInventory(is, null, c));
             }
         }
@@ -317,7 +318,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         if (src instanceof IMEMonitor) {
             myList = ((IMEMonitor) src).getStorageList();
         } else {
-            myList = src.getAvailableItems(src.getChannel().createList());
+            myList = src.getAvailableItems();
         }
 
         itemsToMove *= chan.transferFactor();
@@ -397,7 +398,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         if (src instanceof IMEMonitor) {
             myList = ((IMEMonitor) src).getStorageList();
         } else {
-            myList = src.getAvailableItems(src.getChannel().createList());
+            myList = src.getAvailableItems();
         }
 
         if (fm == FullnessMode.EMPTY) {

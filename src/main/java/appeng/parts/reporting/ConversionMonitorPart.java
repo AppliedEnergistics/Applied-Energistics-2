@@ -33,9 +33,8 @@ import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
@@ -152,7 +151,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         getMainNode().ifPresent(grid -> {
             final IEnergySource energy = grid.getEnergyService();
             final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(StorageChannels.items());
 
             if (allItems) {
                 if (this.getDisplayed() != null) {
@@ -195,7 +194,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         getMainNode().ifPresent(grid -> {
             final IEnergySource energy = grid.getEnergyService();
             final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
-                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(StorageChannels.items());
 
             input.setStackSize(count);
 

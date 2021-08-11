@@ -44,6 +44,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
@@ -51,7 +52,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
@@ -130,7 +130,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public void onStackChange(IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src,
             IStorageChannel<?> chan) {
-        if (chan == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+        if (chan == StorageChannels.fluids()
                 && fullStack.equals(this.config.getFluidInSlot(0))) {
             this.lastReportedValue = fullStack.getStackSize();
             this.updateState();
@@ -177,7 +177,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public void onListUpdate() {
         getMainNode().ifPresent(grid -> {
-            var channel = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+            var channel = StorageChannels.fluids();
             this.updateReportingValue(grid.getStorageService().getInventory(channel));
         });
     }
@@ -194,7 +194,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     private void configureWatchers() {
-        final IFluidStorageChannel channel = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        final IFluidStorageChannel channel = StorageChannels.fluids();
 
         if (this.stackWatcher != null) {
             this.stackWatcher.reset();

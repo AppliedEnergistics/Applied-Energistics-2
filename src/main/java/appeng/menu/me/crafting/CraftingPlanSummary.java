@@ -30,10 +30,9 @@ import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -102,15 +101,14 @@ public class CraftingPlanSummary {
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingJob job) {
-        final IItemList<IAEItemStack> plan = Api.instance().storage()
-                .getStorageChannel(IItemStorageChannel.class).createList();
+        final IItemList<IAEItemStack> plan = StorageChannels.items().createList();
         job.populatePlan(plan);
 
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
         final IStorageService sg = grid.getService(IStorageService.class);
         final IMEInventory<IAEItemStack> items = sg
-                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(StorageChannels.items());
 
         for (final IAEItemStack out : plan) {
             long missingAmount;

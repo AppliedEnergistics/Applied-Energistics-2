@@ -73,6 +73,15 @@ public interface IMEInventory<T extends IAEStack<T>> {
     IItemList<T> getAvailableItems(IItemList<T> out);
 
     /**
+     * request a full report of all available items, storage.
+     *
+     * @return a new list of this inventories content
+     */
+    default IItemList<T> getAvailableItems() {
+        return getAvailableItems(getChannel().createList());
+    }
+
+    /**
      * @return the type of channel your handler should be part of
      */
     IStorageChannel<T> getChannel();

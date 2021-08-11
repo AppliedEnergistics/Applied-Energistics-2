@@ -56,10 +56,9 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
@@ -234,7 +233,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         var storage = grid.getStorageService();
         var energy = grid.getEnergyService();
         final IAEItemStack overflow = Platform.poweredInsert(energy,
-                storage.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)),
+                storage.getInventory(StorageChannels.items()),
                 itemToStore, this.mySrc);
 
         this.isAccepting = overflow == null;
@@ -418,7 +417,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             for (final ItemStack itemStack : itemStacks) {
                 final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);
                 final IAEItemStack overflow = storage
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))
+                        .getInventory(StorageChannels.items())
                         .injectItems(itemToTest, Actionable.SIMULATE, this.mySrc);
                 if (overflow == null || itemToTest.getStackSize() > overflow.getStackSize()) {
                     canStore = true;

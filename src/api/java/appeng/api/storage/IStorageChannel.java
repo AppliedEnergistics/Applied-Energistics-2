@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -37,8 +38,14 @@ import appeng.api.storage.data.IItemList;
 public interface IStorageChannel<T extends IAEStack<T>> {
 
     /**
+     * @return The unique ID of this storage channel.
+     */
+    @Nonnull
+    ResourceLocation getId();
+
+    /**
      * Can be used as factor for transferring stacks of a channel.
-     *
+     * <p>
      * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
      * operation.
      */
@@ -64,7 +71,7 @@ public interface IStorageChannel<T extends IAEStack<T>> {
 
     /**
      * Create a new {@link IAEStack} subtype of the specific object.
-     *
+     * <p>
      * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
      * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
      * might be to use it instead of {@link IAEStack#copy()}, but this might not be supported by all types. IAEStacks

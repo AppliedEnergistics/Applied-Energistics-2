@@ -68,8 +68,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -217,7 +217,7 @@ public class CraftingService
 
         // update the stuff that was in the list...
         this.storageGrid.postAlterationOfStoredItems(
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class), oldItems.keySet(),
+                StorageChannels.items(), oldItems.keySet(),
                 new BaseActionSource());
 
         // re-create list..
@@ -246,7 +246,7 @@ public class CraftingService
         }
 
         this.storageGrid.postAlterationOfStoredItems(
-                Api.instance().storage().getStorageChannel(IItemStorageChannel.class), this.craftableItems.keySet(),
+                StorageChannels.items(), this.craftableItems.keySet(),
                 new BaseActionSource());
     }
 
@@ -302,7 +302,7 @@ public class CraftingService
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel<?> channel) {
         final List<IMEInventoryHandler> list = new ArrayList<>(1);
 
-        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == StorageChannels.items()) {
             list.add(this);
         }
 
@@ -375,7 +375,7 @@ public class CraftingService
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return StorageChannels.items();
     }
 
     @Override

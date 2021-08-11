@@ -45,8 +45,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
@@ -54,7 +53,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -273,8 +271,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Override
         public int fill(FluidStack resource, FluidAction action) {
             if (action == FluidAction.EXECUTE) {
-                final IStorageChannel<IAEFluidStack> chan = Api.instance().storage()
-                        .getStorageChannel(IFluidStorageChannel.class);
+                final IStorageChannel<IAEFluidStack> chan = StorageChannels.fluids();
                 CondenserBlockEntity.this
                         .addPower((resource.isEmpty() ? 0.0 : (double) resource.getAmount()) / chan.transferFactor());
             }
@@ -336,7 +333,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Override
         public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-            if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+            if (channel == StorageChannels.items()) {
                 return (IMEMonitor<T>) this.itemInventory;
             } else {
                 return new CondenserVoidInventory<>(CondenserBlockEntity.this, channel);

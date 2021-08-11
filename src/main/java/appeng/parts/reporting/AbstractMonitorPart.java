@@ -42,12 +42,11 @@ import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
-import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
@@ -198,7 +197,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
             getMainNode().ifPresent(grid -> {
                 this.updateReportingValue(grid.getStorageService()
-                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+                        .getInventory(StorageChannels.items()));
             });
         }
     }

@@ -38,14 +38,13 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor {
     private final IFluidHandler handler;
-    private final IItemList<IAEFluidStack> list = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+    private final IItemList<IAEFluidStack> list = StorageChannels.fluids()
             .createList();
     private final HashMap<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
     private final NavigableMap<Integer, CachedFluidStack> memory;
@@ -107,7 +106,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
     @Override
     public IStorageChannel getChannel() {
-        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return StorageChannels.fluids();
     }
 
     @Override
@@ -157,7 +156,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
                 if (!newIS.isEmpty()) {
                     stack = old == null || old.aeStack == null
-                            ? Api.instance().storage().getStorageChannel(IFluidStorageChannel.class).createStack(newIS)
+                            ? StorageChannels.fluids().createStack(newIS)
                             : old.aeStack.copy();
                 }
                 if (stack != null) {
@@ -296,7 +295,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
                 this.aeStack = null;
             } else {
                 this.fluidStack = is.copy();
-                this.aeStack = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class).createStack(is);
+                this.aeStack = StorageChannels.fluids().createStack(is);
             }
         }
     }

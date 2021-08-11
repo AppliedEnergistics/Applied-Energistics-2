@@ -57,13 +57,12 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
@@ -126,7 +125,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         if (accessor != null) {
             IStorageMonitorable inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                return inventory.getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                return inventory.getInventory(StorageChannels.fluids());
             }
 
             // So this could / can be a design decision. If the block entity does support our custom
@@ -172,7 +171,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         this.resetCacheLogic = 0;
 
         final IMEInventory<IAEFluidStack> in = this.getInternalHandler();
-        IItemList<IAEFluidStack> before = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+        IItemList<IAEFluidStack> before = StorageChannels.fluids()
                 .createList();
         if (in != null) {
             before = in.getAvailableItems(before);
@@ -186,8 +185,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final IMEInventory<IAEFluidStack> out = this.getInternalHandler();
 
         if (in != out) {
-            IItemList<IAEFluidStack> after = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
-                    .createList();
+            IItemList<IAEFluidStack> after = StorageChannels.fluids().createList();
             if (out != null) {
                 after = out.getAvailableItems(after);
             }
@@ -250,7 +248,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         if (this.getMainNode().isActive()) {
             getMainNode().ifPresent(grid -> {
                 grid.getStorageService().postAlterationOfStoredItems(
-                        Api.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
+                        StorageChannels.fluids(), change, this.source);
             });
         }
     }
@@ -286,15 +284,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 this.checkInterfaceVsStorageBus(target, this.getSide().getOpposite());
 
                 this.handler = new MEInventoryHandler<>(inv,
-                        Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                        StorageChannels.fluids());
 
                 this.handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
                 this.handler.setWhitelist(this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                         : IncludeExclude.WHITELIST);
                 this.handler.setPriority(this.getPriority());
 
-                final IItemList<IAEFluidStack> priorityList = Api.instance().storage()
-                        .getStorageChannel(IFluidStorageChannel.class).createList();
+                final IItemList<IAEFluidStack> priorityList = StorageChannels.fluids().createList();
 
                 final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
                 for (int x = 0; x < this.config.getSlots() && x < slotsToUse; x++) {
@@ -404,7 +401,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public IStorageChannel getStorageChannel() {
-        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return StorageChannels.fluids();
     }
 
     public IAEFluidTank getConfig() {

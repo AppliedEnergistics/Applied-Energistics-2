@@ -41,6 +41,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -73,7 +74,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         this.storageNetworks = new IdentityHashMap<>();
         this.storageMonitors = new IdentityHashMap<>();
 
-        Api.instance().storage().storageChannels()
+        StorageChannels.getAll()
                 .forEach(channel -> this.storageMonitors.put(channel, new NetworkMonitor<>(this, channel)));
     }
 
