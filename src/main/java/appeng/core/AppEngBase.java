@@ -83,7 +83,6 @@ import appeng.init.internal.InitCellHandlers;
 import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
-import appeng.init.internal.InitSpatialMovableRegistry;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.internal.InitWirelessHandlers;
 import appeng.init.worldgen.InitBiomeModifications;
@@ -203,7 +202,6 @@ public abstract class AppEngBase implements AppEng {
         AEConfig.instance().save();
         InitWirelessHandlers.init();
         InitUpgrades.init();
-        InitSpatialMovableRegistry.init();
         NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 
         ChunkLoadingService.register();

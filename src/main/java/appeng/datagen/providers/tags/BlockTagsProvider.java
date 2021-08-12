@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
+import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -64,10 +65,9 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 Blocks.RED_TERRACOTTA,
                 Blocks.BLACK_TERRACOTTA);
 
-        addAe2("blacklisted/annihilation_plane");
+        addAe2(AETags.SPATIAL_BLACKLIST, Blocks.BEDROCK);
 
-        addAe2("spatial/blacklist");
-        addAe2("spatial/whitelist");
+        addAe2(AETags.ANNIHILATION_PLANE_BLACKLIST);
 
         addAe2("whitelisted/facades",
                 Blocks.GLASS,
@@ -93,6 +93,10 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
     private void addAe2(String tagName, Object... blockSources) {
         add(AppEng.makeId(tagName), blockSources);
+    }
+
+    private void addAe2(Tag.Named<Block> tag, Object... itemSources) {
+        add(tag.getName(), itemSources);
     }
 
     @SuppressWarnings("unchecked")

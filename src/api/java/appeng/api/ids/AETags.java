@@ -1,8 +1,10 @@
 package appeng.api.ids;
 
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public final class AETags {
 
@@ -43,5 +45,18 @@ public final class AETags {
      * Contains various sources of glass.
      */
     public static final Tag.Named<Item> GLASS = ItemTags.bind("appliedenergistics2:glass");
+
+    /**
+     * Contains blocks that are blacklisted from being moved in and out of spatial storage.
+     * <p/>
+     * To blacklist block entities from being moved, you need to add the hosting block to this tag.
+     */
+    public static final Tag.Named<Block> SPATIAL_BLACKLIST = BlockTags.bind("appliedenergistics2:blacklisted/spatial");
+
+    /**
+     * Contains blocks that are blacklisted from being picked up by an annihilation plane.
+     */
+    public static final Tag.Named<Block> ANNIHILATION_PLANE_BLACKLIST = BlockTags
+            .bind("appliedenergistics2:blacklisted/annihilation_plane");
 
 }

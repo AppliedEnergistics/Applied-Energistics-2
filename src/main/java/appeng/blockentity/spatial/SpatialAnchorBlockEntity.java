@@ -42,7 +42,6 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.api.movable.IMovableBlockEntity;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -66,7 +65,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
 public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
-        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource, IMovableBlockEntity {
+        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource {
 
     static {
         Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
@@ -373,7 +372,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         });
     }
 
-    private void releaseAll() {
+    void releaseAll() {
         for (ChunkPos chunk : this.chunks) {
             this.release(chunk, false);
         }
@@ -387,16 +386,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         throw new IllegalStateException("Cannot be called on a client");
     }
 
-    @Override
-    public boolean prepareToMove() {
-        // Just in case there are still some chunks left, as the level will change.F
-        this.releaseAll();
-
-        return true;
-    }
-
-    @Override
-    public void doneMoving() {
+    void doneMoving() {
         // reset the init state to keep the temporary loaded area until the network is ready.
         this.initialized = false;
 

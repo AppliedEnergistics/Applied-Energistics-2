@@ -31,46 +31,40 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public interface IMovableHandler {
+/**
+ * A strategy for moving block entities in and out of spatial storage.
+ */
+public interface IBlockEntityMoveStrategy {
 
     /**
-     * if you return true from this, your saying you can handle the class, not that single entity, you cannot opt out of
-     * single entities.
-     *
-     * @param type The type of block entity to move.
-     *
-     * @return true if it can handle moving
+     * Tests if this strategy is capable of moving the given block entity type.
      */
     boolean canHandle(BlockEntityType<?> type);
 
     /**
-     * request that the handler move the block entity from its current location to the new one. the block entity has
-     * already been invalidated, and the blocks have already been fully moved.
+     * Called to begin moving a block entity.
+     *
+     * @param blockEntity The block entity to move.
+     * @return The saved representation of the block entity that can be used by this strategy to restore the block
+     *         entity at the target position. Return null to prevent the block entity from being moved.
+     */
+    @Nullable
+    CompoundTag beginMove(BlockEntity blockEntity);
+
+    /**
+     * Complete moving a block entity for which a move was initiated successfully with {@link #beginMove(BlockEntity)}.
+     * The block entity has already been invalidated, and the blocks have already been fully moved.
      * <p/>
      * You are responsible for adding the new block entity to the target level, i.e. using
      * {@link Level#setBlockEntity(BlockEntity)}.
      *
-     * Potential Example:
-     *
-     * <pre>
-     * {
-     *     &#064;code
-     *     Chunk c = level.getChunkAt(x, z);
-     *     c.setChunkBlockBlockentity(x &amp; 0xF, y + y, z &amp; 0xF, blockEntity);
-     *
-     *     if (c.isChunkLoaded) {
-     *         level.addBlockentity(blockEntity);
-     *         level.markBlockForUpdate(x, y, z);
-     *     }
-     * }
-     * </pre>
-     *
-     * @param entity      to be moved block entity
-     * @param savedData   the original entities data saved using {@link BlockEntity#save(CompoundTag)}.
-     * @param level       level of block entity
-     * @param newPosition the new location
+     * @param entity      The block entity being moved, which has already been removed from the original chunk and
+     *                    should not be reused.
+     * @param savedData   Data saved by this strategy in {@link #beginMove(BlockEntity)}.
+     * @param newLevel    Level to moved to
+     * @param newPosition Position to move to
      * @return True if moving succeeded. If false is returned, AE2 will attempt to recover the original entity.
      */
-    @Nullable
-    boolean moveBlockEntity(BlockEntity entity, CompoundTag savedData, Level level, BlockPos newPosition);
+    boolean completeMove(BlockEntity entity, CompoundTag savedData, Level newLevel, BlockPos newPosition);
+
 }
