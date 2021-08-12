@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.Bootstrap;
 
+import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitStorageChannels;
 
 /**
@@ -23,6 +24,7 @@ public abstract class AE2RegistriesMixin {
         if (!appeng2_initialized) {
             appeng2_initialized = true;
             InitStorageChannels.init();
+            InitGridServices.init();
         }
     }
 

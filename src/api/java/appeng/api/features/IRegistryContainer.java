@@ -24,7 +24,6 @@
 package appeng.api.features;
 
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.networking.IGridServiceRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 
@@ -41,12 +40,6 @@ public interface IRegistryContainer {
      * Use the movable registry to white list your block entities.
      */
     IMovableRegistry movable();
-
-    /**
-     * Add new grid-wide services for use during run time. The registry may only be used before the first grid is
-     * created.
-     */
-    IGridServiceRegistry gridService();
 
     /**
      * Lets you register your items as wireless terminals

@@ -16,46 +16,51 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.registries;
+package appeng.api.networking;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
-
 @MockitoSettings
-class GridServiceRegistryTest {
+class GridServicesTest {
 
     @Mock
     IGrid grid;
 
-    GridServiceRegistry registry = new GridServiceRegistry();
+    @BeforeEach
+    void clearRegistry() throws Exception {
+        var field = GridServices.class.getDeclaredField("registry");
+        field.setAccessible(true);
+        ((List<?>) field.get(null)).clear();
+    }
 
     @Test
     void testEmptyRegistry() {
-        var services = registry.createGridServices(grid);
+        var services = GridServices.createServices(grid);
         assertThat(services).isEmpty();
     }
 
     @Test
     void testGridServiceWithDefaultConstructor() {
-        registry.register(PublicInterface.class, GridService1.class);
+        GridServices.register(PublicInterface.class, GridService1.class);
 
-        var services = registry.createGridServices(grid);
+        var services = GridServices.createServices(grid);
         assertThat(services).containsOnlyKeys(PublicInterface.class);
         assertThat(services.get(PublicInterface.class)).isInstanceOf(GridService1.class);
     }
 
     @Test
     void testGridServiceWithGridDependency() {
-        registry.register(GridService2.class, GridService2.class);
+        GridServices.register(GridService2.class, GridService2.class);
 
-        var services = registry.createGridServices(grid);
+        var services = GridServices.createServices(grid);
         assertThat(services).containsOnlyKeys(GridService2.class);
         var actual = (GridService2) services.get(GridService2.class);
         assertThat(actual.grid).isSameAs(grid);
@@ -63,12 +68,12 @@ class GridServiceRegistryTest {
 
     @Test
     void testGridServicesWithDependencies() {
-        registry.register(PublicInterface.class, GridService1.class);
-        registry.register(GridService2.class, GridService2.class);
-        registry.register(GridService3.class, GridService3.class);
-        registry.register(GridService4.class, GridService4.class);
+        GridServices.register(PublicInterface.class, GridService1.class);
+        GridServices.register(GridService2.class, GridService2.class);
+        GridServices.register(GridService3.class, GridService3.class);
+        GridServices.register(GridService4.class, GridService4.class);
 
-        var services = registry.createGridServices(grid);
+        var services = GridServices.createServices(grid);
         assertThat(services).containsOnlyKeys(
                 PublicInterface.class,
                 GridService2.class,
@@ -85,24 +90,25 @@ class GridServiceRegistryTest {
 
     @Test
     void testCantRegisterServiceBeforeItsDependencies() {
-        registry.register(GridService2.class, GridService2.class);
-        assertThatThrownBy(() -> registry.register(GridService3.class, GridService3.class))
+        GridServices.register(GridService2.class, GridService2.class);
+        assertThatThrownBy(() -> GridServices.register(GridService3.class, GridService3.class))
                 .hasMessageContaining("Missing dependency")
                 .hasMessageContaining("PublicInterface");
     }
 
     @Test
     void testMustHavePublicConstructor() {
-        assertThatThrownBy(() -> registry.register(NoCtorClass.class, NoCtorClass.class))
+        assertThatThrownBy(() -> GridServices.register(NoCtorClass.class, NoCtorClass.class))
                 .hasMessageContaining("Grid service implementation class")
                 .hasMessageContaining("has 0 public constructors. It needs exactly 1");
     }
 
     @Test
     void testNoAmbiguousConstructorAllowed() {
-        assertThatThrownBy(() -> registry.register(AmbiguousConstructorClass.class, AmbiguousConstructorClass.class))
-                .hasMessageContaining("Grid service implementation class")
-                .hasMessageContaining("has 2 public constructors. It needs exactly 1");
+        assertThatThrownBy(
+                () -> GridServices.register(AmbiguousConstructorClass.class, AmbiguousConstructorClass.class))
+                        .hasMessageContaining("Grid service implementation class")
+                        .hasMessageContaining("has 2 public constructors. It needs exactly 1");
     }
 
     interface PublicInterface {

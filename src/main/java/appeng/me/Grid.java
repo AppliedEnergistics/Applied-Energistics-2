@@ -27,14 +27,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
+import appeng.api.networking.GridServices;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
-import appeng.core.Api;
-import appeng.core.registries.GridServiceRegistry;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
 
@@ -61,9 +60,7 @@ public class Grid implements IGrid {
 
     private Grid(final GridNode center) {
         this.pivot = Objects.requireNonNull(center);
-
-        var serviceRegistry = (GridServiceRegistry) Api.instance().registries().gridService();
-        this.services = serviceRegistry.createGridServices(this);
+        this.services = GridServices.createServices(this);
     }
 
     int getPriority() {

@@ -81,7 +81,6 @@ import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitCellHandlers;
 import appeng.init.internal.InitChargerRates;
-import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitSpatialMovableRegistry;
@@ -138,9 +137,6 @@ public abstract class AppEngBase implements AppEng {
         AEParts.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
-
-        // Init other thread-safe registries
-        InitGridServices.init();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::registerDimension);
