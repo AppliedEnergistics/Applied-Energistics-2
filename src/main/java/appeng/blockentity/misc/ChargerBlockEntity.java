@@ -35,6 +35,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.features.ChargerRegistry;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGridNode;
@@ -46,7 +47,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
@@ -188,7 +188,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                 final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
 
                 if (ps.getAEMaxPower(myItem) > ps.getAECurrentPower(myItem)) {
-                    final double chargeRate = Api.instance().registries().charger().getChargeRate(myItem.getItem());
+                    var chargeRate = ChargerRegistry.getChargeRate(myItem.getItem());
 
                     double extractedAmount = this.extractAEPower(chargeRate, Actionable.MODULATE,
                             PowerMultiplier.CONFIG);

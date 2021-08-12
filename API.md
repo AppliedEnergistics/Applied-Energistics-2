@@ -1,3 +1,18 @@
+## Mod Initialization
+
+AE2 offers various extension points for your mod to hook into. The following table lists the API classes that are most
+relevant during mod initialization:
+
+| Class | Purpose |
+| ------------- | ------------- |
+| `appeng.api.storage.StorageChannels`  | Access to AE2's built-in item and fluid storage channels, as well as storage channels registered by addons. Addons also register their storage channels here.  |
+| `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here. |
+| `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
+| `appeng.api.features.ChargerRegistry` | Controls how fast items charge in AE2's charger. |
+
+In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
+Once initialization of mods has completed however, changes to these registries result in undefined behavior.
+
 ## Grids and Nodes
 
 AE2's core systems work by building grids from grid nodes that are created and owned by ingame objects such as block
@@ -34,26 +49,26 @@ class MyBlockEntityListener implements IGridNodeListener<MyBlockEntity> {
 class MyBlockEntity {
     // Create node with owner and listener
     private final IManagedNode mainNode = api.createManagedNode(
-        this,
-        MyBlockEntityListener.INSTANCE
+            this,
+            MyBlockEntityListener.INSTANCE
     );
 }
 ```
 
 ### Managed Grid Nodes
 
-The `IGridHelper` API offers a `createManagedNode` method to create an `IManagedGridNode`. Managed grid nodes
-simplify the lifecycle of creating and destroying grid nodes, and can be used to simplify the distinction
-between server and client, since they are available on the client-side as well. They will just not
-create the underlying node if they're being used on the client.
+The `IGridHelper` API offers a `createManagedNode` method to create an `IManagedGridNode`. Managed grid nodes simplify
+the lifecycle of creating and destroying grid nodes, and can be used to simplify the distinction between server and
+client, since they are available on the client-side as well. They will just not create the underlying node if they're
+being used on the client.
 
 Your game object should notify the managed node about the following events:
 
-- Call `destroy` on the node when your game object is destroyed or its chunk unloaded. 
-- Call `create` when the node can assume the owner is now in-world and ready to make
-  outgoing connections (i.e. on its first tick).
-- When your game object loads from NBT data, load the node's stored data using `loadFromNBT`. This has
-  to occur before you call `create`.
+- Call `destroy` on the node when your game object is destroyed or its chunk unloaded.
+- Call `create` when the node can assume the owner is now in-world and ready to make outgoing connections (i.e. on its
+  first tick).
+- When your game object loads from NBT data, load the node's stored data using `loadFromNBT`. This has to occur before
+  you call `create`.
 - When your game object saves to NBT data, save the node's data using `saveToNBT`.
 
 ### In-World Nodes
@@ -62,21 +77,20 @@ The main type of grid node are in-world grid nodes. They need to know their loca
 `IManagedGridNode.create(Level, BlockPos)`. External connections are automatically attempt to connect with adjacent
 in-world grid nodes by AE2 itself and do not need further handling.
 
-In-world nodes can be selectively exposed on specific sides, or on all sides.
-The exposed sides can be changed after node creation and will automatically trigger a repathing.
+In-world nodes can be selectively exposed on specific sides, or on all sides. The exposed sides can be changed after
+node creation and will automatically trigger a repathing.
 
-To expose the actual `IGridNode`, it needs to be exposed by `IManagedGridNode.getNode()` through an appropriate way
-like capabilities.
+To expose the actual `IGridNode`, it needs to be exposed by `IManagedGridNode.getNode()` through an appropriate way like
+capabilities.
 
 ### Virtual Nodes
 
-A special case are virtual nodes, which will not automatically form connection with other nodes.
-These allow addons to build ME networks outside the normal world for various reasons.
+A special case are virtual nodes, which will not automatically form connection with other nodes. These allow addons to
+build ME networks outside the normal world for various reasons.
 
 As these do not automatically establish connections, these have to be manually created with by using
-`IGridHelper.createGridConnection(IGridNode, IGridNode)`.
-Removing a connection requires destroying the `IGridNode`, which also handles chunk unloading and ensures it leaving no
-old connections behind. 
+`IGridHelper.createGridConnection(IGridNode, IGridNode)`. Removing a connection requires destroying the `IGridNode`,
+which also handles chunk unloading and ensures it leaving no old connections behind.
 
 ### Node Services
 

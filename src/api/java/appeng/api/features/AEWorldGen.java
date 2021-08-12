@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
  * This class is thread-safe and may be used in your mod's constructor.
  */
 @ThreadSafe
-public class AEWorldGen {
+public final class AEWorldGen {
 
     private static final Map<AEWorldGenType, TypeSet> settings = new EnumMap<>(AEWorldGenType.class);
 
@@ -27,10 +27,13 @@ public class AEWorldGen {
         }
     }
 
+    private AEWorldGen() {
+    }
+
     /**
      * Forces a given AE2 world-generation type to be disabled for a given biome.
      */
-    public static void disableWorldGenForBiome(AEWorldGenType type, ResourceLocation biomeId) {
+    public synchronized static void disableWorldGenForBiome(AEWorldGenType type, ResourceLocation biomeId) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(biomeId);
 
@@ -42,7 +45,7 @@ public class AEWorldGen {
      * <p>
      * This also takes AE2's configuration file into account.
      */
-    public static boolean isWorldGenDisabledForBiome(AEWorldGenType type, ResourceLocation biomeId) {
+    public synchronized static boolean isWorldGenDisabledForBiome(AEWorldGenType type, ResourceLocation biomeId) {
         TypeSet typeSettings = settings.get(type);
         return typeSettings.configBiomeBlacklist.contains(biomeId)
                 || typeSettings.modBiomeBlacklist.contains(biomeId);
@@ -51,7 +54,7 @@ public class AEWorldGen {
     /**
      * This is used by AE2 to set the biome blacklist from AE2's own configuration file.
      */
-    static void setConfigBlacklists(
+    synchronized static void setConfigBlacklists(
             List<ResourceLocation> quartzBiomeBlacklist,
             List<ResourceLocation> meteoriteBiomeBlacklist) {
         settings.get(AEWorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.clear();

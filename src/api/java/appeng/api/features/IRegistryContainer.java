@@ -52,11 +52,6 @@ public interface IRegistryContainer {
     ICellRegistry cell();
 
     /**
-     * Manage charger via API
-     */
-    IChargerRegistry charger();
-
-    /**
      * get access to the locatable registry
      */
     ILocatableRegistry locatable();

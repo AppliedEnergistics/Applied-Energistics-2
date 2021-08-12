@@ -18,27 +18,25 @@
 
 package appeng.init.internal;
 
-import appeng.api.features.IChargerRegistry;
-import appeng.core.Api;
+import appeng.api.features.ChargerRegistry;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 
-public class InitChargerRates {
+public class InitChargerRegistry {
 
     public static void init() {
         // Charge Rates
-        IChargerRegistry charger = Api.instance().registries().charger();
-        charger.addChargeRate(AEItems.CHARGED_STAFF, 320d);
-        charger.addChargeRate(AEItems.PORTABLE_CELL1K, 800d);
-        charger.addChargeRate(AEItems.PORTABLE_CELL4k, 800d);
-        charger.addChargeRate(AEItems.PORTABLE_CELL16K, 800d);
-        charger.addChargeRate(AEItems.PORTABLE_CELL64K, 800d);
-        charger.addChargeRate(AEItems.COLOR_APPLICATOR, 800d);
-        charger.addChargeRate(AEItems.WIRELESS_TERMINAL, 8000d);
-        charger.addChargeRate(AEItems.ENTROPY_MANIPULATOR, 8000d);
-        charger.addChargeRate(AEItems.MASS_CANNON, 8000d);
-        charger.addChargeRate(AEBlocks.ENERGY_CELL, 8000d);
-        charger.addChargeRate(AEBlocks.DENSE_ENERGY_CELL, 16000d);
+        ChargerRegistry.setChargeRate(AEItems.CHARGED_STAFF, 320d);
+        ChargerRegistry.setChargeRate(AEItems.PORTABLE_CELL1K, 800d);
+        ChargerRegistry.setChargeRate(AEItems.PORTABLE_CELL4k, 800d);
+        ChargerRegistry.setChargeRate(AEItems.PORTABLE_CELL16K, 800d);
+        ChargerRegistry.setChargeRate(AEItems.PORTABLE_CELL64K, 800d);
+        ChargerRegistry.setChargeRate(AEItems.COLOR_APPLICATOR, 800d);
+        ChargerRegistry.setChargeRate(AEItems.WIRELESS_TERMINAL, 8000d);
+        ChargerRegistry.setChargeRate(AEItems.ENTROPY_MANIPULATOR, 8000d);
+        ChargerRegistry.setChargeRate(AEItems.MASS_CANNON, 8000d);
+        ChargerRegistry.setChargeRate(AEBlocks.ENERGY_CELL, 8000d);
+        ChargerRegistry.setChargeRate(AEBlocks.DENSE_ENERGY_CELL, 16000d);
     }
 
 }
