@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
-import appeng.api.networking.GridServices;
+import appeng.api.networking.GridServicesInternal;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
@@ -60,7 +60,7 @@ public class Grid implements IGrid {
 
     private Grid(final GridNode center) {
         this.pivot = Objects.requireNonNull(center);
-        this.services = GridServices.createServices(this);
+        this.services = GridServicesInternal.createServices(this);
     }
 
     int getPriority() {
