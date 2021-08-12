@@ -23,7 +23,6 @@
 
 package appeng.api.features;
 
-import appeng.api.movable.IMovableRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 
@@ -35,11 +34,6 @@ import appeng.api.storage.ICellRegistry;
  * @since rv0
  */
 public interface IRegistryContainer {
-
-    /**
-     * Use the movable registry to white list your block entities.
-     */
-    IMovableRegistry movable();
 
     /**
      * Lets you register your items as wireless terminals

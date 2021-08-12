@@ -9,6 +9,7 @@ relevant during mod initialization:
 | `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here. |
 | `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
 | `appeng.api.features.ChargerRegistry` | Controls how fast items charge in AE2's charger. |
+| `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage. |
 
 In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
 Once initialization of mods has completed however, changes to these registries result in undefined behavior.
@@ -105,7 +106,7 @@ service. These will be described in more detail in the description of the respec
 Each grid provides several services to machines connected to the grid.
 
 AE2 provides some services by default (see sub-interfaces of `IGridService`). Addons can register their own services
-using `IGridServiceRegistry`.
+using `GridServices`.
 
 Services can be retrieved by calling `IGrid#getService` by passing the grid service's interface. For getting AE2's
 default services, `IGrid` offers several convenience methods.

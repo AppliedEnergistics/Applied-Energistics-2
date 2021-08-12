@@ -20,7 +20,6 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -38,12 +37,12 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 
-import appeng.api.movable.IMovableHandler;
-import appeng.api.movable.IMovableRegistry;
+import appeng.api.ids.AETags;
+import appeng.api.movable.BlockEntityMoveStrategies;
+import appeng.api.movable.IBlockEntityMoveStrategy;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.worlddata.WorldData;
 
@@ -58,10 +57,9 @@ public class CachedPlane {
     private final int y_size;
     private final LevelChunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<BlockEntity> blockEntities = new ArrayList<>();
+    private final List<BlockEntityMoveRecord> blockEntities = new ArrayList<>();
     private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
     private final ServerLevel level;
-    private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
 
@@ -106,43 +104,43 @@ public class CachedPlane {
             }
         }
 
-        final IMovableRegistry mr = Api.instance().registries().movable();
-
         for (int cx = 0; cx < this.cx_size; cx++) {
             for (int cz = 0; cz < this.cz_size; cz++) {
-                final List<BlockPos> deadBlockEntities = new ArrayList<>();
-
                 final LevelChunk c = level.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, BlockEntity>> rawBlockEntities = new ArrayList<>(
-                        c.getBlockEntities().entrySet());
-                for (final Entry<BlockPos, BlockEntity> tx : rawBlockEntities) {
-                    final BlockPos cp = tx.getKey();
-                    final BlockEntity te = tx.getValue();
+                // Make a copy of the BE list in the chunk. This allows us to immediately remove BE's we're moving.
+                var rawBlockEntities = new ArrayList<>(c.getBlockEntities().entrySet());
+                for (var entry : rawBlockEntities) {
+                    var blockEntity = entry.getValue();
 
-                    final BlockPos tePOS = te.getBlockPos();
-                    if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
-                            && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                        if (mr.askToMove(te)) {
-                            this.blockEntities.add(te);
-                            deadBlockEntities.add(cp);
+                    var pos = blockEntity.getBlockPos();
+                    if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
+                            && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
+
+                        // If the block entities containing block is blacklisted, it will be skipped
+                        // automatically later, so we have to avoid removing it here
+                        if (AETags.SPATIAL_BLACKLIST.contains(blockEntity.getBlockState().getBlock())) {
+                            continue;
+                        }
+
+                        var strategy = BlockEntityMoveStrategies.get(blockEntity);
+                        var savedData = strategy.beginMove(blockEntity);
+                        if (savedData != null) {
+                            this.blockEntities.add(new BlockEntityMoveRecord(strategy, blockEntity, savedData));
+                            c.removeBlockEntity(entry.getKey());
                         } else {
                             final BlockStorageData details = new BlockStorageData();
-                            this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
+                            this.myColumns[pos.getX() - minX][pos.getZ() - minZ].fillData(pos.getY(), details);
 
                             // don't skip air, just let the code replace it...
                             if (details.state.isAir()) {
-                                level.removeBlock(tePOS, false);
+                                level.removeBlock(pos, false);
                             } else {
-                                this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());
+                                this.myColumns[pos.getX() - minX][pos.getZ() - minZ].setSkip(pos.getY());
                             }
                         }
                     }
-                }
-
-                for (final BlockPos cp : deadBlockEntities) {
-                    c.getBlockEntities().remove(cp);
                 }
 
                 final long gameTime = this.getLevel().getGameTime();
@@ -158,24 +156,9 @@ public class CachedPlane {
                 }
             }
         }
-
-        for (var te : this.blockEntities) {
-            try {
-                this.getLevel().removeBlockEntity(te.getBlockPos());
-            } catch (final Exception e) {
-                AELog.debug(e);
-            }
-        }
-    }
-
-    private IMovableHandler getHandler(final BlockEntity te) {
-        final IMovableRegistry mr = Api.instance().registries().movable();
-        return mr.getHandler(te);
     }
 
     void swap(final CachedPlane dst) {
-        final IMovableRegistry mr = Api.instance().registries().movable();
-
         if (dst.x_size == this.x_size && dst.y_size == this.y_size && dst.z_size == this.z_size) {
             AELog.info("Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size);
 
@@ -210,18 +193,17 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final BlockEntity te : this.blockEntities) {
-                final BlockPos tePOS = te.getBlockPos();
-                dst.addBlockEntity(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset,
-                        tePOS.getZ() - this.z_offset,
-                        te, this, mr);
+            for (var moveRecord : this.blockEntities) {
+                var pos = moveRecord.blockEntity().getBlockPos();
+                dst.addBlockEntity(pos.getX() - this.x_offset, pos.getY() - this.y_offset,
+                        pos.getZ() - this.z_offset,
+                        moveRecord);
             }
 
-            for (final BlockEntity te : dst.blockEntities) {
-                final BlockPos tePOS = te.getBlockPos();
-                this.addBlockEntity(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset,
-                        tePOS.getZ() - dst.z_offset, te,
-                        dst, mr);
+            for (var moveRecord : dst.blockEntities) {
+                var pos = moveRecord.blockEntity().getBlockPos();
+                this.addBlockEntity(pos.getX() - dst.x_offset, pos.getY() - dst.y_offset,
+                        pos.getZ() - dst.z_offset, moveRecord);
             }
 
             for (final TickNextTickData<Block> entry : this.ticks) {
@@ -259,49 +241,49 @@ public class CachedPlane {
                 entry.priority);
     }
 
-    private void addBlockEntity(final int x, final int y, final int z, final BlockEntity te,
-            final CachedPlane alternateDestination, final IMovableRegistry mr) {
+    private void addBlockEntity(final int x, final int y, final int z, BlockEntityMoveRecord moveRecord) {
         try {
-            final Column c = this.myColumns[x][z];
+            var c = this.myColumns[x][z];
+            if (!c.doNotSkip(y + this.y_offset)) {
+                AELog.warn(
+                        "Block entity %s was queued to be moved from %s, but it's position then skipped during the move.",
+                        moveRecord.blockEntity(), moveRecord.blockEntity().getBlockPos());
+                return;
+            }
 
-            if (c.doNotSkip(y + this.y_offset) || alternateDestination == null) {
-                var handler = this.getHandler(te);
+            var strategy = moveRecord.strategy();
+            boolean success;
+            try {
+                success = strategy.completeMove(moveRecord.blockEntity(), moveRecord.savedData(), this.level,
+                        new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
+            } catch (Throwable e) {
+                AELog.warn(e);
+                success = false;
+            }
 
-                var savedData = te.save(new CompoundTag());
-
-                boolean success;
-                try {
-                    success = handler.moveBlockEntity(te, savedData, this.level,
-                            new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset));
-                } catch (final Throwable e) {
-                    AELog.debug(e);
-                    success = false;
-                }
-
-                if (!success) {
-                    attemptRecovery(x, y, z, te, c, savedData);
-                }
-
-                mr.doneMoving(te);
-            } else {
-                alternateDestination.addBlockEntity(x, y, z, te, null, mr);
+            if (!success) {
+                attemptRecovery(x, y, z, moveRecord, c);
             }
         } catch (final Throwable e) {
-            AELog.debug(e);
+            AELog.warn(e);
         }
     }
 
-    private void attemptRecovery(int x, int y, int z, BlockEntity te, Column c, CompoundTag savedData) {
-        final BlockPos pos = new BlockPos(x, y, z);
-        AELog.debug("Trying to recover BE %s @ %s", BlockEntityType.getKey(te.getType()), pos);
+    private void attemptRecovery(int x, int y, int z, BlockEntityMoveRecord moveRecord, Column c) {
+        var pos = new BlockPos(x, y, z);
+        var type = moveRecord.blockEntity().getType();
+        AELog.debug("Trying to recover BE %s @ %s", BlockEntityType.getKey(type), pos);
 
         // attempt recovery, but do not reuse the same TE instance since we did destroy it
-        var recoveredEntity = BlockEntity.loadStatic(pos, te.getBlockState(), savedData);
+        var blockState = moveRecord.blockEntity().getBlockState();
+        var recoveredEntity = BlockEntity.loadStatic(pos, blockState, moveRecord.savedData());
         if (recoveredEntity != null) {
+            // We need to restore the block state too before re-setting the entity
+            this.level.setBlock(pos, blockState, 3);
             c.c.addAndRegisterBlockEntity(recoveredEntity);
             this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), z);
         } else {
-            AELog.info("Failed to recover BE %s @ %s", BlockEntityType.getKey(te.getType()), pos);
+            AELog.warn("Failed to recover BE %s @ %s", BlockEntityType.getKey(type), pos);
         }
     }
 
@@ -366,9 +348,8 @@ public class CachedPlane {
             // make sure storage exists before hand...
             for (int ay = 0; ay < chunkHeight; ay++) {
                 final int by = ay + chunkY;
-                LevelChunkSection extendedblockstorage = storage[by];
-                if (extendedblockstorage == null) {
-                    extendedblockstorage = storage[by] = new LevelChunkSection(by << 4);
+                if (storage[by] == null) {
+                    storage[by] = new LevelChunkSection(by << 4);
                 }
             }
         }
@@ -392,8 +373,8 @@ public class CachedPlane {
         private boolean doNotSkip(final int y) {
             final LevelChunkSection[] storage = this.c.getSections();
             final LevelChunkSection extendedblockstorage = storage[y >> 4];
-            if (CachedPlane.this.reg
-                    .isBlacklisted(extendedblockstorage.getBlockState(this.x, y & 15, this.z).getBlock())) {
+            var blockState = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
+            if (AETags.SPATIAL_BLACKLIST.contains(blockState.getBlock())) {
                 return false;
             }
 
@@ -407,4 +388,11 @@ public class CachedPlane {
             this.skipThese.add(yCoord);
         }
     }
+
+    private static record BlockEntityMoveRecord(
+            IBlockEntityMoveStrategy strategy,
+            BlockEntity blockEntity,
+            CompoundTag savedData) {
+    }
+
 }

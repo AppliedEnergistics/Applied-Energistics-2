@@ -24,7 +24,6 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermRegistry;
-import appeng.api.movable.IMovableRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.core.registries.cell.CellRegistry;
@@ -43,15 +42,9 @@ public class RegistryContainer implements IRegistryContainer {
     private final ILocatableRegistry locatable = new LocatableRegistry();
     private final IWirelessTermRegistry wireless = new WirelessRegistry();
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
-    private final IMovableRegistry movable = new MovableRegistry();
     private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
     private final IPlayerRegistry playerRegistry = new PlayerRegistry();
     private final IPartModels partModels = new PartModels();
-
-    @Override
-    public IMovableRegistry movable() {
-        return this.movable;
-    }
 
     @Override
     public IWirelessTermRegistry wireless() {
