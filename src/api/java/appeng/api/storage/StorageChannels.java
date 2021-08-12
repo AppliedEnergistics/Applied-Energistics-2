@@ -1,24 +1,27 @@
 package appeng.api.storage;
 
-import java.util.Collection;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.Collection;
+import java.util.Map;
+
+/**
+ * AE2's registry of all known {@link IStorageChannel storage channels}.
+ * <p/>
+ * AE2 has built-in {@link #items() item} and {@link #fluids() fluid} storage channels. Addons can register
+ * additional storage channels during initialization using {@link #register(Class, IStorageChannel)}.
+ */
 @ThreadSafe
 public final class StorageChannels {
 
@@ -71,19 +74,33 @@ public final class StorageChannels {
     }
 
     /**
-     * Fetch the factory instance for a specific storage channel.
-     * <p>
-     * Channel must be a direct subtype of {@link IStorageChannel}.
+     * Fetch the implementation for a specific storage channel interface.
      *
      * @param channel The channel type
-     * @return the factory instance
+     * @return The storage channel implementation.
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
     @Nonnull
     public static <T extends IAEStack<T>, C extends IStorageChannel<T>> C get(@Nonnull Class<C> channel) {
         var result = registry.getInstance(channel);
         if (result == null) {
-            throw new IllegalArgumentException("No implementation registered for " + channel);
+            throw new IllegalArgumentException("No storage channel registered with interface " + channel);
+        }
+        return result;
+    }
+
+    /**
+     * Fetch the implementation for a specific storage channel {@link IStorageChannel#getId() id}.
+     *
+     * @param id The {@link IStorageChannel#getId() storage channel id}.
+     * @return The storage channel implementation.
+     * @throws IllegalArgumentException when fetching an unregistered channel.
+     */
+    @Nonnull
+    public static IStorageChannel<?> get(@Nonnull ResourceLocation id) {
+        var result = idRegistry.get(id);
+        if (result == null) {
+            throw new IllegalArgumentException("No storage channel registered for id " + id);
         }
         return result;
     }
