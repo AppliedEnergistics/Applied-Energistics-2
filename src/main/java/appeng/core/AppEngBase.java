@@ -80,7 +80,7 @@ import appeng.init.InitRecipeSerializers;
 import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitCellHandlers;
-import appeng.init.internal.InitChargerRates;
+import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitSpatialMovableRegistry;
@@ -135,6 +135,9 @@ public abstract class AppEngBase implements AppEng {
         AEBlocks.init();
         AEItems.init();
         AEParts.init();
+
+        // Now that item instances are available, we can initialize registries that need item instances
+        InitChargerRegistry.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
@@ -200,7 +203,6 @@ public abstract class AppEngBase implements AppEng {
         AEConfig.instance().save();
         InitWirelessHandlers.init();
         InitUpgrades.init();
-        InitChargerRates.init();
         InitSpatialMovableRegistry.init();
         NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 

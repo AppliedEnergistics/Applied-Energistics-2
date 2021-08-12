@@ -18,7 +18,6 @@
 
 package appeng.core.registries;
 
-import appeng.api.features.IChargerRegistry;
 import appeng.api.features.ILocatableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
@@ -29,7 +28,6 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.core.registries.cell.CellRegistry;
-import appeng.core.registries.charger.ChargerRegistry;
 
 /**
  * represents all registries
@@ -41,7 +39,6 @@ import appeng.core.registries.charger.ChargerRegistry;
  * @since rv0
  */
 public class RegistryContainer implements IRegistryContainer {
-    private final IChargerRegistry charger = new ChargerRegistry();
     private final ICellRegistry cell = new CellRegistry();
     private final ILocatableRegistry locatable = new LocatableRegistry();
     private final IWirelessTermRegistry wireless = new WirelessRegistry();
@@ -64,11 +61,6 @@ public class RegistryContainer implements IRegistryContainer {
     @Override
     public ICellRegistry cell() {
         return this.cell;
-    }
-
-    @Override
-    public IChargerRegistry charger() {
-        return this.charger;
     }
 
     @Override
