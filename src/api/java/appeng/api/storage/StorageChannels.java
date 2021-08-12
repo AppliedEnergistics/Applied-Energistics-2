@@ -1,26 +1,29 @@
 package appeng.api.storage;
 
+import java.util.Collection;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.collect.ImmutableMap;
+
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.resources.ResourceLocation;
-
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * AE2's registry of all known {@link IStorageChannel storage channels}.
  * <p/>
- * AE2 has built-in {@link #items() item} and {@link #fluids() fluid} storage channels. Addons can register
- * additional storage channels during initialization using {@link #register(Class, IStorageChannel)}.
+ * AE2 has built-in {@link #items() item} and {@link #fluids() fluid} storage channels. Addons can register additional
+ * storage channels during initialization using {@link #register(Class, IStorageChannel)}.
  */
 @ThreadSafe
 public final class StorageChannels {

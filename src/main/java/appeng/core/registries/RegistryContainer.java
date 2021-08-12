@@ -27,7 +27,6 @@ import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
-import appeng.api.networking.IGridServiceRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.core.registries.cell.CellRegistry;
@@ -47,7 +46,6 @@ public class RegistryContainer implements IRegistryContainer {
     private final ICellRegistry cell = new CellRegistry();
     private final ILocatableRegistry locatable = new LocatableRegistry();
     private final IWirelessTermRegistry wireless = new WirelessRegistry();
-    private final IGridServiceRegistry gridService = new GridServiceRegistry();
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
     private final IMovableRegistry movable = new MovableRegistry();
     private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
@@ -57,11 +55,6 @@ public class RegistryContainer implements IRegistryContainer {
     @Override
     public IMovableRegistry movable() {
         return this.movable;
-    }
-
-    @Override
-    public IGridServiceRegistry gridService() {
-        return this.gridService;
     }
 
     @Override

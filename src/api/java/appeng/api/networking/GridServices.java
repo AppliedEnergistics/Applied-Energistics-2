@@ -1,22 +1,4 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
-package appeng.core.registries;
+package appeng.api.networking;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -29,18 +11,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridServiceRegistry;
+/**
+ * A registry of grid services to extend grid functionality.
+ */
+@ThreadSafe
+public final class GridServices {
 
-public final class GridServiceRegistry implements IGridServiceRegistry {
+    private GridServices() {
+    }
 
     // This must not be re-sorted because of interdependencies between the registrations
-    private final List<GridCacheRegistration<?>> registry = new ArrayList<>();
+    private static final List<GridCacheRegistration<?>> registry = new ArrayList<>();
 
-    @Override
-    public synchronized <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
+    /**
+     * Register a new grid service for use during operation, must be called during the loading phase.
+     * <p/>
+     * AE will automatically construct instances of the given implementation class by looking up a constructor. There
+     * must be a single constructor.
+     * <p/>
+     * The following constructor parameter types are allowed:
+     * <ul>
+     * <li>Other grid services public interfaces (see interfaces extending {@link IGridService}).</li>
+     * <li>{@link IGrid}, which will be the grid that the service is being constructed for.</li>
+     * </ul>
+     *
+     * @param publicInterface The public facing interface of the grid service you want to register. This class or
+     *                        interface will also be used to query the service from any grid via
+     *                        {@link IGrid#getService(Class)}.
+     * @param implClass       The class used to construct the grid service for each grid. Must have a single
+     *                        constructor.
+     */
+    public static synchronized <T extends IGridServiceProvider> void register(Class<? super T> publicInterface,
             Class<T> implClass) {
         if (isRegistered(publicInterface)) {
             throw new IllegalArgumentException(
@@ -61,11 +64,16 @@ public final class GridServiceRegistry implements IGridServiceRegistry {
         registry.add(registration);
     }
 
-    private boolean isRegistered(Class<?> publicInterface) {
+    private static boolean isRegistered(Class<?> publicInterface) {
         return registry.stream().anyMatch(r -> r.publicInterface.equals(publicInterface));
     }
 
-    public Map<Class<?>, IGridServiceProvider> createGridServices(final IGrid g) {
+    /**
+     * Constructs all registered services for the given grid.
+     * <p/>
+     * This is used by AE2 internally to initialize the services for a grid.
+     */
+    public static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
         var result = new HashMap<Class<?>, IGridServiceProvider>(registry.size());
 
         for (var registration : registry) {
@@ -132,7 +140,6 @@ public final class GridServiceRegistry implements IGridServiceRegistry {
             }
             return provider;
         }
-
     }
 
 }
