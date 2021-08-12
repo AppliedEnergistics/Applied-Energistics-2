@@ -73,7 +73,7 @@ public final class GridServices {
      * <p/>
      * This is used by AE2 internally to initialize the services for a grid.
      */
-    public static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
+    static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
         var result = new HashMap<Class<?>, IGridServiceProvider>(registry.size());
 
         for (var registration : registry) {

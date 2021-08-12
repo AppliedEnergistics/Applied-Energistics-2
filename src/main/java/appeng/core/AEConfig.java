@@ -50,8 +50,8 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
+import appeng.api.features.AEWorldGenInternal;
 import appeng.client.gui.NumberEntryType;
-import appeng.core.registries.WorldGenRegistry;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
@@ -186,7 +186,7 @@ public final class AEConfig {
 
         this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
 
-        WorldGenRegistry.INSTANCE.setConfigBlacklists(
+        AEWorldGenInternal.setConfigBlacklists(
                 COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()),
                 COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)

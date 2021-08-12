@@ -25,10 +25,10 @@ import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
-import appeng.api.features.IWorldGen;
+import appeng.api.features.AEWorldGen;
+import appeng.api.features.AEWorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public final class InitBiomeModifications {
@@ -42,7 +42,7 @@ public final class InitBiomeModifications {
     }
 
     private static void addMeteoriteWorldGen(BiomeLoadingEvent e) {
-        if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateMeteorites(), IWorldGen.WorldGenType.METEORITES,
+        if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateMeteorites(), AEWorldGenType.METEORITES,
                 e.getCategory())) {
             e.getGeneration().addStructureStart(MeteoriteStructure.CONFIGURED_INSTANCE);
         }
@@ -50,7 +50,7 @@ public final class InitBiomeModifications {
 
     private static void addQuartzWorldGen(BiomeLoadingEvent e) {
         if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateQuartzOre(),
-                IWorldGen.WorldGenType.CERTUS_QUARTZ,
+                AEWorldGenType.CERTUS_QUARTZ,
                 e.getCategory())) {
 
             ConfiguredFeature<?, ?> quartzOreFeature = getConfiguredFeature(WorldgenIds.QUARTZ_ORE);
@@ -69,7 +69,7 @@ public final class InitBiomeModifications {
 
     private static boolean shouldGenerateIn(ResourceLocation id,
             boolean enabled,
-            IWorldGen.WorldGenType worldGenType,
+            AEWorldGenType worldGenType,
             BiomeCategory category) {
         if (id == null) {
             return false; // We don't add to unnamed biomes
@@ -86,7 +86,7 @@ public final class InitBiomeModifications {
             return false;
         }
 
-        if (Api.instance().registries().worldgen().isWorldGenDisabledForBiome(worldGenType, id)) {
+        if (AEWorldGen.isWorldGenDisabledForBiome(worldGenType, id)) {
             AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
                     worldGenType, id);
             return false;
