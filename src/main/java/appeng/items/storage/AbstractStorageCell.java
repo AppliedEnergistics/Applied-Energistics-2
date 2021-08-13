@@ -40,6 +40,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -73,7 +74,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         Api.instance().client().addCellInformation(
-                Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
+                StorageCells.getCellInventory(stack, null, this.getChannel()), lines);
     }
 
     @Override
@@ -148,7 +149,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
             }
 
             final Inventory playerInventory = player.getInventory();
-            final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
+            final IMEInventoryHandler inv = StorageCells.getCellInventory(stack, null,
                     this.getChannel());
             if (inv != null && playerInventory.getSelected() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);

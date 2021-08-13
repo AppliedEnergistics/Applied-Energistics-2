@@ -32,11 +32,11 @@ import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
-import appeng.core.Api;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
@@ -188,7 +188,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
 
     private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
             IStorageChannel<T> channel) {
-        final IMEInventory<T> cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
+        final IMEInventory<T> cellInv = StorageCells.getCellInventory(is, null, channel);
         if (cellInv != null) {
             return cellInv.getAvailableItems().iterator();
         } else {

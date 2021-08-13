@@ -58,6 +58,7 @@ import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
@@ -122,8 +123,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         ItemStack paintBall = this.getColor(is);
 
-        final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
-                StorageChannels.items());
+        final IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
         if (inv != null) {
             final IAEItemStack option = inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.SIMULATE,
                     new BaseActionSource());
@@ -239,7 +239,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
         ItemStack newColor = ItemStack.EMPTY;
 
-        final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
+        final IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null,
                 StorageChannels.items());
         if (inv != null) {
             var itemList = inv.getAvailableItems();
@@ -356,7 +356,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
+        final ICellInventoryHandler<IAEItemStack> cdi = StorageCells.getCellInventory(stack, null,
                 StorageChannels.items());
 
         Api.instance().client().addCellInformation(cdi, lines);

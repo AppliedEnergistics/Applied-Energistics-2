@@ -50,6 +50,7 @@ import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
@@ -60,7 +61,6 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
@@ -337,7 +337,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                 this.handlersBySlot[x] = null;
 
                 if (!is.isEmpty()) {
-                    this.handlersBySlot[x] = Api.instance().registries().cell().getHandler(is);
+                    this.handlersBySlot[x] = StorageCells.getHandler(is);
 
                     if (this.handlersBySlot[x] != null) {
                         for (var channel : StorageChannels.getAll()) {
@@ -416,7 +416,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return !stack.isEmpty() && Api.instance().registries().cell().isCellHandled(stack);
+            return !stack.isEmpty() && StorageCells.isCellHandled(stack);
         }
 
     }

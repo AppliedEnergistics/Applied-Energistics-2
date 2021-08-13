@@ -31,11 +31,11 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.util.ConfigManager;
@@ -47,8 +47,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     private final int inventorySlot;
 
     public PortableCellViewer(final ItemStack is, final int slot) {
-        super(Api.instance().registries().cell().getCellInventory(is, null,
-                StorageChannels.items()));
+        super(StorageCells.getCellInventory(is, null, StorageChannels.items()));
         this.ips = (IAEItemPowerStorage) is.getItem();
         this.target = is;
         this.inventorySlot = slot;

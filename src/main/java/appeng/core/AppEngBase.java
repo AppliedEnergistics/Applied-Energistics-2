@@ -79,11 +79,11 @@ import appeng.init.InitItems;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
-import appeng.init.internal.InitCellHandlers;
 import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
+import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.internal.InitWirelessTerminals;
 import appeng.init.worldgen.InitBiomeModifications;
@@ -140,6 +140,7 @@ public abstract class AppEngBase implements AppEng {
         InitChargerRegistry.init();
         InitGridLinkables.init();
         InitWirelessTerminals.init();
+        InitStorageCells.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
@@ -200,7 +201,6 @@ public abstract class AppEngBase implements AppEng {
         Capabilities.register();
         InitDispenserBehavior.init();
         InitMatterCannonAmmo.init();
-        InitCellHandlers.init();
 
         AEConfig.instance().save();
         InitUpgrades.init();

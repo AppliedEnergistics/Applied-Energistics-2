@@ -24,7 +24,6 @@
 package appeng.api.features;
 
 import appeng.api.parts.IPartModels;
-import appeng.api.storage.ICellRegistry;
 
 /**
  * @author AlgorithmX2
@@ -34,11 +33,6 @@ import appeng.api.storage.ICellRegistry;
  * @since rv0
  */
 public interface IRegistryContainer {
-
-    /**
-     * Allows you to register new cell types, these will function in drives
-     */
-    ICellRegistry cell();
 
     /**
      * get access to the locatable registry

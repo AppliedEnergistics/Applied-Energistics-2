@@ -84,6 +84,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -93,7 +94,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
@@ -736,7 +736,7 @@ public class Platform {
         var myChanges = channel.createList();
 
         if (!removedCell.isEmpty()) {
-            var myInv = Api.instance().registries().cell().getCellInventory(removedCell, null, channel);
+            var myInv = StorageCells.getCellInventory(removedCell, null, channel);
             if (myInv != null) {
                 myInv.getAvailableItems(myChanges);
                 for (var is : myChanges) {
@@ -745,7 +745,7 @@ public class Platform {
             }
         }
         if (!addedCell.isEmpty()) {
-            var myInv = Api.instance().registries().cell().getCellInventory(addedCell, null, channel);
+            var myInv = StorageCells.getCellInventory(addedCell, null, channel);
             if (myInv != null) {
                 myInv.getAvailableItems(myChanges);
             }

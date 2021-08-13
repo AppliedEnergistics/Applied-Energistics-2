@@ -60,8 +60,8 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -102,8 +102,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
-                StorageChannels.items());
+        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
 
         Api.instance().client().addCellInformation(cdi, lines);
     }
@@ -119,8 +118,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 shots += cu.getInstalledUpgrades(Upgrades.SPEED);
             }
 
-            final ICellInventoryHandler<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(
-                    p.getItemInHand(hand), null, StorageChannels.items());
+            var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null, StorageChannels.items());
             if (inv != null) {
                 var itemList = inv.getAvailableItems();
                 IAEItemStack req = itemList.getFirstItem();

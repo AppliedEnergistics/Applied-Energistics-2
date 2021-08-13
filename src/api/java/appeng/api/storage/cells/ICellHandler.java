@@ -25,12 +25,11 @@ package appeng.api.storage.cells;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Registration record for {@link ICellRegistry}
+ * @see appeng.api.storage.StorageCells
  */
 public interface ICellHandler {
 

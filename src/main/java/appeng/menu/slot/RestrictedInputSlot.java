@@ -39,6 +39,7 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
@@ -167,7 +168,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return stack.getItem() instanceof ISpatialStorageCell
                         && ((ISpatialStorageCell) stack.getItem()).isSpatialStorage(stack);
             case STORAGE_CELLS:
-                return Api.instance().registries().cell().isCellHandled(stack);
+                return StorageCells.isCellHandled(stack);
             case WORKBENCH_CELL:
                 return stack.getItem() instanceof ICellWorkbenchItem
                         && ((ICellWorkbenchItem) stack.getItem()).isEditable(stack);
@@ -175,7 +176,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return stack.getItem() instanceof IStorageComponent
                         && ((IStorageComponent) stack.getItem()).isStorageComponent(stack);
             case TRASH:
-                if (Api.instance().registries().cell().isCellHandled(stack)) {
+                if (StorageCells.isCellHandled(stack)) {
                     return false;
                 }
 
