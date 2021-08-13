@@ -32,11 +32,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -96,8 +95,7 @@ public final class DisassembleRecipe extends CustomRecipe {
                 output = this.getCellOutput(stackInSlot);
                 if (!output.isEmpty()) {
                     // make sure the storage cell stackInSlot empty...
-                    final IMEInventory<IAEItemStack> cellInv = Api.instance().registries().cell().getCellInventory(
-                            stackInSlot, null, StorageChannels.items());
+                    var cellInv = StorageCells.getCellInventory(stackInSlot, null, StorageChannels.items());
                     if (cellInv != null) {
                         final IItemList<IAEItemStack> list = cellInv.getAvailableItems();
                         if (!list.isEmpty()) {

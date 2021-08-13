@@ -31,6 +31,14 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
+/**
+ * This interface is used by the ME Chest to open the appropriate GUI when a storage cell is inserted into the chest,
+ * and the player right-clicks the terminal screen on the chest. Since any storage cell may be inserted into the chest,
+ * this can potentially open a terminal screen provided by an addon, and this interface allows addons to facilitate
+ * that.
+ *
+ * @see appeng.api.storage.StorageCells
+ */
 public interface ICellGuiHandler {
     /**
      * Return true if this handler can show GUI for this channel.

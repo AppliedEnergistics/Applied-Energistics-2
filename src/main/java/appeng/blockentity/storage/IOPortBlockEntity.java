@@ -50,6 +50,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -57,7 +58,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
@@ -305,7 +305,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             this.cachedInventories = new IdentityHashMap<>();
 
             for (var c : StorageChannels.getAll()) {
-                this.cachedInventories.put(c, Api.instance().registries().cell().getCellInventory(is, null, c));
+                this.cachedInventories.put(c, StorageCells.getCellInventory(is, null, c));
             }
         }
 

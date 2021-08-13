@@ -75,6 +75,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellGuiHandler;
@@ -91,7 +92,6 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
@@ -212,7 +212,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             final ItemStack is = this.getCell();
             if (!is.isEmpty()) {
                 this.isCached = true;
-                ICellHandler cellHandler = Api.instance().registries().cell().getHandler(is);
+                ICellHandler cellHandler = StorageCells.getHandler(is);
                 if (cellHandler != null) {
                     idlePowerUsage = 1.0;
 
@@ -261,7 +261,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.updateHandler();
 
         final ItemStack cell = this.getCell();
-        final ICellHandler ch = Api.instance().registries().cell().getHandler(cell);
+        final ICellHandler ch = StorageCells.getHandler(cell);
 
         if (this.cellHandler != null && ch != null) {
             return ch.getStatusForCell(cell, this.cellHandler.getInternalHandler());
@@ -526,10 +526,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public boolean openGui(final Player p) {
         this.updateHandler();
         if (this.cellHandler != null) {
-            final ICellHandler ch = Api.instance().registries().cell().getHandler(this.getCell());
+            final ICellHandler ch = StorageCells.getHandler(this.getCell());
 
             if (ch != null) {
-                final ICellGuiHandler chg = Api.instance().registries().cell()
+                final ICellGuiHandler chg = StorageCells
                         .getGuiHandler(this.cellHandler.getChannel(), this.getCell());
                 if (chg != null) {
                     chg.openChestGui(p, this, ch, this.cellHandler, this.getCell(), this.cellHandler.getChannel());
@@ -791,7 +791,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return Api.instance().registries().cell().getHandler(stack) != null;
+            return StorageCells.getHandler(stack) != null;
         }
 
     }

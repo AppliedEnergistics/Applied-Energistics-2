@@ -24,8 +24,6 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.parts.IPartModels;
-import appeng.api.storage.ICellRegistry;
-import appeng.core.registries.cell.CellRegistry;
 
 /**
  * represents all registries
@@ -37,17 +35,11 @@ import appeng.core.registries.cell.CellRegistry;
  * @since rv0
  */
 public class RegistryContainer implements IRegistryContainer {
-    private final ICellRegistry cell = new CellRegistry();
     private final ILocatableRegistry locatable = new LocatableRegistry();
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
     private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
     private final IPlayerRegistry playerRegistry = new PlayerRegistry();
     private final IPartModels partModels = new PartModels();
-
-    @Override
-    public ICellRegistry cell() {
-        return this.cell;
-    }
 
     @Override
     public ILocatableRegistry locatable() {

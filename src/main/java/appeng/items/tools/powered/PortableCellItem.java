@@ -39,8 +39,8 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.Api;
@@ -74,8 +74,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
-                StorageChannels.items());
+        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
 
         Api.instance().client().addCellInformation(cdi, lines);
     }

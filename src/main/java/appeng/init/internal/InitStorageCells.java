@@ -18,24 +18,22 @@
 
 package appeng.init.internal;
 
-import appeng.api.features.IRegistryContainer;
-import appeng.core.Api;
+import appeng.api.storage.StorageCells;
 import appeng.core.registries.cell.BasicCellHandler;
 import appeng.core.registries.cell.BasicFluidCellGuiHandler;
 import appeng.core.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.registries.cell.CreativeCellHandler;
 
-public final class InitCellHandlers {
+public final class InitStorageCells {
 
-    private InitCellHandlers() {
+    private InitStorageCells() {
     }
 
     public static void init() {
-        final IRegistryContainer registries = Api.INSTANCE.registries();
-        registries.cell().addCellHandler(new BasicCellHandler());
-        registries.cell().addCellHandler(new CreativeCellHandler());
-        registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
-        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
+        StorageCells.addCellHandler(new BasicCellHandler());
+        StorageCells.addCellHandler(new CreativeCellHandler());
+        StorageCells.addCellGuiHandler(new BasicItemCellGuiHandler());
+        StorageCells.addCellGuiHandler(new BasicFluidCellGuiHandler());
     }
 
 }
