@@ -32,7 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.features.INetworkEncodable;
+import appeng.api.features.GridLinkables;
+import appeng.api.features.IGridLinkableHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
@@ -180,9 +181,10 @@ public class RestrictedInputSlot extends AppEngSlot {
 
                 return !(stack.getItem() instanceof IStorageComponent
                         && ((IStorageComponent) stack.getItem()).isStorageComponent(stack));
-            case ENCODABLE_ITEM:
-                return stack.getItem() instanceof INetworkEncodable
-                        || Api.instance().registries().wireless().isWirelessTerminal(stack);
+            case GRID_LINKABLE_ITEM: {
+                var handler = GridLinkables.get(stack.getItem());
+                return handler != null && handler.canLink(stack);
+            }
             case BIOMETRIC_CARD:
                 return stack.getItem() instanceof IBiometricCard;
             case UPGRADES:
@@ -252,7 +254,10 @@ public class RestrictedInputSlot extends AppEngSlot {
         STORAGE_CELLS(Icon.BACKGROUND_STORAGE_CELL),
         ORE(Icon.BACKGROUND_ORE),
         STORAGE_COMPONENT(Icon.BACKGROUND_STORAGE_COMPONENT),
-        ENCODABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
+        /**
+         * Only allows items that have a registered {@link IGridLinkableHandler}.
+         */
+        GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
         VALID_ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
         ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),

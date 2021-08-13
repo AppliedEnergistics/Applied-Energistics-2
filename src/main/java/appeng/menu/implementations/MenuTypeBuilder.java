@@ -41,13 +41,12 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.WirelessTerminals;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -242,7 +241,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         }
 
         if (hostInterface.isAssignableFrom(WirelessTerminalGuiObject.class)) {
-            final IWirelessTermHandler wh = Api.instance().registries().wireless().getWirelessTerminalHandler(it);
+            var wh = WirelessTerminals.get(it.getItem());
             if (wh != null) {
                 return hostInterface.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
             }

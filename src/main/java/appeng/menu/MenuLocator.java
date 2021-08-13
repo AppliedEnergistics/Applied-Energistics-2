@@ -114,7 +114,11 @@ public final class MenuLocator {
 
     public static MenuLocator forHand(Player player, InteractionHand hand) {
         int slot = getPlayerInventorySlotFromHand(player, hand);
-        return new MenuLocator(Type.PLAYER_INVENTORY, slot, (ResourceLocation) null, null, null);
+        return forInventorySlot(slot);
+    }
+
+    public static MenuLocator forInventorySlot(int inventorySlot) {
+        return new MenuLocator(Type.PLAYER_INVENTORY, inventorySlot, (ResourceLocation) null, null, null);
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {

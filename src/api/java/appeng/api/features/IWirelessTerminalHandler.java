@@ -23,38 +23,40 @@
 
 package appeng.api.features;
 
+import java.util.OptionalLong;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.IConfigManager;
 
 /**
- * A handler for a wireless terminal.
+ * Handles the interaction between an open terminal menu and the item in the player's inventory that represents that
+ * terminal's host.
+ *
+ * @see WirelessTerminals
  */
-public interface IWirelessTermHandler extends INetworkEncodable {
+public interface IWirelessTerminalHandler {
 
     /**
-     * @param is wireless terminal
-     *
-     * @return true, if usePower, hasPower, etc... can be called for the provided item
+     * Gets the key of the grid that the wireless terminal is linked to. This can be empty to signal that the terminal
+     * screen should be closed or be otherwise unavailable. The grid will be looked up using the
+     * {@link ILocatableRegistry}. To support setting the grid key using the standard security station slot, register a
+     * {@link IGridLinkableHandler} for your item.
      */
-    boolean canHandle(ItemStack is);
+    OptionalLong getGridKey(ItemStack is);
 
     /**
      * use an amount of power, in AE units
      *
      * @param amount is in AE units ( 5 per MJ ), if you return false, the item should be dead and return false for
      *               hasPower
-     * @param is     wireless terminal
-     *
      * @return true if wireless terminal uses power
      */
     boolean usePower(Player player, double amount, ItemStack is);
 
     /**
      * gets the power status of the item.
-     *
-     * @param is wireless terminal
      *
      * @return returns true if there is any power left.
      */
@@ -63,9 +65,8 @@ public interface IWirelessTermHandler extends INetworkEncodable {
     /**
      * Return the config manager for the wireless terminal.
      *
-     * @param is wireless terminal
-     *
      * @return config manager of wireless terminal
      */
     IConfigManager getConfigManager(ItemStack is);
+
 }

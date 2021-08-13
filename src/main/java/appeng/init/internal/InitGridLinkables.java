@@ -18,20 +18,17 @@
 
 package appeng.init.internal;
 
-import appeng.api.features.IRegistryContainer;
-import appeng.core.Api;
+import appeng.api.features.GridLinkables;
 import appeng.core.definitions.AEItems;
+import appeng.items.tools.powered.WirelessTerminalItem;
 
-public final class InitWirelessHandlers {
+public final class InitGridLinkables {
 
-    private InitWirelessHandlers() {
+    private InitGridLinkables() {
     }
 
     public static void init() {
-        final IRegistryContainer registries = Api.instance().registries();
-
-        // Wireless Terminal Handler
-        registries.wireless().registerWirelessHandler(AEItems.WIRELESS_TERMINAL.asItem());
+        GridLinkables.register(AEItems.WIRELESS_TERMINAL, WirelessTerminalItem.LINKABLE_HANDLER);
     }
 
 }

@@ -81,10 +81,11 @@ import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitCellHandlers;
 import appeng.init.internal.InitChargerRegistry;
+import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitUpgrades;
-import appeng.init.internal.InitWirelessHandlers;
+import appeng.init.internal.InitWirelessTerminals;
 import appeng.init.worldgen.InitBiomeModifications;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitFeatures;
@@ -137,6 +138,8 @@ public abstract class AppEngBase implements AppEng {
 
         // Now that item instances are available, we can initialize registries that need item instances
         InitChargerRegistry.init();
+        InitGridLinkables.init();
+        InitWirelessTerminals.init();
 
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
@@ -200,7 +203,6 @@ public abstract class AppEngBase implements AppEng {
         InitCellHandlers.init();
 
         AEConfig.instance().save();
-        InitWirelessHandlers.init();
         InitUpgrades.init();
         NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 

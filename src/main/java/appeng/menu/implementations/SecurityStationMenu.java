@@ -25,13 +25,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.features.INetworkEncodable;
-import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.GridLinkables;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.core.Api;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.me.items.ItemTerminalMenu;
@@ -52,8 +50,8 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
 
     private final RestrictedInputSlot configSlot;
 
-    private final RestrictedInputSlot wirelessIn;
-    private final OutputSlot wirelessOut;
+    private final RestrictedInputSlot linkableIn;
+    private final OutputSlot linkableOut;
 
     private final SecurityStationBlockEntity securityBox;
     @GuiSync(0)
@@ -67,10 +65,11 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
                 this.securityBox.getConfigSlot(), 0), SlotSemantic.BIOMETRIC_CARD);
 
-        AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory(this, 2);
-        this.addSlot(this.wirelessIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODABLE_ITEM,
-                wirelessEncoder, 0), SlotSemantic.MACHINE_INPUT);
-        this.addSlot(this.wirelessOut = new OutputSlot(wirelessEncoder, 1, null), SlotSemantic.MACHINE_OUTPUT);
+        // Add a small inventory and two slots for linking items to the connected grid
+        AppEngInternalInventory gridLinkingInv = new AppEngInternalInventory(this, 2);
+        this.addSlot(this.linkableIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.GRID_LINKABLE_ITEM,
+                gridLinkingInv, 0), SlotSemantic.MACHINE_INPUT);
+        this.addSlot(this.linkableOut = new OutputSlot(gridLinkingInv, 1, null), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }
@@ -115,12 +114,12 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
     public void removed(final Player player) {
         super.removed(player);
 
-        if (this.wirelessIn.hasItem()) {
-            player.drop(this.wirelessIn.getItem(), false);
+        if (this.linkableIn.hasItem()) {
+            player.drop(this.linkableIn.getItem(), false);
         }
 
-        if (this.wirelessOut.hasItem()) {
-            player.drop(this.wirelessOut.getItem(), false);
+        if (this.linkableOut.hasItem()) {
+            player.drop(this.linkableOut.getItem(), false);
         }
     }
 
@@ -132,25 +131,16 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
-        if (!this.wirelessOut.hasItem() && this.wirelessIn.hasItem()) {
-            final ItemStack term = this.wirelessIn.getItem().copy();
-            INetworkEncodable networkEncodable = null;
+        if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
+            var term = this.linkableIn.getItem().copy();
 
-            if (term.getItem() instanceof INetworkEncodable) {
-                networkEncodable = (INetworkEncodable) term.getItem();
-            }
+            var handler = GridLinkables.get(term.getItem());
 
-            final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
-                    .getWirelessTerminalHandler(term);
-            if (wTermHandler != null) {
-                networkEncodable = wTermHandler;
-            }
+            if (handler != null && handler.canLink(term)) {
+                handler.link(term, this.securityBox.getSecurityKey());
 
-            if (networkEncodable != null) {
-                networkEncodable.setEncryptionKey(term, String.valueOf(this.securityBox.getSecurityKey()), "");
-
-                this.wirelessIn.set(ItemStack.EMPTY);
-                this.wirelessOut.set(term);
+                this.linkableIn.set(ItemStack.EMPTY);
+                this.linkableOut.set(term);
             }
         }
     }

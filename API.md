@@ -10,6 +10,8 @@ relevant during mod initialization:
 | `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
 | `appeng.api.features.ChargerRegistry` | Controls how fast items charge in AE2's charger. |
 | `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage. |
+| `appeng.api.features.WirelessTerminals` | For working with and adding items that can open wireless terminal screens. |
+| `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station. |
 
 In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
 Once initialization of mods has completed however, changes to these registries result in undefined behavior.
