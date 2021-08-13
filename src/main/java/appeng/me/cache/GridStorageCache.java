@@ -248,8 +248,6 @@ public class GridStorageCache implements IStorageGrid
 			}
 		}
 
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
-
 		tracker.applyChanges();
 	}
 

@@ -61,7 +61,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	private final Object2ObjectMap<IMEMonitorHandlerReceiver<T>, Object> listeners;
 
 	private boolean sendEvent = false;
-	private boolean forceUpdate = false;
 	@Nonnegative
 	private int localDepthSemaphore = 0;
 	private long gridItemCount;
@@ -153,13 +152,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Override
 	public IItemList<T> getStorageList()
 	{
-		if( forceUpdate )
-		{
-			forceUpdate = false;
-			this.cachedList.resetStatus();
-			return this.getAvailableItems( this.cachedList );
-		}
-
 		return this.cachedList;
 	}
 
@@ -285,27 +277,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		if( last != this )
 		{
 			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
-		}
-	}
-
-	void forceUpdate()
-	{
-		this.forceUpdate = true;
-
-		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
-		while ( i.hasNext() )
-		{
-			final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-			final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
-
-			if( receiver.isValid( o.getValue() ) )
-			{
-				receiver.onListUpdate();
-			}
-			else
-			{
-				i.remove();
-			}
 		}
 	}
 
