@@ -19,6 +19,7 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
+import java.util.OptionalLong;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,24 +33,29 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.IGridLinkableHandler;
+import appeng.api.features.IWirelessTerminalHandler;
+import appeng.api.features.WirelessTerminals;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
-import appeng.core.Api;
-import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements IWirelessTermHandler {
+public class WirelessTerminalItem extends AEBasePoweredItem {
 
-    private static final String TAG_ENCRYPTION_KEY = "encryptionKey";
+    public static final IWirelessTerminalHandler TERMINAL_HANDLER = new TerminalHandler();
+
+    public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
+
+    private static final String TAG_GRID_KEY = "gridKey";
 
     public WirelessTerminalItem(Item.Properties props) {
         super(AEConfig.instance().getWirelessTerminalBattery(), props);
@@ -57,7 +63,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
-        Api.instance().registries().wireless().openWirelessTerminalGui(player.getItemInHand(hand), level, player, hand);
+        WirelessTerminals.openTerminal(player.getItemInHand(hand), player, hand);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
@@ -68,61 +74,77 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        if (getEncryptionKey(stack).isEmpty()) {
+        if (getGridKey(stack).isEmpty()) {
             lines.add(GuiText.Unlinked.text());
         } else {
             lines.add(GuiText.Linked.text());
         }
     }
 
-    @Override
-    public boolean canHandle(final ItemStack is) {
-        return AEItems.WIRELESS_TERMINAL.isSameAs(is);
-    }
-
-    @Override
-    public boolean usePower(final Player player, final double amount, final ItemStack is) {
-        return this.extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
-    }
-
-    @Override
-    public boolean hasPower(final Player player, final double amt, final ItemStack is) {
-        return this.getAECurrentPower(is) >= amt;
-    }
-
-    @Override
-    public IConfigManager getConfigManager(final ItemStack target) {
-        final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-            final CompoundTag data = target.getOrCreateTag();
-            manager.writeToNBT(data);
-        });
-
-        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
-
-        out.readFromNBT(target.getOrCreateTag().copy());
-        return out;
-    }
-
-    @Override
-    public String getEncryptionKey(final ItemStack item) {
-        final CompoundTag tag = item.getTag();
-        if (tag != null) {
-            return tag.getString(TAG_ENCRYPTION_KEY);
+    private OptionalLong getGridKey(ItemStack item) {
+        CompoundTag tag = item.getTag();
+        if (tag != null && tag.contains(TAG_GRID_KEY, Constants.NBT.TAG_LONG)) {
+            return OptionalLong.of(tag.getLong(TAG_GRID_KEY));
         } else {
-            return "";
+            return OptionalLong.empty();
         }
-    }
-
-    @Override
-    public void setEncryptionKey(final ItemStack item, final String encKey, final String name) {
-        final CompoundTag tag = item.getOrCreateTag();
-        tag.putString(TAG_ENCRYPTION_KEY, encKey);
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    private static class TerminalHandler implements IWirelessTerminalHandler {
+        private static WirelessTerminalItem getItem(ItemStack stack) {
+            return (WirelessTerminalItem) stack.getItem();
+        }
+
+        @Override
+        public OptionalLong getGridKey(ItemStack is) {
+            return getItem(is).getGridKey(is);
+        }
+
+        @Override
+        public boolean usePower(final Player player, final double amount, final ItemStack is) {
+            return getItem(is).extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
+        }
+
+        @Override
+        public boolean hasPower(final Player player, final double amt, final ItemStack is) {
+            return getItem(is).getAECurrentPower(is) >= amt;
+        }
+
+        @Override
+        public IConfigManager getConfigManager(final ItemStack target) {
+            final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
+                final CompoundTag data = target.getOrCreateTag();
+                manager.writeToNBT(data);
+            });
+
+            out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+            out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+            out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+
+            out.readFromNBT(target.getOrCreateTag().copy());
+            return out;
+        }
+    }
+
+    private static class LinkableHandler implements IGridLinkableHandler {
+        @Override
+        public boolean canLink(ItemStack stack) {
+            return stack.getItem() instanceof WirelessTerminalItem;
+        }
+
+        @Override
+        public void link(ItemStack itemStack, long securityKey) {
+            itemStack.getOrCreateTag().putLong(TAG_GRID_KEY, securityKey);
+        }
+
+        @Override
+        public void unlink(ItemStack itemStack) {
+            itemStack.removeTagKey(TAG_GRID_KEY);
+        }
     }
 }

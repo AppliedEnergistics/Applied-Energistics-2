@@ -36,11 +36,6 @@ import appeng.api.storage.ICellRegistry;
 public interface IRegistryContainer {
 
     /**
-     * Lets you register your items as wireless terminals
-     */
-    IWirelessTermRegistry wireless();
-
-    /**
      * Allows you to register new cell types, these will function in drives
      */
     ICellRegistry cell();

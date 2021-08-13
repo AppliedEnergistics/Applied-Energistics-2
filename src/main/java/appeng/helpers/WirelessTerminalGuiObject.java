@@ -24,8 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.ILocatable;
-import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.IWirelessTerminalHandler;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.networking.IGrid;
@@ -49,8 +48,7 @@ import appeng.menu.interfaces.IInventorySlotAware;
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
 
     private final ItemStack effectiveItem;
-    private final IWirelessTermHandler wth;
-    private final String encryptionKey;
+    private final IWirelessTerminalHandler wth;
     private final Player myPlayer;
     private IGrid targetGrid;
     private IStorageService sg;
@@ -60,33 +58,26 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private double myRange = Double.MAX_VALUE;
     private final int inventorySlot;
 
-    public WirelessTerminalGuiObject(final IWirelessTermHandler wh, final ItemStack is, final Player ep,
+    public WirelessTerminalGuiObject(final IWirelessTerminalHandler wh, final ItemStack is, final Player ep,
             int inventorySlot) {
-        this.encryptionKey = wh.getEncryptionKey(is);
         this.effectiveItem = is;
         this.myPlayer = ep;
         this.wth = wh;
         this.inventorySlot = inventorySlot;
 
-        ILocatable obj = null;
-
-        try {
-            final long encKey = Long.parseLong(this.encryptionKey);
-            obj = Api.instance().registries().locatable().getLocatableBy(encKey);
-        } catch (final NumberFormatException err) {
-            // :P
+        var gridKey = wh.getGridKey(is);
+        if (gridKey.isEmpty()) {
+            return;
         }
 
-        if (obj instanceof IActionHost) {
-            final IGridNode n = ((IActionHost) obj).getActionableNode();
+        var obj = Api.instance().registries().locatable().getLocatableBy(gridKey.getAsLong());
+        if (obj instanceof IActionHost actionHost) {
+            final IGridNode n = actionHost.getActionableNode();
             if (n != null) {
                 this.targetGrid = n.getGrid();
                 if (this.targetGrid != null) {
                     this.sg = this.targetGrid.getService(IStorageService.class);
-                    if (this.sg != null) {
-                        this.itemStorage = this.sg
-                                .getInventory(StorageChannels.items());
-                    }
+                    this.itemStorage = this.sg.getInventory(StorageChannels.items());
                 }
             }
         }
