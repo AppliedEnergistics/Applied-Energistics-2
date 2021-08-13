@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -42,10 +41,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.events.LocatableEventAnnounce;
-import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
-import appeng.api.features.ILocatable;
 import appeng.api.features.IPlayerRegistry;
+import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.GridFlags;
@@ -76,7 +73,7 @@ import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, IAEAppEngInventory,
-        ILocatable, IConfigManagerHost, ISecurityProvider, IColorableBlockEntity {
+        IConfigManagerHost, ISecurityProvider, IColorableBlockEntity {
 
     private static int difference = 0;
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
@@ -206,7 +203,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+        Locatables.securityStations().unregister(getLevel(), securityKey);
         this.isActive = false;
     }
 
@@ -215,14 +212,14 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         super.onReady();
         if (!isRemote()) {
             this.isActive = true;
-            MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.REGISTER));
+            Locatables.securityStations().register(getLevel(), securityKey, this);
         }
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+        Locatables.securityStations().unregister(getLevel(), securityKey);
         this.isActive = false;
     }
 
@@ -241,11 +238,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         }
         return null;
 
-    }
-
-    @Override
-    public long getLocatableSerial() {
-        return this.securityKey;
     }
 
     public boolean isPowered() {

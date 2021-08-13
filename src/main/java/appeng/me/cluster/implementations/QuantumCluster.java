@@ -20,6 +20,8 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,11 +29,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.events.LocatableEventAnnounce;
-import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.features.ILocatable;
+import appeng.api.features.Locatables;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionHost;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -40,7 +41,7 @@ import appeng.me.cluster.MBCalculator;
 import appeng.me.service.helpers.ConnectionWrapper;
 import appeng.util.iterators.ChainedIterator;
 
-public class QuantumCluster implements ILocatable, IAECluster {
+public class QuantumCluster implements IAECluster, IActionHost {
 
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
@@ -75,7 +76,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
         if (this.thisSide != qe && this.thisSide != -qe) {
             if (qe != 0) {
                 if (this.thisSide != 0) {
-                    MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+                    Locatables.quantumNetworkBridges().unregister(center.getLevel(), getLocatableKey());
                 }
 
                 if (this.canUseNode(-qe)) {
@@ -86,17 +87,17 @@ public class QuantumCluster implements ILocatable, IAECluster {
                     this.otherSide = -qe;
                 }
 
-                MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.REGISTER));
+                Locatables.quantumNetworkBridges().register(center.getLevel(), getLocatableKey(), this);
             } else {
-                MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+                Locatables.quantumNetworkBridges().unregister(center.getLevel(), getLocatableKey());
 
                 this.otherSide = 0;
                 this.thisSide = 0;
             }
         }
 
-        final ILocatable myOtherSide = this.otherSide == 0 ? null
-                : Api.instance().registries().locatable().getLocatableBy(this.otherSide);
+        var myOtherSide = this.otherSide == 0 ? null
+                : Locatables.quantumNetworkBridges().get(center.getLevel(), this.otherSide);
 
         boolean shutdown = false;
 
@@ -146,9 +147,9 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     private boolean canUseNode(final long qe) {
-        final QuantumCluster qc = (QuantumCluster) Api.instance().registries().locatable().getLocatableBy(qe);
-        if (qc != null) {
-            final Level level = qc.center.getLevel();
+        var locatable = Locatables.quantumNetworkBridges().get(center.getLevel(), qe);
+        if (locatable instanceof QuantumCluster qc) {
+            var level = qc.center.getLevel();
             if (!qc.isDestroyed) {
                 // In future versions, we might actually want to delay the entire registration
                 // until the center
@@ -213,7 +214,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
             if (this.thisSide != 0) {
                 this.updateStatus(true);
-                MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+                Locatables.quantumNetworkBridges().unregister(center.getLevel(), getLocatableKey());
             }
 
             this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
@@ -240,8 +241,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
                 || this.getRing()[4] == quantumBridge || this.getRing()[6] == quantumBridge;
     }
 
-    @Override
-    public long getLocatableSerial() {
+    private long getLocatableKey() {
         return this.thisSide;
     }
 
@@ -281,6 +281,12 @@ public class QuantumCluster implements ILocatable, IAECluster {
         BlockPos pos = center.getBlockPos();
 
         return "QuantumCluster{" + level + "," + pos + "}";
+    }
+
+    @Nullable
+    @Override
+    public IGridNode getActionableNode() {
+        return center.getMainNode().getNode();
     }
 
 }
