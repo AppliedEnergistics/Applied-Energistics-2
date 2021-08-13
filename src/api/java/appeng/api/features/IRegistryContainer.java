@@ -35,11 +35,6 @@ import appeng.api.parts.IPartModels;
 public interface IRegistryContainer {
 
     /**
-     * get access to the locatable registry
-     */
-    ILocatableRegistry locatable();
-
-    /**
      * get access to the p2p tunnel registry.
      */
     IP2PTunnelRegistry p2pTunnel();

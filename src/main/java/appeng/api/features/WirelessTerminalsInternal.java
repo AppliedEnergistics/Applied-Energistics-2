@@ -5,7 +5,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -36,7 +35,8 @@ public final class WirelessTerminalsInternal {
         }
 
         private boolean checkPreconditions(ItemStack item, Player player) {
-            if (player.getCommandSenderWorld().isClientSide()) {
+            var level = player.getCommandSenderWorld();
+            if (level.isClientSide()) {
                 return false;
             }
 
@@ -53,7 +53,7 @@ public final class WirelessTerminalsInternal {
                 return false;
             }
 
-            final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(key.getAsLong());
+            var securityStation = Locatables.securityStations().get(level, key.getAsLong());
             if (securityStation == null) {
                 player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
                 return false;

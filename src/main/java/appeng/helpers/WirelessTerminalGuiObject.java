@@ -25,6 +25,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.IWirelessTerminalHandler;
+import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.networking.IGrid;
@@ -42,7 +43,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
-import appeng.core.Api;
 import appeng.menu.interfaces.IInventorySlotAware;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
@@ -70,8 +70,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             return;
         }
 
-        var obj = Api.instance().registries().locatable().getLocatableBy(gridKey.getAsLong());
-        if (obj instanceof IActionHost actionHost) {
+        var actionHost = Locatables.securityStations().get(ep.level, gridKey.getAsLong());
+        if (actionHost != null) {
             final IGridNode n = actionHost.getActionableNode();
             if (n != null) {
                 this.targetGrid = n.getGrid();
