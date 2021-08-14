@@ -31,8 +31,5 @@ public interface IWorldData {
     void onServerStoppped();
 
     @Nonnull
-    IWorldGridStorageData storageData();
-
-    @Nonnull
     IWorldCompassData compassData();
 }

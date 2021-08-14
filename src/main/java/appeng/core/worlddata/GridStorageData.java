@@ -35,7 +35,7 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class StorageData extends SavedData implements IWorldGridStorageData {
+final class GridStorageData extends SavedData implements IGridStorageData {
 
     public static final String NAME = AppEng.MOD_ID + "_storage";
 
@@ -91,9 +91,9 @@ final class StorageData extends SavedData implements IWorldGridStorageData {
         return orderedValues.merge(name, firstValue, (oldValue, value) -> oldValue + 1);
     }
 
-    public static StorageData load(CompoundTag tag) {
+    public static GridStorageData load(CompoundTag tag) {
 
-        var result = new StorageData();
+        var result = new GridStorageData();
 
         result.nextGridId = tag.getLong(TAG_NEXT_ID);
 
