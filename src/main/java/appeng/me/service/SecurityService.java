@@ -24,11 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
-import com.mojang.authlib.GameProfile;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -36,7 +37,6 @@ import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.networking.security.ISecurityService;
 import appeng.core.Api;
-import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
 public class SecurityService implements ISecurityService, IGridServiceProvider {
@@ -129,10 +129,12 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
         Preconditions.checkNotNull(player);
         Preconditions.checkNotNull(perm);
 
-        final GameProfile profile = player.getGameProfile();
-        final int playerID = WorldData.instance().playerData().getMePlayerId(profile);
-
-        return this.hasPermission(playerID, perm);
+        if (player instanceof ServerPlayer serverPlayer) {
+            var playerID = IPlayerRegistry.getPlayerId(serverPlayer);
+            return this.hasPermission(playerID, perm);
+        } else {
+            return false;
+        }
     }
 
     @Override

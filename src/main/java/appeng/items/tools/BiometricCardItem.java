@@ -152,7 +152,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void registerPermissions(final ISecurityRegistry register, final IPlayerRegistry pr, final ItemStack is) {
-        register.addPlayer(pr.getID(this.getProfile(is)), this.getPermissions(is));
+        register.addPlayer(pr.getPlayerId(this.getProfile(is)), this.getPermissions(is));
     }
 
     @Override

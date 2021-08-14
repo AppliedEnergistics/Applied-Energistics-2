@@ -36,17 +36,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AEColor;
-import appeng.core.worlddata.WorldData;
 
 /**
  * Manages the lifecycle of a {@link IGridNode}.
@@ -227,8 +228,9 @@ public class ManagedGridNode implements IManagedGridNode {
 
     @Override
     public void setOwningPlayer(@Nonnull Player player) {
-        var playerId = WorldData.instance().playerData().getMePlayerId(player.getGameProfile());
-        setOwningPlayerId(playerId);
+        if (player instanceof ServerPlayer serverPlayer) {
+            setOwningPlayerId(IPlayerRegistry.getPlayerId(serverPlayer));
+        }
     }
 
     @Override

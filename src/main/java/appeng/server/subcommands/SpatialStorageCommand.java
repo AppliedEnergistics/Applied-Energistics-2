@@ -24,7 +24,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -49,8 +48,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.features.IPlayerRegistry;
 import appeng.core.definitions.AEItems;
-import appeng.core.worlddata.WorldData;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.server.ISubCommand;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -153,16 +152,22 @@ public class SpatialStorageCommand implements ISubCommand {
         // Show the owner of the spatial storage plot
         int playerId = plot.getOwner();
         if (playerId != -1) {
-            UUID profileId = WorldData.instance().playerData().getProfileId(playerId);
+            var server = source.getServer();
+            var profileId = IPlayerRegistry.getMapping(server).getProfileId(playerId);
 
             if (profileId == null) {
                 sendKeyValuePair(source, "Owner", "Unknown AE2 player (" + playerId + ")");
             } else {
-                ServerPlayer player = source.getServer().getPlayerList().getPlayer(profileId);
-                if (player == null) {
-                    sendKeyValuePair(source, "Owner", "Unknown Minecraft profile (" + profileId + ")");
+                ServerPlayer player = server.getPlayerList().getPlayer(profileId);
+                if (player != null) {
+                    sendKeyValuePair(source, "Owner", player.getGameProfile().getName() + " [Connected]");
                 } else {
-                    sendKeyValuePair(source, "Owner", player.getDisplayName());
+                    var cachedProfile = server.getProfileCache().get(profileId);
+                    if (cachedProfile.isPresent()) {
+                        sendKeyValuePair(source, "Owner", cachedProfile.get().getName() + " [Disconnected]");
+                    } else {
+                        sendKeyValuePair(source, "Owner", "Minecraft profile (" + profileId + ")");
+                    }
                 }
             }
         } else {
