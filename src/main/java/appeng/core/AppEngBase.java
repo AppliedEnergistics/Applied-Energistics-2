@@ -67,7 +67,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitBlockEntities;
@@ -262,17 +261,14 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void onServerAboutToStart(final FMLServerAboutToStartEvent evt) {
-        WorldData.onServerStarting(evt.getServer());
         ChunkLoadingService.getInstance().onServerAboutToStart(evt);
     }
 
     private void serverStopping(final FMLServerStoppingEvent event) {
-        WorldData.instance().onServerStopping();
         ChunkLoadingService.getInstance().onServerStopping(event);
     }
 
     private void serverStopped(final FMLServerStoppedEvent event) {
-        WorldData.instance().onServerStoppped();
         TickHandler.instance().shutdown();
     }
 

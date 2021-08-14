@@ -44,7 +44,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.worlddata.WorldData;
+import appeng.services.compass.CompassService;
 
 public class CachedPlane {
     private final int x_size;
@@ -308,7 +308,7 @@ public class CachedPlane {
 
                 final LevelChunk c = this.myChunks[x][z];
 
-                WorldData.instance().compassData().service().updateArea(this.getLevel(), c);
+                CompassService.updateArea(this.getLevel(), c);
 
                 ClientboundLevelChunkPacket cdp = new ClientboundLevelChunkPacket(c);
                 level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)

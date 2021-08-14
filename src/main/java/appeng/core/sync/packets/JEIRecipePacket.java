@@ -32,7 +32,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -140,7 +139,7 @@ public class JEIRecipePacket extends BasePacket {
      * in general these cases should never happen except in an error case and should be logged then.
      */
     @Override
-    public void serverPacketData(final INetworkInfo manager, final Player player) {
+    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         // Setup and verification
         final ServerPlayer pmp = (ServerPlayer) player;
         final AbstractContainerMenu con = pmp.containerMenu;

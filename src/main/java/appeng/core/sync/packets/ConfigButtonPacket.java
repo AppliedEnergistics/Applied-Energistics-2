@@ -24,7 +24,6 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
@@ -58,7 +57,7 @@ public final class ConfigButtonPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final Player player) {
+    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         final ServerPlayer sender = (ServerPlayer) player;
         if (sender.containerMenu instanceof AEBaseMenu baseMenu) {
             if (baseMenu.getTarget() instanceof IConfigurableObject) {

@@ -26,6 +26,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -83,7 +84,7 @@ public class FluidSlotPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, Player player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof IFluidSyncMenu) {
             ((IFluidSyncMenu) c).receiveFluidSlots(this.list);

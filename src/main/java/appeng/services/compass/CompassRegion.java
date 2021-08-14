@@ -18,123 +18,136 @@
 
 package appeng.services.compass;
 
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
-final class CompassRegion {
-    private final int lowX;
-    private final int lowZ;
-    private final ServerLevel level;
-    private SaveData data;
+import appeng.core.AELog;
 
-    public CompassRegion(ServerLevel level, final int cx, final int cz) {
-        Preconditions.checkNotNull(level);
+/**
+ * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
+ */
+final class CompassRegion extends SavedData {
 
-        this.level = level;
+    /**
+     * The number of chunks that get saved in a region on each axis.
+     */
+    private static final int CHUNKS_PER_REGION = 1024;
 
-        final int region_x = cx >> 10;
-        final int region_z = cz >> 10;
+    private static final int BITMAP_LENGTH = CHUNKS_PER_REGION * CHUNKS_PER_REGION;
 
-        this.lowX = region_x << 10;
-        this.lowZ = region_z << 10;
+    // Key is the section index, see ChunkAccess.getSections()
+    private final Map<Integer, BitSet> sections = new HashMap<>();
 
-        this.openData(false);
+    /**
+     * Gets the name of the save data for a region that has the given coordinates.
+     */
+    private static String getRegionSaveName(int regionX, int regionZ) {
+        return "ae2_compass_" + regionX + "_" + regionZ;
     }
 
-    void close() {
-        if (this.data != null) {
-            this.data = null;
-        }
+    /**
+     * Retrieve the compass region that serves the given chunk position.
+     */
+    public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
+        Preconditions.checkNotNull(level, "level");
+        Preconditions.checkNotNull(chunkPos, "chunkPos");
+
+        var regionX = chunkPos.x / CHUNKS_PER_REGION;
+        var regionZ = chunkPos.z / CHUNKS_PER_REGION;
+
+        return level.getDataStorage().computeIfAbsent(
+                CompassRegion::load,
+                CompassRegion::new,
+                getRegionSaveName(regionX, regionZ));
     }
 
-    boolean hasBeacon(int cx, int cz) {
-        if (this.data != null) {
-            cx &= 0x3FF;
-            cz &= 0x3FF;
-
-            final int val = this.read(cx, cz);
-            return val != 0;
+    public static CompassRegion load(CompoundTag nbt) {
+        var result = new CompassRegion();
+        for (String key : nbt.getAllKeys()) {
+            if (key.startsWith("section")) {
+                try {
+                    var sectionIndex = Integer.parseInt(key.substring("section".length()));
+                    result.sections.put(sectionIndex, BitSet.valueOf(nbt.getByteArray(key)));
+                } catch (NumberFormatException e) {
+                    AELog.warn("Compass region contains invalid NBT tag %s", key);
+                }
+            } else {
+                AELog.warn("Compass region contains unknown NBT tag %s", key);
+            }
         }
+        return result;
+    }
 
+    @Override
+    public CompoundTag save(CompoundTag compound) {
+        for (var entry : sections.entrySet()) {
+            var key = "section" + entry.getKey();
+            if (entry.getValue().isEmpty()) {
+                continue;
+            }
+            compound.putByteArray(key, entry.getValue().toByteArray());
+        }
+        return compound;
+    }
+
+    boolean hasSkyStone(int cx, int cz) {
+        var bitmapIndex = getBitmapIndex(cx, cz);
+        for (BitSet bitmap : sections.values()) {
+            if (bitmap.get(bitmapIndex)) {
+                return true;
+            }
+        }
         return false;
     }
 
-    void setHasBeacon(int cx, int cz, final int cdy, final boolean hasBeacon) {
-        cx &= 0x3FF;
-        cz &= 0x3FF;
-
-        this.openData(hasBeacon);
-
-        if (this.data != null) {
-            int val = this.read(cx, cz);
-            final int originalVal = val;
-
-            if (hasBeacon) {
-                val |= 1 << cdy;
-            } else {
-                val &= ~(1 << cdy);
-            }
-
-            if (originalVal != val) {
-                this.write(cx, cz, val);
-            }
+    boolean hasSkyStone(int cx, int cz, int sectionIndex) {
+        var bitmapIndex = getBitmapIndex(cx, cz);
+        var section = sections.get(sectionIndex);
+        if (section != null) {
+            return section.get(bitmapIndex);
         }
+        return false;
     }
 
-    private void openData(final boolean create) {
-        if (this.data != null) {
-            return;
-        }
-
-        String name = this.lowX + "_" + this.lowZ;
-
-        if (create) {
-            this.data = level.getDataStorage().computeIfAbsent(SaveData::load, SaveData::new, name);
-            if (this.data.bitmap == null) {
-                this.data.bitmap = new byte[SaveData.BITMAP_LENGTH];
+    void setHasSkyStone(int cx, int cz, int sectionIndex, boolean hasSkyStone) {
+        var bitmapIndex = getBitmapIndex(cx, cz);
+        var section = sections.get(sectionIndex);
+        if (section == null) {
+            if (hasSkyStone) {
+                section = new BitSet(BITMAP_LENGTH);
+                section.set(bitmapIndex);
+                sections.put(sectionIndex, section);
+                setDirty();
             }
         } else {
-            this.data = level.getDataStorage().get(SaveData::load, name);
-        }
-    }
-
-    private int read(final int cx, final int cz) {
-        try {
-            return this.data.bitmap[cx + cz * 0x400];
-        } catch (final IndexOutOfBoundsException outOfBounds) {
-            return 0;
-        }
-    }
-
-    private void write(final int cx, final int cz, final int val) {
-        this.data.bitmap[cx + cz * 0x400] = (byte) val;
-        this.data.setDirty();
-    }
-
-    private static class SaveData extends SavedData {
-
-        private static final int BITMAP_LENGTH = 0x400 * 0x400;
-
-        private byte[] bitmap;
-
-        public static SaveData load(CompoundTag nbt) {
-            var result = new SaveData();
-            result.bitmap = nbt.getByteArray("b");
-            if (result.bitmap.length != BITMAP_LENGTH) {
-                throw new IllegalStateException("Invalid bitmap length: " + result.bitmap.length);
+            if (section.get(bitmapIndex) != hasSkyStone) {
+                setDirty();
             }
-            return result;
+            // There already was data on this y-section in this region
+            if (!hasSkyStone) {
+                section.clear(bitmapIndex);
+                if (section.isEmpty()) {
+                    sections.remove(sectionIndex);
+                }
+                setDirty();
+            } else {
+                section.set(bitmapIndex);
+            }
         }
+    }
 
-        @Override
-        public CompoundTag save(CompoundTag compound) {
-            compound.putByteArray("b", bitmap);
-            return compound;
-        }
-
+    private static int getBitmapIndex(int cx, int cz) {
+        cx &= CHUNKS_PER_REGION - 1;
+        cz &= CHUNKS_PER_REGION - 1;
+        return cx + cz * CHUNKS_PER_REGION;
     }
 
 }

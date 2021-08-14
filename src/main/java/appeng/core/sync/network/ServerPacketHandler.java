@@ -20,6 +20,7 @@ package appeng.core.sync.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AELog;
@@ -34,7 +35,7 @@ public final class ServerPacketHandler extends BasePacketHandler implements IPac
         try {
             final int packetType = packet.readInt();
             final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
-            pack.serverPacketData(manager, player);
+            pack.serverPacketData(manager, (ServerPlayer) player);
         } catch (final IllegalArgumentException e) {
             AELog.warn(e);
         }

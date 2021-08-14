@@ -32,7 +32,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import appeng.block.AEBaseBlock;
-import appeng.core.worlddata.WorldData;
+import appeng.services.compass.CompassService;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
@@ -65,7 +65,7 @@ public class SkyStoneBlock extends AEBaseBlock {
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
         if (level instanceof ServerLevel serverLevel) {
-            WorldData.instance().compassData().service().notifyBlockChange(serverLevel, currentPos);
+            CompassService.notifyBlockChange(serverLevel, currentPos);
         }
 
         return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
@@ -80,7 +80,7 @@ public class SkyStoneBlock extends AEBaseBlock {
         super.onRemove(state, level, pos, newState, isMoving);
 
         if (level instanceof ServerLevel serverLevel) {
-            WorldData.instance().compassData().service().notifyBlockChange(serverLevel, pos);
+            CompassService.notifyBlockChange(serverLevel, pos);
         }
     }
 

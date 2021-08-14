@@ -22,23 +22,19 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 
-import appeng.api.util.DimensionalBlockPos;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.services.compass.ICompassCallback;
+import appeng.services.compass.CompassService;
 
-public class CompassRequestPacket extends BasePacket implements ICompassCallback {
+public class CompassRequestPacket extends BasePacket {
 
     final long attunement;
     final int cx;
     final int cz;
     final int cdy;
-
-    private Player talkBackTo;
 
     public CompassRequestPacket(final FriendlyByteBuf stream) {
         this.attunement = stream.readLong();
@@ -62,18 +58,11 @@ public class CompassRequestPacket extends BasePacket implements ICompassCallback
     }
 
     @Override
-    public void calculatedDirection(final boolean hasResult, final boolean spin, final double radians,
-            final double dist) {
-        NetworkHandler.instance().sendTo(new CompassResponsePacket(this, hasResult, spin, radians),
-                (ServerPlayer) this.talkBackTo);
-    }
+    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+        var pos = new ChunkPos(this.cx, this.cz);
+        var result = CompassService.getDirection(player.getLevel(), pos, 174);
 
-    @Override
-    public void serverPacketData(final INetworkInfo manager, final Player player) {
-        this.talkBackTo = player;
-
-        final DimensionalBlockPos loc = new DimensionalBlockPos(player.level, this.cx << 4, this.cdy << 5,
-                this.cz << 4);
-        WorldData.instance().compassData().service().getCompassDirection(loc, 174, this);
+        var responsePacket = new CompassResponsePacket(this, result.hasResult(), result.spin(), result.radians());
+        NetworkHandler.instance().sendTo(responsePacket, player);
     }
 }

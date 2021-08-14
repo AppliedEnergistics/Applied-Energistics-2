@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
-import appeng.core.worlddata.WorldData;
+import appeng.services.compass.CompassService;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
@@ -102,8 +102,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
         MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().tryUpdateArea(level, chunkPos); // FIXME: We know the y-range
-        // here...
+        CompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
         return true;
     }
 }

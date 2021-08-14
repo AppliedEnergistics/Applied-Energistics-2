@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
@@ -67,7 +66,7 @@ public class PartPlacementPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final Player player) {
+    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         final ServerPlayer sender = (ServerPlayer) player;
         AppEng.instance().setPartInteractionPlayer(sender);
         try {
