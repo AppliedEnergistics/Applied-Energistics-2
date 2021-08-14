@@ -25,18 +25,12 @@ package appeng.api;
 
 import appeng.api.client.IClientHelper;
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 
 public interface IAppEngApi {
-
-    /**
-     * @return Registry Container for the numerous registries in AE2.
-     */
-    IRegistryContainer registries();
 
     /**
      * @return A helper for working with storage data types.

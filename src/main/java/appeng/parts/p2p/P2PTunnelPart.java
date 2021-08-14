@@ -34,6 +34,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
@@ -45,7 +46,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.me.service.P2PService;
 import appeng.me.service.helpers.TunnelCollection;
@@ -168,7 +168,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
         final ItemStack is = player.getItemInHand(hand);
 
-        final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
+        final TunnelType tt = P2PTunnelAttunement.getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
             final CompoundTag data = mc.getData(is);
 

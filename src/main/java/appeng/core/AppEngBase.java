@@ -64,7 +64,6 @@ import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.ticking.TickHandler;
@@ -114,8 +113,6 @@ public abstract class AppEngBase implements AppEng {
     private final ThreadLocal<Player> partInteractionPlayer = new ThreadLocal<>();
 
     static AppEngBase INSTANCE;
-
-    private AdvancementTriggers advancementTriggers;
 
     public AppEngBase() {
         if (INSTANCE != null) {
@@ -175,9 +172,6 @@ public abstract class AppEngBase implements AppEng {
         MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
     }
 
-    private void setupRegistries(RegistryEvent.NewRegistry e) {
-    }
-
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
             if (err != null) {
@@ -190,6 +184,7 @@ public abstract class AppEngBase implements AppEng {
      * Runs after all mods have had time to run their registrations into registries.
      */
     public void postRegistrationInitialization() {
+        // This has to be here because it relies on caps and god knows when those are available...
         InitP2PAttunements.init();
 
         // Do initialization that doesn't depend on mod registries being populated

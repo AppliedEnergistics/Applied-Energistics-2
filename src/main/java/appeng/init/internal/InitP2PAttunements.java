@@ -29,13 +29,11 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.TunnelType;
-import appeng.api.features.IP2PTunnelRegistry;
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ItemDefinition;
 
 public final class InitP2PAttunements {
 
@@ -44,77 +42,91 @@ public final class InitP2PAttunements {
 
     public static void init() {
 
-        IP2PTunnelRegistry p2p = Api.instance().registries().p2pTunnel();
-
         /*
          * light!
          */
-        p2p.addNewAttunement(new ItemStack(Blocks.TORCH), TunnelType.LIGHT);
-        p2p.addNewAttunement(new ItemStack(Blocks.GLOWSTONE), TunnelType.LIGHT);
+        P2PTunnelAttunement.addNewAttunement(Blocks.TORCH, TunnelType.LIGHT);
+        P2PTunnelAttunement.addNewAttunement(Blocks.GLOWSTONE, TunnelType.LIGHT);
 
         /*
          * Forge energy tunnel items
          */
+        P2PTunnelAttunement.addNewAttunement(AEBlocks.DENSE_ENERGY_CELL, TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement(AEBlocks.ENERGY_ACCEPTOR, TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement(AEBlocks.ENERGY_CELL, TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement(AEBlocks.CREATIVE_ENERGY_CELL, TunnelType.FE_POWER);
 
-        addNewAttunement(p2p, AEBlocks.DENSE_ENERGY_CELL, TunnelType.FE_POWER);
-        addNewAttunement(p2p, AEBlocks.ENERGY_ACCEPTOR, TunnelType.FE_POWER);
-        addNewAttunement(p2p, AEBlocks.ENERGY_CELL, TunnelType.FE_POWER);
-        addNewAttunement(p2p, AEBlocks.CREATIVE_ENERGY_CELL, TunnelType.FE_POWER);
-
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.FE_POWER );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.FE_POWER );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 2 ), TunnelType.FE_POWER );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 3 ), TunnelType.FE_POWER );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 4 ), TunnelType.FE_POWER );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_0", 5 ), TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 0 ),
+        // TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 1 ),
+        // TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 2 ),
+        // TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 3 ),
+        // TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 4 ),
+        // TunnelType.FE_POWER );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_0", 5 ),
+        // TunnelType.FE_POWER );
 
         /*
          * EU tunnel items
          */
 
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "ic2", "cable", 0 ), TunnelType.IC2_POWER ); // Copper cable
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "ic2", "cable", 1 ), TunnelType.IC2_POWER ); // Glass fibre
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "ic2", "cable", 0 ),
+        // TunnelType.IC2_POWER ); // Copper cable
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "ic2", "cable", 1 ),
+        // TunnelType.IC2_POWER ); // Glass fibre
         // cable
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "ic2", "cable", 2 ), TunnelType.IC2_POWER ); // Gold cable
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "ic2", "cable", 3 ), TunnelType.IC2_POWER ); // HV cable
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "ic2", "cable", 4 ), TunnelType.IC2_POWER ); // Tin cable
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "ic2", "cable", 2 ),
+        // TunnelType.IC2_POWER ); // Gold cable
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "ic2", "cable", 3 ),
+        // TunnelType.IC2_POWER ); // HV cable
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "ic2", "cable", 4 ),
+        // TunnelType.IC2_POWER ); // Tin cable
 
         /*
          * attune based on most redstone base items.
          */
-        p2p.addNewAttunement(new ItemStack(Items.REDSTONE), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Items.REPEATER), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_LAMP), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.COMPARATOR), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.DAYLIGHT_DETECTOR), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_WIRE), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.REDSTONE_BLOCK), TunnelType.REDSTONE);
-        p2p.addNewAttunement(new ItemStack(Blocks.LEVER), TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Items.REDSTONE, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Items.REPEATER, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.REDSTONE_LAMP, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.COMPARATOR, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.DAYLIGHT_DETECTOR, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.REDSTONE_WIRE, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.REDSTONE_BLOCK, TunnelType.REDSTONE);
+        P2PTunnelAttunement.addNewAttunement(Blocks.LEVER, TunnelType.REDSTONE);
 
         /*
          * attune based on lots of random item related stuff
          */
 
-        addNewAttunement(p2p, AEBlocks.ITEM_INTERFACE, TunnelType.ITEM);
-        addNewAttunement(p2p, AEParts.INTERFACE, TunnelType.ITEM);
-        addNewAttunement(p2p, AEParts.ITEM_STORAGE_BUS, TunnelType.ITEM);
-        addNewAttunement(p2p, AEParts.IMPORT_BUS, TunnelType.ITEM);
-        addNewAttunement(p2p, AEParts.EXPORT_BUS, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEBlocks.ITEM_INTERFACE, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEParts.INTERFACE, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEParts.ITEM_STORAGE_BUS, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEParts.IMPORT_BUS, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEParts.EXPORT_BUS, TunnelType.ITEM);
 
-        p2p.addNewAttunement(new ItemStack(Blocks.HOPPER), TunnelType.ITEM);
-        p2p.addNewAttunement(new ItemStack(Blocks.CHEST), TunnelType.ITEM);
-        p2p.addNewAttunement(new ItemStack(Blocks.TRAPPED_CHEST), TunnelType.ITEM);
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); //
+        P2PTunnelAttunement.addNewAttunement(Blocks.HOPPER, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(Blocks.CHEST, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(Blocks.TRAPPED_CHEST, TunnelType.ITEM);
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "extrautilities",
+        // "extractor_base", 0 ), TunnelType.ITEM );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "mekanism", "parttransmitter", 9
+        // ), TunnelType.ITEM );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_32", 0
+        // ), TunnelType.ITEM ); //
         // itemduct
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_32", 1
+        // ), TunnelType.ITEM ); //
         // itemduct
         // FIXME // (opaque)
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_32", 2
+        // ), TunnelType.ITEM ); //
         // impulse
         // FIXME // itemduct
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_32", 3
+        // ), TunnelType.ITEM ); //
         // impulse
         // FIXME // itemduct
         // (opaque)
@@ -122,72 +134,73 @@ public final class InitP2PAttunements {
         /*
          * attune based on lots of random item related stuff
          */
-        p2p.addNewAttunement(new ItemStack(Items.BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new ItemStack(Items.LAVA_BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new ItemStack(Items.MILK_BUCKET), TunnelType.FLUID);
-        p2p.addNewAttunement(new ItemStack(Items.WATER_BUCKET), TunnelType.FLUID);
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); //
+        P2PTunnelAttunement.addNewAttunement(Items.BUCKET, TunnelType.FLUID);
+        P2PTunnelAttunement.addNewAttunement(Items.LAVA_BUCKET, TunnelType.FLUID);
+        P2PTunnelAttunement.addNewAttunement(Items.MILK_BUCKET, TunnelType.FLUID);
+        P2PTunnelAttunement.addNewAttunement(Items.WATER_BUCKET, TunnelType.FLUID);
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "mekanism", "machineblock2", 11
+        // ), TunnelType.FLUID );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "mekanism", "parttransmitter", 4
+        // ), TunnelType.FLUID );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "extrautilities",
+        // "extractor_base", 6 ), TunnelType.FLUID );
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_16", 0
+        // ), TunnelType.FLUID ); //
         // fluiduct
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_16", 1
+        // ), TunnelType.FLUID ); //
         // fluiduct
         // FIXME // (opaque)
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_16", 2
+        // ), TunnelType.FLUID ); //
         // fluiduct
         // FIXME // hardened
-        // FIXME p2p.addNewAttunement( p2p.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); //
+        // FIXME P2PTunnelAttunement.addNewAttunement( P2PTunnelAttunement.getModItem( "thermaldynamics", "duct_16", 3
+        // ), TunnelType.FLUID ); //
         // fluiduct
         // FIXME // hardened
         // FIXME // (opaque)
         // FIXME
         for (final AEColor c : AEColor.values()) {
-            p2p.addNewAttunement(AEParts.GLASS_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(AEParts.COVERED_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(AEParts.SMART_CABLE.stack(c, 1), TunnelType.ME);
-            p2p.addNewAttunement(AEParts.SMART_DENSE_CABLE.stack(c, 1), TunnelType.ME);
+            P2PTunnelAttunement.addNewAttunement(AEParts.GLASS_CABLE.stack(c, 1), TunnelType.ME);
+            P2PTunnelAttunement.addNewAttunement(AEParts.COVERED_CABLE.stack(c, 1), TunnelType.ME);
+            P2PTunnelAttunement.addNewAttunement(AEParts.SMART_CABLE.stack(c, 1), TunnelType.ME);
+            P2PTunnelAttunement.addNewAttunement(AEParts.SMART_DENSE_CABLE.stack(c, 1), TunnelType.ME);
         }
 
         /*
          * attune based caps
          */
-        p2p.addNewAttunement(Capabilities.FORGE_ENERGY, TunnelType.FE_POWER);
-        p2p.addNewAttunement(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, TunnelType.FLUID);
+        P2PTunnelAttunement.addNewAttunement(Capabilities.FORGE_ENERGY, TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, TunnelType.FLUID);
 
         /*
          * attune based on the ItemStack's modId
          */
 
-        p2p.addNewAttunement("thermaldynamics", TunnelType.FE_POWER);
-        p2p.addNewAttunement("thermalexpansion", TunnelType.FE_POWER);
-        p2p.addNewAttunement("thermalfoundation", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("thermaldynamics", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("thermalexpansion", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("thermalfoundation", TunnelType.FE_POWER);
         // TODO: Remove when confirmed that the official 1.12 version of EnderIO will
         // support FE.
-        p2p.addNewAttunement("enderio", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("enderio", TunnelType.FE_POWER);
         // TODO: Remove when confirmed that the official 1.12 version of Mekanism will
         // support FE.
-        p2p.addNewAttunement("mekanism", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("mekanism", TunnelType.FE_POWER);
         // TODO: Remove when support for RFTools' Powercells support is added
-        p2p.addNewAttunement("rftools", TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement("rftools", TunnelType.FE_POWER);
 
     }
 
     @Nonnull
     private ItemStack getModItem(final String modID, final String name) {
-
         final Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(modID + ":" + name));
 
         if (item == null) {
             return ItemStack.EMPTY;
         }
 
-        final ItemStack myItemStack = new ItemStack(item, 1);
-        return myItemStack;
+        return new ItemStack(item, 1);
     }
 
-    private static void addNewAttunement(IP2PTunnelRegistry p2p, final ItemDefinition<?> definition,
-            final TunnelType type) {
-        p2p.addNewAttunement(definition.stack(), type);
-    }
 }
