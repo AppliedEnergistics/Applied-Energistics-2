@@ -40,11 +40,6 @@ public interface IRegistryContainer {
     IP2PTunnelRegistry p2pTunnel();
 
     /**
-     * get access to the ammo registry.
-     */
-    IMatterCannonAmmoRegistry matterCannon();
-
-    /**
      * Register your IPart models before using them.
      */
     IPartModels partModels();

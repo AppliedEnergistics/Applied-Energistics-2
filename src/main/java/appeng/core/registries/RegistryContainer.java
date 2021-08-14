@@ -18,7 +18,6 @@
 
 package appeng.core.registries;
 
-import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.parts.IPartModels;
@@ -34,17 +33,11 @@ import appeng.api.parts.IPartModels;
  */
 public class RegistryContainer implements IRegistryContainer {
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
-    private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
     private final IPartModels partModels = new PartModels();
 
     @Override
     public IP2PTunnelRegistry p2pTunnel() {
         return this.p2pTunnel;
-    }
-
-    @Override
-    public IMatterCannonAmmoRegistry matterCannon() {
-        return this.matterCannonReg;
     }
 
     @Override

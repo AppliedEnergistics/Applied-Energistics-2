@@ -119,7 +119,7 @@ public final class AEItems {
     public static final ItemDefinition<WirelessTerminalItem> WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, p -> new WirelessTerminalItem(p.stacksTo(1)));
     public static final ItemDefinition<ChargedStaffItem> CHARGED_STAFF = item(AEItemIds.CHARGED_STAFF, p -> new ChargedStaffItem(p.stacksTo(1)));
     public static final ItemDefinition<ColorApplicatorItem> COLOR_APPLICATOR = item(AEItemIds.COLOR_APPLICATOR, p -> new ColorApplicatorItem(p.stacksTo(1)));
-    public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item(AEItemIds.MASS_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));
+    public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item(AEItemIds.MATTER_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));
 
     ///
     /// PORTABLE CELLS

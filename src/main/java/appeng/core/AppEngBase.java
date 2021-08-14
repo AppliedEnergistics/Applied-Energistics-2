@@ -80,7 +80,6 @@ import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitGridLinkables;
-import appeng.init.internal.InitMatterCannonAmmo;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
@@ -199,7 +198,6 @@ public abstract class AppEngBase implements AppEng {
 
         Capabilities.register();
         InitDispenserBehavior.init();
-        InitMatterCannonAmmo.init();
 
         AEConfig.instance().save();
         InitUpgrades.init();

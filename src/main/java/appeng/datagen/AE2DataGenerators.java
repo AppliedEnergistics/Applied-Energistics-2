@@ -29,6 +29,7 @@ import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
+import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 
@@ -47,6 +48,7 @@ public class AE2DataGenerators {
             generator.addProvider(new ItemTagsProvider(dataEvent, blockTagsProvider));
             generator.addProvider(new DecorationModelProvider(generator, dataEvent.getExistingFileHelper()));
             generator.addProvider(new AdvancementGenerator(generator));
+            generator.addProvider(new MatterCannonAmmoProvider(generator));
         }
     }
 
