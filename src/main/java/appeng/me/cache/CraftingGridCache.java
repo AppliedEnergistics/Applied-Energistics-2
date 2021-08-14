@@ -35,7 +35,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import appeng.api.storage.data.IAEFluidStack;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -272,6 +271,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		}
 
 		final Object2ObjectMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = new Object2ObjectOpenHashMap<>(this.craftableItems);
+		final Set<IAEItemStack> oldEmitableItems = new HashSet<>(this.emitableItems);
 
 		// erase list.
 		this.craftingMethods.clear();
@@ -317,14 +317,42 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		ObjectSet<Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>>> i = oldItems.entrySet();
 		for ( Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>> ais : i) {
 			if (!this.craftableItems.containsKey( ais.getKey() )) {
-				craftablesChanged.put( ais.getKey().setCraftable( false ), ais.getValue() );
+				IAEItemStack changedStack = ais.getKey().copy();
+				changedStack.reset();
+				changedStack.setCraftable( false );
+				craftablesChanged.put( changedStack, ais.getValue() );
 			}
 		}
 
 		ObjectSet<Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>>> j = this.craftableItems.entrySet();
 		for ( Entry<IAEItemStack, ImmutableList<ICraftingPatternDetails>> ais : j) {
 			if (!oldItems.containsKey( ais )){
-				craftablesChanged.put( ais.getKey().setCraftable( true ), ais.getValue() );
+				IAEItemStack changedStack = ais.getKey().copy();
+				changedStack.reset();
+				changedStack.setCraftable( true );
+				craftablesChanged.put( changedStack, ais.getValue() );
+			}
+		}
+
+		for( final IAEItemStack st : oldEmitableItems )
+		{
+			if( !emitableItems.contains( st ) )
+			{
+				IAEItemStack changedStack = st.copy();
+				changedStack.reset();
+				changedStack.setCraftable( false );
+				craftablesChanged.put( changedStack, null );
+			}
+		}
+
+		for( final IAEItemStack st : this.emitableItems )
+		{
+			if( !oldEmitableItems.contains( st ) )
+			{
+				IAEItemStack changedStack = st.copy();
+				changedStack.reset();
+				changedStack.setCraftable( true );
+				craftablesChanged.put( changedStack, null );
 			}
 		}
 

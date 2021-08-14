@@ -214,11 +214,13 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		for( final T changedItem : input )
 		{
 			if (changedItem.isCraftable()) {
-				this.cachedList.add( changedItem.copy().setCraftable( true ) );
+				this.cachedList.add( changedItem );
 			}
 			else
 			{
-				this.cachedList.findPrecise( changedItem ).setCraftable( false );
+				T i = this.cachedList.findPrecise( changedItem );
+				if (i != null)
+				i.setCraftable( false );
 			}
 		}
 	}

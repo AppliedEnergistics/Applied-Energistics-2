@@ -507,6 +507,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void upgradesChanged()
 	{
 		this.configureWatchers();
+		this.updateState();
 	}
 
 	@Override
