@@ -21,6 +21,8 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -71,6 +73,8 @@ public final class MeteoritePlacer {
     private final boolean pureCrater;
     private final boolean craterLake;
     private final BoundingBox boundingBox;
+    @Nullable
+    private BoundingBox skyStoneBoundingBox;
 
     public MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox) {
         this.boundingBox = boundingBox;
@@ -412,4 +416,13 @@ public final class MeteoritePlacer {
         };
     }
 
+    /**
+     * Gets the bounding box of the actual meteorite skystone. Useful to update the compass-service after placement.
+     * 
+     * @return Null if no actual skystone was placed.
+     */
+    @Nullable
+    public BoundingBox getSkyStoneBoundingBox() {
+        return skyStoneBoundingBox;
+    }
 }

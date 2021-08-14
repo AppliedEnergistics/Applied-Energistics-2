@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkDirection;
 
@@ -34,7 +35,7 @@ public abstract class BasePacket {
 
     private FriendlyByteBuf p;
 
-    public void serverPacketData(final INetworkInfo manager, final Player player) {
+    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a server side handler.");
     }

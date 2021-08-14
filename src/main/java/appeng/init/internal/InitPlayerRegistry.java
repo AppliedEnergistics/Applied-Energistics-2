@@ -8,7 +8,7 @@ public final class InitPlayerRegistry {
     }
 
     public static void init() {
-        PlayerRegistryInternal.initialize();
+        PlayerRegistryInternal.init();
     }
 
 }
