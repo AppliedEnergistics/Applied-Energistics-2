@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.Bootstrap;
 
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
 import appeng.init.internal.InitPlayerRegistry;
@@ -29,6 +30,7 @@ public abstract class AE2RegistriesMixin {
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
             InitPlayerRegistry.init();
+            P2PTunnelAttunementInternal.init();
         }
     }
 

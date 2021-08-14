@@ -22,7 +22,6 @@ import appeng.api.AEAddon;
 import appeng.api.IAppEngApi;
 import appeng.api.client.IClientHelper;
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.core.api.ApiClientHelper;
@@ -30,7 +29,6 @@ import appeng.core.api.ApiCrafting;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
-import appeng.core.registries.RegistryContainer;
 
 public final class Api implements IAppEngApi {
 
@@ -54,8 +52,6 @@ public final class Api implements IAppEngApi {
 
     private final ApiPart partHelper;
 
-    // private MovableRegistry MovableRegistry = new MovableRegistry();
-    private final IRegistryContainer registryContainer;
     private final IStorageHelper storageHelper;
     private final IGridHelper networkHelper;
     private final ICraftingHelper craftingHelper;
@@ -64,15 +60,9 @@ public final class Api implements IAppEngApi {
     private Api() {
         this.storageHelper = new ApiStorage();
         this.networkHelper = new ApiGrid();
-        this.registryContainer = new RegistryContainer();
         this.partHelper = new ApiPart();
         this.craftingHelper = new ApiCrafting();
         this.client = new ApiClientHelper();
-    }
-
-    @Override
-    public IRegistryContainer registries() {
-        return this.registryContainer;
     }
 
     @Override
