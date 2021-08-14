@@ -45,11 +45,6 @@ public interface IRegistryContainer {
     IMatterCannonAmmoRegistry matterCannon();
 
     /**
-     * get access to the player registry
-     */
-    IPlayerRegistry players();
-
-    /**
      * Register your IPart models before using them.
      */
     IPartModels partModels();

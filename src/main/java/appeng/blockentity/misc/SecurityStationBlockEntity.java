@@ -61,7 +61,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.core.Api;
 import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
@@ -261,7 +260,10 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void readPermissions(final Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
-        final IPlayerRegistry pr = Api.instance().registries().players();
+        var pr = IPlayerRegistry.getMapping(getLevel());
+        if (pr == null) {
+            return;
+        }
 
         // read permissions
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {

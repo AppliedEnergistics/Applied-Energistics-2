@@ -24,9 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -259,14 +257,16 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
     }
 
     private void achievementPost() {
+        var server = myGrid.getPivot().getLevel().getServer();
+
         if (this.lastChannels != this.getChannelsInUse()) {
             final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.getChannelsInUse());
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
-                for (final IGridNode n : this.requireChannels) {
-                    Player player = Api.instance().registries().players().findPlayer(n.getOwningPlayerId());
-                    if (player instanceof ServerPlayer) {
-                        currentBracket.trigger((ServerPlayer) player);
+                for (var n : this.requireChannels) {
+                    var player = IPlayerRegistry.getConnected(server, n.getOwningPlayerId());
+                    if (player != null) {
+                        currentBracket.trigger(player);
                     }
                 }
             }

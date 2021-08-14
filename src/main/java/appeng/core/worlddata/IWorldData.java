@@ -34,8 +34,5 @@ public interface IWorldData {
     IWorldGridStorageData storageData();
 
     @Nonnull
-    IWorldPlayerData playerData();
-
-    @Nonnull
     IWorldCompassData compassData();
 }

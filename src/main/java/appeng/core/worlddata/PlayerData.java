@@ -21,17 +21,18 @@ package appeng.core.worlddata;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import appeng.api.features.IPlayerRegistry;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 
@@ -43,16 +44,33 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerData extends SavedData implements IWorldPlayerData {
+public final class PlayerData extends SavedData implements IPlayerRegistry {
 
-    public static final String NAME = AppEng.MOD_ID + "_players";
-    public static final String TAG_PLAYER_IDS = "playerIds";
-    public static final String TAG_PROFILE_IDS = "profileIds";
+    private static final String NAME = AppEng.MOD_ID + "_players";
+    private static final String TAG_PLAYER_IDS = "playerIds";
+    private static final String TAG_PROFILE_IDS = "profileIds";
 
     private final BiMap<UUID, Integer> mapping = HashBiMap.create();
 
+    private final MinecraftServer server;
+
     // Caches the highest assigned player id + 1
     private int nextPlayerId = 0;
+
+    private PlayerData(MinecraftServer server) {
+        this.server = server;
+    }
+
+    public static PlayerData get(MinecraftServer server) {
+        var overworld = server.getLevel(ServerLevel.OVERWORLD);
+        if (overworld == null) {
+            throw new IllegalStateException("Cannot retrieve player data for a server that has no overworld.");
+        }
+        return overworld.getDataStorage().computeIfAbsent(
+                nbt -> PlayerData.load(server, nbt),
+                () -> new PlayerData(server),
+                PlayerData.NAME);
+    }
 
     @Nullable
     @Override
@@ -61,25 +79,25 @@ final class PlayerData extends SavedData implements IWorldPlayerData {
     }
 
     @Override
-    public int getMePlayerId(@Nonnull final GameProfile profile) {
-        Preconditions.checkNotNull(profile);
+    public int getPlayerId(UUID profileId) {
+        Preconditions.checkNotNull(profileId, "profileId");
 
-        final UUID uuid = profile.getId();
-        Integer playerId = mapping.get(uuid);
+        Integer playerId = mapping.get(profileId);
 
         if (playerId == null) {
             playerId = this.nextPlayerId++;
-            this.mapping.put(profile.getId(), playerId);
+            this.mapping.put(profileId, playerId);
             setDirty();
 
-            AELog.info("Assigning ME player id %s to Minecraft profile %s (%s)", playerId, profile.getId(),
-                    profile.getName());
+            var player = server.getPlayerList().getPlayer(profileId);
+            var name = player != null ? player.getGameProfile().getName() : "[UNKNOWN]";
+            AELog.info("Assigning ME player id %s to Minecraft profile %s (%s)", playerId, profileId, name);
         }
 
         return playerId;
     }
 
-    public static PlayerData load(CompoundTag nbt) {
+    private static PlayerData load(MinecraftServer server, CompoundTag nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -88,7 +106,7 @@ final class PlayerData extends SavedData implements IWorldPlayerData {
                     + profileIds.length + " profile IDs (latter must be 2 * the former)");
         }
 
-        var result = new PlayerData();
+        var result = new PlayerData(server);
         int highestPlayerId = -1;
         for (int i = 0; i < playerIds.length; i++) {
             int playerId = playerIds[i];

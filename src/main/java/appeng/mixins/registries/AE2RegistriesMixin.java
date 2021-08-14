@@ -9,6 +9,7 @@ import net.minecraft.server.Bootstrap;
 
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
+import appeng.init.internal.InitPlayerRegistry;
 import appeng.init.internal.InitStorageChannels;
 
 /**
@@ -27,6 +28,7 @@ public abstract class AE2RegistriesMixin {
             InitStorageChannels.init();
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
+            InitPlayerRegistry.init();
         }
     }
 

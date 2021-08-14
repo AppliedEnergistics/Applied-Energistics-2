@@ -23,6 +23,7 @@ import com.mojang.authlib.GameProfile;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -31,7 +32,6 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
@@ -117,8 +117,14 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
         if (input.getItem() instanceof IBiometricCard tbc) {
             final GameProfile newUser = tbc.getProfile(input.createItemStack());
 
-            final int PlayerID = Api.instance().registries().players().getID(newUser);
-            if (this.blockEntity.getOwner() == PlayerID) {
+            var pr = IPlayerRegistry.getMapping(blockEntity.getLevel());
+            if (pr == null) {
+                // Don't do further checks on the client-side, which doesn't have access to the player registry
+                return true;
+            }
+
+            int playerId = pr.getPlayerId(newUser);
+            if (this.blockEntity.getOwner() == playerId) {
                 return false;
             }
 
