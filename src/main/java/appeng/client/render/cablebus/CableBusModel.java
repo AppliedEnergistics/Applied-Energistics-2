@@ -20,7 +20,6 @@ package appeng.client.render.cablebus;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -36,11 +35,11 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 
+import appeng.api.parts.PartModelsInternal;
 import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.
@@ -49,16 +48,10 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
 
     public static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
-    private final PartModels partModels;
-
-    public CableBusModel(PartModels partModels) {
-        this.partModels = partModels;
-    }
-
     @Override
     public Collection<ResourceLocation> getModelDependencies() {
-        partModels.setInitialized(true);
-        List<ResourceLocation> models = new ArrayList<>(partModels.getModels());
+        PartModelsInternal.freeze();
+        var models = new ArrayList<>(PartModelsInternal.getModels());
         models.add(TRANSLUCENT_FACADE_MODEL);
         return models;
     }
@@ -93,7 +86,7 @@ public class CableBusModel implements BasicUnbakedModel<CableBusModel> {
             Function<Material, TextureAtlasSprite> spriteGetterIn, ModelState transformIn) {
         ImmutableMap.Builder<ResourceLocation, BakedModel> result = ImmutableMap.builder();
 
-        for (ResourceLocation location : this.partModels.getModels()) {
+        for (ResourceLocation location : PartModelsInternal.getModels()) {
             BakedModel bakedModel = bakery.bake(location, transformIn, spriteGetterIn);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);

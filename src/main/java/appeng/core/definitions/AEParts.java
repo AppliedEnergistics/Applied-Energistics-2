@@ -27,10 +27,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
+import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
-import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.registries.PartModels;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
@@ -129,8 +128,7 @@ public final class AEParts {
             Class<T> partClass,
             Function<ItemStack, T> factory) {
 
-        PartModels partModels = (PartModels) Api.instance().registries().partModels();
-        partModels.registerModels(PartModelsHelper.createModels(partClass));
+        PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(id, props -> new PartItem<>(props, factory));
     }
 
@@ -138,8 +136,7 @@ public final class AEParts {
             Class<T> partClass,
             Function<ItemStack, T> factory) {
 
-        PartModels partModels = (PartModels) Api.instance().registries().partModels();
-        partModels.registerModels(PartModelsHelper.createModels(partClass));
+        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         final ColoredItemDefinition definition = new ColoredItemDefinition();
         for (final AEColor color : AEColor.values()) {

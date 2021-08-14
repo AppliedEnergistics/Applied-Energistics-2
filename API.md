@@ -14,6 +14,7 @@ relevant during mod initialization:
 | `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station. |
 | `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids. |
 | `appeng.api.features.Locatables` | For discovering security stations and quantum network bridges based on their unique keys, regardless of location. |
+| `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts. |
 
 In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
 Once initialization of mods has completed however, changes to these registries result in undefined behavior.

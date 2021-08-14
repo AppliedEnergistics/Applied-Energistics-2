@@ -331,7 +331,7 @@ public interface IPart extends ICustomCableConnection {
      * {@link AEColor#whiteVariant bright variant}.</dd>
      * </dl>
      *
-     * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
+     * <b>Important:</b> All models must have been registered via the {@link PartModels} API before use.
      */
     @Nonnull
     default IPartModel getStaticModels() {

@@ -42,9 +42,7 @@ import appeng.client.render.model.GlassModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
-import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.registries.PartModels;
 import appeng.parts.automation.PlaneModelLoader;
 
 @OnlyIn(Dist.CLIENT)
@@ -72,7 +70,7 @@ public final class InitBuiltInModels {
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
                 CraftingCubeModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
-                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
+                CableBusModelLoader.INSTANCE);
     }
 
     private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {

@@ -23,8 +23,6 @@
 
 package appeng.api.features;
 
-import appeng.api.parts.IPartModels;
-
 /**
  * @author AlgorithmX2
  * @author thatsIch
@@ -39,8 +37,4 @@ public interface IRegistryContainer {
      */
     IP2PTunnelRegistry p2pTunnel();
 
-    /**
-     * Register your IPart models before using them.
-     */
-    IPartModels partModels();
 }
