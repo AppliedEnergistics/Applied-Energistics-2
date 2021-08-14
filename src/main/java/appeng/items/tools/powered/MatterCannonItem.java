@@ -26,6 +26,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
@@ -81,6 +83,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -157,7 +160,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final double d1 = rayFrom.y;
                         final double d2 = rayFrom.z;
 
-                        final float penetration = Api.instance().registries().matterCannon().getPenetration(ammo); // 196.96655f;
+                        final float penetration = getPenetration(ammo); // 196.96655f;
                         if (penetration <= 0) {
                             final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof PaintBallItem) {
@@ -423,18 +426,34 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
-        final float pen = Api.instance().registries().matterCannon()
-                .getPenetration(requestedAddition.createItemStack());
+    public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition) {
+
+        final float pen = getPenetration(requestedAddition.createItemStack());
         if (pen > 0) {
             return false;
         }
 
-        if (requestedAddition.getItem() instanceof PaintBallItem) {
-            return false;
+        return !(requestedAddition.getItem() instanceof PaintBallItem);
+    }
+
+    private float getPenetration(ItemStack itemStack) {
+        // We need a server to query the recipes if the cache is empty
+        var server = AppEng.instance().getCurrentServer();
+        if (server == null) {
+            AELog.warn("Tried to get penetration of matter cannon ammo for %s while no server was running", itemStack);
+            return 0;
         }
 
-        return true;
+        var recipes = server.getRecipeManager().byType(MatterCannonAmmo.TYPE);
+        for (Recipe<Container> recipe : recipes.values()) {
+            if (recipe instanceof MatterCannonAmmo ammoRecipe) {
+                if (ammoRecipe.getAmmo().test(itemStack)) {
+                    return ammoRecipe.getWeight();
+                }
+            }
+        }
+
+        return 0;
     }
 
     @Override

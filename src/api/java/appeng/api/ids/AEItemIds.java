@@ -42,7 +42,7 @@ public final class AEItemIds {
     public static final ResourceLocation ENCODED_PATTERN = id("encoded_pattern");
     public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
-    public static final ResourceLocation MASS_CANNON = id("matter_cannon");
+    public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
     public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
     public static final ResourceLocation COLOR_APPLICATOR = id("color_applicator");
     public static final ResourceLocation WIRELESS_TERMINAL = id("wireless_terminal");

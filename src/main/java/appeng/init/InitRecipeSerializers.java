@@ -28,6 +28,7 @@ import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
+import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
 
 public final class InitRecipeSerializers {
 
@@ -41,7 +42,8 @@ public final class InitRecipeSerializers {
                 GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE,
                 FacadeRecipe.getSerializer(facadeItem),
-                EntropyRecipeSerializer.INSTANCE);
+                EntropyRecipeSerializer.INSTANCE,
+                MatterCannonAmmoSerializer.INSTANCE);
     }
 
 }
