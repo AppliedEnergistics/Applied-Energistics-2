@@ -77,6 +77,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     @Override
+    public void onReady() {
+        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        super.onReady();
+    }
+
+    @Override
     protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         try {
@@ -244,7 +250,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         return true;
     }
 
-    private class ChargerInvFilter implements IAEItemFilter {
+    private static class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
             return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);

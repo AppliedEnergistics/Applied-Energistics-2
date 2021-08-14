@@ -187,6 +187,12 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
+    public void onReady() {
+        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+        super.onReady();
+    }
+
+    @Override
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
