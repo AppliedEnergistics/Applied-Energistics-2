@@ -16,6 +16,7 @@ relevant during mod initialization:
 | `appeng.api.features.Locatables` | For discovering security stations and quantum network bridges based on their unique keys, regardless of location. |
 | `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts. |
 | `appeng.api.features.P2PTunnelAttunement` | For registering new items that attune P2P tunnels to specific types when right-clicked. |
+| `appeng.api.client.StorageCellModels` | For customizing the models of storage cells when they're inserted into drives or ME chests. |
 
 In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
 Once initialization of mods has completed however, changes to these registries result in undefined behavior.

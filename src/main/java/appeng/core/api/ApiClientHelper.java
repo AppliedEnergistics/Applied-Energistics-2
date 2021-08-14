@@ -24,18 +24,14 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
-import appeng.api.client.ICellModelRegistry;
 import appeng.api.client.IClientHelper;
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.api.client.ApiCellModelRegistry;
 import appeng.core.localization.GuiText;
 
 public class ApiClientHelper implements IClientHelper {
-
-    private final ICellModelRegistry cells = new ApiCellModelRegistry();
 
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
@@ -65,11 +61,6 @@ public class ApiClientHelper implements IClientHelper {
             }
         }
 
-    }
-
-    @Override
-    public ICellModelRegistry cells() {
-        return this.cells;
     }
 
 }

@@ -37,10 +37,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.client.model.IModelConfiguration;
 
-import appeng.api.client.ICellModelRegistry;
+import appeng.api.client.StorageCellModels;
 import appeng.client.render.BasicUnbakedModel;
-import appeng.core.Api;
-import appeng.core.api.client.ApiCellModelRegistry;
+import appeng.init.internal.InitStorageCells;
 
 public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
@@ -53,17 +52,16 @@ public class DriveModel implements BasicUnbakedModel<DriveModel> {
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
             ItemOverrides overrides, ResourceLocation modelLocation) {
-        final ICellModelRegistry cellRegistry = Api.instance().client().cells();
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
-        for (Entry<Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
+        for (Entry<Item, ResourceLocation> entry : StorageCellModels.models().entrySet()) {
             BakedModel cellModel = bakery.bake(entry.getValue(), modelTransform, spriteGetter);
             cellModels.put(entry.getKey(), cellModel);
         }
 
         final BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
-        final BakedModel defaultCell = bakery.bake(cellRegistry.getDefaultModel(), modelTransform,
+        final BakedModel defaultCell = bakery.bake(StorageCellModels.getDefaultModel(), modelTransform,
                 spriteGetter);
         cellModels.put(Items.AIR, bakery.bake(MODEL_CELL_EMPTY, modelTransform, spriteGetter));
 
@@ -72,9 +70,9 @@ public class DriveModel implements BasicUnbakedModel<DriveModel> {
 
     @Override
     public Collection<ResourceLocation> getModelDependencies() {
-        ICellModelRegistry cells = Api.instance().client().cells();
-        return ImmutableSet.<ResourceLocation>builder().add(cells.getDefaultModel())
-                .addAll(ApiCellModelRegistry.getModels()).addAll(cells.models().values()).build();
+        return ImmutableSet.<ResourceLocation>builder().add(StorageCellModels.getDefaultModel())
+                .addAll(InitStorageCells.getModels())
+                .addAll(StorageCellModels.models().values()).build();
     }
 
 }

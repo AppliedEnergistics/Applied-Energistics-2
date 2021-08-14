@@ -38,12 +38,4 @@ public interface IClientHelper {
      * @param lines   List of lines to add to.
      */
     <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<Component> lines);
-
-    /**
-     * A helper to work with clientside related tasks for cells.
-     * 
-     * @return
-     */
-    ICellModelRegistry cells();
-
 }

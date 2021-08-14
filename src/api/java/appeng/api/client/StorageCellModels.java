@@ -23,20 +23,36 @@
 
 package appeng.api.client;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * A registry for 3D models used to render storage cells in the world, when they are inserted into a drive or similar
  * machines.
  */
-public interface ICellModelRegistry {
+@ThreadSafe
+public final class StorageCellModels {
+
+    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
+            "appliedenergistics2:block/drive/drive_cell");
+
+    private static final Map<Item, ResourceLocation> registry = new IdentityHashMap<>();
+
+    private StorageCellModels() {
+    }
 
     /**
      * Register a new model for a storage cell item.
@@ -52,33 +68,47 @@ public interface ICellModelRegistry {
      * 
      * For examples look at our cell part models within the drive model directory.
      * 
-     * @param item  The cell item
-     * @param model The {@link ResourceLocation} representing the model.
+     * @param itemLike The cell item
+     * @param model    The {@link ResourceLocation} representing the model.
      */
-    void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
+    public synchronized static void registerModel(@Nonnull ItemLike itemLike, @Nonnull ResourceLocation model) {
+        Objects.requireNonNull(itemLike, "itemLike");
+        var item = Objects.requireNonNull(itemLike.asItem(), "item.asItem()");
+        Objects.requireNonNull(model, "model");
+        Preconditions.checkArgument(!registry.containsKey(item), "Cannot register an item twice.");
+
+        registry.put(item, model);
+    }
 
     /**
      * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
      * drive or similar.
      * 
-     * @param item
+     * @param itemLike
      * @return null, if no model is registered.
      */
     @Nullable
-    ResourceLocation model(@Nonnull Item item);
+    public synchronized static ResourceLocation model(@Nonnull ItemLike itemLike) {
+        Objects.requireNonNull(itemLike, "itemLike");
+        var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
+
+        return registry.get(item);
+    }
 
     /**
-     * An unmodifiable map of all registered mappings.
-     * 
-     * @return
+     * A copy of all registered mappings.
      */
     @Nonnull
-    Map<Item, ResourceLocation> models();
+    public synchronized static Map<Item, ResourceLocation> models() {
+        return new HashMap<>(registry);
+    }
 
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
     @Nonnull
-    ResourceLocation getDefaultModel();
+    public static ResourceLocation getDefaultModel() {
+        return MODEL_CELL_DEFAULT;
+    }
 
 }
