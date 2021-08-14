@@ -51,8 +51,6 @@ public final class WorldData implements IWorldData {
 
     @Nullable
     private static MinecraftServer server;
-
-    private final IWorldGridStorageData storageData;
     private final IWorldCompassData compassData;
 
     private WorldData(@Nonnull final ServerLevel overworld) {
@@ -63,14 +61,14 @@ public final class WorldData implements IWorldData {
             throw new IllegalStateException("The server doesn't have an overworld we could store our data on!");
         }
 
-        final StorageData storageData = overworld.getDataStorage().computeIfAbsent(StorageData::load, StorageData::new,
-                StorageData.NAME);
+        final GridStorageData storageData = overworld.getDataStorage().computeIfAbsent(GridStorageData::load,
+                GridStorageData::new,
+                GridStorageData.NAME);
 
         final ThreadFactory compassThreadFactory = new CompassThreadFactory();
         final CompassService compassService = new CompassService(server, compassThreadFactory);
         final CompassData compassData = new CompassData(compassService);
 
-        this.storageData = storageData;
         this.compassData = compassData;
 
     }
@@ -116,12 +114,6 @@ public final class WorldData implements IWorldData {
         compassData.service().kill();
         instance = null;
         WorldData.server = null;
-    }
-
-    @Nonnull
-    @Override
-    public IWorldGridStorageData storageData() {
-        return this.storageData;
     }
 
     @Nonnull

@@ -22,10 +22,11 @@ import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
-import appeng.core.worlddata.WorldData;
+import appeng.core.worlddata.IGridStorageData;
 
 public class GridStorage implements IGridStorage {
 
@@ -96,7 +97,7 @@ public class GridStorage implements IGridStorage {
         return this.divided.containsKey(myStorage);
     }
 
-    void remove() {
-        WorldData.instance().storageData().destroyGridStorage(this.myID);
+    void remove(MinecraftServer server) {
+        IGridStorageData.get(server).destroyGridStorage(this.myID);
     }
 }

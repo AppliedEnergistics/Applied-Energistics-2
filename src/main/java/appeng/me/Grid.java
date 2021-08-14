@@ -34,7 +34,7 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
-import appeng.core.worlddata.WorldData;
+import appeng.core.worlddata.IGridStorageData;
 import appeng.hooks.ticking.TickHandler;
 
 public class Grid implements IGrid {
@@ -97,7 +97,7 @@ public class Grid implements IGrid {
             } else {
                 this.pivot = null;
                 TickHandler.instance().removeNetwork(this);
-                this.myStorage.remove();
+                this.myStorage.remove(gridNode.getLevel().getServer());
             }
         }
     }
@@ -118,7 +118,7 @@ public class Grid implements IGrid {
                 }
             } else if (grid != this) {
                 if (this.myStorage == null) {
-                    this.myStorage = WorldData.instance().storageData().getNewGridStorage();
+                    this.myStorage = IGridStorageData.get(getPivot().getLevel().getServer()).getNewGridStorage();
                     this.myStorage.setGrid(this);
                 }
 
@@ -136,7 +136,7 @@ public class Grid implements IGrid {
                 }
             }
         } else if (this.myStorage == null) {
-            this.myStorage = WorldData.instance().storageData().getNewGridStorage();
+            this.myStorage = IGridStorageData.get(getPivot().getLevel().getServer()).getNewGridStorage();
             this.myStorage.setGrid(this);
         }
 

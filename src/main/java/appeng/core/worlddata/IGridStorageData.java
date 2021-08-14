@@ -20,6 +20,9 @@ package appeng.core.worlddata;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+
 import appeng.me.GridStorage;
 
 /**
@@ -27,7 +30,19 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldGridStorageData {
+public interface IGridStorageData {
+
+    static IGridStorageData get(MinecraftServer server) {
+        var overworld = server.getLevel(ServerLevel.OVERWORLD);
+        if (overworld == null) {
+            throw new IllegalStateException("Cannot retrieve grid storage data for a server that has no overworld.");
+        }
+        return overworld.getDataStorage().computeIfAbsent(
+                GridStorageData::load,
+                GridStorageData::new,
+                GridStorageData.NAME);
+    }
+
     GridStorage getGridStorage(long storageID);
 
     @Nonnull

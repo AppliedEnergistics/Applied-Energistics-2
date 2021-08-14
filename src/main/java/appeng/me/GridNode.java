@@ -56,7 +56,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
-import appeng.core.worlddata.WorldData;
+import appeng.core.worlddata.IGridStorageData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IGridNode, IPathItem {
@@ -379,7 +379,7 @@ public class GridNode implements IGridNode, IPathItem {
             this.setLastSecurityKey(node.getLong("k"));
 
             final long storageID = node.getLong("g");
-            final GridStorage gridStorage = WorldData.instance().storageData().getGridStorage(storageID);
+            final GridStorage gridStorage = IGridStorageData.get(getLevel().getServer()).getGridStorage(storageID);
             this.setGridStorage(gridStorage);
         } else {
             this.owningPlayerId = -1; // Unknown owner

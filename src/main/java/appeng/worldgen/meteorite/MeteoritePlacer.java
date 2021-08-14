@@ -40,7 +40,7 @@ import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
-import appeng.core.worlddata.WorldData;
+import appeng.core.worlddata.IGridStorageData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.fallout.Fallout;
@@ -221,7 +221,7 @@ public final class MeteoritePlacer {
                         duplicate = false;
 
                         if (Math.random() > PRESSES_SPAWN_CHANCE) {
-                            r = WorldData.instance().storageData().getNextOrderedValue("presses", 0);
+                            r = IGridStorageData.get(level.getServer()).getNextOrderedValue("presses", 0);
                         } else {
                             r = (int) (Math.random() * 1000);
                         }
