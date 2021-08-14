@@ -24,14 +24,11 @@ import com.google.gson.JsonObject;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
-import appeng.core.registries.PartModels;
-
 public class CableBusModelLoader implements IModelLoader<CableBusModel> {
 
-    private final PartModels partModels;
+    public static final CableBusModelLoader INSTANCE = new CableBusModelLoader();
 
-    public CableBusModelLoader(PartModels partModels) {
-        this.partModels = partModels;
+    private CableBusModelLoader() {
     }
 
     @Override
@@ -40,7 +37,7 @@ public class CableBusModelLoader implements IModelLoader<CableBusModel> {
 
     @Override
     public CableBusModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-        return new CableBusModel(partModels);
+        return new CableBusModel();
     }
 
 }

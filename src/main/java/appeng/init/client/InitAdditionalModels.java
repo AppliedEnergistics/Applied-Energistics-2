@@ -22,9 +22,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
 
+import appeng.api.parts.PartModelsInternal;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
-import appeng.core.Api;
-import appeng.core.registries.PartModels;
 
 /**
  * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
@@ -35,9 +34,8 @@ public class InitAdditionalModels {
     public static void init() {
         ModelLoader.addSpecialModel(MolecularAssemblerRenderer.LIGHTS_MODEL);
 
-        PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
-        partModels.getModels().forEach(ModelLoader::addSpecialModel);
-        partModels.setInitialized(true);
+        PartModelsInternal.freeze();
+        PartModelsInternal.getModels().forEach(ModelLoader::addSpecialModel);
     }
 
 }

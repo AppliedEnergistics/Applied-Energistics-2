@@ -30,7 +30,6 @@ import appeng.core.api.ApiCrafting;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
-import appeng.core.registries.PartModels;
 import appeng.core.registries.RegistryContainer;
 
 public final class Api implements IAppEngApi {
@@ -69,10 +68,6 @@ public final class Api implements IAppEngApi {
         this.partHelper = new ApiPart();
         this.craftingHelper = new ApiCrafting();
         this.client = new ApiClientHelper();
-    }
-
-    public PartModels getPartModels() {
-        return (PartModels) this.registryContainer.partModels();
     }
 
     @Override
