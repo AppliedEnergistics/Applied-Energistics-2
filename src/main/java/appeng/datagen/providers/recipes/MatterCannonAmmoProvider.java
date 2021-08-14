@@ -27,7 +27,7 @@ public class MatterCannonAmmoProvider extends RecipeProvider {
         registerAmmoTag(consumer, "nuggets/sheep", new ResourceLocation("forge:nuggets/sheep"), 32);
         registerAmmoTag(consumer, "nuggets/fish", new ResourceLocation("forge:nuggets/fish"), 32);
 
-        // real level...
+        // derived from real world atomic mass...
         registerAmmoTag(consumer, "nuggets/lithium", new ResourceLocation("forge:nuggets/lithium"), 6.941f);
         registerAmmoTag(consumer, "nuggets/beryllium", new ResourceLocation("forge:nuggets/beryllium"), 9.0122f);
         registerAmmoTag(consumer, "nuggets/boron", new ResourceLocation("forge:nuggets/boron"), 10.811f);
