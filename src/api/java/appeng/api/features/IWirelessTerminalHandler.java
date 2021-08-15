@@ -40,9 +40,9 @@ public interface IWirelessTerminalHandler {
 
     /**
      * Gets the key of the grid that the wireless terminal is linked to. This can be empty to signal that the terminal
-     * screen should be closed or be otherwise unavailable. The grid will be looked up using the {@link Locatables}. To
-     * support setting the grid key using the standard security station slot, register a {@link IGridLinkableHandler}
-     * for your item.
+     * screen should be closed or be otherwise unavailable. The grid will be looked up using
+     * {@link Locatables#securityStations()}. To support setting the grid key using the standard security station slot,
+     * register a {@link IGridLinkableHandler} for your item.
      */
     OptionalLong getGridKey(ItemStack is);
 
