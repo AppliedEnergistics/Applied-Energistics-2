@@ -38,6 +38,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -45,7 +46,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IInterfaceHost;
@@ -78,7 +78,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
+        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

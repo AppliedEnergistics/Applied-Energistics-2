@@ -28,6 +28,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
@@ -41,7 +42,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.parts.AEBasePart;
@@ -75,7 +75,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
+        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

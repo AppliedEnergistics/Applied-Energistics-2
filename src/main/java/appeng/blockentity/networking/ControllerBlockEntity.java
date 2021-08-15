@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
@@ -39,14 +40,13 @@ import appeng.api.util.AECableType;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.core.Api;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
     static {
-        Api.instance().grid().addNodeOwnerEventHandler(
+        AEApi.grid().addNodeOwnerEventHandler(
                 GridControllerChange.class,
                 ControllerBlockEntity.class,
                 ControllerBlockEntity::updateState);

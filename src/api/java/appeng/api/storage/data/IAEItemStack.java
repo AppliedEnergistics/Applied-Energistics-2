@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
  *
  * Don't Implement.
  *
- * Construct with Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class).createStack( ItemStack )
+ * Construct with IAppEngApi.instance().storage().getStorageChannel( IItemStorageChannel.class).createStack( ItemStack )
  */
 public interface IAEItemStack extends IAEStack<IAEItemStack> {
 

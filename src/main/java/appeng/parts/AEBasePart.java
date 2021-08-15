@@ -45,6 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
@@ -63,7 +64,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -94,7 +94,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE);
+        return AEApi.grid().createManagedNode(this, NodeListener.INSTANCE);
     }
 
     /**

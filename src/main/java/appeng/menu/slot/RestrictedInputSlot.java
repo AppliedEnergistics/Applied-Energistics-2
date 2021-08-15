@@ -31,6 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
@@ -44,7 +45,6 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
@@ -114,7 +114,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final ICraftingHelper crafting = Api.instance().crafting();
+        final ICraftingHelper crafting = AEApi.crafting();
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
@@ -246,7 +246,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             // Allow either an empty slot, or a valid encoded pattern
             ItemStack stack = getItem();
-            return stack.isEmpty() || Api.instance().crafting().decodePattern(stack, getLevel()) != null;
+            return stack.isEmpty() || AEApi.crafting().decodePattern(stack, getLevel()) != null;
         }
         return true;
     }

@@ -36,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
@@ -46,7 +47,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
@@ -89,7 +89,7 @@ public class DebugCardItem extends AEBaseItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            var gh = Api.instance().grid().getNodeHost(level, pos);
+            var gh = AEApi.grid().getNodeHost(level, pos);
             if (gh != null) {
                 this.outputMsg(player, "---------------------------------------------------");
                 var node = (GridNode) gh.getGridNode(side);

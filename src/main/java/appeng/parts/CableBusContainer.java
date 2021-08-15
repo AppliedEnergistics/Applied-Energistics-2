@@ -50,6 +50,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants;
 
+import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
@@ -71,7 +72,6 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
 import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
 import appeng.me.GridConnection;
@@ -376,7 +376,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             }
         }
 
-        if (Api.instance().partHelper().getCableRenderMode().opaqueFacades) {
+        if (AEApi.partHelper().getCableRenderMode().opaqueFacades) {
             final IFacadeContainer fc = this.getFacadeContainer();
             for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
                 final IFacadePart p = fc.getFacade(side);
@@ -545,7 +545,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
                                 try {
-                                    Api.instance().grid().createGridConnection(cn, sn);
+                                    AEApi.grid().createGridConnection(cn, sn);
                                 } catch (final FailedConnectionException e) {
                                     // ekk
                                     AELog.debug(e);
@@ -946,7 +946,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 // Dense cables however also respect the adjacent cable-type since their outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getBlockEntity().getBlockPos().relative(facing);
-                var adjacentHost = Api.instance().grid().getNodeHost(getBlockEntity().getLevel(), adjacentPos);
+                var adjacentHost = AEApi.grid().getNodeHost(getBlockEntity().getLevel(), adjacentPos);
 
                 if (adjacentHost != null) {
                     var adjacentType = adjacentHost.getCableConnectionType(facing.getOpposite());
@@ -1073,7 +1073,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 part.getBoxes(bch);
             }
 
-            if ((Api.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision)
+            if ((AEApi.partHelper().getCableRenderMode().opaqueFacades || forCollision)
                     && s != AEPartLocation.INTERNAL) {
                 final IFacadePart fp = fc.getFacade(s);
                 if (fp != null) {

@@ -44,6 +44,7 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.world.level.Level;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -75,7 +76,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
-import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
@@ -102,11 +102,11 @@ public class CraftingService
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
+        AEApi.grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
                 (service, event) -> {
                     ((CraftingService) service).updatePatterns();
                 });
-        Api.instance().grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
+        AEApi.grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
                 (service, event) -> {
                     ((CraftingService) service).updateList = true;
                 });

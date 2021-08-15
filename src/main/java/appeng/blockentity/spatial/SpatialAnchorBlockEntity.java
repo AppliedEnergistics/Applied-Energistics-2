@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
+import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.GridFlags;
@@ -58,7 +59,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
-import appeng.core.Api;
 import appeng.me.service.StatisticsService;
 import appeng.services.ChunkLoadingService;
 import appeng.util.ConfigManager;
@@ -68,9 +68,9 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource {
 
     static {
-        Api.instance().grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
+        AEApi.grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
                 SpatialAnchorBlockEntity::chunkAdded);
-        Api.instance().grid().addNodeOwnerEventHandler(GridChunkRemoved.class, SpatialAnchorBlockEntity.class,
+        AEApi.grid().addNodeOwnerEventHandler(GridChunkRemoved.class, SpatialAnchorBlockEntity.class,
                 SpatialAnchorBlockEntity::chunkRemoved);
     }
 

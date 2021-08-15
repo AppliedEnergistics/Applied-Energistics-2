@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -33,7 +34,6 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.util.InventoryAdaptor;
 
 public class MultiCraftingTracker {
@@ -54,7 +54,7 @@ public class MultiCraftingTracker {
             final CompoundTag link = extra.getCompound("links-" + x);
 
             if (link != null && !link.isEmpty()) {
-                this.setLink(x, Api.instance().storage().loadCraftingLink(link, this.owner));
+                this.setLink(x, AEApi.storage().loadCraftingLink(link, this.owner));
             }
         }
     }

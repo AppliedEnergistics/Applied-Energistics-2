@@ -43,7 +43,7 @@ public interface IInWorldGridNodeHost {
      * calling updateState, you can join the Grid when your block is ready.
      *
      * @param dir feel free to ignore this, most blocks will use the same node for every side.
-     * @return a IGridNode, create these with AEApi.INSTANCE().createGridNode( MyIGridBlock )
+     * @return a IGridNode, create these with IAppEngApi.instance().createGridNode( MyIGridBlock )
      */
     @Nullable
     IGridNode getGridNode(@Nonnull Direction dir);

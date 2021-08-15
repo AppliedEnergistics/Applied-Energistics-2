@@ -180,7 +180,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
                 return null;
             }
         } catch (final Throwable t) {
-            AELog.debug(t);
+            AELog.warn(t);
         }
 
         stream.capacity(stream.readableBytes());

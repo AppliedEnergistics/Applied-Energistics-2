@@ -25,10 +25,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.core.Api;
 import appeng.me.helpers.BlockEntityNodeListener;
 
 public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
@@ -52,7 +52,7 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
     @Override
     public void onReady() {
         super.onReady();
-        this.proxy = Api.instance().grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE)
+        this.proxy = AEApi.grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(getItemFromBlockEntity());
         this.proxy.create(level, worldPosition);

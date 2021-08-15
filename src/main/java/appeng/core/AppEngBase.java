@@ -199,8 +199,6 @@ public abstract class AppEngBase implements AppEng {
         NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 
         ChunkLoadingService.register();
-
-        AddonLoader.loadAddons(Api.INSTANCE);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> event) {

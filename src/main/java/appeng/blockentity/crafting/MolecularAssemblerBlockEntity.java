@@ -37,6 +37,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
@@ -56,7 +57,6 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
@@ -215,7 +215,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final Level level = this.getLevel();
-                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(myPat, level);
+                final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(myPat, level);
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
                     this.myPlan = ph;
@@ -240,7 +240,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.isSame(is, this.myPattern)) {
                 final Level level = this.getLevel();
-                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, level);
+                final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(is, level);
 
                 if (ph != null && ph.isCraftable()) {
                     this.progress = 0;

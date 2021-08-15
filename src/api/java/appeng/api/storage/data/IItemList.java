@@ -32,9 +32,10 @@ import appeng.api.storage.IStorageChannel;
  *
  * Don't Implement.
  *
- * Construct with - For items: Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class).createList() - For
- * fluids: Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class).createList() - Replace with the
- * corresponding {@link IStorageChannel} type for non native channels
+ * Construct with - For items: IAppEngApi.instance().storage().getStorageChannel(
+ * IItemStorageChannel.class).createList() - For fluids: IAppEngApi.instance().storage().getStorageChannel(
+ * IFluidStorageChannel.class).createList() - Replace with the corresponding {@link IStorageChannel} type for non native
+ * channels
  */
 public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T> {
 

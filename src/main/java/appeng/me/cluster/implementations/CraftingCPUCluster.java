@@ -37,6 +37,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -63,7 +64,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingEvent;
 import appeng.crafting.CraftingJob;
@@ -1117,7 +1117,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         for (int x = 0; x < list.size(); x++) {
             final CompoundTag item = list.getCompound(x);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            ICraftingHelper craftingHelper = Api.instance().crafting();
+            ICraftingHelper craftingHelper = AEApi.crafting();
             if (craftingHelper.isEncodedPattern(pattern)) {
                 final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
                         this.getLevel());
