@@ -36,13 +36,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAgent;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
@@ -68,7 +68,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         if (pos == null) {
             return new NetworkToolViewer(is, null, level.isClientSide());
         }
-        var host = Api.instance().grid().getNodeHost(level, pos);
+        var host = AEApi.grid().getNodeHost(level, pos);
         return new NetworkToolViewer(is, host, level.isClientSide());
     }
 
@@ -131,7 +131,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         }
 
         // The network tool has special behavior for machines hosting world-accessible nodes
-        var nodeHost = Api.instance().grid().getNodeHost(level, pos);
+        var nodeHost = AEApi.grid().getNodeHost(level, pos);
 
         var bs = level.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {

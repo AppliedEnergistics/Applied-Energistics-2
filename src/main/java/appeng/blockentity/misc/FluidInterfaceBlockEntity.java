@@ -35,6 +35,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -42,7 +43,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.core.Api;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityFluidInterface;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -69,7 +69,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
+        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

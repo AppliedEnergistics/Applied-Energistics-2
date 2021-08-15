@@ -30,7 +30,8 @@ import net.minecraft.world.item.ItemStack;
 /**
  * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
  *
- * you must register your bus with the Bus renderer, using AEApi.INSTANCE().partHelper().setItemBusRenderer( this );
+ * you must register your bus with the Bus renderer, using IAppEngApi.instance().partHelper().setItemBusRenderer( this
+ * );
  *
  * then simply add this, and call AE's Bus Placement Code.
  *
@@ -40,7 +41,7 @@ import net.minecraft.world.item.ItemStack;
  * {@literal @}Override
  * public default ActionResultType onItemUse(ItemStack is, PlayerEntity player, World level, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
  *	{
- *		return Api.INSTANCE.partHelper().placeBus( is, pos, side, player, hand, level );
+ *		return IAppEngApi.instance().partHelper().placeBus( is, pos, side, player, hand, level );
  *	}
  * </code>
  * </pre>

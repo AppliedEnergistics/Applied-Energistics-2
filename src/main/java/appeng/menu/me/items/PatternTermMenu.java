@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
@@ -41,7 +42,6 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IMenuCraftingPacket;
@@ -82,7 +82,7 @@ public class PatternTermMenu extends ItemTerminalMenu
     private final PatternTermSlot craftOutputSlot;
     private final RestrictedInputSlot blankPatternSlot;
     private final RestrictedInputSlot encodedPatternSlot;
-    private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
+    private final ICraftingHelper craftingHelper = AEApi.crafting();
 
     private CraftingRecipe currentRecipe;
     private boolean currentRecipeCraftingMode;

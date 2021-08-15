@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -43,7 +44,6 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
@@ -76,7 +76,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
         var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
 
-        Api.instance().client().addCellInformation(cdi, lines);
+        AEApi.client().addCellInformation(cdi, lines);
     }
 
     @Override

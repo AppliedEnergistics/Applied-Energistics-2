@@ -47,11 +47,11 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.LogicalSide;
 
+import appeng.api.AEApi;
 import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEngClient;
 import appeng.crafting.CraftingJob;
 import appeng.items.misc.PaintBallItem;
@@ -238,7 +238,7 @@ public class TickHandler {
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
             this.tickColors(this.cliPlayerColors);
-            final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
+            final CableRenderMode currentMode = AEApi.partHelper().getCableRenderMode();
 
             // Handle changes to the cable-rendering mode
             if (currentMode != this.crm) {

@@ -53,6 +53,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -90,7 +91,6 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIInventory;
@@ -400,7 +400,7 @@ public class DualityItemInterface
     }
 
     private void addToCraftingList(final ItemStack is) {
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
+        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(is,
                 this.iHost.getBlockEntity().getLevel());
 
         if (details != null) {

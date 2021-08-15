@@ -25,12 +25,12 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
-import appeng.core.Api;
 
 /**
  * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and
@@ -51,7 +51,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE);
+        return AEApi.grid().createManagedNode(this, NodeListener.INSTANCE);
     }
 
     @Override
@@ -75,12 +75,13 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
         var flags = 0;
 
         var node = getMainNode().getNode();
-        if (node.isPowered()) {
-            flags |= POWERED_FLAG;
-        }
-
-        if (node.meetsChannelRequirements()) {
-            flags |= CHANNEL_FLAG;
+        if (node != null) {
+            if (node.isPowered()) {
+                flags |= POWERED_FLAG;
+            }
+            if (node.meetsChannelRequirements()) {
+                flags |= CHANNEL_FLAG;
+            }
         }
 
         return flags;

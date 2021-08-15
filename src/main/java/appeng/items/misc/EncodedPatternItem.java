@@ -47,10 +47,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
+import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
@@ -114,7 +114,7 @@ public class EncodedPatternItem extends AEBaseItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, level);
+        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(stack, level);
 
         if (details == null) {
             if (!stack.hasTag()) {
@@ -212,7 +212,7 @@ public class EncodedPatternItem extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
-        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, level);
+        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(item, level);
 
         out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
 

@@ -27,12 +27,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
@@ -105,7 +105,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
-            final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
+            final ICraftingPatternDetails details = AEApi.crafting().decodePattern(is,
                     this.getHost().getBlockEntity().getLevel());
             if (details != null) {
                 this.setCraftingRecipe(details.isCraftable());

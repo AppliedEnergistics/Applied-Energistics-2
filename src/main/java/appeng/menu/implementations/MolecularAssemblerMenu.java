@@ -25,10 +25,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -69,7 +69,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
 
         if (is.getItem() instanceof EncodedPatternItem) {
             final Level level = this.getBlockEntity().getLevel();
-            final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, level);
+            final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(is, level);
             if (ph != null && ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, level);
             }

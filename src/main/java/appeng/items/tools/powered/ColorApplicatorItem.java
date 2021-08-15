@@ -52,6 +52,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
@@ -68,7 +69,6 @@ import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
@@ -359,7 +359,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final ICellInventoryHandler<IAEItemStack> cdi = StorageCells.getCellInventory(stack, null,
                 StorageChannels.items());
 
-        Api.instance().client().addCellInformation(cdi, lines);
+        AEApi.client().addCellInformation(cdi, lines);
     }
 
     @Override

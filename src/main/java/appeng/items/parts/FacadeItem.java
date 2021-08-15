@@ -42,10 +42,10 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.api.AEApi;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
@@ -68,7 +68,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return Api.instance().partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(),
+        return AEApi.partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(),
                 context.getPlayer(),
                 context.getHand(), context.getLevel());
     }

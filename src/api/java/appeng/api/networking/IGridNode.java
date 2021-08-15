@@ -36,7 +36,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.IAppEngApi;
+import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.util.AEColor;
@@ -46,7 +46,7 @@ import appeng.api.util.AEColor;
  * <p>
  * updateState, getGrid, destroy are required to implement a proper IGridHost.
  * <p>
- * Don't Implement; Acquire from {@link IAppEngApi}.createGridNode
+ * Don't Implement; Acquire from {@link AEApi}.createGridNode
  */
 public interface IGridNode {
 

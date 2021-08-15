@@ -36,6 +36,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -43,7 +44,6 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
@@ -73,7 +73,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        Api.instance().client().addCellInformation(
+        AEApi.client().addCellInformation(
                 StorageCells.getCellInventory(stack, null, this.getChannel()), lines);
     }
 

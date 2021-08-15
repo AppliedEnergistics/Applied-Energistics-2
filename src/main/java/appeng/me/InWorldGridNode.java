@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
@@ -35,7 +36,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 
 /**
@@ -59,7 +59,7 @@ public class InWorldGridNode extends GridNode {
     protected void findInWorldConnections() {
         final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
 
-        var gridApi = Api.INSTANCE.grid();
+        var gridApi = AEApi.grid();
 
         // Clean up any connections that we might have left over to nodes that we can no longer reach
         cleanupConnections();

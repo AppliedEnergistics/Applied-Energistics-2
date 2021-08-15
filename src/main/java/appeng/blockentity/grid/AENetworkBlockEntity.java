@@ -26,12 +26,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.core.Api;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
@@ -44,7 +44,7 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
             .setTagName("proxy");
 
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE);
+        return AEApi.grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE);
     }
 
     public AENetworkBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {

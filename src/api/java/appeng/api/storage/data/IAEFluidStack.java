@@ -34,7 +34,8 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * Don't Implement.
  *
- * Construct with Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class).createStack( FluidStack )
+ * Construct with IAppEngApi.instance().storage().getStorageChannel( IFluidStorageChannel.class).createStack( FluidStack
+ * )
  */
 public interface IAEFluidStack extends IAEStack<IAEFluidStack> {
 

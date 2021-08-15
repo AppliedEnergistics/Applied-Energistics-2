@@ -36,6 +36,7 @@ import com.google.common.collect.Sets;
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,7 +55,6 @@ import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.pathing.IPathingService;
-import appeng.core.Api;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
@@ -63,12 +63,13 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyService implements IEnergyService, IEnergyGridProvider, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
+        AEApi.grid().addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
                 (service, event) -> {
                     ((EnergyService) service).nodeIdlePowerChangeHandler(event);
                 });
 
-        Api.instance().grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class, IEnergyService.class,
+        AEApi.grid().addGridServiceEventHandler(GridPowerStorageStateChanged.class,
+                IEnergyService.class,
                 (service, event) -> {
                     ((EnergyService) service).storagePowerChangeHandler(event);
                 });

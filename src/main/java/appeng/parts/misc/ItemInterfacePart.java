@@ -34,6 +34,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -46,7 +47,6 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityItemInterface;
@@ -102,7 +102,7 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return Api.instance().grid().createManagedNode(this, NODE_LISTENER);
+        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

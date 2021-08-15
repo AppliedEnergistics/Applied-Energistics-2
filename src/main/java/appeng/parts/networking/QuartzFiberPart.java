@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -39,7 +40,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.service.EnergyService;
@@ -60,7 +60,7 @@ public class QuartzFiberPart extends AEBasePart {
                 .setIdlePowerUsage(0)
                 .setFlags(GridFlags.CANNOT_CARRY)
                 .addService(IEnergyGridProvider.class, energyBridge);
-        this.outerNode = Api.instance().grid().createManagedNode(this, NodeListener.INSTANCE)
+        this.outerNode = AEApi.grid().createManagedNode(this, NodeListener.INSTANCE)
                 .setTagName("outer")
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(is)

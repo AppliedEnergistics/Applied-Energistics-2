@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.AEApi;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -37,7 +38,6 @@ import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.core.Api;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
@@ -51,7 +51,8 @@ import appeng.me.pathfinding.PathSegment;
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 
     static {
-        Api.instance().grid().addGridServiceEventHandler(GridChannelRequirementChanged.class, IPathingService.class,
+        AEApi.grid().addGridServiceEventHandler(GridChannelRequirementChanged.class,
+                IPathingService.class,
                 (service, event) -> {
                     ((PathServiceService) service).updateNodReq(event);
                 });

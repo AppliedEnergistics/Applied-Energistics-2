@@ -57,6 +57,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
@@ -70,7 +71,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.PlayerMessages;
@@ -107,7 +107,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
         var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
 
-        Api.instance().client().addCellInformation(cdi, lines);
+        AEApi.client().addCellInformation(cdi, lines);
     }
 
     @Override

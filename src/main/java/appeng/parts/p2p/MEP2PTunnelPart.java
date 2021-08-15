@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -41,13 +42,11 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
-import appeng.parts.AEBasePart;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -60,8 +59,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     private final Connections connection = new Connections(this);
 
-    private final IManagedGridNode outerNode = Api.instance().grid()
-            .createManagedNode(this, AEBasePart.NodeListener.INSTANCE)
+    private final IManagedGridNode outerNode = AEApi.grid()
+            .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
@@ -188,7 +187,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
             for (final MEP2PTunnelPart me : newSides) {
                 try {
-                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
+                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, AEApi
                             .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
                 } catch (final FailedConnectionException e) {
                     final BlockEntity start = this.getBlockEntity();

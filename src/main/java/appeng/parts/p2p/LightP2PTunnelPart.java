@@ -75,7 +75,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
-        super.readFromStream(data);
+        boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
         final int oldOpacity = this.opacity;
 
@@ -83,7 +83,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         this.opacity = data.readInt();
 
         this.setOutput(this.lastValue > 0);
-        return this.lastValue != oldValue || oldOpacity != this.opacity;
+        return changed || this.lastValue != oldValue || oldOpacity != this.opacity;
     }
 
     private boolean doWork() {
