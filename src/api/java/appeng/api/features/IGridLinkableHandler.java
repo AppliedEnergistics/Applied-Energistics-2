@@ -4,8 +4,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Handles the linking of items to specific grids when they're put into the security terminal linking slot.
- * <p/>
- * 
+ *
  * @see GridLinkables
  */
 public interface IGridLinkableHandler {
@@ -17,6 +16,8 @@ public interface IGridLinkableHandler {
 
     /**
      * Link the given stack to the given grid security key.
+     * <p/>
+     * The security key can be used to obtain the security station using {@link Locatables#securityStations()}.
      */
     void link(ItemStack itemStack, long securityKey);
 
