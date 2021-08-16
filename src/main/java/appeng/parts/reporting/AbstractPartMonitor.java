@@ -82,6 +82,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	private IAEItemStack configuredItem;
 	private IAEFluidStack configuredFluid;
+	private long configuredAmount;
 	private String lastHumanReadableText;
 	private boolean isLocked;
 	private IStackWatcher myWatcher;
@@ -211,11 +212,11 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			if (fluidInTank == null)
 			{
 				this.configuredFluid = null;
-				this.configuredItem = AEItemStack.fromItemStack( eq );
+				this.configuredItem = AEItemStack.fromItemStack( eq ).setStackSize( 0 );
 			}
 			else if( fluidInTank.amount > 0 )
 			{
-				this.configuredFluid = AEFluidStack.fromFluidStack( fluidInTank );
+				this.configuredFluid = AEFluidStack.fromFluidStack( fluidInTank ).setStackSize( 0 );
 				this.configuredItem = null;
 			}
 
@@ -305,11 +306,11 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			final IAEItemStack result = (IAEItemStack) monitor.getStorageList().findPrecise( (T) this.configuredItem );
 			if( result == null )
 			{
-				this.configuredItem.setStackSize( 0 );
+				this.configuredAmount = 0;
 			}
 			else
 			{
-				this.configuredItem.setStackSize( result.getStackSize() );
+				this.configuredAmount = result.getStackSize();
 			}
 		}
 		else if( this.configuredFluid != null)
@@ -317,11 +318,11 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			final IAEFluidStack result = (IAEFluidStack) monitor.getStorageList().findPrecise( (T) this.configuredFluid );
 			if( result == null )
 			{
-				this.configuredFluid.setStackSize( 0 );
+				this.configuredAmount = 0;
 			}
 			else
 			{
-				this.configuredFluid.setStackSize( result.getStackSize() );
+				this.configuredAmount = result.getStackSize();
 			}
 		}
 	}
@@ -390,108 +391,35 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	@MENetworkEventSubscribe
 	public void powerStatusChange( final MENetworkPowerStatusChange ev )
 	{
-		if( !this.getProxy().isPowered() )
+		if( this.getProxy().isPowered() )
 		{
-			if( this.myWatcher != null )
-			{
-				if( this.configuredItem != null )
-				{
-					this.configuredItem.setStackSize( 0 );
-				}
-				if( this.configuredFluid != null )
-				{
-					this.configuredFluid.setStackSize( 0 );
-				}
-			}
-		}
-		else
-		{
-			try
-			{
-				if( this.configuredItem != null )
-				{
-					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
-				}
-				if( this.configuredFluid != null )
-				{
-					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
-				}
-			}
-			catch( final GridAccessException e )
-			{
-				// ;P
-			}
+			this.configureWatchers();
 		}
 	}
 
 	@MENetworkEventSubscribe
 	public void channelChanged( final MENetworkChannelsChanged c )
 	{
-		if( !this.getProxy().isPowered() )
+		if( this.getProxy().isPowered() )
 		{
-			if( this.myWatcher != null )
-			{
-				if( this.configuredItem != null )
-				{
-					this.configuredItem.setStackSize( 0 );
-				}
-				if( this.configuredFluid != null )
-				{
-					this.configuredFluid.setStackSize( 0 );
-				}
-			}
-		}
-		else
-		{
-			try
-			{
-				if( this.configuredItem != null )
-				{
-					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
-				}
-				if( this.configuredFluid != null )
-				{
-					this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
-				}
-			}
-			catch( final GridAccessException e )
-			{
-				// ;P
-			}
+			this.configureWatchers();
 		}
 	}
 
 	@Override
 	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
 	{
+		this.configuredAmount = this.configuredAmount + diffStack.getStackSize();
+
 		if( this.configuredItem != null )
 		{
-			long diff = this.configuredItem.getStackSize() + diffStack.getStackSize();
-			this.configuredItem.setStackSize( diff >= 0 ? this.configuredItem.getStackSize() + diffStack.getStackSize() : 0 );
-
-			final long stackSize = this.configuredItem.getStackSize();
-			final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm( stackSize );
-
-			if( !humanReadableText.equals( this.lastHumanReadableText ) )
-			{
-				this.lastHumanReadableText = humanReadableText;
-				this.getHost().markForUpdate();
-			}
+			this.configuredItem.setStackSize( this.configuredAmount );
 		}
 		else if( this.configuredFluid != null )
 		{
-			long diff = this.configuredFluid.getStackSize() + diffStack.getStackSize();
-			this.configuredFluid.setStackSize( diff >= 0 ? this.configuredFluid.getStackSize() + diffStack.getStackSize() : 0 );
-
-			final long stackSize = this.configuredFluid.getStackSize() / 1000;
-			final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm( stackSize ) + "B";
-
-			if( !humanReadableText.equals( this.lastHumanReadableText ) )
-			{
-				this.lastHumanReadableText = humanReadableText;
-				this.getHost().markForUpdate();
-			}
+			this.configuredFluid.setStackSize( this.configuredAmount );
 		}
+		this.getHost().markForUpdate();
 	}
 
 	@Override

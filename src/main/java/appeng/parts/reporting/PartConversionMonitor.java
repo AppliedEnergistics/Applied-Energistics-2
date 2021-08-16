@@ -137,14 +137,15 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			{
 				this.insertItem( player, hand, false );
 			}
-
 		}
 
 		//If its a fluid container, grab its fluidstack. if its empty pass its itemstack;
 
-		if (eq.isEmpty()){
+		if( eq.isEmpty() )
+		{
 			return super.onPartActivate( player, hand, pos );
 		}
+
 		if( fluidInTank != null && fluidInTank.amount > 0 )
 		{
 			if( getDisplayed() instanceof IAEItemStack || getDisplayed() == null )
@@ -155,22 +156,19 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			{
 				this.drainFluidContainer( player, hand );
 			}
-			else {
+			else
+			{
 				return super.onPartActivate( player, hand, pos );
 			}
+		}
+		else if( this.getDisplayed() != null && this.getDisplayed().equals( eq ) )
+		{
+			this.insertItem( player, hand, false );
 		}
 		else
 		{
-			if( getDisplayed() instanceof IAEFluidStack || getDisplayed() == null )
-			{
-				return super.onPartActivate( player, hand, pos );
-			}
-			if( ( (IAEItemStack) this.getDisplayed() ).equals( eq ) )
-			{
-				this.insertItem( player, hand, false );
-			}
+			return super.onPartActivate( player, hand, pos );
 		}
-
 		return true;
 	}
 
@@ -192,7 +190,6 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			return false;
 		}
 
-		ItemStack eq = player.getHeldItem( hand );
 		if( this.getDisplayed() != null && this.getDisplayed() instanceof IAEItemStack )
 		{
 			this.extractItem( player, ( (IAEItemStack) this.getDisplayed() ).getDefinition().getMaxStackSize() );
@@ -282,7 +279,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	{
 		if (!(this.getDisplayed() instanceof IAEItemStack))
 			return;
-		final IAEItemStack input = (IAEItemStack) this.getDisplayed();
+		final IAEItemStack input = (IAEItemStack) this.getDisplayed().copy();
 		if( input != null )
 		{
 			try
