@@ -141,11 +141,6 @@ public class PartConversionMonitor extends AbstractPartMonitor
 
 		//If its a fluid container, grab its fluidstack. if its empty pass its itemstack;
 
-		if( eq.isEmpty() )
-		{
-			return super.onPartActivate( player, hand, pos );
-		}
-
 		if( fluidInTank != null && fluidInTank.amount > 0 )
 		{
 			if( getDisplayed() instanceof IAEItemStack || getDisplayed() == null )
@@ -161,11 +156,11 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				return super.onPartActivate( player, hand, pos );
 			}
 		}
-		else if( this.getDisplayed() != null && this.getDisplayed().equals( eq ) )
+		else if( this.getDisplayed() != null && this.getDisplayed().equals( player.getHeldItem( hand ) ) )
 		{
 			this.insertItem( player, hand, false );
 		}
-		else
+		else if( !player.getHeldItem( hand ).isEmpty() )
 		{
 			return super.onPartActivate( player, hand, pos );
 		}

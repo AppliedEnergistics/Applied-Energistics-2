@@ -300,7 +300,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	private <T extends IAEStack<T>> void updateReportingValue ( final IMEMonitor<T> monitor )
 	{
-
 		if( this.configuredItem != null)
 		{
 			final IAEItemStack result = (IAEItemStack) monitor.getStorageList().findPrecise( (T) this.configuredItem );
@@ -312,6 +311,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			{
 				this.configuredAmount = result.getStackSize();
 			}
+			this.configuredItem.setStackSize( this.configuredAmount );
 		}
 		else if( this.configuredFluid != null)
 		{
@@ -324,6 +324,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			{
 				this.configuredAmount = result.getStackSize();
 			}
+			this.configuredFluid.setStackSize( this.configuredAmount );
 		}
 	}
 
