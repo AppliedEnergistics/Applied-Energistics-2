@@ -178,7 +178,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return;
 		}
-		if( inv == this.config )
+		if( inv == this.config && ( !removed.isEmpty() || !added.isEmpty() ) )
 		{
 			this.readConfig();
 		}

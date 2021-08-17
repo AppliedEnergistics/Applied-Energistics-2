@@ -25,6 +25,9 @@ import java.util.Objects;
 
 import appeng.fluids.parts.FluidHandlerAdapter;
 import appeng.me.storage.MEPassThrough;
+import appeng.parts.AEBasePart;
+import appeng.tile.misc.TileInterface;
+import appeng.tile.networking.TileCableBus;
 import appeng.util.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import net.minecraft.entity.player.EntityPlayer;
@@ -306,10 +309,19 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
+
 			final TileEntity te = w.getTileEntity( neighbor );
 
 			// In case the TE was destroyed, we have to do a full reset immediately.
-			if( te == null )
+			if( te instanceof TileCableBus )
+			{
+				if( ( (TileCableBus) te ).getPart( this.getSide().getOpposite() ) instanceof PartInterface )
+				{
+					this.resetCache( true );
+					this.resetCache();
+				}
+			}
+			if( te == null || te instanceof TileInterface )
 			{
 				this.resetCache( true );
 				this.resetCache();
