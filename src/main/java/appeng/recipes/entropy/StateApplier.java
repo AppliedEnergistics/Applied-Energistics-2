@@ -60,4 +60,12 @@ class StateApplier<T extends Comparable<T>> {
         return create(stateDefinition, propertyName, value);
     }
 
+    public Property<T> getProperty() {
+        return property;
+    }
+
+    public String getValueName() {
+        return property.getName(value);
+    }
+
 }
