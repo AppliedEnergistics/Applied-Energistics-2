@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.ItemLike;
@@ -12,7 +11,7 @@ import net.minecraft.world.level.ItemLike;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 
-public class MatterCannonAmmoProvider extends RecipeProvider {
+public class MatterCannonAmmoProvider extends AE2RecipeProvider {
     public MatterCannonAmmoProvider(DataGenerator generator) {
         super(generator);
     }

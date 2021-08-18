@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
@@ -16,9 +15,8 @@ import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.IAE2DataProvider;
 
-public class DecorationBlockRecipes extends RecipeProvider implements IAE2DataProvider {
+public class DecorationBlockRecipes extends AE2RecipeProvider {
 
     public DecorationBlockRecipes(DataGenerator generatorIn) {
         super(generatorIn);
