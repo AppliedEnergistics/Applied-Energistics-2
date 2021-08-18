@@ -41,27 +41,20 @@ public class GrinderRecipe implements Recipe<Container> {
     public static final RecipeType<GrinderRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
-    private final String group;
     private final Ingredient ingredient;
     private final int ingredientCount;
     private final ItemStack result;
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
+    public GrinderRecipe(ResourceLocation id, Ingredient ingredient, int ingredientCount,
             ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
-        this.group = group;
         this.ingredient = ingredient;
         this.ingredientCount = ingredientCount;
         this.result = result;
         this.turns = turns;
         this.optionalResults = ImmutableList.copyOf(optionalResults);
-    }
-
-    @Override
-    public String getGroup() {
-        return group;
     }
 
     @Override

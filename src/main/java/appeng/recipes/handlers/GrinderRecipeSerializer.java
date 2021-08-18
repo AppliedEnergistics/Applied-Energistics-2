@@ -42,6 +42,8 @@ import appeng.core.AEConfig;
 public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
         implements RecipeSerializer<GrinderRecipe> {
 
+    public static final int DEFAULT_TURNS = 8;
+
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 
     static {
@@ -53,7 +55,6 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
 
     @Override
     public GrinderRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        String group = GsonHelper.getAsString(json, "group", "");
         JsonObject inputObj = GsonHelper.getAsJsonObject(json, "input");
         Ingredient ingredient = Ingredient.fromJson(inputObj);
         int ingredientCount = 1;
@@ -78,16 +79,15 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
             }
         }
 
-        int turns = GsonHelper.getAsInt(json, "turns", 8);
+        int turns = GsonHelper.getAsInt(json, "turns", DEFAULT_TURNS);
 
-        return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
+        return new GrinderRecipe(recipeId, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
 
     @Nullable
     @Override
     public GrinderRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 
-        String group = buffer.readUtf();
         Ingredient ingredient = Ingredient.fromNetwork(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItem();
@@ -100,12 +100,11 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
             optionalResults.add(new GrinderOptionalResult(chance, optionalResult));
         }
 
-        return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, result, turns, optionalResults);
+        return new GrinderRecipe(recipeId, ingredient, ingredientCount, result, turns, optionalResults);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, GrinderRecipe recipe) {
-        buffer.writeUtf(recipe.getGroup());
         recipe.getIngredient().toNetwork(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());
         buffer.writeItem(recipe.getResultItem());
