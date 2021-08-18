@@ -9,10 +9,8 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
@@ -29,7 +27,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
 
-public class GrinderRecipes extends RecipeProvider {
+public class GrinderRecipes extends AE2RecipeProvider {
 
     public GrinderRecipes(DataGenerator generator) {
         super(generator);
@@ -147,11 +145,11 @@ public class GrinderRecipes extends RecipeProvider {
                 }
 
                 var resultJson = new JsonObject();
-                resultJson.add("primary", writeItemStack(result));
+                resultJson.add("primary", toJson(result));
                 if (!optionalResults.isEmpty()) {
                     var optionalJson = new JsonArray();
                     for (var optionalResult : optionalResults) {
-                        var optionalResultJson = writeItemStack(optionalResult.getResult());
+                        var optionalResultJson = toJson(optionalResult.getResult());
                         if (!Float.isNaN(optionalResult.getChance())) {
                             optionalResultJson.addProperty("percentageChance", optionalResult.getChance() * 100);
                         }
@@ -161,15 +159,6 @@ public class GrinderRecipes extends RecipeProvider {
                 }
                 json.add("result", resultJson);
                 json.addProperty("turns", turns);
-            }
-
-            private static JsonObject writeItemStack(ItemStack result) {
-                var json = new JsonObject();
-                json.addProperty("item", Registry.ITEM.getKey(result.getItem()).toString());
-                if (result.getCount() > 1) {
-                    json.addProperty("count", result.getCount());
-                }
-                return json;
             }
 
             @Override

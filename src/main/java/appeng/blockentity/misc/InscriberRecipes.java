@@ -110,7 +110,7 @@ public final class InscriberRecipes {
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-        return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
+        return new InscriberRecipe(NAMEPLATE_RECIPE_ID, startingItem, renamedItem,
                 plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
                 plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
     }

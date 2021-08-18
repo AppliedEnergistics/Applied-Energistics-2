@@ -60,7 +60,6 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
 
         InscriberProcessType mode = getMode(json);
 
-        String group = GsonHelper.getAsString(json, "group", "");
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
@@ -75,25 +74,23 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
             bottom = Ingredient.fromJson(ingredients.get("bottom"));
         }
 
-        return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
+        return new InscriberRecipe(recipeId, middle, result, top, bottom, mode);
     }
 
     @Nullable
     @Override
     public InscriberRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        String group = buffer.readUtf();
         Ingredient middle = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
         Ingredient top = Ingredient.fromNetwork(buffer);
         Ingredient bottom = Ingredient.fromNetwork(buffer);
         InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
 
-        return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
+        return new InscriberRecipe(recipeId, middle, result, top, bottom, mode);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, InscriberRecipe recipe) {
-        buffer.writeUtf(recipe.getGroup());
         recipe.getMiddleInput().toNetwork(buffer);
         buffer.writeItem(recipe.getResultItem());
         recipe.getTopOptional().toNetwork(buffer);

@@ -25,6 +25,10 @@ public final class ConventionTags {
     public static Tag.Named<Item> ENDER_PEARL = itemConvention("ender_pearls");
     public static Tag.Named<Item> WHEAT_CROP = itemConvention("crops/wheat");
 
+    public static Tag.Named<Item> DIAMOND = itemConvention("gems/diamond");
+    public static Tag.Named<Item> REDSTONE = itemConvention("dusts/redstone");
+    public static Tag.Named<Item> GLOWSTONE = itemConvention("dusts/glowstone");
+
     private static Tag.Named<Item> itemConvention(String name) {
         return ItemTags.bind("forge:" + name);
     }

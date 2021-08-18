@@ -32,13 +32,11 @@ import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 
 public class InscriberRecipe implements Recipe<Container> {
-
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
     public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
-    private final String group;
 
     private final Ingredient middleInput;
     private final Ingredient topOptional;
@@ -46,10 +44,9 @@ public class InscriberRecipe implements Recipe<Container> {
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
+    public InscriberRecipe(ResourceLocation id, Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
-        this.group = group;
         this.middleInput = middleInput;
         this.output = output;
         this.topOptional = topOptional;
@@ -119,10 +116,5 @@ public class InscriberRecipe implements Recipe<Container> {
 
     public InscriberProcessType getProcessType() {
         return processType;
-    }
-
-    @Override
-    public String getGroup() {
-        return group;
     }
 }

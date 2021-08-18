@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -14,7 +13,7 @@ import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipeBuilder;
 
-public class EntropyRecipes extends RecipeProvider {
+public class EntropyRecipes extends AE2RecipeProvider {
     public EntropyRecipes(DataGenerator generator) {
         super(generator);
     }

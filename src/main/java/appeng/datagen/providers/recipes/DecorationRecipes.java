@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -34,9 +33,8 @@ import net.minecraft.world.level.block.Block;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
 
-public class DecorationRecipes extends RecipeProvider implements IAE2DataProvider {
+public class DecorationRecipes extends AE2RecipeProvider {
 
     BlockDefinition<?>[][] blocks = {
             { AEBlocks.SKY_STONE_BLOCK, AEBlocks.SKY_STONE_SLAB, AEBlocks.SKY_STONE_STAIRS,
