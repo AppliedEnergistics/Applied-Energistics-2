@@ -60,6 +60,15 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
         }
     }
 
+    @Override
+    public Property<?> getProperty() {
+        return property;
+    }
+
+    public Set<String> getValueNames() {
+        return propertyValues.stream().map(property::getName).collect(Collectors.toSet());
+    }
+
     public static MultipleValuesMatcher<?> create(StateDefinition<?, ?> stateDefinition, String propertyName,
             List<String> values) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateDefinition, propertyName);

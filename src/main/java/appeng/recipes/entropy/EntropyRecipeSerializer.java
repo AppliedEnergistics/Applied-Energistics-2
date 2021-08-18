@@ -28,7 +28,9 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -298,6 +300,113 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
 
             consumer.accept(StateApplier.create(stateDefinition, key, value));
         });
+    }
+
+    public void toJson(EntropyRecipe recipe, JsonObject json) {
+        json.addProperty("mode", recipe.getMode().name().toLowerCase(Locale.ROOT));
+        json.add("input", serializeInput(recipe));
+        json.add("output", serializeOutput(recipe));
+    }
+
+    private JsonObject serializeInput(EntropyRecipe recipe) {
+        var input = new JsonObject();
+        if (recipe.getInputBlock() != null) {
+            var jsonBlock = new JsonObject();
+            jsonBlock.addProperty("id", Registry.BLOCK.getKey(recipe.getInputBlock()).toString());
+            serializeStateMatchers(recipe.getInputBlockMatchers(), jsonBlock);
+            input.add("block", jsonBlock);
+        }
+
+        if (recipe.getInputFluid() != null) {
+            var jsonFluid = new JsonObject();
+            jsonFluid.addProperty("id", Registry.FLUID.getKey(recipe.getInputFluid()).toString());
+            serializeStateMatchers(recipe.getInputFluidMatchers(), jsonFluid);
+            input.add("fluid", jsonFluid);
+        }
+        return input;
+    }
+
+    private JsonElement serializeOutput(EntropyRecipe recipe) {
+        var output = new JsonObject();
+        if (recipe.getOutputBlock() != null) {
+            var jsonBlock = new JsonObject();
+            jsonBlock.addProperty("id", Registry.BLOCK.getKey(recipe.getOutputBlock()).toString());
+            if (recipe.getOutputBlockKeep()) {
+                jsonBlock.addProperty("keep", true);
+            }
+            serializeStateAppliers(recipe.getOutputBlockStateAppliers(), jsonBlock);
+            output.add("block", jsonBlock);
+        }
+
+        if (recipe.getOutputFluid() != null) {
+            var jsonFluid = new JsonObject();
+            jsonFluid.addProperty("id", Registry.FLUID.getKey(recipe.getOutputFluid()).toString());
+            if (recipe.getOutputFluidKeep()) {
+                jsonFluid.addProperty("keep", true);
+            }
+            serializeStateAppliers(recipe.getOutputFluidStateAppliers(), jsonFluid);
+            output.add("fluid", jsonFluid);
+        }
+
+        if (!recipe.getDrops().isEmpty()) {
+            var jsonDrops = new JsonArray();
+
+            for (var drop : recipe.getDrops()) {
+                var jsonDrop = new JsonObject();
+                jsonDrop.addProperty("item", Registry.ITEM.getKey(drop.getItem()).toString());
+                if (drop.getCount() > 1) {
+                    jsonDrop.addProperty("count", drop.getCount());
+                }
+                jsonDrops.add(jsonDrop);
+            }
+
+            output.add("drops", jsonDrops);
+        }
+        return output;
+    }
+
+    private void serializeStateMatchers(List<StateMatcher> matchers, JsonObject json) {
+        if (matchers.isEmpty()) {
+            return;
+        }
+
+        var properties = new JsonObject();
+        for (var matcher : matchers) {
+            JsonElement serializedMatcher;
+            if (matcher instanceof SingleValueMatcher<?>singleMatcher) {
+                serializedMatcher = new JsonPrimitive(singleMatcher.getValueName());
+            } else if (matcher instanceof MultipleValuesMatcher<?>multiMatcher) {
+                var values = new JsonArray();
+                for (var valueName : multiMatcher.getValueNames()) {
+                    values.add(valueName);
+                }
+                serializedMatcher = values;
+            } else if (matcher instanceof RangeValueMatcher<?>rangeMatcher) {
+                var range = new JsonObject();
+                range.addProperty("min", rangeMatcher.getMinValueName());
+                range.addProperty("max", rangeMatcher.getMaxValueName());
+                serializedMatcher = range;
+            } else {
+                throw new IllegalStateException("Don't know how to serialize state matcher " + matcher);
+            }
+
+            String propertyName = matcher.getProperty().getName();
+            properties.add(propertyName, serializedMatcher);
+        }
+        json.add("properties", properties);
+    }
+
+    private void serializeStateAppliers(List<StateApplier<?>> appliers, JsonObject json) {
+        if (appliers.isEmpty()) {
+            return;
+        }
+
+        var properties = new JsonObject();
+        for (var applier : appliers) {
+            var property = applier.getProperty();
+            properties.addProperty(property.getName(), applier.getValueName());
+        }
+        json.add("properties", properties);
     }
 
 }

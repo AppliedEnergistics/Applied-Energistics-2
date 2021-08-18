@@ -21,11 +21,17 @@ package appeng.recipes.entropy;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public interface StateMatcher {
     boolean matches(StateHolder<?, ?> state);
 
     void writeToPacket(FriendlyByteBuf buffer);
+
+    /**
+     * Which property of the state definition this matcher applies to.
+     */
+    Property<?> getProperty();
 
     static StateMatcher read(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         MatcherType type = buffer.readEnum(MatcherType.class);

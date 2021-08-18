@@ -19,18 +19,25 @@
 package appeng.recipes.entropy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
-class EntropyRecipeBuilder {
+public class EntropyRecipeBuilder {
     private ResourceLocation id;
     private EntropyMode mode;
 
@@ -48,46 +55,59 @@ class EntropyRecipeBuilder {
     private boolean outputFluidKeep;
     private List<ItemStack> drops = Collections.emptyList();
 
-    void setId(ResourceLocation id) {
+    public EntropyRecipeBuilder setId(ResourceLocation id) {
         Preconditions.checkArgument(id != null);
         this.id = id;
+        return this;
     }
 
-    void setMode(EntropyMode mode) {
+    public EntropyRecipeBuilder setMode(EntropyMode mode) {
         this.mode = Objects.requireNonNull(mode, "mode must not be null");
+        return this;
     }
 
-    void setInputBlock(Block inputBlock) {
+    public EntropyRecipeBuilder setInputBlock(Block inputBlock) {
         this.inputBlock = Objects.requireNonNull(inputBlock, "inputBlock must not be null");
+        return this;
     }
 
-    void setInputFluid(Fluid inputFluid) {
+    public EntropyRecipeBuilder setInputFluid(Fluid inputFluid) {
         this.inputFluid = Objects.requireNonNull(inputFluid, "inputFluid must not be null");
+        return this;
     }
 
-    void setOutputBlock(Block outputBlock) {
+    public EntropyRecipeBuilder setOutputBlock(Block outputBlock) {
         this.outputBlock = Objects.requireNonNull(outputBlock, "outputBlock must not be null");
+        return this;
     }
 
-    void setOutputBlockKeep(boolean outputBlockKeep) {
+    public EntropyRecipeBuilder setOutputBlockKeep(boolean outputBlockKeep) {
         this.outputBlockKeep = outputBlockKeep;
+        return this;
     }
 
-    void setOutputFluid(Fluid outputFluid) {
+    public EntropyRecipeBuilder setOutputFluid(Fluid outputFluid) {
         this.outputFluid = Objects.requireNonNull(outputFluid, "outputFluid must not be null");
+        return this;
     }
 
-    void setOutputFluidKeep(boolean outputFluidKeep) {
+    public EntropyRecipeBuilder setOutputFluidKeep(boolean outputFluidKeep) {
         this.outputFluidKeep = outputFluidKeep;
+        return this;
     }
 
-    void setDrops(List<ItemStack> drops) {
+    public EntropyRecipeBuilder setDrops(List<ItemStack> drops) {
         Preconditions.checkArgument(!drops.isEmpty(), "drops needs to be a non empty list when set");
 
         this.drops = drops;
+        return this;
     }
 
-    void addBlockStateMatcher(StateMatcher matcher) {
+    public EntropyRecipeBuilder setDrops(ItemStack... drops) {
+        return setDrops(Arrays.asList(drops));
+    }
+
+    public EntropyRecipeBuilder addBlockStateMatcher(StateMatcher matcher) {
         Preconditions.checkState(this.inputBlock != null,
                 "Can only add appliers when an input block is present.");
 
@@ -97,9 +117,10 @@ class EntropyRecipeBuilder {
 
         this.inputBlockMatchers.add(matcher);
 
+        return this;
     }
 
-    void addFluidStateMatcher(StateMatcher matcher) {
+    public EntropyRecipeBuilder addFluidStateMatcher(StateMatcher matcher) {
         Preconditions.checkState(this.inputFluid != null,
                 "Can only add appliers when an input fluid is present.");
 
@@ -109,9 +130,10 @@ class EntropyRecipeBuilder {
 
         this.inputFluidMatchers.add(matcher);
 
+        return this;
     }
 
-    void addBlockStateAppliers(StateApplier<?> applier) {
+    public EntropyRecipeBuilder addBlockStateAppliers(StateApplier<?> applier) {
         Preconditions.checkState(this.outputBlock != null,
                 "Can only add appliers when an output block is present.");
 
@@ -121,9 +143,10 @@ class EntropyRecipeBuilder {
 
         this.outputBlockStateAppliers.add(applier);
 
+        return this;
     }
 
-    void addFluidStateAppliers(StateApplier<?> applier) {
+    public EntropyRecipeBuilder addFluidStateAppliers(StateApplier<?> applier) {
         Preconditions.checkState(this.outputFluid != null,
                 "Can only add appliers when an output fluid is present.");
 
@@ -133,9 +156,10 @@ class EntropyRecipeBuilder {
 
         this.outputFluidStateAppliers.add(applier);
 
+        return this;
     }
 
-    EntropyRecipe build() {
+    public EntropyRecipe build() {
         Preconditions.checkState(id != null);
         Preconditions.checkState(mode != null);
         Preconditions.checkState(inputBlock != null || inputFluid != null,
@@ -144,6 +168,39 @@ class EntropyRecipeBuilder {
         return new EntropyRecipe(id, mode, inputBlock, inputBlockMatchers, inputFluid, inputFluidMatchers, outputBlock,
                 outputBlockStateAppliers, outputBlockKeep, outputFluid, outputFluidStateAppliers, outputFluidKeep,
                 drops);
+    }
+
+    public void save(Consumer<FinishedRecipe> consumer) {
+        consumer.accept(new Result());
+    }
+
+    private class Result implements FinishedRecipe {
+        @Override
+        public void serializeRecipeData(JsonObject json) {
+            EntropyRecipeSerializer.INSTANCE.toJson(build(), json);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return EntropyRecipeSerializer.INSTANCE;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
     }
 
 }

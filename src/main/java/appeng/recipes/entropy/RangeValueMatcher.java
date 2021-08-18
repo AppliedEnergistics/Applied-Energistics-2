@@ -55,6 +55,19 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
         buffer.writeUtf(property.getName(maxValue));
     }
 
+    @Override
+    public Property<?> getProperty() {
+        return property;
+    }
+
+    public String getMinValueName() {
+        return property.getName(minValue);
+    }
+
+    public String getMaxValueName() {
+        return property.getName(maxValue);
+    }
+
     public static StateMatcher create(StateDefinition<?, ?> stateDefinition, String propertyName, String minValueName,
             String maxValueName) {
         Property<?> property = PropertyUtils.getRequiredProperty(stateDefinition, propertyName);
