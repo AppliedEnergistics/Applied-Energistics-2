@@ -21,12 +21,45 @@ package appeng.core;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
+import appeng.api.AEApiInternal;
+import appeng.api.features.P2PTunnelAttunementInternal;
+import appeng.init.InitAdvancementTriggers;
+import appeng.init.InitLootConditions;
+import appeng.init.InitStats;
+import appeng.init.internal.InitBlockEntityMoveStrategies;
+import appeng.init.internal.InitGridServices;
+import appeng.init.internal.InitPlayerRegistry;
+import appeng.init.internal.InitStorageChannels;
+
 /**
  * This class is just responsible for initializing the client or server-side mod class.
  */
 @Mod(AppEng.MOD_ID)
 public class AppEngBootstrap {
+    private volatile static boolean bootstrapped;
+
     public AppEngBootstrap() {
         DistExecutor.unsafeRunForDist(() -> AppEngClient::new, () -> AppEngServer::new);
     }
+
+    /**
+     * This is called from a Mixin whenever Minecraft itself Bootstraps.
+     */
+    public static void runEarlyStartup() {
+        if (!bootstrapped) {
+            bootstrapped = true;
+            AEApiInternal.init();
+            InitStorageChannels.init();
+            InitGridServices.init();
+            InitBlockEntityMoveStrategies.init();
+            InitPlayerRegistry.init();
+            P2PTunnelAttunementInternal.init();
+
+            // This has to be initialized here because Forge's common setup event will not run in datagens.
+            InitStats.init();
+            InitAdvancementTriggers.init();
+            InitLootConditions.init();
+        }
+    }
+
 }

@@ -113,6 +113,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         if (!level.isClientSide()) {
             SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {
+                blockEntity.unpackLootTable(player);
                 MenuOpener.open(SkyChestMenu.TYPE, player,
                         MenuLocator.forBlockEntity(blockEntity));
             }
@@ -184,5 +185,12 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         }
 
         return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos blockPos, BlockState state, Player player) {
+        super.playerWillDestroy(level, blockPos, state, player);
+        // Spawn loot for player
+        level.getBlockEntity(blockPos, AEBlockEntities.SKY_CHEST).ifPresent(chest -> chest.unpackLootTable(player));
     }
 }

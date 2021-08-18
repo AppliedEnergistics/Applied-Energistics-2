@@ -18,33 +18,25 @@
 
 package appeng.worldgen.meteorite;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
+import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
 import appeng.core.definitions.BlockDefinition;
-import appeng.core.worlddata.IGridStorageData;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import appeng.worldgen.meteorite.fallout.Fallout;
 import appeng.worldgen.meteorite.fallout.FalloutCopy;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -52,13 +44,13 @@ import appeng.worldgen.meteorite.fallout.FalloutSand;
 import appeng.worldgen.meteorite.fallout.FalloutSnow;
 
 public final class MeteoritePlacer {
-    private static final double PRESSES_SPAWN_CHANCE = 0.7;
-    private static final int SKYSTONE_SPAWN_LIMIT = 12;
+    private static final ResourceLocation METEORITE_CHEST_LOOTTABLE = AppEng.makeId("chests/meteorite");
     private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
     private final LevelAccessor level;
+    private final Random random;
     private final Fallout type;
     private final BlockPos pos;
     private final int x;
@@ -73,12 +65,12 @@ public final class MeteoritePlacer {
     private final boolean pureCrater;
     private final boolean craterLake;
     private final BoundingBox boundingBox;
-    @Nullable
-    private BoundingBox skyStoneBoundingBox;
 
-    public MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox) {
+    public MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
+            Random random) {
         this.boundingBox = boundingBox;
         this.level = level;
+        this.random = random;
         this.pos = settings.getPos();
         this.x = settings.getPos().getX();
         this.y = settings.getPos().getY();
@@ -204,80 +196,9 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             this.putter.put(level, pos, this.skyChestDefinition.block().defaultBlockState());
 
-            final BlockEntity te = level.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another
-                                                              // issue
-            final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
-            if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
-            {
-                // TODO: loot tables would be better
-                int primary = Math.max(1, (int) (Math.random() * 4));
-
-                if (primary > 3) // in case math breaks...
-                {
-                    primary = 3;
-                }
-
-                for (int zz = 0; zz < primary; zz++) {
-                    int r;
-                    boolean duplicate;
-
-                    do {
-                        duplicate = false;
-
-                        if (Math.random() > PRESSES_SPAWN_CHANCE) {
-                            r = IGridStorageData.get(level.getServer()).getNextOrderedValue("presses", 0);
-                        } else {
-                            r = (int) (Math.random() * 1000);
-                        }
-
-                        ItemStack toAdd = ItemStack.EMPTY;
-
-                        switch (r % 4) {
-                            case 0:
-                                toAdd = AEItems.CALCULATION_PROCESSOR_PRESS.stack();
-                                break;
-                            case 1:
-                                toAdd = AEItems.ENGINEERING_PROCESSOR_PRESS.stack();
-                                break;
-                            case 2:
-                                toAdd = AEItems.LOGIC_PROCESSOR_PRESS.stack();
-                                break;
-                            case 3:
-                                toAdd = AEItems.SILICON_PRESS.stack();
-                                break;
-                            default:
-                        }
-
-                        if (!toAdd.isEmpty()) {
-                            if (ap.simulateRemove(1, toAdd, null).isEmpty()) {
-                                ap.addItems(toAdd);
-                            } else {
-                                duplicate = true;
-                            }
-                        }
-                    } while (duplicate);
-                }
-
-                final int secondary = Math.max(1, (int) (Math.random() * 3));
-                for (int zz = 0; zz < secondary; zz++) {
-                    switch ((int) (Math.random() * 1000) % 3) {
-                        case 0 -> {
-                            final int amount = (int) (Math.random() * SKYSTONE_SPAWN_LIMIT + 1);
-                            ap.addItems(new ItemStack(skyStoneItem, amount));
-                        }
-                        case 1 -> {
-                            final List<ItemStack> possibles = new ArrayList<>();
-                            possibles.add(new ItemStack(Items.GOLD_NUGGET));
-                            ItemStack nugget = Platform.pickRandom(possibles);
-                            if (nugget != null && !nugget.isEmpty()) {
-                                nugget = nugget.copy();
-                                nugget.setCount((int) (Math.random() * 12) + 1);
-                                ap.addItems(nugget);
-                            }
-                        }
-                    }
-                }
-            }
+            level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(chest -> {
+                chest.setLootTable(METEORITE_CHEST_LOOTTABLE, random.nextLong());
+            });
         }
     }
 
@@ -349,18 +270,18 @@ public final class MeteoritePlacer {
 
                             final BlockState xf = level.getBlockState(blockPosDown);
                             if (!xf.getMaterial().isReplaceable()) {
-                                final double extraRange = Math.random() * 0.6;
+                                final double extraRange = random.nextDouble() * 0.6;
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);
 
-                                if (!xf.isAir() && height > 0 && Math.random() > 0.6) {
+                                if (!xf.isAir() && height > 0 && random.nextDouble() > 0.6) {
                                     randomShit++;
                                     this.type.getRandomFall(level, blockPos);
                                 }
                             }
                         }
                     } else // decay.
-                    if (level.isEmptyBlock(blockPosUp) && Math.random() > 0.4) {
+                    if (level.isEmptyBlock(blockPosUp) && random.nextDouble() > 0.4) {
                         final double dx = i - x;
                         final double dy = j - y;
                         final double dz = k - z;
@@ -409,20 +330,11 @@ public final class MeteoritePlacer {
 
     private Fallout getFallout(LevelAccessor level, BlockPos pos, FalloutMode mode) {
         return switch (mode) {
-            case SAND -> new FalloutSand(level, pos, this.putter, this.skyStone);
-            case TERRACOTTA -> new FalloutCopy(level, pos, this.putter, this.skyStone);
-            case ICE_SNOW -> new FalloutSnow(level, pos, this.putter, this.skyStone);
-            default -> new Fallout(this.putter, this.skyStone);
+            case SAND -> new FalloutSand(level, pos, this.putter, this.skyStone, random);
+            case TERRACOTTA -> new FalloutCopy(level, pos, this.putter, this.skyStone, random);
+            case ICE_SNOW -> new FalloutSnow(level, pos, this.putter, this.skyStone, random);
+            default -> new Fallout(this.putter, this.skyStone, random);
         };
     }
 
-    /**
-     * Gets the bounding box of the actual meteorite skystone. Useful to update the compass-service after placement.
-     * 
-     * @return Null if no actual skystone was placed.
-     */
-    @Nullable
-    public BoundingBox getSkyStoneBoundingBox() {
-        return skyStoneBoundingBox;
-    }
 }

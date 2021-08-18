@@ -18,6 +18,8 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import java.util.Random;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -26,13 +28,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class FalloutSnow extends FalloutCopy {
-    private static final double SNOW_THRESHOLD = 0.7;
-    private static final double ICE_THRESHOLD = 0.5;
+    private static final float SNOW_THRESHOLD = 0.7f;
+    private static final float ICE_THRESHOLD = 0.5f;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSnow(final LevelAccessor level, BlockPos pos, final MeteoriteBlockPutter putter,
-            final BlockState skyStone) {
-        super(level, pos, putter, skyStone);
+    public FalloutSnow(LevelAccessor level, BlockPos pos, MeteoriteBlockPutter putter,
+            BlockState skyStone, Random random) {
+        super(level, pos, putter, skyStone, random);
         this.putter = putter;
     }
 
@@ -42,7 +44,7 @@ public class FalloutSnow extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor level, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
         if (a > SNOW_THRESHOLD) {
             this.putter.put(level, pos, Blocks.SNOW.defaultBlockState());
         } else if (a > ICE_THRESHOLD) {

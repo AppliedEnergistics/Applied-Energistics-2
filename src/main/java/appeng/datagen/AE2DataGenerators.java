@@ -26,6 +26,7 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import appeng.core.AppEng;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
+import appeng.datagen.providers.loot.ChestDropProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
@@ -41,6 +42,7 @@ public class AE2DataGenerators {
         DataGenerator generator = dataEvent.getGenerator();
         if (dataEvent.includeServer()) {
             generator.addProvider(new BlockDropProvider(dataEvent));
+            generator.addProvider(new ChestDropProvider(dataEvent));
             generator.addProvider(new DecorationRecipes(generator));
             generator.addProvider(new DecorationBlockRecipes(generator));
             BlockTagsProvider blockTagsProvider = new BlockTagsProvider(dataEvent);

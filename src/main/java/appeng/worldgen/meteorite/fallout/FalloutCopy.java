@@ -18,6 +18,8 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import java.util.Random;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -26,23 +28,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class FalloutCopy extends Fallout {
-    private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
-    private static final double AIR_BLOCK_THRESHOLD = 0.8;
-    private static final double BLOCK_THRESHOLD_STEP = 0.1;
+    private static final float SPECIFIED_BLOCK_THRESHOLD = 0.9f;
+    private static final float AIR_BLOCK_THRESHOLD = 0.8f;
+    private static final float BLOCK_THRESHOLD_STEP = 0.1f;
 
     private final BlockState block;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutCopy(final LevelAccessor level, BlockPos pos, final MeteoriteBlockPutter putter,
-            final BlockState skyStone) {
-        super(putter, skyStone);
+    public FalloutCopy(LevelAccessor level, BlockPos pos, MeteoriteBlockPutter putter,
+            BlockState skyStone, Random random) {
+        super(putter, skyStone, random);
         this.putter = putter;
         this.block = level.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
     }
 
     @Override
     public void getRandomFall(final LevelAccessor level, BlockPos pos) {
-        final double a = Math.random();
+        var a = random.nextFloat();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(level, pos, this.block);
         } else {
@@ -50,13 +52,13 @@ public class FalloutCopy extends Fallout {
         }
     }
 
-    public void getOther(final LevelAccessor level, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
 
     }
 
     @Override
-    public void getRandomInset(final LevelAccessor level, BlockPos pos) {
-        final double a = Math.random();
+    public void getRandomInset(LevelAccessor level, BlockPos pos) {
+        var a = random.nextFloat();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(level, pos, this.block);
         } else if (a > AIR_BLOCK_THRESHOLD) {

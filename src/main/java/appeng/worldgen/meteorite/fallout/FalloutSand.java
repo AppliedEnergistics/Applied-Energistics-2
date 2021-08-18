@@ -18,6 +18,8 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import java.util.Random;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -26,12 +28,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class FalloutSand extends FalloutCopy {
-    private static final double GLASS_THRESHOLD = 0.66;
+    private static final float GLASS_THRESHOLD = 0.66f;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSand(final LevelAccessor level, BlockPos pos, final MeteoriteBlockPutter putter,
-            final BlockState skyStone) {
-        super(level, pos, putter, skyStone);
+    public FalloutSand(LevelAccessor level, BlockPos pos, MeteoriteBlockPutter putter,
+            BlockState skyStone, Random random) {
+        super(level, pos, putter, skyStone, random);
         this.putter = putter;
     }
 
@@ -41,7 +43,7 @@ public class FalloutSand extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor level, BlockPos pos, final double a) {
+    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
         if (a > GLASS_THRESHOLD) {
             this.putter.put(level, pos, Blocks.GLASS.defaultBlockState());
         }

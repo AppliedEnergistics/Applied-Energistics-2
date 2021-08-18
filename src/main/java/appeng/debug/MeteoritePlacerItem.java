@@ -120,7 +120,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
                 pos.getX() + range, pos.getY(), pos.getZ() + range);
 
-        final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox);
+        final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox, level.random);
         placer.place();
 
         player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
