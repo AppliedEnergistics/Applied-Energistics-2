@@ -67,7 +67,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.ticking.TickHandler;
-import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
 import appeng.init.InitContainerTypes;
@@ -75,7 +74,6 @@ import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
 import appeng.init.InitRecipeSerializers;
-import appeng.init.InitStats;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitGridLinkables;
@@ -186,10 +184,6 @@ public abstract class AppEngBase implements AppEng {
     public void postRegistrationInitialization() {
         // This has to be here because it relies on caps and god knows when those are available...
         InitP2PAttunements.init();
-
-        // Do initialization that doesn't depend on mod registries being populated
-        InitStats.init();
-        InitAdvancementTriggers.init();
 
         Capabilities.register();
         InitDispenserBehavior.init();

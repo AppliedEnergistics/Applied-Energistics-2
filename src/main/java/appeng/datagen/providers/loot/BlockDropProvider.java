@@ -91,6 +91,13 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
                 DataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
             }
         }
+
+        DataProvider.save(GSON, cache, toJson(LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .name("extra")
+                        .setRolls(UniformGenerator.between(1, 3))
+                        .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
+                getPath(outputFolder, AppEng.makeId("chests/meteorite")));
     }
 
     private LootTable.Builder defaultBuilder(Block block) {

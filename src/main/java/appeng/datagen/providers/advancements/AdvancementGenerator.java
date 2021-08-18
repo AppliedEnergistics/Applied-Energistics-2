@@ -32,6 +32,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.loot.NeededPressType;
+import appeng.loot.NeedsPressCondition;
 
 public class AdvancementGenerator implements IAE2DataProvider {
 
@@ -129,7 +131,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SKY_COMPASS))
                 .save(consumer, "appliedenergistics2:main/compass");
 
-        var presses = Advancement.Builder.advancement()
+        var pressesBuilder = Advancement.Builder.advancement()
                 .display(
                         AEItems.LOGIC_PROCESSOR_PRESS,
                         new TranslatableComponent("achievement.ae2.Presses"),
@@ -141,14 +143,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(root)
-                .addCriterion("calc",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CALCULATION_PROCESSOR_PRESS))
-                .addCriterion("eng",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ENGINEERING_PROCESSOR_PRESS))
-                .addCriterion("logic", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.LOGIC_PROCESSOR_PRESS))
-                .addCriterion("silicon", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.SILICON_PRESS))
-                .requirements(RequirementsStrategy.OR)
-                .save(consumer, "appliedenergistics2:main/presses");
+                // This MUST be AND, otherwise the tracking stops after the first acquired press
+                .requirements(RequirementsStrategy.AND);
+        for (var neededPress : NeededPressType.values()) {
+            pressesBuilder.addCriterion(neededPress.getCriterionName(),
+                    InventoryChangeTrigger.TriggerInstance.hasItems(neededPress.getItem()));
+        }
+        var presses = pressesBuilder.save(consumer, NeedsPressCondition.ADVANCEMENT_ID.toString());
 
         var controller = Advancement.Builder.advancement()
                 .display(

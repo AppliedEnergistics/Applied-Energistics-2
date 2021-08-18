@@ -11,7 +11,7 @@
     "structure.ConfiguredStructureFeaturesAccessor",
     "feature.ConfiguredFeaturesAccessor",
     "feature.LevelLightEngineMixin",
-    "registries.AE2RegistriesMixin"
+    "EarlyStartupMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

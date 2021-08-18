@@ -18,10 +18,24 @@
 
 package appeng.blockentity.storage;
 
+import static net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity.LOOT_TABLE_SEED_TAG;
+import static net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity.LOOT_TABLE_TAG;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,7 +43,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -40,12 +59,18 @@ import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.util.inv.InvOperation;
 
+@SuppressWarnings("JavadocReference")
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
 public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 
     private final ChestLidController chestLidController = new ChestLidController();
+
+    // This reimplements RandomizableContainerBlockEntity, because we cannot inherit from it here
+    @Nullable
+    protected ResourceLocation lootTable;
+    protected long lootTableSeed;
 
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
@@ -130,4 +155,81 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
         }
     }
 
+    /**
+     * @see RandomizableContainerBlockEntity#tryLoadLootTable(CompoundTag)
+     */
+    @Override
+    public void load(CompoundTag data) {
+        super.load(data);
+
+        if (data.contains(LOOT_TABLE_TAG, Tag.TAG_STRING)) {
+            this.lootTable = new ResourceLocation(data.getString(LOOT_TABLE_TAG));
+            this.lootTableSeed = data.getLong(LOOT_TABLE_SEED_TAG);
+        }
+    }
+
+    /**
+     * @see RandomizableContainerBlockEntity#trySaveLootTable(CompoundTag)
+     */
+    @Override
+    public CompoundTag save(CompoundTag data) {
+        data = super.save(data);
+
+        if (this.lootTable != null) {
+            data.putString(LOOT_TABLE_TAG, this.lootTable.toString());
+            if (this.lootTableSeed != 0L) {
+                data.putLong(LOOT_TABLE_SEED_TAG, this.lootTableSeed);
+            }
+        }
+
+        return data;
+    }
+
+    /**
+     * @see RandomizableContainerBlockEntity#unpackLootTable(Player)
+     */
+    public void unpackLootTable(@Nullable Player openingPlayer) {
+        if (this.lootTable != null && this.level instanceof ServerLevel serverLevel) {
+            var loottable = serverLevel.getServer().getLootTables().get(this.lootTable);
+            if (openingPlayer instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.GENERATE_LOOT.trigger(serverPlayer, this.lootTable);
+            }
+
+            this.lootTable = null; // Can only generate once
+            var lootBuilder = new LootContext.Builder(serverLevel)
+                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.worldPosition))
+                    .withOptionalRandomSeed(this.lootTableSeed);
+            if (openingPlayer != null) {
+                lootBuilder.withLuck(openingPlayer.getLuck())
+                        .withParameter(LootContextParams.THIS_ENTITY, openingPlayer);
+            }
+
+            // Convert our inventory into a Container so the loot-table interaction works like in Vanilla
+            var lootOutput = new SimpleContainer(this.inv.getSlots());
+            for (int i = 0; i < this.inv.getSlots(); i++) {
+                lootOutput.setItem(i, this.inv.getStackInSlot(i));
+            }
+
+            loottable.fill(lootOutput, lootBuilder.create(LootContextParamSets.CHEST));
+
+            // Convert it back
+            for (int i = 0; i < this.inv.getSlots(); i++) {
+                this.inv.setStackInSlot(i, lootOutput.getItem(i));
+            }
+        }
+    }
+
+    /**
+     * @see RandomizableContainerBlockEntity#setLootTable(ResourceLocation, long)
+     */
+    public void setLootTable(ResourceLocation lootTable, long lootTableSeed) {
+        this.lootTable = lootTable;
+        this.lootTableSeed = lootTableSeed;
+    }
+
+    @Override
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        unpackLootTable(null);
+        super.getDrops(level, pos, drops);
+    }
 }

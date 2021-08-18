@@ -99,7 +99,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     public boolean postProcess(WorldGenLevel level, StructureFeatureManager p_230383_2_,
             ChunkGenerator chunkGeneratorIn,
             Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
-        MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds);
+        MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds, rand);
         placer.place();
 
         CompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
