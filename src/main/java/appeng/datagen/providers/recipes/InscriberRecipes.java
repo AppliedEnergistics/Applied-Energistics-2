@@ -35,7 +35,7 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.PRESS)
                 .save(consumer, "silicon_press");
-        inscribe(AEItems.SILICON, AEItems.SILICON_PRINT.stack())
+        inscribe(Ingredient.of(ConventionTags.SILICON), AEItems.SILICON_PRINT.stack())
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.PRESS)
                 .save(consumer, "silicon_print");

@@ -18,7 +18,6 @@
 
 package appeng.datagen;
 
-import appeng.datagen.providers.recipes.CraftingRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +28,7 @@ import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.loot.ChestDropProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
+import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
 import appeng.datagen.providers.recipes.EntropyRecipes;
