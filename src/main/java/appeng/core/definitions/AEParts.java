@@ -144,7 +144,7 @@ public final class AEParts {
 
             ItemDefinition<?> itemDef = item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color));
 
-            definition.add(color, itemDef);
+            definition.add(color, AppEng.makeId(id), itemDef);
         }
 
         return definition;

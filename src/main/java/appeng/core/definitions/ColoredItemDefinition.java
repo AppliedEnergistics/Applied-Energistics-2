@@ -18,6 +18,7 @@
 
 package appeng.core.definitions;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -26,14 +27,20 @@ import appeng.api.util.AEColor;
 
 public final class ColoredItemDefinition {
 
-    private final ItemLike[] colors = new ItemLike[AEColor.values().length];
+    private final ItemLike[] items = new ItemLike[AEColor.values().length];
+    private final ResourceLocation[] ids = new ResourceLocation[AEColor.values().length];
 
-    void add(final AEColor v, final ItemLike is) {
-        this.colors[v.ordinal()] = is;
+    void add(AEColor v, ResourceLocation id, ItemLike is) {
+        this.ids[v.ordinal()] = id;
+        this.items[v.ordinal()] = is;
+    }
+
+    public ResourceLocation id(final AEColor color) {
+        return ids[color.ordinal()];
     }
 
     public Item item(final AEColor color) {
-        final ItemLike is = this.colors[color.ordinal()];
+        final ItemLike is = this.items[color.ordinal()];
 
         if (is == null) {
             return null;
@@ -43,7 +50,7 @@ public final class ColoredItemDefinition {
     }
 
     public ItemStack stack(final AEColor color, final int stackSize) {
-        final ItemLike is = this.colors[color.ordinal()];
+        final ItemLike is = this.items[color.ordinal()];
 
         if (is == null) {
             return ItemStack.EMPTY;
