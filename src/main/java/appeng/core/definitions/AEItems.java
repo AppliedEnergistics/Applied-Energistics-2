@@ -269,7 +269,7 @@ public final class AEItems {
                 continue;
             }
 
-            colors.add(color, item(id, p -> new PaintBallItem(p, color, lumen)));
+            colors.add(color, id, item(id, p -> new PaintBallItem(p, color, lumen)));
         }
         return colors;
     }

@@ -18,6 +18,7 @@
 
 package appeng.datagen;
 
+import appeng.datagen.providers.recipes.CraftingRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -59,6 +60,7 @@ public class AE2DataGenerators {
             generator.addProvider(new GrinderRecipes(generator));
             generator.addProvider(new InscriberRecipes(generator));
             generator.addProvider(new SmeltingRecipes(generator));
+            generator.addProvider(new CraftingRecipes(generator));
         }
     }
 
