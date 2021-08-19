@@ -32,13 +32,13 @@ public final class InitUpgrades {
     public static void init() {
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = AEParts.INTERFACE.asItem().getDescriptionId();
+        String interfaceGroup = AEParts.ITEM_INTERFACE.asItem().getDescriptionId();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEParts.ITEM_INTERFACE, 1, interfaceGroup);
         Upgrades.CRAFTING.registerItem(AEBlocks.ITEM_INTERFACE, 1, interfaceGroup);
 
         // IO Port!

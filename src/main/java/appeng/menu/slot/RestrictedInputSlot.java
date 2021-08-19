@@ -18,7 +18,6 @@
 
 package appeng.menu.slot;
 
-import appeng.api.ids.AETags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +29,7 @@ import appeng.api.AEApi;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
+import appeng.api.ids.AETags;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;

@@ -25,14 +25,11 @@ import com.google.common.math.StatsAccumulator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -42,13 +39,10 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfiguration> {
-
-    private final Tag<Block> sandTag = BlockTags.getAllTags().getTagOrEmpty(new ResourceLocation("minecraft:sand"));
-    private final Tag<Block> terracottaTag = BlockTags.getAllTags()
-            .getTagOrEmpty(new ResourceLocation("forge:terracotta"));
 
     public MeteoriteStructureStart(StructureFeature<NoneFeatureConfiguration> feature, ChunkPos pos,
             int references, long seed) {
@@ -234,11 +228,11 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
     }
 
     private FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
-        final Block block = blockState.getBlock();
+        var block = blockState.getBlock();
 
-        if (sandTag.contains(block)) {
+        if (BlockTags.SAND.contains(block)) {
             return FalloutMode.SAND;
-        } else if (terracottaTag.contains(block)) {
+        } else if (ConventionTags.TERRACOTTA_BLOCK.contains(block)) {
             return FalloutMode.TERRACOTTA;
         } else if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
                 || block == Blocks.PACKED_ICE) {

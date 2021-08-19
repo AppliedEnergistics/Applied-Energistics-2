@@ -380,7 +380,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            if (AEParts.INTERFACE.isSameAs(is)) {
+            if (AEParts.ITEM_INTERFACE.isSameAs(is)) {
                 is = AEBlocks.ITEM_INTERFACE.stack();
             }
 
