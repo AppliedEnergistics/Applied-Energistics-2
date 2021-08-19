@@ -137,12 +137,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
     }
 
-    // Copy the content of block tags, assuming the ID are equivalent to the items
+    // Copy the entries AE2 added to certain block tags over to item tags of the same name
+    // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
-        mirrorBlockTag(new ResourceLocation("forge:ores"));
+        mirrorBlockTag(Tags.Blocks.ORES.getName());
         mirrorBlockTag(new ResourceLocation("forge:ores/certus_quartz"));
 
-        mirrorBlockTag(new ResourceLocation("forge:storage_blocks"));
+        mirrorBlockTag(Tags.Blocks.STORAGE_BLOCKS.getName());
         mirrorBlockTag(new ResourceLocation("forge:storage_blocks/certus_quartz"));
     }
 

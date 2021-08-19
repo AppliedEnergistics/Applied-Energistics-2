@@ -11,6 +11,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.Tags;
 
 /**
  * Contains various tags:
@@ -42,8 +43,8 @@ public final class ConventionTags {
 
     // Includes synthetic/purified
     public static Tag.Named<Item> ALL_NETHER_QUARTZ = tag("appliedenergistics2:all_nether_quartz");
-    public static Tag.Named<Item> NETHER_QUARTZ = tag("forge:gems/quartz");
-    public static Tag.Named<Item> NETHER_QUARTZ_ORE = tag("forge:ores/quartz");
+    public static Tag.Named<Item> NETHER_QUARTZ = Tags.Items.GEMS_QUARTZ;
+    public static Tag.Named<Item> NETHER_QUARTZ_ORE = Tags.Items.ORES_QUARTZ;
     public static Tag.Named<Item> NETHER_QUARTZ_DUST = tag("forge:dusts/quartz");
 
     // Includes synthetic/purified
@@ -51,29 +52,29 @@ public final class ConventionTags {
     public static Tag.Named<Item> FLUIX_DUST = tag("forge:dusts/fluix");
     public static Tag.Named<Item> FLUIX_CRYSTAL = tag("forge:gems/fluix");
 
-    public static Tag.Named<Item> GOLD_INGOT = tag("forge:ingots/gold");
-    public static Tag.Named<Item> GOLD_ORE = tag("forge:ores/gold");
+    public static Tag.Named<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
+    public static Tag.Named<Item> GOLD_ORE = Tags.Items.ORES_GOLD;
     public static Tag.Named<Item> GOLD_DUST = tag("forge:dusts/gold");
 
-    public static Tag.Named<Item> IRON_INGOT = tag("forge:ingots/iron");
-    public static Tag.Named<Item> IRON_ORE = tag("forge:ores/iron");
+    public static Tag.Named<Item> IRON_INGOT = Tags.Items.INGOTS_IRON;
+    public static Tag.Named<Item> IRON_ORE = Tags.Items.ORES_IRON;
     public static Tag.Named<Item> IRON_DUST = tag("forge:dusts/iron");
 
-    public static Tag.Named<Item> DIAMOND = tag("forge:gems/diamond");
-    public static Tag.Named<Item> REDSTONE = tag("forge:dusts/redstone");
-    public static Tag.Named<Item> GLOWSTONE = tag("forge:dusts/glowstone");
+    public static Tag.Named<Item> DIAMOND = Tags.Items.GEMS_DIAMOND;
+    public static Tag.Named<Item> REDSTONE = Tags.Items.DUSTS_REDSTONE;
+    public static Tag.Named<Item> GLOWSTONE = Tags.Items.DUSTS_GLOWSTONE;
 
-    public static Tag.Named<Item> ENDER_PEARL = tag("forge:ender_pearls");
+    public static Tag.Named<Item> ENDER_PEARL = Tags.Items.ENDER_PEARLS;
     public static Tag.Named<Item> ENDER_PEARL_DUST = tag("forge:dusts/ender");
     public static Tag.Named<Item> WHEAT_CROP = tag("forge:crops/wheat");
 
-    public static Tag.Named<Item> WOOD_STICK = tag("forge:rods/wooden");
+    public static Tag.Named<Item> WOOD_STICK = Tags.Items.RODS_WOODEN;
     public static Tag.Named<Item> WOOD_GEAR = tag("forge:gears/wooden");
-    public static Tag.Named<Item> CHEST = tag("forge:blocks/chests/wooden");
+    public static Tag.Named<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
-    public static Tag.Named<Item> STONE = tag("forge:stone");
-    public static Tag.Named<Item> COBBLESTONE = tag("forge:cobblestone");
-    public static Tag.Named<Item> GLASS = tag("forge:glass");
+    public static Tag.Named<Item> STONE = Tags.Items.STONE;
+    public static Tag.Named<Item> COBBLESTONE = Tags.Items.COBBLESTONE;
+    public static Tag.Named<Item> GLASS = Tags.Items.GLASS;
 
     public static Tag.Named<Item> GLASS_CABLE = tag("appliedenergistics2:glass_cable");
     public static Tag.Named<Item> SMART_CABLE = tag("appliedenergistics2:smart_cable");
