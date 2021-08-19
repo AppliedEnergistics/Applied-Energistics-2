@@ -79,6 +79,10 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
             addAe2(ConventionTags.COVERED_DENSE_CABLE, AEParts.COVERED_DENSE_CABLE.item(color));
         }
 
+        for (AEColor color : AEColor.VALID_COLORS) {
+            addAe2(ConventionTags.PAINT_BALLS, AEItems.COLORED_PAINT_BALL.item(color));
+        }
+
         addAe2(ConventionTags.SILICON, AEItems.SILICON);
         addAe2(ConventionTags.QUARTZ_WRENCH, AEItems.CERTUS_QUARTZ_WRENCH, AEItems.NETHER_QUARTZ_WRENCH);
         addAe2(ConventionTags.QUARTZ_KNIFE, AEItems.CERTUS_QUARTZ_KNIFE, AEItems.NETHER_QUARTZ_KNIFE);
