@@ -11,10 +11,10 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 
 public class DecorationBlockRecipes extends AE2RecipeProvider {
 
@@ -28,8 +28,8 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BLOCK)
                 .pattern("aa")
                 .pattern("aa")
-                .define('a', AETags.NATURAL_CERTUS_QUARTZ_CRYSTAL)
-                .unlockedBy("has_certus_crystal", has(AETags.NATURAL_CERTUS_QUARTZ_CRYSTAL))
+                .define('a', ConventionTags.CERTUS_QUARTZ)
+                .unlockedBy("has_certus_crystal", has(ConventionTags.CERTUS_QUARTZ))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_block"));
 
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BLOCK)
@@ -80,9 +80,9 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
 
         ShapedRecipeBuilder.shaped(AEBlocks.LIGHT_DETECTOR)
                 .pattern("ab")
-                .define('a', AETags.NETHER_QUARTZ_CRYSTALS)
+                .define('a', ConventionTags.ALL_NETHER_QUARTZ)
                 .define('b', Items.IRON_INGOT)
-                .unlockedBy("has_nether_quartz", has(AETags.NETHER_QUARTZ_CRYSTALS))
+                .unlockedBy("has_nether_quartz", has(ConventionTags.ALL_NETHER_QUARTZ))
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(consumer, AppEng.makeId("decorative/light_detector"));
 
@@ -98,9 +98,9 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .pattern("aba")
                 .pattern("bab")
                 .pattern("aba")
-                .define('a', AETags.QUARTZ_DUST)
-                .define('b', AETags.GLASS)
-                .unlockedBy("has_quartz_dust", has(AETags.QUARTZ_DUST))
+                .define('a', ConventionTags.ALL_QUARTZ_DUST)
+                .define('b', ConventionTags.GLASS)
+                .unlockedBy("has_quartz_dust", has(ConventionTags.ALL_QUARTZ_DUST))
                 .save(consumer, AppEng.makeId("decorative/quartz_glass"));
 
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_VIBRANT_GLASS)
