@@ -39,7 +39,7 @@ public class GrinderRecipes extends AE2RecipeProvider {
         grinder(Items.BONE, new ItemStack(Items.BONE_MEAL, 4))
                 .save(consumer, "bonemeal");
 
-        grinder(ConventionTags.CERTUS_QUARTZ_CRYSTAL, AEItems.CERTUS_QUARTZ_DUST.stack())
+        grinder(ConventionTags.CERTUS_QUARTZ, AEItems.CERTUS_QUARTZ_DUST.stack())
                 .setTurns(4)
                 .save(consumer, "certus_quartz_dust");
         grinder(ConventionTags.CERTUS_QUARTZ_ORE, AEItems.CERTUS_QUARTZ_DUST.stack())
