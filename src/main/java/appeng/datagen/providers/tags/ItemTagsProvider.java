@@ -18,8 +18,13 @@
 
 package appeng.datagen.providers.tags;
 
-import java.nio.file.Path;
-
+import appeng.api.ids.AETags;
+import appeng.api.util.AEColor;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.datagen.providers.IAE2DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -29,13 +34,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
-import appeng.api.ids.AETags;
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.nio.file.Path;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
@@ -45,92 +44,94 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
     @Override
     protected void addTags() {
-        registerForgeTags();
+        copyBlockTags();
 
-        addAe2("blacklisted/annihilation_plane");
+        add("blacklisted/annihilation_plane");
 
-        addAe2(ConventionTags.CERTUS_QUARTZ_DUST, AEItems.CERTUS_QUARTZ_DUST);
-        addAe2(ConventionTags.ENDER_PEARL_DUST, AEItems.ENDER_DUST);
-        addAe2(ConventionTags.FLUIX_DUST, AEItems.FLUIX_DUST);
-        addAe2(ConventionTags.ALL_QUARTZ_DUST, ConventionTags.CERTUS_QUARTZ_DUST, ConventionTags.NETHER_QUARTZ_DUST);
+        add(ConventionTags.CERTUS_QUARTZ_DUST, AEItems.CERTUS_QUARTZ_DUST);
+        add(ConventionTags.ENDER_PEARL_DUST, AEItems.ENDER_DUST);
 
-        addAe2(AETags.CERTUS_QUARTZ_CRYSTAL,
+        add(ConventionTags.ALL_QUARTZ_DUST, ConventionTags.CERTUS_QUARTZ_DUST, ConventionTags.NETHER_QUARTZ_DUST);
+        add(ConventionTags.ALL_CERTUS_QUARTZ,
                 ConventionTags.CERTUS_QUARTZ,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
-        addAe2(ConventionTags.CERTUS_QUARTZ,
-                AEItems.CERTUS_QUARTZ_CRYSTAL);
-        addAe2(ConventionTags.ALL_FLUIX,
+        add(ConventionTags.ALL_FLUIX,
                 AEItems.FLUIX_CRYSTAL,
                 AEItems.PURIFIED_FLUIX_CRYSTAL);
-        addAe2(ConventionTags.ALL_NETHER_QUARTZ,
+        add(ConventionTags.ALL_NETHER_QUARTZ,
                 Tags.Items.GEMS_QUARTZ,
                 AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL);
-        addAe2(ConventionTags.ALL_QUARTZ,
+        add(ConventionTags.ALL_QUARTZ,
                 Tags.Items.GEMS_QUARTZ,
                 ConventionTags.CERTUS_QUARTZ,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
 
         for (AEColor color : AEColor.values()) {
-            addAe2(ConventionTags.SMART_DENSE_CABLE, AEParts.SMART_DENSE_CABLE.item(color));
-            addAe2(ConventionTags.SMART_CABLE, AEParts.SMART_CABLE.item(color));
-            addAe2(ConventionTags.GLASS_CABLE, AEParts.GLASS_CABLE.item(color));
-            addAe2(ConventionTags.COVERED_CABLE, AEParts.COVERED_CABLE.item(color));
-            addAe2(ConventionTags.COVERED_DENSE_CABLE, AEParts.COVERED_DENSE_CABLE.item(color));
+            add(ConventionTags.SMART_DENSE_CABLE, AEParts.SMART_DENSE_CABLE.item(color));
+            add(ConventionTags.SMART_CABLE, AEParts.SMART_CABLE.item(color));
+            add(ConventionTags.GLASS_CABLE, AEParts.GLASS_CABLE.item(color));
+            add(ConventionTags.COVERED_CABLE, AEParts.COVERED_CABLE.item(color));
+            add(ConventionTags.COVERED_DENSE_CABLE, AEParts.COVERED_DENSE_CABLE.item(color));
         }
 
         for (AEColor color : AEColor.VALID_COLORS) {
-            addAe2(ConventionTags.PAINT_BALLS, AEItems.COLORED_PAINT_BALL.item(color));
+            add(ConventionTags.PAINT_BALLS, AEItems.COLORED_PAINT_BALL.item(color));
         }
 
-        addAe2(ConventionTags.SILICON, AEItems.SILICON);
-        addAe2(ConventionTags.QUARTZ_WRENCH, AEItems.CERTUS_QUARTZ_WRENCH, AEItems.NETHER_QUARTZ_WRENCH);
-        addAe2(ConventionTags.QUARTZ_KNIFE, AEItems.CERTUS_QUARTZ_KNIFE, AEItems.NETHER_QUARTZ_KNIFE);
+        add(ConventionTags.SILICON, AEItems.SILICON);
+        add(ConventionTags.QUARTZ_WRENCH, AEItems.CERTUS_QUARTZ_WRENCH, AEItems.NETHER_QUARTZ_WRENCH);
+        add(ConventionTags.QUARTZ_KNIFE, AEItems.CERTUS_QUARTZ_KNIFE, AEItems.NETHER_QUARTZ_KNIFE);
 
-        addAe2(ConventionTags.NETHER_QUARTZ_DUST, AEItems.NETHER_QUARTZ_DUST);
+        add(ConventionTags.NETHER_QUARTZ_DUST, AEItems.NETHER_QUARTZ_DUST);
 
-        addAe2(ConventionTags.METAL_INGOTS, Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON);
+        add(AETags.METAL_INGOTS,
+                optionalTag("forge:ingots/copper"),
+                optionalTag("forge:ingots/tin"),
+                optionalTag("forge:ingots/iron"),
+                optionalTag("forge:ingots/gold"),
+                optionalTag("forge:ingots/brass"),
+                optionalTag("forge:ingots/nickel"),
+                optionalTag("forge:ingots/aluminium")
+        );
 
-        addAe2(ConventionTags.ITEM_INTERFACE, AEParts.INTERFACE, AEBlocks.ITEM_INTERFACE);
-        addAe2(ConventionTags.FLUID_INTERFACE, AEParts.FLUID_INTERFACE, AEBlocks.FLUID_INTERFACE);
+        add(ConventionTags.ITEM_INTERFACE, AEParts.INTERFACE, AEBlocks.ITEM_INTERFACE);
+        add(ConventionTags.FLUID_INTERFACE, AEParts.FLUID_INTERFACE, AEBlocks.FLUID_INTERFACE);
 
-        addAe2(ConventionTags.ILLUMINATED_PANEL, AEParts.MONITOR,
+        add(ConventionTags.ILLUMINATED_PANEL, AEParts.MONITOR,
                 AEParts.SEMI_DARK_MONITOR,
                 AEParts.DARK_MONITOR);
 
-        addAe2(ConventionTags.WOOD_GEAR, AEItems.WOODEN_GEAR);
+        add(ConventionTags.WOOD_GEAR, AEItems.WOODEN_GEAR);
+
+        add(ConventionTags.GOLD_DUST, AEItems.GOLD_DUST);
+        add(ConventionTags.IRON_DUST, AEItems.IRON_DUST);
+        add(ConventionTags.NETHER_QUARTZ_DUST, AEItems.NETHER_QUARTZ_DUST);
+        add(ConventionTags.FLUIX_DUST, AEItems.FLUIX_DUST);
+        add(ConventionTags.CERTUS_QUARTZ_DUST, AEItems.CERTUS_QUARTZ_DUST);
+
+        add(ConventionTags.FLUIX_CRYSTAL, AEItems.FLUIX_CRYSTAL);
+        add(ConventionTags.CERTUS_QUARTZ, AEItems.CERTUS_QUARTZ_CRYSTAL,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
     }
 
-    /**
-     * Adds our items to common Forge tags.
-     */
-    private void registerForgeTags() {
+    private Tag.Named<Item> optionalTag(String name) {
+        return ItemTags.createOptional(new ResourceLocation(name));
+    }
+
+    private void copyBlockTags() {
         mirrorForgeBlockTag("ores");
         mirrorForgeBlockTag("ores/certus_quartz");
 
         mirrorForgeBlockTag("storage_blocks");
         mirrorForgeBlockTag("storage_blocks/certus_quartz");
-
-        addForge("dusts/gold", AEItems.GOLD_DUST);
-        addForge("dusts/iron", AEItems.IRON_DUST);
-        addForge("dusts/quartz", AEItems.NETHER_QUARTZ_DUST);
-        addForge("dusts/fluix", AEItems.FLUIX_DUST);
-        addForge("dusts/certus_quartz", AEItems.CERTUS_QUARTZ_DUST);
-
-        addForge("gems/fluix", AEItems.FLUIX_CRYSTAL);
-        addForge("gems/certus_quartz", AEItems.CERTUS_QUARTZ_CRYSTAL,
-                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
     }
 
-    private void addForge(String tagName, Object... itemSources) {
-        add(new ResourceLocation("forge", tagName), itemSources);
-    }
-
-    private void addAe2(String tagName, Object... itemSources) {
+    private void add(String tagName, Object... itemSources) {
         add(AppEng.makeId(tagName), itemSources);
     }
 
-    private void addAe2(Tag.Named<Item> tag, Object... itemSources) {
+    private void add(Tag.Named<Item> tag, Object... itemSources) {
         add(tag.getName(), itemSources);
     }
 
@@ -157,10 +158,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
     private void mirrorForgeBlockTag(String tagName) {
         mirrorBlockTag(new ResourceLocation("forge:" + tagName));
-    }
-
-    private void mirrorAe2BlockTag(String tagName) {
-        mirrorBlockTag(AppEng.makeId(tagName));
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {
