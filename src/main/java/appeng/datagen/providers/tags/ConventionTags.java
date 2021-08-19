@@ -73,6 +73,7 @@ public final class ConventionTags {
     public static Tag.Named<Item> QUARTZ_KNIFE = tag("appliedenergistics2:knife");
     public static Tag.Named<Item> METAL_INGOTS = tag("appliedenergistics2:metal_ingots");
     public static Tag.Named<Item> SILICON = itemConvention("silicon");
+    public static Tag.Named<Item> PAINT_BALLS = tag("appliedenergistics2:paint_balls");
 
     public static final Map<DyeColor, Tag.Named<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
