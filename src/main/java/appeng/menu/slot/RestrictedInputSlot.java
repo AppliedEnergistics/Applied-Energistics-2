@@ -18,12 +18,7 @@
 
 package appeng.menu.slot;
 
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.resources.ResourceLocation;
+import appeng.api.ids.AETags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -57,13 +52,6 @@ import appeng.util.Platform;
  * @since rv0
  */
 public class RestrictedInputSlot extends AppEngSlot {
-
-    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
-            new ResourceLocation("forge:ingots/copper"), new ResourceLocation("forge:ingots/tin"),
-            new ResourceLocation("forge:ingots/iron"), new ResourceLocation("forge:ingots/gold"),
-            new ResourceLocation("forge:ingots/lead"), new ResourceLocation("forge:ingots/bronze"),
-            new ResourceLocation("forge:ingots/brass"), new ResourceLocation("forge:ingots/nickel"),
-            new ResourceLocation("forge:ingots/aluminium"));
 
     private final PlacableItemType which;
     private boolean allowEdit = true;
@@ -218,19 +206,8 @@ public class RestrictedInputSlot extends AppEngSlot {
         return super.getDisplayStack();
     }
 
-    public static boolean isMetalIngot(final ItemStack i) {
-        if (Platform.itemComparisons().isSameItem(i, new ItemStack(Items.IRON_INGOT))) {
-            return true;
-        }
-
-        Set<ResourceLocation> itemTags = i.getItem().getTags();
-        for (ResourceLocation tagName : METAL_INGOT_TAGS) {
-            if (itemTags.contains(tagName)) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isMetalIngot(ItemStack i) {
+        return AETags.METAL_INGOTS.contains(i.getItem());
     }
 
     private boolean isAllowEdit() {

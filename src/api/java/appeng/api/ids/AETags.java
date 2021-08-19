@@ -6,20 +6,15 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+/**
+ * Tags that AE uses for functional purposes.
+ * For recipe tags that you may use in your recipe data generation, please see the non-api class
+ * ConventionTags.
+ */
 public final class AETags {
 
     private AETags() {
     }
-
-    /**
-     * Contains all of AE2's certus crystals, such as:
-     * <ul>
-     * <li>Certus Quartz Crystals</li>
-     * <li>Charged Certus Quartz Crystals</li>
-     * <li>Pure Certus Quartz Crystals</li>
-     * </ul>
-     */
-    public static final Tag.Named<Item> CERTUS_QUARTZ_CRYSTAL = ItemTags.bind("appliedenergistics2:crystals/certus");
 
     /**
      * Contains blocks that are blacklisted from being moved in and out of spatial storage.
@@ -33,5 +28,11 @@ public final class AETags {
      */
     public static final Tag.Named<Block> ANNIHILATION_PLANE_BLACKLIST = BlockTags
             .bind("appliedenergistics2:blacklisted/annihilation_plane");
+
+    /**
+     * Used by the quartz knife to decide which ingots can be crafted into nameplates, as well as the crafting
+     * recipe for cable anchors.
+     */
+    public static Tag.Named<Item> METAL_INGOTS = ItemTags.bind("appliedenergistics2:metal_ingots");
 
 }

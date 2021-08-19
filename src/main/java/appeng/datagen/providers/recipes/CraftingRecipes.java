@@ -3,6 +3,7 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
+import appeng.api.ids.AETags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -1026,10 +1027,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
         // ====================================================
 
         ShapelessRecipeBuilder.shapeless(AEParts.CABLE_ANCHOR, 3)
-                .requires(ConventionTags.METAL_INGOTS)
+                .requires(AETags.METAL_INGOTS)
                 .requires(ConventionTags.QUARTZ_KNIFE)
                 .unlockedBy("has_knife", has(ConventionTags.QUARTZ_KNIFE))
-                .unlockedBy("has_metal_ingots", has(ConventionTags.METAL_INGOTS))
+                .unlockedBy("has_metal_ingots", has(AETags.METAL_INGOTS))
                 .save(consumer, AppEng.makeId("network/parts/cable_anchor"));
         ShapelessRecipeBuilder.shapeless(AEParts.ENERGY_ACCEPTOR)
                 .requires(AEBlocks.ENERGY_ACCEPTOR)
