@@ -37,6 +37,7 @@ import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
 import appeng.datagen.providers.tags.BlockTagsProvider;
+import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -46,15 +47,23 @@ public class AE2DataGenerators {
     public static void onGatherData(GatherDataEvent dataEvent) {
         DataGenerator generator = dataEvent.getGenerator();
         if (dataEvent.includeServer()) {
+            // Loot
             generator.addProvider(new BlockDropProvider(dataEvent));
             generator.addProvider(new ChestDropProvider(dataEvent));
-            generator.addProvider(new DecorationRecipes(generator));
-            generator.addProvider(new DecorationBlockRecipes(generator));
+
+            // Tags
             BlockTagsProvider blockTagsProvider = new BlockTagsProvider(dataEvent);
             generator.addProvider(blockTagsProvider);
             generator.addProvider(new ItemTagsProvider(dataEvent, blockTagsProvider));
+            generator.addProvider(new FluidTagsProvider(dataEvent));
+
+            // Misc
             generator.addProvider(new DecorationModelProvider(generator, dataEvent.getExistingFileHelper()));
             generator.addProvider(new AdvancementGenerator(generator));
+
+            // Recipes
+            generator.addProvider(new DecorationRecipes(generator));
+            generator.addProvider(new DecorationBlockRecipes(generator));
             generator.addProvider(new MatterCannonAmmoProvider(generator));
             generator.addProvider(new EntropyRecipes(generator));
             generator.addProvider(new GrinderRecipes(generator));

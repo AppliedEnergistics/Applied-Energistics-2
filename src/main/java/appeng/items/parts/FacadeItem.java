@@ -26,8 +26,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -43,22 +41,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
+import appeng.api.ids.AETags;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
-
-    /**
-     * Block tag used to explicitly whitelist blocks for use in facades.
-     */
-    private static final Tag.Named<Block> BLOCK_WHITELIST = BlockTags
-            .createOptional(AppEng.makeId("whitelisted/facades"));
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -105,7 +97,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.defaultBlockState();
 
         final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
-        final boolean isWhiteListed = BLOCK_WHITELIST.contains(block);
+        final boolean isWhiteListed = AETags.FACADE_BLOCK_WHITELIST.contains(block);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();

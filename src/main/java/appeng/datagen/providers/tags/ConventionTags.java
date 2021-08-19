@@ -1,21 +1,23 @@
 package appeng.datagen.providers.tags;
 
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
 /**
  * Contains various tags:
  * <ul>
- *     <li>Convention tags defined by the modding API for mod-compatibility purposes.</li>
- *     <li>Tags defined by AE2 itself for recipe use.</li>
- *     <li>Tags provided by AE2 for mod compatibility in the convention namespace.</li>
+ * <li>Convention tags defined by the modding API for mod-compatibility purposes.</li>
+ * <li>Tags defined by AE2 itself for recipe use.</li>
+ * <li>Tags provided by AE2 for mod compatibility in the convention namespace.</li>
  * </ul>
  */
 public final class ConventionTags {
@@ -34,6 +36,8 @@ public final class ConventionTags {
     public static Tag.Named<Item> ALL_CERTUS_QUARTZ = tag("appliedenergistics2:all_certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ = tag("forge:gems/certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ_ORE = tag("forge:ores/certus_quartz");
+    public static Tag.Named<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("forge:ores/certus_quartz");
+    public static Tag.Named<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("forge:ores/certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ_DUST = tag("forge:dusts/certus_quartz");
 
     // Includes synthetic/purified
@@ -88,12 +92,18 @@ public final class ConventionTags {
                     Function.identity(),
                     dye -> tag("forge:dyes/" + dye.getSerializedName())));
 
+    public static final Tag.Named<Block> TERRACOTTA_BLOCK = blockTag("forge:terracotta");
+
     public static Tag.Named<Item> dye(DyeColor color) {
         return DYES.get(color);
     }
 
     private static Tag.Named<Item> tag(String name) {
         return ItemTags.bind(name);
+    }
+
+    private static Tag.Named<Block> blockTag(String name) {
+        return BlockTags.bind(name);
     }
 
 }

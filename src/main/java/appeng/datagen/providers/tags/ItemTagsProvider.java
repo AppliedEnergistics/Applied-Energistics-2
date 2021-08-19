@@ -18,6 +18,14 @@
 
 package appeng.datagen.providers.tags;
 
+import java.nio.file.Path;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+
 import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -25,16 +33,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-
-import java.nio.file.Path;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
@@ -46,124 +44,110 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     protected void addTags() {
         copyBlockTags();
 
-        add("blacklisted/annihilation_plane");
+        // Provide empty blacklist tags
+        tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);
 
-        add(ConventionTags.CERTUS_QUARTZ_DUST, AEItems.CERTUS_QUARTZ_DUST);
-        add(ConventionTags.ENDER_PEARL_DUST, AEItems.ENDER_DUST);
+        tag(ConventionTags.CERTUS_QUARTZ_DUST)
+                .add(AEItems.CERTUS_QUARTZ_DUST.asItem());
+        tag(ConventionTags.ENDER_PEARL_DUST)
+                .add(AEItems.ENDER_DUST.asItem());
 
-        add(ConventionTags.ALL_QUARTZ_DUST, ConventionTags.CERTUS_QUARTZ_DUST, ConventionTags.NETHER_QUARTZ_DUST);
-        add(ConventionTags.ALL_CERTUS_QUARTZ,
-                ConventionTags.CERTUS_QUARTZ,
-                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL);
-        add(ConventionTags.ALL_FLUIX,
-                AEItems.FLUIX_CRYSTAL,
-                AEItems.PURIFIED_FLUIX_CRYSTAL);
-        add(ConventionTags.ALL_NETHER_QUARTZ,
-                Tags.Items.GEMS_QUARTZ,
-                AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL);
-        add(ConventionTags.ALL_QUARTZ,
-                Tags.Items.GEMS_QUARTZ,
-                ConventionTags.CERTUS_QUARTZ,
-                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
+        tag(ConventionTags.ALL_QUARTZ_DUST)
+                .addTag(ConventionTags.CERTUS_QUARTZ_DUST)
+                .addTag(ConventionTags.NETHER_QUARTZ_DUST);
+
+        tag(ConventionTags.ALL_CERTUS_QUARTZ)
+                .addTag(ConventionTags.CERTUS_QUARTZ)
+                .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+                .add(AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL.asItem());
+        tag(ConventionTags.ALL_FLUIX)
+                .add(AEItems.FLUIX_CRYSTAL.asItem())
+                .add(AEItems.PURIFIED_FLUIX_CRYSTAL.asItem());
+        tag(ConventionTags.ALL_NETHER_QUARTZ)
+                .addTag(Tags.Items.GEMS_QUARTZ)
+                .add(AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL.asItem());
+        tag(ConventionTags.ALL_QUARTZ)
+                .addTag(Tags.Items.GEMS_QUARTZ)
+                .addTag(ConventionTags.CERTUS_QUARTZ)
+                .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
 
         for (AEColor color : AEColor.values()) {
-            add(ConventionTags.SMART_DENSE_CABLE, AEParts.SMART_DENSE_CABLE.item(color));
-            add(ConventionTags.SMART_CABLE, AEParts.SMART_CABLE.item(color));
-            add(ConventionTags.GLASS_CABLE, AEParts.GLASS_CABLE.item(color));
-            add(ConventionTags.COVERED_CABLE, AEParts.COVERED_CABLE.item(color));
-            add(ConventionTags.COVERED_DENSE_CABLE, AEParts.COVERED_DENSE_CABLE.item(color));
+            tag(ConventionTags.SMART_DENSE_CABLE).add(AEParts.SMART_DENSE_CABLE.item(color));
+            tag(ConventionTags.SMART_CABLE).add(AEParts.SMART_CABLE.item(color));
+            tag(ConventionTags.GLASS_CABLE).add(AEParts.GLASS_CABLE.item(color));
+            tag(ConventionTags.COVERED_CABLE).add(AEParts.COVERED_CABLE.item(color));
+            tag(ConventionTags.COVERED_DENSE_CABLE).add(AEParts.COVERED_DENSE_CABLE.item(color));
         }
 
         for (AEColor color : AEColor.VALID_COLORS) {
-            add(ConventionTags.PAINT_BALLS, AEItems.COLORED_PAINT_BALL.item(color));
+            tag(ConventionTags.PAINT_BALLS).add(AEItems.COLORED_PAINT_BALL.item(color));
         }
 
-        add(ConventionTags.SILICON, AEItems.SILICON);
-        add(ConventionTags.QUARTZ_WRENCH, AEItems.CERTUS_QUARTZ_WRENCH, AEItems.NETHER_QUARTZ_WRENCH);
-        add(ConventionTags.QUARTZ_KNIFE, AEItems.CERTUS_QUARTZ_KNIFE, AEItems.NETHER_QUARTZ_KNIFE);
+        tag(ConventionTags.SILICON)
+                .add(AEItems.SILICON.asItem());
+        tag(ConventionTags.QUARTZ_WRENCH)
+                .add(AEItems.CERTUS_QUARTZ_WRENCH.asItem())
+                .add(AEItems.NETHER_QUARTZ_WRENCH.asItem());
+        tag(ConventionTags.QUARTZ_KNIFE)
+                .add(AEItems.CERTUS_QUARTZ_KNIFE.asItem())
+                .add(AEItems.NETHER_QUARTZ_KNIFE.asItem());
 
-        add(ConventionTags.NETHER_QUARTZ_DUST, AEItems.NETHER_QUARTZ_DUST);
+        tag(ConventionTags.NETHER_QUARTZ_DUST)
+                .add(AEItems.NETHER_QUARTZ_DUST.asItem());
 
-        add(AETags.METAL_INGOTS,
-                optionalTag("forge:ingots/copper"),
-                optionalTag("forge:ingots/tin"),
-                optionalTag("forge:ingots/iron"),
-                optionalTag("forge:ingots/gold"),
-                optionalTag("forge:ingots/brass"),
-                optionalTag("forge:ingots/nickel"),
-                optionalTag("forge:ingots/aluminium")
-        );
+        tag(AETags.METAL_INGOTS)
+                .addOptionalTag(new ResourceLocation("forge:ingots/copper"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/tin"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/iron"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/gold"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/brass"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/nickel"))
+                .addOptionalTag(new ResourceLocation("forge:ingots/aluminium"));
 
-        add(ConventionTags.ITEM_INTERFACE, AEParts.INTERFACE, AEBlocks.ITEM_INTERFACE);
-        add(ConventionTags.FLUID_INTERFACE, AEParts.FLUID_INTERFACE, AEBlocks.FLUID_INTERFACE);
+        tag(ConventionTags.ITEM_INTERFACE)
+                .add(AEParts.ITEM_INTERFACE.asItem())
+                .add(AEBlocks.ITEM_INTERFACE.asItem());
+        tag(ConventionTags.FLUID_INTERFACE)
+                .add(AEParts.FLUID_INTERFACE.asItem())
+                .add(AEBlocks.FLUID_INTERFACE.asItem());
 
-        add(ConventionTags.ILLUMINATED_PANEL, AEParts.MONITOR,
-                AEParts.SEMI_DARK_MONITOR,
-                AEParts.DARK_MONITOR);
+        tag(ConventionTags.ILLUMINATED_PANEL)
+                .add(AEParts.MONITOR.asItem())
+                .add(AEParts.SEMI_DARK_MONITOR.asItem())
+                .add(AEParts.DARK_MONITOR.asItem());
 
-        add(ConventionTags.WOOD_GEAR, AEItems.WOODEN_GEAR);
+        tag(ConventionTags.WOOD_GEAR)
+                .add(AEItems.WOODEN_GEAR.asItem());
 
-        add(ConventionTags.GOLD_DUST, AEItems.GOLD_DUST);
-        add(ConventionTags.IRON_DUST, AEItems.IRON_DUST);
-        add(ConventionTags.NETHER_QUARTZ_DUST, AEItems.NETHER_QUARTZ_DUST);
-        add(ConventionTags.FLUIX_DUST, AEItems.FLUIX_DUST);
-        add(ConventionTags.CERTUS_QUARTZ_DUST, AEItems.CERTUS_QUARTZ_DUST);
+        tag(ConventionTags.GOLD_DUST)
+                .add(AEItems.GOLD_DUST.asItem());
+        tag(ConventionTags.IRON_DUST)
+                .add(AEItems.IRON_DUST.asItem());
+        tag(ConventionTags.NETHER_QUARTZ_DUST)
+                .add(AEItems.NETHER_QUARTZ_DUST.asItem());
+        tag(ConventionTags.FLUIX_DUST)
+                .add(AEItems.FLUIX_DUST.asItem());
+        tag(ConventionTags.CERTUS_QUARTZ_DUST)
+                .add(AEItems.CERTUS_QUARTZ_DUST.asItem());
 
-        add(ConventionTags.FLUIX_CRYSTAL, AEItems.FLUIX_CRYSTAL);
-        add(ConventionTags.CERTUS_QUARTZ, AEItems.CERTUS_QUARTZ_CRYSTAL,
-                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
+        tag(ConventionTags.FLUIX_CRYSTAL)
+                .add(AEItems.FLUIX_CRYSTAL.asItem());
+        tag(ConventionTags.CERTUS_QUARTZ)
+                .add(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
+                .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
     }
 
-    private Tag.Named<Item> optionalTag(String name) {
-        return ItemTags.createOptional(new ResourceLocation(name));
-    }
-
+    // Copy the content of block tags, assuming the ID are equivalent to the items
     private void copyBlockTags() {
-        mirrorForgeBlockTag("ores");
-        mirrorForgeBlockTag("ores/certus_quartz");
+        mirrorBlockTag(new ResourceLocation("forge:ores"));
+        mirrorBlockTag(new ResourceLocation("forge:ores/certus_quartz"));
 
-        mirrorForgeBlockTag("storage_blocks");
-        mirrorForgeBlockTag("storage_blocks/certus_quartz");
-    }
-
-    private void add(String tagName, Object... itemSources) {
-        add(AppEng.makeId(tagName), itemSources);
-    }
-
-    private void add(Tag.Named<Item> tag, Object... itemSources) {
-        add(tag.getName(), itemSources);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void add(ResourceLocation tagName, Object... itemSources) {
-        TagAppender<Item> builder = tag(ItemTags.createOptional(tagName));
-
-        for (Object itemSource : itemSources) {
-            if (itemSource instanceof ItemLike) {
-                builder.add(((ItemLike) itemSource).asItem());
-            } else if (itemSource instanceof Tag.Named) {
-                builder.addTag((Tag.Named<Item>) itemSource);
-            } else if (itemSource instanceof String itemSourceString) {
-                if (itemSourceString.startsWith("#")) {
-                    builder.add(new Tag.TagEntry(new ResourceLocation(itemSourceString.substring(1))));
-                } else {
-                    builder.add(new Tag.ElementEntry(new ResourceLocation(itemSourceString)));
-                }
-            } else {
-                throw new IllegalArgumentException("Unknown item source: " + itemSource);
-            }
-        }
-    }
-
-    private void mirrorForgeBlockTag(String tagName) {
-        mirrorBlockTag(new ResourceLocation("forge:" + tagName));
+        mirrorBlockTag(new ResourceLocation("forge:storage_blocks"));
+        mirrorBlockTag(new ResourceLocation("forge:storage_blocks/certus_quartz"));
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {
-        copy(
-                BlockTags.createOptional(tagName),
-                ItemTags.createOptional(tagName));
+        copy(BlockTags.createOptional(tagName), ItemTags.createOptional(tagName));
     }
 
     @Override

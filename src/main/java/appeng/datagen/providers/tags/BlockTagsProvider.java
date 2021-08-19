@@ -20,9 +20,9 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
@@ -31,7 +31,6 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
@@ -41,13 +40,27 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
     @Override
     protected void addTags() {
-        addForge("ores/certus_quartz", AEBlocks.QUARTZ_ORE, AEBlocks.QUARTZ_ORE_CHARGED);
-        addForge("ores", "#forge:ores/certus_quartz");
+        // Black- and whitelist tags
+        tag(AETags.SPATIAL_BLACKLIST).add(Blocks.BEDROCK);
+        tag(AETags.ANNIHILATION_PLANE_BLOCK_BLACKLIST);
+        tag(AETags.FACADE_BLOCK_WHITELIST)
+                .add(Blocks.GLASS,
+                        AEBlocks.QUARTZ_GLASS.block(),
+                        AEBlocks.QUARTZ_VIBRANT_GLASS.block())
+                .addTag(Tags.Blocks.STAINED_GLASS);
 
-        addForge("storage_blocks/certus_quartz", AEBlocks.QUARTZ_BLOCK);
-        addForge("storage_blocks", "#forge:storage_blocks/certus_quartz");
+        tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
+                .add(AEBlocks.QUARTZ_ORE.block(), AEBlocks.QUARTZ_ORE_CHARGED.block());
+        tag(Tags.Blocks.ORES)
+                .addTag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK);
 
-        addForge("terracotta", Blocks.TERRACOTTA,
+        tag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK)
+                .add(AEBlocks.QUARTZ_BLOCK.block());
+        tag(Tags.Blocks.STORAGE_BLOCKS)
+                .addTag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK);
+
+        tag(ConventionTags.TERRACOTTA_BLOCK).add(
+                Blocks.TERRACOTTA,
                 Blocks.WHITE_TERRACOTTA,
                 Blocks.ORANGE_TERRACOTTA,
                 Blocks.MAGENTA_TERRACOTTA,
@@ -65,18 +78,8 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 Blocks.RED_TERRACOTTA,
                 Blocks.BLACK_TERRACOTTA);
 
-        addAe2(AETags.SPATIAL_BLACKLIST, Blocks.BEDROCK);
-
-        addAe2(AETags.ANNIHILATION_PLANE_BLACKLIST);
-
-        addAe2("whitelisted/facades",
-                Blocks.GLASS,
-                Tags.Blocks.STAINED_GLASS,
-                AEBlocks.QUARTZ_GLASS,
-                AEBlocks.QUARTZ_VIBRANT_GLASS);
-
-        // Special behavior is associated with this tag
-        add(BlockTags.WALLS.getName(),
+        // Special behavior is associated with this tag, so our walls need to be added to it
+        tag(BlockTags.WALLS).add(
                 AEBlocks.SKY_STONE_WALL.block(),
                 AEBlocks.SMOOTH_SKY_STONE_WALL.block(),
                 AEBlocks.SKY_STONE_BRICK_WALL.block(),
@@ -87,40 +90,8 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 AEBlocks.QUARTZ_PILLAR_WALL.block());
     }
 
-    private void addForge(String tagName, Object... blockSources) {
-        add(new ResourceLocation("forge", tagName), blockSources);
-    }
-
-    private void addAe2(String tagName, Object... blockSources) {
-        add(AppEng.makeId(tagName), blockSources);
-    }
-
-    private void addAe2(Tag.Named<Block> tag, Object... itemSources) {
-        add(tag.getName(), itemSources);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void add(ResourceLocation tagName, Object... blockSources) {
-        TagAppender<Block> builder = tag(BlockTags.createOptional(tagName));
-
-        for (Object blockSource : blockSources) {
-            if (blockSource instanceof Block) {
-                builder.add((Block) blockSource);
-            } else if (blockSource instanceof BlockDefinition) {
-                builder.add(((BlockDefinition<?>) blockSource).block());
-            } else if (blockSource instanceof Tag.Named) {
-                builder.addTag(
-                        (Tag.Named<Block>) blockSource);
-            } else if (blockSource instanceof String blockSourceString) {
-                if (blockSourceString.startsWith("#")) {
-                    builder.add(new Tag.TagEntry(new ResourceLocation(blockSourceString.substring(1))));
-                } else {
-                    builder.add(new Tag.ElementEntry(new ResourceLocation(blockSourceString)));
-                }
-            } else {
-                throw new IllegalArgumentException("Unknown block source: " + blockSource);
-            }
-        }
+    private TagsProvider.TagAppender<Block> tag(String name) {
+        return tag(BlockTags.bind(name));
     }
 
     @Override

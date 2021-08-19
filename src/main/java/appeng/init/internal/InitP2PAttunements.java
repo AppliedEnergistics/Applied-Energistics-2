@@ -102,7 +102,7 @@ public final class InitP2PAttunements {
          */
 
         P2PTunnelAttunement.addNewAttunement(AEBlocks.ITEM_INTERFACE, TunnelType.ITEM);
-        P2PTunnelAttunement.addNewAttunement(AEParts.INTERFACE, TunnelType.ITEM);
+        P2PTunnelAttunement.addNewAttunement(AEParts.ITEM_INTERFACE, TunnelType.ITEM);
         P2PTunnelAttunement.addNewAttunement(AEParts.ITEM_STORAGE_BUS, TunnelType.ITEM);
         P2PTunnelAttunement.addNewAttunement(AEParts.IMPORT_BUS, TunnelType.ITEM);
         P2PTunnelAttunement.addNewAttunement(AEParts.EXPORT_BUS, TunnelType.ITEM);

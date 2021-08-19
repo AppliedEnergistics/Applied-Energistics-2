@@ -111,7 +111,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart(AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
     public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart(AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);
     public static final ItemDefinition<PartItem<ConversionMonitorPart>> CONVERSION_MONITOR = createPart(AEPartIds.ITEM_CONVERSION_MONITOR, ConversionMonitorPart.class, ConversionMonitorPart::new);
-    public static final ItemDefinition<PartItem<ItemInterfacePart>> INTERFACE = createPart(AEPartIds.ITEM_INTERFACE, ItemInterfacePart.class, ItemInterfacePart::new);
+    public static final ItemDefinition<PartItem<ItemInterfacePart>> ITEM_INTERFACE = createPart(AEPartIds.ITEM_INTERFACE, ItemInterfacePart.class, ItemInterfacePart::new);
     public static final ItemDefinition<PartItem<FluidInterfacePart>> FLUID_INTERFACE = createPart(AEPartIds.FLUID_INTERFACE, FluidInterfacePart.class, FluidInterfacePart::new);
     public static final ItemDefinition<PartItem<InterfaceTerminalPart>> INTERFACE_TERMINAL = createPart(AEPartIds.INTERFACE_TERMINAL, InterfaceTerminalPart.class, InterfaceTerminalPart::new);
     public static final ItemDefinition<PartItem<FluidTerminalPart>> FLUID_TERMINAL = createPart(AEPartIds.FLUID_TERMINAL, FluidTerminalPart.class, FluidTerminalPart::new);

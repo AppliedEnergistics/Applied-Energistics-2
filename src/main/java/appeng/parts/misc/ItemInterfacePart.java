@@ -227,7 +227,7 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEParts.INTERFACE.stack();
+        return AEParts.ITEM_INTERFACE.stack();
     }
 
     @Override

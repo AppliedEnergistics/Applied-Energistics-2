@@ -3,7 +3,6 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import appeng.api.ids.AETags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -12,6 +11,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
+import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -445,10 +445,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface"));
         ShapelessRecipeBuilder.shapeless(AEBlocks.ITEM_INTERFACE)
-                .requires(AEParts.INTERFACE)
-                .unlockedBy("has_cable_item_interface", has(AEParts.INTERFACE))
+                .requires(AEParts.ITEM_INTERFACE)
+                .unlockedBy("has_cable_item_interface", has(AEParts.ITEM_INTERFACE))
                 .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE)
+        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_INTERFACE)
                 .requires(AEBlocks.ITEM_INTERFACE)
                 .unlockedBy("has_item_interface", has(AEBlocks.ITEM_INTERFACE))
                 .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_part"));
