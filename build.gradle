@@ -56,12 +56,22 @@ repositories {
     maven { url = 'https://repo.spongepowered.org/maven' }
 }
 
+///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
+configurations {
+    apiImplementation.extendsFrom(implementation)
+    library
+    implementation.extendsFrom(library)
+}
+///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // compile against provided APIs
-    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}:api"
+// TODO-117    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
+// TODO-117    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}:api"
+    compileOnly files("jei-1.17.1-7.7.1.9999-api.jar")
+    compileOnly files("theoneprobe-1.17-0.0.0-api.jar")
 
     // Runtime, Mods
 // TODO-117   runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
@@ -85,10 +95,9 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
-    //
-    // Remove this once there has been a proper release, and Forge updated to it.
-    //
-    implementation 'org.spongepowered:mixin:0.8.3'
+///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
+    library files('mixin-0.0.0.jar')
+///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
@@ -143,10 +152,6 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
-}
-
-configurations {
-    apiImplementation.extendsFrom(implementation)
 }
 
 test {
@@ -407,4 +412,10 @@ tasks.withType(GenerateModuleMetadata) {
 // Temporary compile fix, breaks reobfJar. Remove once Sponge Mixin Gradle Plugin gets fixed
 // https://github.com/SpongePowered/MixinGradle/issues/29
 net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace.metaClass.extraMapping = {
+}
+
+minecraft.runs.all {
+    lazyToken('minecraft_classpath') {
+        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+    }
 }
