@@ -52,7 +52,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 .add(Blocks.GLASS,
                         AEBlocks.QUARTZ_GLASS.block(),
                         AEBlocks.QUARTZ_VIBRANT_GLASS.block())
-                .addTag(Tags.Blocks.STAINED_GLASS);
+                .addTag(ConventionTags.STAINED_GLASS_BLOCK);
 
         tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
                 .add(AEBlocks.QUARTZ_ORE.block(), AEBlocks.QUARTZ_ORE_CHARGED.block());

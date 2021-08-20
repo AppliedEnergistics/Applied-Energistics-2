@@ -23,7 +23,7 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BLOCK)
                 .pattern("aa")

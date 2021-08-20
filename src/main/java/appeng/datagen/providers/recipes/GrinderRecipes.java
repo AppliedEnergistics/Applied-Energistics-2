@@ -34,7 +34,7 @@ public class GrinderRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         grinder(Items.BONE, new ItemStack(Items.BONE_MEAL, 4))
                 .save(consumer, "bonemeal");

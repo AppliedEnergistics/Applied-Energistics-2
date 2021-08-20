@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -34,10 +33,9 @@ import net.minecraft.world.phys.AABB;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 
 public final class SingularityEntity extends AEBaseItemEntity {
-
-    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
 
     private static int randTickSeed = 0;
 
@@ -79,16 +77,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
                 if (e instanceof ItemEntity) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
-                        boolean matches = false;
-
-                        if (AEItems.ENDER_DUST.isSameAs(other)) {
-                            matches = true;
-                        }
-
-                        // check... other name.
-                        if (!matches && other.getItem().getTags().contains(TAG_ENDER_PEARL)) {
-                            matches = true;
-                        }
+                        var matches = ConventionTags.ENDER_PEARL_DUST.contains(other.getItem())
+                                || ConventionTags.ENDER_PEARL.contains(other.getItem());
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {

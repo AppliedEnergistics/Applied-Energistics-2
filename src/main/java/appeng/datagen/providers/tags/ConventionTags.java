@@ -93,7 +93,11 @@ public final class ConventionTags {
                     Function.identity(),
                     dye -> tag("forge:dyes/" + dye.getSerializedName())));
 
+    public static final Tag.Named<Block> STAINED_GLASS_BLOCK = Tags.Blocks.STAINED_GLASS;
+
     public static final Tag.Named<Block> TERRACOTTA_BLOCK = blockTag("forge:terracotta");
+
+    public static final Tag.Named<Item> STORAGE_BLOCKS = Tags.Items.STORAGE_BLOCKS;
 
     public static Tag.Named<Item> dye(DyeColor color) {
         return DYES.get(color);

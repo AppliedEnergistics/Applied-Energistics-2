@@ -1,9 +1,12 @@
 package appeng.datagen.providers.recipes;
 
+import java.util.function.Consumer;
+
 import com.google.gson.JsonObject;
 
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,4 +23,12 @@ public abstract class AE2RecipeProvider extends RecipeProvider {
         }
         return stackObj;
     }
+
+    @Override
+    protected final void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        buildAE2CraftingRecipes(consumer);
+    }
+
+    protected abstract void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer);
+
 }

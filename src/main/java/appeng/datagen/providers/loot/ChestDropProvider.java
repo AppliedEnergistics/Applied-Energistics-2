@@ -40,6 +40,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.AlternativeLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
@@ -75,7 +76,7 @@ public class ChestDropProvider implements IAE2DataProvider {
                 .withPool(LootPool.lootPool()
                         .name("main")
                         .setRolls(UniformGenerator.between(1, 3))
-                        .bonusRolls(1, 1)
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 12))))
                         .add(LootItem.lootTableItem(Items.GOLD_NUGGET)
@@ -85,7 +86,7 @@ public class ChestDropProvider implements IAE2DataProvider {
                 .withPool(LootPool.lootPool()
                         .name("needed_presses")
                         .setRolls(UniformGenerator.between(1, 2))
-                        .bonusRolls(1, 1)
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(AEItems.CALCULATION_PROCESSOR_PRESS)
                                 .when(NEEDS_CALCULATION_PROCESSOR_PRESS))
                         .add(LootItem.lootTableItem(AEItems.ENGINEERING_PROCESSOR_PRESS)
@@ -105,7 +106,7 @@ public class ChestDropProvider implements IAE2DataProvider {
                                         NEEDS_LOGIC_PROCESSOR_PRESS,
                                         NEEDS_SILICON_PRESS)))
                         .setRolls(UniformGenerator.between(1, 2))
-                        .bonusRolls(1, 1)
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(AEItems.CALCULATION_PROCESSOR_PRESS))
                         .add(LootItem.lootTableItem(AEItems.ENGINEERING_PROCESSOR_PRESS))
                         .add(LootItem.lootTableItem(AEItems.LOGIC_PROCESSOR_PRESS))

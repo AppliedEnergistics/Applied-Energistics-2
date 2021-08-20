@@ -22,19 +22,17 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -70,6 +68,7 @@ import appeng.block.paint.PaintSplotchesBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
@@ -84,23 +83,10 @@ import appeng.util.item.AEItemStack;
 public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
-    private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
-            .put(new ResourceLocation("forge:dyes/black"), AEColor.BLACK)
-            .put(new ResourceLocation("forge:dyes/blue"), AEColor.BLUE)
-            .put(new ResourceLocation("forge:dyes/brown"), AEColor.BROWN)
-            .put(new ResourceLocation("forge:dyes/cyan"), AEColor.CYAN)
-            .put(new ResourceLocation("forge:dyes/gray"), AEColor.GRAY)
-            .put(new ResourceLocation("forge:dyes/green"), AEColor.GREEN)
-            .put(new ResourceLocation("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
-            .put(new ResourceLocation("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
-            .put(new ResourceLocation("forge:dyes/lime"), AEColor.LIME)
-            .put(new ResourceLocation("forge:dyes/magenta"), AEColor.MAGENTA)
-            .put(new ResourceLocation("forge:dyes/orange"), AEColor.ORANGE)
-            .put(new ResourceLocation("forge:dyes/pink"), AEColor.PINK)
-            .put(new ResourceLocation("forge:dyes/purple"), AEColor.PURPLE)
-            .put(new ResourceLocation("forge:dyes/red"), AEColor.RED)
-            .put(new ResourceLocation("forge:dyes/white"), AEColor.WHITE)
-            .put(new ResourceLocation("forge:dyes/yellow"), AEColor.YELLOW).build();
+    private static final Map<Tag.Named<Item>, AEColor> TAG_TO_COLOR = AEColor.VALID_COLORS.stream()
+            .collect(Collectors.toMap(
+                    aeColor -> ConventionTags.dye(aeColor.dye),
+                    Function.identity()));
 
     private static final String TAG_COLOR = "color";
 
@@ -212,9 +198,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         if (paintBall.getItem() instanceof PaintBallItem ipb) {
             return ipb.getColor();
         } else {
-            for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
-                Tag<Item> tag = ItemTags.getAllTags().getTag(entry.getKey());
-                if (tag != null && tag.contains(paintBall.getItem())) {
+            for (var entry : TAG_TO_COLOR.entrySet()) {
+                if (entry.getKey().contains(paintBall.getItem())) {
                     return entry.getValue();
                 }
             }

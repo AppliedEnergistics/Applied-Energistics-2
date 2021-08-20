@@ -58,7 +58,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
         for (var block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);

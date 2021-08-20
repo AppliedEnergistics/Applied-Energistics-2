@@ -28,7 +28,7 @@ public class InscriberRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
         inscribe(AEItems.SILICON_PRESS, new ItemStack(Items.IRON_BLOCK))

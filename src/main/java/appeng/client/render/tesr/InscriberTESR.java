@@ -43,6 +43,7 @@ import appeng.api.features.InscriberProcessType;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**
@@ -198,8 +199,6 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
         vb.endVertex();
     }
 
-    private static final ResourceLocation TAG_STORAGE_BLOCKS = new ResourceLocation("forge:storage_blocks");
-
     private void renderItem(PoseStack ms, final ItemStack stack, final float o, MultiBufferSource buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
@@ -213,7 +212,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
             // heuristic to scale items down much further than blocks
-            if (!stack.getItem().getTags().contains(TAG_STORAGE_BLOCKS)) {
+            if (!ConventionTags.STORAGE_BLOCKS.contains(stack.getItem())) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
