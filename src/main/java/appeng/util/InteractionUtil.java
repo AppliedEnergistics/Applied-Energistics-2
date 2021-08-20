@@ -20,7 +20,6 @@ package appeng.util;
 
 import java.util.List;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -36,7 +35,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 
-import appeng.api.implementations.items.IAEWrench;
+import appeng.api.features.AEToolActions;
 
 /**
  * Utility functions revolving around using or placing items.
@@ -46,29 +45,18 @@ public final class InteractionUtil {
     private InteractionUtil() {
     }
 
-    public static boolean isWrench(final Player player, final ItemStack eq, final BlockPos pos) {
-        if (!eq.isEmpty()) {
-            try {
-                // TODO: Build Craft Wrench?
-                /*
-                 * if( eq.getItem() instanceof IToolWrench ) { IToolWrench wrench = (IToolWrench) eq.getItem(); return
-                 * wrench.canWrench( player, x, y, z ); }
-                 */
+    /**
+     * Checks if the given tool is a wrench capable of disassembling.
+     */
+    public static boolean canWrenchDisassemble(ItemStack tool) {
+        return tool.canPerformAction(AEToolActions.WRENCH_DISASSEMBLE);
+    }
 
-                // FIXME if( eq.getItem() instanceof cofh.api.item.IToolHammer )
-                // FIXME {
-                // FIXME return ( (cofh.api.item.IToolHammer) eq.getItem() ).isUsable( eq,
-                // player, pos );
-                // FIXME }
-            } catch (final Throwable ignore) { // explodes without BC
-
-            }
-
-            if (eq.getItem() instanceof IAEWrench wrench) {
-                return wrench.canWrench(eq, player, pos);
-            }
-        }
-        return false;
+    /**
+     * Checks if the given tool is a wrench capable of rotating.
+     */
+    public static boolean canWrenchRotate(ItemStack tool) {
+        return tool.canPerformAction(AEToolActions.WRENCH_ROTATE);
     }
 
     /**

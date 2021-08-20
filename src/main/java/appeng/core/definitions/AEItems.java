@@ -29,7 +29,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.common.ToolType;
 
 import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
@@ -139,7 +138,7 @@ public final class AEItems {
 
     public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item(AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
     public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item(AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
-    public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1).addToolType(ToolType.get("wrench"), 0)));
+    public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item(AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<EncodedPatternItem> ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));

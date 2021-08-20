@@ -88,7 +88,7 @@ public class PartPlacement {
         final BlockHitResult mop = level.clip(rtc);
         BlockPlaceContext useContext = new BlockPlaceContext(new UseOnContext(player, hand, mop));
 
-        if (!held.isEmpty() && InteractionUtil.isWrench(player, held, pos)
+        if (!held.isEmpty() && InteractionUtil.canWrenchDisassemble(held)
                 && InteractionUtil.isInAlternateUseMode(player)) {
             if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), player)) {
                 return InteractionResult.FAIL;

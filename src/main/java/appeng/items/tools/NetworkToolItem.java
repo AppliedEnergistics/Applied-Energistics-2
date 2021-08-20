@@ -35,10 +35,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.common.ToolAction;
 
 import appeng.api.AEApi;
+import appeng.api.features.AEToolActions;
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.items.IAEWrench;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
@@ -56,7 +57,7 @@ import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
+public class NetworkToolItem extends AEBaseItem implements IGuiItem {
 
     public NetworkToolItem(Item.Properties properties) {
         super(properties);
@@ -164,8 +165,10 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public boolean canWrench(final ItemStack wrench, final Player player, final BlockPos pos) {
-        return true;
+    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+        if (toolAction == AEToolActions.WRENCH_DISASSEMBLE || toolAction == AEToolActions.WRENCH_ROTATE) {
+            return true;
+        }
+        return super.canPerformAction(stack, toolAction);
     }
-
 }

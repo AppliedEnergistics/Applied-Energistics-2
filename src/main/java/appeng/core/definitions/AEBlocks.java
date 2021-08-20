@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.ToolType;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
@@ -109,13 +108,13 @@ public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Properties QUARTZ_PROPERTIES = defaultProps(Material.STONE)
-            .strength(3, 5).requiresCorrectToolForDrops().harvestLevel(1);
+            .strength(3, 5).requiresCorrectToolForDrops();
     private static final Properties SKYSTONE_PROPERTIES = defaultProps(Material.STONE)
-            .strength(50, 150).requiresCorrectToolForDrops();
+            .strength(5, 150).requiresCorrectToolForDrops();
     private static final StateArgumentPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
             p4) -> false;
     private static final Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.STONE)
-            .strength(50, 150).noOcclusion();
+            .strength(5, 150).noOcclusion();
 
     // spotless:off
     public static final BlockDefinition<QuartzOreBlock> QUARTZ_ORE = block(AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
@@ -133,7 +132,7 @@ public final class AEBlocks {
     public static final BlockDefinition<QuartzFixtureBlock> QUARTZ_FIXTURE = block(AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new);
     public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block(AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BLOCK = block(AEBlockIds.SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.STONE,
-            defaultProps(Material.STONE).strength(50, 150).requiresCorrectToolForDrops().harvestLevel(3)));
+            defaultProps(Material.STONE).strength(50, 150).requiresCorrectToolForDrops()));
 
     public static final BlockDefinition<SkyStoneBlock> SMOOTH_SKY_STONE_BLOCK = block(AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.BLOCK, SKYSTONE_PROPERTIES));
     public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BRICK = block(AEBlockIds.SKY_STONE_BRICK, () -> new SkyStoneBlock(SkystoneType.BRICK, SKYSTONE_PROPERTIES));
@@ -144,7 +143,7 @@ public final class AEBlocks {
 
     public static final BlockDefinition<SkyCompassBlock> SKY_COMPASS = block(AEBlockIds.SKY_COMPASS, () -> new SkyCompassBlock(defaultProps(Material.DECORATION)));
     public static final BlockDefinition<GrinderBlock> GRINDSTONE = block(AEBlockIds.GRINDSTONE, () -> new GrinderBlock(defaultProps(Material.STONE).strength(3.2f)));
-    public static final BlockDefinition<CrankBlock> CRANK = block(AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).noOcclusion()));
+    public static final BlockDefinition<CrankBlock> CRANK = block(AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).noOcclusion()));
     public static final BlockDefinition<InscriberBlock> INSCRIBER = block(AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));
     public static final BlockDefinition<WirelessBlock> WIRELESS_ACCESS_POINT = block(AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new);
     public static final BlockDefinition<ChargerBlock> CHARGER = block(AEBlockIds.CHARGER, ChargerBlock::new);
