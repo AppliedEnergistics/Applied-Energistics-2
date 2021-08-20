@@ -72,7 +72,7 @@ public class GenericSlotWidget extends CustomSlotWidget {
             RenderSystem.applyModelViewMatrix();
 
             var text = AEStackRendering.formatAmount(stack, AmountFormat.PREVIEW_LARGE_FONT);
-            StackSizeRenderer.renderSizeLabel(screen.getMinecraft().font, getTooltipAreaX(), getTooltipAreaY(), text,
+            StackSizeRenderer.renderSizeLabel(mc.font, getTooltipAreaX(), getTooltipAreaY(), text,
                     true);
 
             globalStack.popPose();

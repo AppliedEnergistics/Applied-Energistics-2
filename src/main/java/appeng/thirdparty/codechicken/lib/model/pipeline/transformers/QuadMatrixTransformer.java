@@ -19,20 +19,17 @@
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
-import appeng.thirdparty.codechicken.lib.model.Quad;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
 /**
  * Created by covers1624 on 2/6/20.
  */
-public class QuadMatrixTransformer extends QuadTransformer {
-    public static IPipelineElementFactory<QuadMatrixTransformer> FACTORY = QuadMatrixTransformer::new;
+public class QuadMatrixTransformer implements RenderContext.QuadTransform {
     private static final Matrix4f identity;
 
     static {
@@ -40,6 +37,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         identity.setIdentity();
     }
 
+    private final Vector3f storage3 = new Vector3f();
     private final Vector4f storage = new Vector4f();
     private Matrix4f matrix;
     private boolean identityMatrix;
@@ -48,8 +46,7 @@ public class QuadMatrixTransformer extends QuadTransformer {
         super();
     }
 
-    public QuadMatrixTransformer(IVertexConsumer parent, Matrix4f matrix) {
-        super(parent);
+    public QuadMatrixTransformer(Matrix4f matrix) {
         this.matrix = matrix;
         this.identityMatrix = matrix.equals(identity);
     }
@@ -60,26 +57,30 @@ public class QuadMatrixTransformer extends QuadTransformer {
     }
 
     @Override
-    public boolean transform() {
+    public boolean transform(MutableQuadView quad) {
         if (identityMatrix) {
             return true;
         }
-        for (Quad.Vertex vertex : this.quad.vertices) {
-            storage.set(vertex.vec[0], vertex.vec[1], vertex.vec[2], 1);
+        for (int i = 0; i < 4; i++) {
+            quad.copyPos(i, storage3);
+            storage.set(storage3.x(), storage3.y(), storage3.z(), 1);
             storage.transform(matrix);
-            vertex.vec[0] = storage.x();
-            vertex.vec[1] = storage.y();
-            vertex.vec[2] = storage.z();
+            quad.pos(i, storage.x(), storage.y(), storage.z());
 
-            storage.set(vertex.normal[0], vertex.normal[1], vertex.normal[2], 0);
-            storage.transform(matrix);
-            storage.normalize();
-            vertex.normal[0] = storage.x();
-            vertex.normal[1] = storage.y();
-            vertex.normal[2] = storage.z();
+            if (quad.hasNormal(i)) {
+                quad.copyNormal(i, storage3);
+                storage.set(storage3.x(), storage3.y(), storage3.z(), 0);
+                storage.transform(matrix);
+                storage.normalize();
+                quad.normal(i, storage.x(), storage.y(), storage.z());
+
+                if (i == 0) {
+                    Direction face = Direction.getNearest(storage.x(), storage.y(), storage.z());
+                    quad.nominalFace(face);
+                    quad.cullFace(face);
+                }
+            }
         }
-        Quad.Vertex v0 = quad.vertices[0];
-        quad.orientation = Direction.getNearest(v0.normal[0], v0.normal[1], v0.normal[2]);
         return true;
     }
 }

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -38,8 +40,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
@@ -48,11 +48,15 @@ import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.IAEPatternDetails;
+import appeng.helpers.InvalidPatternHelper;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public abstract class EncodedPatternItem extends AEBaseItem {
+public abstract class EncodedPatternItem extends AEBaseItem implements AEToolItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
@@ -98,7 +102,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         if (!stack.hasTag()) {
@@ -232,7 +236,8 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             } else if (output instanceof IAEFluidStack fluidStack) {
                 var dummyFluid = AEItems.DUMMY_FLUID_ITEM.asItem();
                 out = new ItemStack(dummyFluid);
-                dummyFluid.setFluidStack(out, fluidStack.getFluidStack());
+                dummyFluid.setFluid(out, fluidStack.getFluid());
+                dummyFluid.setAmount(out, fluidStack.getStackSize());
             }
         }
 

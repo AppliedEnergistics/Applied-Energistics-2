@@ -23,9 +23,12 @@
 
 package appeng.api.features;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,10 +36,12 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.core.Direction;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.TunnelType;
 
@@ -49,7 +54,7 @@ public final class P2PTunnelAttunement {
 
     private static final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
     private static final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
-    private static final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
+    private static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>();
 
     private P2PTunnelAttunement() {
     }
@@ -78,10 +83,36 @@ public final class P2PTunnelAttunement {
         modIdTunnels.put(modId, type);
     }
 
-    public synchronized static void addNewAttunement(@Nonnull Capability<?> cap, @Nonnull TunnelType type) {
-        Objects.requireNonNull(cap, "cap");
+    /**
+     * Attunement based on the ability of getting an API via Fabric API Lookup from the item.
+     */
+    public synchronized static <T> void addNewAttunement(ItemApiLookup<?, T> api,
+            Function<ItemStack, T> contextProvider,
+            TunnelType type) {
+        Objects.requireNonNull(api, "api");
+        Objects.requireNonNull(contextProvider, "contextProvider");
         Objects.requireNonNull(type, "type");
-        capTunnels.put(cap, type);
+        apiAttunements.add(new ApiAttunement<>(api, contextProvider, type));
+    }
+
+    /**
+     * Attunement based on the ability of getting a storage container API via Fabric API Lookup from the item.
+     */
+    public synchronized static void addNewAttunement(@Nonnull ItemApiLookup<?, ContainerItemContext> api,
+            @Nonnull TunnelType type) {
+        addNewAttunement(api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
+            ItemStack buffer = stack;
+
+            @Override
+            protected ItemStack getStack() {
+                return buffer;
+            }
+
+            @Override
+            protected void setStack(ItemStack stack) {
+                buffer = stack;
+            }
+        }), type);
     }
 
     /**
@@ -106,19 +137,17 @@ public final class P2PTunnelAttunement {
                 }
             }
 
-            // Next, check if the Item you're holding supports any registered capability
-            for (Direction face : Direction.values()) {
-                for (Map.Entry<Capability<?>, TunnelType> entry : capTunnels.entrySet()) {
-                    if (trigger.getCapability(entry.getKey(), face).isPresent()) {
-                        return entry.getValue();
-                    }
+            // Check provided APIs
+            for (var apiAttunement : apiAttunements) {
+                if (apiAttunement.hasApi(trigger)) {
+                    return apiAttunement.type();
                 }
             }
 
             // Use the mod id as last option.
             for (final Map.Entry<String, TunnelType> entry : modIdTunnels.entrySet()) {
-                if (trigger.getItem().getRegistryName() != null
-                        && trigger.getItem().getRegistryName().getNamespace().equals(entry.getKey())) {
+                var id = Registry.ITEM.getKey(trigger.getItem());
+                if (id.getNamespace().equals(entry.getKey())) {
                     return entry.getValue();
                 }
             }
@@ -126,4 +155,14 @@ public final class P2PTunnelAttunement {
 
         return null;
     }
+
+    private record ApiAttunement<T> (
+            ItemApiLookup<?, T> api,
+            Function<ItemStack, T> contextProvider,
+            TunnelType type) {
+        public boolean hasApi(ItemStack stack) {
+            return api.find(stack, contextProvider.apply(stack)) != null;
+        }
+    }
+
 }

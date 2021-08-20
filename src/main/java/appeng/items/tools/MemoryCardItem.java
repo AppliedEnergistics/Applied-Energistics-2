@@ -20,36 +20,35 @@ package appeng.items.tools;
 
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
+public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem {
 
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
@@ -60,7 +59,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
@@ -165,31 +164,27 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         }
     }
 
+    // TODO FABRIC 117 need to test this actually clears the card in all cases
     @Override
-    public InteractionResult useOn(UseOnContext context) {
-        if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
-            Level level = context.getLevel();
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        var player = context.getPlayer();
+        if (player != null && InteractionUtil.isInAlternateUseMode(player)) {
+            var level = context.getLevel();
             if (!level.isClientSide()) {
-                this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
+                var state = context.getLevel().getBlockState(context.getClickedPos());
+                var useResult = state.use(context.getLevel(), context.getPlayer(),
+                        context.getHand(),
+                        new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
+                                context.getClickedPos(),
+                                context.isInside()));
+                if (!useResult.consumesAction()) {
+                    clearCard(context.getPlayer(), context.getLevel(), context.getHand());
+                }
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
-        } else {
-            return super.useOn(context);
-        }
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
-            this.clearCard(player, level, hand);
         }
 
-        return super.use(level, player, hand);
-    }
-
-    @Override
-    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
-        return true;
+        return InteractionResult.PASS;
     }
 
     private void clearCard(final Player player, final Level level, final InteractionHand hand) {

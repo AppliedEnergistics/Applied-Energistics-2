@@ -25,20 +25,21 @@ import net.minecraft.world.level.block.Block;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
+import appeng.hooks.IDisassemblyRemainder;
 
-public class CraftingStorageItem extends AEBaseBlockItem {
+public class CraftingStorageItem extends AEBaseBlockItem implements IDisassemblyRemainder {
 
     public CraftingStorageItem(Block id, Item.Properties props) {
         super(id, props);
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
-        return AEBlocks.CRAFTING_UNIT.stack();
+    public ItemStack getDisassemblyRemainder(ItemStack input) {
+        if (AEConfig.instance().isDisassemblyCraftingEnabled()) {
+            return AEBlocks.CRAFTING_UNIT.stack();
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
-    @Override
-    public boolean hasContainerItem(final ItemStack stack) {
-        return AEConfig.instance().isDisassemblyCraftingEnabled();
-    }
 }

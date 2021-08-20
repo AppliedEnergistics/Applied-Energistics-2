@@ -42,7 +42,6 @@ import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemConditi
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -66,8 +65,8 @@ public class ChestDropProvider implements IAE2DataProvider {
 
     private final Path outputFolder;
 
-    public ChestDropProvider(GatherDataEvent dataEvent) {
-        outputFolder = dataEvent.getGenerator().getOutputFolder();
+    public ChestDropProvider(Path outputFolder) {
+        this.outputFolder = outputFolder;
     }
 
     @Override

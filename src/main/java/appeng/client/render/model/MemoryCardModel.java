@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -33,34 +32,31 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
 /**
- * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the
- * part/block.
+ * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the part/tile.
  */
-public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
+public class MemoryCardModel implements BasicUnbakedModel {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 
     @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ItemOverrides overrides, ResourceLocation modelLocation) {
-        TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
+    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
+            ModelState rotationContainer, ResourceLocation modelId) {
+        TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
 
-        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }
@@ -69,5 +65,4 @@ public class MemoryCardModel implements BasicUnbakedModel<MemoryCardModel> {
     public Stream<Material> getAdditionalTextures() {
         return Stream.of(TEXTURE);
     }
-
 }

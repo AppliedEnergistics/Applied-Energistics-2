@@ -23,6 +23,7 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,6 @@ import appeng.api.client.IAEStackRenderHandler;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 import appeng.client.gui.style.FluidBlitter;
@@ -92,14 +92,14 @@ public class InitStackRenderHandlers {
             @Override
             public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y,
                     IAEFluidStack stack) {
-                FluidBlitter.create(IAEStack.copy(stack, 1).getFluidStack())
+                FluidBlitter.create(stack.getFluid())
                         .dest(x, y, 16, 16)
                         .blit(poseStack, 0);
             }
 
             @Override
             public Component getDisplayName(IAEFluidStack stack) {
-                return IAEStack.copy(stack, 1).getFluidStack().getDisplayName();
+                return FluidVariantRendering.getName(stack.getFluid());
             }
 
             @Override

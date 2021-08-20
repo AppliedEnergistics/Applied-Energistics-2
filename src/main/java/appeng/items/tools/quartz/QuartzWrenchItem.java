@@ -26,16 +26,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.ToolAction;
 
-import appeng.api.features.AEToolActions;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.AEBaseBlock;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class QuartzWrenchItem extends AEBaseItem {
+public class QuartzWrenchItem extends AEBaseItem implements AEToolItem {
 
     public QuartzWrenchItem(Item.Properties props) {
         super(props);
@@ -67,14 +66,6 @@ public class QuartzWrenchItem extends AEBaseItem {
             }
         }
         return InteractionResult.PASS;
-    }
-
-    @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        if (toolAction == AEToolActions.WRENCH_DISASSEMBLE || toolAction == AEToolActions.WRENCH_ROTATE) {
-            return true;
-        }
-        return super.canPerformAction(stack, toolAction);
     }
 
 }

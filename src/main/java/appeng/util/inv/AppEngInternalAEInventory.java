@@ -23,12 +23,12 @@ import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
+import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class AppEngInternalAEInventory extends BaseInternalInventory {
@@ -116,7 +116,7 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
         int limit = this.getStackLimit(slot, stack);
 
         if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
+            if (!Platform.canItemStacksStack(stack, existing)) {
                 return stack;
             }
 
@@ -132,14 +132,14 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
         if (!simulate) {
             if (existing.isEmpty()) {
                 this.inv[slot] = StorageChannels.items()
-                        .createStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                        .createStack(reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
             }
             this.fireOnChangeInventory(slot, ItemStack.EMPTY,
-                    reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                    reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
         }
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+        return reachedLimit ? Platform.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
@@ -156,9 +156,9 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
                 if (!simulate) {
                     split.grow(-amount);
                     this.fireOnChangeInventory(slot,
-                            ItemHandlerHelper.copyStackWithSize(split, amount), ItemStack.EMPTY);
+                            Platform.copyStackWithSize(split, amount), ItemStack.EMPTY);
                 }
-                return ItemHandlerHelper.copyStackWithSize(split, amount);
+                return Platform.copyStackWithSize(split, amount);
             }
         }
         return ItemStack.EMPTY;

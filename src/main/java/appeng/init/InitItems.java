@@ -18,8 +18,8 @@
 
 package appeng.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -29,12 +29,12 @@ public final class InitItems {
     private InitItems() {
     }
 
-    public static void init(IForgeRegistry<Item> registry) {
+    public static void init(Registry<Item> registry) {
         for (var definition : AEBlocks.getBlocks()) {
-            registry.register(definition.asItem());
+            Registry.register(registry, definition.id(), definition.asItem());
         }
         for (var definition : AEItems.getItems()) {
-            registry.register(definition.asItem());
+            Registry.register(registry, definition.id(), definition.asItem());
         }
     }
 

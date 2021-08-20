@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.loot.BlockLoot;
@@ -50,8 +51,6 @@ import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableConditio
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -93,13 +92,13 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
 
     private final Path outputFolder;
 
-    public BlockDropProvider(GatherDataEvent dataEvent) {
-        outputFolder = dataEvent.getGenerator().getOutputFolder();
+    public BlockDropProvider(Path outputFolder) {
+        this.outputFolder = outputFolder;
     }
 
     @Override
     public void run(@Nonnull HashCache cache) throws IOException {
-        for (Map.Entry<ResourceKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+        for (Map.Entry<ResourceKey<Block>, Block> entry : Registry.BLOCK.entrySet()) {
             LootTable.Builder builder;
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
@@ -110,7 +109,6 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
 
         DataProvider.save(GSON, cache, toJson(LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .name("extra")
                         .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
                 getPath(outputFolder, AppEng.makeId("chests/meteorite")));

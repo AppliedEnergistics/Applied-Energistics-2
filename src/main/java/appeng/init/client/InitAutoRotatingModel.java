@@ -29,8 +29,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 
 import appeng.block.AEBaseBlock;
 import appeng.client.render.crafting.MonitorBakedModel;
@@ -38,13 +36,14 @@ import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
+import appeng.hooks.ModelsReloadCallback;
 
 public final class InitAutoRotatingModel {
 
     /**
      * Blocks that should not use the auto rotation model.
      */
-    private static final Set<BlockDefinition> NO_AUTO_ROTATION = ImmutableSet.of(
+    private static final Set<BlockDefinition<?>> NO_AUTO_ROTATION = ImmutableSet.of(
             AEBlocks.MULTI_PART,
             AEBlocks.CONTROLLER,
             AEBlocks.PAINT,
@@ -64,10 +63,10 @@ public final class InitAutoRotatingModel {
     private InitAutoRotatingModel() {
     }
 
-    public static void init(IEventBus modEventBus) {
+    public static void init() {
         register(AEBlocks.CRAFTING_MONITOR, InitAutoRotatingModel::customizeCraftingMonitorModel);
 
-        for (BlockDefinition block : AEBlocks.getBlocks()) {
+        for (BlockDefinition<?> block : AEBlocks.getBlocks()) {
             if (NO_AUTO_ROTATION.contains(block)) {
                 continue;
             }
@@ -79,11 +78,11 @@ public final class InitAutoRotatingModel {
             }
         }
 
-        modEventBus.addListener(InitAutoRotatingModel::onModelBake);
+        ModelsReloadCallback.EVENT.register(InitAutoRotatingModel::onModelBake);
     }
 
-    private static void register(BlockDefinition block, Function<BakedModel, BakedModel> customizer) {
-        String path = block.block().getRegistryName().getPath();
+    private static void register(BlockDefinition<?> block, Function<BakedModel, BakedModel> customizer) {
+        String path = block.id().getPath();
         CUSTOMIZERS.put(path, customizer);
     }
 
@@ -95,8 +94,7 @@ public final class InitAutoRotatingModel {
         return new AutoRotatingBakedModel(model);
     }
 
-    private static void onModelBake(ModelBakeEvent event) {
-        Map<ResourceLocation, BakedModel> modelRegistry = event.getModelRegistry();
+    private static void onModelBake(Map<ResourceLocation, BakedModel> modelRegistry) {
         Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
         BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 

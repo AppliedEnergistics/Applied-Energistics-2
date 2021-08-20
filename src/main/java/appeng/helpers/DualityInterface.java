@@ -21,10 +21,7 @@ package appeng.helpers;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -42,7 +39,6 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorPassThrough;
@@ -96,11 +92,8 @@ public abstract class DualityInterface {
         this.priority = tag.getInt("priority");
     }
 
-    protected <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
-        if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
-            return LazyOptional.of(() -> this.accessor).cast();
-        }
-        return LazyOptional.empty();
+    public IStorageMonitorableAccessor getGridStorageAccessor() {
+        return accessor;
     }
 
     private class Ticker implements IGridTickable {

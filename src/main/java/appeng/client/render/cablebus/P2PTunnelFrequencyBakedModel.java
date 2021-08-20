@@ -18,30 +18,39 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
 
+import appeng.api.inventories.IDynamicPartBakedModel;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
-public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
+public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
+
+    private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
     private final TextureAtlasSprite texture;
 
-    private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
+    private final static Cache<Long, Mesh> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
@@ -50,17 +59,31 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData modelData) {
-        if (side != null || !modelData.hasProperty(P2PTunnelFrequencyModelData.FREQUENCY)) {
-            return Collections.emptyList();
+    public void emitQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier,
+            RenderContext context, Direction partSide, @Nullable Object modelData) {
+        if (!(modelData instanceof Long)) {
+            return;
         }
+        long frequency = (long) modelData;
 
-        return this.getPartQuads(modelData.getData(P2PTunnelFrequencyModelData.FREQUENCY));
+        Mesh frequencyMesh = getFrequencyModel(frequency);
+        if (frequencyMesh != null) {
+            context.meshConsumer().accept(frequencyMesh);
+        }
     }
 
-    private List<BakedQuad> getQuadsForFrequency(final short frequency, final boolean active) {
+    @Override
+    public ItemTransforms getTransforms() {
+        return ItemTransforms.NO_TRANSFORMS;
+    }
+
+    private Mesh createFrequencyMesh(final short frequency, final boolean active) {
+
+        MeshBuilder meshBuilder = renderer.meshBuilder();
+
         final AEColor[] colors = Platform.p2p().toColors(frequency);
-        final CubeBuilder cb = new CubeBuilder();
+        final CubeBuilder cb = new CubeBuilder(meshBuilder.getEmitter());
 
         cb.setTexture(this.texture);
         cb.useStandardUV();
@@ -91,18 +114,18 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
         // Reset back to default
         cb.setEmissiveMaterial(false);
 
-        return cb.getOutput();
+        return meshBuilder.build();
     }
 
-    private List<BakedQuad> getPartQuads(long partFlags) {
+    private Mesh getFrequencyModel(long partFlags) {
         try {
             return modelCache.get(partFlags, () -> {
                 short frequency = (short) (partFlags & 0xffffL);
                 boolean active = (partFlags & 0x10000L) != 0;
-                return this.getQuadsForFrequency(frequency, active);
+                return this.createFrequencyMesh(frequency, active);
             });
         } catch (ExecutionException e) {
-            return Collections.emptyList();
+            return null;
         }
     }
 

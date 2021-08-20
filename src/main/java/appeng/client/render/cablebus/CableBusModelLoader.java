@@ -18,26 +18,24 @@
 
 package appeng.client.render.cablebus;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import net.fabricmc.fabric.api.client.model.ModelProviderContext;
+import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.model.IModelLoader;
+import appeng.core.AppEng;
 
-public class CableBusModelLoader implements IModelLoader<CableBusModel> {
+public class CableBusModelLoader implements ModelResourceProvider {
 
-    public static final CableBusModelLoader INSTANCE = new CableBusModelLoader();
-
-    private CableBusModelLoader() {
-    }
+    private static final ResourceLocation CABLE_BUS_MODEL = AppEng.makeId("block/cable_bus");
 
     @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-    }
-
-    @Override
-    public CableBusModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-        return new CableBusModel();
+    public UnbakedModel loadModelResource(ResourceLocation resourceId, ModelProviderContext context) {
+        if (CABLE_BUS_MODEL.equals(resourceId)) {
+            return new CableBusModel();
+        } else {
+            return null;
+        }
     }
 
 }

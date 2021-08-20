@@ -34,15 +34,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 import appeng.menu.NullMenu;
-import appeng.util.Platform;
+import appeng.util.CraftingRemainders;
 import appeng.util.item.AEItemStack;
 
 public class AECraftingPattern implements IAEPatternDetails {
@@ -130,9 +130,9 @@ public class AECraftingPattern implements IAEPatternDetails {
      */
     private Ingredient getRecipeIngredient(int slot) {
 
-        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
+        if (recipe instanceof ShapedRecipe shapedRecipe) {
 
-            return getShapedRecipeIngredient(slot, shapedRecipe.getRecipeWidth());
+            return getShapedRecipeIngredient(slot, shapedRecipe.getWidth());
         } else {
             return getShapelessRecipeIngredient(slot);
         }
@@ -312,7 +312,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         public IAEStack getContainerItem(IAEStack template) {
             if (template.getChannel() == StorageChannels.items()) {
                 Preconditions.checkArgument(template.getStackSize() == 1);
-                return Platform.getContainerItem(template.cast(StorageChannels.items()));
+                return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
             }
             return null;
         }

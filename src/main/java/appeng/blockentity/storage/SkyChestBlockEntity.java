@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -48,8 +50,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -58,7 +58,7 @@ import appeng.menu.implementations.SkyChestMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
 @SuppressWarnings("JavadocReference")
-@OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
+@EnvironmentInterface(value = EnvType.CLIENT, itf = LidBlockEntity.class)
 public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);

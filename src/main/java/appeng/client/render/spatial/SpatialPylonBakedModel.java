@@ -18,22 +18,30 @@
 
 package appeng.client.render.spatial;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -41,7 +49,7 @@ import appeng.client.render.cablebus.CubeBuilder;
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements IDynamicBakedModel {
+class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
@@ -49,13 +57,17 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
         this.textures = ImmutableMap.copyOf(textures);
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-            @Nonnull IModelData extraData) {
-        int flags = this.getFlags(extraData);
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
-        CubeBuilder builder = new CubeBuilder();
+    @Override
+    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
+        int flags = getFlags(blockView, pos);
+
+        CubeBuilder builder = new CubeBuilder(context.getEmitter());
 
         if (flags != 0) {
             Direction ori = null;
@@ -133,13 +145,28 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
 
         // Reset back to default
         builder.setEmissiveMaterial(false);
-
-        return builder.getOutput();
     }
 
-    private int getFlags(IModelData modelData) {
-        Integer flags = modelData.getData(SpatialPylonBlockEntity.STATE);
-        return flags != null ? flags : 0;
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        // Not intended to be used as an item model.
+    }
+
+    @Nonnull
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
+        // Can only sensibly render using the new API
+        return Collections.emptyList();
+    }
+
+    private int getFlags(BlockAndTintGetter blockRenderView, BlockPos pos) {
+        if (blockRenderView instanceof RenderAttachedBlockView renderAttachedBlockView) {
+            Object attachment = renderAttachedBlockView.getBlockEntityRenderAttachment(pos);
+            if (attachment instanceof Integer flags) {
+                return flags;
+            }
+        }
+        return 0;
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(int flags, Direction ori, Direction dir) {
@@ -198,6 +225,11 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures.get(SpatialPylonTextureType.DIM);
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return ItemTransforms.NO_TRANSFORMS;
     }
 
     @Override

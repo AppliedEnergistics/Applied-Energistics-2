@@ -23,9 +23,9 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
@@ -49,8 +49,8 @@ public final class EmptyUpgradeInventory implements IUpgradeInventory {
     }
 
     @Override
-    public IItemHandler toItemHandler() {
-        return EmptyHandler.INSTANCE;
+    public Storage<ItemVariant> toStorage() {
+        return Storage.empty();
     }
 
     @Override

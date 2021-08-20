@@ -24,16 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
 
 import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
-import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.crafting.pattern.CraftingPatternItem;
@@ -95,7 +94,7 @@ public final class AEItems {
     public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item(AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
     public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item(AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item(AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50).setNoRepair(), QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item(AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50), QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
 
     ///
     /// NETHER QUARTZ TOOLS
@@ -107,7 +106,7 @@ public final class AEItems {
     public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item(AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
     public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item(AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item(AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50).setNoRepair(), QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item(AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
 
     ///
     /// VARIOUS POWERED TOOLS
@@ -262,22 +261,21 @@ public final class AEItems {
         return colors;
     }
 
-    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory) {
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<FabricItemSettings, T> factory) {
         return item(id, factory, CreativeTab.INSTANCE);
     }
 
-    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Properties, T> factory,
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<FabricItemSettings, T> factory,
             CreativeModeTab group) {
 
-        Properties p = new Properties().tab(group);
+        FabricItemSettings p = new FabricItemSettings().group(group);
 
         T item = factory.apply(p);
-        item.setRegistryName(id);
 
         ItemDefinition<T> definition = new ItemDefinition<>(id, item);
 
-        if (group instanceof AEItemGroup) {
-            ((AEItemGroup) group).add(definition);
+        if (group == CreativeTab.INSTANCE) {
+            CreativeTab.add(definition);
         }
 
         ITEMS.add(definition);

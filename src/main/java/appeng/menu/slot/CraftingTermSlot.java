@@ -196,7 +196,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
                 if (r == null) {
                     final Item target = request.getItem();
-                    if (target.canBeDepleted() && target.isRepairable(request)) {
+                    if (target.canBeDepleted() && target.isValidRepairItem(request, request)) {
                         boolean isBad = false;
                         for (int x = 0; x < ic.getContainerSize(); x++) {
                             final ItemStack pis = ic.getItem(x);
