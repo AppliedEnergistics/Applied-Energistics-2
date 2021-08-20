@@ -58,7 +58,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.me.storage.MEMonitorIInventory;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.automation.UpgradeablePart;
@@ -330,10 +329,6 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
         this.monitor = null;
         if (target != null) {
             var inv = this.getInventoryWrapper(target);
-
-            if (inv instanceof MEMonitorIInventory h) {
-                h.setMode((StorageFilter) this.getConfigManager().getSetting(Settings.STORAGE_FILTER));
-            }
 
             if (inv instanceof ITickingMonitor tickingMonitor) {
                 this.monitor = tickingMonitor;

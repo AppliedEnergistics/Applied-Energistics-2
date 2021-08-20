@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.misc;
+package appeng.me.storage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,18 +47,22 @@ import appeng.util.item.AEItemStack;
 /**
  * Wraps an Item Handler in such a way that it can be used as an IMEInventory for items.
  */
-class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
+public abstract class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
     private final IItemHandler itemHandler;
-    private final Runnable alertDevice;
     private final InventoryCache cache;
 
-    ItemHandlerAdapter(IItemHandler itemHandler, Runnable alertDevice) {
+    public ItemHandlerAdapter(IItemHandler itemHandler) {
         this.itemHandler = itemHandler;
-        this.alertDevice = alertDevice;
         this.cache = new InventoryCache(this.itemHandler);
     }
+
+    /**
+     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus),
+     * or rebuild it directly (interface).
+     */
+    protected abstract void onInjectOrExtract();
 
     @Override
     public IAEItemStack injectItems(IAEItemStack iox, Actionable type, IActionSource src) {
@@ -80,7 +84,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         }
 
         if (type == Actionable.MODULATE) {
-            this.alertDevice.run();
+            onInjectOrExtract();
         }
 
         return AEItemStack.fromItemStack(remaining);
@@ -156,7 +160,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
         if (!gathered.isEmpty()) {
             if (mode == Actionable.MODULATE) {
-                this.alertDevice.run();
+                onInjectOrExtract();
             }
 
             return AEItemStack.fromItemStack(gathered);

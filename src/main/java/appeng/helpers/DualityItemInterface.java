@@ -28,6 +28,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import appeng.api.config.*;
+import appeng.api.storage.data.IItemList;
+import appeng.me.storage.ItemHandlerAdapter;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.core.BlockPos;
@@ -54,10 +57,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.GridFlags;
@@ -93,7 +92,6 @@ import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
@@ -1042,10 +1040,10 @@ public class DualityItemInterface
         }
     }
 
-    private class InterfaceInventory extends MEMonitorIInventory {
+    private class InterfaceInventory extends ItemHandlerAdapter implements IMEMonitor<IAEItemStack> {
 
         public InterfaceInventory(final DualityItemInterface iface) {
-            super(new AdaptorItemHandler(iface.storage));
+            super(iface.storage);
             this.setActionSource(mySource);
         }
 
@@ -1073,6 +1071,47 @@ public class DualityItemInterface
             }
 
             return super.extractItems(request, type, src);
+        }
+
+        @Override
+        protected void onInjectOrExtract() {
+            // Rebuild cache immediately
+            this.onTick();
+        }
+
+        @Override
+        public AccessRestriction getAccess() {
+            return AccessRestriction.READ_WRITE;
+        }
+
+        @Override
+        public boolean isPrioritized(IAEItemStack input) {
+            return false;
+        }
+
+        @Override
+        public boolean canAccept(IAEItemStack input) {
+            return true;
+        }
+
+        @Override
+        public int getPriority() {
+            return 0;
+        }
+
+        @Override
+        public int getSlot() {
+            return 0;
+        }
+
+        @Override
+        public boolean validForPass(int i) {
+            return true;
+        }
+
+        @Override
+        public IItemList<IAEItemStack> getStorageList() {
+            return getAvailableItems();
         }
     }
 

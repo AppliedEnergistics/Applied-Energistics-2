@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import appeng.me.storage.ItemHandlerAdapter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -79,7 +80,12 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
         var itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (itemHandlerOpt.isPresent()) {
-            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null), alertDevice);
+            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null)) {
+                @Override
+                protected void onInjectOrExtract() {
+                    alertDevice.run();
+                }
+            };
         }
 
         return null;
