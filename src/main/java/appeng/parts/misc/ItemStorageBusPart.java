@@ -28,7 +28,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -40,6 +39,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
+import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
@@ -64,7 +64,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     public ItemStorageBusPart(final ItemStack is) {
-        super(is);
+        super(TickRates.ItemStorageBus, is);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
     @Override
     protected IMEInventory<IAEItemStack> getHandlerAdapter(BlockEntity target, Direction targetSide,
             Runnable alertDevice) {
-        final LazyOptional<IItemHandler> itemHandlerOpt = target
+        var itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (itemHandlerOpt.isPresent()) {
             return new ItemHandlerAdapter(itemHandlerOpt.orElse(null), alertDevice);
@@ -87,11 +87,11 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
 
     @Override
     protected int getHandlerHash(BlockEntity target, Direction targetSide) {
-        final LazyOptional<IItemHandler> itemHandlerOpt = target
+        var itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
 
         if (itemHandlerOpt.isPresent()) {
-            IItemHandler itemHandler = itemHandlerOpt.orElse(null);
+            var itemHandler = itemHandlerOpt.orElse(null);
             return Objects.hash(target, itemHandler, itemHandler.getSlots());
         } else {
             return 0;

@@ -29,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -40,6 +39,7 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
+import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.FluidStorageBusMenu;
@@ -65,7 +65,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
     public FluidStorageBusPart(ItemStack is) {
-        super(is);
+        super(TickRates.FluidStorageBus, is);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
     @Override
     protected IMEInventory<IAEFluidStack> getHandlerAdapter(BlockEntity target, Direction targetSide,
             Runnable alertDevice) {
-        final LazyOptional<IFluidHandler> handlerExtOpt = target
+        var handlerExtOpt = target
                 .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
             return new FluidHandlerAdapter(handlerExtOpt.orElse(null), alertDevice);
@@ -88,11 +88,11 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
 
     @Override
     protected int getHandlerHash(BlockEntity target, Direction targetSide) {
-        final LazyOptional<IFluidHandler> fluidHandlerOpt = target
+        var fluidHandlerOpt = target
                 .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
 
         if (fluidHandlerOpt.isPresent()) {
-            IFluidHandler itemHandler = fluidHandlerOpt.orElse(null);
+            var itemHandler = fluidHandlerOpt.orElse(null);
             return Objects.hash(target, itemHandler, itemHandler.getTanks());
         } else {
             return 0;
