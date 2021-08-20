@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.annotation.concurrent.ThreadSafe;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 
 /**
  * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.

@@ -36,7 +36,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 import appeng.core.AppEng;
-import appeng.mixins.unlitquad.BakedQuadAccessor;
 
 /**
  * Implementation details of allowing quads to be defined as "unlit" in JSON models by specifying an "unlit" boolean
@@ -102,7 +101,7 @@ public class UnlitQuadHooks {
         for (int i = 0; i < 4; i++) {
             vertexData[stride * i + LIGHT_OFFSET] = UNLIT_LIGHT_UV;
         }
-        TextureAtlasSprite sprite = ((BakedQuadAccessor) quad).getSprite();
+        TextureAtlasSprite sprite = quad.getSprite();
         // Copy the quad to disable diffuse lighting
         return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), sprite,
                 false /* diffuse lighting */);

@@ -20,12 +20,13 @@ package appeng.parts.misc;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -43,7 +44,7 @@ import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalAEInventory;
 
-public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IItemHandler> {
+public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Storage<ItemVariant>> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
@@ -62,7 +63,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     public ItemStorageBusPart(final ItemStack is) {
-        super(TickRates.ItemStorageBus, is, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        super(TickRates.ItemStorageBus, is, ItemStorage.SIDED);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
 
     @Nullable
     @Override
-    protected IMEInventory<IAEItemStack> getHandlerAdapter(IItemHandler handler, Runnable alertDevice) {
+    protected IMEInventory<IAEItemStack> getHandlerAdapter(Storage<ItemVariant> handler, Runnable alertDevice) {
         return new ItemHandlerAdapter(handler) {
             @Override
             protected void onInjectOrExtract() {

@@ -44,8 +44,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -123,10 +121,6 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     public void setPriority(int priority) {
         this.priority = priority;
         this.host.saveChanges();
-    }
-
-    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-        return this.returnInv.getCapability(capability);
     }
 
     public void writeToNBT(CompoundTag tag) {
@@ -360,7 +354,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         this.returnInv.addDrops(drops);
     }
 
-    public GenericStackInv getReturnInv() {
+    public PatternProviderReturnInventory getReturnInv() {
         return this.returnInv;
     }
 
@@ -430,11 +424,12 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)
                             && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
-                        final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                directedBlockEntity.getBlockPos(), null);
-                        if (!g.isEmpty()) {
-                            what = g;
-                        }
+                        // FIXME fabric
+                        // final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                        // directedBlockEntity.getBlockPos(), null);
+                        // if (!g.isEmpty()) {
+                        // what = g;
+                        // }
                     }
                 } catch (final Throwable t) {
                     BAD_BLOCKS.add(directedBlock); // nope!

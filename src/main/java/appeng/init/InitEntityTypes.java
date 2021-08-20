@@ -18,8 +18,8 @@
 
 package appeng.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEEntities;
 
@@ -28,12 +28,11 @@ public final class InitEntityTypes {
     private InitEntityTypes() {
     }
 
-    public static void init(IForgeRegistry<EntityType<?>> registry) {
+    public static void init(Registry<EntityType<?>> registry) {
         for (var entry : AEEntities.getEntityTypes().entrySet()) {
             var id = entry.getKey();
             var entityType = entry.getValue();
-            entityType.setRegistryName(id);
-            registry.register(entityType);
+            Registry.register(registry, id, entityType);
         }
     }
 

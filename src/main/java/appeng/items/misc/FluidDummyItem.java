@@ -20,8 +20,10 @@ package appeng.items.misc;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,9 +33,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
@@ -48,11 +47,14 @@ import appeng.util.Platform;
  */
 public class FluidDummyItem extends AEBaseItem {
     private static final String NBT_DISPLAY_AMOUNT = "DisplayAmount";
+    private static final String NBT_FLUID_VARIANT = "FluidVariant";
+    private static final String NBT_AMOUNT = "Amount";
 
-    public static ItemStack fromFluidStack(FluidStack fs, boolean displayAmount) {
+    public static ItemStack fromFluidStack(ResourceAmount<FluidVariant> fs, boolean displayAmount) {
         var item = AEItems.DUMMY_FLUID_ITEM.asItem();
         var stack = new ItemStack(item);
-        item.setFluidStack(stack, fs);
+        item.setFluid(stack, fs.resource());
+        item.setAmount(stack, fs.amount());
         item.setDisplayAmount(stack, displayAmount);
         return stack;
     }
@@ -63,28 +65,40 @@ public class FluidDummyItem extends AEBaseItem {
 
     @Override
     public String getDescriptionId(ItemStack stack) {
-        FluidStack fluidStack = this.getFluidStack(stack);
-        if (fluidStack.isEmpty()) {
-            fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
-        }
-        return fluidStack.getTranslationKey();
+        return Platform.getDescriptionId(this.getFluid(stack));
     }
 
-    public FluidStack getFluidStack(ItemStack is) {
+    public FluidVariant getFluid(ItemStack is) {
         if (is.hasTag()) {
-            CompoundTag tag = is.getTag();
-            return FluidStack.loadFluidStackFromNBT(tag);
+            return FluidVariant.fromNbt(is.getTag().getCompound(NBT_FLUID_VARIANT));
         }
-        return FluidStack.EMPTY;
+        return FluidVariant.blank();
     }
 
-    public void setFluidStack(ItemStack is, FluidStack fs) {
-        if (fs.isEmpty()) {
-            is.setTag(null);
+    public long getAmount(ItemStack is) {
+        if (is.hasTag()) {
+            return is.getTag().getLong(NBT_AMOUNT);
+        }
+        return 0;
+    }
+
+    public ResourceAmount<FluidVariant> getFluidStack(ItemStack is) {
+        return new ResourceAmount<>(getFluid(is), getAmount(is));
+    }
+
+    public void setAmount(ItemStack is, long amount) {
+        if (amount == 0) {
+            is.removeTagKey(NBT_AMOUNT);
         } else {
-            CompoundTag tag = new CompoundTag();
-            fs.writeToNBT(tag);
-            is.setTag(tag);
+            is.getOrCreateTag().putLong(NBT_AMOUNT, amount);
+        }
+    }
+
+    public void setFluid(ItemStack is, FluidVariant fluid) {
+        if (fluid.isBlank()) {
+            is.removeTagKey(NBT_FLUID_VARIANT);
+        } else {
+            is.getOrCreateTag().put(NBT_FLUID_VARIANT, fluid.toNbt());
         }
     }
 
@@ -103,7 +117,7 @@ public class FluidDummyItem extends AEBaseItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
         if (getDisplayAmount(stack)) {
-            lines.add(new TextComponent(Platform.formatFluidAmount(getFluidStack(stack).getAmount())));
+            lines.add(new TextComponent(Platform.formatFluidAmount(getAmount(stack))));
         }
     }
 

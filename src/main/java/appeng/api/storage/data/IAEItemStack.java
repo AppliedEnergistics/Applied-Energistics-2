@@ -25,6 +25,7 @@ package appeng.api.storage.data;
 
 import java.util.Objects;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -105,6 +106,8 @@ public interface IAEItemStack extends IAEStack {
      * @return definition stack
      */
     ItemStack getDefinition();
+
+    ItemVariant getVariant();
 
     /**
      * Compare this AE item stack to another item stack, but ignores the amount. It checks the item type, NBT and damage

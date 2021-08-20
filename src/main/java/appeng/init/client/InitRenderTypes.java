@@ -18,10 +18,10 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -29,13 +29,13 @@ import appeng.core.definitions.BlockDefinition;
 /**
  * Initializes which layers specific blocks render in.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class InitRenderTypes {
 
     /**
      * List of blocks that should render in the cutout layer.
      */
-    private static final BlockDefinition[] CUTOUT_BLOCKS = {
+    private static final BlockDefinition<?>[] CUTOUT_BLOCKS = {
             AEBlocks.CRAFTING_MONITOR,
             AEBlocks.SECURITY_STATION,
             AEBlocks.CONTROLLER,
@@ -64,12 +64,14 @@ public final class InitRenderTypes {
     }
 
     public static void init() {
-        for (BlockDefinition definition : CUTOUT_BLOCKS) {
-            ItemBlockRenderTypes.setRenderLayer(definition.block(), RenderType.cutout());
+        for (var definition : CUTOUT_BLOCKS) {
+
+            BlockRenderLayerMap.INSTANCE.putBlock(definition.block(), RenderType.cutout());
         }
 
         // Cable bus multiblock renders in all layers
-        ItemBlockRenderTypes.setRenderLayer(AEBlocks.MULTI_PART.block(), rt -> true);
+        // TODO FABRIC 117 Fabric does not support rendering into multiple render layers simultaneously.
+        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.MULTI_PART.block(), RenderType.cutout());
     }
 
 }

@@ -18,9 +18,10 @@
 
 package appeng.integration.modules.waila.part;
 
-import net.minecraft.nbt.CompoundTag;
+import java.util.List;
 
-import mcp.mobius.waila.api.ITooltip;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.parts.IPart;
 import appeng.integration.modules.waila.WailaText;
@@ -33,7 +34,7 @@ import appeng.util.Platform;
 public final class StorageMonitorDataProvider implements IPartDataProvider {
 
     @Override
-    public void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
         if (part instanceof StorageMonitorPart monitor) {
             var displayed = monitor.getDisplayed();
             var isLocked = monitor.isLocked();

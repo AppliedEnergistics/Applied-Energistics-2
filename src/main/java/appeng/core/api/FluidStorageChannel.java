@@ -22,17 +22,17 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
+import appeng.helpers.FluidContainerHelper;
 import appeng.items.misc.FluidDummyItem;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidList;
@@ -52,12 +52,13 @@ public final class FluidStorageChannel implements IFluidStorageChannel {
 
     @Override
     public int transferFactor() {
-        return 125;
+        // On Forge this was 125mb (so 125/1000th of a bucket)
+        return (int) (FluidConstants.BUCKET * 1000 / 125);
     }
 
     @Override
     public int getUnitsPerByte() {
-        return 8000;
+        return (int) (8 * FluidConstants.BUCKET);
     }
 
     @Override
@@ -69,14 +70,11 @@ public final class FluidStorageChannel implements IFluidStorageChannel {
     public IAEFluidStack createStack(Object input) {
         Preconditions.checkNotNull(input);
 
-        if (input instanceof FluidStack) {
-            return AEFluidStack.fromFluidStack((FluidStack) input);
-        }
         if (input instanceof ItemStack is) {
-            if (is.getItem() instanceof FluidDummyItem) {
-                return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
+            if (is.getItem() instanceof FluidDummyItem fluidDummyItem) {
+                return AEFluidStack.of(fluidDummyItem.getFluid(is), 1);
             } else {
-                return AEFluidStack.fromFluidStack(FluidUtil.getFluidContained(is).orElse(null));
+                return FluidContainerHelper.getContainedFluid(is);
             }
         }
 

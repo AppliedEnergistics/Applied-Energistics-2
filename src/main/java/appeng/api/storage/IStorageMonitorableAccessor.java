@@ -25,6 +25,11 @@ package appeng.api.storage;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.api.ids.AEConstants;
 import appeng.api.networking.security.IActionSource;
 
 /**
@@ -36,6 +41,9 @@ import appeng.api.networking.security.IActionSource;
  * annotation.
  */
 public interface IStorageMonitorableAccessor {
+
+    BlockApiLookup<IStorageMonitorableAccessor, Direction> SIDED = BlockApiLookup.get(
+            new ResourceLocation(AEConstants.MOD_ID, "storage"), IStorageMonitorableAccessor.class, Direction.class);
 
     /**
      * @return Null if the network cannot be accessed by the given action source (i.e. security doesn't permit it).

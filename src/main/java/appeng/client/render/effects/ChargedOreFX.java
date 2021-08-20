@@ -20,6 +20,8 @@ package appeng.client.render.effects;
 
 import com.mojang.math.Vector3f;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.DustParticle;
 import net.minecraft.client.particle.Particle;
@@ -27,10 +29,8 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ChargedOreFX extends DustParticle {
 
     private static final DustParticleOptions PARTICLE_DATA = new DustParticleOptions(new Vector3f(0.21f, 0.61f, 1.0f),
@@ -52,7 +52,7 @@ public class ChargedOreFX extends DustParticle {
         return j1 << 20 | j1 << 4;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet spriteSet;
 

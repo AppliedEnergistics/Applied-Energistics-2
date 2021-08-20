@@ -47,8 +47,10 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.helpers.MetaRotation;
+import appeng.hooks.INeighborChangeSensitive;
 
-public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity> implements IOrientableBlock {
+public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity>
+        implements IOrientableBlock, INeighborChangeSensitive {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -83,8 +85,6 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, level, pos, neighbor);
-
         final LightDetectorBlockEntity tld = this.getBlockEntity(level, pos);
         if (tld != null) {
             tld.updateLight();

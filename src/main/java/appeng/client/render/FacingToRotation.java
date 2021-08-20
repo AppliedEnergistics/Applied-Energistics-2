@@ -62,6 +62,7 @@ public enum FacingToRotation implements StringRepresentable {
     private final Quaternion xRot;
     private final Quaternion yRot;
     private final Quaternion zRot;
+    private final Quaternion combinedRotation;
     private final Matrix4f mat;
 
     FacingToRotation(Vector3f rot) {
@@ -71,14 +72,15 @@ public enum FacingToRotation implements StringRepresentable {
         this.mat.multiply(xRot = Vector3f.XP.rotationDegrees(rot.x()));
         this.mat.multiply(yRot = Vector3f.YP.rotationDegrees(rot.y()));
         this.mat.multiply(zRot = Vector3f.ZP.rotationDegrees(rot.z()));
+        this.combinedRotation = new Quaternion(rot.x(), rot.y(), rot.z(), true);
     }
 
     public boolean isRedundant() {
         return rot.x() == 0 && rot.y() == 0 && rot.z() == 0;
     }
 
-    public Vector3f getRot() {
-        return this.rot;
+    public Quaternion getRot() {
+        return this.combinedRotation;
     }
 
     public Matrix4f getMat() {

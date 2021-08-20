@@ -29,12 +29,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
 
-public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-        implements RecipeSerializer<InscriberRecipe> {
+public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
 

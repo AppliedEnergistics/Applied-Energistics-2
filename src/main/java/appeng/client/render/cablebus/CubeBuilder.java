@@ -18,27 +18,24 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.List;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Vector4f;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 /**
  * Builds the quads for a cube.
  */
+@Environment(EnvType.CLIENT)
 public class CubeBuilder {
-
-    private final List<BakedQuad> output;
 
     private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>(Direction.class);
 
@@ -46,7 +43,7 @@ public class CubeBuilder {
 
     private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
-    private byte[] uvRotations = new byte[Direction.values().length];
+    private final byte[] uvRotations = new byte[Direction.values().length];
 
     private int color = 0xFFFFFFFF;
 
@@ -54,12 +51,12 @@ public class CubeBuilder {
 
     private boolean emissiveMaterial;
 
-    public CubeBuilder(List<BakedQuad> output) {
-        this.output = output;
-    }
+    private final QuadEmitter emitter;
 
-    public CubeBuilder() {
-        this(new ArrayList<>(6));
+    private int vertexIndex = 0;
+
+    public CubeBuilder(QuadEmitter emitter) {
+        this.emitter = emitter;
     }
 
     public void addCube(float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -90,10 +87,8 @@ public class CubeBuilder {
 
         TextureAtlasSprite texture = this.textures.get(face);
 
-        BakedQuadBuilder builder = new BakedQuadBuilder(texture);
-        builder.setQuadOrientation(face);
-        builder.setQuadTint(-1);
-        builder.setApplyDiffuseLighting(true);
+        QuadEmitter emitter = this.emitter;
+        emitter.colorIndex(-1).nominalFace(face);
 
         UvVector uv = new UvVector();
 
@@ -112,44 +107,52 @@ public class CubeBuilder {
 
         switch (face) {
             case DOWN -> {
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
-                this.putVertexBR(builder, face, x2, y1, z2, uv);
-                this.putVertexBL(builder, face, x1, y1, z2, uv);
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
+                this.putVertexTR(face, x2, y1, z1, uv);
+                this.putVertexBR(face, x2, y1, z2, uv);
+                this.putVertexBL(face, x1, y1, z2, uv);
+                this.putVertexTL(face, x1, y1, z1, uv);
             }
             case UP -> {
-                this.putVertexTL(builder, face, x1, y2, z1, uv);
-                this.putVertexBL(builder, face, x1, y2, z2, uv);
-                this.putVertexBR(builder, face, x2, y2, z2, uv);
-                this.putVertexTR(builder, face, x2, y2, z1, uv);
+                this.putVertexTL(face, x1, y2, z1, uv);
+                this.putVertexBL(face, x1, y2, z2, uv);
+                this.putVertexBR(face, x2, y2, z2, uv);
+                this.putVertexTR(face, x2, y2, z1, uv);
             }
             case NORTH -> {
-                this.putVertexBR(builder, face, x2, y2, z1, uv);
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
-                this.putVertexBL(builder, face, x1, y2, z1, uv);
+                this.putVertexBR(face, x2, y2, z1, uv);
+                this.putVertexTR(face, x2, y1, z1, uv);
+                this.putVertexTL(face, x1, y1, z1, uv);
+                this.putVertexBL(face, x1, y2, z1, uv);
             }
             case SOUTH -> {
-                this.putVertexBL(builder, face, x1, y2, z2, uv);
-                this.putVertexTL(builder, face, x1, y1, z2, uv);
-                this.putVertexTR(builder, face, x2, y1, z2, uv);
-                this.putVertexBR(builder, face, x2, y2, z2, uv);
+                this.putVertexBL(face, x1, y2, z2, uv);
+                this.putVertexTL(face, x1, y1, z2, uv);
+                this.putVertexTR(face, x2, y1, z2, uv);
+                this.putVertexBR(face, x2, y2, z2, uv);
             }
             case WEST -> {
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
-                this.putVertexTR(builder, face, x1, y1, z2, uv);
-                this.putVertexBR(builder, face, x1, y2, z2, uv);
-                this.putVertexBL(builder, face, x1, y2, z1, uv);
+                this.putVertexTL(face, x1, y1, z1, uv);
+                this.putVertexTR(face, x1, y1, z2, uv);
+                this.putVertexBR(face, x1, y2, z2, uv);
+                this.putVertexBL(face, x1, y2, z1, uv);
             }
             case EAST -> {
-                this.putVertexBR(builder, face, x2, y2, z1, uv);
-                this.putVertexBL(builder, face, x2, y2, z2, uv);
-                this.putVertexTL(builder, face, x2, y1, z2, uv);
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
+                this.putVertexBR(face, x2, y2, z1, uv);
+                this.putVertexBL(face, x2, y2, z2, uv);
+                this.putVertexTL(face, x2, y1, z2, uv);
+                this.putVertexTR(face, x2, y1, z1, uv);
             }
         }
 
-        this.output.add(builder.build());
+        if (emissiveMaterial) {
+            // Force Brightness to 15, this is for full bright mode
+            // this vertex element will only be present in that case
+            int lightmap = LightTexture.pack(15, 15);
+            emitter.lightmap(lightmap, lightmap, lightmap, lightmap);
+        }
+
+        emitter.emit();
+        this.vertexIndex = 0;
     }
 
     private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
@@ -244,7 +247,7 @@ public class CubeBuilder {
     }
 
     // uv.u1, uv.v1
-    private void putVertexTL(BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv) {
+    private void putVertexTL(Direction face, float x, float y, float z, UvVector uv) {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
@@ -266,11 +269,11 @@ public class CubeBuilder {
             }
         }
 
-        this.putVertex(builder, face, x, y, z, u, v);
+        this.putVertex(face, x, y, z, u, v);
     }
 
     // uv.u2, uv.v1
-    private void putVertexTR(BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv) {
+    private void putVertexTR(Direction face, float x, float y, float z, UvVector uv) {
         float u, v;
 
         switch (this.uvRotations[face.ordinal()]) {
@@ -291,11 +294,11 @@ public class CubeBuilder {
                 v = uv.v2;
             }
         }
-        this.putVertex(builder, face, x, y, z, u, v);
+        this.putVertex(face, x, y, z, u, v);
     }
 
     // uv.u2, uv.v2
-    private void putVertexBR(BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv) {
+    private void putVertexBR(Direction face, float x, float y, float z, UvVector uv) {
 
         float u;
         float v;
@@ -319,11 +322,11 @@ public class CubeBuilder {
             }
         }
 
-        this.putVertex(builder, face, x, y, z, u, v);
+        this.putVertex(face, x, y, z, u, v);
     }
 
     // uv.u1, uv.v2
-    private void putVertexBL(BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv) {
+    private void putVertexBL(Direction face, float x, float y, float z, UvVector uv) {
 
         float u;
         float v;
@@ -347,47 +350,20 @@ public class CubeBuilder {
             }
         }
 
-        this.putVertex(builder, face, x, y, z, u, v);
+        this.putVertex(face, x, y, z, u, v);
     }
 
-    private void putVertex(BakedQuadBuilder builder, Direction face, float x, float y, float z, float u, float v) {
-        VertexFormat format = builder.getVertexFormat();
+    private void putVertex(Direction face, float x, float y, float z, float u, float v) {
 
-        List<VertexFormatElement> elements = format.getElements();
-        for (int i = 0; i < elements.size(); i++) {
-            VertexFormatElement e = elements.get(i);
-            switch (e.getUsage()) {
-                case POSITION:
-                    builder.put(i, x, y, z);
-                    break;
-                case NORMAL:
-                    builder.put(i, face.getStepX(), face.getStepY(), face.getStepZ());
-                    break;
-                case COLOR:
-                    // Color format is RGBA
-                    float r = (this.color >> 16 & 0xFF) / 255f;
-                    float g = (this.color >> 8 & 0xFF) / 255f;
-                    float b = (this.color & 0xFF) / 255f;
-                    float a = (this.color >> 24 & 0xFF) / 255f;
-                    builder.put(i, r, g, b, a);
-                    break;
-                case UV:
-                    if (e.getIndex() == 0) {
-                        builder.put(i, u, v);
-                        break;
-                    } else if (e.getIndex() == 2 && emissiveMaterial) {
-                        // Force Brightness to 15, this is for full bright mode
-                        // this vertex element will only be present in that case
-                        final float lightMapU = (float) (15 * 0x20) / 0xFFFF;
-                        final float lightMapV = (float) (15 * 0x20) / 0xFFFF;
-                        builder.put(i, lightMapU, lightMapV);
-                        break;
-                    }
-                default:
-                    builder.put(i);
-                    break;
-            }
-        }
+        emitter.pos(vertexIndex, x, y, z);
+        emitter.normal(vertexIndex, face.getStepX(), face.getStepY(), face.getStepZ());
+
+        // Color format is RGBA
+        emitter.spriteColor(vertexIndex, 0, this.color);
+
+        emitter.sprite(vertexIndex, 0, u, v);
+
+        vertexIndex++;
     }
 
     public void setTexture(TextureAtlasSprite texture) {
@@ -454,7 +430,4 @@ public class CubeBuilder {
         this.useStandardUV = true;
     }
 
-    public List<BakedQuad> getOutput() {
-        return this.output;
-    }
 }

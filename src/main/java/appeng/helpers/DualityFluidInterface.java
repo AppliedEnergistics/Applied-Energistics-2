@@ -20,18 +20,17 @@ package appeng.helpers;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -58,7 +57,7 @@ public class DualityFluidInterface
         extends DualityInterface
         implements IAEFluidInventory, IConfigurableObject, IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
-    public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
+    public static final long TANK_CAPACITY = FluidConstants.BUCKET * 4;
 
     private final ConfigManager cm = new ConfigManager((manager, setting) -> {
         saveChanges();
@@ -128,15 +127,6 @@ public class DualityFluidInterface
 
     public DimensionalBlockPos getLocation() {
         return new DimensionalBlockPos(this.host.getBlockEntity());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
-        if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.tanks);
-        }
-        return super.getCapability(capabilityClass, facing);
     }
 
     private void readConfig() {
@@ -245,14 +235,14 @@ public class DualityFluidInterface
 
             if (work.getStackSize() > 0) {
                 // make sure strange things didn't happen...
-                if (this.tanks.fill(slot, work.getFluidStack(), false) != work.getStackSize()) {
+                if (this.tanks.fill(slot, work, false) != work.getStackSize()) {
                     changed = true;
                 } else {
                     final IAEFluidStack acquired = Platform.poweredExtraction(src, dest, work,
                             this.interfaceRequestSource);
                     if (acquired != null) {
                         changed = true;
-                        final int filled = this.tanks.fill(slot, acquired.getFluidStack(), true);
+                        final long filled = this.tanks.fill(slot, acquired, true);
                         if (filled != acquired.getStackSize()) {
                             throw new IllegalStateException("bad attempt at managing tanks. ( fill )");
                         }
@@ -263,8 +253,8 @@ public class DualityFluidInterface
                 toStore.setStackSize(-toStore.getStackSize());
 
                 // make sure strange things didn't happen...
-                final FluidStack canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
-                if (canExtract.isEmpty() || canExtract.getAmount() != toStore.getStackSize()) {
+                final long canExtract = this.tanks.drain(slot, toStore, false);
+                if (canExtract != toStore.getStackSize()) {
                     changed = true;
                 } else {
                     IAEFluidStack notStored = Platform.poweredInsert(src, dest, toStore, this.interfaceRequestSource);
@@ -273,8 +263,8 @@ public class DualityFluidInterface
                     if (toStore.getStackSize() > 0) {
                         // extract items!
                         changed = true;
-                        final FluidStack removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
-                        if (removed.isEmpty() || toStore.getStackSize() != removed.getAmount()) {
+                        final long removed = this.tanks.drain(slot, toStore, true);
+                        if (toStore.getStackSize() != removed) {
                             throw new IllegalStateException("bad attempt at managing tanks. ( drain )");
                         }
                     }
@@ -351,7 +341,7 @@ public class DualityFluidInterface
     private class InterfaceInventory extends FluidHandlerAdapter implements IMEMonitor<IAEFluidStack> {
 
         InterfaceInventory() {
-            super(tanks);
+            super(tanks, cm.getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
             this.setActionSource(actionSource);
         }
 
@@ -396,7 +386,7 @@ public class DualityFluidInterface
     }
 
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

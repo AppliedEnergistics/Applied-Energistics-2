@@ -23,14 +23,15 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 
 /**
- * Wraps another {@link IItemHandler} in such a way that the underlying item hander is queried from a supplier, which
+ * Wraps another {@link InternalInventory} in such a way that the underlying inventory is queried from a supplier, which
  * allows it to be changed at any time.
  */
 public class SupplierInternalInventory implements InternalInventory {
@@ -46,8 +47,8 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-    public IItemHandler toItemHandler() {
-        return delegate.get().toItemHandler();
+    public Storage<ItemVariant> toStorage() {
+        return delegate.get().toStorage();
     }
 
     @Override

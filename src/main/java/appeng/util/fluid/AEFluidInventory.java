@@ -18,12 +18,19 @@
 
 package appeng.util.fluid;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
@@ -38,17 +45,27 @@ public class AEFluidInventory implements IAEFluidTank {
     private static final IAEFluidStack EMPTY_AE_FLUIDSTACK = null;
 
     private final IAEFluidStack[] fluids;
+    private final List<View> storageViews;
     private final IAEFluidInventory handler;
-    private final int capacity;
+    private final long capacity;
 
-    public AEFluidInventory(final IAEFluidInventory handler, final int slots, final int capacity) {
+    public AEFluidInventory(final IAEFluidInventory handler, final int slots, final long capacity) {
         this.fluids = new IAEFluidStack[slots];
+        this.storageViews = new ArrayList<>();
+        for (int i = 0; i < slots; ++i) {
+            this.storageViews.add(new View(i));
+        }
         this.handler = handler;
         this.capacity = capacity;
     }
 
     public AEFluidInventory(final IAEFluidInventory handler, final int slots) {
         this(handler, slots, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public long getTankCapacity(int tankIndex) {
+        return tankIndex <= 0 && tankIndex < this.fluids.length ? capacity : 0;
     }
 
     @Override
@@ -92,202 +109,62 @@ public class AEFluidInventory implements IAEFluidTank {
     }
 
     @Override
-    public int getTanks() {
-        return this.fluids.length;
-    }
+    public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        long totalInserted = 0;
 
-    @Nonnull
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        if (tank < 0 || tank >= fluids.length) {
-            return FluidStack.EMPTY;
-        }
-        return fluids[tank] == EMPTY_AE_FLUIDSTACK ? FluidStack.EMPTY : fluids[tank].getFluidStack();
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return this.capacity;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        return stack != FluidStack.EMPTY;
-    }
-
-    public int fill(final int slot, final FluidStack resource, final boolean doFill) {
-        if (resource.isEmpty() || resource.getAmount() <= 0) {
-            return 0;
-        }
-
-        final IAEFluidStack fluid = this.fluids[slot];
-
-        if (fluid != EMPTY_AE_FLUIDSTACK && !fluid.getFluidStack().equals(resource)) {
-            return 0;
-        }
-
-        int amountToStore = this.capacity;
-
-        if (fluid != EMPTY_AE_FLUIDSTACK) {
-            amountToStore -= fluid.getStackSize();
-        }
-
-        amountToStore = Math.min(amountToStore, resource.getAmount());
-
-        if (doFill) {
-            if (fluid == EMPTY_AE_FLUIDSTACK) {
-                this.setFluidInSlot(slot, AEFluidStack.fromFluidStack(resource));
-            } else {
-                fluid.setStackSize(fluid.getStackSize() + amountToStore);
-                this.onContentChanged(slot);
+        // First iteration matches the resource, second iteration inserts into empty slots.
+        for (View view : storageViews) {
+            if (!view.isResourceBlank()) {
+                totalInserted += view.insert(resource, maxAmount - totalInserted, transaction);
             }
         }
 
-        return amountToStore;
+        for (View view : storageViews) {
+            if (view.isResourceBlank()) {
+                totalInserted += view.insert(resource, maxAmount - totalInserted, transaction);
+            }
+        }
+
+        return totalInserted;
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || resource.getAmount() <= 0) {
-            return 0;
+    public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        long totalExtracted = 0;
+
+        for (View view : storageViews) {
+            totalExtracted += view.extract(resource, maxAmount - totalExtracted, transaction);
         }
 
-        // Find a suitable slot
-        int slot = indexOfFluid(resource);
-        if (slot == -1) {
-            slot = indexOfEmptySlot();
-            if (slot == -1) {
-                return 0;
-            }
-        }
+        return totalExtracted;
+    }
 
-        final IAEFluidStack fluid = this.fluids[slot];
-
-        int amountToStore = this.capacity;
-
-        if (fluid != EMPTY_AE_FLUIDSTACK) {
-            amountToStore -= fluid.getStackSize();
-        }
-
-        amountToStore = Math.min(amountToStore, resource.getAmount());
-
-        if (action == FluidAction.EXECUTE) {
-            if (fluid == EMPTY_AE_FLUIDSTACK) {
-                this.setFluidInSlot(slot, AEFluidStack.fromFluidStack(resource));
-            } else {
-                fluid.setStackSize(fluid.getStackSize() + amountToStore);
-                this.onContentChanged(slot);
-            }
-        }
-
-        return amountToStore;
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
+        return (Iterator) storageViews.iterator();
     }
 
     @Override
-    public FluidStack drain(final FluidStack fluid, final FluidAction action) {
-        if (fluid.isEmpty() || fluid.getAmount() <= 0) {
-            return FluidStack.EMPTY;
+    public long fill(int slot, IAEFluidStack stack, boolean doFill) {
+        try (Transaction tx = Transaction.openOuter()) {
+            long result = storageViews.get(slot).insert(stack.getFluid(), stack.getStackSize(), tx);
+            if (doFill)
+                tx.commit();
+            return result;
         }
-
-        final FluidStack resource = fluid.copy();
-
-        FluidStack totalDrained = FluidStack.EMPTY;
-        for (int slot = 0; slot < this.getSlots(); ++slot) {
-            FluidStack drain = this.drain(slot, resource, action == FluidAction.EXECUTE);
-            if (!drain.isEmpty()) {
-                if (totalDrained.isEmpty()) {
-                    totalDrained = drain;
-                } else {
-                    totalDrained.setAmount(totalDrained.getAmount() + drain.getAmount());
-                }
-
-                resource.setAmount(resource.getAmount() - drain.getAmount());
-                if (resource.getAmount() <= 0) {
-                    break;
-                }
-            }
-        }
-        return totalDrained;
     }
 
     @Override
-    public FluidStack drain(final int maxDrain, final FluidAction action) {
-        if (maxDrain == 0) {
-            return FluidStack.EMPTY;
+    public long drain(int slot, IAEFluidStack stack, boolean doDrain) {
+        try (Transaction tx = Transaction.openOuter()) {
+            long result = storageViews.get(slot).extract(stack.getFluid(), stack.getStackSize(), tx);
+            if (doDrain)
+                tx.commit();
+            return result;
         }
-
-        FluidStack totalDrained = FluidStack.EMPTY;
-        int toDrain = maxDrain;
-
-        for (int slot = 0; slot < this.getSlots(); ++slot) {
-            if (totalDrained.isEmpty()) {
-                totalDrained = this.drain(slot, toDrain, action == FluidAction.EXECUTE);
-                if (totalDrained.isEmpty()) {
-                    toDrain -= totalDrained.getAmount();
-                }
-            } else {
-                FluidStack copy = totalDrained.copy();
-                copy.setAmount(toDrain);
-                FluidStack drain = this.drain(slot, copy, action == FluidAction.EXECUTE);
-                if (!drain.isEmpty()) {
-                    totalDrained.setAmount(totalDrained.getAmount() + drain.getAmount());
-                    toDrain -= drain.getAmount();
-                }
-            }
-
-            if (toDrain <= 0) {
-                break;
-            }
-        }
-        return totalDrained;
-    }
-
-    private int indexOfFluid(FluidStack resource) {
-        for (int slot = 0; slot < fluids.length; slot++) {
-            if (fluids[slot] != EMPTY_AE_FLUIDSTACK && fluids[slot].getFluidStack().isFluidEqual(resource)) {
-                return slot;
-            }
-        }
-        return -1;
-    }
-
-    private int indexOfEmptySlot() {
-        for (int slot = 0; slot < fluids.length; slot++) {
-            if (fluids[slot] == EMPTY_AE_FLUIDSTACK) {
-                return slot;
-            }
-        }
-        return -1;
-    }
-
-    public FluidStack drain(final int slot, final FluidStack resource, final boolean doDrain) {
-        final IAEFluidStack fluid = this.fluids[slot];
-        if (resource.isEmpty() || fluid == EMPTY_AE_FLUIDSTACK || !fluid.getFluidStack().equals(resource)) {
-            return FluidStack.EMPTY;
-        }
-        return this.drain(slot, resource.getAmount(), doDrain);
-    }
-
-    public FluidStack drain(final int slot, final int maxDrain, boolean doDrain) {
-        final IAEFluidStack fluid = this.fluids[slot];
-        if (fluid == EMPTY_AE_FLUIDSTACK || maxDrain <= 0) {
-            return FluidStack.EMPTY;
-        }
-
-        int drained = maxDrain;
-        if (fluid.getStackSize() < drained) {
-            drained = (int) fluid.getStackSize();
-        }
-
-        FluidStack stack = new FluidStack(fluid.getFluid(), drained);
-        if (doDrain) {
-            fluid.setStackSize(fluid.getStackSize() - drained);
-            if (fluid.getStackSize() <= 0) {
-                this.fluids[slot] = EMPTY_AE_FLUIDSTACK;
-            }
-            this.onContentChanged(slot);
-        }
-        return stack;
     }
 
     public void writeToNBT(final CompoundTag data, final String name) {
@@ -329,6 +206,91 @@ public class AEFluidInventory implements IAEFluidTank {
             } catch (final Exception e) {
                 AELog.debug(e);
             }
+        }
+    }
+
+    // SnapshotParticipant doesn't allow null snapshots so we can't just copy the IAEFluidStack.
+    private class View extends SnapshotParticipant<ResourceAmount<FluidVariant>> implements StorageView<FluidVariant> {
+        private final int slotIndex;
+
+        private View(int slotIndex) {
+            this.slotIndex = slotIndex;
+        }
+
+        @Override
+        public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            if (!getResource().equals(resource))
+                return 0;
+
+            long actuallyExtracted = Math.min(getAmount(), maxAmount);
+
+            if (actuallyExtracted > 0) {
+                updateSnapshots(transaction);
+                fluids[slotIndex].decStackSize(actuallyExtracted);
+                if (fluids[slotIndex].getStackSize() == 0) {
+                    fluids[slotIndex] = EMPTY_AE_FLUIDSTACK;
+                }
+            }
+
+            return 0;
+        }
+
+        public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+            if (isResourceBlank() || fluids[slotIndex].getFluid().equals(resource)) {
+                long inserted = Math.min(maxAmount, capacity - getAmount());
+
+                if (inserted > 0) {
+                    updateSnapshots(transaction);
+                    if (isResourceBlank()) {
+                        fluids[slotIndex] = AEFluidStack.of(resource, inserted);
+                    } else {
+                        fluids[slotIndex].incStackSize(inserted);
+                    }
+                    return inserted;
+                }
+            }
+
+            return 0;
+        }
+
+        @Override
+        public boolean isResourceBlank() {
+            return getResource().isBlank();
+        }
+
+        @Override
+        public FluidVariant getResource() {
+            return fluids[slotIndex] == EMPTY_AE_FLUIDSTACK ? FluidVariant.blank() : fluids[slotIndex].getFluid();
+        }
+
+        @Override
+        public long getAmount() {
+            return fluids[slotIndex] == EMPTY_AE_FLUIDSTACK ? 0 : fluids[slotIndex].getStackSize();
+        }
+
+        @Override
+        public long getCapacity() {
+            return capacity;
+        }
+
+        @Override
+        protected ResourceAmount<FluidVariant> createSnapshot() {
+            return new ResourceAmount<>(getResource(), getAmount());
+        }
+
+        @Override
+        protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
+            if (snapshot.resource().isBlank() || snapshot.amount() == 0) {
+                fluids[slotIndex] = EMPTY_AE_FLUIDSTACK;
+            } else {
+                fluids[slotIndex] = AEFluidStack.of(snapshot.resource(), snapshot.amount());
+            }
+        }
+
+        @Override
+        protected void onFinalCommit() {
+            onContentChanged(slotIndex);
         }
     }
 

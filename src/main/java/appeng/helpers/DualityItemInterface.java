@@ -31,9 +31,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Setting;
@@ -477,21 +474,13 @@ public class DualityItemInterface
         this.craftingTracker.jobStateChange(link);
     }
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
-        if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return LazyOptional.of(this.storage::toItemHandler).cast();
-        }
-        return super.getCapability(capabilityClass, facing);
-    }
-
     /**
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
     private class InterfaceInventory extends ItemHandlerAdapter implements IMEMonitor<IAEItemStack> {
 
         InterfaceInventory() {
-            super(storage.toItemHandler());
+            super(storage.toStorage());
             this.setActionSource(actionSource);
         }
 

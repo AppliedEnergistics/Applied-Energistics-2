@@ -18,14 +18,9 @@
 
 package appeng.helpers;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.core.definitions.AEItems;
 import appeng.items.contents.CellConfig;
@@ -47,16 +42,14 @@ public class FluidCellConfig extends CellConfig {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.insertItem(slot, stack, simulate);
         }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
+        var fluidVariant = FluidContainerHelper.getContainedFluidVariant(stack);
+        if (fluidVariant == null) {
             return stack;
         }
-        FluidStack fluid = fluidOpt.orElse(null);
 
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
         ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
+        item.setFluid(is, fluidVariant);
         return super.insertItem(slot, is, simulate);
     }
 
@@ -65,16 +58,14 @@ public class FluidCellConfig extends CellConfig {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.setItemDirect(slot, stack);
         }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
+        var fluidVariant = FluidContainerHelper.getContainedFluidVariant(stack);
+        if (fluidVariant == null) {
             return;
         }
-        FluidStack fluid = fluidOpt.orElse(null);
 
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
         ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
+        item.setFluid(is, fluidVariant);
         super.setItemDirect(slot, is);
     }
 
@@ -83,16 +74,14 @@ public class FluidCellConfig extends CellConfig {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.isItemValid(slot, stack);
         }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
+        var fluidVariant = FluidContainerHelper.getContainedFluidVariant(stack);
+        if (fluidVariant == null) {
             return false;
         }
-        FluidStack fluid = fluidOpt.orElse(null);
 
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
         ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
+        item.setFluid(is, fluidVariant);
         return super.isItemValid(slot, is);
     }
 

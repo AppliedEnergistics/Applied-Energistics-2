@@ -18,24 +18,29 @@
 
 package appeng.init.client;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AppEng;
 
 public final class InitParticleTypes {
 
     private InitParticleTypes() {
     }
 
-    public static void init(IForgeRegistry<ParticleType<?>> registry) {
-        registry.register(ParticleTypes.CHARGED_ORE);
-        registry.register(ParticleTypes.CRAFTING);
-        registry.register(ParticleTypes.ENERGY);
-        registry.register(ParticleTypes.LIGHTNING_ARC);
-        registry.register(ParticleTypes.LIGHTNING);
-        registry.register(ParticleTypes.MATTER_CANNON);
-        registry.register(ParticleTypes.VIBRANT);
+    public static void init(Registry<ParticleType<?>> registry) {
+        register(registry, ParticleTypes.CHARGED_ORE, "charged_ore_fx");
+        register(registry, ParticleTypes.CRAFTING, "crafting_fx");
+        register(registry, ParticleTypes.ENERGY, "energy_fx");
+        register(registry, ParticleTypes.LIGHTNING_ARC, "lightning_arc_fx");
+        register(registry, ParticleTypes.LIGHTNING, "lightning_fx");
+        register(registry, ParticleTypes.MATTER_CANNON, "matter_cannon_fx");
+        register(registry, ParticleTypes.VIBRANT, "vibrant_fx");
+    }
+
+    private static void register(Registry<ParticleType<?>> registry, ParticleType<?> type, String name) {
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId(name), type);
     }
 
 }

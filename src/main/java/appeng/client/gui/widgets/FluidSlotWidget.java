@@ -20,27 +20,24 @@ package appeng.client.gui.widgets;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.IIngredientSupplier;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FluidSlotPacket;
-import appeng.util.fluid.AEFluidStack;
+import appeng.helpers.FluidContainerHelper;
+import appeng.util.Platform;
 import appeng.util.fluid.IAEFluidTank;
 
 public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupplier {
@@ -56,7 +53,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
             final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
-            FluidBlitter.create(fs.getFluidStack())
+            FluidBlitter.create(fs.getFluid())
                     .dest(getTooltipAreaX(), getTooltipAreaY(), getTooltipAreaWidth(), getTooltipAreaHeight())
                     .blit(poseStack, getBlitOffset());
         }
@@ -68,8 +65,7 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
             return false;
         }
         final ItemStack mouseStack = player.containerMenu.getCarried();
-        return mouseStack.isEmpty()
-                || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+        return mouseStack.isEmpty() || FluidContainerHelper.isFluidContainer(mouseStack);
     }
 
     @Override
@@ -77,10 +73,10 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
         if (clickStack.isEmpty() || mouseButton == 1) {
             this.setFluidStack(null);
         } else if (mouseButton == 0) {
-            final Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(clickStack);
-            fluidOpt.ifPresent(fluid -> {
-                this.setFluidStack(AEFluidStack.fromFluidStack(fluid));
-            });
+            var stack = FluidContainerHelper.getContainedFluid(clickStack);
+            if (stack != null) {
+                setFluidStack(stack);
+            }
         }
     }
 
@@ -88,7 +84,8 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
     public List<Component> getTooltipMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
-            return Collections.singletonList(new TranslatableComponent(fluid.getFluidStack().getTranslationKey()));
+            return Collections.singletonList(
+                    Platform.getFluidDisplayName(fluid));
         }
         return Collections.emptyList();
     }
@@ -110,10 +107,10 @@ public class FluidSlotWidget extends CustomSlotWidget implements IIngredientSupp
 
     @Nullable
     @Override
-    public FluidStack getFluidIngredient() {
+    public FluidVariant getFluidIngredient() {
         IAEFluidStack fluidStack = getFluidStack();
         if (fluidStack != null) {
-            return fluidStack.getFluidStack();
+            return fluidStack.getFluid();
         }
         return null;
     }

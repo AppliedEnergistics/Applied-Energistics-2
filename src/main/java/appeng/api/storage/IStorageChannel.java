@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -73,9 +72,10 @@ public interface IStorageChannel<T extends IAEStack> {
      * Create a new {@link IAEStack} subtype of the specific object.
      * <p>
      * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
-     * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
-     * might be to use it instead of {@link IAEStack#copy}, but this might not be supported by all types. IAEStacks that
-     * use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
+     * converting an {@link ItemStack} or {@link net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount} into
+     * the corresponding {@link IAEStack}. Another valid case might be to use it instead of {@link IAEStack#copy}, but
+     * this might not be supported by all types. IAEStacks that use custom items for
+     * {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
      *
      * @param input The object to turn into an {@link IAEStack}
      * @return The converted stack or null

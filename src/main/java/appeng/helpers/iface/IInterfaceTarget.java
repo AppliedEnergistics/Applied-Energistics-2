@@ -18,29 +18,28 @@
 
 package appeng.helpers.iface;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.inventories.PlatformInventoryWrapper;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.capabilities.Capabilities;
 import appeng.crafting.execution.GenericStackHelper;
 import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.ItemHandlerAdapter;
@@ -52,20 +51,20 @@ public interface IInterfaceTarget {
             return null;
 
         // our capability first: allows any storage channel
-        var accessor = be.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, side).orElse(null);
+        var accessor = IStorageMonitorableAccessor.SIDED.find(l, pos, null, be, side);
         if (accessor != null) {
             return wrapStorageMonitorable(accessor, src);
         }
 
         // otherwise fall back to the platform capability
         // TODO: look into exposing this for other storage channels
-        var itemHandler = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-        var fluidHandler = be.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+        var itemHandler = ItemStorage.SIDED.find(l, pos, null, be, side);
+        var fluidHandler = FluidStorage.SIDED.find(l, pos, null, be, side);
 
-        if (itemHandler.isPresent() || fluidHandler.isPresent()) {
+        if (itemHandler != null || fluidHandler != null) {
             return wrapHandlers(
-                    itemHandler.orElse(EmptyHandler.INSTANCE),
-                    fluidHandler.orElse(EmptyFluidHandler.INSTANCE),
+                    Objects.requireNonNullElse(itemHandler, Storage.empty()),
+                    Objects.requireNonNullElse(fluidHandler, Storage.empty()),
                     src);
         }
 
@@ -110,19 +109,18 @@ public interface IInterfaceTarget {
         return false;
     }
 
-    private static IInterfaceTarget wrapHandlers(IItemHandler itemHandler, IFluidHandler fluidHandler,
+    private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
             IActionSource src) {
         var itemAdapter = new ItemHandlerAdapter(itemHandler) {
             @Override
             protected void onInjectOrExtract() {
             }
         };
-        var fluidAdapter = new FluidHandlerAdapter(fluidHandler) {
+        var fluidAdapter = new FluidHandlerAdapter(fluidHandler, false) {
             @Override
             protected void onInjectOrExtract() {
             }
         };
-        var adaptor = new PlatformInventoryWrapper(itemHandler);
         return new IInterfaceTarget() {
             @Nullable
             @Override
@@ -138,10 +136,20 @@ public interface IInterfaceTarget {
 
             @Override
             public boolean isBusy() {
-                return !adaptor.simulateRemove(1, ItemStack.EMPTY, null).isEmpty() ||
-                        !fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE).isEmpty();
+                return IInterfaceTarget.canRemove(itemHandler) || IInterfaceTarget.canRemove(fluidHandler);
             }
         };
+    }
+
+    private static <T> boolean canRemove(Storage<T> storage) {
+        try (Transaction tx = Transaction.openOuter()) {
+            for (var view : storage.iterable(tx)) {
+                if (!view.isResourceBlank() && view.extract(view.getResource(), Long.MAX_VALUE, tx) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Nullable

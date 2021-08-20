@@ -18,15 +18,21 @@
 
 package appeng.util.fluid;
 
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 import appeng.api.storage.data.IAEFluidStack;
 
-public interface IAEFluidTank extends IFluidHandler {
+public interface IAEFluidTank extends Storage<FluidVariant> {
     void setFluidInSlot(final int slot, final IAEFluidStack fluid);
 
     IAEFluidStack getFluidInSlot(final int slot);
 
     int getSlots();
 
+    long getTankCapacity(int tankIndex);
+
+    long fill(int slot, IAEFluidStack stack, boolean doFill);
+
+    long drain(int slot, IAEFluidStack stack, boolean doDrain);
 }

@@ -18,9 +18,12 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorTESR;
@@ -34,7 +37,7 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.core.definitions.AEBlockEntities;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class InitBlockEntityRenderers {
 
     private InitBlockEntityRenderers() {
@@ -42,17 +45,22 @@ public final class InitBlockEntityRenderers {
 
     public static void init() {
 
-        BlockEntityRenderers.register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.CRANK, CrankTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
-        BlockEntityRenderers.register(AEBlockEntities.DRIVE, DriveLedBlockEntityRenderer::new);
-        BlockEntityRenderers.register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);
-        BlockEntityRenderers.register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
-        BlockEntityRenderers.register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
+        register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
+        register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
+        register(AEBlockEntities.CRANK, CrankTESR::new);
+        register(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
+        register(AEBlockEntities.DRIVE, DriveLedBlockEntityRenderer::new);
+        register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);
+        register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);
+        register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
+        register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
+        register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
 
+    }
+
+    private static <T extends BlockEntity> void register(BlockEntityType<T> type,
+            BlockEntityRendererProvider<T> factory) {
+        BlockEntityRendererRegistry.INSTANCE.register(type, factory);
     }
 
 }

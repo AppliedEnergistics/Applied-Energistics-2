@@ -20,11 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -37,7 +37,7 @@ public class SwitchGuisPacket extends BasePacket {
     private final MenuType<?> newGui;
 
     public SwitchGuisPacket(final FriendlyByteBuf stream) {
-        this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
+        this.newGui = Registry.MENU.get(stream.readResourceLocation());
     }
 
     // api
@@ -47,7 +47,7 @@ public class SwitchGuisPacket extends BasePacket {
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        data.writeResourceLocation(newGui.getRegistryName());
+        data.writeResourceLocation(Registry.MENU.getKey(newGui));
 
         this.configureWrite(data);
     }
