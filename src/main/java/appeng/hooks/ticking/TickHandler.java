@@ -37,24 +37,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.LogicalSide;
 
-import appeng.api.AEApi;
-import appeng.api.parts.CableRenderMode;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEngClient;
 import appeng.crafting.CraftingJob;
-import appeng.items.misc.PaintBallItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.util.ILevelRunnable;
@@ -73,9 +68,6 @@ public class TickHandler {
     private final Map<LevelAccessor, Queue<ILevelRunnable>> callQueue = new HashMap<>();
     private final ServerBlockEntityRepo blockEntities = new ServerBlockEntityRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
-    private final Map<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
-    private final Map<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
-    private CableRenderMode crm = CableRenderMode.STANDARD;
 
     /**
      * A stop watch to limit processing the additional queues to honor
@@ -94,11 +86,14 @@ public class TickHandler {
     private TickHandler() {
     }
 
-    public Map<Integer, PlayerColor> getPlayerColors() {
-        if (Platform.isServer()) {
-            return this.srvPlayerColors;
-        }
-        return this.cliPlayerColors;
+    public void init() {
+        MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onWorldTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onUnloadChunk);
+        // Try to go first for level loads since we use it to initialize state
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onLoadWorld);
+        // Try to go last for level unloads since we use it to clean-up state
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadWorld);
     }
 
     public void addCallable(final LevelAccessor level, Runnable c) {
@@ -140,7 +135,7 @@ public class TickHandler {
      *
      * @param blockEntity to be added, must be not null
      */
-    public void addInit(final AEBaseBlockEntity blockEntity) {
+    public void addInit(AEBaseBlockEntity blockEntity) {
         // for no there is no reason to care about this on the client...
         if (!blockEntity.getLevel().isClientSide()) {
             Objects.requireNonNull(blockEntity);
@@ -242,16 +237,6 @@ public class TickHandler {
     }
 
     /**
-     * Client side ticking similar to the global server tick.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public void onClientTick(final ClientTickEvent ev) {
-        if (ev.phase == Phase.START) {
-            onClientTickStart();
-        }
-    }
-
-    /**
      * Tick a single {@link Level}
      * <p>
      * This can happen multiple times per level, but each level should only be ticked once per minecraft tick.
@@ -283,18 +268,6 @@ public class TickHandler {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private void onClientTickStart() {
-        this.tickColors(this.cliPlayerColors);
-        final CableRenderMode currentMode = AEApi.partHelper().getCableRenderMode();
-
-        // Handle changes to the cable-rendering mode
-        if (currentMode != this.crm) {
-            this.crm = currentMode;
-            AppEngClient.instance().triggerUpdates();
-        }
-    }
-
     private void onServerWorldTickStart(ServerLevel level) {
         var queue = this.callQueue.get(level);
         processQueueElementsRemaining += this.processQueue(queue, level);
@@ -313,11 +286,9 @@ public class TickHandler {
     }
 
     private void onServerTickEnd() {
-        this.tickColors(this.srvPlayerColors);
-
         // tick networks.
         this.grids.updateNetworks();
-        for (final Grid g : this.grids.getNetworks()) {
+        for (var g : this.grids.getNetworks()) {
             g.update();
         }
 
@@ -399,21 +370,6 @@ public class TickHandler {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Tick all currently players having a color applied by a {@link PaintBallItem}.
-     */
-    private void tickColors(final Map<Integer, PlayerColor> playerSet) {
-        final Iterator<PlayerColor> i = playerSet.values().iterator();
-
-        while (i.hasNext()) {
-            final PlayerColor pc = i.next();
-            if (pc.isDone()) {
-                i.remove();
-            }
-            pc.tick();
         }
     }
 

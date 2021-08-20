@@ -46,7 +46,6 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
-import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
@@ -99,8 +98,6 @@ public class BasePacketHandler {
         ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
         ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
-
-        PAINTED_ENTITY(PaintedEntityPacket.class, PaintedEntityPacket::new),
 
         FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
 

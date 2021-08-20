@@ -47,7 +47,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -154,13 +153,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
 
-        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onWorldTick);
-        MinecraftForge.EVENT_BUS.addListener(TickHandler.instance()::onUnloadChunk);
-        // Try to go first for level loads since we use it to initialize state
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, TickHandler.instance()::onLoadWorld);
-        // Try to go last for level unloads since we use it to clean-up state
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onUnloadWorld);
+        TickHandler.instance().init();
 
         MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
