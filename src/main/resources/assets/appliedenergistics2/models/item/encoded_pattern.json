@@ -1,4 +1,6 @@
 {
-  "loader": "appliedenergistics2:encoded_pattern",
-  "baseModel": "appliedenergistics2:item/encoded_pattern_base"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "appliedenergistics2:item/encoded_pattern"
+  }
 }

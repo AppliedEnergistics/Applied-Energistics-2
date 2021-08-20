@@ -231,6 +231,12 @@ public final class Blitter {
         return color(r, g, b);
     }
 
+    public void blit(int zIndex) {
+        // If we're not using a specific pose stack for transforms, we pass an empty
+        // one to just get an identity transform
+        blit(new PoseStack(), zIndex);
+    }
+
     public void blit(PoseStack poseStack, int zIndex) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.texture);

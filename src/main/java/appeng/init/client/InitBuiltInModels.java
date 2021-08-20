@@ -28,13 +28,11 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
-import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.FacadeItemModel;
 import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModelLoader;
-import appeng.client.render.crafting.EncodedPatternModelLoader;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.ColorApplicatorModel;
 import appeng.client.render.model.DriveModel;
@@ -53,7 +51,6 @@ public final class InitBuiltInModels {
     public static void init() {
         addBuiltInModel("glass", GlassModel::new);
         addBuiltInModel("sky_compass", SkyCompassModel::new);
-        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
         addBuiltInModel("memory_card", MemoryCardModel::new);
         addBuiltInModel("biometric_card", BiometricCardModel::new);
         addBuiltInModel("drive", DriveModel::new);
@@ -63,8 +60,6 @@ public final class InitBuiltInModels {
         addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
         addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
         addBuiltInModel("facade", FacadeItemModel::new);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
-                EncodedPatternModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
                 PlaneModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
