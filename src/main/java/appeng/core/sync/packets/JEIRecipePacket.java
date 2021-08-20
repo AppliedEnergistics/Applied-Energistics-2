@@ -38,7 +38,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -265,9 +264,9 @@ public class JEIRecipePacket extends BasePacket {
 
         // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
         // matrix
-        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
-            int width = shapedRecipe.getRecipeWidth();
-            int height = shapedRecipe.getRecipeHeight();
+        if (recipe instanceof ShapedRecipe shapedRecipe) {
+            int width = shapedRecipe.getWidth();
+            int height = shapedRecipe.getHeight();
             Preconditions.checkArgument(width <= 3 && height <= 3);
 
             for (int h = 0; h < height; h++) {

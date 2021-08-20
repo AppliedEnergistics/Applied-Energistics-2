@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,9 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.storage.data.IAEItemStack;
@@ -43,10 +42,10 @@ import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements IColorableBlockEntity {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Integer dspList;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private boolean updateList;
 
     private IAEItemStack dspPlay;
@@ -170,7 +169,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
+    public Object getRenderAttachmentData() {
         return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());
     }
 

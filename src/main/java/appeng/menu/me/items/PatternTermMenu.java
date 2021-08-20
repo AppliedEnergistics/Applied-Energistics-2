@@ -18,6 +18,13 @@
 
 package appeng.menu.me.items;
 
+import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +38,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -42,6 +48,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -63,7 +70,6 @@ import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
@@ -224,9 +230,10 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
     private static IAEStack[] toAeStacks(ItemStack... stacks) {
         IAEStack[] out = new IAEStack[stacks.length];
+        var fluidDummy = AEItems.DUMMY_FLUID_ITEM.asItem();
         for (int i = 0; i < stacks.length; ++i) {
-            if (stacks[i].getItem() == AEItems.DUMMY_FLUID_ITEM.asItem()) {
-                out[i] = AEFluidStack.fromFluidStack(AEItems.DUMMY_FLUID_ITEM.asItem().getFluidStack(stacks[i]));
+            if (stacks[i].getItem() == fluidDummy) {
+                out[i] = IAEFluidStack.of(fluidDummy.getFluid(stacks[i]), fluidDummy.getAmount(stacks[i]));
             } else {
                 out[i] = AEItemStack.fromItemStack(stacks[i]);
             }
@@ -512,15 +519,22 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     private static void convertItemToFluid(Slot slot) {
-        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
-        fluidStack.ifPresent(fs -> {
-            slot.set(FluidDummyItem.fromFluidStack(fs, true));
-        });
+        var fluidStack = getFluidContained(slot.getItem());
+        if (fluidStack != null) {
+            slot.set(FluidDummyItem.fromFluidStack(fluidStack, true));
+        }
     }
 
     private static boolean canConvertItemToFluid(Slot slot) {
-        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
-        return !fluidStack.isEmpty();
+        return getFluidContained(slot.getItem()) != null;
+    }
+
+    @Nullable
+    private static ResourceAmount<FluidVariant> getFluidContained(ItemStack stack) {
+        if (stack.isEmpty())
+            return null;
+        return StorageUtil.findExtractableContent(
+                ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM), null);
     }
 
     public FakeCraftingMatrixSlot[] getCraftingGridSlots() {

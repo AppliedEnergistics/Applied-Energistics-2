@@ -18,10 +18,13 @@
 
 package appeng.client.render.tesr;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -37,9 +40,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
@@ -47,7 +47,7 @@ import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
@@ -56,6 +56,8 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
     public static final Material TEXTURE_BLOCK = new Material(Sheets.CHEST_SHEET,
             new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
+
+    public static final ImmutableList<Material> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
 
     private final ModelPart lid;
     private final ModelPart bottom;
@@ -126,13 +128,6 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
             case STONE -> TEXTURE_STONE;
             case BLOCK -> TEXTURE_BLOCK;
         };
-    }
-
-    public static void registerTextures(TextureStitchEvent.Pre evt) {
-        if (evt.getMap().location().equals(Sheets.CHEST_SHEET)) {
-            evt.addSprite(TEXTURE_STONE.texture());
-            evt.addSprite(TEXTURE_BLOCK.texture());
-        }
     }
 
 }

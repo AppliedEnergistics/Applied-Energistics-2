@@ -23,10 +23,14 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.NotImplementedException;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -35,14 +39,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -111,7 +107,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
-        if (this.blocked || input == null || input.getStackSize() < FluidAttributes.BUCKET_VOLUME) {
+        if (this.blocked || input == null || input.getStackSize() < FluidConstants.BUCKET) {
             // need a full bucket
             return input;
         }
@@ -124,19 +120,21 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
         if (this.canReplace(level, state, pos)) {
             if (type == Actionable.MODULATE) {
-                final FluidStack fs = input.getFluidStack();
-                fs.setAmount(FluidAttributes.BUCKET_VOLUME);
-
-                final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
-                tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
-
-                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) level);
-                if (!FluidUtil.tryPlaceFluid(fakePlayer, level, InteractionHand.MAIN_HAND, pos, tank, fs)) {
-                    return input;
-                }
+                // TODO FABRIC 117
+                throw new NotImplementedException("NYI");
+//                final FluidStack fs = input.getFluidStack();
+//                fs.setAmount(FluidConstants.BUCKET);
+//
+//                final FluidTank tank = new FluidTank(FluidConstants.BUCKET);
+//                tank.fill(fs, Storage<FluidVariant>.FluidAction.EXECUTE);
+//
+//                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) level);
+//                if (!FluidUtil.tryPlaceFluid(fakePlayer, level, InteractionHand.MAIN_HAND, pos, tank, fs)) {
+//                    return input;
+//                }
             }
             final IAEFluidStack ret = input.copy();
-            ret.setStackSize(input.getStackSize() - FluidAttributes.BUCKET_VOLUME);
+            ret.setStackSize(input.getStackSize() - FluidConstants.BUCKET);
             return ret.getStackSize() == 0 ? null : ret;
         }
         this.blocked = true;
@@ -169,7 +167,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }
@@ -206,8 +204,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
-        return new PlaneModelData(getConnections());
+    public Object getRenderAttachmentData() {
+        return getConnections();
     }
 
     public IAEFluidTank getConfig() {

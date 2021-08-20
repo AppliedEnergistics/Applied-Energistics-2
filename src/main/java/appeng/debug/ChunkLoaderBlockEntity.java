@@ -36,8 +36,8 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ServerT
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
+    public void clearRemoved() {
+        super.clearRemoved();
 
         Level level = getLevel();
         if (level instanceof ServerLevel) {

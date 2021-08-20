@@ -22,12 +22,14 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 final class AESharedItemStack {
 
     private final ItemStack itemStack;
+    private final ItemVariant variant;
     private final int itemId;
     private final int itemDamage;
     private final int hashCode;
@@ -44,6 +46,14 @@ final class AESharedItemStack {
      */
     private AESharedItemStack(ItemStack itemStack, int damage) {
         this.itemStack = itemStack;
+        ItemVariant variant = null;
+        try {
+            variant = ItemVariant.of(itemStack);
+        } catch (ClassCastException e) {
+            // FIXME TEST HACKS
+            // Running from tests: mixins don't apply, so the cast of Item to ItemVariantCache fails.
+        }
+        this.variant = variant;
         this.itemId = Item.getId(itemStack.getItem());
         this.itemDamage = damage;
 
@@ -89,4 +99,7 @@ final class AESharedItemStack {
                 this.itemStack.hasTag() ? this.itemStack.getTag() : 0);
     }
 
+    public ItemVariant getVariant() {
+        return variant;
+    }
 }

@@ -20,175 +20,126 @@ package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.google.common.base.Splitter;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.category.IRecipeCategory;
+import me.shedaniel.math.Point;
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.implementations.items.IStorageComponent;
-import appeng.blockentity.misc.CondenserBlockEntity;
-import appeng.client.gui.Icon;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
 
-class CondenserCategory implements IRecipeCategory<CondenserOutput> {
+class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
-    private static final String TITLE_TRANSLATION_KEY = "block.appliedenergistics2.Condenser";
+    private static final int PADDING = 7;
 
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
-
-    private final IDrawable background;
-    private final IDrawableAnimated progress;
-
-    private final IDrawable iconButton;
-    private final IDrawable iconTrash;
-    private final IDrawable icon;
-
-    private final Map<CondenserOutput, IDrawable> buttonIcons;
-
-    public CondenserCategory(IGuiHelper guiHelper) {
-        this.icon = guiHelper.createDrawableIngredient(AEBlocks.CONDENSER.stack());
-
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
-        this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
-
-        // This is shown on the "input slot" for condenser operations to indicate that any item can be used
-        this.iconTrash = new IconDrawable(Icon.BACKGROUND_TRASH, 1, 27);
-        this.iconButton = new IconDrawable(Icon.TOOLBAR_BUTTON_BACKGROUND, 78, 26);
-
-        IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 178, 25, 6, 18).addPadding(0, 0, 70, 0)
-                .build();
-        this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
-                false);
-
-        this.buttonIcons = new EnumMap<>(CondenserOutput.class);
-
-        this.buttonIcons.put(CondenserOutput.MATTER_BALLS,
-                new IconDrawable(Icon.CONDENSER_OUTPUT_MATTER_BALL, 78, 26));
-        this.buttonIcons.put(CondenserOutput.SINGULARITY,
-                new IconDrawable(Icon.CONDENSER_OUTPUT_SINGULARITY, 78, 26));
-    }
-
-    private ItemStack getOutput(CondenserOutput recipe) {
-        return switch (recipe) {
-            case MATTER_BALLS -> AEItems.MATTER_BALL.stack();
-            case SINGULARITY -> AEItems.SINGULARITY.stack();
-            default -> ItemStack.EMPTY;
-        };
-    }
+    public static final CategoryIdentifier<CondenserOutputDisplay> ID = CategoryIdentifier
+            .of(AppEng.makeId("condenser"));
 
     @Override
-    public ResourceLocation getUid() {
-        return CondenserCategory.UID;
-    }
-
-    @Override
-    public Class<? extends CondenserOutput> getRecipeClass() {
-        return CondenserOutput.class;
+    public Renderer getIcon() {
+        return EntryStacks.of(AEBlocks.CONDENSER.stack());
     }
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
+        return new TranslatableComponent("gui.appliedenergistics2.Condenser");
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public CategoryIdentifier<? extends CondenserOutputDisplay> getCategoryIdentifier() {
+        return ID;
     }
 
     @Override
-    public IDrawable getIcon() {
-        return icon;
-    }
+    public List<Widget> setupDisplay(CondenserOutputDisplay recipeDisplay, Rectangle bounds) {
 
-    @Override
-    public void setIngredients(CondenserOutput recipe, IIngredients ingredients) {
-        ingredients.setOutput(VanillaTypes.ITEM, getOutput(recipe));
-    }
+        List<Widget> widgets = new ArrayList<>();
+        widgets.add(Widgets.createRecipeBase(bounds));
 
-    @Override
-    public void draw(CondenserOutput recipe, PoseStack poseStack, double mouseX, double mouseY) {
-        this.progress.draw(poseStack);
-        this.iconTrash.draw(poseStack);
-        this.iconButton.draw(poseStack);
+        Point origin = new Point(bounds.x + PADDING, bounds.y + PADDING);
 
-        IDrawable buttonIcon = this.buttonIcons.get(recipe);
-        if (buttonIcon != null) {
-            buttonIcon.draw(poseStack);
+        ResourceLocation location = AppEng.makeId("textures/guis/condenser.png");
+        widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
+
+        ResourceLocation statesLocation = AppEng.makeId("textures/guis/states.png");
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
+
+        // FIXME IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location,
+        // 178, 25, 6, 18).addPadding(0, 0, 70, 0)
+        // FIXME .build();
+        // FIXME this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40,
+        // IDrawableAnimated.StartDirection.BOTTOM,
+        // FIXME false);
+
+        if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 16, 112, 14, 14));
+        } else if (recipeDisplay.getType() == CondenserOutput.SINGULARITY) {
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 32, 112, 14, 14));
         }
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CondenserOutput output, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 54, 26);
-
-        // Get all storage cells and cycle them through a fake input slot
-        itemStacks.init(1, true, 50, 0);
-        itemStacks.set(1, this.getViableStorageComponents(output));
-
-        // This only sets the output
-        itemStacks.set(ingredients);
-    }
-
-    private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        List<ItemStack> viableComponents = new ArrayList<>();
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_1K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_4K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_16K_CELL_COMPONENT.stack());
-        this.addViableComponent(condenserOutput, viableComponents, AEItems.ITEM_64K_CELL_COMPONENT.stack());
-        return viableComponents;
-    }
-
-    private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents,
-            ItemStack itemStack) {
-        IStorageComponent comp = (IStorageComponent) itemStack.getItem();
-        int storage = comp.getBytes(itemStack) * CondenserBlockEntity.BYTE_MULTIPLIER;
-        if (storage >= condenserOutput.requiredPower) {
-            viableComponents.add(itemStack);
-        }
-    }
-
-    @Override
-    public List<Component> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
-
-        if (mouseX >= 28 && mouseX < 28 + 16 && mouseY >= 78 && mouseY < 78 + 16) {
-            String key;
-
-            switch (output) {
-                case MATTER_BALLS:
-                    key = "gui.tooltips.appliedenergistics2.MatterBalls";
-                    break;
-                case SINGULARITY:
-                    key = "gui.tooltips.appliedenergistics2.Singularity";
-                    break;
-                default:
-                    return Collections.emptyList();
+        widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+            Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
+            if (rect.contains(mouseX, mouseY)) {
+                Tooltip.create(
+                        getTooltip(recipeDisplay.getType()).stream().map(TextComponent::new)
+                                .collect(Collectors.toList()))
+                        .queue();
             }
+        }));
 
-            return Lists.newArrayList(new TranslatableComponent(key));
+        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y + 27)).disableBackground().markOutput()
+                .entries(recipeDisplay.getOutputEntries().get(0));
+        widgets.add(outputSlot);
+
+        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y + 1)).disableBackground()
+                .markInput().entries(recipeDisplay.getViableStorageComponents());
+        widgets.add(storageCellSlot);
+
+        return widgets;
+
+    }
+
+    @Override
+    public int getDisplayWidth(CondenserOutputDisplay display) {
+        return 94 + 2 * PADDING;
+    }
+
+    @Override
+    public int getDisplayHeight() {
+        return 48 + 2 * PADDING;
+    }
+
+    private List<String> getTooltip(CondenserOutput type) {
+        String key;
+        switch (type) {
+            case MATTER_BALLS:
+                key = "gui.tooltips.appliedenergistics2.MatterBalls";
+                break;
+            case SINGULARITY:
+                key = "gui.tooltips.appliedenergistics2.Singularity";
+                break;
+            default:
+                return Collections.emptyList();
         }
-        return Collections.emptyList();
+
+        return Splitter.on("\n").splitToList(new TranslatableComponent(key, type.requiredPower).getString());
     }
 
 }

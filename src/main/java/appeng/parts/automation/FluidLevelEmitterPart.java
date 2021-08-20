@@ -20,13 +20,14 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IStorageChannel;
@@ -114,7 +115,7 @@ public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEFl
     }
 
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

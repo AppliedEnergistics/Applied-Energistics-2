@@ -24,14 +24,15 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -48,9 +49,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     private final AESharedItemStack sharedStack;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Component displayName;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private List<Component> tooltip;
 
     private AEItemStack(final AEItemStack is) {
@@ -65,6 +66,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         this.setStackSize(size);
         this.setCraftable(false);
         this.setCountRequestable(0);
+    }
+
+    @Nullable
+    public static AEItemStack of(@Nonnull ItemVariant variant, long amount) {
+        if (variant.isBlank()) {
+            return null;
+        }
+
+        // TODO: Optimize later
+        var stack = variant.toStack();
+
+        return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), amount);
     }
 
     @Nullable
@@ -125,7 +138,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
-        buffer.writeItemStack(this.getDefinition(), true);
+        buffer.writeItem(this.getDefinition());
     }
 
     @Override
@@ -152,7 +165,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public ItemStack createItemStack() {
-        return ItemHandlerHelper.copyStackWithSize(this.getDefinition(),
+        return Platform.copyStackWithSize(this.getDefinition(),
                 (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
     }
 
@@ -212,10 +225,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public String toString() {
-        return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
+        return this.getStackSize() + "x" + Registry.ITEM.getKey(this.getDefinition().getItem());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public List<Component> getToolTip() {
         if (this.tooltip == null) {
             this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
@@ -223,7 +236,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return this.tooltip;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Component getDisplayName() {
         if (this.displayName == null) {
             this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
@@ -231,9 +244,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return this.displayName;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public String getModID() {
-        return this.getDefinition().getItem().getRegistryName().getNamespace();
+        return Registry.ITEM.getKey(this.getDefinition().getItem()).getNamespace();
     }
 
     @Override
@@ -249,6 +262,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     @Override
     public ItemStack getDefinition() {
         return this.sharedStack.getDefinition();
+    }
+
+    @Override
+    public ItemVariant getVariant() {
+        return this.sharedStack.getVariant();
     }
 
     AESharedItemStack getSharedStack() {

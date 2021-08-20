@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
@@ -108,7 +108,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
+    public InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
         return this.invExt;
     }
 
@@ -207,7 +207,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 is.shrink(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setItemDirect(0, fuelItem.getContainerItem(is));
+                    this.inv.setItemDirect(0, new ItemStack(fuelItem.getCraftingRemainingItem()));
                 } else {
                     this.inv.setItemDirect(0, is);
                 }
@@ -233,7 +233,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     public static int getBurnTime(ItemStack is) {
-        return ForgeHooks.getBurnTime(is, null);
+        var burnTime = FuelRegistry.INSTANCE.get(is.getItem());
+        return burnTime != null ? burnTime : 0;
     }
 
     public static boolean hasBurnTime(ItemStack is) {

@@ -25,6 +25,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -37,10 +39,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -61,7 +59,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -75,7 +72,7 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.util.Platform;
+import appeng.util.CraftingRemainders;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -105,7 +102,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private boolean forcePlan = false;
     private boolean reboot = true;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
     public MolecularAssemblerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -314,7 +311,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected InternalInventory getExposedInventoryForSide(Direction side) {
+    public InternalInventory getExposedInventoryForSide(Direction side) {
         return this.gridInvExt;
     }
 
@@ -399,7 +396,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-                    this.gridInv.setItemDirect(x, Platform.getContainerItem(this.craftingInv.getItem(x)));
+                    this.gridInv.setItemDirect(x, CraftingRemainders.getRemainder(this.craftingInv.getItem(x)));
                 }
 
                 if (this.patternInv.isEmpty()) {
@@ -525,12 +522,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return this.isPowered;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
         this.animationStatus = status;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public AssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;
@@ -540,16 +537,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (Capabilities.CRAFTING_MACHINE == capability) {
-            return Capabilities.CRAFTING_MACHINE.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-
-        return super.getCapability(capability, facing);
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

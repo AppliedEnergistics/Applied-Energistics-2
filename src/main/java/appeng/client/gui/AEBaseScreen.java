@@ -57,7 +57,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
@@ -291,8 +290,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     private void drawTooltip(PoseStack poseStack, Tooltip tooltip, int mouseX, int mouseY) {
-        // Only difference between this and the Vanilla function is that we can specify a maximum width here
-        GuiUtils.drawHoveringText(poseStack, tooltip.getContent(), mouseX, mouseY, width, height, 200, font);
+        drawTooltip(poseStack, mouseX, mouseY, tooltip.getContent());
     }
 
     // FIXME FABRIC: move out to json (?)
@@ -553,7 +551,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 final List<Slot> slots = this.getInventorySlots();
                 for (final Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
-                            && inventorySlot.isSameInventory(slot)
+                            && isSameInventory(inventorySlot, slot)
                             && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
                         this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
                     }
@@ -583,10 +581,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         if (getMenu().getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().options.keyHotbarSlots[j].isActiveAndMatches(input)) {
+                if (getMinecraft().options.keyHotbarSlots[j].matches(input.getValue(), -1)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
-                        if (s.getSlotIndex() == j && s.container == this.menu.getPlayerInventory()
+                        if (s.slot == j && s.container == this.menu.getPlayerInventory()
                                 && !s.mayPickup(this.menu.getPlayerInventory().player)) {
                             return false;
                         }
@@ -597,7 +595,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         return true;
                     } else {
                         for (final Slot s : slots) {
-                            if (s.getSlotIndex() == j
+                            if (s.slot == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 NetworkHandler.instance()
                                         .sendToServer(new SwapSlotsPacket(s.index, theSlot.index));
@@ -830,4 +828,28 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         return ingredient;
     }
+
+    public final int getGuiLeft() {
+        return this.leftPos;
+    }
+
+    public final int getGuiTop() {
+        return this.topPos;
+    }
+
+    protected final Minecraft getMinecraft() {
+        return minecraft;
+    }
+
+    protected final Slot getSlotUnderMouse() {
+        return hoveredSlot;
+    }
+
+    public static boolean isSameInventory(Slot a, Slot b) {
+        if (a instanceof AppEngSlot appEngSlotA && b instanceof AppEngSlot appEngSlotB) {
+            return appEngSlotA.container == appEngSlotB.container;
+        }
+        return a.container == b.container;
+    }
+
 }

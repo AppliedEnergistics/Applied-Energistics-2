@@ -18,12 +18,14 @@
 
 package appeng.util.fluid;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.world.level.material.Fluids;
 
 /**
  * Helps with playing fill/empty sounds for fluids to players.
@@ -33,34 +35,33 @@ public final class FluidSoundHelper {
     private FluidSoundHelper() {
     }
 
-    public static void playFillSound(Player player, FluidStack fluidStack) {
-        if (fluidStack.isEmpty()) {
+    public static void playFillSound(Player player, FluidVariant fluid) {
+        if (fluid.isBlank()) {
             return;
         }
 
-        SoundEvent fillSound = fluidStack.getFluid().getAttributes().getFillSound(fluidStack);
-        if (fillSound == null) {
-            return;
-        }
-
-        playSound(player, fillSound);
+        fluid.getFluid().getPickupSound().ifPresent(sound -> playSound(player, sound));
     }
 
-    public static void playEmptySound(Player player, FluidStack fluidStack) {
-        if (fluidStack.isEmpty()) {
+    public static void playEmptySound(Player player, FluidVariant fluid) {
+        if (fluid.isBlank()) {
             return;
         }
 
-        SoundEvent fillSound = fluidStack.getFluid().getAttributes().getEmptySound(fluidStack);
-        if (fillSound == null) {
-            return;
+// TODO: FABRIC 117 No equivalent available right now
+//        SoundEvent fillSound = fluid.getFluid().getAttributes().getEmptySound(fluid);
+//        if (fillSound == null) {
+//            return;
+//        }
+        if (fluid.getFluid() == Fluids.LAVA) {
+            playSound(player, SoundEvents.BUCKET_EMPTY_LAVA);
+        } else {
+            playSound(player, SoundEvents.BUCKET_EMPTY);
         }
-
-        playSound(player, fillSound);
     }
 
     /**
-     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
+     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, Storage<FluidVariant>, int, Player, boolean)
      */
     private static void playSound(Player player, SoundEvent fillSound) {
         // This should just play the sound for the player themselves

@@ -18,122 +18,94 @@
 
 package appeng.integration.modules.jei;
 
+import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.category.IRecipeCategory;
+import me.shedaniel.math.Point;
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.recipes.handlers.GrinderOptionalResult;
-import appeng.recipes.handlers.GrinderRecipe;
 
-class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
+class GrinderRecipeCategory implements DisplayCategory<GrinderRecipeWrapper> {
 
-    private static final String TITLE_TRANSLATION_KEY = "block.appliedenergistics2.grindstone";
-
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
-    private final IDrawable background;
-    private final IDrawable icon;
-
-    public GrinderRecipeCategory(IGuiHelper guiHelper) {
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
-        this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
-
-        this.icon = guiHelper.createDrawableIngredient(AEBlocks.GRINDSTONE.stack());
-    }
+    public static final CategoryIdentifier<GrinderRecipeWrapper> ID = CategoryIdentifier.of(AppEng.makeId("grinder"));
 
     @Override
-    public ResourceLocation getUid() {
-        return GrinderRecipeCategory.UID;
+    public Renderer getIcon() {
+        return EntryStacks.of(AEBlocks.GRINDSTONE.stack(1));
     }
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
+        return new TranslatableComponent("block.appliedenergistics2.grindstone");
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public CategoryIdentifier<? extends GrinderRecipeWrapper> getCategoryIdentifier() {
+        return GrinderRecipeCategory.ID;
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, GrinderRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-
-        itemStacks.init(0, true, 0, 0);
-        itemStacks.init(1, false, 100, 46);
-        itemStacks.init(2, false, 118, 46);
-        itemStacks.init(3, false, 136, 46);
-
-        itemStacks.set(ingredients);
+    public int getDisplayHeight() {
+        return 70; // Padded to avoid the "+" button overlapping the UI
     }
 
     @Override
-    public Class<? extends GrinderRecipe> getRecipeClass() {
-        return GrinderRecipe.class;
+    public int getDisplayWidth(GrinderRecipeWrapper display) {
+        return 154;
     }
 
     @Override
-    public IDrawable getIcon() {
-        return icon;
-    }
+    public List<Widget> setupDisplay(GrinderRecipeWrapper recipe, Rectangle bounds) {
 
-    @Override
-    public void setIngredients(GrinderRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(Collections.singletonList(recipe.getIngredient()));
-        List<ItemStack> outputs = new ArrayList<>(3);
-        outputs.add(recipe.getResultItem());
-        for (GrinderOptionalResult optionalResult : recipe.getOptionalResults()) {
-            outputs.add(optionalResult.getResult());
+        ResourceLocation location = AppEng.makeId("textures/guis/grinder.png");
+        Widget background = Widgets.createTexturedWidget(location, bounds.x, bounds.y, 11, 16, 154, 70);
+
+        List<Widget> widgets = new ArrayList<>();
+        widgets.add(background);
+
+        // Add the input
+        EntryIngredient input = recipe.getInputEntries().get(0);
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1)).backgroundEnabled(false).markInput()
+                .entries(input));
+
+        // Add the output slots and their chances (if <100%)
+        List<EntryIngredient> output = recipe.getOutputEntries();
+        List<Double> outputChances = recipe.getOutputChances();
+        DecimalFormat df = new DecimalFormat("###.##");
+        int offset = bounds.x + 101;
+        for (int i = 0; i < output.size(); i++) {
+            Slot slot = Widgets.createSlot(new Point(offset, bounds.y + 47))
+                    .backgroundEnabled(false)
+                    .entries(output.get(i));
+            widgets.add(slot);
+
+            double chance = outputChances.get(i);
+            if (chance < 100) {
+                Point p = new Point(slot.getBounds().getCenterX(), slot.getBounds().getMaxY() + 2);
+                widgets.add(Widgets.createLabel(p, new TextComponent(df.format(chance) + "%")).shadow(false)
+                        .color(Color.gray.getRGB()));
+            }
+            offset += 18;
         }
-        ingredients.setOutputs(VanillaTypes.ITEM, outputs);
-    }
 
-    // FIXME USE SPECIAL INGREDIENT TYPE
-    // FIXME @Override
-    // FIXME public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
-    // FIXME {
-    // FIXME
-    // FIXME FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-    // FIXME
-    // FIXME int x = 118;
-    // FIXME
-    // FIXME final float scale = 0.85f;
-    // FIXME final float invScale = 1 / scale;
-    // FIXME GlStateManager.scale( scale, scale, 1 );
-    // FIXME
-    // FIXME if( this.recipe.getOptionalOutput() != null )
-    // FIXME {
-    // FIXME String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
-    // FIXME float width = fr.getStringWidth( text ) * scale;
-    // FIXME int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-    // FIXME fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-    // FIXME x += 18;
-    // FIXME }
-    // FIXME
-    // FIXME if( this.recipe.getSecondOptionalOutput() != null )
-    // FIXME {
-    // FIXME String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
-    // FIXME float width = fr.getStringWidth( text ) * scale;
-    // FIXME int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-    // FIXME fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-    // FIXME }
-    // FIXME
-    // FIXME GlStateManager.scale( invScale, invScale, 1 );
-    // FIXME }
+        return widgets;
+    }
 
 }

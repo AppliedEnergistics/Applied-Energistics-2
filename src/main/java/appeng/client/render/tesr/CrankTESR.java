@@ -22,6 +22,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -30,8 +32,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.grindstone.CrankBlockEntity;
 import appeng.client.render.FacingToRotation;
@@ -40,7 +40,7 @@ import appeng.client.render.FacingToRotation;
  * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
  * normal model.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CrankTESR implements BlockEntityRenderer<CrankBlockEntity> {
 
     public CrankTESR(BlockEntityRendererProvider.Context context) {
