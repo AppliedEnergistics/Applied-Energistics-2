@@ -38,7 +38,7 @@ public final class ConventionTags {
     public static Tag.Named<Item> CERTUS_QUARTZ = tag("forge:gems/certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ_ORE = tag("forge:ores/certus_quartz");
     public static Tag.Named<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("forge:ores/certus_quartz");
-    public static Tag.Named<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("forge:ores/certus_quartz");
+    public static Tag.Named<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("forge:storage_blocks/certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ_DUST = tag("forge:dusts/certus_quartz");
 
     // Includes synthetic/purified
