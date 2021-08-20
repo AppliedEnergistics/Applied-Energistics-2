@@ -38,7 +38,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.menu.slot.OptionalTypeOnlyFakeSlot;
-import appeng.parts.misc.StorageBusPart;
+import appeng.parts.misc.ItemStorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
 
@@ -48,11 +48,11 @@ import appeng.util.iterators.NullIterator;
 public class ItemStorageBusMenu extends UpgradeableMenu {
 
     public static final MenuType<ItemStorageBusMenu> TYPE = MenuTypeBuilder
-            .create(ItemStorageBusMenu::new, StorageBusPart.class)
+            .create(ItemStorageBusMenu::new, ItemStorageBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("storagebus");
 
-    private final StorageBusPart storageBus;
+    private final ItemStorageBusPart storageBus;
 
     @GuiSync(3)
     public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
@@ -60,7 +60,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu {
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-    public ItemStorageBusMenu(int id, final Inventory ip, final StorageBusPart te) {
+    public ItemStorageBusMenu(int id, final Inventory ip, final ItemStorageBusPart te) {
         super(TYPE, id, ip, te);
         this.storageBus = te;
     }

@@ -42,7 +42,7 @@ public enum TickRates {
 
     VibrationChamber(10, 40),
 
-    StorageBus(5, 60),
+    ItemStorageBus(5, 60),
 
     FluidStorageBus(5, 60),
 
