@@ -20,6 +20,9 @@ package appeng.helpers;
 
 import java.util.Optional;
 
+import appeng.api.config.AccessRestriction;
+import appeng.api.storage.data.IItemList;
+import appeng.me.storage.FluidHandlerAdapter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -60,7 +63,6 @@ import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
@@ -447,7 +449,7 @@ public class DualityFluidInterface
         }
     }
 
-    private class InterfaceInventory extends MEMonitorIFluidHandler {
+    private class InterfaceInventory extends FluidHandlerAdapter implements IMEMonitor<IAEFluidStack> {
 
         InterfaceInventory(final DualityFluidInterface iface) {
             super(iface.tanks);
@@ -477,6 +479,47 @@ public class DualityFluidInterface
             }
 
             return super.extractItems(request, type, src);
+        }
+
+        @Override
+        protected void onInjectOrExtract() {
+            // Rebuild cache immediately
+            this.onTick();
+        }
+
+        @Override
+        public AccessRestriction getAccess() {
+            return AccessRestriction.READ_WRITE;
+        }
+
+        @Override
+        public boolean isPrioritized(IAEFluidStack input) {
+            return false;
+        }
+
+        @Override
+        public boolean canAccept(IAEFluidStack input) {
+            return true;
+        }
+
+        @Override
+        public int getPriority() {
+            return 0;
+        }
+
+        @Override
+        public int getSlot() {
+            return 0;
+        }
+
+        @Override
+        public boolean validForPass(int i) {
+            return true;
+        }
+
+        @Override
+        public IItemList<IAEFluidStack> getStorageList() {
+            return getAvailableItems();
         }
     }
 

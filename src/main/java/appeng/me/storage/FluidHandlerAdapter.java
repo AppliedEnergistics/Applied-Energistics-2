@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.misc;
+package appeng.me.storage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,28 +38,27 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.storage.ITickingMonitor;
 import appeng.util.fluid.AEFluidStack;
 
 /**
  * Wraps an Fluid Handler in such a way that it can be used as an IMEInventory for fluids.
- *
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
  */
-public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMonitor<IAEFluidStack>, ITickingMonitor {
+public abstract class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMonitor<IAEFluidStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IFluidHandler fluidHandler;
-    private final Runnable alertDevice;
     private final FluidHandlerAdapter.InventoryCache cache;
 
-    FluidHandlerAdapter(IFluidHandler fluidHandler, Runnable alertDevice) {
+    public FluidHandlerAdapter(IFluidHandler fluidHandler) {
         this.fluidHandler = fluidHandler;
-        this.alertDevice = alertDevice;
         this.cache = new FluidHandlerAdapter.InventoryCache(this.fluidHandler);
     }
+
+    /**
+     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus),
+     * or rebuild it directly (interface).
+     */
+    protected abstract void onInjectOrExtract();
 
     @Override
     public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
@@ -74,7 +73,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
         }
 
         if (type == Actionable.MODULATE) {
-            this.alertDevice.run();
+            this.onInjectOrExtract();
         }
 
         fluidStack.setAmount(remaining);
@@ -94,7 +93,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
         }
 
         if (mode == Actionable.MODULATE) {
-            this.alertDevice.run();
+            this.onInjectOrExtract();
         }
         return AEFluidStack.fromFluidStack(gathered);
     }
