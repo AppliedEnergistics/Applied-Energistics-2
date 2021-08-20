@@ -102,7 +102,7 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
 
     private LootTable.Builder defaultBuilder(Block block) {
         Builder<?> entry = LootItem.lootTableItem(block);
-        LootPool.Builder pool = LootPool.lootPool().name("main").setRolls(ConstantValue.exactly(1)).add(entry)
+        LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)
                 .when(ExplosionCondition.survivesExplosion());
 
         return LootTable.lootTable().withPool(pool);

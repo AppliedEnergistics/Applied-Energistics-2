@@ -28,9 +28,11 @@ import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.menu.implementations.VibrationChamberMenu;
+import appeng.util.Platform;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
 
@@ -47,14 +49,17 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
         this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
                 Direction.VERTICAL);
         widgets.add("generationRateBar", this.generationRateBar);
+
+        addToLeftToolbar(CommonButtons.togglePowerUnit());
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.generationRateBar.setFullMsg(new TextComponent(VibrationChamberBlockEntity.POWER_PER_TICK
-                * this.menu.getCurrentProgress() / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t"));
+        var powerPerTick = VibrationChamberBlockEntity.POWER_PER_TICK
+                * this.menu.getCurrentProgress() / VibrationChamberBlockEntity.DILATION_SCALING;
+        this.generationRateBar.setFullMsg(new TextComponent(Platform.formatPower(powerPerTick, true)));
     }
 
     @Override

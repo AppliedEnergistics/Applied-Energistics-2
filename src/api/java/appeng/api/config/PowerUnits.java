@@ -27,21 +27,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public enum PowerUnits {
-    AE("gui.appliedenergistics2.units.appliedenergstics"), // Native Units - AE Energy
-    // EU("gui.appliedenergistics2.units.ic2"), // IndustrialCraft 2 - Energy Units
-    RF("gui.appliedenergistics2.units.rf"); // RF - Redstone Flux
+    AE("gui.appliedenergistics2.units.appliedenergstics", "AE"), // Native Units - AE Energy
+    RF("gui.appliedenergistics2.units.rf", "RF"); // RF - Redstone Flux
 
     /**
      * unlocalized name for the power unit.
      */
     public final String unlocalizedName;
+
+    /**
+     * unlocalized name for the power unit's symbol used to display values.
+     */
+    public final String symbolName;
     /**
      * please do not edit this value, it is set when AE loads its config files.
      */
     public double conversionRatio = 1.0;
 
-    PowerUnits(final String un) {
+    PowerUnits(final String un, String symbolName) {
         this.unlocalizedName = un;
+        this.symbolName = symbolName;
     }
 
     /**
@@ -62,6 +67,10 @@ public enum PowerUnits {
 
     public Component textComponent() {
         return new TranslatableComponent(unlocalizedName);
+    }
+
+    public String getSymbolName() {
+        return symbolName;
     }
 
 }

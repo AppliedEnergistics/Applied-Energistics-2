@@ -18,16 +18,22 @@
 
 package appeng.init;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
+import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
+import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
 
 public final class InitRecipeSerializers {
@@ -37,13 +43,18 @@ public final class InitRecipeSerializers {
 
     public static void init(IForgeRegistry<RecipeSerializer<?>> registry) {
         FacadeItem facadeItem = AEItems.FACADE.asItem();
-        registry.registerAll(
-                DisassembleRecipe.SERIALIZER,
-                GrinderRecipeSerializer.INSTANCE,
-                InscriberRecipeSerializer.INSTANCE,
-                FacadeRecipe.getSerializer(facadeItem),
-                EntropyRecipeSerializer.INSTANCE,
-                MatterCannonAmmoSerializer.INSTANCE);
+        register(registry, AppEng.makeId("disassemble"), DisassembleRecipe.SERIALIZER);
+        register(registry, GrinderRecipe.TYPE_ID, GrinderRecipeSerializer.INSTANCE);
+        register(registry, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
+        register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
+        register(registry, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);
+        register(registry, MatterCannonAmmo.TYPE_ID, MatterCannonAmmoSerializer.INSTANCE);
+    }
+
+    private static void register(IForgeRegistry<RecipeSerializer<?>> registry, ResourceLocation id,
+            RecipeSerializer<?> serializer) {
+        serializer.setRegistryName(id);
+        registry.register(serializer);
     }
 
 }

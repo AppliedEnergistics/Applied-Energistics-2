@@ -30,7 +30,7 @@ public final class InitBlocks {
     }
 
     public static void init(IForgeRegistry<Block> registry) {
-        for (BlockDefinition definition : AEBlocks.getBlocks()) {
+        for (BlockDefinition<?> definition : AEBlocks.getBlocks()) {
             registry.register(definition.block());
         }
     }

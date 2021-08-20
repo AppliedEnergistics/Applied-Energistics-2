@@ -45,7 +45,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -222,8 +221,8 @@ public class EncodedPatternItem extends AEBaseItem {
 
     public boolean isEncodedPattern(ItemStack itemStack) {
         return itemStack != null && !itemStack.isEmpty() && itemStack.getItem() == this && itemStack.getTag() != null
-                && itemStack.getTag().contains(NBT_INGREDIENTS, Constants.NBT.TAG_LIST)
-                && itemStack.getTag().contains(NBT_PRODUCTS, Constants.NBT.TAG_LIST);
+                && itemStack.getTag().contains(NBT_INGREDIENTS, Tag.TAG_LIST)
+                && itemStack.getTag().contains(NBT_PRODUCTS, Tag.TAG_LIST);
     }
 
     public ResourceLocation getCraftingRecipeId(ItemStack itemStack) {
@@ -232,7 +231,7 @@ public class EncodedPatternItem extends AEBaseItem {
         final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING)
+        return tag.contains(NBT_RECIPE_ID, Tag.TAG_STRING)
                 ? new ResourceLocation(tag.getString(NBT_RECIPE_ID))
                 : null;
     }

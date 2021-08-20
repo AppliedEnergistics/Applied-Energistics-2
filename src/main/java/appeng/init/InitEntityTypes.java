@@ -29,7 +29,10 @@ public final class InitEntityTypes {
     }
 
     public static void init(IForgeRegistry<EntityType<?>> registry) {
-        for (EntityType<?> entityType : AEEntities.getEntityTypes()) {
+        for (var entry : AEEntities.getEntityTypes().entrySet()) {
+            var id = entry.getKey();
+            var entityType = entry.getValue();
+            entityType.setRegistryName(id);
             registry.register(entityType);
         }
     }

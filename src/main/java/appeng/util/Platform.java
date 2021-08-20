@@ -56,6 +56,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
@@ -153,11 +154,11 @@ public class Platform {
     }
 
     public static String formatPower(double p, boolean isRate) {
-        final PowerUnits displayUnits = AEConfig.instance().getSelectedPowerUnit();
+        var displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
-        String unitName = displayUnits.name();
+        var unitName = displayUnits.getSymbolName();
 
         String level = "";
         int offset = 0;
@@ -401,6 +402,10 @@ public class Platform {
         final Player p = FakePlayerFactory.getMinecraft(level);
         FAKE_PLAYERS.put(level, p);
         return p;
+    }
+
+    public static boolean isFakePlayer(Player player) {
+        return player instanceof FakePlayer;
     }
 
     /**

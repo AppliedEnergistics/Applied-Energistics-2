@@ -33,10 +33,6 @@ public class MatterCannonAmmoSerializer extends ForgeRegistryEntry<RecipeSeriali
 
     public static final MatterCannonAmmoSerializer INSTANCE = new MatterCannonAmmoSerializer();
 
-    static {
-        INSTANCE.setRegistryName(MatterCannonAmmo.TYPE_ID);
-    }
-
     private MatterCannonAmmoSerializer() {
     }
 

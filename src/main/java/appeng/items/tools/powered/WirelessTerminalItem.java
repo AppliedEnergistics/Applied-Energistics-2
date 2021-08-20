@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.OptionalLong;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,7 +34,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -83,7 +83,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem {
 
     private OptionalLong getGridKey(ItemStack item) {
         CompoundTag tag = item.getTag();
-        if (tag != null && tag.contains(TAG_GRID_KEY, Constants.NBT.TAG_LONG)) {
+        if (tag != null && tag.contains(TAG_GRID_KEY, Tag.TAG_LONG)) {
             return OptionalLong.of(tag.getLong(TAG_GRID_KEY));
         } else {
             return OptionalLong.empty();

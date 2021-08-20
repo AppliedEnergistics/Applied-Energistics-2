@@ -18,9 +18,6 @@
 
 package appeng.init;
 
-import java.util.Map;
-
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -31,7 +28,7 @@ public final class InitBlockEntities {
     }
 
     public static void init(IForgeRegistry<BlockEntityType<?>> registry) {
-        for (Map.Entry<ResourceLocation, BlockEntityType<?>> entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
+        for (var entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
             registry.register(entry.getValue());
         }
     }
