@@ -74,10 +74,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.PlayerMessages;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MatterCannonPacket;
-import appeng.hooks.ticking.PlayerColor;
-import appeng.hooks.ticking.TickHandler;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
@@ -156,20 +153,20 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final Vec3 direction = rayTo.subtract(rayFrom);
                         direction.normalize();
 
-                        final double d0 = rayFrom.x;
-                        final double d1 = rayFrom.y;
-                        final double d2 = rayFrom.z;
+                        var x = rayFrom.x;
+                        var y = rayFrom.y;
+                        var z = rayFrom.z;
 
-                        final float penetration = getPenetration(ammo); // 196.96655f;
+                        var penetration = getPenetration(ammo); // 196.96655f;
                         if (penetration <= 0) {
                             final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof PaintBallItem) {
-                                this.shootPaintBalls(type, level, p, rayFrom, rayTo, direction, d0, d1, d2);
+                                this.shootPaintBalls(type, level, p, rayFrom, rayTo, direction, x, y, z);
                             }
                             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         } else {
-                            this.standardAmmo(penetration, level, p, rayFrom, rayTo, direction, d0, d1, d2);
+                            this.standardAmmo(penetration, level, p, rayFrom, rayTo, direction, x, y, z);
                         }
                     }
                 } else {
@@ -244,18 +241,13 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             // boolean lit = ipb.isLumen( type );
 
             if (pos instanceof EntityHitResult entityResult) {
-                Entity entityHit = entityResult.getEntity();
-
-                final int id = entityHit.getId();
-                final PlayerColor marker = new PlayerColor(id, col, 20 * 30);
-                TickHandler.instance().getPlayerColors().put(id, marker);
+                var entityHit = entityResult.getEntity();
 
                 if (entityHit instanceof Sheep sh) {
                     sh.setColor(col.dye);
                 }
 
                 entityHit.hurt(DamageSource.playerAttack(p), 0);
-                NetworkHandler.instance().sendToAll(marker.getPacket());
             } else if (pos instanceof BlockHitResult blockResult) {
                 final Direction side = blockResult.getDirection();
                 final BlockPos hitPos = blockResult.getBlockPos().relative(side);

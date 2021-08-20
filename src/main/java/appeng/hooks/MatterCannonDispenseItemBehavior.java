@@ -19,13 +19,9 @@
 package appeng.hooks;
 
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 
 import appeng.api.util.AEPartLocation;
@@ -38,24 +34,22 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
     protected ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem tm) {
-            final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
+            var direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
-            for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                if (Direction.getStepX() == d.xOffset && Direction.getStepY() == d.yOffset
-                        && Direction.getStepZ() == d.zOffset) {
+            for (var d : AEPartLocation.SIDE_LOCATIONS) {
+                if (direction.getStepX() == d.xOffset && direction.getStepY() == d.yOffset
+                        && direction.getStepZ() == d.zOffset) {
                     dir = d;
                 }
             }
 
-            final Level level = dispenser.getLevel();
-            if (level instanceof ServerLevel) {
-                final Player p = Platform.getPlayer((ServerLevel) level);
-                Platform.configurePlayer(p, dir, dispenser.getEntity());
+            var level = dispenser.getLevel();
+            var p = Platform.getPlayer(level);
+            Platform.configurePlayer(p, dir, dispenser.getEntity());
 
-                p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
+            p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
-                dispensedItem = tm.use(level, p, null).getObject();
-            }
+            dispensedItem = tm.use(level, p, null).getObject();
         }
         return dispensedItem;
     }

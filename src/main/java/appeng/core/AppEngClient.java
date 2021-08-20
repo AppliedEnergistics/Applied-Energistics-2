@@ -39,15 +39,16 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
+import appeng.api.AEApi;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
@@ -60,7 +61,6 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.ticking.TickHandler;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
@@ -88,6 +88,12 @@ public class AppEngClient extends AppEngBase {
 
     private final EnumMap<ActionKey, KeyMapping> bindings = new EnumMap<>(ActionKey.class);
 
+    /**
+     * Last known cable render mode. Used to update all rendered blocks once at the end of the tick when the mode is
+     * changed.
+     */
+    private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
+
     public AppEngClient() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -99,7 +105,11 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
 
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, TickHandler.instance()::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
+            if (e.phase == TickEvent.Phase.START) {
+                updateCableRenderMode();
+            }
+        });
 
         InitAutoRotatingModel.init(modEventBus);
 
@@ -141,7 +151,6 @@ public class AppEngClient extends AppEngBase {
             postClientSetup(minecraft);
         });
 
-        MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
         MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
         MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
 
@@ -177,19 +186,6 @@ public class AppEngClient extends AppEngBase {
         InitItemModelsProperties.init();
         InitRenderTypes.init();
         InitBuiltInModels.init();
-    }
-
-    private void postPlayerRender(final RenderLivingEvent.Pre p) {
-        // FIXME final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
-        // FIXME if( player != null )
-        // FIXME {
-        // FIXME final AEColor col = player.myColor;
-        // FIXME final float r = 0xff & ( col.mediumVariant >> 16 );
-        // FIXME final float g = 0xff & ( col.mediumVariant >> 8 );
-        // FIXME final float b = 0xff & ( col.mediumVariant );
-        // FIXME // FIXME: This is most certainly not going to work!
-        // FIXME GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
-        // FIXME }
     }
 
     private void wheelEvent(final InputEvent.MouseScrollEvent me) {
@@ -278,7 +274,16 @@ public class AppEngClient extends AppEngBase {
                 0.0f);
     }
 
-    public void triggerUpdates() {
+    private void updateCableRenderMode() {
+        var currentMode = AEApi.partHelper().getCableRenderMode();
+
+        // Handle changes to the cable-rendering mode
+        if (currentMode == this.prevCableRenderMode) {
+            return;
+        }
+
+        this.prevCableRenderMode = currentMode;
+
         final Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             return;
