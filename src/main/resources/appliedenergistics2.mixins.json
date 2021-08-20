@@ -19,7 +19,8 @@
     "unlitquad.ModelBakeryMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
-    "unlitquad.BakedQuadAccessor"
+    "unlitquad.BakedQuadAccessor",
+    "RenderEncodedPatternMixin"
   ],
   "server": [],
   "injectors": {
