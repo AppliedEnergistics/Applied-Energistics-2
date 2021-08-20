@@ -41,13 +41,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.grindstone.CrankBlockEntity;
 import appeng.core.stats.AeStats;
+import appeng.util.Platform;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
@@ -59,7 +59,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (player instanceof FakePlayer || player == null) {
+        if (player == null || Platform.isFakePlayer(player)) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

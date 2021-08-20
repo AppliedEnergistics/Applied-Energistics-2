@@ -36,7 +36,6 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -44,10 +43,6 @@ import appeng.core.definitions.ItemDefinition;
 public final class DisassembleRecipe extends CustomRecipe {
     public static final RecipeSerializer<DisassembleRecipe> SERIALIZER = new SimpleRecipeSerializer<>(
             DisassembleRecipe::new);
-
-    static {
-        SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "disassemble"));
-    }
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
 

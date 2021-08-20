@@ -25,6 +25,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -33,7 +34,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.core.AELog;
@@ -76,7 +76,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         lines.add(GuiText.SerialNumber.text(serialNumber));
 
         CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(TAG_PLOT_SIZE, Constants.NBT.TAG_LONG)) {
+        if (tag != null && tag.contains(TAG_PLOT_SIZE, Tag.TAG_LONG)) {
             BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
             lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
         }

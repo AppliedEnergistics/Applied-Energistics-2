@@ -74,7 +74,6 @@ public class ChestDropProvider implements IAE2DataProvider {
     public void run(@Nonnull HashCache cache) throws IOException {
         var meteoriteChestTable = LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .name("main")
                         .setRolls(UniformGenerator.between(1, 3))
                         .setBonusRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)
@@ -84,7 +83,6 @@ public class ChestDropProvider implements IAE2DataProvider {
                 // This pool should grant one of the presses the player actually needs, with luck granting one
                 // additional.
                 .withPool(LootPool.lootPool()
-                        .name("needed_presses")
                         .setRolls(UniformGenerator.between(1, 2))
                         .setBonusRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(AEItems.CALCULATION_PROCESSOR_PRESS)
@@ -98,7 +96,6 @@ public class ChestDropProvider implements IAE2DataProvider {
                 // This loot pool should be active if the looter is not a player or they no
                 // need a specific press.
                 .withPool(LootPool.lootPool()
-                        .name("presses")
                         .when(InvertedLootItemCondition.invert(
                                 AlternativeLootItemCondition.alternative(
                                         NEEDS_CALCULATION_PROCESSOR_PRESS,

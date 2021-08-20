@@ -27,7 +27,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.util.Constants;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
@@ -97,7 +96,7 @@ public class SpatialStorageWorldData extends SavedData {
             throw new IllegalStateException("Invalid AE2 spatial info version: " + version);
         }
 
-        ListTag plotsTag = tag.getList(TAG_PLOTS, Constants.NBT.TAG_COMPOUND);
+        ListTag plotsTag = tag.getList(TAG_PLOTS, Tag.TAG_COMPOUND);
         for (Tag plotTag : plotsTag) {
             SpatialStoragePlot plot = SpatialStoragePlot.fromTag((CompoundTag) plotTag);
 

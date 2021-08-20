@@ -18,6 +18,8 @@
 
 package appeng.init.worldgen;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -38,8 +40,22 @@ final class WorldgenIds {
     public static final ResourceLocation QUARTZ_ORE = AppEng.makeId("quartz_ore");
 
     /**
+     * Resource key of the {@link ConfiguredFeature} that generates quartz ore.
+     */
+    @SuppressWarnings("unused")
+    public static final ResourceKey<ConfiguredFeature<?, ?>> QUARTZ_ORE_KEY = ResourceKey
+            .create(Registry.CONFIGURED_FEATURE_REGISTRY, QUARTZ_ORE);
+
+    /**
      * ID of the {@link ConfiguredFeature} and {@link Feature} that generate charged quartz ore.
      */
     public static final ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
+
+    /**
+     * Resource key of the {@link ConfiguredFeature} that generates charged quartz ore.
+     */
+    @SuppressWarnings("unused")
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CHARGED_QUARTZ_ORE_KEY = ResourceKey
+            .create(Registry.CONFIGURED_FEATURE_REGISTRY, CHARGED_QUARTZ_ORE);
 
 }

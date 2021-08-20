@@ -40,6 +40,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.block.spatial.SpatialPylonBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
@@ -66,7 +67,6 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     private final SpatialPylonCalculator calc = new SpatialPylonCalculator(this);
     private int displayBits = 0;
     private SpatialPylonCluster cluster;
-    private boolean didHaveLight = false;
 
     public SpatialPylonBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -157,30 +157,15 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         }
 
         if (oldBits != this.displayBits) {
+            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(SpatialPylonBlock.POWERED_ON,
+                    (this.displayBits & DISPLAY_POWERED_ENABLED) != 0));
             this.markForUpdate();
-        }
-    }
-
-    @Override
-    public void markForUpdate() {
-        super.markForUpdate();
-        final boolean hasLight = this.getLightValue() > 0;
-        if (hasLight != this.didHaveLight) {
-            this.didHaveLight = hasLight;
-            this.level.getLightEngine().checkBlock(this.worldPosition);
         }
     }
 
     @Override
     public boolean canBeRotated() {
         return false;
-    }
-
-    public int getLightValue() {
-        if ((this.displayBits & DISPLAY_POWERED_ENABLED) == DISPLAY_POWERED_ENABLED) {
-            return 8;
-        }
-        return 0;
     }
 
     @Override

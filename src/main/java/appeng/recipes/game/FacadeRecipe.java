@@ -29,7 +29,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.FacadeItem;
@@ -86,7 +85,6 @@ public final class FacadeRecipe extends CustomRecipe {
     public static RecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
             SERIALIZER = new SimpleRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
-            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade"));
         }
         return SERIALIZER;
     }

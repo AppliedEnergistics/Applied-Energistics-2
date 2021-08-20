@@ -23,8 +23,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.core.definitions.BlockDefinition;
-import appeng.core.definitions.ItemDefinition;
 
 public final class InitItems {
 
@@ -32,10 +30,10 @@ public final class InitItems {
     }
 
     public static void init(IForgeRegistry<Item> registry) {
-        for (BlockDefinition<?> definition : AEBlocks.getBlocks()) {
+        for (var definition : AEBlocks.getBlocks()) {
             registry.register(definition.asItem());
         }
-        for (ItemDefinition<?> definition : AEItems.getItems()) {
+        for (var definition : AEItems.getItems()) {
             registry.register(definition.asItem());
         }
     }

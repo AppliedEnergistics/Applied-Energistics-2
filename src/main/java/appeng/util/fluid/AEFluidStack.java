@@ -24,12 +24,12 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -102,7 +102,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         }
 
         CompoundTag tag = null;
-        if (data.contains(NBT_FLUID_TAG, Constants.NBT.TAG_COMPOUND)) {
+        if (data.contains(NBT_FLUID_TAG, Tag.TAG_COMPOUND)) {
             tag = data.getCompound(NBT_FLUID_TAG);
         }
 

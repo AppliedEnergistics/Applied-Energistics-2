@@ -20,6 +20,8 @@ package appeng.worldgen.meteorite;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -37,6 +39,9 @@ import appeng.core.AppEng;
 public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
+
+    public static final ResourceKey<ConfiguredStructureFeature<?, ?>> KEY = ResourceKey
+            .create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ID);
 
     public static final StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(
             NoneFeatureConfiguration.CODEC);

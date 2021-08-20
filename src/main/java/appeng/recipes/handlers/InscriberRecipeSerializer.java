@@ -38,10 +38,6 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
 
-    static {
-        INSTANCE.setRegistryName(InscriberRecipe.TYPE_ID);
-    }
-
     private InscriberRecipeSerializer() {
     }
 

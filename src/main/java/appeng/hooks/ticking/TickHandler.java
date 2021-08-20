@@ -191,8 +191,11 @@ public class TickHandler {
      * Removes any pending initialization callbacks for block entities in that chunk.
      */
     public void onUnloadChunk(final ChunkEvent.Unload ev) {
-        if (!ev.getWorld().isClientSide()) {
-            this.blockEntities.removeChunk(ev.getWorld(), ev.getChunk().getPos().toLong());
+        var level = ev.getWorld();
+        var chunk = ev.getChunk();
+
+        if (!level.isClientSide()) {
+            this.blockEntities.removeChunk(level, chunk.getPos().toLong());
         }
     }
 
@@ -200,35 +203,42 @@ public class TickHandler {
      * Handle a newly loaded level and setup defaults when necessary.
      */
     public void onLoadWorld(final WorldEvent.Load ev) {
-        if (!ev.getWorld().isClientSide()) {
-            this.blockEntities.addLevel(ev.getWorld());
+        var level = ev.getWorld();
+
+        if (level.isClientSide()) {
+            return; // for no there is no reason to care about this on the client...
         }
+
+        this.blockEntities.addLevel(level);
     }
 
     /**
      * Handle a level unload and tear down related data structures.
      */
     public void onUnloadWorld(final WorldEvent.Unload ev) {
-        // for no there is no reason to care about this on the client...
-        if (!ev.getWorld().isClientSide()) {
-            var toDestroy = new ArrayList<GridNode>();
+        var level = ev.getWorld();
 
-            this.grids.updateNetworks();
-            for (final Grid g : this.grids.getNetworks()) {
-                for (var n : g.getNodes()) {
-                    if (n.getLevel() == ev.getWorld()) {
-                        toDestroy.add((GridNode) n);
-                    }
+        if (level.isClientSide()) {
+            return; // for no there is no reason to care about this on the client...
+        }
+
+        var toDestroy = new ArrayList<GridNode>();
+
+        this.grids.updateNetworks();
+        for (final Grid g : this.grids.getNetworks()) {
+            for (var n : g.getNodes()) {
+                if (n.getLevel() == level) {
+                    toDestroy.add((GridNode) n);
                 }
             }
-
-            for (var n : toDestroy) {
-                n.destroy();
-            }
-
-            this.blockEntities.removeLevel(ev.getWorld());
-            this.callQueue.remove(ev.getWorld());
         }
+
+        for (var n : toDestroy) {
+            n.destroy();
+        }
+
+        this.blockEntities.removeLevel(level);
+        this.callQueue.remove(level);
     }
 
     /**
@@ -237,14 +247,7 @@ public class TickHandler {
     @OnlyIn(Dist.CLIENT)
     public void onClientTick(final ClientTickEvent ev) {
         if (ev.phase == Phase.START) {
-            this.tickColors(this.cliPlayerColors);
-            final CableRenderMode currentMode = AEApi.partHelper().getCableRenderMode();
-
-            // Handle changes to the cable-rendering mode
-            if (currentMode != this.crm) {
-                this.crm = currentMode;
-                AppEngClient.instance().triggerUpdates();
-            }
+            onClientTickStart();
         }
     }
 
@@ -263,42 +266,68 @@ public class TickHandler {
         }
 
         if (ev.phase == Phase.START) {
-            final Queue<ILevelRunnable> queue = this.callQueue.get(level);
-            processQueueElementsRemaining += this.processQueue(queue, level);
+            onServerWorldTickStart(serverLevel);
         } else if (ev.phase == Phase.END) {
-            this.simulateCraftingJobs(level);
-            this.readyBlockEntities(serverLevel);
+            onServerWorldTickEnd(serverLevel);
         }
     }
 
     /**
-     * Tick everything related to a the global server tick once per minecraft tick.
+     * Tick everything related to the global server tick once per minecraft tick.
      */
     public void onServerTick(final ServerTickEvent ev) {
         if (ev.phase == Phase.START) {
-            // Reset the stop watch on the start of each server tick.
-            this.processQueueElementsProcessed = 0;
-            this.processQueueElementsRemaining = 0;
-            this.sw.reset();
+            onServerTickStart();
+        } else if (ev.phase == Phase.END) {
+            onServerTickEnd();
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void onClientTickStart() {
+        this.tickColors(this.cliPlayerColors);
+        final CableRenderMode currentMode = AEApi.partHelper().getCableRenderMode();
+
+        // Handle changes to the cable-rendering mode
+        if (currentMode != this.crm) {
+            this.crm = currentMode;
+            AppEngClient.instance().triggerUpdates();
+        }
+    }
+
+    private void onServerWorldTickStart(ServerLevel level) {
+        var queue = this.callQueue.get(level);
+        processQueueElementsRemaining += this.processQueue(queue, level);
+    }
+
+    private void onServerWorldTickEnd(ServerLevel level) {
+        this.simulateCraftingJobs(level);
+        this.readyBlockEntities(level);
+    }
+
+    private void onServerTickStart() {
+        // Reset the stop watch on the start of each server tick.
+        this.processQueueElementsProcessed = 0;
+        this.processQueueElementsRemaining = 0;
+        this.sw.reset();
+    }
+
+    private void onServerTickEnd() {
+        this.tickColors(this.srvPlayerColors);
+
+        // tick networks.
+        this.grids.updateNetworks();
+        for (final Grid g : this.grids.getNetworks()) {
+            g.update();
         }
 
-        if (ev.phase == Phase.END) {
-            this.tickColors(this.srvPlayerColors);
+        // cross level queue.
+        processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
 
-            // tick networks.
-            this.grids.updateNetworks();
-            for (final Grid g : this.grids.getNetworks()) {
-                g.update();
-            }
-
-            // cross level queue.
-            processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
-
-            if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
-                AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
-                        TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
-                        processQueueElementsRemaining);
-            }
+        if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
+            AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
+                    TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
+                    processQueueElementsRemaining);
         }
     }
 

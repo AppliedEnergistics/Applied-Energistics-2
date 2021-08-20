@@ -18,11 +18,12 @@
 
 package appeng.core.definitions;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
@@ -36,10 +37,10 @@ import appeng.entity.TinyTNTPrimedEntity;
 
 public final class AEEntities {
 
-    private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
+    private static final Map<ResourceLocation, EntityType<?>> ENTITY_TYPES = new HashMap<>();
 
-    public static List<EntityType<?>> getEntityTypes() {
-        return Collections.unmodifiableList(ENTITY_TYPES);
+    public static Map<ResourceLocation, EntityType<?>> getEntityTypes() {
+        return Collections.unmodifiableMap(ENTITY_TYPES);
     }
 
     public static final EntityType<SingularityEntity> SINGULARITY = create(
@@ -76,8 +77,7 @@ public final class AEEntities {
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
         EntityType<T> result = builder.build(registryLoc);
-        result.setRegistryName(registryLoc);
-        ENTITY_TYPES.add(result);
+        ENTITY_TYPES.put(new ResourceLocation(registryLoc), result);
         return result;
     }
 

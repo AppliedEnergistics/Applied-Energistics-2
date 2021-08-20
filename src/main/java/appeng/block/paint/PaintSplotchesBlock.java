@@ -28,6 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -41,8 +43,29 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 
 public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEntity> {
+
+    /**
+     * Lumen paint splotches contribute light-level 12, two or more have light-level 15. We model this with 0 = 0, 1 =
+     * 12, 2 = 15.
+     */
+    public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 2);
+
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion().air());
+        super(defaultProps(Material.WATER, MaterialColor.NONE).noOcclusion().air().lightLevel(state -> {
+            var lightLevel = state.getValue(LIGHT_LEVEL);
+            return switch (lightLevel) {
+                default -> 0;
+                case 1 -> 12;
+                case 2 -> 15;
+            };
+        }));
+        registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(LIGHT_LEVEL);
     }
 
     @Override
@@ -71,17 +94,6 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
         if (!level.isClientSide() && precipitation == Biome.Precipitation.RAIN) {
             level.removeBlock(pos, false);
         }
-    }
-
-    @Override
-    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        final PaintSplotchesBlockEntity tp = this.getBlockEntity(level, pos);
-
-        if (tp != null) {
-            return tp.getLightLevel();
-        }
-
-        return 0;
     }
 
     @Override

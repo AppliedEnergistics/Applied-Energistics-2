@@ -19,9 +19,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -32,12 +29,11 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.loot.NeededPressType;
 import appeng.loot.NeedsPressCondition;
 
 public class AdvancementGenerator implements IAE2DataProvider {
-
-    public static final Tag.Named<Item> GLASS_CABLE = ItemTags.bind("appliedenergistics2:glass_cable");
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -276,7 +272,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .parent(fluix)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance
-                                .hasItems(ItemPredicate.Builder.item().of(GLASS_CABLE).build()))
+                                .hasItems(ItemPredicate.Builder.item().of(ConventionTags.GLASS_CABLE).build()))
                 .save(consumer, "appliedenergistics2:main/glass_cable");
 
         var facade = Advancement.Builder.advancement()

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -34,7 +33,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -44,6 +42,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 import appeng.block.paint.PaintSplotches;
+import appeng.block.paint.PaintSplotchesBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.helpers.Splotch;
 import appeng.items.misc.PaintBallItem;
@@ -52,9 +51,6 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
     public static final ModelProperty<PaintSplotches> SPLOTCHES = new ModelProperty<>();
 
-    private static final int LIGHT_PER_DOT = 12;
-
-    private int isLit = 0;
     private List<Splotch> dots = null;
 
     public PaintSplotchesBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -102,33 +98,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
-            this.isLit = 0;
             this.dots = null;
             return;
         }
 
-        this.dots = new ArrayList(howMany);
+        this.dots = new ArrayList<>(howMany);
         for (int x = 0; x < howMany; x++) {
             this.dots.add(new Splotch(in));
-        }
-
-        this.isLit = 0;
-        for (final Splotch s : this.dots) {
-            if (s.isLumen()) {
-                this.isLit += LIGHT_PER_DOT;
-            }
-        }
-
-        this.maxLit();
-    }
-
-    private void maxLit() {
-        if (this.isLit > 14) {
-            this.isLit = 14;
-        }
-
-        if (this.level != null) {
-            this.level.getBrightness(LightLayer.BLOCK, this.worldPosition);
         }
     }
 
@@ -166,34 +142,31 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     private void removeSide(final Direction side) {
-        final Iterator<Splotch> i = this.dots.iterator();
-        while (i.hasNext()) {
-            final Splotch s = i.next();
-            if (s.getSide() == side) {
-                i.remove();
-            }
-        }
+        this.dots.removeIf(s -> s.getSide() == side);
 
         this.markForUpdate();
         this.saveChanges();
     }
 
     private void updateData() {
-        this.isLit = 0;
-        for (final Splotch s : this.dots) {
-            if (s.isLumen()) {
-                this.isLit += LIGHT_PER_DOT;
-            }
-        }
-
-        this.maxLit();
-
         if (this.dots.isEmpty()) {
             this.dots = null;
         }
 
         if (this.dots == null) {
             this.level.removeBlock(this.worldPosition, false);
+        } else {
+            var lumenCount = 0;
+            for (Splotch dot : dots) {
+                if (dot.isLumen()) {
+                    lumenCount++;
+                    if (lumenCount >= 2) {
+                        break;
+                    }
+                }
+            }
+            this.level.setBlockAndUpdate(getBlockPos(),
+                    getBlockState().setValue(PaintSplotchesBlock.LIGHT_LEVEL, lumenCount));
         }
     }
 
@@ -203,12 +176,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
 
         this.removeSide(side);
-
         this.updateData();
-    }
-
-    public int getLightLevel() {
-        return this.isLit;
     }
 
     public void addBlot(final ItemStack type, final Direction side, final Vec3 hitVec) {
@@ -230,11 +198,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
             }
 
             this.dots.add(new Splotch(col, lit, side, hitVec));
-            if (lit) {
-                this.isLit += LIGHT_PER_DOT;
-            }
 
-            this.maxLit();
+            updateData();
             this.markForUpdate();
             this.saveChanges();
         }

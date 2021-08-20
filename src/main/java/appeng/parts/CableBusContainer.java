@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -48,7 +49,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
@@ -839,8 +839,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
             String defKey = "def:" + side.ordinal();
             String extraKey = "extra:" + side.ordinal();
-            if (data.contains(defKey, Constants.NBT.TAG_COMPOUND)
-                    && data.contains(extraKey, Constants.NBT.TAG_COMPOUND)) {
+            if (data.contains(defKey, Tag.TAG_COMPOUND)
+                    && data.contains(extraKey, Tag.TAG_COMPOUND)) {
                 final CompoundTag def = data.getCompound(defKey);
                 final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);

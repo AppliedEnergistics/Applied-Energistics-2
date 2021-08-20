@@ -50,10 +50,6 @@ public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
 
     public static final EntropyRecipeSerializer INSTANCE = new EntropyRecipeSerializer();
 
-    static {
-        INSTANCE.setRegistryName(EntropyRecipe.TYPE_ID);
-    }
-
     private EntropyRecipeSerializer() {
     }
 

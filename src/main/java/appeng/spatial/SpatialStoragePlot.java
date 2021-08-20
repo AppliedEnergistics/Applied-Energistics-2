@@ -25,8 +25,8 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * A plot inside the storage cell level that is assigned to a specific storage cell.
@@ -193,7 +193,7 @@ public class SpatialStoragePlot {
         int ownerId = tag.getInt(TAG_OWNER);
         SpatialStoragePlot plot = new SpatialStoragePlot(id, size, ownerId);
 
-        if (tag.contains(TAG_LAST_TRANSITION, Constants.NBT.TAG_COMPOUND)) {
+        if (tag.contains(TAG_LAST_TRANSITION, Tag.TAG_COMPOUND)) {
             plot.lastTransition = TransitionInfo.fromTag(tag.getCompound(TAG_LAST_TRANSITION));
         }
         return plot;

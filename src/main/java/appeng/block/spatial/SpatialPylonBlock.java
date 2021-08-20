@@ -19,10 +19,11 @@
 package appeng.block.spatial;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
@@ -30,8 +31,19 @@ import appeng.helpers.AEMaterials;
 
 public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity> {
 
+    public static final BooleanProperty POWERED_ON = BooleanProperty.create("powered_on");
+
     public SpatialPylonBlock() {
-        super(defaultProps(AEMaterials.GLASS));
+        super(defaultProps(AEMaterials.GLASS).lightLevel(state -> {
+            return state.getValue(POWERED_ON) ? 8 : 0;
+        }));
+        registerDefaultState(defaultBlockState().setValue(POWERED_ON, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED_ON);
     }
 
     @SuppressWarnings("deprecation")
@@ -42,15 +54,6 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
         if (tsp != null) {
             tsp.neighborChanged(fromPos);
         }
-    }
-
-    @Override
-    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        final SpatialPylonBlockEntity tsp = this.getBlockEntity(level, pos);
-        if (tsp != null) {
-            return tsp.getLightValue();
-        }
-        return super.getLightEmission(state, level, pos);
     }
 
 }
