@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -53,8 +54,8 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider {
     }
 
     @Override
-    public String getID() {
-        return AppEng.MOD_ID + ":BlockEntityInfoProvider";
+    public ResourceLocation getID() {
+        return AppEng.makeId("block-entity");
     }
 
     @Override

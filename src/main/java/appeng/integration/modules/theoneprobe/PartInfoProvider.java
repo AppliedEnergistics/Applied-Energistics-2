@@ -19,13 +19,10 @@
 package appeng.integration.modules.theoneprobe;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.google.common.collect.Lists;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -33,7 +30,6 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.api.parts.IPart;
 import appeng.core.AppEng;
 import appeng.integration.modules.theoneprobe.part.ChannelInfoProvider;
 import appeng.integration.modules.theoneprobe.part.IPartProbInfoProvider;
@@ -48,32 +44,28 @@ public final class PartInfoProvider implements IProbeInfoProvider {
     private final PartAccessor accessor = new PartAccessor();
 
     public PartInfoProvider() {
-        final IPartProbInfoProvider channel = new ChannelInfoProvider();
-        final IPartProbInfoProvider power = new PowerStateInfoProvider();
-        final IPartProbInfoProvider storageMonitor = new StorageMonitorInfoProvider();
-        final IPartProbInfoProvider p2p = new P2PStateInfoProvider();
-
-        this.providers = Lists.newArrayList(channel, power, p2p, storageMonitor);
+        this.providers = List.of(
+                new ChannelInfoProvider(),
+                new PowerStateInfoProvider(),
+                new P2PStateInfoProvider(),
+                new StorageMonitorInfoProvider());
     }
 
     @Override
-    public String getID() {
-        return AppEng.MOD_ID + ":PartInfoProvider";
+    public ResourceLocation getID() {
+        return AppEng.makeId("part");
     }
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level level,
             BlockState blockState, IProbeHitData data) {
-        final BlockEntity te = level.getBlockEntity(data.getPos());
-        final Optional<IPart> maybePart = this.accessor.getMaybePart(te, data);
-
-        if (maybePart.isPresent()) {
-            final IPart part = maybePart.get();
-
-            for (final IPartProbInfoProvider provider : this.providers) {
-                provider.addProbeInfo(part, mode, probeInfo, player, level, blockState, data);
-            }
-        }
+        var blockEntity = level.getBlockEntity(data.getPos());
+        this.accessor.getMaybePart(blockEntity, data)
+                .ifPresent(part -> {
+                    for (var provider : this.providers) {
+                        provider.addProbeInfo(part, mode, probeInfo, player, level, blockState, data);
+                    }
+                });
 
     }
 }

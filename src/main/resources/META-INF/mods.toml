@@ -41,3 +41,10 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
     versionRange="${top_version}"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.appliedenergistics2]]
+    modId="jade"
+    mandatory=false
+    versionRange="${jade_version}"
+    ordering="AFTER"
+    side="BOTH"
