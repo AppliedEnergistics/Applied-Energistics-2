@@ -18,7 +18,7 @@
 
 package appeng.datagen.providers.tags;
 
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraft.data.DataGenerator;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
@@ -26,8 +26,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider implements IAE2DataProvider {
 
-    public FluidTagsProvider(GatherDataEvent dataEvent) {
-        super(dataEvent.getGenerator(), AppEng.MOD_ID, dataEvent.getExistingFileHelper());
+    public FluidTagsProvider(DataGenerator generator) {
+        super(generator);
     }
 
     @Override

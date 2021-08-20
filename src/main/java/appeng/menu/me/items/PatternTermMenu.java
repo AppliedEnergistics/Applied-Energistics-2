@@ -18,7 +18,7 @@
 
 package appeng.menu.me.items;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.fluids.FluidUtil;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -51,6 +50,7 @@ import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.crafting.pattern.AECraftingPattern;
+import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.misc.WrappedFluidStack;
 import appeng.items.storage.ViewCellItem;
@@ -67,7 +67,6 @@ import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
@@ -564,15 +563,14 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     private static void convertItemToFluid(Slot slot) {
-        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
-        fluidStack.map(AEFluidStack::fromFluidStack).ifPresent(fs -> {
-            slot.set(fs.wrap());
-        });
+        var fluidStack = FluidContainerHelper.getContainedFluid(slot.getItem());
+        if (fluidStack != null) {
+            slot.set(fluidStack.wrap());
+        }
     }
 
     private static boolean canConvertItemToFluid(Slot slot) {
-        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
-        return !fluidStack.isEmpty();
+        return FluidContainerHelper.getContainedFluid(slot.getItem()) != null;
     }
 
     public void setProcessingResult(ItemStack resultItem) {

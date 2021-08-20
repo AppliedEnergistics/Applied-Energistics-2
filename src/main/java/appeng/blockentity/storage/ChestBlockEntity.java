@@ -20,11 +20,20 @@ package appeng.blockentity.storage;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.BlankVariantView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,14 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -89,7 +90,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
@@ -130,7 +130,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private boolean isCached = false;
     private ChestMonitorHandler<?> cellHandler;
     private Accessor accessor;
-    private IFluidHandler fluidHandler;
+    private Storage<FluidVariant> fluidHandler;
     // This is only used on the client to display the right cell model without
     // synchronizing the entire
     // cell's inventory when a chest comes into view.
@@ -361,7 +361,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         // when it changes from
         // empty->non-empty, so when the cell is changed, it should re-send the state
         // because of that
-        data.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, getCell().getItem().getRegistryName());
+        data.writeVarInt(Item.getId(getCell().getItem()));
     }
 
     @Override
@@ -373,7 +373,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.state = data.readByte();
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
-        this.cellItem = data.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
+        this.cellItem = Item.byId(data.readVarInt());
 
         this.lastStateChange = this.level.getGameTime();
 
@@ -443,7 +443,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
+    public InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
         if (side == this.getForward()) {
             return this.cellInventory;
         } else {
@@ -643,19 +643,22 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        this.updateHandler();
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null
-                && facing != this.getForward()) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
+    @Nullable
+    public Storage<FluidVariant> getFluidHandler(Direction side) {
+        if (side != getForward()) {
+            return fluidHandler;
+        } else {
+            return null;
         }
-        if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null
-                && facing != this.getForward()) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
+    }
+
+    @Nullable
+    public IStorageMonitorableAccessor getMEHandler(Direction side) {
+        if (side != getForward()) {
+            return accessor;
+        } else {
+            return null;
         }
-        return super.getCapability(capability, facing);
     }
 
     private class Accessor implements IStorageMonitorableAccessor {
@@ -669,83 +672,81 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class FluidHandler implements IFluidHandler, IFluidTank {
+    private class FluidHandler extends SnapshotParticipant<IAEFluidStack>
+            implements InsertionOnlyStorage<FluidVariant> {
+        private IAEFluidStack queuedInsert;
+
+        /**
+         * If we accept fluids, simulate that we have an empty tank with 1 bucket capacity at all times.
+         */
+        private final List<StorageView<FluidVariant>> fakeInputTanks = Collections.singletonList(
+                new BlankVariantView<>(FluidVariant.blank(), FluidConstants.BUCKET));
 
         private boolean canAcceptLiquids() {
             return ChestBlockEntity.this.cellHandler != null
                     && ChestBlockEntity.this.cellHandler.getChannel() == StorageChannels.fluids();
         }
 
-        @Nonnull
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
-        }
+        public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+            if (queuedInsert != null) {
+                return 0; // Can only insert once per action
+            }
 
-        @Override
-        public int getFluidAmount() {
-            return 0;
-        }
-
-        @Override
-        public int getCapacity() {
-            return canAcceptLiquids() ? FluidAttributes.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return canAcceptLiquids();
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? FluidAttributes.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return tank == 0;
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
-                final IAEFluidStack results = StorageHelper.poweredInsert(ChestBlockEntity.this,
-                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()),
-                        AEFluidStack.fromFluidStack(resource),
-                        ChestBlockEntity.this.mySrc,
-                        action == FluidAction.EXECUTE ? Actionable.MODULATE : Actionable.SIMULATE);
-
-                if (results == null) {
-                    return resource.getAmount();
+                var stack = AEFluidStack.of(resource, maxAmount);
+                if (stack != null) {
+                    stack.setStackSize(pushToNetwork(stack, false));
+                    if (stack.getStackSize() > 0) {
+                        updateSnapshots(transaction);
+                        queuedInsert = stack;
+                    }
+                    return stack.getStackSize();
                 }
-                return resource.getAmount() - (int) results.getStackSize();
             }
             return 0;
         }
 
-        @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
+        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
+            if (canAcceptLiquids()) {
+                return fakeInputTanks.iterator();
+            } else {
+                return Collections.emptyIterator();
+            }
         }
 
-        @Nonnull
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
+        protected final IAEFluidStack createSnapshot() {
+            return queuedInsert;
+        }
+
+        @Override
+        protected final void readSnapshot(IAEFluidStack snapshot) {
+            this.queuedInsert = snapshot;
+        }
+
+        @Override
+        protected final void onFinalCommit() {
+            pushToNetwork(queuedInsert, true);
+            queuedInsert = null;
+        }
+
+        private long pushToNetwork(IAEFluidStack what, boolean commit) {
+            ChestBlockEntity.this.updateHandler();
+            if (canAcceptLiquids()) {
+                final Actionable mode = commit ? Actionable.MODULATE : Actionable.SIMULATE;
+                var overflow = StorageHelper.poweredInsert(ChestBlockEntity.this,
+                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()), what,
+                        ChestBlockEntity.this.mySrc, mode);
+
+                if (overflow == null) {
+                    return what.getStackSize();
+                }
+                return what.getStackSize() - (int) overflow.getStackSize();
+            }
+            return 0;
         }
     }
 

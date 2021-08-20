@@ -18,87 +18,74 @@
 
 package appeng.client.render.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.AELog;
 
-class BiometricCardBakedModel implements BakedModel {
+class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
 
     private final BakedModel baseModel;
 
     private final TextureAtlasSprite texture;
 
-    private final int hash;
-
-    private final Cache<Integer, BiometricCardBakedModel> modelCache;
-
-    private final ImmutableList<BakedQuad> generalQuads;
-
     BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture) {
-        this(baseModel, texture, 0, createCache());
-    }
-
-    private BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, int hash,
-            Cache<Integer, BiometricCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
-        this.hash = hash;
-        this.generalQuads = ImmutableList.copyOf(this.buildGeneralQuads());
-        this.modelCache = modelCache;
     }
 
-    private static Cache<Integer, BiometricCardBakedModel> createCache() {
-        return CacheBuilder.newBuilder().maximumSize(100).build();
+    @Override
+    public boolean isVanillaAdapter() {
+        return false;
+    }
+
+    @Override
+    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
+        // Not intended as a block
+    }
+
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        context.fallbackConsumer().accept(this.baseModel);
+
+        // Get the player's name hash from the card
+        int hash = getHash(stack);
+
+        emitColorCode(context.getEmitter(), hash);
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-
-        List<BakedQuad> quads = this.baseModel.getQuads(state, side, rand, EmptyModelData.INSTANCE);
-
-        if (side != null) {
-            return quads;
-        }
-
-        List<BakedQuad> result = new ArrayList<>(quads.size() + this.generalQuads.size());
-        result.addAll(quads);
-        result.addAll(this.generalQuads);
-        return result;
+        return this.baseModel.getQuads(state, side, rand);
     }
 
-    private List<BakedQuad> buildGeneralQuads() {
-        CubeBuilder builder = new CubeBuilder();
+    private void emitColorCode(QuadEmitter emitter, int hash) {
+        CubeBuilder builder = new CubeBuilder(emitter);
 
         builder.setTexture(this.texture);
 
-        AEColor col = AEColor.values()[Math.abs(3 + this.hash) % AEColor.values().length];
-        if (this.hash == 0) {
+        AEColor col = AEColor.values()[Math.abs(3 + hash) % AEColor.values().length];
+        if (hash == 0) {
             col = AEColor.BLACK;
         }
 
@@ -110,7 +97,7 @@ class BiometricCardBakedModel implements BakedModel {
                 if (x == 0 || y == 0 || x == 7 || y == 5) {
                     isLit = false;
                 } else {
-                    isLit = (this.hash & 1 << x) != 0 || (this.hash & 1 << y) != 0;
+                    isLit = (hash & 1 << x) != 0 || (hash & 1 << y) != 0;
                 }
 
                 if (isLit) {
@@ -124,7 +111,6 @@ class BiometricCardBakedModel implements BakedModel {
                 builder.addCube(4 + x, 6 + y, 7.5f, 4 + x + 1, 6 + y + 1, 8.5f);
             }
         }
-        return builder.getOutput();
     }
 
     @Override
@@ -159,49 +145,23 @@ class BiometricCardBakedModel implements BakedModel {
 
     @Override
     public ItemOverrides getOverrides() {
-        return new ItemOverrides() {
-            @Override
-            public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
-                    LivingEntity entity, int seed) {
-                String username = "";
-                if (stack.getItem() instanceof IBiometricCard biometricCard) {
-                    var gp = biometricCard.getProfile(stack);
-                    if (gp != null) {
-                        if (gp.getId() != null) {
-                            username = gp.getId().toString();
-                        } else {
-                            username = gp.getName();
-                        }
-                    }
-                }
-                final int hash = !username.isEmpty() ? username.hashCode() : 0;
+        return ItemOverrides.EMPTY;
+    }
 
-                // Get hash
-                if (hash == 0) {
-                    return BiometricCardBakedModel.this;
-                }
-
-                try {
-                    return BiometricCardBakedModel.this.modelCache.get(hash,
-                            () -> new BiometricCardBakedModel(BiometricCardBakedModel.this.baseModel,
-                                    BiometricCardBakedModel.this.texture, hash,
-                                    BiometricCardBakedModel.this.modelCache));
-                } catch (ExecutionException e) {
-                    AELog.error(e);
-                    return BiometricCardBakedModel.this;
+    private static int getHash(ItemStack stack) {
+        String username = "";
+        if (stack.getItem() instanceof IBiometricCard biometricCard) {
+            var gp = biometricCard.getProfile(stack);
+            if (gp != null) {
+                if (gp.getId() != null) {
+                    username = gp.getId().toString();
+                } else {
+                    username = gp.getName();
                 }
             }
-        };
+        }
+
+        return !username.isEmpty() ? username.hashCode() : 0;
     }
 
-    @Override
-    public boolean doesHandlePerspectives() {
-        return true;
-    }
-
-    @Override
-    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
-        baseModel.handlePerspective(cameraTransformType, mat);
-        return this;
-    }
 }

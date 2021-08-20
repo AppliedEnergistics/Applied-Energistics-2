@@ -18,107 +18,98 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.Map;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.helpers.IMenuCraftingPacket;
 
-abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket, R extends Recipe<?>>
-        implements IRecipeTransferHandler<T, R> {
+abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
+        implements TransferHandler {
 
-    private final Class<T> menuClass;
-    private final Class<R> recipeClass;
-    protected final IRecipeTransferHandlerHelper helper;
+    private final Class<T> containerClass;
 
-    RecipeTransferHandler(Class<T> menuClass, Class<R> recipeClass, IRecipeTransferHandlerHelper helper) {
-        this.menuClass = menuClass;
-        this.recipeClass = recipeClass;
-        this.helper = helper;
+    RecipeTransferHandler(Class<T> containerClass) {
+        this.containerClass = containerClass;
     }
 
     @Override
-    public final Class<T> getContainerClass() {
-        return this.menuClass;
-    }
-
-    @Override
-    public final IRecipeTransferError transferRecipe(T menu, R recipe, IRecipeLayout recipeLayout,
-            Player player, boolean maxTransfer, boolean doTransfer) {
-        final ResourceLocation recipeId = recipe.getId();
-
-        if (recipeId == null) {
-            return this.helper
-                    .createUserErrorWithTooltip(new TranslatableComponent("jei.appliedenergistics2.missing_id"));
+    public Result handle(Context context) {
+        if (!containerClass.isInstance(context.getMenu())) {
+            return Result.createNotApplicable();
         }
 
-        // Check that the recipe can actually be looked up via the manager, i.e. our facade recipes have an ID, but are
-        // never registered with the recipe manager.
+        Display recipe = context.getDisplay();
+
+        T menu = containerClass.cast(context.getMenu());
+
+        var recipeId = recipe.getDisplayLocation().orElse(null);
+
+        // Check that the recipe can actually be looked up via the manager, i.e. our
+        // facade recipes
+        // have an ID, but are never registered with the recipe manager.
         boolean canSendReference = true;
-        if (!player.getCommandSenderWorld().getRecipeManager().byKey(recipeId).isPresent()) {
-            // Validate that the recipe is a shapeless or shapedrecipe, since we can serialize those
-            if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
-                return this.helper
-                        .createUserErrorWithTooltip(new TranslatableComponent("jei.appliedenergistics2.missing_id"));
-            }
+        if (recipeId == null || context.getMinecraft().level.getRecipeManager().byKey(recipeId).isEmpty()) {
             canSendReference = false;
         }
 
-        if (!recipe.canCraftInDimensions(3, 3)) {
-            return this.helper.createUserErrorWithTooltip(
-                    new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
+        if (recipe instanceof SimpleGridMenuDisplay gridDisplay) {
+            if (gridDisplay.getWidth() > 3 || gridDisplay.getHeight() > 3) {
+                return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
+            }
+        } else if (recipe.getInputEntries().size() > 9) {
+            return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
         }
 
-        final IRecipeTransferError error = doTransferRecipe(menu, recipe, recipeLayout, player, maxTransfer);
+        final Result error = doTransferRecipe(menu, recipe, context);
 
-        if (doTransfer && this.canTransfer(error)) {
+        if (error != null) {
+            return error;
+        }
+
+        if (context.isActuallyCrafting()) {
             if (canSendReference) {
                 NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId));
             } else {
-                // To avoid earlier problems of too large packets being sent that crashed the client, as a fallback when
-                // the recipe ID could not be resolved, we'll just send the displayed items.
+                // To avoid earlier problems of too large packets being sent that crashed the
+                // client,
+                // as a fallback when the recipe ID could not be resolved, we'll just send the
+                // displayed
+                // items.
                 NonNullList<Ingredient> flatIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
-                ItemStack output = ItemStack.EMPTY;
-
-                // Determine the first JEI slot that has an actual input, we'll use this to offset the crafting grid
-                // target slot
-                int firstInputSlot = recipeLayout.getItemStacks().getGuiIngredients().entrySet().stream()
-                        .filter(e -> e.getValue().isInput()).mapToInt(Map.Entry::getKey).min().orElse(0);
+                ItemStack output = null;
+                for (EntryStack<?> entryStack : recipe.getOutputEntries().get(0)) {
+                    if (entryStack.getType() == VanillaEntryTypes.ITEM) {
+                        output = entryStack.castValue();
+                    }
+                }
+                if (output == null || output.isEmpty()) {
+                    return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.no_output"));
+                }
 
                 // Now map the actual ingredients into the output/input
-                for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
-                        .getGuiIngredients().entrySet()) {
-                    IGuiIngredient<ItemStack> item = entry.getValue();
-                    if (item.getDisplayedIngredient() == null) {
+                for (int i = 0; i < recipe.getInputEntries().size(); i++) {
+                    var inputIngredient = recipe.getInputEntries().get(i);
+                    if (inputIngredient.isEmpty()) {
                         continue;
                     }
-
-                    int inputIndex = entry.getKey() - firstInputSlot;
-                    if (item.isInput() && inputIndex < flatIngredients.size()) {
-                        ItemStack displayedIngredient = item.getDisplayedIngredient();
-                        if (displayedIngredient != null) {
-                            flatIngredients.set(inputIndex, Ingredient.of(displayedIngredient));
-                        }
-                    } else if (!item.isInput() && output.isEmpty()) {
-                        output = item.getDisplayedIngredient();
+                    if (i < flatIngredients.size()) {
+                        var ingredients = inputIngredient
+                                .stream()
+                                .filter(entry -> entry.getType() == VanillaEntryTypes.ITEM)
+                                .map(entry -> (ItemStack) entry.getValue());
+                        flatIngredients.set(i, Ingredient.of(ingredients));
                     }
                 }
 
@@ -127,18 +118,9 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
             }
         }
 
-        return error;
+        return Result.createSuccessful().blocksFurtherHandling();
     }
 
-    @Override
-    public Class<R> getRecipeClass() {
-        return this.recipeClass;
-    }
-
-    protected abstract IRecipeTransferError doTransferRecipe(T menu, R recipe, IRecipeLayout recipeLayout,
-            Player player, boolean maxTransfer);
-
-    private boolean canTransfer(IRecipeTransferError error) {
-        return error == null || error.getType() == Type.COSMETIC;
-    }
+    protected abstract Result doTransferRecipe(T container, Display recipe,
+            TransferHandler.Context context);
 }

@@ -18,25 +18,23 @@
 
 package appeng.debug;
 
-import javax.annotation.Nullable;
-
 import com.google.common.math.IntMath;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
+
+import team.reborn.energy.api.EnergyStorage;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 
-public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, IEnergyStorage {
+public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, EnergyStorage {
     /**
      * The base energy injected each tick. Adjacent energy generators will increase it to pow(base, #generators).
      */
@@ -62,57 +60,38 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            final BlockEntity te = this.getLevel().getBlockEntity(this.getBlockPos().relative(facing));
-            if (te == null) {
-                continue;
-            }
-            final LazyOptional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite());
-
-            cap.ifPresent(consumer -> {
-                if (consumer.canReceive()) {
-                    consumer.receiveEnergy(energyToInsert, false);
+            EnergyStorage consumer = EnergyStorage.SIDED.find(getLevel(), getBlockPos().relative(facing),
+                    facing.getOpposite());
+            if (consumer != null) {
+                try (var tx = Transaction.openOuter()) {
+                    consumer.insert(energyToInsert, tx);
                 }
-            });
+            }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    @Nullable
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == CapabilityEnergy.ENERGY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this);
-        }
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
+    public long insert(long maxAmount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        return maxExtract;
+    public long extract(long maxAmount, TransactionContext transaction) {
+        return maxAmount;
     }
 
     @Override
-    public int getEnergyStored() {
-        return Integer.MAX_VALUE;
+    public long getAmount() {
+        return Long.MAX_VALUE;
     }
 
     @Override
-    public int getMaxEnergyStored() {
-        return Integer.MAX_VALUE;
+    public long getCapacity() {
+        return Long.MAX_VALUE;
     }
 
     @Override
-    public boolean canExtract() {
-        return true;
-    }
-
-    @Override
-    public boolean canReceive() {
+    public boolean supportsInsertion() {
         return false;
     }
 }

@@ -8,12 +8,14 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEFluidStack;
@@ -26,7 +28,6 @@ import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
 import appeng.crafting.simulation.helpers.SimulationEnv;
 import appeng.util.BootstrapMinecraft;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.item.AEItemStack;
 
 @BootstrapMinecraft
@@ -92,7 +93,7 @@ public class CraftingSimulationTest {
         // Let's add 1 stored water bucket and 3500 mb.
         // We add a little bit more water to test that exact multiples of the template get extracted.
         env.addStoredItem(waterBucket);
-        env.addStoredItem(IAEStack.copy(water1000mb, 3500));
+        env.addStoredItem(fluid(Fluids.WATER, 3500));
 
         // Crafting should use the water bucket from the network and then the water directly.
         var plan = env.runSimulation(IAEStack.copy(grass, 2));
@@ -269,7 +270,8 @@ public class CraftingSimulationTest {
     }
 
     private static IAEFluidStack fluid(Fluid fluid, int amount) {
-        return AEFluidStack.fromFluidStack(new FluidStack(fluid, amount));
+        // The tag prevents a ClassCastException when Fluid is cast to FluidVariantCache
+        return IAEFluidStack.of(FluidVariant.of(fluid, new CompoundTag()), amount * FluidConstants.BUCKET / 1000);
     }
 
     private static IAEStack mult(IAEStack template, long multiplier) {

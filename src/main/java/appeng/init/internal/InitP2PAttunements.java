@@ -20,18 +20,18 @@ package appeng.init.internal;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.config.TunnelType;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.util.AEColor;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 
@@ -171,8 +171,8 @@ public final class InitP2PAttunements {
         /*
          * attune based caps
          */
-        P2PTunnelAttunement.addNewAttunement(Capabilities.FORGE_ENERGY, TunnelType.FE_POWER);
-        P2PTunnelAttunement.addNewAttunement(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, TunnelType.FLUID);
+        P2PTunnelAttunement.addNewAttunement(EnergyStorage.ITEM, TunnelType.FE_POWER);
+        P2PTunnelAttunement.addNewAttunement(FluidStorage.ITEM, TunnelType.FLUID);
 
         /*
          * attune based on the ItemStack's modId
@@ -194,13 +194,8 @@ public final class InitP2PAttunements {
 
     @Nonnull
     private ItemStack getModItem(final String modID, final String name) {
-        final Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(modID + ":" + name));
-
-        if (item == null) {
-            return ItemStack.EMPTY;
-        }
-
-        return new ItemStack(item, 1);
+        var item = Registry.ITEM.get(new ResourceLocation(modID + ":" + name));
+        return new ItemStack(item);
     }
 
 }

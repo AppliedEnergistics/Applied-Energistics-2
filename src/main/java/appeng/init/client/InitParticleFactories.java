@@ -18,8 +18,7 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
@@ -35,7 +34,7 @@ public final class InitParticleFactories {
     }
 
     public static void init() {
-        ParticleEngine particles = Minecraft.getInstance().particleEngine;
+        var particles = ParticleFactoryRegistry.getInstance();
         particles.register(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
         particles.register(ParticleTypes.ENERGY, EnergyFx.Factory::new);
         particles.register(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);

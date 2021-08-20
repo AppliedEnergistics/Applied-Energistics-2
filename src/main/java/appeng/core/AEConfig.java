@@ -18,8 +18,8 @@
 
 package appeng.core;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,17 +30,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
-import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
@@ -51,33 +41,68 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.features.AEWorldGenInternal;
 import appeng.client.gui.NumberEntryType;
+import appeng.core.config.BooleanOption;
+import appeng.core.config.ConfigFileManager;
+import appeng.core.config.ConfigSection;
+import appeng.core.config.DoubleOption;
+import appeng.core.config.EnumOption;
+import appeng.core.config.IntegerOption;
+import appeng.core.config.StringListOption;
+import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
-@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AEConfig {
 
-    public static final ClientConfig CLIENT;
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final CommonConfig COMMON;
-    public static final ForgeConfigSpec COMMON_SPEC;
+    public final ClientConfig CLIENT;
+    public final ConfigFileManager clientConfigManager;
+    public final CommonConfig COMMON;
+    public final ConfigFileManager commonConfigManager;
 
-    // Default Energy Conversion Rates
-    private static final double DEFAULT_RF_EXCHANGE = 0.5;
+    AEConfig(File configDir) {
+        ConfigSection clientRoot = ConfigSection.createRoot();
+        CLIENT = new ClientConfig(clientRoot);
+        clientConfigManager = createConfigFileManager(clientRoot, configDir, "appliedenergistics2/client.json");
 
-    static {
-        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-        CLIENT_SPEC = specPair.getRight();
-        CLIENT = specPair.getLeft();
+        ConfigSection commonRoot = ConfigSection.createRoot();
+        COMMON = new CommonConfig(commonRoot);
+        commonConfigManager = createConfigFileManager(commonRoot, configDir, "appliedenergistics2/common.json");
 
-        final Pair<CommonConfig, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder()
-                .configure(CommonConfig::new);
-        COMMON_SPEC = commonPair.getRight();
-        COMMON = commonPair.getLeft();
+        syncClientConfig();
+        syncCommonConfig();
     }
 
+    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir,
+            String filename) {
+        File configFile = new File(configDir, filename);
+        ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
+        if (!configFile.exists()) {
+            result.save(); // Save a default file
+        } else {
+            result.load();
+
+            // Re-save immediately to write-out new defaults
+            try {
+                result.save();
+            } catch (Exception e) {
+                AELog.warn(e);
+            }
+        }
+        return result;
+    }
+
+    // Default Energy Conversion Rates
+    private static final double DEFAULT_TR_EXCHANGE = 2.0;
+
     // Config instance
-    private static final AEConfig instance = new AEConfig();
+    private static AEConfig instance;
+
+    public static void load(File configFolder) {
+        if (instance != null) {
+            throw new IllegalStateException();
+        }
+        instance = new AEConfig(configFolder);
+    }
 
     // Misc
     private boolean removeCrashingItemsOnLoad;
@@ -85,8 +110,8 @@ public final class AEConfig {
     private boolean enableEffects;
     private boolean useLargeFonts;
     private boolean useColoredCraftingStatus;
+    private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
-    private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
     // GUI Buttons
     private final int[] craftByStacks = new int[4];
@@ -118,23 +143,12 @@ public final class AEConfig {
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
-    // FIXME: this is shit, move this concern out of the config class
-    @SubscribeEvent
-    public static void onModConfigEvent(final ModConfigEvent configEvent) {
-        if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-            instance.syncClientConfig();
-        } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
-            instance.syncCommonConfig();
-        }
-    }
-
     private void syncClientConfig() {
+        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
-        this.selectedPowerUnit = CLIENT.selectedPowerUnit.get();
 
-        // load buttons..
         for (int btnNum = 0; btnNum < 4; btnNum++) {
             this.craftByStacks[btnNum] = CLIENT.craftByStacks.get(btnNum).get();
             this.priorityByStacks[btnNum] = CLIENT.priorityByStacks.get(btnNum).get();
@@ -143,7 +157,7 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
+        PowerUnits.TR.conversionRatio = COMMON.powerRatioTechReborn.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
@@ -227,14 +241,6 @@ public final class AEConfig {
     }
 
     public void save() {
-        if (CLIENT_SPEC.isLoaded()) {
-            CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
-            CLIENT_SPEC.save();
-        }
-
-        if (COMMON_SPEC.isLoaded()) {
-            COMMON_SPEC.save();
-        }
     }
 
     /**
@@ -253,14 +259,14 @@ public final class AEConfig {
     }
 
     public PowerUnits getSelectedPowerUnit() {
-        return this.selectedPowerUnit;
+        return this.CLIENT.selectedPowerUnit.get();
     }
 
     @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
-        this.selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
+        PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 Settings.POWER_UNITS.getValues());
-        this.save();
+        CLIENT.selectedPowerUnit.set(selectedPowerUnit);
     }
 
     // Getters
@@ -293,11 +299,7 @@ public final class AEConfig {
     }
 
     public boolean isDisableColoredCableRecipesInJEI() {
-        return CLIENT.disableColoredCableRecipesInJEI.get();
-    }
-
-    public boolean isShowFacadesInJEIEnabled() {
-        return CLIENT.showFacadesInJEI.get();
+        return this.disableColoredCableRecipesInJEI;
     }
 
     public int getCraftingCalculationTimePerTick() {
@@ -336,8 +338,12 @@ public final class AEConfig {
         return () -> this.chargedStaffBattery;
     }
 
+    public double getPowerTransactionLimitTechReborn() {
+        return COMMON.powerTransactionLimitTechReborn.get();
+    }
+
     public float getSpawnChargedChance() {
-        return COMMON.spawnChargedChance.get().floatValue();
+        return (float) COMMON.spawnChargedChance.get();
     }
 
     public int getQuartzOresPerCluster() {
@@ -354,7 +360,7 @@ public final class AEConfig {
     }
 
     public float getImprovedFluidMultiplier() {
-        return COMMON.improvedFluidMultiplier.get().floatValue();
+        return (float) COMMON.improvedFluidMultiplier.get();
     }
 
     public boolean isShowDebugGuiOverlays() {
@@ -418,37 +424,32 @@ public final class AEConfig {
     private static class ClientConfig {
 
         // Misc
-        public final BooleanValue enableEffects;
-        public final BooleanValue useLargeFonts;
-        public final BooleanValue useColoredCraftingStatus;
-        public final BooleanValue disableColoredCableRecipesInJEI;
-        public final BooleanValue showFacadesInJEI;
-        public final EnumValue<PowerUnits> selectedPowerUnit;
-        public final BooleanValue debugGuiOverlays;
+        public final BooleanOption enableEffects;
+        public final BooleanOption useLargeFonts;
+        public final BooleanOption useColoredCraftingStatus;
+        public final BooleanOption disableColoredCableRecipesInJEI;
+        public final EnumOption<PowerUnits> selectedPowerUnit;
+        public final BooleanOption debugGuiOverlays;
 
         // GUI Buttons
         private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
-        public final List<ConfigValue<Integer>> craftByStacks;
-        public final List<ConfigValue<Integer>> priorityByStacks;
-        public final List<ConfigValue<Integer>> levelByStacks;
+        public final List<IntegerOption> craftByStacks;
+        public final List<IntegerOption> priorityByStacks;
+        public final List<IntegerOption> levelByStacks;
 
         // Terminal Settings
-        public final EnumValue<YesNo> searchTooltips;
-        public final EnumValue<TerminalStyle> terminalStyle;
-        public final EnumValue<SearchBoxMode> terminalSearchMode;
+        public final EnumOption<YesNo> searchTooltips;
+        public final EnumOption<TerminalStyle> terminalStyle;
+        public final EnumOption<SearchBoxMode> terminalSearchMode;
 
-        public ClientConfig(ForgeConfigSpec.Builder builder) {
-            builder.push("client");
-            this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
-                    true);
-            this.showFacadesInJEI = builder.define("showFacadesInJEI", true);
-            this.enableEffects = builder.comment("TODO").define("enableEffects", true);
-            this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
-            this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
-            this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
-                    PowerUnits.AE, PowerUnits.values());
-            this.debugGuiOverlays = builder.comment("Show debugging GUI overlays")
-                    .define("showDebugGuiOverlays", false);
+        public ClientConfig(ConfigSection root) {
+            ConfigSection client = root.subsection("client");
+            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
+            this.enableEffects = client.addBoolean("enableEffects", true);
+            this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
+            this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
+            this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
+            this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
 
             this.craftByStacks = new ArrayList<>(4);
             this.priorityByStacks = new ArrayList<>(4);
@@ -458,23 +459,19 @@ public final class AEConfig {
                 int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
                 final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
 
-                this.craftByStacks.add(builder.comment("Controls buttons on Crafting Screen")
-                        .defineInRange("craftByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.priorityByStacks.add(builder.comment("Controls buttons on Priority Screen")
-                        .defineInRange("priorityByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.levelByStacks.add(builder.comment("Controls buttons on Level Emitter Screen")
-                        .defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
+                this.craftByStacks.add(client.addInt("craftByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Crafting Screen"));
+                this.priorityByStacks.add(client.addInt("priorityByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Priority Screen"));
+                this.levelByStacks.add(client.addInt("levelByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Level Emitter Screen"));
             }
 
-            builder.pop();
-
-            builder.push("terminals");
-            this.searchTooltips = builder.comment("Should tooltips be searched. Performance impact")
-                    .defineEnum("searchTooltips", YesNo.YES, YesNo.values());
-            this.terminalStyle = builder.defineEnum("terminalStyle", TerminalStyle.TALL, TerminalStyle.values());
-            this.terminalSearchMode = builder.defineEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH,
-                    SearchBoxMode.values());
-            builder.pop();
+            ConfigSection terminals = root.subsection("terminals");
+            this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,
+                    "Should tooltips be searched. Performance impact");
+            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
+            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH);
         }
 
     }
@@ -482,201 +479,180 @@ public final class AEConfig {
     private static class CommonConfig {
 
         // Misc
-        public final BooleanValue removeCrashingItemsOnLoad;
-        public final ConfigValue<Integer> formationPlaneEntityLimit;
-        public final ConfigValue<Integer> craftingCalculationTimePerTick;
-        public final BooleanValue allowBlockEntityFacades;
-        public final BooleanValue debugTools;
-        public final BooleanValue matterCannonBlockDamage;
-        public final BooleanValue tinyTntBlockDamage;
+        public final BooleanOption removeCrashingItemsOnLoad;
+        public final IntegerOption formationPlaneEntityLimit;
+        public final IntegerOption craftingCalculationTimePerTick;
+        public final BooleanOption allowBlockEntityFacades;
+        public final BooleanOption debugTools;
+        public final BooleanOption matterCannonBlockDamage;
+        public final BooleanOption tinyTntBlockDamage;
 
         // Crafting
-        public final BooleanValue inWorldSingularity;
-        public final BooleanValue inWorldFluix;
-        public final BooleanValue inWorldPurification;
-        public final BooleanValue disassemblyCrafting;
+        public final BooleanOption inWorldSingularity;
+        public final BooleanOption inWorldFluix;
+        public final BooleanOption inWorldPurification;
+        public final BooleanOption disassemblyCrafting;
 
         // Spatial IO/Dimension
-        public final ConfigValue<Double> spatialPowerExponent;
-        public final ConfigValue<Double> spatialPowerMultiplier;
+        public final DoubleOption spatialPowerExponent;
+        public final DoubleOption spatialPowerMultiplier;
 
         // Logging
-        public final BooleanValue securityAuditLog;
-        public final BooleanValue blockUpdateLog;
-        public final BooleanValue packetLog;
-        public final BooleanValue craftingLog;
-        public final BooleanValue debugLog;
-        public final BooleanValue chunkLoggerTrace;
+        public final BooleanOption securityAuditLog;
+        public final BooleanOption blockUpdateLog;
+        public final BooleanOption packetLog;
+        public final BooleanOption craftingLog;
+        public final BooleanOption debugLog;
+        public final BooleanOption chunkLoggerTrace;
 
         // Batteries
-        public final ConfigValue<Integer> wirelessTerminalBattery;
-        public final ConfigValue<Integer> entropyManipulatorBattery;
-        public final ConfigValue<Integer> matterCannonBattery;
-        public final ConfigValue<Integer> portableCellBattery;
-        public final ConfigValue<Integer> colorApplicatorBattery;
-        public final ConfigValue<Integer> chargedStaffBattery;
+        public final IntegerOption wirelessTerminalBattery;
+        public final IntegerOption entropyManipulatorBattery;
+        public final IntegerOption matterCannonBattery;
+        public final IntegerOption portableCellBattery;
+        public final IntegerOption colorApplicatorBattery;
+        public final IntegerOption chargedStaffBattery;
 
         // Certus quartz
-        public final DoubleValue spawnChargedChance;
-        public final ConfigValue<Integer> quartzOresPerCluster;
-        public final ConfigValue<Integer> quartzOresClusterAmount;
-        public final BooleanValue generateQuartzOre;
-        public final ConfigValue<List<? extends String>> quartzOresBiomeBlacklist;
+        public final DoubleOption spawnChargedChance;
+        public final IntegerOption quartzOresPerCluster;
+        public final IntegerOption quartzOresClusterAmount;
+        public final BooleanOption generateQuartzOre;
+        public final StringListOption quartzOresBiomeBlacklist;
 
         // Meteors
-        public final BooleanValue generateMeteorites;
-        public final BooleanValue spawnPressesInMeteorites;
-        public final ConfigValue<List<? extends String>> meteoriteBiomeBlacklist;
+        public final BooleanOption generateMeteorites;
+        public final BooleanOption spawnPressesInMeteorites;
+        public final StringListOption meteoriteBiomeBlacklist;
 
         // Wireless
-        public final ConfigValue<Double> wirelessBaseCost;
-        public final ConfigValue<Double> wirelessCostMultiplier;
-        public final ConfigValue<Double> wirelessTerminalDrainMultiplier;
-        public final ConfigValue<Double> wirelessBaseRange;
-        public final ConfigValue<Double> wirelessBoosterRangeMultiplier;
-        public final ConfigValue<Double> wirelessBoosterExp;
-        public final ConfigValue<Double> wirelessHighWirelessCount;
+        public final DoubleOption wirelessBaseCost;
+        public final DoubleOption wirelessCostMultiplier;
+        public final DoubleOption wirelessTerminalDrainMultiplier;
+        public final DoubleOption wirelessBaseRange;
+        public final DoubleOption wirelessBoosterRangeMultiplier;
+        public final DoubleOption wirelessBoosterExp;
+        public final DoubleOption wirelessHighWirelessCount;
 
         // Power Ratios
-        public final ConfigValue<Double> powerRatioForgeEnergy;
-        public final DoubleValue powerUsageMultiplier;
+        public final DoubleOption powerRatioTechReborn;
+        public final DoubleOption powerUsageMultiplier;
+
+        // How much TR energy can be transfered at most in one operation
+        public final DoubleOption powerTransactionLimitTechReborn;
 
         // Condenser Power Requirement
-        public final ConfigValue<Integer> condenserMatterBallsPower;
-        public final ConfigValue<Integer> condenserSingularityPower;
+        public final IntegerOption condenserMatterBallsPower;
+        public final IntegerOption condenserSingularityPower;
 
         // In-World Purification
         // Settings for improved speed depending on fluid the crystal is in
-        public final ConfigValue<String> improvedFluidTag;
-        public final ConfigValue<Double> improvedFluidMultiplier;
+        public final StringOption improvedFluidTag;
+        public final DoubleOption improvedFluidMultiplier;
 
-        public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
-        public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
+        public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
+        public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
 
-        public CommonConfig(ForgeConfigSpec.Builder builder) {
+        public CommonConfig(ConfigSection root) {
 
-            builder.push("general");
-            removeCrashingItemsOnLoad = builder.comment(
-                    "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!")
-                    .define("removeCrashingItemsOnLoad", false);
-            debugTools = builder.define("unsupportedDeveloperTools", false);
-            matterCannonBlockDamage = builder
-                    .comment("Enables the ability of the Matter Cannon to break blocks.")
-                    .define("matterCannonBlockDamage", true);
-            tinyTntBlockDamage = builder
-                    .comment("Enables the ability of Tiny TNT to break blocks.")
-                    .define("tinyTntBlockDamage", true);
-            builder.pop();
+            ConfigSection general = root.subsection("general");
+            removeCrashingItemsOnLoad = general.addBoolean("removeCrashingItemsOnLoad", false,
+                    "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!");
+            debugTools = general.addBoolean("unsupportedDeveloperTools", false);
+            matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
+                    "Enables the ability of the Matter Cannon to break blocks.");
+            tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
+                    "Enables the ability of Tiny TNT to break blocks.");
 
-            builder.push("automation");
-            formationPlaneEntityLimit = builder.comment("TODO").define("formationPlaneEntityLimit", 128);
-            builder.pop();
+            ConfigSection automation = root.subsection("automation");
+            formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
 
-            builder.push("facades");
-            allowBlockEntityFacades = builder.comment(
-                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.")
-                    .define("allowBlockEntities", false);
-            builder.pop();
+            ConfigSection facades = root.subsection("facades");
+            allowBlockEntityFacades = facades.addBoolean("allowBlockEntities", false,
+                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.");
 
-            builder.push("craftingCPU");
+            ConfigSection craftingCPU = root.subsection("craftingCPU");
+            this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
 
-            this.craftingCalculationTimePerTick = builder.define("craftingCalculationTimePerTick", 5);
+            var crafting = root.subsection("crafting");
+            inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
+                    "Enable the in-world crafting of singularities.");
+            inWorldFluix = crafting.addBoolean("inWorldFluix", true, "Enable the in-world crafting of fluix crystals.");
+            inWorldPurification = crafting.addBoolean("inWorldPurification", true,
+                    "Enable the in-world crafting of pure crystals.");
+            disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
+                    "Enable the recipes for disassembling storage cells and crafting units.");
 
-            builder.pop();
+            ConfigSection spatialio = root.subsection("spatialio");
+            this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
+            this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
 
-            builder.push("crafting");
-            inWorldSingularity = builder.comment("Enable the in-world crafting of singularities.")
-                    .define("inWorldSingularity", true);
-            inWorldFluix = builder.comment("Enable the in-world crafting of fluix crystals.").define("inWorldFluix",
-                    true);
-            inWorldPurification = builder.comment("Enable the in-world crafting of pure crystals.")
-                    .define("inWorldPurification", true);
-            disassemblyCrafting = builder
-                    .comment("Enable the recipes for disassembling storage cells and crafting units.")
-                    .define("disassemblyCrafting", true);
-            builder.pop();
+            var logging = root.subsection("logging");
+            securityAuditLog = logging.addBoolean("securityAuditLog", false);
+            blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
+            packetLog = logging.addBoolean("packetLog", false);
+            craftingLog = logging.addBoolean("craftingLog", false);
+            debugLog = logging.addBoolean("debugLog", false);
+            chunkLoggerTrace = logging.addBoolean("chunkLoggerTrace", false,
+                    "Enable stack trace logging for the chunk loading debug command");
 
-            builder.push("spatialio");
-            this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
-            this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
-            builder.pop();
+            ConfigSection battery = root.subsection("battery");
+            this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
+            this.chargedStaffBattery = battery.addInt("chargedStaff", 8000);
+            this.entropyManipulatorBattery = battery.addInt("entropyManipulator", 200000);
+            this.portableCellBattery = battery.addInt("portableCell", 20000);
+            this.colorApplicatorBattery = battery.addInt("colorApplicator", 20000);
+            this.matterCannonBattery = battery.addInt("matterCannon", 200000);
 
-            builder.push("logging");
-            securityAuditLog = builder.define("securityAuditLog", false);
-            blockUpdateLog = builder.define("blockUpdateLog", false);
-            packetLog = builder.define("packetLog", false);
-            craftingLog = builder.define("craftingLog", false);
-            debugLog = builder.define("debugLog", false);
-            chunkLoggerTrace = builder.comment("Enable stack trace logging for the chunk loading debug command")
-                    .define("chunkLoggerTrace", false);
-            builder.pop();
+            ConfigSection worldGen = root.subsection("worldGen");
 
-            builder.push("battery");
-            this.wirelessTerminalBattery = builder.define("wirelessTerminal", 1600000);
-            this.chargedStaffBattery = builder.define("chargedStaff", 8000);
-            this.entropyManipulatorBattery = builder.define("entropyManipulator", 200000);
-            this.portableCellBattery = builder.define("portableCell", 20000);
-            this.colorApplicatorBattery = builder.define("colorApplicator", 20000);
-            this.matterCannonBattery = builder.define("matterCannon", 200000);
-            builder.pop();
+            this.spawnChargedChance = worldGen.addDouble("spawnChargedChance", 0.08, 0.0, 1.0);
+            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
+            this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
+                    "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
+            this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
-            builder.push("worldGen");
+            this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
+            this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 4);
+            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
+            this.quartzOresBiomeBlacklist = worldGen.addStringList("quartzOresBiomeBlacklist", new ArrayList<>(),
+                    "Biome IDs in which quartz ores should NOT be generated (i.e. minecraft:plains).");
 
-            this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
-            this.generateMeteorites = builder.define("generateMeteorites", true);
-            this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
-                    Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
-            this.spawnPressesInMeteorites = builder.define("spawnPressesInMeteorites", true);
+            ConfigSection wireless = root.subsection("wireless");
+            this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
+            this.wirelessCostMultiplier = wireless.addDouble("wirelessCostMultiplier", 1.0);
+            this.wirelessBaseRange = wireless.addDouble("wirelessBaseRange", 16.0);
+            this.wirelessBoosterRangeMultiplier = wireless.addDouble("wirelessBoosterRangeMultiplier", 1.0);
+            this.wirelessBoosterExp = wireless.addDouble("wirelessBoosterExp", 1.5);
+            this.wirelessHighWirelessCount = wireless.addDouble("wirelessHighWirelessCount", 64.0);
+            this.wirelessTerminalDrainMultiplier = wireless.addDouble("wirelessTerminalDrainMultiplier", 1.0);
 
-            this.generateQuartzOre = builder.define("generateQuartzOre", true);
-            this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
-            this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
-            this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
-                    Collections.emptyList(),
-                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
+            ConfigSection PowerRatios = root.subsection("PowerRatios");
+            powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
+            powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
 
-            builder.pop();
+            ConfigSection integration = root.subsection("Integration");
+            powerTransactionLimitTechReborn = integration.addDouble("MaxTechRebornEnergyPerTransaction", 10000.0, 0.1,
+                    1000000.0, "The maximum amount of TechReborn energy units that can be transfered per operation.");
 
-            builder.push("wireless");
-            this.wirelessBaseCost = builder.define("wirelessBaseCost", 8.0);
-            this.wirelessCostMultiplier = builder.define("wirelessCostMultiplier", 1.0);
-            this.wirelessBaseRange = builder.define("wirelessBaseRange", 16.0);
-            this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 1.0);
-            this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.5);
-            this.wirelessHighWirelessCount = builder.define("wirelessHighWirelessCount", 64.0);
-            this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.0);
-            builder.pop();
+            ConfigSection Condenser = root.subsection("Condenser");
+            condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
+            condenserSingularityPower = Condenser.addInt("Singularity", 256000);
 
-            builder.push("PowerRatios");
-            powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
-            powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
-            builder.pop();
-
-            builder.push("Condenser");
-            condenserMatterBallsPower = builder.define("MatterBalls", 256);
-            condenserSingularityPower = builder.define("Singularity", 256000);
-            builder.pop();
-
-            builder.comment(
-                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.")
-                    .push("tickRates");
+            ConfigSection tickrates = root.subsection("tickRates",
+                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
             for (TickRates tickRate : TickRates.values()) {
-                tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
-                tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
+                tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
+                tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
-            builder.pop();
 
-            builder.comment("Settings for in-world purification of crystals.").push("inWorldPurification");
+            ConfigSection inWorldPurification = root.subsection("inWorldPurification",
+                    "Settings for in-world purification of crystals.");
 
-            improvedFluidTag = builder.comment(
-                    "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.")
-                    .define("improvedFluidTag", "");
-            improvedFluidMultiplier = builder
-                    .comment("The speed multiplier to use when the crystals are submerged in the improved fluid.")
-                    .defineInRange("improvedFluidMultiplier", 2.0, 1.0, 10.0);
-
-            builder.pop();
+            improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "",
+                    "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
+            improvedFluidMultiplier = inWorldPurification.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
+                    "The speed multiplier to use when the crystals are submerged in the improved fluid.");
         }
 
     }

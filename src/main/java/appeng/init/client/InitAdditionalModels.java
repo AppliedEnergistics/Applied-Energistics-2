@@ -18,9 +18,9 @@
 
 package appeng.init.client;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.ModelLoader;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 
 import appeng.api.parts.PartModelsInternal;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
@@ -28,14 +28,18 @@ import appeng.client.render.crafting.MolecularAssemblerRenderer;
 /**
  * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class InitAdditionalModels {
 
     public static void init() {
-        ModelLoader.addSpecialModel(MolecularAssemblerRenderer.LIGHTS_MODEL);
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((resourceManager, consumer) -> {
+            consumer.accept(MolecularAssemblerRenderer.LIGHTS_MODEL);
+        });
 
         PartModelsInternal.freeze();
-        PartModelsInternal.getModels().forEach(ModelLoader::addSpecialModel);
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((resourceManager, consumer) -> {
+            PartModelsInternal.getModels().forEach(consumer);
+        });
     }
 
 }

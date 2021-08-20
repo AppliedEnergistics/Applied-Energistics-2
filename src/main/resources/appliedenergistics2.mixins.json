@@ -1,8 +1,7 @@
 {
   "required": true,
-  "minVersion": "0.8.3",
+  "minVersion": "0.8.2",
   "package": "appeng.mixins",
-  "refmap": "appliedenergistics2.mixins.refmap.json",
   "compatibilityLevel": "JAVA_11",
   "mixins": [
     "spatial.DimensionTypeMixin",
@@ -11,7 +10,12 @@
     "structure.ConfiguredStructureFeaturesAccessor",
     "feature.ConfiguredFeaturesAccessor",
     "feature.LevelLightEngineMixin",
-    "EarlyStartupMixin"
+    "EarlyStartupMixin",
+    "DynamicLadderMixin",
+    "OnNeighborUpdateMixin",
+    "ServerLevelCustomItemEntityMixin",
+    "ConditionalRecipeMixin",
+    "BreakSpeedMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
@@ -19,7 +23,9 @@
     "unlitquad.ModelBakeryMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
-    "unlitquad.BakedQuadAccessor",
+    "BlockBreakParticleMixin",
+    "ModelsReloadMixin",
+    "MouseWheelMixin",
     "RenderEncodedPatternMixin",
     "ItemToolModMixin"
   ],

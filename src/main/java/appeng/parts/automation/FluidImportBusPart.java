@@ -20,15 +20,12 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -41,8 +38,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -96,50 +93,78 @@ public class FluidImportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        final BlockEntity te = this.getConnectedTE();
-        if (te != null) {
-            LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getOpposite());
+        var grid = getMainNode().getGrid();
+        var adjacentStorage = this.getConnectedTE();
+        if (adjacentStorage == null || grid == null) {
+            return TickRateModulation.SLEEP;
+        }
 
-            if (fhOpt.isPresent()) {
-                var grid = getMainNode().getGrid();
-                if (grid != null) {
-                    final IFluidHandler fh = fhOpt.orElseThrow(IllegalStateException::new);
-                    final IMEMonitor<IAEFluidStack> inv = grid.getStorageService()
-                            .getInventory(this.getChannel());
+        long remainingTransferAmount = calculateAmountToSend();
 
-                    final FluidStack fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);
+        var inv = grid.getStorageService().getInventory(this.getChannel());
+        try (var tx = Transaction.openOuter()) {
 
-                    if (this.filterEnabled() && !this.isInFilter(fluidStack)) {
-                        return TickRateModulation.SLOWER;
+            // Try to find an extractable resource that fits our filter, and if we've found at least one,
+            // continue until we've filled the desired amount per transfer
+            IAEFluidStack extractable = null;
+            for (StorageView<FluidVariant> view : adjacentStorage.iterable(tx)) {
+                var resource = view.getResource();
+                if (resource.isBlank()
+                        // After the first extractable resource, we're just trying to get enough to fill our
+                        // transfer quota.
+                        || extractable != null && !extractable.getFluid().equals(resource)
+                        // Regard a filter that is set on the bus
+                        || this.filterEnabled() && !this.isInFilter(resource)) {
+                    continue;
+                }
+
+                // Check how much of *this* resource we can actually insert into the network, it might be 0
+                // if the cells are partitioned or there's not enough types left, etc.
+                long amountForThisResource = remainingTransferAmount;
+                var overflow = inv.injectItems(AEFluidStack.of(resource, amountForThisResource), Actionable.SIMULATE,
+                        this.source);
+                if (overflow != null) {
+                    amountForThisResource -= overflow.getStackSize();
+                }
+
+                // Try to extract it
+                var amount = view.extract(resource, amountForThisResource, tx);
+                if (amount > 0) {
+                    if (extractable != null) {
+                        extractable.incStackSize(amount);
+                    } else {
+                        extractable = AEFluidStack.of(resource, amount);
                     }
-
-                    final AEFluidStack aeFluidStack = AEFluidStack.fromFluidStack(fluidStack);
-
-                    if (aeFluidStack != null) {
-                        final IAEFluidStack notInserted = inv.injectItems(aeFluidStack, Actionable.MODULATE,
-                                this.source);
-
-                        if (notInserted != null && notInserted.getStackSize() > 0) {
-                            aeFluidStack.decStackSize(notInserted.getStackSize());
-                        }
-
-                        fh.drain(aeFluidStack.getFluidStack(), FluidAction.EXECUTE);
-
-                        return TickRateModulation.FASTER;
+                    remainingTransferAmount -= amount;
+                    if (remainingTransferAmount >= 0) {
+                        // We got enough to fill our transfer quota
+                        break;
                     }
-
-                    return TickRateModulation.IDLE;
                 }
             }
+
+            // We might have found nothing to extract
+            if (extractable == null) {
+                return TickRateModulation.SLOWER;
+            }
+
+            var notInserted = inv.injectItems(extractable, Actionable.MODULATE, this.source);
+
+            if (notInserted != null && notInserted.getStackSize() > 0) {
+                // Be nice and try to give the overflow back
+                AELog.warn("Extracted %s from adjacent tank and voided it because network refused insert",
+                        extractable);
+            }
+
+            tx.commit();
+            return TickRateModulation.FASTER;
         }
-        return TickRateModulation.SLEEP;
     }
 
-    private boolean isInFilter(FluidStack fluid) {
+    private boolean isInFilter(FluidVariant fluid) {
         for (int i = 0; i < this.getConfig().getSlots(); i++) {
             final IAEFluidStack stack = this.getConfig().getFluidInSlot(i);
-            if (stack != null && stack.equals(fluid)) {
+            if (stack != null && stack.getFluid().equals(fluid)) {
                 return true;
             }
         }

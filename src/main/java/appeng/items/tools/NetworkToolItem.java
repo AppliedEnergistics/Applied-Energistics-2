@@ -28,16 +28,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.common.ToolAction;
 
-import appeng.api.features.AEToolActions;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
@@ -47,6 +44,7 @@ import appeng.api.util.INetworkToolAgent;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.menu.AEBaseMenu;
@@ -57,7 +55,7 @@ import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class NetworkToolItem extends AEBaseItem implements IGuiItem {
+public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem {
 
     public NetworkToolItem(Item.Properties properties) {
         super(properties);
@@ -115,11 +113,6 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    @Override
-    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
-        return true;
-    }
-
     public boolean serverSideToolLogic(UseOnContext useContext) {
         BlockPos pos = useContext.getClickedPos();
         Player p = useContext.getPlayer();
@@ -136,7 +129,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem {
 
         var bs = level.getBlockState(pos);
         if (!InteractionUtil.isInAlternateUseMode(p)) {
-            if (nodeHost == null && bs.rotate(level, pos, Rotation.CLOCKWISE_90) != bs) {
+            if (nodeHost == null && bs.rotate(Rotation.CLOCKWISE_90) != bs) {
                 bs.neighborChanged(level, pos, Blocks.AIR, pos, false);
                 p.swing(hand);
                 return !level.isClientSide;
@@ -164,11 +157,4 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem {
         return false;
     }
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        if (toolAction == AEToolActions.WRENCH_DISASSEMBLE || toolAction == AEToolActions.WRENCH_ROTATE) {
-            return true;
-        }
-        return super.canPerformAction(stack, toolAction);
-    }
 }

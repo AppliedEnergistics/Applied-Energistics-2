@@ -19,19 +19,16 @@
 package appeng.menu.implementations;
 
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.FluidSyncHelper;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.IAEFluidTank;
 
 public abstract class FluidConfigurableMenu<T extends IUpgradeableObject> extends UpgradeableMenu<T>
@@ -53,10 +50,9 @@ public abstract class FluidConfigurableMenu<T extends IUpgradeableObject> extend
 
     @Override
     protected ItemStack transferStackToMenu(ItemStack input) {
-        Optional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
-        if (fsOpt.isPresent()) {
+        var stack = FluidContainerHelper.getContainedFluid(input);
+        if (stack != null) {
             final IAEFluidTank t = this.getFluidConfigInventory();
-            final IAEFluidStack stack = AEFluidStack.fromFluidStack(fsOpt.orElse(null));
             for (int i = 0; i < t.getSlots(); ++i) {
                 if (t.getFluidInSlot(i) == null && this.isValidForConfig(i, stack)) {
                     t.setFluidInSlot(i, stack);

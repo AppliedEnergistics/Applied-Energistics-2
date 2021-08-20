@@ -49,8 +49,8 @@ public class InscriberRecipes extends AE2RecipeProvider {
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
-        inscribe(AEItems.SILICON_PRESS, AEItems.SILICON_PRESS.stack())
-                .setTop(Ingredient.of(Items.IRON_BLOCK))
+        inscribe(Items.IRON_BLOCK, AEItems.SILICON_PRESS.stack())
+                .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "silicon_press");
         inscribe(Ingredient.of(ConventionTags.SILICON), AEItems.SILICON_PRINT.stack())

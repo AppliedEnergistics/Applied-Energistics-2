@@ -24,16 +24,20 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,27 +46,24 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
+import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
 
 /**
  * This item reprents one of the seeds used to grow various forms of quartz by throwing them into water (for that
  * behavior, see the linked entity)
  */
-public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
+public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AECustomEntityItem {
 
     /**
      * Name of NBT tag used to store the growth progress value.
      */
     public static final String TAG_GROWTH_TICKS = "p";
-
-    public static final String TAG_PREVENT_MAGNET = "PreventRemoteMovement";
 
     /**
      * The number of growth ticks required to finish growing in minecraft ticks 24000 ticks equals one minecraft day or
@@ -124,7 +125,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
@@ -139,26 +140,15 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public int getEntityLifespan(final ItemStack itemStack, final Level level) {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public boolean hasCustomEntity(final ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public Entity createEntity(final Level level, final Entity location, final ItemStack itemstack) {
-        final GrowingCrystalEntity egc = new GrowingCrystalEntity(level, location.getX(), location.getY(),
-                location.getZ(), itemstack);
+    public Entity replaceItemEntity(ServerLevel level, ItemEntity location, ItemStack itemStack) {
+        var egc = new GrowingCrystalEntity(level, location.getX(), location.getY(),
+                location.getZ(), itemStack);
 
         egc.setDeltaMovement(location.getDeltaMovement());
 
         // Cannot read the pickup delay of the original item, so we
         // use the pickup delay used for items dropped by a player instead
         egc.setPickUpDelay(40);
-        egc.getPersistentData().putBoolean(TAG_PREVENT_MAGNET, true);
 
         return egc;
     }

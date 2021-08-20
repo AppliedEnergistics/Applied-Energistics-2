@@ -29,8 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
@@ -172,11 +170,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     public InternalInventory getSubInventory(ResourceLocation id) {
         var inv = duality.getSubInventory(id);
         return inv != null ? inv : super.getSubInventory(id);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.duality.getCapability(capabilityClass, this.getSide());
     }
 
     @Override

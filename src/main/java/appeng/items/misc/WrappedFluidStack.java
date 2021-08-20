@@ -20,12 +20,15 @@ package appeng.items.misc;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -38,9 +41,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AppEng;
@@ -62,9 +62,7 @@ public class WrappedFluidStack extends AEBaseItem {
         var result = new ItemStack(item);
 
         var tag = result.getOrCreateTag();
-        var fluidTag = new CompoundTag();
-        stack.getFluidStack().writeToNBT(fluidTag);
-        tag.put(NBT_FLUID, fluidTag);
+        tag.put(NBT_FLUID, stack.getFluid().toNbt());
         if (stack.getStackSize() > 0) {
             tag.putLong(NBT_AMOUNT, stack.getStackSize());
         }
@@ -86,8 +84,8 @@ public class WrappedFluidStack extends AEBaseItem {
             return null;
         }
 
-        var fluid = FluidStack.loadFluidStackFromNBT(tag.getCompound(NBT_FLUID));
-        if (fluid.isEmpty()) {
+        var fluid = FluidVariant.fromNbt(tag.getCompound(NBT_FLUID));
+        if (fluid.isBlank()) {
             return null;
         }
 
@@ -120,21 +118,30 @@ public class WrappedFluidStack extends AEBaseItem {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack itemInSlot, ItemStack otherStack, Slot slot,
             ClickAction clickAction, Player player, SlotAccess otherItemAccess) {
+        if (player.containerMenu == null) {
+            // We need the opened menu since we're ignoring slotAccess due to no helper being available for it in the
+            // transfer API
+            return true;
+        }
+
         // Allow picking up fluid dummy items with a fluid container
         var fluidStack = WrappedFluidStack.unwrap(itemInSlot);
         if (clickAction == ClickAction.PRIMARY && fluidStack != null) {
             // TODO: Getting the carried item is tricky
-            var heldContainer = FluidUtil.getFluidHandler(otherStack).orElse(null);
+            var heldContainer = FluidStorage.ITEM.find(otherStack,
+                    ContainerItemContext.ofPlayerCursor(player, player.containerMenu));
             if (heldContainer != null) {
-                var inserted = heldContainer.fill(fluidStack.getFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+                long inserted;
+                try (var tx = Transaction.openOuter()) {
+                    inserted = heldContainer.insert(fluidStack.getFluid(), fluidStack.getStackSize(), tx);
+                    tx.commit();
+                }
 
                 if (inserted >= fluidStack.getStackSize()) {
                     slot.set(ItemStack.EMPTY);
-                    otherItemAccess.set(heldContainer.getContainer());
                 } else if (inserted > 0) {
                     fluidStack.decStackSize(inserted);
                     slot.set(fluidStack.wrap());
-                    otherItemAccess.set(heldContainer.getContainer());
                 }
             }
         }
@@ -145,14 +152,14 @@ public class WrappedFluidStack extends AEBaseItem {
 
     @Override
     public String getDescriptionId(ItemStack stack) {
-        return this.getFluid(stack).getTranslationKey();
+        return Platform.getDescriptionId(this.getFluid(stack));
     }
 
-    private FluidStack getFluid(ItemStack is) {
+    private FluidVariant getFluid(ItemStack is) {
         if (is.hasTag()) {
-            return FluidStack.loadFluidStackFromNBT(is.getTag().getCompound(NBT_FLUID));
+            return FluidVariant.fromNbt(is.getTag().getCompound(NBT_FLUID));
         }
-        return FluidStack.EMPTY;
+        return FluidVariant.blank();
     }
 
     public long getAmount(ItemStack is) {

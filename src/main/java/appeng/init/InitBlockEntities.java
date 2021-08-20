@@ -18,8 +18,8 @@
 
 package appeng.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlockEntities;
 
@@ -27,9 +27,9 @@ public final class InitBlockEntities {
     private InitBlockEntities() {
     }
 
-    public static void init(IForgeRegistry<BlockEntityType<?>> registry) {
+    public static void init(Registry<BlockEntityType<?>> registry) {
         for (var entry : AEBlockEntities.getBlockEntityTypes().entrySet()) {
-            registry.register(entry.getValue());
+            Registry.register(registry, entry.getKey(), entry.getValue());
         }
     }
 }

@@ -18,29 +18,33 @@
 
 package appeng.block.paint;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
@@ -49,7 +53,7 @@ import appeng.helpers.Splotch;
  * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
  * a matter cannon with paint balls.
  */
-class PaintSplotchesBakedModel implements IDynamicBakedModel {
+class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
 
     private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
@@ -65,30 +69,24 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
                 bakedTextureGetter.apply(TEXTURE_PAINT2), bakedTextureGetter.apply(TEXTURE_PAINT3) };
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-            @Nonnull IModelData extraData) {
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
-        if (side != null) {
-            return Collections.emptyList();
+    @Override
+    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
+
+        Object renderAttachment = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
+        if (!(renderAttachment instanceof PaintSplotches)) {
+            return;
         }
-
-        PaintSplotches splotchesState = extraData.getData(PaintSplotchesBlockEntity.SPLOTCHES);
-
-        if (splotchesState == null) {
-            // This is the inventory model which should usually not be used other than in
-            // special cases
-            List<BakedQuad> quads = new ArrayList<>(1);
-            CubeBuilder builder = new CubeBuilder(quads);
-            builder.setTexture(this.textures[0]);
-            builder.addCube(0, 0, 0, 16, 16, 16);
-            return quads;
-        }
+        PaintSplotches splotchesState = (PaintSplotches) renderAttachment;
 
         List<Splotch> splotches = splotchesState.getSplotches();
 
-        CubeBuilder builder = new CubeBuilder();
+        CubeBuilder builder = new CubeBuilder(context.getEmitter());
 
         float offsetConstant = 0.001f;
         for (final Splotch s : splotches) {
@@ -153,8 +151,20 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
                 default:
             }
         }
+    }
 
-        return builder.getOutput();
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return ItemTransforms.NO_TRANSFORMS;
     }
 
     @Override

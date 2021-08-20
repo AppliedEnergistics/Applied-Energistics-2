@@ -25,15 +25,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Setting;
@@ -59,12 +57,13 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.NullInventory;
+import appeng.me.storage.StorageAdapter;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
+import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.AppEngInternalInventory;
@@ -479,21 +478,14 @@ public class DualityItemInterface
         this.craftingTracker.jobStateChange(link);
     }
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
-        if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return LazyOptional.of(this.storage::toItemHandler).cast();
-        }
-        return super.getCapability(capabilityClass, facing);
-    }
-
     /**
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
-    private class InterfaceInventory extends ItemHandlerAdapter implements IMEMonitor<IAEItemStack> {
+    private class InterfaceInventory extends StorageAdapter<ItemVariant, IAEItemStack>
+            implements IMEMonitor<IAEItemStack> {
 
         InterfaceInventory() {
-            super(storage.toItemHandler());
+            super(IVariantConversion.ITEM, storage.toStorage(), false);
             this.setActionSource(actionSource);
         }
 

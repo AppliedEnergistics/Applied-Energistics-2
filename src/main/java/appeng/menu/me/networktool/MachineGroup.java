@@ -22,13 +22,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Represents the status of machines grouped by their {@link IGridBlock#getMachineRepresentation() item representation}.
+ * Represents the status of machines grouped by their item representation.
  */
 public class MachineGroup {
     /**
      * The item stack used for grouping machines together, which is also used for showing the group in the UI.
-     *
-     * @see IGridBlock#getMachineRepresentation()
      */
     private final ItemStack display;
 
@@ -58,7 +56,7 @@ public class MachineGroup {
     }
 
     void write(FriendlyByteBuf data) {
-        data.writeItemStack(display, true);
+        data.writeItem(display);
         data.writeDouble(idlePowerUsage);
         data.writeVarInt(count);
     }

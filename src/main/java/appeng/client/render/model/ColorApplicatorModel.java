@@ -23,7 +23,8 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -31,7 +32,6 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
@@ -40,7 +40,7 @@ import appeng.core.AppEng;
  * A color applicator uses the base model, and extends it with additional layers that are colored according to the
  * selected color of the applicator.
  */
-public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorModel> {
+public class ColorApplicatorModel implements BasicUnbakedModel {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "item/color_applicator_colored");
@@ -53,7 +53,7 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
             new ResourceLocation(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 
@@ -62,16 +62,16 @@ public class ColorApplicatorModel implements BasicUnbakedModel<ColorApplicatorMo
         return Stream.of(TEXTURE_DARK, TEXTURE_MEDIUM, TEXTURE_DARK);
     }
 
+    @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
+    public BakedModel bake(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+            ModelState modelTransform, ResourceLocation modelId) {
+        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
 
         TextureAtlasSprite texDark = spriteGetter.apply(TEXTURE_DARK);
         TextureAtlasSprite texMedium = spriteGetter.apply(TEXTURE_MEDIUM);
         TextureAtlasSprite texBright = spriteGetter.apply(TEXTURE_BRIGHT);
 
-        return new ColorApplicatorBakedModel(baseModel, modelTransform, texDark, texMedium, texBright);
+        return new ColorApplicatorBakedModel(baseModel, texDark, texMedium, texBright);
     }
 }

@@ -30,27 +30,20 @@ public class TargetPoint {
     public final double x;
     public final double y;
     public final double z;
-    public final double r2;
+    public final double radius;
     public final Level level;
 
-    public TargetPoint(double x, double y, double z, double r2, Level level) {
-        this(null, x, y, z, r2, level);
+    public TargetPoint(double x, double y, double z, double radius, Level level) {
+        this(null, x, y, z, radius, level);
     }
 
-    public TargetPoint(ServerPlayer excluded, double x, double y, double z, double r2, Level level) {
+    public TargetPoint(ServerPlayer excluded, double x, double y, double z, double radius, Level level) {
         this.excluded = excluded;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.r2 = r2;
+        this.radius = radius;
         this.level = level;
     }
 
-    public static TargetPoint at(double x, double y, double z, double r2, Level level) {
-        return new TargetPoint(x, y, z, r2, level);
-    }
-
-    public static TargetPoint at(ServerPlayer excluded, double x, double y, double z, double r2, Level level) {
-        return new TargetPoint(excluded, x, y, z, r2, level);
-    }
 }
