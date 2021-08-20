@@ -195,7 +195,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
 
-            if (InteractionUtil.isWrench(player, heldItem, pos) && InteractionUtil.isInAlternateUseMode(player)) {
+            if (InteractionUtil.canWrenchDisassemble(heldItem) && InteractionUtil.isInAlternateUseMode(player)) {
                 final BlockState blockState = level.getBlockState(pos);
                 final Block block = blockState.getBlock();
 

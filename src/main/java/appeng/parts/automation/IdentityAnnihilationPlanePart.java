@@ -59,15 +59,15 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected ItemStack createHarvestTool(BlockState state) {
-        ItemStack harvestTool = super.createHarvestTool(state);
+    protected HarvestTool createHarvestTool(BlockState state) {
+        var harvestTool = super.createHarvestTool(state);
 
         // For silk touch purposes, enchant the fake tool
-        if (harvestTool != null) {
-            EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), harvestTool);
-        }
+        var item = harvestTool.item().copy();
+        EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), item);
 
-        return harvestTool;
+        // Set fallback to false, to ensure it'll be used even if not strictly required
+        return new HarvestTool(item, false);
     }
 
     @Override

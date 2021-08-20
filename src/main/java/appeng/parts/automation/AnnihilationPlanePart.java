@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import appeng.api.config.Actionable;
@@ -374,14 +373,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         final BlockState state = level.getBlockState(pos);
         final BlockEntity te = level.getBlockEntity(pos);
 
-        ItemStack harvestTool = createHarvestTool(state);
+        var harvestTool = createHarvestTool(state);
+        var harvestToolItem = harvestTool.item();
 
-        if (!state.requiresCorrectToolForDrops() && state.getHarvestTool() == null && !harvestTool.isEnchanted()) {
+        if (!state.requiresCorrectToolForDrops() && harvestTool.fallback()) {
             // Do not use a tool when not required, no hints about it and not enchanted in cases like silk touch.
-            harvestTool = ItemStack.EMPTY;
+            harvestToolItem = ItemStack.EMPTY;
         }
 
-        return Block.getDrops(state, level, pos, te, fakePlayer, harvestTool);
+        return Block.getDrops(state, level, pos, te, fakePlayer, harvestToolItem);
     }
 
     /**
@@ -475,18 +475,18 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      *
      * @param state The block state of the block about to be broken.
      */
-    protected ItemStack createHarvestTool(BlockState state) {
-        ToolType harvestToolType = state.getBlock().getHarvestTool(state);
-
-        if (harvestToolType == ToolType.AXE) {
-            return new ItemStack(Items.DIAMOND_AXE, 1);
-        } else if (harvestToolType == ToolType.SHOVEL) {
-            return new ItemStack(Items.DIAMOND_SHOVEL, 1);
-        } else if (harvestToolType == ToolType.HOE) {
-            return new ItemStack(Items.DIAMOND_HOE, 1);
+    protected HarvestTool createHarvestTool(BlockState state) {
+        if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+            return new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), false);
+        } else if (state.is(BlockTags.MINEABLE_WITH_AXE)) {
+            return new HarvestTool(new ItemStack(Items.DIAMOND_AXE, 1), false);
+        } else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+            return new HarvestTool(new ItemStack(Items.DIAMOND_SHOVEL, 1), false);
+        } else if (state.is(BlockTags.MINEABLE_WITH_HOE)) {
+            return new HarvestTool(new ItemStack(Items.DIAMOND_HOE, 1), false);
         } else {
             // Use a pickaxe for everything else. Mostly to allow silk touch enchants
-            return new ItemStack(Items.DIAMOND_PICKAXE, 1);
+            return new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), true);
         }
     }
 
@@ -496,6 +496,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     public static boolean isItemBlacklisted(Item i) {
         return ITEM_BLACKLIST.contains(i);
+    }
+
+    record HarvestTool(ItemStack item, boolean fallback) {
     }
 
 }

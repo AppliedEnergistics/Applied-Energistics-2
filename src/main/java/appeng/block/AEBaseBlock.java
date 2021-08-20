@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.common.ToolType;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -57,7 +56,7 @@ public abstract class AEBaseBlock extends Block {
     public static BlockBehaviour.Properties defaultProps(Material material, MaterialColor color) {
         return BlockBehaviour.Properties.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .strength(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
+                .strength(2.2f, 11.f)
                 .sound(getDefaultSoundByMaterial(material));
     }
 

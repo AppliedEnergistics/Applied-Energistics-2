@@ -89,7 +89,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
-            } else if (InteractionUtil.isWrench(player, eq, this.getBlockEntity().getBlockPos())
+            } else if (InteractionUtil.canWrenchRotate(eq)
                     && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);

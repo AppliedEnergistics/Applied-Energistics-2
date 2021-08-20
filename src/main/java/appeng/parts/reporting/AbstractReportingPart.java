@@ -164,9 +164,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        final BlockEntity te = this.getBlockEntity();
-
-        if (InteractionUtil.isWrench(player, player.getInventory().getSelected(), te.getBlockPos())) {
+        if (InteractionUtil.canWrenchRotate(player.getInventory().getSelected())) {
             if (!isRemote()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
                 this.getHost().markForUpdate();
