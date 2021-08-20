@@ -18,11 +18,11 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.renderer.item.ItemProperties;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
@@ -35,7 +35,7 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 /**
  * Registers custom properties that can be used in item model JSON files.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class InitItemModelsProperties {
 
     private InitItemModelsProperties() {
@@ -43,7 +43,8 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        ItemProperties.register(colorApplicatorItem, new ResourceLocation(AppEng.MOD_ID, "colored"),
+        FabricModelPredicateProviderRegistry.register(colorApplicatorItem,
+                new ResourceLocation(AppEng.MOD_ID, "colored"),
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -57,12 +58,13 @@ public final class InitItemModelsProperties {
         registerSeedGrowth(AEItems.FLUIX_CRYSTAL_SEED);
 
         // Register the client-only item model property for chargeable items
-        ForgeRegistries.ITEMS.forEach(item -> {
+        Registry.ITEM.forEach(item -> {
             if (!(item instanceof AEBaseBlockItemChargeable chargeable)) {
                 return;
             }
 
-            ItemProperties.register(chargeable, new ResourceLocation("appliedenergistics2:fill_level"),
+            FabricModelPredicateProviderRegistry.register(chargeable,
+                    new ResourceLocation("appliedenergistics2:fill_level"),
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
@@ -77,7 +79,8 @@ public final class InitItemModelsProperties {
      */
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
-        ItemProperties.register(definition.asItem(), new ResourceLocation("appliedenergistics2:growth"),
+        FabricModelPredicateProviderRegistry.register(definition.asItem(),
+                new ResourceLocation("appliedenergistics2:growth"),
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
                         / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }

@@ -20,8 +20,8 @@ package appeng.client.gui;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Allows a widget to expose an ingredient for use with the JEI integration. This is used to allow players to hover
@@ -41,7 +41,7 @@ public interface IIngredientSupplier {
      * @return If this widget contains a fluid, return it for the purposes of JEI integration.
      */
     @Nullable
-    default FluidStack getFluidIngredient() {
+    default FluidVariant getFluidIngredient() {
         return null;
     }
 

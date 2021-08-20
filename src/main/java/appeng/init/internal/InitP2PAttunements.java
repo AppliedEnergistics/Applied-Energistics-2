@@ -18,13 +18,14 @@
 
 package appeng.init.internal;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+
+import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.util.AEColor;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 
@@ -47,7 +48,7 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.addItem(AEBlocks.ENERGY_ACCEPTOR, P2PTunnelAttunement.ENERGY_TUNNEL);
         P2PTunnelAttunement.addItem(AEBlocks.ENERGY_CELL, P2PTunnelAttunement.ENERGY_TUNNEL);
         P2PTunnelAttunement.addItem(AEBlocks.CREATIVE_ENERGY_CELL, P2PTunnelAttunement.ENERGY_TUNNEL);
-        P2PTunnelAttunement.addItemByCap(Capabilities.FORGE_ENERGY, P2PTunnelAttunement.ENERGY_TUNNEL);
+        P2PTunnelAttunement.addItemByApi(EnergyStorage.ITEM, P2PTunnelAttunement.ENERGY_TUNNEL);
         P2PTunnelAttunement.addItemByMod("thermaldynamics", P2PTunnelAttunement.ENERGY_TUNNEL);
         P2PTunnelAttunement.addItemByMod("thermalexpansion", P2PTunnelAttunement.ENERGY_TUNNEL);
         P2PTunnelAttunement.addItemByMod("thermalfoundation", P2PTunnelAttunement.ENERGY_TUNNEL);
@@ -86,8 +87,7 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.addItem(Items.LAVA_BUCKET, P2PTunnelAttunement.FLUID_TUNNEL);
         P2PTunnelAttunement.addItem(Items.MILK_BUCKET, P2PTunnelAttunement.FLUID_TUNNEL);
         P2PTunnelAttunement.addItem(Items.WATER_BUCKET, P2PTunnelAttunement.FLUID_TUNNEL);
-        P2PTunnelAttunement.addItemByCap(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
-                P2PTunnelAttunement.FLUID_TUNNEL);
+        P2PTunnelAttunement.addItemByApi(FluidStorage.ITEM, P2PTunnelAttunement.FLUID_TUNNEL);
 
         for (var c : AEColor.values()) {
             P2PTunnelAttunement.addItem(AEParts.GLASS_CABLE.item(c), P2PTunnelAttunement.ME_TUNNEL);

@@ -21,13 +21,11 @@ package appeng.init.client;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -102,12 +100,6 @@ class InitScreensTest {
      */
     @Test
     void testMissingTranslationKeys() throws IOException {
-        // Load AE2 translation data
-        Map<String, String> i18n = new HashMap<>(Language.getInstance().getLanguageData());
-        try (InputStream in = getClass().getResourceAsStream("/assets/appliedenergistics2/lang/en_us.json")) {
-            Language.loadFromJson(in, i18n::put);
-        }
-
         StyleManager.initialize(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();
@@ -115,7 +107,7 @@ class InitScreensTest {
             ScreenStyle style = StyleManager.loadStyleDoc(path);
 
             for (Text text : style.getText().values()) {
-                collectMissingTranslations(path, text.getText(), errors, i18n.keySet());
+                collectMissingTranslations(path, text.getText(), errors);
             }
         }
 
@@ -123,17 +115,16 @@ class InitScreensTest {
     }
 
     private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text,
-            Map<String, String> errors,
-            Set<String> i18nKeys) {
+            Map<String, String> errors) {
         if (text instanceof TranslatableComponent) {
             String key = ((TranslatableComponent) text).getKey();
-            if (!i18nKeys.contains(key)) {
+            if (!Language.getInstance().has(key)) {
                 errors.merge(path, key, (a, b) -> a + ", " + b);
             }
         }
 
         for (net.minecraft.network.chat.Component sibling : text.getSiblings()) {
-            collectMissingTranslations(path, sibling, errors, i18nKeys);
+            collectMissingTranslations(path, sibling, errors);
         }
     }
 

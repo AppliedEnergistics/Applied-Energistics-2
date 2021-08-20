@@ -166,7 +166,7 @@ class AEPatternHelper {
         ListTag tag = new ListTag();
         boolean foundStack = false;
         for (var stack : stacks) {
-            tag.add(stack.serializeNBT());
+            tag.add(stack.save(new CompoundTag()));
             if (!stack.isEmpty()) {
                 foundStack = true;
             }

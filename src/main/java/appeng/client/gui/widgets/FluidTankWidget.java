@@ -26,21 +26,22 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.IIngredientSupplier;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.FluidBlitter;
+import appeng.util.Platform;
 import appeng.util.fluid.IAEFluidTank;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngredientSupplier {
     private final IAEFluidTank tank;
     private final int slot;
@@ -56,7 +57,7 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
         if (this.visible) {
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
-                Blitter blitter = FluidBlitter.create(fluidStack.getFluidStack());
+                Blitter blitter = FluidBlitter.create(fluidStack.getFluid());
 
                 final int filledHeight = (int) (this.height
                         * ((float) fluidStack.getStackSize() / this.tank.getTankCapacity(this.slot)));
@@ -91,7 +92,7 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             return Arrays.asList(
-                    fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()),
+                    Platform.getFluidDisplayName(fluid),
                     new TextComponent(fluid.getStackSize() + "mB"));
         }
         return Collections.emptyList();
@@ -124,8 +125,9 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
 
     @Nullable
     @Override
-    public FluidStack getFluidIngredient() {
-        return tank.getFluidInTank(this.slot).copy();
+    public FluidVariant getFluidIngredient() {
+        var stack = tank.getFluidInSlot(this.slot);
+        return stack != null ? stack.getFluid() : null;
     }
 
     @Override

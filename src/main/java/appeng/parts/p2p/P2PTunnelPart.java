@@ -24,13 +24,14 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -44,7 +45,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
 import appeng.me.service.P2PService;
@@ -56,6 +56,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     private final TunnelCollection type = new TunnelCollection<T>(null, this.getClass());
     private boolean output;
     private short freq;
+    private final EnergyDrainHandler energyDrainHandler = new EnergyDrainHandler();
 
     public P2PTunnelPart(final ItemStack is) {
         super(is);
@@ -285,6 +286,13 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     }
 
+    protected void queueTunnelDrain(final PowerUnits unit, final double f, TransactionContext transaction) {
+        final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
+
+        energyDrainHandler.updateSnapshots(transaction);
+        energyDrainHandler.pendingEnergy += ae_to_tax;
+    }
+
     protected void queueTunnelDrain(final PowerUnits unit, final double f) {
         final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
 
@@ -314,13 +322,37 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public IModelData getModelData() {
+    public Object getRenderAttachmentData() {
         long ret = Short.toUnsignedLong(this.getFrequency());
 
         if (this.isActive() && this.isPowered()) {
             ret |= 0x10000L;
         }
 
-        return new P2PTunnelFrequencyModelData(ret);
+        return ret;
+    }
+
+    private class EnergyDrainHandler extends SnapshotParticipant<Double> {
+        private double pendingEnergy;
+
+        @Override
+        protected Double createSnapshot() {
+            return pendingEnergy;
+        }
+
+        @Override
+        protected void readSnapshot(Double snapshot) {
+            pendingEnergy = snapshot;
+        }
+
+        @Override
+        protected void onFinalCommit() {
+            if (pendingEnergy > 0) {
+                getMainNode().ifPresent(grid -> {
+                    grid.getEnergyService().extractAEPower(pendingEnergy, Actionable.MODULATE, PowerMultiplier.ONE);
+                });
+                pendingEnergy = 0;
+            }
+        }
     }
 }

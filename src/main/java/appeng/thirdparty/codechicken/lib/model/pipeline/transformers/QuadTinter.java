@@ -18,20 +18,16 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
-import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 
 /**
  * This transformer tints quads.. Feed it the output of BlockColors.colorMultiplier.
  *
  * @author covers1624
  */
-public class QuadTinter extends QuadTransformer {
-
-    public static final IPipelineElementFactory<QuadTinter> FACTORY = QuadTinter::new;
+public class QuadTinter implements RenderContext.QuadTransform {
 
     private int tint;
 
@@ -39,9 +35,8 @@ public class QuadTinter extends QuadTransformer {
         super();
     }
 
-    public QuadTinter(IVertexConsumer consumer, int tint) {
-        super(consumer);
-        this.tint = tint;
+    public QuadTinter(int tint) {
+        this.tint = tint | 0xFF000000;
     }
 
     public QuadTinter setTint(int tint) {
@@ -50,18 +45,13 @@ public class QuadTinter extends QuadTransformer {
     }
 
     @Override
-    public boolean transform() {
+    public boolean transform(MutableQuadView quad) {
         // Nuke tintIndex.
-        this.quad.tintIndex = -1;
-        if (this.format.hasColor) {
-            float r = (this.tint >> 0x10 & 0xFF) / 255F;
-            float g = (this.tint >> 0x08 & 0xFF) / 255F;
-            float b = (this.tint & 0xFF) / 255F;
-            for (Vertex v : this.quad.vertices) {
-                v.color[0] *= r;
-                v.color[1] *= g;
-                v.color[2] *= b;
-            }
+        quad.colorIndex(-1);
+        for (int i = 0; i < 4; i++) {
+            int color = quad.spriteColor(i, 0);
+            color = ColorHelper.multiplyColor(color, tint);
+            quad.spriteColor(i, 0, color);
         }
         return true;
     }

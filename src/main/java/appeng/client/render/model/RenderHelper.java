@@ -23,43 +23,41 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.world.phys.Vec3;
 
 // TODO: Investigate use of CubeBuilder instead
 final class RenderHelper {
 
-    private static EnumMap<Direction, List<Vec3>> cornersForFacing = generateCornersForFacings();
+    private static EnumMap<Direction, List<Vector3f>> cornersForFacing = generateCornersForFacings();
 
     private RenderHelper() {
 
     }
 
-    static List<Vec3> getFaceCorners(Direction side) {
+    static List<Vector3f> getFaceCorners(Direction side) {
         return cornersForFacing.get(side);
     }
 
-    private static EnumMap<Direction, List<Vec3>> generateCornersForFacings() {
-        EnumMap<Direction, List<Vec3>> result = new EnumMap<>(Direction.class);
+    private static EnumMap<Direction, List<Vector3f>> generateCornersForFacings() {
+        EnumMap<Direction, List<Vector3f>> result = new EnumMap<>(Direction.class);
 
         for (Direction facing : Direction.values()) {
-            List<Vec3> corners;
+            List<Vector3f> corners;
 
-            float offset = facing.getAxisDirection() == AxisDirection.NEGATIVE ? 0 : 1;
+            float offset = facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? 0 : 1;
 
             corners = switch (facing.getAxis()) {
-                case X -> Lists.newArrayList(new Vec3(offset, 1, 1), new Vec3(offset, 0, 1),
-                        new Vec3(offset, 0, 0), new Vec3(offset, 1, 0));
-                case Y -> Lists.newArrayList(new Vec3(1, offset, 1), new Vec3(1, offset, 0),
-                        new Vec3(0, offset, 0), new Vec3(0, offset, 1));
-                case Z -> Lists.newArrayList(new Vec3(0, 1, offset), new Vec3(0, 0, offset),
-                        new Vec3(1, 0, offset), new Vec3(1, 1, offset));
+                case X -> Lists.newArrayList(new Vector3f(offset, 1, 1), new Vector3f(offset, 0, 1),
+                        new Vector3f(offset, 0, 0), new Vector3f(offset, 1, 0));
+                case Y -> Lists.newArrayList(new Vector3f(1, offset, 1), new Vector3f(1, offset, 0),
+                        new Vector3f(0, offset, 0), new Vector3f(0, offset, 1));
+                case Z -> Lists.newArrayList(new Vector3f(0, 1, offset), new Vector3f(0, 0, offset),
+                        new Vector3f(1, 0, offset), new Vector3f(1, 1, offset));
             };
 
-            if (facing.getAxisDirection() == AxisDirection.NEGATIVE) {
+            if (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
                 corners = Lists.reverse(corners);
             }
 
@@ -69,11 +67,4 @@ final class RenderHelper {
         return result;
     }
 
-    private static Vec3 adjust(Vec3 vec, Axis axis, double delta) {
-        return switch (axis) {
-            case X -> new Vec3(vec.x + delta, vec.y, vec.z);
-            case Y -> new Vec3(vec.x, vec.y + delta, vec.z);
-            case Z -> new Vec3(vec.x, vec.y, vec.z + delta);
-        };
-    }
 }

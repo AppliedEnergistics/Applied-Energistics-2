@@ -33,22 +33,17 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
+import appeng.helpers.FluidContainerHelper;
 import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.NullMenu;
-import appeng.util.Platform;
-import appeng.util.fluid.AEFluidStack;
+import appeng.util.CraftingRemainders;
 import appeng.util.item.AEItemStack;
 
 public class AECraftingPattern implements IAEPatternDetails {
@@ -156,9 +151,9 @@ public class AECraftingPattern implements IAEPatternDetails {
      */
     private Ingredient getRecipeIngredient(int slot) {
 
-        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
+        if (recipe instanceof ShapedRecipe shapedRecipe) {
 
-            return getShapedRecipeIngredient(slot, shapedRecipe.getRecipeWidth());
+            return getShapedRecipeIngredient(slot, shapedRecipe.getWidth());
         } else {
             return getShapelessRecipeIngredient(slot);
         }
@@ -319,13 +314,13 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     private IAEStack getItemOrFluidInput(int slot, IAEItemStack item) {
-        var containedFluid = FluidUtil.getFluidContained(item.createItemStack()).orElse(null);
+        var containedFluid = FluidContainerHelper.getContainedFluid(item.createItemStack());
 
         if (canSubstituteFluids && containedFluid != null) {
             // For the MVP, we only support buckets in regular shaped and shapeless recipes.
             if (recipe.getClass() == ShapedRecipe.class || recipe.getClass() == ShapelessRecipe.class) {
                 if (item.getItem() instanceof BucketItem) {
-                    return AEFluidStack.fromFluidStack(containedFluid);
+                    return containedFluid;
                 }
             }
         }
@@ -384,7 +379,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         public IAEStack getContainerItem(IAEStack template) {
             if (template.getChannel() == StorageChannels.items()) {
                 Preconditions.checkArgument(template.getStackSize() == 1);
-                return Platform.getContainerItem(template.cast(StorageChannels.items()));
+                return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
             }
             return null;
         }

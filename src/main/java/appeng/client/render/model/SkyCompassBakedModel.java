@@ -18,15 +18,17 @@
 
 package appeng.client.render.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -39,11 +41,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
@@ -52,9 +51,9 @@ import appeng.hooks.CompassResult;
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
  * around the Y-axis to get the compass to point in the right direction.
  */
-public class SkyCompassBakedModel implements IDynamicBakedModel {
+public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
+
     // Rotation is expressed as radians
-    public static final ModelProperty<Float> ROTATION = new ModelProperty<>();
 
     private final BakedModel base;
 
@@ -67,46 +66,53 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         this.pointer = pointer;
     }
 
+    public BakedModel getBase() {
+        return base;
+    }
+
+    public BakedModel getPointer() {
+        return pointer;
+    }
+
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData extraData) {
-        float rotation = 0;
-        // Get rotation from the special block state
-        Float rotationFromData = extraData.getData(ROTATION);
-        if (rotationFromData != null) {
-            rotation = rotationFromData;
-        } else {
-            // This is used to render a compass pointing in a specific direction when being
-            // held in hand
-            rotation = this.fallbackRotation;
-        }
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
+    @Override
+    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         // Pre-compute the quad count to avoid list resizes
-        List<BakedQuad> quads = new ArrayList<>(this.base.getQuads(state, side, rand, extraData));
-        // We'll add the pointer as "sideless"
-        if (side == null) {
-            // Set up the rotation around the Y-axis for the pointer
-            Matrix4f matrix = new Matrix4f();
-            matrix.setIdentity();
-            matrix.multiply(new Quaternion(0, rotation, 0, false));
+        context.fallbackConsumer().accept(this.base);
+    }
 
-            MatrixVertexTransformer transformer = new MatrixVertexTransformer(matrix);
-            for (BakedQuad bakedQuad : this.pointer.getQuads(state, side, rand, extraData)) {
-                BakedQuadBuilder builder = new BakedQuadBuilder();
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        context.fallbackConsumer().accept(base);
 
-                transformer.setParent(builder);
-                transformer.setVertexFormat(builder.getVertexFormat());
-                bakedQuad.pipe(transformer);
-                // FIXME: This entire code is no longer truly valid...
-                // FIXME builder.setQuadOrientation( null ); // After rotation, facing a
-                // specific side cannot be guaranteed
-                // anymore
-                BakedQuad q = builder.build();
-                quads.add(q);
+        // This is used to render a compass pointing in a specific direction when being
+        // held in hand
+        // Set up the rotation around the Y-axis for the pointer
+        context.pushTransform(quad -> {
+            Quaternion quaternion = new Quaternion(0, this.fallbackRotation, 0, false);
+            Vector3f pos = new Vector3f();
+            for (int i = 0; i < 4; i++) {
+                quad.copyPos(i, pos);
+                pos.add(-0.5f, -0.5f, -0.5f);
+                pos.transform(quaternion);
+                pos.add(0.5f, 0.5f, 0.5f);
+                quad.pos(i, pos);
             }
-        }
+            return true;
+        });
+        context.fallbackConsumer().accept(this.pointer);
+        context.popTransform();
+    }
 
-        return quads;
+    // this is used in the block entity renderer
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+        return base.getQuads(state, face, random);
     }
 
     @Override

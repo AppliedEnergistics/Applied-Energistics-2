@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.util.Platform;
+import appeng.util.CraftingRemainders;
 import appeng.util.item.AEItemStack;
 
 public class ProcessingPatternBuilder {
@@ -57,7 +57,7 @@ public class ProcessingPatternBuilder {
             public IAEStack getContainerItem(IAEStack template) {
                 if (containerItems && template.getChannel() == StorageChannels.items()) {
                     assertThat(template.getStackSize()).isEqualTo(1);
-                    return Platform.getContainerItem(template.cast(StorageChannels.items()));
+                    return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
                 }
                 return null;
             }

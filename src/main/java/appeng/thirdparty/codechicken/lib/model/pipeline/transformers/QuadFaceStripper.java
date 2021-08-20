@@ -20,22 +20,17 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
-import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
 /**
  * This transformer strips quads that are on faces. Simply set the bounds for the faces, and the strip mask.
  *
  * @author covers1624
  */
-public class QuadFaceStripper extends QuadTransformer {
-
-    public static final IPipelineElementFactory<QuadFaceStripper> FACTORY = QuadFaceStripper::new;
+public class QuadFaceStripper implements RenderContext.QuadTransform {
 
     private AABB bounds;
     private int mask;
@@ -44,8 +39,7 @@ public class QuadFaceStripper extends QuadTransformer {
         super();
     }
 
-    public QuadFaceStripper(IVertexConsumer parent, AABB bounds, int mask) {
-        super(parent);
+    public QuadFaceStripper(AABB bounds, int mask) {
         this.bounds = bounds;
         this.mask = mask;
     }
@@ -70,37 +64,37 @@ public class QuadFaceStripper extends QuadTransformer {
     }
 
     @Override
-    public boolean transform() {
+    public boolean transform(MutableQuadView quad) {
         if (this.mask == 0) {
             return true;// No mask, nothing changes.
         }
         // If the bit for this quad is set, then check if we should strip.
-        if ((this.mask & 1 << this.quad.orientation.ordinal()) != 0) {
-            Direction.AxisDirection dir = this.quad.orientation.getAxisDirection();
-            Vertex[] vertices = this.quad.vertices;
-            switch (this.quad.orientation.getAxis()) {
-                case X -> {
+        Direction face = quad.nominalFace();
+        if ((this.mask & 1 << face.ordinal()) != 0) {
+            Direction.AxisDirection dir = face.getAxisDirection();
+            switch (face.getAxis()) {
+                case X: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxX : this.bounds.minX);
-                    float x1 = vertices[0].vec[0];
-                    float x2 = vertices[1].vec[0];
-                    float x3 = vertices[2].vec[0];
-                    float x4 = vertices[3].vec[0];
+                    float x1 = quad.posByIndex(0, 0);
+                    float x2 = quad.posByIndex(1, 0);
+                    float x3 = quad.posByIndex(2, 0);
+                    float x4 = quad.posByIndex(3, 0);
                     return x1 != x2 || x2 != x3 || x3 != x4 || x4 != bound;
                 }
-                case Y -> {
+                case Y: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxY : this.bounds.minY);
-                    float y1 = vertices[0].vec[1];
-                    float y2 = vertices[1].vec[1];
-                    float y3 = vertices[2].vec[1];
-                    float y4 = vertices[3].vec[1];
+                    float y1 = quad.posByIndex(0, 1);
+                    float y2 = quad.posByIndex(1, 1);
+                    float y3 = quad.posByIndex(2, 1);
+                    float y4 = quad.posByIndex(3, 1);
                     return y1 != y2 || y2 != y3 || y3 != y4 || y4 != bound;
                 }
-                case Z -> {
+                case Z: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxZ : this.bounds.minZ);
-                    float z1 = vertices[0].vec[2];
-                    float z2 = vertices[1].vec[2];
-                    float z3 = vertices[2].vec[2];
-                    float z4 = vertices[3].vec[2];
+                    float z1 = quad.posByIndex(0, 2);
+                    float z2 = quad.posByIndex(1, 2);
+                    float z3 = quad.posByIndex(2, 2);
+                    float z4 = quad.posByIndex(3, 2);
                     return z1 != z2 || z2 != z3 || z3 != z4 || z4 != bound;
                 }
             }

@@ -18,12 +18,12 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import com.mojang.math.Vector3f;
 
-import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 
 /**
  * This transformer simply clamps the vertices inside the provided box. You probably want to Re-Interpolate the UV's,
@@ -31,46 +31,75 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
  *
  * @author covers1624
  */
-public class QuadClamper extends QuadTransformer {
+public class QuadClamper implements RenderContext.QuadTransform {
 
-    public static IPipelineElementFactory<QuadClamper> FACTORY = QuadClamper::new;
+    private final AABB clampBounds;
 
-    private AABB clampBounds;
+    private final Vector3f pos = new Vector3f();
 
-    QuadClamper() {
-        super();
-    }
-
-    public QuadClamper(IVertexConsumer parent, AABB bounds) {
-        super(parent);
-        this.clampBounds = bounds;
-    }
-
-    public void setClampBounds(AABB bounds) {
-        this.clampBounds = bounds;
+    public QuadClamper(AABB clampBounds) {
+        this.clampBounds = clampBounds;
     }
 
     @Override
-    public boolean transform() {
-        int s = this.quad.orientation.ordinal() >> 1;
+    public boolean transform(MutableQuadView quad) {
+        int s = quad.nominalFace().ordinal() >> 1;
 
-        this.quad.clamp(this.clampBounds);
+        clamp(quad, this.clampBounds);
 
         // Check if the quad would be invisible and cull it.
-        Vertex[] vertices = this.quad.vertices;
-        float x1 = vertices[0].dx(s);
-        float x2 = vertices[1].dx(s);
-        float x3 = vertices[2].dx(s);
-        float x4 = vertices[3].dx(s);
+        float x1 = quad.posByIndex(0, dx(s));
+        float x2 = quad.posByIndex(1, dx(s));
+        float x3 = quad.posByIndex(2, dx(s));
+        float x4 = quad.posByIndex(3, dx(s));
 
-        float y1 = vertices[0].dy(s);
-        float y2 = vertices[1].dy(s);
-        float y3 = vertices[2].dy(s);
-        float y4 = vertices[3].dy(s);
+        float y1 = quad.posByIndex(0, dy(s));
+        float y2 = quad.posByIndex(1, dy(s));
+        float y3 = quad.posByIndex(2, dy(s));
+        float y4 = quad.posByIndex(3, dy(s));
 
         // These comparisons are safe as we are comparing clamped values.
         boolean flag1 = x1 == x2 && x2 == x3 && x3 == x4;
         boolean flag2 = y1 == y2 && y2 == y3 && y3 == y4;
         return !flag1 && !flag2;
     }
+
+    private void clamp(MutableQuadView quad, AABB bb) {
+        for (int i = 0; i < 4; i++) {
+            quad.copyPos(i, pos);
+            pos.set((float) Mth.clamp(pos.x(), bb.minX, bb.maxX),
+                    (float) Mth.clamp(pos.y(), bb.minY, bb.maxY),
+                    (float) Mth.clamp(pos.z(), bb.minZ, bb.maxZ));
+            quad.pos(i, pos);
+        }
+    }
+
+    /**
+     * Gets the 2d X coord for the given axis.
+     *
+     * @param s The axis. side >> 1
+     * @return The x coord.
+     */
+    private static int dx(int s) {
+        if (s <= 1) {
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    /**
+     * Gets the 2d Y coord for the given axis.
+     *
+     * @param s The axis. side >> 1
+     * @return The y coord.
+     */
+    private static int dy(int s) {
+        if (s > 0) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
 }

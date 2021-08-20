@@ -29,20 +29,26 @@ import java.util.Random;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Iterables;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -56,15 +62,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.util.thread.SidedThreadGroups;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -83,13 +81,13 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
@@ -102,8 +100,7 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
-    @VisibleForTesting
-    public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
+    private static final FabricLoader FABRIC = FabricLoader.getInstance();
 
     /*
      * random source, use it for item drop locations...
@@ -198,18 +195,12 @@ public class Platform {
 
     }
 
-    /**
-     * @return True if client-side classes (such as Renderers) are available.
-     */
-    public static boolean hasClientClasses() {
-        return FMLEnvironment.dist.isClient();
-    }
-
     /*
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
+        var currentServer = AppEng.instance().getCurrentServer();
+        return currentServer == null || Thread.currentThread() != currentServer.getRunningThread();
     }
 
     public static boolean hasPermissions(final DimensionalBlockPos dc, final Player player) {
@@ -287,14 +278,21 @@ public class Platform {
      * returns true if the code is on the server.
      */
     public static boolean isServer() {
-        return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
+        try {
+            var currentServer = AppEng.instance().getCurrentServer();
+            return currentServer != null && Thread.currentThread() == currentServer.getRunningThread();
+        } catch (NullPointerException npe) {
+            // FIXME TEST HACKS
+            // Running from tests: AppEng.instance() is null... :(
+            return false;
+        }
     }
 
     /**
      * Throws an exception if the current thread is not one of the server threads.
      */
     public static void assertServerThread() {
-        if (Thread.currentThread().getThreadGroup() != serverThreadGroup) {
+        if (!isServer()) {
             throw new UnsupportedOperationException(
                     "This code can only be called server-side and this is most likely a bug.");
         }
@@ -304,7 +302,7 @@ public class Platform {
         return Math.abs(RANDOM_GENERATOR.nextInt());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static List<Component> getTooltip(final Object o) {
         if (o == null) {
             return Collections.emptyList();
@@ -339,17 +337,17 @@ public class Platform {
     }
 
     public static String getModId(final IAEFluidStack fs) {
-        if (fs == null) {
+        if (fs == null || fs.getFluid().isBlank()) {
             return "** Null";
         }
 
-        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluid());
-        return n == null ? "** Null" : n.getNamespace();
+        var n = Registry.FLUID.getKey(fs.getFluid().getFluid());
+        return n == Registry.FLUID.getDefaultKey() ? "** Null" : n.getNamespace();
     }
 
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
-                + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
+                + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
     }
 
     public static Component getItemDisplayName(final Object o) {
@@ -378,12 +376,19 @@ public class Platform {
         }
     }
 
+    public static String getDescriptionId(Fluid fluid) {
+        return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
+    }
+
+    public static String getDescriptionId(FluidVariant fluid) {
+        return getDescriptionId(fluid.getFluid());
+    }
+
     public static Component getFluidDisplayName(IAEFluidStack o) {
         if (o == null) {
             return new TextComponent("** Null");
         }
-        FluidStack fluidStack = o.getFluidStack();
-        return fluidStack.getDisplayName();
+        return new TranslatableComponent(getDescriptionId(o.getFluid()));
     }
 
     public static boolean isChargeable(final ItemStack i) {
@@ -400,18 +405,11 @@ public class Platform {
     public static Player getPlayer(final ServerLevel level) {
         Objects.requireNonNull(level);
 
-        final Player wrp = FAKE_PLAYERS.get(level);
-        if (wrp != null) {
-            return wrp;
-        }
-
-        final Player p = FakePlayerFactory.getMinecraft(level);
-        FAKE_PLAYERS.put(level, p);
-        return p;
+        return FakePlayer.getOrCreate(level);
     }
 
     public static boolean isFakePlayer(Player player) {
-        return player instanceof FakePlayer;
+        return FakePlayer.isFakePlayer(player);
     }
 
     /**
@@ -688,37 +686,6 @@ public class Platform {
         return ItemStack.EMPTY;
     }
 
-    /**
-     * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
-     * crafting, i.E. the empty bucket for a bucket of water.
-     */
-    // TODO: investigate if all these special cases make sense. E.g. item == null isn't possible anymore.
-    public static ItemStack getContainerItem(final ItemStack stackInSlot) {
-        if (stackInSlot == null) {
-            return ItemStack.EMPTY;
-        }
-
-        final Item i = stackInSlot.getItem();
-        if (i == null || !i.hasContainerItem(stackInSlot)) {
-            if (stackInSlot.getCount() > 1) {
-                stackInSlot.setCount(stackInSlot.getCount() - 1);
-                return stackInSlot;
-            }
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack ci = i.getContainerItem(stackInSlot.copy());
-        if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
-            ci = ItemStack.EMPTY;
-        }
-
-        return ci;
-    }
-
-    public static IAEItemStack getContainerItem(IAEItemStack stack) {
-        return StorageChannels.items().createStack(getContainerItem(stack.createItemStack()));
-    }
-
     public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
         if (!level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
@@ -772,7 +739,7 @@ public class Platform {
     }
 
     public static String formatFluidAmount(long amount) {
-        return NumberFormat.getNumberInstance(Locale.US).format(amount / 1000.0) + " B";
+        return NumberFormat.getNumberInstance(Locale.US).format(amount / (double) FluidConstants.BUCKET) + " B";
     }
 
     /**
@@ -782,5 +749,25 @@ public class Platform {
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
         return level instanceof ServerLevel serverLevel && serverLevel.isPositionTickingWithEntitiesLoaded(pos);
+    }
+
+    public static Transaction openOrJoinTx() {
+        return Transaction.openNested(Transaction.getCurrentUnsafe());
+    }
+
+    public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b) {
+        if (a.isEmpty() || !a.sameItem(b) || a.hasTag() != b.hasTag())
+            return false;
+
+        return (!a.hasTag() || a.getTag().equals(b.getTag()));
+    }
+
+    @Nonnull
+    public static ItemStack copyStackWithSize(@Nonnull ItemStack itemStack, int size) {
+        if (size == 0)
+            return ItemStack.EMPTY;
+        ItemStack copy = itemStack.copy();
+        copy.setCount(size);
+        return copy;
     }
 }

@@ -20,10 +20,11 @@ package appeng.block.networking;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -63,9 +64,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IBlockRenderProperties;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -79,12 +77,18 @@ import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMaterials;
+import appeng.hooks.ICustomBlockDestroyEffect;
+import appeng.hooks.ICustomBlockHitEffect;
+import appeng.hooks.ICustomPickBlock;
+import appeng.hooks.IDynamicLadder;
+import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock {
+public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock,
+        ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -156,8 +160,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, Level level, BlockPos pos, Player player,
-            boolean willHarvest, FluidState fluid) {
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        super.playerWillDestroy(level, pos, state, player);
+
         if (player.getAbilities().instabuild) {
             final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
             if (blockEntity != null) {
@@ -165,7 +170,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             }
             // maybe ray trace?
         }
-        return super.removedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     // TODO-1.17 This hook was removed from Forge with replacement and may be unnecessary
@@ -246,7 +250,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
@@ -323,97 +327,93 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
-    public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
-        consumer.accept(new IBlockRenderProperties() {
+    public boolean addHitEffects(final BlockState state, final Level level, final HitResult target,
+            final ParticleEngine effectRenderer) {
 
-            @Override
-            public boolean addHitEffects(final BlockState state, final Level level, final HitResult target,
-                    final ParticleEngine effectRenderer) {
+        // Half the particle rate. Since we're spawning concentrated on a specific spot,
+        // our particle effect otherwise looks too strong
+        if (Platform.getRandom().nextBoolean()) {
+            return true;
+        }
 
-                // Half the particle rate. Since we're spawning concentrated on a specific spot,
-                // our particle effect otherwise looks too strong
-                if (Platform.getRandom().nextBoolean()) {
-                    return true;
-                }
+        if (target.getType() != Type.BLOCK) {
+            return false;
+        }
+        BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y,
+                target.getLocation().z);
 
-                if (target.getType() != Type.BLOCK) {
-                    return false;
-                }
-                BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y,
-                        target.getLocation().z);
+        ICableBusContainer cb = cb(level, blockPos);
 
-                ICableBusContainer cb = cb(level, blockPos);
+        // Our built-in model has the actual baked sprites we need
+        BakedModel model = Minecraft.getInstance().getBlockRenderer()
+                .getBlockModel(defaultBlockState());
 
-                // Our built-in model has the actual baked sprites we need
-                BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                        .getBlockModel(defaultBlockState());
+        // We cannot add the effect if we don't have the model
+        if (!(model instanceof CableBusBakedModel cableBusModel)) {
+            return true;
+        }
 
-                // We cannot add the effect if we don't have the model
-                if (!(model instanceof CableBusBakedModel cableBusModel)) {
-                    return true;
-                }
+        CableBusRenderState renderState = cb.getRenderState();
 
-                CableBusRenderState renderState = cb.getRenderState();
+        // Spawn a particle for one of the particle textures
+        TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
+        if (texture != null) {
+            double x = target.getLocation().x;
+            double y = target.getLocation().y;
+            double z = target.getLocation().z;
+            // FIXME: Check how this looks, probably like shit, maybe provide parts the
+            // ability to supply particle textures???
+            effectRenderer.add(
+                    new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture).scale(0.8F));
+        }
 
-                // Spawn a particle for one of the particle textures
-                TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
-                if (texture != null) {
-                    double x = target.getLocation().x;
-                    double y = target.getLocation().y;
-                    double z = target.getLocation().z;
-                    // FIXME: Check how this looks, probably like shit, maybe provide parts the
-                    // ability to supply particle textures???
-                    effectRenderer.add(
-                            new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture).scale(0.8F));
-                }
+        return true;
+    }
 
-                return true;
-            }
+    @Environment(EnvType.CLIENT)
+    @Override
+    public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos,
+            ParticleEngine effectRenderer) {
+        ICableBusContainer cb = cb(level, pos);
 
-            @Override
-            public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos,
-                    ParticleEngine effectRenderer) {
-                ICableBusContainer cb = cb(level, pos);
+        // Our built-in model has the actual baked sprites we need
+        BakedModel model = Minecraft.getInstance().getBlockRenderer()
+                .getBlockModel(defaultBlockState());
 
-                // Our built-in model has the actual baked sprites we need
-                BakedModel model = Minecraft.getInstance().getBlockRenderer()
-                        .getBlockModel(defaultBlockState());
+        // We cannot add the effect if we dont have the model
+        if (!(model instanceof CableBusBakedModel cableBusModel)) {
+            return true;
+        }
 
-                // We cannot add the effect if we dont have the model
-                if (!(model instanceof CableBusBakedModel cableBusModel)) {
-                    return true;
-                }
+        CableBusRenderState renderState = cb.getRenderState();
 
-                CableBusRenderState renderState = cb.getRenderState();
+        List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
 
-                List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
+        if (!textures.isEmpty()) {
+            // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
+            for (int j = 0; j < 4; ++j) {
+                for (int k = 0; k < 4; ++k) {
+                    for (int l = 0; l < 4; ++l) {
+                        // Randomly select one of the textures if the cable bus has more than just one
+                        // possibility here
+                        final TextureAtlasSprite texture = Platform.pickRandom(textures);
 
-                if (!textures.isEmpty()) {
-                    // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
-                    for (int j = 0; j < 4; ++j) {
-                        for (int k = 0; k < 4; ++k) {
-                            for (int l = 0; l < 4; ++l) {
-                                // Randomly select one of the textures if the cable bus has more than just one
-                                // possibility here
-                                final TextureAtlasSprite texture = Platform.pickRandom(textures);
+                        final double x = pos.getX() + (j + 0.5D) / 4.0D;
+                        final double y = pos.getY() + (k + 0.5D) / 4.0D;
+                        final double z = pos.getZ() + (l + 0.5D) / 4.0D;
 
-                                final double x = pos.getX() + (j + 0.5D) / 4.0D;
-                                final double y = pos.getY() + (k + 0.5D) / 4.0D;
-                                final double z = pos.getZ() + (l + 0.5D) / 4.0D;
-
-                                // FIXME: Check how this looks, probably like shit, maybe provide parts the
-                                // ability to supply particle textures???
-                                Particle effect = new CableBusBreakingParticle((ClientLevel) level, x, y, z,
-                                        x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
-                                effectRenderer.add(effect);
-                            }
-                        }
+                        // FIXME: Check how this looks, probably like shit, maybe provide parts the
+                        // ability to supply particle textures???
+                        Particle effect = new CableBusBreakingParticle((ClientLevel) level, x, y, z,
+                                x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
+                        effectRenderer.add(effect);
                     }
                 }
-
-                return true;
             }
-        });
+        }
+
+        return true;
     }
 }

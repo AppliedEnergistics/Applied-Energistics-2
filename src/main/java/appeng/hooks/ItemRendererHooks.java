@@ -59,7 +59,7 @@ public final class ItemRendererHooks {
         } else if (WrappedFluidStack.isWrapped(stack)) {
             var fluidStack = WrappedFluidStack.unwrap(stack);
             if (fluidStack != null) {
-                FluidBlitter.create(fluidStack.getFluidStack())
+                FluidBlitter.create(fluidStack.getFluid())
                         .dest(x, y, 16, 16)
                         .blit((int) (100.0 + renderer.blitOffset));
             }

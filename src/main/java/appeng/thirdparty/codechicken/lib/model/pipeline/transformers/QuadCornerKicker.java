@@ -21,14 +21,12 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 import static net.minecraft.core.Direction.AxisDirection.NEGATIVE;
 import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
-
-import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
 /**
  * This transformer is a little complicated. Basically a Facade / Cover can use this to 'kick' the edges in of quads to
@@ -38,10 +36,9 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
  *
  * @author covers1624
  */
-public class QuadCornerKicker extends QuadTransformer {
+public class QuadCornerKicker implements RenderContext.QuadTransform {
 
-    // The factory for pipeline creation.
-    public static final IPipelineElementFactory<QuadCornerKicker> FACTORY = QuadCornerKicker::new;
+    public static final QuadCornerKicker INSTANCE = new QuadCornerKicker();
 
     // Simple horizonal lookups.
     public static int[][] horizonals = new int[][] {
@@ -62,7 +59,7 @@ public class QuadCornerKicker extends QuadTransformer {
     private AABB box;
     private double thickness;
 
-    QuadCornerKicker() {
+    public QuadCornerKicker() {
         super();
     }
 
@@ -103,26 +100,23 @@ public class QuadCornerKicker extends QuadTransformer {
     }
 
     @Override
-    public boolean transform() {
-
-        int side = this.quad.orientation.ordinal();
+    public boolean transform(MutableQuadView quad) {
+        int side = quad.nominalFace().ordinal();
         if (side != this.mySide && side != (this.mySide ^ 1)) {
             for (int hoz : horizonals[this.mySide]) {
                 if (side != hoz && side != (hoz ^ 1) && (this.facadeMask & 1 << hoz) != 0) {
                     Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
-                    for (Vertex vertex : this.quad.vertices) {
-                        float x = vertex.vec[0];
-                        float y = vertex.vec[1];
-                        float z = vertex.vec[2];
+                    for (int i = 0; i < 4; i++) {
+                        float x = quad.posByIndex(i, 0);
+                        float y = quad.posByIndex(i, 1);
+                        float z = quad.posByIndex(i, 2);
                         if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
                                 && epsComp(z, corner.pZ(this.box))) {
                             Vec3i vec = Direction.values()[hoz].getNormal();
                             x -= vec.getX() * this.thickness;
                             y -= vec.getY() * this.thickness;
                             z -= vec.getZ() * this.thickness;
-                            vertex.vec[0] = x;
-                            vertex.vec[1] = y;
-                            vertex.vec[2] = z;
+                            quad.pos(i, x, y, z);
                         }
                     }
                 }
@@ -142,11 +136,11 @@ public class QuadCornerKicker extends QuadTransformer {
 
         private AxisDirection xAxis;
         private AxisDirection yAxis;
-        private Direction.AxisDirection zAxis;
+        private AxisDirection zAxis;
 
         private static final int[] sideMask = { 0, 2, 0, 1, 0, 4 };
 
-        Corner(AxisDirection xAxis, Direction.AxisDirection yAxis, AxisDirection zAxis) {
+        Corner(AxisDirection xAxis, AxisDirection yAxis, AxisDirection zAxis) {
             this.xAxis = xAxis;
             this.yAxis = yAxis;
             this.zAxis = zAxis;
@@ -179,4 +173,16 @@ public class QuadCornerKicker extends QuadTransformer {
             return (float) (this.zAxis == NEGATIVE ? box.minZ : box.maxZ);
         }
     }
+
+    // Should be small enough.
+    private final static double EPSILON = 0.00001;
+
+    private static boolean epsComp(float a, float b) {
+        if (a == b) {
+            return true;
+        } else {
+            return Math.abs(a - b) < EPSILON;
+        }
+    }
+
 }

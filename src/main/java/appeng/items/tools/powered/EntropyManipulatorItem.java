@@ -164,9 +164,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         if (tryBoth || !InteractionUtil.isInAlternateUseMode(p)) {
-            if (block instanceof TntBlock) {
+            if (block instanceof TntBlock tntBlock) {
+                tntBlock.playerWillDestroy(level, pos, level.getBlockState(pos), p);
                 level.removeBlock(pos, false);
-                block.catchFire(level.getBlockState(pos), level, pos, side, p);
                 return true;
             }
 

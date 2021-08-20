@@ -21,7 +21,6 @@ package appeng.client.render.cablebus;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -29,25 +28,21 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
-public class P2PTunnelFrequencyModel implements BasicUnbakedModel<P2PTunnelFrequencyModel> {
+public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
+
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
+    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ItemOverrides overrides, ResourceLocation modelLocation) {
-        try {
-            final TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
-            return new P2PTunnelFrequencyBakedModel(texture);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public BakedModel bake(ModelBakery bakery, Function<Material, TextureAtlasSprite> textureGetter,
+            ModelState modelState, ResourceLocation resourceLocation) {
+        final TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
+        return new P2PTunnelFrequencyBakedModel(texture);
     }
 
     @Override

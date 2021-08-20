@@ -18,73 +18,95 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 
 import appeng.client.render.FacingToRotation;
-import appeng.thirdparty.codechicken.lib.model.CachedFormat;
-import appeng.thirdparty.codechicken.lib.model.Quad;
-import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadMatrixTransformer;
 
 /**
  * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
  * facing
  */
-public class QuadRotator {
-    private static final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> //
-    BakedPipeline.builder()//
-            .addElement("transformer", QuadMatrixTransformer.FACTORY)//
-            .build());
-    private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
+public class QuadRotator implements RenderContext.QuadTransform {
 
-    public List<BakedQuad> rotateQuads(List<BakedQuad> quads, Direction newForward, Direction newUp) {
-        if (newForward == Direction.NORTH && newUp == Direction.UP) {
-            return quads; // This is the default orientation
+    public static final RenderContext.QuadTransform NULL_TRANSFORM = quad -> true;
+
+    private static final EnumMap<FacingToRotation, RenderContext.QuadTransform> TRANSFORMS = new EnumMap<>(
+            FacingToRotation.class);
+
+    static {
+        for (FacingToRotation rotation : FacingToRotation.values()) {
+            if (rotation.isRedundant()) {
+                TRANSFORMS.put(rotation, NULL_TRANSFORM);
+            } else {
+                TRANSFORMS.put(rotation, new QuadRotator(rotation));
+            }
         }
-        FacingToRotation rotation = getRotation(newForward, newUp);
-        if (rotation.isRedundant()) {
-            return quads;
-        }
-
-        List<BakedQuad> result = new ArrayList<>(quads.size());
-
-        CachedFormat format = CachedFormat.lookup(DefaultVertexFormat.BLOCK);
-        BakedPipeline pipeline = pipelines.get();
-        Quad collector = collectors.get();
-        QuadMatrixTransformer transformer = pipeline.getElement("transformer", QuadMatrixTransformer.class);
-
-        // FIXME: Temporary rotation fix
-        Matrix4f mat = new Matrix4f();
-        mat.setTranslation(-0.5f, -0.5f, -0.5f);
-        mat.multiplyBackward(rotation.getMat());
-        mat.translate(new Vector3f(0.5f, 0.5f, 0.5f));
-
-        for (BakedQuad quad : quads) {
-            pipeline.reset(format);
-            collector.reset(format);
-
-            transformer.setMatrix(mat);
-            pipeline.prepare(collector);
-            quad.pipe(pipeline);
-            result.add(collector.bake());
-        }
-
-        return result;
     }
 
-    private FacingToRotation getRotation(Direction forward, Direction up) {
+    private final FacingToRotation rotation;
+
+    private final Quaternion quaternion;
+
+    private QuadRotator(FacingToRotation rotation) {
+        this.rotation = rotation;
+        this.quaternion = rotation.getRot();
+    }
+
+    public static RenderContext.QuadTransform get(Direction newForward, Direction newUp) {
+        return get(getRotation(newForward, newUp));
+    }
+
+    public static RenderContext.QuadTransform get(FacingToRotation rotation) {
+        if (rotation.isRedundant()) {
+            return NULL_TRANSFORM; // This is the default orientation
+        }
+        return TRANSFORMS.get(rotation);
+    }
+
+    @Override
+    public boolean transform(MutableQuadView quad) {
+        Vector3f tmp = new Vector3f();
+
+        for (int i = 0; i < 4; i++) {
+            // Transform the position (center of rotation is 0.5, 0.5, 0.5)
+            quad.copyPos(i, tmp);
+            tmp.add(-0.5f, -0.5f, -0.5f);
+            tmp.transform(quaternion);
+            tmp.add(0.5f, 0.5f, 0.5f);
+            quad.pos(i, tmp);
+
+            // Transform the normal
+            if (quad.hasNormal(i)) {
+                quad.copyNormal(i, tmp);
+                tmp.transform(quaternion);
+                quad.normal(i, tmp);
+            }
+        }
+
+        // Transform the nominal face, setting the cull face will also overwrite the
+        // nominialFace,
+        // hence saving both first and the order here.
+        Direction nominalFace = quad.nominalFace();
+        Direction cullFace = quad.cullFace();
+        if (cullFace != null) {
+            quad.cullFace(rotation.rotate(cullFace));
+        }
+        quad.nominalFace(rotation.rotate(nominalFace));
+
+        return true;
+    }
+
+    private static FacingToRotation getRotation(Direction forward, Direction up) {
         // Sanitize forward/up
         if (forward.getAxis() == up.getAxis()) {
-            if (up.getAxis() == Axis.Y) {
+            if (up.getAxis() == Direction.Axis.Y) {
                 up = Direction.NORTH;
             } else {
                 up = Direction.UP;
@@ -93,4 +115,5 @@ public class QuadRotator {
 
         return FacingToRotation.get(forward, up);
     }
+
 }
