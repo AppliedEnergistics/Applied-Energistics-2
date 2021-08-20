@@ -66,7 +66,7 @@ public final class ConventionTags {
 
     public static Tag.Named<Item> ENDER_PEARL = Tags.Items.ENDER_PEARLS;
     public static Tag.Named<Item> ENDER_PEARL_DUST = tag("forge:dusts/ender");
-    public static Tag.Named<Item> WHEAT_CROP = tag("forge:crops/wheat");
+    public static Tag.Named<Item> WHEAT_CROP = Tags.Items.CROPS_WHEAT;
 
     public static Tag.Named<Item> WOOD_STICK = Tags.Items.RODS_WOODEN;
     public static Tag.Named<Item> WOOD_GEAR = tag("forge:gears/wooden");
