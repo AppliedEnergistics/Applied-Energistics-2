@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,22 +16,21 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.localization;
+package appeng.integration.modules.waila;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public enum WailaText {
     Crafting,
 
-    DeviceOnline, DeviceOffline, DeviceMissingChannel,
+    DeviceOnline, DeviceOffline, NetworkBooting, DeviceMissingChannel,
 
     P2PUnlinked, P2PInputOneOutput, P2PInputManyOutputs, P2POutput,
 
     Locked, Unlocked, Showing,
 
-    Contains, Channels;
+    Stored, Contains, Channels;
 
     private final String root;
 
@@ -39,23 +38,11 @@ public enum WailaText {
         this.root = "waila.appliedenergistics2";
     }
 
-    WailaText(final String r) {
-        this.root = r;
-    }
-
-    public String getLocal() {
-        return I18n.get(this.getTranslationKey());
-    }
-
-    public String getTranslationKey() {
-        return this.root + '.' + this.toString();
-    }
-
-    public Component textComponent() {
+    public MutableComponent textComponent() {
         return new TranslatableComponent(this.root + '.' + this.toString());
     }
 
-    public Component textComponent(Object... args) {
+    public MutableComponent textComponent(Object... args) {
         return new TranslatableComponent(this.root + '.' + this.toString(), args);
     }
 

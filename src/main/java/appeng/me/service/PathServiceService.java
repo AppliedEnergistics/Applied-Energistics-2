@@ -305,7 +305,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
     @Override
     public boolean isNetworkBooting() {
-        return !this.booting && !this.active.isEmpty();
+        return this.booting && !this.active.isEmpty();
     }
 
     @Override
