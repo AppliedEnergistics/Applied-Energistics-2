@@ -18,16 +18,19 @@
 
 package appeng.me.cluster.implementations;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
@@ -42,6 +45,20 @@ import appeng.me.service.helpers.ConnectionWrapper;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements IAECluster, IActionHost {
+
+    private static final Set<QuantumCluster> ACTIVE_CLUSTERS = new HashSet<>();
+
+    static {
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            ACTIVE_CLUSTERS.clear();
+        });
+        ServerWorldEvents.UNLOAD.register((server, level) -> {
+            var iteration = new ArrayList<>(ACTIVE_CLUSTERS);
+            for (QuantumCluster activeCluster : iteration) {
+                activeCluster.onUnload(level);
+            }
+        });
+    }
 
     private final BlockPos boundsMin;
     private final BlockPos boundsMax;
@@ -60,9 +77,8 @@ public class QuantumCluster implements IAECluster, IActionHost {
         this.setRing(new QuantumBridgeBlockEntity[8]);
     }
 
-    @SubscribeEvent
-    public void onUnload(final WorldEvent.Unload e) {
-        if (this.center.getLevel() == e.getWorld()) {
+    private void onUnload(ServerLevel level) {
+        if (this.center.getLevel() == level) {
             this.setUpdateStatus(false);
             this.destroy();
         }
@@ -208,7 +224,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         MBCalculator.setModificationInProgress(this);
         try {
             if (this.registered) {
-                MinecraftForge.EVENT_BUS.unregister(this);
+                ACTIVE_CLUSTERS.remove(this);
                 this.registered = false;
             }
 
@@ -251,7 +267,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
     void setCenter(final QuantumBridgeBlockEntity c) {
         this.registered = true;
-        MinecraftForge.EVENT_BUS.register(this);
+        ACTIVE_CLUSTERS.add(this);
         this.center = c;
     }
 

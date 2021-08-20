@@ -30,10 +30,10 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -42,7 +42,7 @@ import appeng.api.storage.data.IAEStack;
  * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
  * query the render handler first.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 @ThreadSafe
 public class AEStackRendering {
     private static volatile Map<IStorageChannel<?>, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();

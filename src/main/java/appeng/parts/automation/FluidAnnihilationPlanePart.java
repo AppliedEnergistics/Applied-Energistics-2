@@ -22,8 +22,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -34,10 +36,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -59,6 +57,7 @@ import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
+import appeng.helpers.FluidContainerHelper;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
@@ -67,8 +66,8 @@ import appeng.util.fluid.AEFluidStack;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final Tag.Named<Fluid> TAG_BLACKLIST = FluidTags
-            .createOptional(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
+    public static final Tag<Fluid> TAG_BLACKLIST = TagRegistry
+            .fluid(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");
@@ -135,7 +134,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         final BlockPos pos = te.getBlockPos().relative(this.getSide());
 
         BlockState blockstate = level.getBlockState(pos);
-        if (blockstate.getBlock() instanceof BucketPickup) {
+        if (blockstate.getBlock() instanceof BucketPickup bucketPickup) {
             FluidState fluidState = blockstate.getFluidState();
 
             Fluid fluid = fluidState.getType();
@@ -145,17 +144,17 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
             if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
-                final IAEFluidStack blockFluid = AEFluidStack
-                        .fromFluidStack(new FluidStack(fluidState.getType(), FluidAttributes.BUCKET_VOLUME));
+                var blockFluid = AEFluidStack.of(FluidVariant.of(fluid), FluidConstants.BLOCK);
                 if (this.storeFluid(grid, blockFluid, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    var fluidContainer = ((BucketPickup) blockstate.getBlock()).pickupBlock(level, pos, blockstate);
-                    FluidUtil.getFluidContained(fluidContainer).ifPresent(fs -> {
-                        this.storeFluid(grid, AEFluidStack.fromFluidStack(fs), true);
-                    });
+                    var fluidContainer = bucketPickup.pickupBlock(level, pos, blockstate);
+                    var pickedUpStack = FluidContainerHelper.getContainedFluid(fluidContainer);
+                    if (pickedUpStack != null) {
+                        this.storeFluid(grid, pickedUpStack, true);
+                    }
 
                     if (!throttleEffect()) {
                         AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
@@ -211,8 +210,8 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
-        return new PlaneModelData(getConnections());
+    public Object getRenderAttachmentData() {
+        return getConnections();
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {

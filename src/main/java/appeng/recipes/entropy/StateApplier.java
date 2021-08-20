@@ -20,12 +20,12 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Generic template to apply named properties to block and fluid states.
@@ -53,7 +53,7 @@ class StateApplier<T extends Comparable<T>> {
         return new StateApplier<>(property, value);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     static StateApplier<?> readFromPacket(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();

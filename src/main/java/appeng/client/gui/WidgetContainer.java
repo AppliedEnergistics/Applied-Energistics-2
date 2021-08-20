@@ -74,7 +74,7 @@ public class WidgetContainer {
             widget.setWidth(widgetStyle.getWidth());
         }
         if (widgetStyle.getHeight() != 0) {
-            widget.setHeight(widgetStyle.getHeight());
+            widget.height = widgetStyle.getHeight();
         }
 
         if (widget instanceof TabButton) {

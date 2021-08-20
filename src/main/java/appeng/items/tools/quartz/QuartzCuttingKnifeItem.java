@@ -18,8 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,11 +39,12 @@ import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;
-    private final Random random = new Random();
 
     public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);
         this.type = type;
+        // TODO FABRIC 117 This means knife doesnt lose durability when used in normal crafting
+        this.craftingRemainingItem = this;
     }
 
     @Override
@@ -74,20 +73,21 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
         return Platform.canRepair(this.type, a, b);
     }
 
-    @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
-        ItemStack damagedStack = itemStack.copy();
-        if (damagedStack.hurt(1, random, null)) {
-            return ItemStack.EMPTY;
-        } else {
-            return damagedStack;
-        }
-    }
-
-    @Override
-    public boolean hasContainerItem(final ItemStack stack) {
-        return true;
-    }
+    // TODO FABRIC 117 recipe remainders
+//    @Override
+//    public ItemStack getContainerItem(final ItemStack itemStack) {
+//        ItemStack damagedStack = itemStack.copy();
+//        if (damagedStack.hurt(1, random, null)) {
+//            return ItemStack.EMPTY;
+//        } else {
+//            return damagedStack;
+//        }
+//    }
+//
+//    @Override
+//    public boolean hasContainerItem(final ItemStack stack) {
+//        return true;
+//    }
 
     @Override
     public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,

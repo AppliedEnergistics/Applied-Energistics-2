@@ -39,7 +39,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
 import appeng.api.ids.AETags;
@@ -48,9 +47,10 @@ import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
-public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
+public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem, AEToolItem {
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -120,7 +120,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     public ItemStack createFacadeForItemUnchecked(final ItemStack itemStack) {
         final ItemStack is = new ItemStack(this);
         final CompoundTag data = new CompoundTag();
-        data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
+        data.putString(NBT_ITEM_ID, Registry.ITEM.getKey(itemStack.getItem()).toString());
         is.setTag(data);
         return is;
     }
@@ -143,11 +143,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         }
 
         ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
-
-        if (baseItem == null) {
-            return ItemStack.EMPTY;
-        }
+        Item baseItem = Registry.ITEM.get(itemId);
 
         return new ItemStack(baseItem, 1);
     }
@@ -180,7 +176,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         }
 
         final CompoundTag facadeTag = new CompoundTag();
-        facadeTag.putString(NBT_ITEM_ID, item.getRegistryName().toString());
+        facadeTag.putString(NBT_ITEM_ID, Registry.ITEM.getKey(item).toString());
         facadeStack.setTag(facadeTag);
 
         return facadeStack;
@@ -194,7 +190,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return false;
         }
 
-        return ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucent())
-                || ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucentNoCrumbling());
+        return ItemBlockRenderTypes.getChunkRenderType(blockState) == RenderType.translucent()
+                || ItemBlockRenderTypes.getChunkRenderType(blockState) == RenderType.translucentNoCrumbling();
     }
 }

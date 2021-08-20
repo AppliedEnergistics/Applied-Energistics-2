@@ -33,6 +33,8 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
@@ -48,13 +50,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -81,7 +76,7 @@ public interface IPart extends ICustomCableConnection {
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     default void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
@@ -340,26 +335,13 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
-     * forwarded to parts on the appropriate side.
-     *
-     * @see CapabilityProvider#getCapability(Capability, Direction)
-     *
-     * @return The capability
-     */
-    @Nonnull
-    default <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return LazyOptional.empty();
-    }
-
-    /**
      * Additional model data to be passed to the models for rendering this part.
      *
      * @return The model data to pass to the model. Only useful if custom models are used.
      */
-    @Nonnull
-    default IModelData getModelData() {
-        return EmptyModelData.INSTANCE;
+    @Nullable
+    default Object getRenderAttachmentData() {
+        return null;
     }
 
     /**

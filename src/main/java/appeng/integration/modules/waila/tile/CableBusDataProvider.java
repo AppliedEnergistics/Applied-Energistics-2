@@ -26,22 +26,19 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IServerDataProvider;
-import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.TooltipPosition;
-import mcp.mobius.waila.api.config.IPluginConfig;
-import mcp.mobius.waila.api.ui.IElement;
-import mcp.mobius.waila.api.ui.IElementHelper;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -65,27 +62,21 @@ public final class CableBusDataProvider {
             new P2PStateDataProvider(),
             new DebugDataProvider());
 
-    private static IElementHelper elementHelper;
-
     private CableBusDataProvider() {
     }
 
     public static void register(IRegistrar registrar) {
-        CableBusDataProvider.elementHelper = registrar.getElementHelper();
-
-        registrar.registerIconProvider(new IconProvider(), CableBusBlock.class);
+        registrar.addDisplayItem(new IconProvider(), CableBusBlock.class);
         registrar.registerComponentProvider(new NameProvider(),
                 TooltipPosition.HEAD, CableBusBlock.class);
-        registrar.registerComponentProvider(new TooltipAdapter(IPartDataProvider::appendBodyTooltip),
+        registrar.registerComponentProvider(new TooltipAdapter(),
                 TooltipPosition.BODY, CableBusBlock.class);
         registrar.registerBlockDataProvider(new ServerDataAdapter(), CableBusBlockEntity.class);
     }
 
     private static class NameProvider implements IComponentProvider {
-        private static final ResourceLocation OBJECT_NAME = new ResourceLocation("waila:object_name");
-
         @Override
-        public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        public void appendHead(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
             var blockEntity = accessor.getBlockEntity();
             var hitResult = accessor.getHitResult();
 
@@ -101,7 +92,7 @@ public final class CableBusDataProvider {
 
             // Replace the object name
             if (name != null) {
-                tooltip.remove(OBJECT_NAME);
+                tooltip.clear();
                 tooltip.add(name.copy().withStyle(style -> {
                     // Don't overwrite a text color if one is present
                     if (style.getColor() == null) {
@@ -109,38 +100,33 @@ public final class CableBusDataProvider {
                     } else {
                         return style;
                     }
-                }), OBJECT_NAME);
+                }));
             }
         }
     }
 
     private static class IconProvider implements IComponentProvider {
-        @Nullable
         @Override
-        public IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
+        public ItemStack getDisplayItem(IBlockAccessor accessor, IPluginConfig config) {
             var blockEntity = accessor.getBlockEntity();
             var hitResult = accessor.getHitResult();
 
             var selected = getPart(blockEntity, hitResult);
             if (selected.facade != null) {
-                return elementHelper.item(selected.facade.getItemStack());
+                return selected.facade.getItemStack();
             } else if (selected.part != null) {
                 var item = selected.part.getItemStack(PartItemStack.PICK);
                 if (!item.isEmpty()) {
-                    return elementHelper.item(item);
+                    return item;
                 }
             }
-            return currentIcon;
-        }
-
-        @Override
-        public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+            return ItemStack.EMPTY;
         }
     }
 
-    private record TooltipAdapter(TooltipAppender appender) implements IComponentProvider {
+    private static class TooltipAdapter implements IComponentProvider {
         @Override
-        public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
             // Pick the part the cursor is on
             var selected = getPart(accessor.getBlockEntity(), accessor.getHitResult());
             if (selected.part != null) {
@@ -148,7 +134,7 @@ public final class CableBusDataProvider {
                 var partTag = accessor.getServerData().getCompound(getPartDataName(selected.side));
 
                 for (var provider : PROVIDERS) {
-                    appender.append(provider, selected.part, partTag, tooltip);
+                    provider.appendBody(selected.part, partTag, tooltip);
                 }
             }
         }
@@ -157,7 +143,7 @@ public final class CableBusDataProvider {
     private static class ServerDataAdapter implements IServerDataProvider<BlockEntity> {
         @Override
         public void appendServerData(CompoundTag serverData, ServerPlayer serverPlayer, Level level,
-                BlockEntity blockEntity, boolean showDetails) {
+                BlockEntity blockEntity) {
 
             if (!(blockEntity instanceof CableBusBlockEntity cableBus)) {
                 return;
@@ -186,11 +172,6 @@ public final class CableBusDataProvider {
 
     private static String getPartDataName(@Nullable Direction location) {
         return "cableBusPart" + (location == null ? "center" : location.name());
-    }
-
-    @FunctionalInterface
-    interface TooltipAppender {
-        void append(IPartDataProvider provider, IPart part, CompoundTag partData, ITooltip tooltip);
     }
 
     /**

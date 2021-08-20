@@ -30,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
@@ -77,8 +76,8 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
-        return new PlaneModelData(getConnections());
+    public Object getRenderAttachmentData() {
+        return getConnections();
     }
 
 }

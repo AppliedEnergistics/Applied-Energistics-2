@@ -18,11 +18,12 @@
 
 package appeng.helpers;
 
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 public interface IConfigurableFluidInventory {
 
-    default IFluidHandler getFluidInventoryByName(String name) {
+    default Storage<FluidVariant> getFluidInventoryByName(String name) {
         return null;
     }
 }

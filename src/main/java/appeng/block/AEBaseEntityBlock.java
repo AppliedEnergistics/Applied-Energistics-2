@@ -220,11 +220,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     }
                 }
 
-                if (block.removedByPlayer(blockState, level, pos, player, false, level.getFluidState(pos))) {
-                    final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
-                    Platform.spawnDrops(level, pos, itemsToDrop);
-                    level.removeBlock(pos, false);
-                }
+                block.destroy(level, pos, state);
+                final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
+                Platform.spawnDrops(level, pos, itemsToDrop);
+                level.removeBlock(pos, false);
 
                 return InteractionResult.FAIL;
             }

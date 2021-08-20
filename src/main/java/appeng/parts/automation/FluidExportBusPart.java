@@ -20,14 +20,10 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -41,7 +37,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -95,47 +90,39 @@ public class FluidExportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        final BlockEntity te = this.getConnectedTE();
-        LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
-        if (te != null) {
-            fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getOpposite());
+        var fh = this.getConnectedTE();
+        var grid = getMainNode().getGrid();
+        if (fh == null || grid == null) {
+            return TickRateModulation.SLEEP;
         }
-        if (fhOpt.isPresent()) {
-            var grid = getMainNode().getGrid();
-            if (grid != null) {
-                final IFluidHandler fh = fhOpt.orElse(null);
-                final IMEMonitor<IAEFluidStack> inv = grid.getStorageService().getInventory(this.getChannel());
 
-                if (fh != null) {
-                    for (int i = 0; i < this.getConfig().getSlots(); i++) {
-                        IAEFluidStack fluid = this.getConfig().getFluidInSlot(i);
-                        if (fluid != null) {
-                            final IAEFluidStack toExtract = fluid.copy();
+        var inv = grid.getStorageService().getInventory(this.getChannel());
 
-                            toExtract.setStackSize(this.calculateAmountToSend());
+        for (int i = 0; i < this.getConfig().getSlots(); i++) {
+            IAEFluidStack fluid = this.getConfig().getFluidInSlot(i);
+            if (fluid != null) {
+                final IAEFluidStack toExtract = fluid.copy();
 
-                            final IAEFluidStack out = inv.extractItems(toExtract, Actionable.SIMULATE, this.source);
+                toExtract.setStackSize(this.calculateAmountToSend());
 
-                            if (out != null) {
-                                int wasInserted = fh.fill(out.getFluidStack(), FluidAction.EXECUTE);
+                var out = inv.extractItems(toExtract, Actionable.SIMULATE, this.source);
+                if (out != null) {
+                    try (var tx = Transaction.openOuter()) {
+                        long wasInserted = fh.insert(out.getFluid(), out.getStackSize(), tx);
 
-                                if (wasInserted > 0) {
-                                    toExtract.setStackSize(wasInserted);
-                                    inv.extractItems(toExtract, Actionable.MODULATE, this.source);
+                        if (wasInserted > 0) {
+                            toExtract.setStackSize(wasInserted);
+                            inv.extractItems(toExtract, Actionable.MODULATE, this.source);
 
-                                    return TickRateModulation.FASTER;
-                                }
-                            }
+                            return TickRateModulation.FASTER;
                         }
                     }
-
-                    return TickRateModulation.SLOWER;
                 }
             }
         }
 
-        return TickRateModulation.SLEEP;
+        return TickRateModulation.SLOWER;
+
     }
 
     @Override

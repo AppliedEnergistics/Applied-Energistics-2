@@ -20,6 +20,8 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -30,8 +32,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -44,6 +44,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
+import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
@@ -53,7 +54,8 @@ import appeng.menu.MenuOpener;
 import appeng.menu.me.items.MEPortableCellMenu;
 import appeng.parts.automation.UpgradeInventory;
 
-public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem {
+public class PortableCellItem extends AEBasePoweredItem
+        implements IStorageCell<IAEItemStack>, IGuiItem, ICustomReequipAnimation {
 
     private final StorageTier tier;
 
@@ -70,7 +72,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);

@@ -21,13 +21,11 @@ package appeng.integration.modules.waila;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
-import mcp.mobius.waila.api.WailaPlugin;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.integration.modules.waila.tile.CableBusDataProvider;
 
-@WailaPlugin
 public class WailaModule implements IWailaPlugin {
 
     public void register(IRegistrar registrar) {

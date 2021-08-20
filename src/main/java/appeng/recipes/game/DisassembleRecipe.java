@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -39,6 +40,7 @@ import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
+import appeng.hooks.IDisassemblyRemainder;
 
 public final class DisassembleRecipe extends CustomRecipe {
     public static final RecipeSerializer<DisassembleRecipe> SERIALIZER = new SimpleRecipeSerializer<>(
@@ -128,6 +130,20 @@ public final class DisassembleRecipe extends CustomRecipe {
         }
 
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer craftingContainer) {
+        var result = super.getRemainingItems(craftingContainer);
+
+        for (int i = 0; i < result.size(); ++i) {
+            ItemStack itemStack = craftingContainer.getItem(i);
+            if (itemStack.getItem() instanceof IDisassemblyRemainder remainder) {
+                result.set(i, remainder.getDisassemblyRemainder(itemStack));
+            }
+        }
+
+        return result;
     }
 
     @Nonnull

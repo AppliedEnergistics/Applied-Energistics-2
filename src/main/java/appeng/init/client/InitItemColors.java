@@ -18,10 +18,11 @@
 
 package appeng.init.client;
 
-import net.minecraft.client.color.item.ItemColors;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
@@ -38,7 +39,7 @@ public final class InitItemColors {
     private InitItemColors() {
     }
 
-    public static void init(ItemColors itemColors) {
+    public static void init(Registry itemColors) {
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.asItem());
         // I checked, the ME chest doesn't keep its color in item form
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
@@ -65,7 +66,7 @@ public final class InitItemColors {
     /**
      * We use a white base item icon for paint balls. This applies the correct color to it.
      */
-    private static void registerPaintBall(ItemColors colors, PaintBallItem item) {
+    private static void registerPaintBall(Registry colors, PaintBallItem item) {
         AEColor color = item.getColor();
         final int colorValue = item.isLumen() ? color.mediumVariant : color.mediumVariant;
         final int r = colorValue >> 16 & 0xff;
@@ -111,9 +112,12 @@ public final class InitItemColors {
             return -1;
         }
 
-        FluidStack fluidStack = fluidItem.getFluidStack(stack);
+        return FluidVariantRendering.getColor(fluidItem.getFluid(stack));
+    }
 
-        return fluidStack.getFluid().getAttributes().getColor(fluidStack);
+    @FunctionalInterface
+    public interface Registry {
+        void register(ItemColor itemColor, ItemLike... itemLikes);
     }
 
 }

@@ -22,6 +22,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,8 +37,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
@@ -63,7 +63,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {

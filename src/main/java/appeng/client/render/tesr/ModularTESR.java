@@ -23,16 +23,16 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;

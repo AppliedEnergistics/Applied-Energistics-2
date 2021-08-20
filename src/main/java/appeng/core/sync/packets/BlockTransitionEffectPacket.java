@@ -20,6 +20,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -30,13 +32,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.GameData;
 
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
@@ -71,7 +71,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(pos);
-        int blockStateId = GameData.getBlockStateIDMap().getId(blockState);
+        int blockStateId = Block.getId(blockState);
         if (blockStateId == -1) {
             AELog.warn("Failed to find numeric id for block state %s", blockState);
         }
@@ -85,7 +85,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
-        BlockState blockState = GameData.getBlockStateIDMap().byId(blockStateId);
+        BlockState blockState = Block.stateById(blockStateId);
         if (blockState == null) {
             AELog.warn("Received invalid blockstate id %d from server", blockStateId);
             blockState = Blocks.AIR.defaultBlockState();
@@ -96,14 +96,14 @@ public class BlockTransitionEffectPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final Player player) {
         spawnParticles();
 
         playBreakOrPickupSound();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void spawnParticles() {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
@@ -122,7 +122,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void playBreakOrPickupSound() {
 
         SoundEvent soundEvent;
@@ -130,14 +130,11 @@ public class BlockTransitionEffectPacket extends BasePacket {
         float pitch;
         if (soundMode == SoundMode.FLUID) {
             // This code is based on what BucketItem does
-            Fluid fluid = blockState.getFluidState().getType();
-            soundEvent = fluid.getAttributes().getFillSound();
-            if (soundEvent == null) {
-                if (fluid.is(FluidTags.LAVA)) {
-                    soundEvent = SoundEvents.BUCKET_FILL_LAVA;
-                } else {
-                    soundEvent = SoundEvents.BUCKET_FILL;
-                }
+            Fluid rawFluid = blockState.getFluidState().getType();
+            if (rawFluid.is(FluidTags.LAVA)) {
+                soundEvent = SoundEvents.BUCKET_FILL_LAVA;
+            } else {
+                soundEvent = SoundEvents.BUCKET_FILL;
             }
             volume = 1;
             pitch = 1;

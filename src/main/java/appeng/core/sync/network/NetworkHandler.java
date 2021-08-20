@@ -18,116 +18,25 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketListener;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.RunningOnDifferentThreadException;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.event.EventNetworkChannel;
+import net.minecraft.world.level.Level;
 
 import appeng.core.sync.BasePacket;
 
-public class NetworkHandler {
-    private static NetworkHandler instance;
+public interface NetworkHandler {
 
-    private final ResourceLocation myChannelName;
-
-    private final IPacketHandler clientHandler;
-    private final IPacketHandler serverHandler;
-
-    public NetworkHandler(final ResourceLocation channelName) {
-        EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
-                .networkProtocolVersion(() -> "1").clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true)
-                .eventNetworkChannel();
-        ec.registerObject(this);
-
-        this.clientHandler = DistExecutor.unsafeRunForDist(() -> ClientPacketHandler::new, () -> () -> null);
-        this.serverHandler = this.createServerSide();
+    static NetworkHandler instance() {
+        return NetworkHandlerHolder.INSTANCE;
     }
 
-    public static void init(final ResourceLocation channelName) {
-        instance = new NetworkHandler(channelName);
-    }
+    void sendToAll(final BasePacket message);
 
-    public static NetworkHandler instance() {
-        return instance;
-    }
+    void sendTo(final BasePacket message, final ServerPlayer player);
 
-    private IPacketHandler createServerSide() {
-        try {
-            return new ServerPacketHandler();
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
+    void sendToAllAround(final BasePacket message, final TargetPoint point);
 
-    @SubscribeEvent
-    public void serverPacket(final NetworkEvent.ClientCustomPayloadEvent ev) {
-        if (this.serverHandler != null) {
-            try {
-                NetworkEvent.Context ctx = ev.getSource().get();
-                ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) ctx.getNetworkManager()
-                        .getPacketListener();
-                ctx.setPacketHandled(true);
-                ctx.enqueueWork(
-                        () -> this.serverHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));
+    void sendToDimension(final BasePacket message, final Level level);
 
-            } catch (final RunningOnDifferentThreadException ignored) {
+    void sendToServer(final BasePacket message);
 
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void clientPacket(final NetworkEvent.ServerCustomPayloadEvent ev) {
-        if (ev instanceof NetworkEvent.ServerCustomPayloadLoginEvent) {
-            return;
-        }
-        if (this.clientHandler != null) {
-            try {
-                NetworkEvent.Context ctx = ev.getSource().get();
-                PacketListener netHandler = ctx.getNetworkManager().getPacketListener();
-                ctx.setPacketHandled(true);
-                ctx.enqueueWork(() -> this.clientHandler.onPacketData(null, netHandler, ev.getPayload(), null));
-            } catch (final RunningOnDifferentThreadException ignored) {
-
-            }
-        }
-    }
-
-    public ResourceLocation getChannel() {
-        return this.myChannelName;
-    }
-
-    public void sendToAll(final BasePacket message) {
-        getServer().getPlayerList().broadcastAll(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
-    }
-
-    public void sendTo(final BasePacket message, final ServerPlayer player) {
-        player.connection.send(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
-    }
-
-    public void sendToAllAround(final BasePacket message, final TargetPoint point) {
-        Packet<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
-        getServer().getPlayerList().broadcast(point.excluded, point.x, point.y, point.z, point.r2,
-                point.level.dimension(), pkt);
-    }
-
-    public void sendToServer(final BasePacket message) {
-        Minecraft.getInstance().getConnection().send(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
-    }
-
-    private MinecraftServer getServer() {
-        return LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
-    }
 }

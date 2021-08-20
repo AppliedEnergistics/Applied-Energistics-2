@@ -18,23 +18,24 @@
 
 package appeng.blockentity.misc;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Setting;
@@ -48,12 +49,10 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
@@ -71,7 +70,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     private final InternalInventory inputSlot = new CondenseItemHandler();
-    private final IFluidHandler fluidHandler = new FluidHandler();
+    private final Storage<FluidVariant> fluidHandler = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
     private final InternalInventory externalInv = new CombinedInternalInventory(this.inputSlot,
@@ -192,25 +191,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return externalInv;
     }
 
-    public IFluidHandler getFluidHandler() {
+    public Storage<FluidVariant> getFluidHandler() {
         return fluidHandler;
     }
 
     public MEHandler getMEHandler() {
         return meHandler;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(this.externalInv::toItemHandler);
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
-        } else if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.meHandler);
-        }
-        return super.getCapability(capability, facing);
     }
 
     private class CondenseItemHandler extends BaseInternalInventory {
@@ -253,71 +239,37 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
      * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power to this
      * condenser.
      */
-    private class FluidHandler implements IFluidTank, IFluidHandler {
+    private class FluidHandler extends SnapshotParticipant<Double> implements InsertionOnlyStorage<FluidVariant> {
+        private double pendingEnergy = 0;
 
-        @Nonnull
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
+        public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+            // We allow up to a bucket per insert
+            var amount = Math.min(FluidConstants.BUCKET, maxAmount);
+            updateSnapshots(transaction);
+            pendingEnergy += amount / (double) FluidConstants.BUCKET / StorageChannels.fluids().transferFactor();
+            return amount;
         }
 
         @Override
-        public int getFluidAmount() {
-            return 0;
+        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
+            return Collections.emptyIterator();
         }
 
         @Override
-        public int getCapacity() {
-            return FluidAttributes.BUCKET_VOLUME;
+        protected Double createSnapshot() {
+            return pendingEnergy;
         }
 
         @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return !stack.isEmpty();
+        protected void readSnapshot(Double snapshot) {
+            pendingEnergy = snapshot;
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            if (action == FluidAction.EXECUTE) {
-                final IStorageChannel<IAEFluidStack> chan = StorageChannels.fluids();
-                CondenserBlockEntity.this
-                        .addPower((resource.isEmpty() ? 0.0 : (double) resource.getAmount()) / chan.transferFactor());
-            }
-
-            return resource.isEmpty() ? 0 : resource.getAmount();
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? getCapacity() : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return tank == 0 && isFluidValid(stack);
+        protected void onFinalCommit() {
+            CondenserBlockEntity.this.addPower(pendingEnergy);
+            pendingEnergy = 0;
         }
     }
 

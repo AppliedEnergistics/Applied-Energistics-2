@@ -21,12 +21,13 @@ package appeng.parts.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
@@ -38,14 +39,15 @@ import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.FluidHandlerAdapter;
+import appeng.me.storage.StorageAdapter;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.parts.PartModel;
+import appeng.util.IVariantConversion;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
 
-public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, IFluidHandler>
+public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, Storage<FluidVariant>>
         implements IAEFluidInventory, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
@@ -62,7 +64,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, I
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
     public FluidStorageBusPart(ItemStack is) {
-        super(TickRates.FluidStorageBus, is, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        super(TickRates.FluidStorageBus, is, FluidStorage.SIDED);
     }
 
     @Override
@@ -72,8 +74,8 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, I
 
     @Nullable
     @Override
-    protected IMEInventory<IAEFluidStack> getHandlerAdapter(IFluidHandler handler, Runnable alertDevice) {
-        return new FluidHandlerAdapter(handler) {
+    protected IMEInventory<IAEFluidStack> getHandlerAdapter(Storage<FluidVariant> handler, Runnable alertDevice) {
+        return new StorageAdapter<>(IVariantConversion.FLUID, handler, false) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();
@@ -116,7 +118,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, I
     }
 
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

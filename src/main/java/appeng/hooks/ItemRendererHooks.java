@@ -57,8 +57,8 @@ public final class ItemRendererHooks {
                 }
             }
         } else if (stack.getItem() instanceof FluidDummyItem dummyItem) {
-            var fluid = dummyItem.getFluidStack(stack);
-            if (!fluid.isEmpty()) {
+            var fluid = dummyItem.getFluid(stack);
+            if (!fluid.isBlank()) {
                 FluidBlitter.create(fluid)
                         .dest(x, y, 16, 16)
                         .blit((int) (100.0 + renderer.blitOffset));
