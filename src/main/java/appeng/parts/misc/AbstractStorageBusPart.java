@@ -22,27 +22,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
@@ -53,86 +46,68 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.*;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.ItemStorageBusMenu;
-import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class StorageBusPart extends UpgradeablePart
-        implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
-
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
-
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_off"));
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_on"));
-
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
-
-    private final IActionSource mySrc;
-    private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
+public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends UpgradeablePart
+        implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
+    protected final IActionSource source;
+    private boolean wasActive = false;
     private int priority = 0;
     private boolean cached = false;
     private ITickingMonitor monitor = null;
-    private MEInventoryHandler<IAEItemStack> handler = null;
+    private MEInventoryHandler<T> handler = null;
     private int handlerHash = 0;
-    private boolean wasActive = false;
     private byte resetCacheLogic = 0;
 
-    public StorageBusPart(final ItemStack is) {
+    public AbstractStorageBusPart(ItemStack is) {
         super(is);
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.mySrc = new MachineSource(this);
+        this.source = new MachineSource(this);
         getMainNode()
                 .addService(ICellProvider.class, this)
                 .addService(IGridTickable.class, this);
     }
 
-    @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        updateStatus();
-    }
+    protected abstract IStorageChannel<T> getStorageChannel();
 
-    private void updateStatus() {
+    @Nullable
+    protected abstract IMEInventory<T> getHandlerAdapter(BlockEntity target, Direction targetSide,
+            Runnable alertDevice);
+
+    /**
+     * Hash the adjacent handler, or return 0 if there is no handler.
+     */
+    protected abstract int getHandlerHash(BlockEntity target, Direction targetSide);
+
+    protected abstract int getStackConfigSize();
+
+    @Nullable
+    protected abstract T getStackInConfigSlot(int slot);
+
+    @Override
+    protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
         final boolean currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
@@ -142,56 +117,18 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    protected int getUpgradeSlots() {
-        return 5;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-        this.resetCache(true);
+    public final void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
+        this.scheduleCacheReset(true);
         this.getHost().markForSave();
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
-
-        if (inv == this.Config) {
-            this.resetCache(true);
-        }
-    }
-
-    @Override
-    public void upgradesChanged() {
+    public final void upgradesChanged() {
         super.upgradesChanged();
-        this.resetCache(true);
+        this.scheduleCacheReset(true);
     }
 
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.Config.readFromNBT(data, "config");
-        this.priority = data.getInt("priority");
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.Config.writeToNBT(data, "config");
-        data.putInt("priority", this.priority);
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.Config;
-        }
-
-        return super.getInventoryByName(name);
-    }
-
-    private void resetCache(final boolean fullReset) {
+    protected final void scheduleCacheReset(final boolean fullReset) {
         if (isRemote()) {
             return;
         }
@@ -208,71 +145,87 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public boolean isValid(final Object verificationToken) {
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        this.priority = data.getInt("priority");
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        data.putInt("priority", this.priority);
+    }
+
+    @Override
+    public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+        if (!isRemote()) {
+            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+        }
+        return true;
+    }
+
+    @Override
+    public final boolean isValid(final Object verificationToken) {
         return this.handler == verificationToken;
     }
 
     @Override
-    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-            final IActionSource source) {
+    public final void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
         if (this.getMainNode().isActive()) {
             getMainNode().ifPresent((grid, node) -> {
-                grid.getStorageService().postAlterationOfStoredItems(
-                        StorageChannels.items(), change, this.mySrc);
+                grid.getStorageService().postAlterationOfStoredItems(getStorageChannel(), change, this.source);
             });
         }
     }
 
     @Override
-    public void onListUpdate() {
+    public final void onListUpdate() {
         // not used here.
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public final void getBoxes(final IPartCollisionHelper bch) {
         bch.addBox(3, 3, 15, 13, 13, 16);
         bch.addBox(2, 2, 14, 14, 14, 15);
         bch.addBox(5, 5, 12, 11, 11, 14);
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    protected final int getUpgradeSlots() {
+        return 5;
+    }
+
+    @Override
+    public final float getCableConnectionLength(AECableType cable) {
+        return 4;
+    }
+
+    @Override
+    public final void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
             final BlockEntity te = level.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
-                this.resetCache(true);
-                this.resetCache();
+                this.scheduleCacheReset(true);
+                this.doCacheReset();
             } else {
-                this.resetCache(false);
+                this.scheduleCacheReset(false);
             }
         }
     }
 
     @Override
-    public float getCableConnectionLength(AECableType cable) {
-        return 4;
-    }
-
-    @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
-            MenuOpener.open(ItemStorageBusMenu.TYPE, player, MenuLocator.forPart(this));
-        }
-        return true;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public final TickingRequest getTickingRequest(final IGridNode node) {
+        // TODO: overridable for fluid bus specific config?
         return new TickingRequest(TickRates.StorageBus.getMin(), TickRates.StorageBus.getMax(), this.monitor == null,
                 true);
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public final TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
         if (this.resetCacheLogic != 0) {
-            this.resetCache();
+            this.doCacheReset();
         }
 
         if (this.monitor != null) {
@@ -282,13 +235,12 @@ public class StorageBusPart extends UpgradeablePart
         return TickRateModulation.SLEEP;
     }
 
-    private void resetCache() {
+    private void doCacheReset() {
         final boolean fullReset = this.resetCacheLogic == 2;
         this.resetCacheLogic = 0;
 
-        final IMEInventory<IAEItemStack> in = this.getInternalHandler();
-        IItemList<IAEItemStack> before = StorageChannels.items()
-                .createList();
+        final IMEInventory<T> in = this.getInternalHandler();
+        IItemList<T> before = getStorageChannel().createList();
         if (in != null) {
             before = in.getAvailableItems(before);
         }
@@ -298,19 +250,18 @@ public class StorageBusPart extends UpgradeablePart
             this.handlerHash = 0;
         }
 
-        final IMEInventory<IAEItemStack> out = this.getInternalHandler();
+        final IMEInventory<T> out = this.getInternalHandler();
 
         if (in != out) {
-            IItemList<IAEItemStack> after = StorageChannels.items()
-                    .createList();
+            IItemList<T> after = getStorageChannel().createList();
             if (out != null) {
                 after = out.getAvailableItems(after);
             }
-            Platform.postListChanges(before, after, this, this.mySrc);
+            Platform.postListChanges(before, after, this, this.source);
         }
     }
 
-    private IMEInventory<IAEItemStack> getInventoryWrapper(BlockEntity target) {
+    private IMEInventory<T> getInventoryWrapper(BlockEntity target) {
 
         Direction targetSide = this.getSide().getDirection().getOpposite();
 
@@ -320,9 +271,9 @@ public class StorageBusPart extends UpgradeablePart
 
         if (accessorOpt.isPresent()) {
             IStorageMonitorableAccessor accessor = accessorOpt.orElse(null);
-            IStorageMonitorable inventory = accessor.getInventory(this.mySrc);
+            IStorageMonitorable inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                return inventory.getInventory(StorageChannels.items());
+                return inventory.getInventory(getStorageChannel());
             }
 
             // So this could / can be a design decision. If the block entity does support our custom
@@ -335,19 +286,12 @@ public class StorageBusPart extends UpgradeablePart
             return null;
         }
 
-        // Check via cap for IItemHandler
-        final LazyOptional<IItemHandler> handlerExtOpt = target
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
-        if (handlerExtOpt.isPresent()) {
-            return new ItemHandlerAdapter(handlerExtOpt.orElse(null), () -> {
-                getMainNode().ifPresent((grid, node) -> {
-                    grid.getTickManager().alertDevice(node);
-                });
+        // Check via cap adapter
+        return getHandlerAdapter(target, targetSide, () -> {
+            getMainNode().ifPresent((grid, node) -> {
+                grid.getTickManager().alertDevice(node);
             });
-        }
-
-        return null;
-
+        });
     }
 
     // TODO, LazyOptionals are cacheable this might need changing?
@@ -365,18 +309,10 @@ public class StorageBusPart extends UpgradeablePart
             return Objects.hash(target, accessorOpt.orElse(null));
         }
 
-        final LazyOptional<IItemHandler> itemHandlerOpt = target
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
-
-        if (itemHandlerOpt.isPresent()) {
-            IItemHandler itemHandler = itemHandlerOpt.orElse(null);
-            return Objects.hash(target, itemHandler, itemHandler.getSlots());
-        }
-
-        return 0;
+        return getHandlerHash(target, targetSide);
     }
 
-    public MEInventoryHandler<IAEItemStack> getInternalHandler() {
+    public final MEInventoryHandler<T> getInternalHandler() {
         if (this.cached) {
             return this.handler;
         }
@@ -397,7 +333,7 @@ public class StorageBusPart extends UpgradeablePart
         this.handler = null;
         this.monitor = null;
         if (target != null) {
-            IMEInventory<IAEItemStack> inv = this.getInventoryWrapper(target);
+            IMEInventory<T> inv = this.getInventoryWrapper(target);
 
             if (inv instanceof MEMonitorIInventory h) {
                 h.setMode((StorageFilter) this.getConfigManager().getSetting(Settings.STORAGE_FILTER));
@@ -411,33 +347,32 @@ public class StorageBusPart extends UpgradeablePart
             if (inv != null) {
                 this.checkInterfaceVsStorageBus(target, this.getSide().getOpposite());
 
-                this.handler = new MEInventoryHandler<IAEItemStack>(inv,
-                        StorageChannels.items());
+                this.handler = new MEInventoryHandler<>(inv, getStorageChannel());
 
                 this.handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
                 this.handler.setWhitelist(this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                         : IncludeExclude.WHITELIST);
                 this.handler.setPriority(this.priority);
 
-                final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
+                final IItemList<T> priorityList = getStorageChannel().createList();
 
                 final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-                for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
-                    final IAEItemStack is = this.Config.getAEStackInSlot(x);
+                for (int x = 0; x < getStackConfigSize() && x < slotsToUse; x++) {
+                    final T is = getStackInConfigSlot(x);
                     if (is != null) {
                         priorityList.add(is);
                     }
                 }
 
                 if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                    this.handler.setPartitionList(new FuzzyPriorityList<IAEItemStack>(priorityList,
+                    this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList,
                             (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
                 } else {
-                    this.handler.setPartitionList(new PrecisePriorityList<IAEItemStack>(priorityList));
+                    this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
                 }
 
                 if (inv instanceof IBaseMonitor) {
-                    ((IBaseMonitor<IAEItemStack>) inv).addListener(this, this.handler);
+                    ((IBaseMonitor<T>) inv).addListener(this, this.handler);
                 }
             }
         }
@@ -482,10 +417,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
-        if (channel == StorageChannels.items()) {
-            final IMEInventoryHandler<IAEItemStack> out = this.getMainNode().isActive() ? this.getInternalHandler()
-                    : null;
+    public final List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+        if (channel == getStorageChannel()) {
+            final IMEInventoryHandler<T> out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
             if (out != null) {
                 return Collections.singletonList(out);
             }
@@ -494,35 +428,14 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public int getPriority() {
+    public final int getPriority() {
         return this.priority;
     }
 
     @Override
-    public void setPriority(final int newValue) {
+    public final void setPriority(final int newValue) {
         this.priority = newValue;
         this.getHost().markForSave();
-        this.resetCache(true);
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.ITEM_STORAGE_BUS.stack();
-    }
-
-    @Override
-    public MenuType<?> getMenuType() {
-        return ItemStorageBusMenu.TYPE;
+        this.scheduleCacheReset(true);
     }
 }

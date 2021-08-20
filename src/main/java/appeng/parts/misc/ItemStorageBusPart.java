@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -30,57 +29,57 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
-import appeng.menu.implementations.FluidStorageBusMenu;
+import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.fluid.IAEFluidTank;
-import appeng.util.inv.IAEFluidInventory;
+import appeng.util.inv.InvOperation;
 
-public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
-        implements IAEFluidInventory, IConfigurableFluidInventory {
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
-            "part/fluid_storage_bus_base");
+public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
+
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
+
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_off"));
+
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_on"));
+
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
 
-    private final AEFluidInventory config = new AEFluidInventory(this, 63);
+    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
-    public FluidStorageBusPart(ItemStack is) {
+    public ItemStorageBusPart(final ItemStack is) {
         super(is);
     }
 
     @Override
-    public IStorageChannel<IAEFluidStack> getStorageChannel() {
-        return StorageChannels.fluids();
+    protected IStorageChannel<IAEItemStack> getStorageChannel() {
+        return StorageChannels.items();
     }
 
     @Nullable
     @Override
-    protected IMEInventory<IAEFluidStack> getHandlerAdapter(BlockEntity target, Direction targetSide,
+    protected IMEInventory<IAEItemStack> getHandlerAdapter(BlockEntity target, Direction targetSide,
             Runnable alertDevice) {
-        final LazyOptional<IFluidHandler> handlerExtOpt = target
-                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
-        if (handlerExtOpt.isPresent()) {
-            return new FluidHandlerAdapter(handlerExtOpt.orElse(null), alertDevice);
+        final LazyOptional<IItemHandler> itemHandlerOpt = target
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
+        if (itemHandlerOpt.isPresent()) {
+            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null), alertDevice);
         }
 
         return null;
@@ -88,12 +87,12 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
 
     @Override
     protected int getHandlerHash(BlockEntity target, Direction targetSide) {
-        final LazyOptional<IFluidHandler> fluidHandlerOpt = target
-                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
+        final LazyOptional<IItemHandler> itemHandlerOpt = target
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
 
-        if (fluidHandlerOpt.isPresent()) {
-            IFluidHandler itemHandler = fluidHandlerOpt.orElse(null);
-            return Objects.hash(target, itemHandler, itemHandler.getTanks());
+        if (itemHandlerOpt.isPresent()) {
+            IItemHandler itemHandler = itemHandlerOpt.orElse(null);
+            return Objects.hash(target, itemHandler, itemHandler.getSlots());
         } else {
             return 0;
         }
@@ -106,12 +105,15 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
 
     @Nullable
     @Override
-    protected IAEFluidStack getStackInConfigSlot(int slot) {
-        return this.config.getFluidInSlot(slot);
+    protected IAEItemStack getStackInConfigSlot(int slot) {
+        return this.config.getAEStackInSlot(slot);
     }
 
     @Override
-    public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removedStack, final ItemStack newStack) {
+        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+
         if (inv == this.config) {
             this.scheduleCacheReset(true);
         }
@@ -129,19 +131,15 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
         this.config.writeToNBT(data, "config");
     }
 
-    public IAEFluidTank getConfig() {
-        return this.config;
-    }
-
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public IItemHandler getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }
-        return null;
+
+        return super.getInventoryByName(name);
     }
 
-    @Nonnull
     @Override
     public IPartModel getStaticModels() {
         if (this.isActive() && this.isPowered()) {
@@ -155,11 +153,11 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEParts.FLUID_STORAGE_BUS.stack();
+        return AEParts.ITEM_STORAGE_BUS.stack();
     }
 
     @Override
     public MenuType<?> getMenuType() {
-        return FluidStorageBusMenu.TYPE;
+        return ItemStorageBusMenu.TYPE;
     }
 }

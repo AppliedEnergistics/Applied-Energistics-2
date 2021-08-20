@@ -49,7 +49,7 @@ import appeng.parts.misc.FluidInterfacePart;
 import appeng.parts.misc.FluidStorageBusPart;
 import appeng.parts.misc.InvertedToggleBusPart;
 import appeng.parts.misc.ItemInterfacePart;
-import appeng.parts.misc.StorageBusPart;
+import appeng.parts.misc.ItemStorageBusPart;
 import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.CoveredCablePart;
 import appeng.parts.networking.CoveredDenseCablePart;
@@ -93,7 +93,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<PanelPart>> MONITOR = createPart(AEPartIds.MONITOR, PanelPart.class, PanelPart::new);
     public static final ItemDefinition<PartItem<SemiDarkPanelPart>> SEMI_DARK_MONITOR = createPart(AEPartIds.SEMI_DARK_MONITOR, SemiDarkPanelPart.class, SemiDarkPanelPart::new);
     public static final ItemDefinition<PartItem<DarkPanelPart>> DARK_MONITOR = createPart(AEPartIds.DARK_MONITOR, DarkPanelPart.class, DarkPanelPart::new);
-    public static final ItemDefinition<PartItem<StorageBusPart>> ITEM_STORAGE_BUS = createPart(AEPartIds.ITEM_STORAGE_BUS, StorageBusPart.class, StorageBusPart::new);
+    public static final ItemDefinition<PartItem<ItemStorageBusPart>> ITEM_STORAGE_BUS = createPart(AEPartIds.ITEM_STORAGE_BUS, ItemStorageBusPart.class, ItemStorageBusPart::new);
     public static final ItemDefinition<PartItem<FluidStorageBusPart>> FLUID_STORAGE_BUS = createPart(AEPartIds.FLUID_STORAGE_BUS, FluidStorageBusPart.class, FluidStorageBusPart::new);
     public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.ITEM_IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
     public static final ItemDefinition<PartItem<FluidImportBusPart>> FLUID_IMPORT_BUS = createPart(AEPartIds.FLUID_IMPORT_BUS, FluidImportBusPart.class, FluidImportBusPart::new);
